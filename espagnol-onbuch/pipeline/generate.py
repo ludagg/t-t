@@ -327,6 +327,7 @@ def autofix(body):
     body = re.sub(r"(?<![\\_])_{3,}(?!_)", lambda m: "\\_" * min(len(m.group(0)), 12), body)
     # \\emphà la place de} : accolade ouvrante oubliée devant une lettre accentuée
     body = re.sub(r"\\(emph|textbf|textit|cle|esp)(?=[^\W\d_a-zA-Z])", r"\\\1{", body)
+    body = _escape_ampersands(body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
@@ -559,6 +560,27 @@ def _close_boxes(body):
     out.append(body[last:])
     if opened:
         out.append(f"\n\\end{{{opened}}}\n")
+    return "".join(out)
+
+
+_AMP_ENVS = {"tabular", "tabularx", "array", "align", "align*", "aligned", "alignat", "alignat*", "matrix", "pmatrix", "bmatrix",
+             "vmatrix", "cases", "tikzpicture", "gathered", "split", "eqnarray", "longtable", "pgfplots", "axis"}
+
+
+def _escape_ampersands(body):
+    """« Structure & Versification » hors tableau : & -> \\& (les & des
+    tableaux, matrices, alignements et figures TikZ restent intacts)."""
+    out, last, depth = [], 0, 0
+    for m in re.finditer(r"\\(begin|end)\{([^}]+)\}", body):
+        seg = body[last:m.start()]
+        out.append(seg if depth else re.sub(r"(?<!\\)&", r"\\&", seg))
+        out.append(m.group(0))
+        if m.group(2) in _AMP_ENVS:
+            depth += 1 if m.group(1) == "begin" else -1
+            depth = max(depth, 0)
+        last = m.end()
+    seg = body[last:]
+    out.append(seg if depth else re.sub(r"(?<!\\)&", r"\\&", seg))
     return "".join(out)
 
 
