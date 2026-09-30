@@ -311,6 +311,7 @@ def autofix(body):
         return pic
     body = re.sub(r"\\begin\{tikzpicture\}\[[^\]]*\].*?\\end\{tikzpicture\}", _scale_to_xy, body, flags=re.S)
     body = _box_as_command(body)
+    body = _close_boxes(body)
     body = _lonely_items(body)
     # circuitikz : étiquette l=$...$ non protégée (virgule, parenthèses) -> l={$...$}
     body = re.sub(r"(to\[[^\]]*?\b(?:l|l_|l\^|v|v_|v\^|i|i_|i\^|a|a_|a\^)=)\$([^$]*)\$",
@@ -514,6 +515,31 @@ def _lonely_items(body):
             inner = "\n\\begin{itemize}" + inner.rstrip() + "\n\\end{itemize}\n"
         return m.group(1) + inner + m.group(4)
     return re.sub(r"(\\begin\{(" + _BOX + r")\}(?:\[(?:[^\[\]]|\{[^{}]*\})*\])?)(.*?)(\\end\{\2\})", fix, body, flags=re.S)
+
+
+def _close_boxes(body):
+    """Boîte pédagogique jamais refermée (oubli fréquent du relecteur) : les
+    boîtes ne s'imbriquent pas, donc un nouveau \\begin{boîte}, un titre
+    \\coursec/\\courssub ou la fin du bloc ferment la boîte encore ouverte."""
+    # textebox peut figurer dans un exercice ou un exercice résolu : ignorée ici
+    tok = re.compile(r"\\(begin|end)\{(" + _BOX.replace("textebox|", "") + r")\}|\\(coursec|courssub)\{")
+    out, last, opened = [], 0, None
+    for m in tok.finditer(body):
+        if m.group(3):
+            if opened:
+                out.append(body[last:m.start()] + f"\\end{{{opened}}}\n\n")
+                last, opened = m.start(), None
+        elif m.group(1) == "begin":
+            if opened:
+                out.append(body[last:m.start()] + f"\\end{{{opened}}}\n\n")
+                last = m.start()
+            opened = m.group(2)
+        elif opened == m.group(2):
+            opened = None
+    out.append(body[last:])
+    if opened:
+        out.append(f"\n\\end{{{opened}}}\n")
+    return "".join(out)
 
 
 def _box_as_command(body):
