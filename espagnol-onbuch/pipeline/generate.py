@@ -318,6 +318,8 @@ def autofix(body):
     # faute de frappe « \\end{exemplebox> » (souvent suivie du vrai \\end) : on la corrige
     body = re.sub(r"\\end\{(\w+)>[ \t]*\n(?:[ \t]*\n)*[ \t]*\\end\{\1\}", r"\\end{\1}", body)
     body = re.sub(r"\\(begin|end)\{(\w+)>", r"\\\1{\2}", body)
+    # répétition dégénérée de « \\_ » (lignes à compléter) : plafonnée à 12
+    body = re.sub(r"(?:\\_){13,}", r"\\_" * 12, body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
