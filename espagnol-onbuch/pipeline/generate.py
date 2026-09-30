@@ -315,6 +315,9 @@ def autofix(body):
                   lambda m: m.group(1) + re.sub(r"(?<!\\)&", r"\\&", m.group(2)) + m.group(3), body, flags=re.M)
     # \\esp{a\\\\b} : saut de ligne interdit dans \emph -> \esp{a}\\\esp{b}
     body = re.sub(r"\\esp\{([^{}\n]*?)\\\\\s*([^{}\n]*)\}", r"\\esp{\1}\\\\\\esp{\2}", body)
+    # faute de frappe « \\end{exemplebox> » (souvent suivie du vrai \\end) : on la corrige
+    body = re.sub(r"\\end\{(\w+)>[ \t]*\n(?:[ \t]*\n)*[ \t]*\\end\{\1\}", r"\\end{\1}", body)
+    body = re.sub(r"\\(begin|end)\{(\w+)>", r"\\\1{\2}", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
@@ -541,6 +544,9 @@ def _close_boxes(body):
             opened = m.group(2)
         elif opened == m.group(2):
             opened = None
+        else:  # \\end{boîte} orphelin (boîte déjà fermée) : supprimé
+            out.append(body[last:m.start()])
+            last = m.end()
     out.append(body[last:])
     if opened:
         out.append(f"\n\\end{{{opened}}}\n")
