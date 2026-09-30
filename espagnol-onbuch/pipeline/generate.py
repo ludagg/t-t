@@ -818,8 +818,13 @@ def write_block(L, plan, d, name, instruction, what):
     ctx = lesson_brief(L) + "\n\nPLAN GÉNÉRAL DE LA LEÇON :\n" + plan_summary(plan)
     if not raw_f.exists():
         log(f"[{L['id']}] rédaction {what}")
-        raw = sanitize(llm([{"role": "system", "content": SYSTEM},
-                            {"role": "user", "content": ctx + "\n\n" + instruction}], WRITER_MODELS, max_tokens=20000))
+        for essai in range(3):
+            raw = sanitize(llm([{"role": "system", "content": SYSTEM},
+                                {"role": "user", "content": ctx + "\n\n" + instruction}], WRITER_MODELS, max_tokens=20000))
+            # sortie dégénérée (trop courte ou caractère répété à l'infini) : on recommence
+            if len(raw) > 1500 and not re.search(r"(.)\1{60,}", raw) and not re.search(r"(?:\\_){40,}", raw):
+                break
+            log(f"[{L['id']}] sortie dégénérée pour {what} ({len(raw)} car.), nouvel essai")
         raw_f.write_text(raw)
     raw = raw_f.read_text()
     if not rev_f.exists():
