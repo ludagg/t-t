@@ -332,7 +332,7 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
     _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ode|ame|olimits|eg)"
-    body = "\n".join(re.sub(r"(?<!\\)\\n(?!" + _ok + r"\b)", r"\\\\", l) if re.match(r"\s*\\node\b", l) else l
+    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\])(?!" + _ok + r"\b)", r"\\\\", l) if re.match(r"\s*\\node\b", l) else l
                      for l in body.split("\n"))
     body = _box_as_command(body)
     body = _close_boxes(body)
