@@ -330,6 +330,10 @@ def autofix(body):
     body = _escape_ampersands(body)
     # \\end{center  (accolade fermante oubliée en fin de ligne)
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
+    # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
+    _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ode|ame|olimits|eg)"
+    body = "\n".join(re.sub(r"(?<!\\)\\n(?!" + _ok + r"\b)", r"\\\\", l) if re.match(r"\s*\\node\b", l) else l
+                     for l in body.split("\n"))
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
@@ -531,7 +535,7 @@ def _lonely_items(body):
     """Boîte dont le contenu commence directement par \\item (sans liste) -> itemize."""
     def fix(m):
         inner = m.group(3)
-        if re.match(r"\s*\\item\b", inner) and not re.search(r"\\begin\{(itemize|enumerate|description)\}", inner):
+        if re.match(r"\s*\\item\b", inner):
             inner = "\n\\begin{itemize}" + inner.rstrip() + "\n\\end{itemize}\n"
         return m.group(1) + inner + m.group(4)
     return re.sub(r"(\\begin\{(" + _BOX + r")\}(?:\[(?:[^\[\]]|\{[^{}]*\})*\])?)(.*?)(\\end\{\2\})", fix, body, flags=re.S)
