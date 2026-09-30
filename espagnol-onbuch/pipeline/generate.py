@@ -325,6 +325,8 @@ def autofix(body):
     body = re.sub(r"\\([¿¡])", r"\1", body)
     # lignes à compléter écrites « ______ » sans échappement (hors math) -> \\_ (plafonné)
     body = re.sub(r"(?<![\\_])_{3,}(?!_)", lambda m: "\\_" * min(len(m.group(0)), 12), body)
+    # \\emphà la place de} : accolade ouvrante oubliée devant une lettre accentuée
+    body = re.sub(r"\\(emph|textbf|textit|cle|esp)(?=[^\W\d_a-zA-Z])", r"\\\1{", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
