@@ -334,6 +334,10 @@ def autofix(body):
     _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ode|ame|olimits|eg)"
     body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\])(?!" + _ok + r"\b)", r"\\\\", l) if re.match(r"\s*\\node\b", l) else l
                      for l in body.split("\n"))
+    # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
+    body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
+    # « # » (hashtag) non échappé : aucune macro à paramètres dans les blocs
+    body = re.sub(r"(?<!\\)#", r"\\#", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
@@ -536,7 +540,8 @@ def _lonely_items(body):
     def fix(m):
         inner = m.group(3)
         if re.match(r"\s*\\item\b", inner):
-            inner = "\n\\begin{itemize}" + inner.rstrip() + "\n\\end{itemize}\n"
+            lst = "enumerate" if m.group(2) == "methode" else "itemize"
+            inner = "\n\\begin{" + lst + "}" + inner.rstrip() + "\n\\end{" + lst + "}\n"
         return m.group(1) + inner + m.group(4)
     return re.sub(r"(\\begin\{(" + _BOX + r")\}(?:\[(?:[^\[\]]|\{[^{}]*\})*\])?)(.*?)(\\end\{\2\})", fix, body, flags=re.S)
 
