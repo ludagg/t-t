@@ -310,6 +310,11 @@ def autofix(body):
             pic = pic[:sm.start()] + f"x={val}cm, y={val}cm" + pic[sm.end():]
         return pic
     body = re.sub(r"\\begin\{tikzpicture\}\[[^\]]*\].*?\\end\{tikzpicture\}", _scale_to_xy, body, flags=re.S)
+    # « Thème & Version » dans un titre de boîte : & doit être échappé
+    body = re.sub(r"(\\begin\{(?:" + _BOX + r")\}\[)([^\n]*)(\])[ \t]*$",
+                  lambda m: m.group(1) + re.sub(r"(?<!\\)&", r"\\&", m.group(2)) + m.group(3), body, flags=re.M)
+    # \\esp{a\\\\b} : saut de ligne interdit dans \emph -> \esp{a}\\\esp{b}
+    body = re.sub(r"\\esp\{([^{}\n]*?)\\\\\s*([^{}\n]*)\}", r"\\esp{\1}\\\\\\esp{\2}", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
