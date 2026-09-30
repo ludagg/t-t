@@ -191,6 +191,7 @@ CONTRAT LaTeX (obligatoire) :
 - Comparaisons français/espagnol : tableaux \begin{center}\begin{tabularx}{\linewidth}{|X|X|X|}\hline \rowcolor{popblueL} Français & Español & Remarque \\ \hline ... \end{tabularx}\end{center}. Conjugaison : \begin{tabular}{|l|l|l|}\hline ... avec autant de cases par ligne que de colonnes.
 - Mathématiques : quasiment inutiles ici. Si tu écris un nombre ou une date, reste en texte normal.
 - Illustrations : place chaque figure dans \begin{popfigure} ... \legende{Légende}\end{popfigure}. TikZ simple uniquement (cartes mentales, schémas de structure de phrase, frise chronologique des temps, flèches de transformation style direct/indirect, organigramme de choix ser/estar). Couleurs autorisées : popink, poporange, popdark, poppurple, popgreen, popblue, poppink, popgold, popmuted, popline, popcream, et leurs teintes popblueL, poporangeL, popgreenL, poppurpleL, poppinkL, popgoldL (ou mélanges comme popblue!30). Bibliothèques TikZ disponibles : arrows.meta, positioning, calc, shapes.geometric, decorations.pathmorphing, patterns, mindmap, trees, fit, backgrounds, matrix. Nombres décimaux en TikZ avec un POINT (0.55cm). Garde le code TikZ simple, correct et compilable ; les textes de nœuds sur plusieurs lignes exigent align=center ; ne mets pas de caractère % ni _ non échappé.
+- Prononciation : PAS d'alphabet phonétique international (la police ne l'affiche pas) ; note la prononciation en lettres françaises entre guillemets (ex. « bé-ni-fi-si-o »).
 - Listes : itemize / enumerate classiques.
 - Le symbole % doit être échappé \% ; les caractères & _ # doivent être échappés hors des tableaux (& ne sert que de séparateur de colonnes dans un tabular).
 """
@@ -320,6 +321,8 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+)>", r"\\\1{\2}", body)
     # répétition dégénérée de « \\_ » (lignes à compléter) : plafonnée à 12
     body = re.sub(r"(?:\\_){13,}", r"\\_" * 12, body)
+    # « \\¿ » « \\¡ » : antislash superflu devant la ponctuation espagnole
+    body = re.sub(r"\\([¿¡])", r"\1", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
