@@ -328,6 +328,8 @@ def autofix(body):
     # \\emphà la place de} : accolade ouvrante oubliée devant une lettre accentuée
     body = re.sub(r"\\(emph|textbf|textit|cle|esp)(?=[^\W\d_a-zA-Z])", r"\\\1{", body)
     body = _escape_ampersands(body)
+    # \\end{center  (accolade fermante oubliée en fin de ligne)
+    body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
