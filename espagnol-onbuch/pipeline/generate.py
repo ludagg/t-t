@@ -322,7 +322,7 @@ def autofix(body):
     # répétition dégénérée de « \\_ » (lignes à compléter) : plafonnée à 12
     body = re.sub(r"(?:\\_){13,}", r"\\_" * 12, body)
     # « \\¿ » « \\¡ » : antislash superflu devant la ponctuation espagnole
-    body = re.sub(r"(?<!\\)\\([¿¡])", r"\1", body)
+    body = re.sub(r"(?<!\\)\\([¿¡áéíóúñüÁÉÍÓÚÑÜ])", r"\1", body)
     # lignes à compléter écrites « ______ » sans échappement (hors math) -> \\_ (plafonné)
     body = re.sub(r"(?<![\\_])_{3,}(?!_)", lambda m: "\\_" * min(len(m.group(0)), 12), body)
     # \\emphà la place de} : accolade ouvrante oubliée devant une lettre accentuée
