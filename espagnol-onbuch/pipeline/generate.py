@@ -797,10 +797,17 @@ Réponds UNIQUEMENT avec un objet JSON valide (pas de Markdown) :
  "exercices_idees": ["idée d'exercice type Bac", "..."]
 }
 Contraintes : 4 à 7 sections ; chaque section a 4 à 10 points de contenu précis, au moins 1 illustration simple quand c'est naturel (schéma de structure, carte mentale), et 3 à 6 boîtes pédagogiques."""
-    txt = llm([{"role": "system", "content": "Tu es un inspecteur pédagogique d'espagnol au MINESEC (Cameroun) et concepteur de cours premium. Tu réponds uniquement en JSON valide."},
-               {"role": "user", "content": prompt}], WRITER_MODELS, max_tokens=8000, temperature=0.4)
-    m = re.search(r"\{.*\}", strip_fences(txt), re.S)
-    plan = json.loads(m.group(0))
+    for essai in range(3):
+        try:
+            txt = llm([{"role": "system", "content": "Tu es un inspecteur pédagogique d'espagnol au MINESEC (Cameroun) et concepteur de cours premium. Tu réponds uniquement en JSON valide."},
+                       {"role": "user", "content": prompt}], WRITER_MODELS, max_tokens=8000, temperature=0.4)
+            m = re.search(r"\{.*\}", strip_fences(txt), re.S)
+            plan = json.loads(m.group(0))
+            break
+        except (json.JSONDecodeError, AttributeError) as e:
+            log(f"[{L['id']}] plan JSON invalide ({e}), nouvel essai")
+    else:
+        raise RuntimeError('plan JSON invalide après 3 essais')
     f.write_text(json.dumps(plan, ensure_ascii=False, indent=1))
     return plan
 
