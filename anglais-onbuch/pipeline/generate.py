@@ -228,6 +228,49 @@ HEADER = r"""\newcommand{\DOCMATIERE}{Anglais}\newcommand{\DOCNIVEAU}{Tle A}\new
 """
 
 
+
+def _split_linebreaks_in_style(body):
+    """\\textit{a \\\\ b} -> \\textit{a}\\\\\\textit{b} (idem \\emph, \\textbf) : un « \\\\ » dans l'argument d'une
+    commande de style fait échouer les nœuds TikZ (align=center)."""
+    out, pos = [], 0
+    pat = re.compile(r"\\(textit|emph|textbf)\{")
+    while True:
+        m = pat.search(body, pos)
+        if not m:
+            out.append(body[pos:])
+            break
+        depth, k = 1, m.end()
+        while k < len(body) and depth:
+            c = body[k]
+            if c == "\\":
+                k += 2
+                continue
+            depth += (c == "{") - (c == "}")
+            k += 1
+        inner = body[m.end():k - 1]
+        # découpe de l'intérieur aux « \\\\ » de profondeur 0
+        parts, d, last, q = [], 0, 0, 0
+        while q < len(inner):
+            c = inner[q]
+            if c == "\\" and inner[q:q + 2] == "\\\\" and d == 0:
+                parts.append(inner[last:q])
+                q += 2
+                last = q
+                continue
+            if c == "\\":
+                q += 2
+                continue
+            d += (c == "{") - (c == "}")
+            q += 1
+        parts.append(inner[last:])
+        out.append(body[pos:m.start()])
+        if len(parts) > 1 and depth == 0 and "\n\n" not in inner:
+            out.append("\\\\".join("\\" + m.group(1) + "{" + x.strip() + "}" for x in parts))
+        else:
+            out.append(body[m.start():k])
+        pos = k
+    return "".join(out)
+
 def autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
     - virgule décimale dans une dimension TikZ : 0,55cm -> 0.55cm, aspect=2,6 -> 2.6
@@ -328,6 +371,8 @@ def autofix(body):
     # transcription phonétique \\textipa : la police n'a pas les glyphes -> supprimée
     body = re.sub(r"[ \t]*\[\\textipa\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}\]", "", body)
     body = re.sub(r"\\textipa\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}", "", body)
+    # \\textit{a\\\\b} (saut de ligne dans l'argument) provoque une erreur dans les nœuds TikZ : \\textit{a}\\\\\\textit{b}
+    body = _split_linebreaks_in_style(body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
