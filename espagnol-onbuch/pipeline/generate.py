@@ -350,6 +350,20 @@ def autofix(body):
             body = re.sub(r"(?<![\w/=.-])" + _nm + r"(?=\s*[,\]])", _nm + "S", body)
     # \\rowcolor au milieu d'une ligne de tableau (après « & ») : invalide -> \\cellcolor
     body = re.sub(r"(&\s*)\\rowcolor\{", r"\1\\cellcolor{", body)
+    # nom d'environnement inconnu très proche d'un nom de boîte (aretrin, aretenire, exoresolue…) -> nom de boîte
+    import difflib
+    _known = set(_BOX.split("|")) | {"itemize", "enumerate", "description", "center", "tabular", "tabularx", "array", "tikzpicture",
+              "popfigure", "align", "align*", "aligned", "equation", "equation*", "cases", "pmatrix", "bmatrix", "matrix", "minipage",
+              "multicols", "tcolorbox", "objectifs", "prerequis", "sommaire", "document", "axis", "scope", "flushleft", "flushright",
+              "quote", "quotation", "verbatim", "lstlisting", "figure", "table", "tabbing", "gather", "split", "proof", "smallmatrix",
+              "vmatrix", "Vmatrix", "wrapfigure", "circuitikzpicture", "tcblisting", "groupplot", "otherlanguage", "pgfonlayer", "multline"}
+    def _fix_env(m):
+        n = m.group(2)
+        if n in _known:
+            return m.group(0)
+        c = difflib.get_close_matches(n, [b for b in _BOX.split("|")], n=1, cutoff=0.6)
+        return m.group(1) + "{" + c[0] + "}" if c else m.group(0)
+    body = re.sub(r"(\\(?:begin|end))\{([A-Za-z]+\*?)\}", _fix_env, body)
     # fautes de frappe sur le nom de la boîte « aretenir »
     body = re.sub(r"\{(?:aretenu|aretein|aretenire|aretnir|aretenir\])\}", "{aretenir}", body)
     # deux sauts de ligne consécutifs « \\\\\\\\ » dans un nœud TikZ : le second n'a pas de ligne à terminer
