@@ -350,6 +350,8 @@ def autofix(body):
             body = re.sub(r"(?<![\w/=.-])" + _nm + r"(?=\s*[,\]])", _nm + "S", body)
     # fautes de frappe sur le nom de la boîte « aretenir »
     body = re.sub(r"\{(?:aretenu|aretein|aretenire|aretnir|aretenir\])\}", "{aretenir}", body)
+    # deux sauts de ligne consécutifs « \\\\\\\\ » dans un nœud TikZ : le second n'a pas de ligne à terminer
+    body = "\n".join(re.sub(r"\\\\\\\\(?!\[)", r"\\\\[3pt]", l) if re.match(r"\s*\\node\b", l) else l for l in body.split("\n"))
     # lignes de tableau terminées par « | » (style Markdown) au lieu de « \\\\ »
     body = re.sub(r"\\begin\{tabularx?\}.*?\\end\{tabularx?\}",
                   lambda m: re.sub(r"(&[^\n]*?)[ \t]*\|[ \t]*$", r"\1 \\\\", m.group(0), flags=re.M), body, flags=re.S)
