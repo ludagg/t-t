@@ -343,6 +343,10 @@ def autofix(body):
     # mindmap TikZ : « \\child » n'existe pas (c'est « child ») et un « ; » avant un child coupe le chemin
     body = re.sub(r"^([ \t]*)\\child\b", r"\1child", body, flags=re.M)
     body = re.sub(r"\}[ \t]*;[ \t]*\n(?=[ \t]*child\b)", "}\n", body)
+    # style TikZ nommé « step » : conflit avec la clé step= -> renommé
+    if re.search(r"(?<![\w/])step\s*/\.style", body):
+        body = re.sub(r"(?<![\w/])step(?=\s*/\.style)", "pasoS", body)
+        body = re.sub(r"(?<![\w/=.-])step(?=\s*[,\]])", "pasoS", body)
     body = _box_as_command(body)
     # nom de boîte écrit comme une commande sans argument (ex. « Voir \\attention. » dans un tableau)
     body = re.sub(r"\\(" + _BOX.replace("textebox|", "") + r")\b(?!\s*[\[{])", "", body)
