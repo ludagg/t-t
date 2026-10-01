@@ -21,29 +21,29 @@ Constat (vérifié) :
 - Conséquence : `main` et `claude/chemistry-latex-pdf-courses-p0a1gi` peuvent être amenées à
   `ccr-bf7f5830-fwu7b5` par **simple avance rapide (fast-forward)**, donc **sans perte**.
 
-## Étapes de publication (à faire une fois la génération terminée, ou par le propriétaire)
+## Publication — FAITE (commit `d211f78`)
 
-> Non encore exécutées : elles modifient `main`. À lancer seulement avec l'accord du propriétaire du dépôt.
+Après « Sync fork » sur GitHub, la branche chimie contenait 49 commits supplémentaires (cours du dépôt
+d'origine : info, philo, sciences, svteehb, TD…). Elle a été fusionnée dans `ccr-bf7f5830-fwu7b5`
+(sans conflit, aucune suppression), puis **`claude/chemistry-latex-pdf-courses-p0a1gi` et `main` ont été
+avancées par avance rapide** (sans `--force`) jusqu'à ce commit. Les trois branches sont identiques à `d211f78`.
+
+Pour la suite : continuer à travailler sur `ccr-bf7f5830-fwu7b5`, pousser les nouveaux cours là, et publier
+sur la branche chimie et `main` **uniquement après accord du propriétaire** :
 
 ```bash
 git fetch origin
-git checkout ccr-bf7f5830-fwu7b5 && git pull origin ccr-bf7f5830-fwu7b5
-
-# 1. Branche « chimie » (tous les cours) — avance rapide
-git push origin ccr-bf7f5830-fwu7b5:claude/chemistry-latex-pdf-courses-p0a1gi
-
-# 2. main — avance rapide (refusée par Git si quelqu'un a poussé entre-temps : refaire un fetch/merge)
-git push origin ccr-bf7f5830-fwu7b5:main
+git push origin ccr-bf7f5830-fwu7b5:claude/chemistry-latex-pdf-courses-p0a1gi   # avance rapide
+git push origin ccr-bf7f5830-fwu7b5:main                                        # avance rapide
 ```
 
-Si `main` a reçu de nouveaux commits entre-temps : `git merge origin/main` sur la branche de travail
-(aucun conflit attendu tant que ces commits ne touchent pas aux dossiers `*-onbuch`), puis pousser.
+Si Git refuse (« non-fast-forward »), quelqu'un a poussé entre-temps : `git merge origin/<branche>` puis réessayer.
+Ne jamais forcer. Attention : un push sur `main` déclenche un déploiement Vercel de l'application.
 
-## Cours « de l'autre dépôt » non encore chargés
+## Cours « de l'autre dépôt » (historique)
 
-Le propriétaire a indiqué que des cours générés dans un **dépôt initial (autre compte GitHub)** n'ont pas été
-chargés dans ce dépôt (ce dépôt est un fork recréé). Cet agent n'a eu accès qu'à `ludagg/t-t` : ces cours-là
-**ne sont pas ici**. Pour les intégrer sans perte :
+Ces cours (dépôt `andersonclement/t-t`, dont `ludagg/t-t` est un fork) ont été récupérés via « Sync fork » de la branche
+chimie puis fusionnés (voir ci-dessus). Si d'autres branches d'origine doivent être intégrées, procédure :
 
 ```bash
 git remote add initial https://github.com/<ancien-compte>/<ancien-depot>
