@@ -337,7 +337,9 @@ def autofix(body):
     # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
     body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
     # « # » (hashtag) non échappé : aucune macro à paramètres dans les blocs
-    body = re.sub(r"(?<!\\)#", r"\\#", body)
+    # (on garde #1..#9 uniquement sur les lignes qui définissent un style/une macro TikZ)
+    body = "\n".join(l if re.search(r"/\.(append )?style|\\tikzset|\\pgfkeys|\\newcommand|\\def\b", l)
+                     else re.sub(r"(?<!\\)#", r"\\#", l) for l in body.split("\n"))
     # mindmap TikZ : « \\child » n'existe pas (c'est « child ») et un « ; » avant un child coupe le chemin
     body = re.sub(r"^([ \t]*)\\child\b", r"\1child", body, flags=re.M)
     body = re.sub(r"\}[ \t]*;[ \t]*\n(?=[ \t]*child\b)", "}\n", body)
