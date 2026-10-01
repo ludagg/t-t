@@ -321,6 +321,8 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+)>", r"\\\1{\2}", body)
     # « \\ » suivi d'une ligne commençant par « [Texte] » : LaTeX lit [..] comme option de \\
     body = re.sub(r"\\\\([ \t]*\n[ \t]*)\[(?!\s*-?[\d.]+\s*(?:pt|cm|mm|em|ex|bp|in)\b)", r"\\\\\1{}[", body)
+    # « \\begin{tikzpicture}\n\\mindmap[opts] » : \\mindmap n'existe pas -> option de tikzpicture
+    body = re.sub(r"\\begin\{tikzpicture\}(?:\[[^\]\n]*\])?\s*\n\s*\\mindmap\[([^\n]*)\]\s*\n", lambda m: "\\begin{tikzpicture}[mindmap, " + m.group(1) + "]\n", body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
