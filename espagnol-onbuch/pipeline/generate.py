@@ -338,6 +338,9 @@ def autofix(body):
     body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
     # « # » (hashtag) non échappé : aucune macro à paramètres dans les blocs
     body = re.sub(r"(?<!\\)#", r"\\#", body)
+    # mindmap TikZ : « \\child » n'existe pas (c'est « child ») et un « ; » avant un child coupe le chemin
+    body = re.sub(r"^([ \t]*)\\child\b", r"\1child", body, flags=re.M)
+    body = re.sub(r"\}[ \t]*;[ \t]*\n(?=[ \t]*child\b)", "}\n", body)
     body = _box_as_command(body)
     body = _close_boxes(body)
     body = _lonely_items(body)
