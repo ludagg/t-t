@@ -379,6 +379,8 @@ def autofix(body):
                   lambda m: re.sub(r"(&[^\n]*?)[ \t]*\|[ \t]*$", r"\1 \\\\", m.group(0), flags=re.M), body, flags=re.S)
     # nom de boîte écrit comme une commande sans argument (ex. « Voir \\attention. » dans un tableau)
     body = re.sub(r"\\(" + _BOX.replace("textebox|", "") + r")\b(?!\s*[\[{])", "", body)
+    # « \savaistu{Titre} » ou « \savaistu[Titre] » en début de ligne : \begin{savaistu}[Titre] oublié
+    body = re.sub(r"(?m)^\\(" + _BOX_NAMES.replace("textebox|", "") + r")[\{\[]([^\]\}\n]*)[\}\]][ \t]*$", r"\\begin{\1}[\2]", body)
     body = _close_boxes(body)
     body = _lonely_items(body)
     # circuitikz : étiquette l=$...$ non protégée (virgule, parenthèses) -> l={$...$}
