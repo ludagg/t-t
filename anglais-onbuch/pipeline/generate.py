@@ -325,6 +325,9 @@ def autofix(body):
     body = re.sub(r"\\begin\{tikzpicture\}(?:\[[^\]\n]*\])?\s*\n\s*\\mindmap\[([^\n]*)\]\s*\n", lambda m: "\\begin{tikzpicture}[mindmap, " + m.group(1) + "]\n", body)
     # « \\newlineMot » : espace manquant après \\newline
     body = re.sub(r"\\newline(?=[A-Za-z])", r"\\newline ", body)
+    # transcription phonétique \\textipa : la police n'a pas les glyphes -> supprimée
+    body = re.sub(r"[ \t]*\[\\textipa\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}\]", "", body)
+    body = re.sub(r"\\textipa\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}", "", body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
