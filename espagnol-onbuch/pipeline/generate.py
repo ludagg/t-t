@@ -347,6 +347,8 @@ def autofix(body):
     if re.search(r"(?<![\w/])step\s*/\.style", body):
         body = re.sub(r"(?<![\w/])step(?=\s*/\.style)", "pasoS", body)
         body = re.sub(r"(?<![\w/=.-])step(?=\s*[,\]])", "pasoS", body)
+    # \\begin{methode[Titre] : accolade fermante oubliée avant le titre optionnel
+    body = re.sub(r"\\begin\{(" + _BOX + r")\[", r"\\begin{\1}[", body)
     body = _box_as_command(body)
     # nom de boîte écrit comme une commande sans argument (ex. « Voir \\attention. » dans un tableau)
     body = re.sub(r"\\(" + _BOX.replace("textebox|", "") + r")\b(?!\s*[\[{])", "", body)
