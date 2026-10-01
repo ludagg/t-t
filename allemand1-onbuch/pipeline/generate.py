@@ -568,6 +568,9 @@ def _close_boxes(body):
     """Boîte pédagogique jamais refermée (oubli fréquent du relecteur) : les
     boîtes ne s'imbriquent pas, donc un nouveau \\begin{boîte}, un titre
     \\coursec/\\courssub ou la fin du bloc ferment la boîte encore ouverte."""
+    # débuts mal tapés « \\begin{boîte][Titre] » / « \\begin{boîte[Titre] » : réparés avant l'analyse des boîtes
+    body = re.sub(r"\\begin\{(\w+)\]\[", r"\\begin{\1}[", body)
+    body = re.sub(r"\\begin\{(" + _BOX + r")\[", r"\\begin{\1}[", body)
     # textebox peut figurer dans un exercice ou un exercice résolu : ignorée ici
     tok = re.compile(r"\\(begin|end)\{(" + _BOX.replace("textebox|", "") + r")\}|\\(coursec|courssub)\{")
     out, last, opened = [], 0, None
