@@ -348,6 +348,11 @@ def autofix(body):
         if re.search(r"(?<![\w/])" + _nm + r"\s*/\.style", body):
             body = re.sub(r"(?<![\w/])" + _nm + r"(?=\s*/\.style)", _nm + "S", body)
             body = re.sub(r"(?<![\w/=.-])" + _nm + r"(?=\s*[,\]])", _nm + "S", body)
+    # fautes de frappe sur le nom de la boîte « aretenir »
+    body = re.sub(r"\{(?:aretenu|aretein|aretenire|aretnir|aretenir\])\}", "{aretenir}", body)
+    # lignes de tableau terminées par « | » (style Markdown) au lieu de « \\\\ »
+    body = re.sub(r"\\begin\{tabularx?\}.*?\\end\{tabularx?\}",
+                  lambda m: re.sub(r"(&[^\n]*?)[ \t]*\|[ \t]*$", r"\1 \\\\", m.group(0), flags=re.M), body, flags=re.S)
     # nom de boîte écrit comme une commande sans argument (ex. « Voir \\attention. » dans un tableau)
     body = re.sub(r"\\(" + _BOX.replace("textebox|", "") + r")\b(?!\s*[\[{])", "", body)
     body = _close_boxes(body)
