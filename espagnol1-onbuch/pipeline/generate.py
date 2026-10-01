@@ -348,6 +348,8 @@ def autofix(body):
         if re.search(r"(?<![\w/])" + _nm + r"\s*/\.style", body):
             body = re.sub(r"(?<![\w/])" + _nm + r"(?=\s*/\.style)", _nm + "S", body)
             body = re.sub(r"(?<![\w/=.-])" + _nm + r"(?=\s*[,\]])", _nm + "S", body)
+    # \\rowcolor au milieu d'une ligne de tableau (après « & ») : invalide -> \\cellcolor
+    body = re.sub(r"(&\s*)\\rowcolor\{", r"\1\\cellcolor{", body)
     # fautes de frappe sur le nom de la boîte « aretenir »
     body = re.sub(r"\{(?:aretenu|aretein|aretenire|aretnir|aretenir\])\}", "{aretenir}", body)
     # deux sauts de ligne consécutifs « \\\\\\\\ » dans un nœud TikZ : le second n'a pas de ligne à terminer
