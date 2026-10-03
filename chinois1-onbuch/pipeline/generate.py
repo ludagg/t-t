@@ -375,6 +375,8 @@ def autofix(body):
     body = re.sub(r"\\textipa\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}", "", body)
     # \\textit{a\\\\b} (saut de ligne dans l'argument) provoque une erreur dans les nœuds TikZ : \\textit{a}\\\\\\textit{b}
     body = _split_linebreaks_in_style(body)
+    # emojis : absents de la police -> supprimés
+    body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
