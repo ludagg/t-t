@@ -500,7 +500,7 @@ def autofix(body):
     # \\end{center  (accolade fermante oubliée en fin de ligne)
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
-    _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ormalfont|ormalcolor|ormalbaselines|ewpage|ewcounter|ode|ame|olimits|eg|ull|abla)"
+    _ok = r"(?:um|ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ormalfont|ormalcolor|ormalbaselines|ewpage|ewcounter|ode|ame|olimits|eg|ull|abla)"
     body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(\u3000-\u9fff\uff00-\uffef])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
                      for l in body.split("\n"))
     # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
