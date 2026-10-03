@@ -293,6 +293,48 @@ def _fix_column_count(body):
         return m.group(1) + new + m.group(4)
     return pat.sub(fix, body)
 
+
+def _zh_linebreaks(body):
+    """\\zh{A \\\\ B} (saut de ligne dans l'argument, p. ex. dans une cellule de tableau) ->
+    \\shortstack[l]{\\zh{A}\\\\ \\zh{B}} : un « \\\\ » dans un groupe casse la ligne du tableau."""
+    out, pos = [], 0
+    pat = re.compile(r"\\zh\{")
+    while True:
+        m = pat.search(body, pos)
+        if not m:
+            out.append(body[pos:])
+            break
+        depth, k = 1, m.end()
+        while k < len(body) and depth:
+            c = body[k]
+            if c == "\\":
+                k += 2
+                continue
+            depth += (c == "{") - (c == "}")
+            k += 1
+        inner = body[m.end():k - 1]
+        parts, d, last, q = [], 0, 0, 0
+        while q < len(inner):
+            c = inner[q]
+            if c == "\\" and inner[q:q + 2] == "\\\\" and d == 0:
+                parts.append(inner[last:q])
+                q += 2
+                last = q
+                continue
+            if c == "\\":
+                q += 2
+                continue
+            d += (c == "{") - (c == "}")
+            q += 1
+        parts.append(inner[last:])
+        out.append(body[pos:m.start()])
+        if len(parts) > 1 and depth == 0 and "\n\n" not in inner:
+            out.append("\\shortstack[l]{" + "\\\\ ".join("\\zh{" + x.strip() + "}" for x in parts if x.strip()) + "}")
+        else:
+            out.append(body[m.start():k])
+        pos = k
+    return "".join(out)
+
 def autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
     - virgule décimale dans une dimension TikZ : 0,55cm -> 0.55cm, aspect=2,6 -> 2.6
@@ -399,6 +441,7 @@ def autofix(body):
     body = _split_linebreaks_in_style(body)
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
+    body = _zh_linebreaks(body)
     body = _fix_column_count(body)
     # jamo coréen « ㄱ » pris pour un trait chinois : remplacé par le trait 乛
     body = body.replace("\u3131", "\u4e5b")
