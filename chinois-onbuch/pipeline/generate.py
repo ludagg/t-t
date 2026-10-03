@@ -335,6 +335,20 @@ def _zh_linebreaks(body):
         pos = k
     return "".join(out)
 
+
+def _stray_hline(body):
+    """\\hline hors d'un tableau (pseudo-tableaux écrits avec « \\\\ » et « \\hline » en texte libre) -> filet horizontal."""
+    out, depth = [], 0
+    env = re.compile(r"\\(begin|end)\{(tabularx|tabular|array|longtable|tabu)\*?\}")
+    for line in body.split("\n"):
+        for m in env.finditer(line):
+            depth += 1 if m.group(1) == "begin" else -1
+        if depth <= 0 and re.fullmatch(r"\s*\\hline\s*", line):
+            out.append("\\noindent\\rule{\\linewidth}{0.4pt}\\par")
+        else:
+            out.append(line)
+    return "\n".join(out)
+
 def autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
     - virgule décimale dans une dimension TikZ : 0,55cm -> 0.55cm, aspect=2,6 -> 2.6
@@ -443,6 +457,7 @@ def autofix(body):
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _zh_linebreaks(body)
+    body = _stray_hline(body)
     body = _fix_column_count(body)
     # caractères de description idéographique (⿰ ⿱…) absents des polices -> notation textuelle ; accent combinant isolé supprimé
     for _c, _t in zip("\u2ff0\u2ff1\u2ff2\u2ff3\u2ff4\u2ff5\u2ff6\u2ff7\u2ff8\u2ff9\u2ffa\u2ffb",
@@ -529,6 +544,7 @@ def autofix(body):
     body = re.sub(r"\\(" + _BOX.replace("textebox|", "") + r")\b(?!\s*[\[{])", "", body)
     # « \savaistu{Titre} » ou « \savaistu[Titre] » en début de ligne : \begin{savaistu}[Titre] oublié
     body = re.sub(r"(?m)^\\(" + _BOX_NAMES.replace("textebox|", "") + r")[\{\[]([^\]\}\n]*)[\}\]][ \t]*$", r"\\begin{\1}[\2]", body)
+    body = re.sub(r"(?m)^\\(" + _BOX_NAMES.replace("textebox|", "") + r")\[([^\n]*)\][ \t]*$", r"\\begin{\1}[\2]", body)
     body = _close_boxes(body)
     body = _lonely_items(body)
     # circuitikz : étiquette l=$...$ non protégée (virgule, parenthèses) -> l={$...$}
