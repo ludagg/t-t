@@ -343,11 +343,22 @@ def _stray_hline(body):
     for line in body.split("\n"):
         for m in env.finditer(line):
             depth += 1 if m.group(1) == "begin" else -1
+            depth = max(depth, 0)
         if depth <= 0 and re.fullmatch(r"\s*\\hline\s*", line):
             out.append("\\noindent\\rule{\\linewidth}{0.4pt}\\par")
         else:
             out.append(line)
     return "\n".join(out)
+
+
+def _tikz_node_ampersand(body):
+    """« & » non échappé dans le texte d'un nœud TikZ (hors matrices) -> « \\& »."""
+    def fix_block(m):
+        blk = m.group(0)
+        if "ampersand replacement" in blk or "matrix" in blk:
+            return blk
+        return "\n".join(re.sub(r"(?<!\\)&", r"\\&", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l for l in blk.split("\n"))
+    return re.sub(r"\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}", fix_block, body, flags=re.S)
 
 def autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
@@ -457,6 +468,7 @@ def autofix(body):
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _zh_linebreaks(body)
+    body = _tikz_node_ampersand(body)
     body = _stray_hline(body)
     body = _fix_column_count(body)
     # caractères de description idéographique (⿰ ⿱…) absents des polices -> notation textuelle ; accent combinant isolé supprimé
@@ -501,7 +513,7 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
     _ok = r"(?:um|ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ormalfont|ormalcolor|ormalbaselines|ewpage|ewcounter|ode|ame|olimits|eg|ull|abla)"
-    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(\u3000-\u9fff\uff00-\uffef])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
+    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ0-9\\\\(\u3000-\u9fff\uff00-\uffef])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
                      for l in body.split("\n"))
     # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
     body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
