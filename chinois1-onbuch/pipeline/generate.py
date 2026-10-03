@@ -443,6 +443,10 @@ def autofix(body):
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _zh_linebreaks(body)
     body = _fix_column_count(body)
+    # symboles absents des polices (nombres cerclés > 10, croix emoji) -> équivalents simples
+    for _i in range(11, 21):
+        body = body.replace(chr(0x2460 + _i - 1), f"({_i})")
+    body = body.replace("\u274c", "\u2717")
     # jamo coréen « ㄱ » pris pour un trait chinois : remplacé par le trait 乛
     body = body.replace("\u3131", "\u4e5b")
     # « \\______ » (antislash + suite de soulignés) -> \\_ répétés
