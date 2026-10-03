@@ -271,6 +271,28 @@ def _split_linebreaks_in_style(body):
         pos = k
     return "".join(out)
 
+
+def _fix_column_count(body):
+    """Tableau simple (|X|X|…| ou |l|c|…|) dont des lignes ont plus de cellules que de colonnes déclarées :
+    on ajoute les colonnes manquantes (erreur fréquente des modèles : « Extra alignment tab »)."""
+    pat = re.compile(r"(\\begin\{(tabularx|tabular)\}(?:\{\\linewidth\})?\{)(\|?(?:[XlcrR]\|?)+)(\}.*?\\end\{\2\})", re.S)
+    def fix(m):
+        spec, inner = m.group(3), m.group(4)
+        decl = len(re.findall(r"[XlcrR]", spec))
+        most = 0
+        for row in re.split(r"\\\\", inner):
+            if "\\multicolumn" in row or "\\begin{tabular" in row[8:]:
+                return m.group(0)
+            cells = len(re.findall(r"(?<!\\)&", row)) + 1 if re.search(r"(?<!\\)&", row) else 0
+            most = max(most, cells)
+        if most <= decl or most > decl + 3:
+            return m.group(0)
+        letter = "X" if m.group(2) == "tabularx" else "l"
+        add = ("|" + letter) * (most - decl) + ("|" if spec.endswith("|") else "")
+        new = spec.rstrip("|") + add if spec.endswith("|") else spec + letter * (most - decl)
+        return m.group(1) + new + m.group(4)
+    return pat.sub(fix, body)
+
 def autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
     - virgule décimale dans une dimension TikZ : 0,55cm -> 0.55cm, aspect=2,6 -> 2.6
@@ -377,6 +399,7 @@ def autofix(body):
     body = _split_linebreaks_in_style(body)
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
+    body = _fix_column_count(body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
