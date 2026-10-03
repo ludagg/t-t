@@ -400,6 +400,8 @@ def autofix(body):
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _fix_column_count(body)
+    # jamo coréen « ㄱ » pris pour un trait chinois : remplacé par le trait 乛
+    body = body.replace("\u3131", "\u4e5b")
     # « \\______ » (antislash + suite de soulignés) -> \\_ répétés
     body = re.sub(r"\\_(_+)", lambda m: "\\_" * min(len(m.group(0)) - 1, 8), body)
     # caractères de traits exotiques (plan supplémentaire : 𠃌 𠃋 𠆢…) absents de la police -> texte
