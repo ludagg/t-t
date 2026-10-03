@@ -400,6 +400,8 @@ def autofix(body):
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _fix_column_count(body)
+    # « \\ldots有的 » : une commande directement suivie d'un caractère chinois (lettre pour xeCJK) est mal lue -> \\ldots{}有的
+    body = re.sub(r"(\\[A-Za-z]+)(?=[\u3000-\u303f\u3400-\u9fff\uf900-\ufaff\uff00-\uffef])", r"\1{}", body)
     # « Bac\+ » : \+ n'existe pas hors tabbing
     body = re.sub(r"(?<!\\)\\\+", "+", body)
     # balise HTML « </textebox> » au lieu de \end{textebox}
