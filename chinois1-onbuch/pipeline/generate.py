@@ -444,6 +444,8 @@ def autofix(body):
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _zh_linebreaks(body)
     body = _fix_column_count(body)
+    # « (\\) » : symbole du 4e ton écrit avec une barre inverse -> \\textbackslash
+    body = body.replace("(\\)", "(\\textbackslash{})")
     # symboles absents des polices (nombres cerclés > 10, croix emoji) -> équivalents simples
     for _i in range(11, 21):
         body = body.replace(chr(0x2460 + _i - 1), f"({_i})")
