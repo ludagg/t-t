@@ -51,6 +51,7 @@
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
 \usepackage{array}
 \usepackage{multicol}
+\usepackage{multirow}
 \usepackage{siunitx}
 % parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
 \sisetup{locale=FR,output-decimal-marker={,},group-minimum-digits=4,parse-numbers=false}
@@ -123,6 +124,18 @@
 % ============================================================
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Symboles, API et emojis absents de la police principale : repli sur DejaVu Sans (caractères actifs)
+\newfontface\symfont{DejaVuSans.ttf}[Path=../../../fonts/]
+\makeatletter
+\newcommand\symactive[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{{\symfont\char#1}}}
+\newcommand\symblank[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{}}
+\newcommand\symhyph[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{\mbox{-}}}
+\newcount\symc
+\newcommand\symrange[2]{\symc=#1 \@whilenum\symc<#2 \do{\expandafter\symactive\expandafter{\the\symc}\advance\symc by 1 }}
+\newcommand\symblankrange[2]{\symc=#1 \@whilenum\symc<#2 \do{\expandafter\symblank\expandafter{\the\symc}\advance\symc by 1 }}
+\makeatother
+\symrange{"0250}{"02FF}\symactive{"2713}\symactive{"2714}\symactive{"2717}\symactive{"2718}\symactive{"2610}\symactive{"2611}\symactive{"2612}
+\symhyph{"2011}\symhyph{"2E1A}\symblankrange{"1F300}{"1FAFF}\symblank{"FE0F}
 % Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
 % Jakarta, pour que les formules se fondent dans le texte.
 \usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
@@ -312,6 +325,12 @@
 \providecommand{\textipa}[1]{#1}
 % Soulignement (ulem non chargé) : \uline, \ul
 \providecommand{\uline}[1]{\underline{#1}}\providecommand{\ul}[1]{\underline{#1}}
+% \glossaire{\item ...} inventée par les modèles : liste de glossaire
+\providecommand{\glossaire}[1]{\begin{itemize}#1\end{itemize}}
+% \alert (beamer) inventée par les modèles : texte mis en évidence
+\providecommand{\alert}[1]{\textbf{\textcolor{poppink}{#1}}}
+% variantes ASCII d'ordinaux écrites en macro
+\providecommand{\iere}{\textsuperscript{re}}\providecommand{\ieme}{\textsuperscript{e}}\providecommand{\ere}{\textsuperscript{re}}\providecommand{\eme}{\textsuperscript{e}}\providecommand{\er}{\textsuperscript{er}}\providecommand{\ie}{\textsuperscript{e}}
 % Ordinaux français écrits en macro par les modèles : 1\ière, 3\ième
 \newcommand{\ière}{\textsuperscript{re}}\newcommand{\ième}{\textsuperscript{e}}
 % \exemple (inventée par les modèles) : étiquette « Exemple : »

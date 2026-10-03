@@ -124,6 +124,18 @@
 % ============================================================
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Symboles, API et emojis absents de la police principale : repli sur DejaVu Sans (caractères actifs)
+\newfontface\symfont{DejaVuSans.ttf}[Path=../../../fonts/]
+\makeatletter
+\newcommand\symactive[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{{\symfont\char#1}}}
+\newcommand\symblank[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{}}
+\newcommand\symhyph[1]{\catcode#1=13 \begingroup\lccode`\~=#1 \lowercase{\endgroup\def~}{\mbox{-}}}
+\newcount\symc
+\newcommand\symrange[2]{\symc=#1 \@whilenum\symc<#2 \do{\expandafter\symactive\expandafter{\the\symc}\advance\symc by 1 }}
+\newcommand\symblankrange[2]{\symc=#1 \@whilenum\symc<#2 \do{\expandafter\symblank\expandafter{\the\symc}\advance\symc by 1 }}
+\makeatother
+\symrange{"0250}{"02FF}\symactive{"2713}\symactive{"2714}\symactive{"2717}\symactive{"2718}\symactive{"2610}\symactive{"2611}\symactive{"2612}
+\symhyph{"2011}\symhyph{"2E1A}\symblankrange{"1F300}{"1FAFF}\symblank{"FE0F}
 % Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
 % Jakarta, pour que les formules se fondent dans le texte.
 \usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
@@ -313,6 +325,8 @@
 \providecommand{\textipa}[1]{#1}
 % Soulignement (ulem non chargé) : \uline, \ul
 \providecommand{\uline}[1]{\underline{#1}}\providecommand{\ul}[1]{\underline{#1}}
+% \glossaire{\item ...} inventée par les modèles : liste de glossaire
+\providecommand{\glossaire}[1]{\begin{itemize}#1\end{itemize}}
 % \alert (beamer) inventée par les modèles : texte mis en évidence
 \providecommand{\alert}[1]{\textbf{\textcolor{poppink}{#1}}}
 % variantes ASCII d'ordinaux écrites en macro
@@ -3578,10 +3592,10 @@ Votre classe de Terminale A a visité l'usine \all{„CacaoTransform SA“} à D
 
 \begin{corrige}[Exercice 1 — QCM : grammaire de la vie économique]
 \begin{enumerate}
-    \item \textbf{Réponse A} : \all{größer als}. Le comparatif de supériorité se forme avec le suffixe \all{-er} + \all{als}. \all{groß} prend l'Umlaut : \all{groß $\rightarrow$ größer}. B est faux (pas de \all{mehr} + adjectif en allemand), C est un superlatif, D est un calque du français « plus grand \emph{que} » : on dit \all{als}, jamais \all{wie} après un comparatif.
-    \item \textbf{Réponse A} : \all{wir könnten}. Le \emph{Konjunktiv II} de \all{können} se construit sur le prétérit \all{konnt-} avec Umlaut : \all{ich könnte, wir könnten}. B est l'indicatif présent ; C est un tour lourd à éviter avec les verbes modaux ; D est un plus-que-parfait.
-    \item \textbf{Réponse A} : \all{Der Vertrag wird vom Direktor unterschrieben.} Passif au présent : \all{werden} (conjugué) + participe II en fin de phrase ; l'agent est introduit par \all{von} + datif (\all{vom} = \all{von dem}). B est au prétérit, C est un \emph{Zustandspassiv} (état), D a un ordre des mots fautif.
-    \item \textbf{Réponse B} : \all{Mit freundlichen Grüßen}. C'est la formule de clôture standard d'une lettre commerciale formelle. A, C et D sont réservées aux lettres amicales (\all{Liebe Grüße}, \all{Bis bald}, \all{Dein}).
+    \item \textbf{Réponse A} : \all{größer als}. Le \cle{comparatif de supériorité} se forme avec le suffixe \all{-er} + \all{als}. L'adjectif \all{groß} prend l'\cle{Umlaut} : \all{groß $\rightarrow$ größer}. B est faux (pas de \all{mehr} + adjectif en allemand), C est un \cle{superlatif}, D est un calque du français « plus grand \emph{que} » : on dit \all{als}, jamais \all{wie} après un comparatif.
+    \item \textbf{Réponse A} : \all{wir könnten}. Le \cle{Konjunktiv II} de \all{können} se construit sur le \cle{Präteritum} \all{konnt-} avec Umlaut : \all{ich könnte, wir könnten}. B est l'\cle{Indikatif présent} ; C (\all{würden können}) est un tour lourd à éviter avec les verbes modaux ; D est un \cle{Plus-que-parfait} (Konjunktiv II Perfekt).
+    \item \textbf{Réponse A} : \all{Der Vertrag wird vom Direktor unterschrieben.} \cle{Passif} (Vorgangspassiv) au présent : \all{werden} (conjugué) + \cle{Participe II} en fin de phrase ; l'agent est introduit par \all{von} + \cle{Datif} (\all{vom} = \all{von dem}). B est au \cle{Präteritum} (\all{wurde}), C est un \cle{Zustandspassiv} (état : \all{ist unterschrieben}), D a un ordre des mots fautif (le participe II doit être en position finale).
+    \item \textbf{Réponse B} : \all{Mit freundlichen Grüßen}. C'est la \cle{formule de clôture} standard d'une \cle{lettre commerciale} formelle. A (\all{Liebe Grüße}), C (\all{Bis bald}) et D (\all{Dein}) sont réservées aux lettres amicales.
 \end{enumerate}
 \end{corrige}
 
@@ -3620,7 +3634,30 @@ Paires correctes :
 \hline
 \end{tabular}
 \end{center}
-\textbf{Point de vigilance :} l'énoncé donnait \all{der Angebot} ; le genre correct est \all{das Angebot} (nom neutre, pluriel \all{die Angebote}). Retenez : \all{die Lieferung, -en} ; \all{die Rechnung, -en} ; \all{die Beschwerde, -n} ; \all{der Vertrag, „-e} ; \all{die Mahnung, -en} ; \all{der Liefertermin, -e}.
+\textbf{Point de vigilance :} l'énoncé donnait \all{der Angebot} ; le genre correct est \all{das Angebot} (nom neutre, pluriel \all{die Angebote}). Retenez les genres et pluriels :
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Nom (singulier)} & \textbf{Pluriel} \\
+\hline
+\all{die Lieferung} & \all{die Lieferungen} \\
+\hline
+\all{die Rechnung} & \all{die Rechnungen} \\
+\hline
+\all{das Angebot} & \all{die Angebote} \\
+\hline
+\all{die Beschwerde} & \all{die Beschwerden} \\
+\hline
+\all{der Zahlungsaufschub} & \all{die Zahlungsaufschübe} (Umlaut !) \\
+\hline
+\all{der Vertrag} & \all{die Verträge} (Umlaut !) \\
+\hline
+\all{die Mahnung} & \all{die Mahnungen} \\
+\hline
+\all{der Liefertermin} & \all{die Liefertermine} \\
+\hline
+\end{tabular}
+\end{center}
 \end{corrige}
 
 \begin{corrige}[Exercice 4 — Conjugaison et formes grammaticales en contexte]
@@ -3636,41 +3673,41 @@ Texte complété :
 \end{quote}
 Justifications :
 \begin{itemize}
-    \item \all{freuten wir uns} : \emph{Konjunktiv II} présent de \all{sich freuen} (\all{freute} + Umlaut), exprime ici une formule de politesse atténuée.
-    \item \all{sind niedriger} : comparatif de \all{niedrig} + \all{als}.
-    \item \all{ist am besten} : superlatif irrégulier de \all{gut} (\all{gut -- besser -- am besten}).
-    \item \all{muss geliefert werden} : passif avec modal au présent : modal conjugué + participe II + \all{werden} en fin de phrase.
-    \item \all{eingehalten werden} : participe II du verbe à particule séparable \all{einhalten} (\all{eingehalten}) + infinitif \all{werden} (passif au \emph{Futur I} : \all{wird eingehalten werden}, ici dans une subordonnée conditionnelle sans \all{wenn}, le verbe conjugué \all{sollte} est en tête).
-    \item \all{würden wir ... zurücktreten} : \emph{Konjunktiv II} avec \all{würden} + infinitif ; inversion du sujet après la subordonnée conditionnelle placée en tête ; la particule \all{zurück} se détache en fin de phrase.
+    \item \all{freuten wir uns} : \cle{Konjunktiv II} présent de \all{sich freuen}. \textbf{Attention :} \all{freuen} est un verbe \emph{faible} (régulier) ; son Präteritum est \all{freute}, et le Konjunktiv II est identique (\all{freute}) \textbf{sans Umlaut} (l'Umlaut ne concerne que les verbes forts et les modaux). C'est une formule de politesse atténuée.
+    \item \all{sind niedriger} : \cle{comparatif} de \all{niedrig} + \all{als}.
+    \item \all{ist am besten} : \cle{superlatif} irrégulier de \all{gut} (\all{gut -- besser -- am besten}).
+    \item \all{muss geliefert werden} : \cle{passif avec modal} au présent : modal conjugué (\all{muss}) + \cle{Participe II} (\all{geliefert}) + \all{werden} (infinitif) en fin de phrase.
+    \item \all{eingehalten werden} : \cle{Participe II} du \cle{verbe à particule séparable} \all{einhalten} (\all{eingehalten}) + infinitif \all{werden} (passif au \cle{Futur I} : \all{wird eingehalten werden}, ici dans une \cle{subordonnée conditionnelle sans \all{wenn}} : le verbe conjugué \all{sollte} est en tête).
+    \item \all{würden wir ... zurücktreten} : \cle{Konjunktiv II} avec \all{würden} + infinitif ; \cle{inversion du sujet} après la subordonnée conditionnelle placée en tête ; la \cle{particule séparable} \all{zurück} se détache en fin de phrase.
 \end{itemize}
 \end{corrige}
 
 \begin{corrige}[Exercice 5 — Thème : phrases à traduire en allemand]
 \begin{enumerate}
-    \item \all{Wenn die Preise niedriger wären, würden wir mehr Produkte kaufen.} (ou : \all{... käuften wir mehr Produkte.}) — Conditionnel irréel : \emph{Konjunktiv II} dans les deux propositions ; comparatif \all{niedriger}.
-    \item \all{Der Brief wurde gestern vom Direktor geschrieben.} — Passif au \emph{Präteritum} : \all{wurde} + participe II ; agent avec \all{von} + datif.
-    \item \all{Der deutsche Markt ist größer als der österreichische Markt.} — Comparatif avec Umlaut : \all{größer als}.
-    \item \all{Könnten Sie uns bitte Ihren Katalog schicken?} — \emph{Konjunktiv II} de politesse ; \all{Ihren Katalog} : accusatif masculin.
-    \item \all{Die Waren müssen vor Freitag geliefert werden.} — Passif avec modal : \all{müssen} + participe II + \all{werden} en position finale.
+    \item \all{Wenn die Preise niedriger wären, würden wir mehr Produkte kaufen.} — \cle{Conditionnel irréel} : \cle{Konjunktiv II} dans les deux propositions (\all{wären}, \all{würden kaufen}) ; \cle{comparatif} \all{niedriger}. (Variante formelle rare : \all{käufen wir} — incorrect car \all{kaufen} est faible, pas d'Umlaut ; on évite \all{kauften wir} qui sonne comme un passé).
+    \item \all{Der Brief wurde gestern vom Direktor geschrieben.} — \cle{Passif} au \cle{Präteritum} : \all{wurde} + \cle{Participe II} ; agent avec \all{von} + \cle{Datif} (\all{vom}).
+    \item \all{Der deutsche Markt ist größer als der österreichische Markt.} — \cle{Comparatif} avec Umlaut : \all{größer als}.
+    \item \all{Könnten Sie uns bitte Ihren Katalog schicken?} — \cle{Konjunktiv II} de \cle{politesse} (\all{könnten}) ; \all{Ihren Katalog} : \cle{accusatif} masculin.
+    \item \all{Die Waren müssen vor Freitag geliefert werden.} — \cle{Passif avec modal} : \all{müssen} + \cle{Participe II} + \all{werden} en position finale.
     \item \all{Wir bitten Sie, die Rechnung Nummer 456 zu begleichen.} (ou : \all{... die Rechnung Nr. 456 zu bezahlen.}) — Tournure commerciale : \all{Wir bitten Sie, ... zu + Infinitiv}.
-    \item \all{Dieses Angebot ist das beste, das wir erhalten haben.} — Superlatif attributif : \all{das beste} ; subordonnée relative au \emph{Perfekt} (le français « ayons reçu » se rend naturellement par le \emph{Perfekt}).
-    \item \all{Die Zahlung ist letzte Woche erfolgt.} (ou : \all{... ist letzte Woche geleistet worden.}) — Passif au \emph{Perfekt} : \all{ist} + participe II + \all{worden} ; avec \all{erfolgen}, le verbe est intransitif et le \emph{Perfekt} actif suffit.
+    \item \all{Dieses Angebot ist das beste, das wir erhalten haben.} — \cle{Superlatif attributif} : \all{das beste} (déclinaison faible après \all{das}) ; \cle{subordonnée relative} au \cle{Perfekt} (le français « ayons reçu » se rend naturellement par le Perfekt).
+    \item \all{Die Zahlung ist letzte Woche erfolgt.} (ou : \all{... ist letzte Woche geleistet worden.}) — \all{erfolgen} (intransitif) : \cle{Perfekt actif} avec \all{sein} (\all{ist erfolgt}) = « a eu lieu » ; \all{leisten} (transitif) : \cle{Passif Perfekt} (\all{ist geleistet worden}) = « a été effectué ».
 \end{enumerate}
-\textbf{Points de vigilance :} majuscule à tous les noms (\all{Preise, Produkte, Brief, Direktor, Markt, Katalog, Waren, Rechnung, Angebot, Zahlung}) ; \all{als} et non \all{wie} après un comparatif ; place de \all{werden} en fin de phrase dans le passif avec modal.
+\textbf{Points de vigilance :} majuscule à tous les noms (\all{Preise, Produkte, Brief, Direktor, Markt, Katalog, Waren, Rechnung, Angebot, Zahlung}) ; \all{als} et non \all{wie} après un \cle{comparatif} ; place de \all{werden} en fin de phrase dans le \cle{passif avec modal}.
 \end{corrige}
 
 \begin{corrige}[Exercice 6 — Transformation : voix active $\rightarrow$ voix passive]
 \begin{enumerate}
-    \item \all{Die Maschinen werden von der Firma Müller geliefert.} — Présent : \all{werden} + participe II ; \all{von} + datif féminin (\all{von der}).
-    \item \all{Die Rechnung wurde vom Kunden nicht bezahlt.} — Prétérit : \all{wurde} ; la négation \all{nicht} se place avant le participe.
-    \item \all{Die Pakete sind vom Spediteur abgeholt worden.} — \emph{Perfekt} passif : \all{sind} + participe II + \all{worden} (et non \all{geworden}).
-    \item \all{Der Vertrag wird nächste Woche von uns unterschrieben werden.} — \emph{Futur I} passif : \all{wird} + participe II + \all{werden} ; \all{man/wir} devient \all{von uns}.
-    \item \all{Die Waren müssen sorgfältig geprüft werden.} — \all{man} impersonnel disparaît au passif ; modal conjugué + participe II + \all{werden}.
-    \item \all{Die Entscheidung konnte vom Chef nicht getroffen werden.} — Prétérit du modal \all{können} : \all{konnte} + participe II + \all{werden}.
-    \item \all{Der Bericht wird auf Deutsch geschrieben.} — Sans agent (\all{man} non repris) ; notez la majuscule à \all{Deutsch} (langue nominalisée).
-    \item \all{Das Fenster ist geöffnet worden.} — Agent indéfini \all{jemand} : on ne le reprend pas ; \emph{Perfekt} passif : \all{ist ... worden}.
+    \item \all{Die Maschinen werden von der Firma Müller geliefert.} — Présent : \all{werden} + \cle{Participe II} ; \all{von} + \cle{Datif} féminin (\all{von der}).
+    \item \all{Die Rechnung wurde vom Kunden nicht bezahlt.} — \cle{Präteritum} : \all{wurde} ; la négation \all{nicht} se place avant le participe.
+    \item \all{Die Pakete sind vom Spediteur abgeholt worden.} — \cle{Perfekt passif} : \all{sind} (auxiliaire \all{sein} pour le passif parfait) + \cle{Participe II} + \all{worden} (et non \all{geworden}) ; \all{Spediteur} masculin $\rightarrow$ \all{vom}.
+    \item \all{Der Vertrag wird nächste Woche von uns unterschrieben werden.} — \cle{Futur I passif} : \all{wird} + \cle{Participe II} + \all{werden} ; \all{man/wir} devient \all{von uns}.
+    \item \all{Die Waren müssen sorgfältig geprüft werden.} — \all{man} impersonnel disparaît au passif ; modal conjugué (\all{müssen}) + \cle{Participe II} + \all{werden}.
+    \item \all{Die Entscheidung konnte vom Chef nicht getroffen werden.} — \cle{Präteritum} du modal \all{können} : \all{konnte} + \cle{Participe II} + \all{werden}.
+    \item \all{Der Bericht wird auf Deutsch geschrieben.} — Sans agent (\all{man} non repris) ; notez la majuscule à \all{Deutsch} (langue \cle{nominalisée}).
+    \item \all{Das Fenster ist geöffnet worden.} — Agent indéfini \all{jemand} : on ne le reprend pas ; \cle{Perfekt passif} : \all{ist ... worden}.
 \end{enumerate}
-\textbf{Rappel de méthode :} l'objet accusatif de l'actif devient le sujet nominatif du passif ; \all{werden} se conjugue au temps de la phrase active ; le participe II va en fin de phrase (avant \all{werden}/\all{worden} s'il y en a).
+\textbf{Rappel de méthode :} l'objet \cle{accusatif} de l'actif devient le \cle{sujet nominatif} du passif ; \all{werden} se conjugue au temps de la phrase active ; le \cle{Participe II} va en fin de phrase (avant \all{werden}/\all{worden} s'il y en a).
 \end{corrige}
 
 \begin{corrige}[Exercice 7 — Texte à trous : comparatif et superlatif]
@@ -3686,29 +3723,29 @@ Formes à retenir :
 \begin{center}
 \begin{tabular}{|l|l|l|}
 \hline
-\rowcolor{popblueL} \textbf{Positif} & \textbf{Comparatif} & \textbf{Superlatif} \\
+\rowcolor{popblueL} \textbf{Positif} & \textbf{Comparatif} & \textbf{Superlatif (prédicatif : \all{am ... sten})} \\
 \hline
-\all{groß} & \all{größer} & \all{am größten} \\
+\all{groß} & \all{größer} (Umlaut) & \all{am größten} \\
 \hline
-\all{hoch} & \all{höher} & \all{am höchsten} \\
+\all{hoch} & \all{höher} (perte du \all{-c-}) & \all{am höchsten} \\
 \hline
-\all{bekannt} & \all{bekannter} & \all{am bekanntesten} \\
+\all{bekannt} & \all{bekannter} & \all{am bekanntesten} (\all{-esten} après \all{-t}) \\
 \hline
-\all{viel} & \all{mehr} & \all{am meisten} \\
+\all{viel} & \all{mehr} (irrégulier) & \all{am meisten} \\
 \hline
 \all{niedrig} & \all{niedriger} & \all{am niedrigsten} \\
 \hline
-\all{gern} & \all{lieber} & \all{am liebsten} \\
+\all{gern} & \all{lieber} (irrégulier) & \all{am liebsten} \\
 \hline
-\all{einfach} & \all{einfacher} & \all{am einfachsten} \\
+\all{einfach} & \all{einfacher} & \all{am einfachsten} (\all{-esten} après \all{-ch}) \\
 \hline
-\all{gut} & \all{besser} & \all{am besten} \\
+\all{gut} & \all{besser} (irrégulier) & \all{am besten} \\
 \hline
 \all{wichtig} & \all{wichtiger} & \all{am wichtigsten} \\
 \hline
 \end{tabular}
 \end{center}
-\textbf{Points de vigilance :} \all{hoch} perd le \all{-c-} au comparatif (\all{höher}) ; \all{bekannt} et \all{einfach} prennent \all{-esten} au superlatif (euphonie après \all{-t}, \all{-ch}) ; \all{das beste Ergebnis} : superlatif attributif avec adjectif décliné (\all{-e} après \all{das}).
+\textbf{Points de vigilance :} \all{hoch} perd le \all{-c-} au comparatif (\all{höher}) ; \all{bekannt} et \all{einfach} prennent \all{-esten} au superlatif (euphonie après \all{-t}, \all{-ch}) ; \all{das beste Ergebnis} : \cle{superlatif attributif} avec adjectif décliné (\all{-e} après article défini \all{das}).
 \end{corrige}
 
 \begin{corrige}[Exercice 8 — Appariement : structure de la lettre commerciale et du compte rendu]
@@ -3734,15 +3771,15 @@ Paires correctes :
 \hline
 8. \all{Die Anlagen} & H (pièces jointes) \\
 \hline
-9. \all{Einleitung} & J (sujet, date, lieu, participants, objectif) \\
+9. \all{Einleitung (Bericht)} & J (sujet, date, lieu, participants, objectif) \\
 \hline
-10. \all{Hauptteil} & I (résultats, décisions, mesures) \\
+10. \all{Hauptteil (Bericht)} & I (résultats, décisions, mesures) \\
 \hline
-11. \all{Schluss} & K (résumé, suites, signature, date) \\
+11. \all{Schluss (Bericht)} & K (résumé, suites, signature, date) \\
 \hline
 \end{tabular}
 \end{center}
-\textbf{Point de vigilance :} contrairement au français, la \all{Betreffzeile} allemande s'écrit aujourd'hui \emph{sans} le mot \all{Betreff} devant ; elle se place \emph{avant} l'\all{Anrede}. Après \all{Mit freundlichen Grüßen}, il n'y a \textbf{pas de virgule}.
+\textbf{Point de vigilance :} contrairement au français, la \cle{Betreffzeile} allemande s'écrit aujourd'hui \emph{sans} le mot \all{Betreff} devant (norme DIN 5008) ; elle se place \emph{avant} l'\cle{Anrede}. Après \all{Mit freundlichen Grüßen}, il n'y a \textbf{pas de virgule}. Après l'\all{Anrede}, virgule obligatoire, puis le corps commence par une \emph{minuscule}.
 \end{corrige}
 
 \begin{corrige}[Exercice 9 — Compréhension et langue : Les exportations suisses]
@@ -3751,16 +3788,16 @@ Paires correctes :
 \begin{enumerate}
     \item \all{Die drei wichtigsten Exportgüter der Schweiz sind chemisch-pharmazeutische Produkte, Uhren sowie Maschinen und Präzisionsinstrumente.} (1,5 pt)
     \item \all{Der wichtigste Handelspartner der Schweiz ist Deutschland.} (1,5 pt)
-    \item \all{... investieren Firmen wie Novartis oder Roche \textbf{viel} in Forschung.} (positif, pas de comparaison ici) ; \all{Dies macht die Schweiz \textbf{innovativer} als viele Konkurrenten.} (comparatif + \all{als}) ; \all{Er macht die Produkte \textbf{teurer} für ausländische Käufer.} (comparatif de \all{teuer} : \all{teurer}, sans \all{-e-} supplémentaire). (3 pts)
-    \item \all{Wenn der Franken \textbf{nicht so stark wäre}, \textbf{würden die Exporte} wahrscheinlich weiter \textbf{steigen}.} — \emph{Konjunktiv II} de \all{sein} : \all{wäre} ; principale avec \all{würden} + infinitif et inversion du sujet. (1 pt)
+    \item \all{... investieren Firmen wie Novartis oder Roche \textbf{viel} in Forschung.} (positif, pas de comparaison ici) ; \all{Dies macht die Schweiz \textbf{innovativer} als viele Konkurrenten.} (\cle{comparatif} + \all{als}) ; \all{Er macht die Produkte \textbf{teurer} für ausländische Käufer.} (\cle{comparatif} de \all{teuer} : \all{teurer}, sans \all{-e-} supplémentaire). (3 pts)
+    \item \all{Wenn der Franken \textbf{nicht so stark wäre}, \textbf{würden die Exporte} wahrscheinlich weiter \textbf{steigen}.} — \cle{Konjunktiv II} de \all{sein} : \all{wäre} ; principale avec \all{würden} + infinitif et \cle{inversion du sujet} (\all{würden die Exporte}). (1 pt)
     \item \all{„Par excellence“ bedeutet hier „in höchstem Maße“ oder „wie kaum ein anderes Land“: Die Schweiz ist ein typisches, vorbildliches Exportland.} (1 pt)
     \item \all{Der starke Franken ist ein Problem, weil er die Schweizer Produkte für ausländische Käufer teurer macht.} (2 pts)
 \end{enumerate}
-\textbf{Points de vigilance :} \all{teuer $\rightarrow$ teurer} (et non \all{teuerer}) ; dans la phrase conditionnelle avec \all{wenn}, le verbe conjugué de la subordonnée va en fin (\all{wäre}), et la principale commence par le verbe (\all{würden ... steigen}).
+\textbf{Points de vigilance :} \all{teuer $\rightarrow$ teurer} (et non \all{teuerer}) ; dans la \cle{phrase conditionnelle} avec \all{wenn}, le verbe conjugué de la subordonnée va en \cle{fin de phrase} (\all{wäre}), et la principale commence par le verbe (\all{würden ... steigen}).
 \end{corrige}
 
 \begin{corrige}[Exercice 10 — Thème et Version : épreuves types Bac]
-\textbf{Barème indicatif : 10 points} (Thème : 5 $\times$ 1 pt = 5 pts ; Version : 5 pts, dont fidélité du sens 3 pts, qualité du français 2 pts).
+\textbf{Barème indicatif : 10 points} (Thème : 5 x 1 pt = 5 pts ; Version : 5 pts, dont fidélité du sens 3 pts, qualité du français 2 pts).
 
 \textbf{Partie A — Thème (corrigé)}
 \begin{enumerate}
@@ -3782,7 +3819,7 @@ Les relations économiques entre l'Allemagne et le Cameroun ont une longue tradi
 
 Un nouvel axe prioritaire est la promotion des énergies renouvelables. Des entreprises allemandes construisent des installations solaires dans les régions rurales. Cela crée des emplois et améliore l'approvisionnement en électricité. Le gouvernement camerounais espère que les investissements augmenteront dans les années à venir. Si l'infrastructure était meilleure, davantage d'entreprises viendraient.
 \end{quote}
-\textbf{Points de vigilance :} \all{im Gegenzug} = « en contrepartie » ; \all{die Stromversorgung} = « l'approvisionnement en électricité » (faux ami : pas « la version du courant ») ; \all{Arbeitsplätze schaffen} = « créer des emplois » ; rendre le \emph{Futur I} et le \emph{Konjunktiv II} par le futur et le conditionnel français.
+\textbf{Points de vigilance :} \all{im Gegenzug} = « en contrepartie » ; \all{die Stromversorgung} = « l'approvisionnement en électricité » (faux ami : pas « la version du courant ») ; \all{Arbeitsplätze schaffen} = « créer des emplois » ; rendre le \cle{Futur I} (\all{werden steigen}) et le \cle{Konjunktiv II} (\all{wären, würden kommen}) par le futur et le conditionnel français.
 \end{corrige}
 
 \begin{corrige}[Exercice 11 — Expression écrite : lettre de réclamation et compte rendu]
@@ -3834,9 +3871,9 @@ Musterstraße 10\\
 \begin{itemize}
     \item Pas de virgule après \all{Mit freundlichen Grüßen} ; virgule obligatoire après l'\all{Anrede}, puis le corps commence par une \emph{minuscule} (\all{am 20. September...}).
     \item Date : \all{Douala, den 15. Oktober 2025} (accusatif avec \all{den}).
-    \item Compte rendu au passé : privilégier le \emph{Präteritum} (\all{besuchte, wurden, sahen}) et le passif (\all{wurden uns gezeigt, wurde kontrolliert}).
-    \item Majuscules : \all{Laptops, Geräte, Verspätung, Preisnachlass, Besuch, Fabrik, Qualität}.
-    \item Éviter les calques : « nous espérons une solution rapide » $\rightarrow$ \all{wir hoffen auf eine schnelle Lösung} (avec \all{auf} + accusatif).
+    \item Compte rendu au passé : privilégier le \cle{Präteritum} (\all{besuchte, wurden, sahen, war, konnten, danken}) et le \cle{passif} (\all{wurden ... gezeigt, wurde kontrolliert}).
+    \item Majuscules : \all{Laptops, Geräte, Verspätung, Preisnachlass, Besuch, Fabrik, Qualität, Empfang}.
+    \item Éviter les calques : « nous espérons une solution rapide » $\rightarrow$ \all{wir hoffen auf eine schnelle Lösung} (avec \all{auf} + accusatif) ; « nous vous prions de... » $\rightarrow$ \all{Wir bitten Sie, ... zu + Infinitiv}.
 \end{itemize}
 \end{corrige}
 
