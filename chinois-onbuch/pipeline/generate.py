@@ -400,6 +400,12 @@ def autofix(body):
     # emojis : absents de la police -> supprimés
     body = re.sub("[\U0001F000-\U0001FAFF\uFE0F\u200D]", "", body)
     body = _fix_column_count(body)
+    # « \\______ » (antislash + suite de soulignés) -> \\_ répétés
+    body = re.sub(r"\\_(_+)", lambda m: "\\_" * min(len(m.group(0)) - 1, 8), body)
+    # caractères de traits exotiques (plan supplémentaire : 𠃌 𠃋 𠆢…) absents de la police -> texte
+    body = re.sub("[\U00020000-\U0002FFFF]", "(trait brisé)", body)
+    # commentaires TikZ « % ... » échappés par erreur en « \\% ... » (le texte est alors composé hors d'un nœud)
+    body = re.sub(r"\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}", lambda m: re.sub(r"(?m)(^[ \t]*|;[ \t]*)\\%", r"\1%", m.group(0)), body, flags=re.S)
     # \\"同学们 : guillemet droit échappé devant du chinois (\\" = tréma en LaTeX) -> guillemets chinois
     body = re.sub(r'\\"(?=[\u3400-\u9fff\uf900-\ufaff])', "\u201c", body)
     body = re.sub(r'(?<=[\u3400-\u9fff\uff00-\uffef\u3000-\u303f])\\"', "\u201d", body)
@@ -422,7 +428,7 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
     _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ormalfont|ormalcolor|ormalbaselines|ewpage|ewcounter|ode|ame|olimits|eg|ull|abla)"
-    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(])(?!" + _ok + r"\b)", r"\\\\", l) if re.match(r"\s*\\node\b", l) else l
+    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
                      for l in body.split("\n"))
     # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
     body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
