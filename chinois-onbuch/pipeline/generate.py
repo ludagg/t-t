@@ -403,6 +403,7 @@ def autofix(body):
     body = re.sub(r"\\begin\{popfigure\}.*?\\end\{popfigure\}", _fig, body, flags=re.S)
     # TikZ : font=\small\textbf -> \bfseries (\textbf attend un argument)
     body = re.sub(r"(font\s*=\s*\{?[^,\]}]*?)\\textbf\b", r"\1\\bfseries", body)
+    body = re.sub(r"(font\s*=\s*\{?[^,\]}]*?)\\(?:textit|emph)\b", r"\1\\itshape", body)
     # pgfplots : coordinates (a,b) (c,d); sans accolades -> boucle infinie
     body = re.sub(r"\bcoordinates\s*((?:\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)\s*)+);", lambda m: "coordinates {" + m.group(1).strip() + "};", body)
     # environnement inventé "erreur" -> attention (boîte prévue par le contrat)
@@ -477,7 +478,7 @@ def autofix(body):
     body = re.sub(r"\\(begin|end)\{(\w+\*?)[ \t]*$", r"\\\1{\2}", body, flags=re.M)
     # « \\n » littéral à la place d'un saut de ligne dans les nœuds TikZ
     _ok = r"(?:ewline|eq|u|ot|oindent|earrow|abla|e|i|mid|warrow|ewcommand|onumber|ormalsize|ormalfont|ormalcolor|ormalbaselines|ewpage|ewcounter|ode|ame|olimits|eg|ull|abla)"
-    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
+    body = "\n".join(re.sub(r"(?<!\\)\\n(?=[A-Za-zÀ-ÿ\\\\(\u3000-\u9fff\uff00-\uffef])(?!" + _ok + r"\b)", r"\\\\", l) if re.search(r"\\node\b|\bnode\s*[\[{]", l) else l
                      for l in body.split("\n"))
     # \\step (inventé) -> \\item ; la boîte qui commence par \\item est ensuite enveloppée dans une liste
     body = re.sub(r"^([ \t]*)\\step\b[ \t]*", r"\1\\item ", body, flags=re.M)
