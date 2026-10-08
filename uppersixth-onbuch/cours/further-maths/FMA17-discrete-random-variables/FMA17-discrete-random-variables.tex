@@ -1,0 +1,2969 @@
+% Discrete Random Variables — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA17-discrete-random-variables.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{17}
+\newcommand{\DOCTITRE}{Discrete Random Variables}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Discrete Random Variables}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{17}{6 periods}{This chapter introduces discrete random variables and their probability distributions, the fundamental language of probability at Advanced Level. Students learn to construct and use probability mass functions and cumulative distribution functions, compute and interpret expectation, variance, mode and median, and discover moment generating functions as a powerful tool for analysing distributions.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define a discrete random variable and distinguish it from a continuous one.
+\item By the end of this chapter I can construct the probability mass function (p.m.f) of a discrete random variable from a described experiment and present it as a table or formula.
+\item By the end of this chapter I can verify and use the two conditions for a valid p.m.f (non-negativity and total probability equal to 1), including finding unknown constants.
+\item By the end of this chapter I can compute the expectation E(X) and the expectation of a function E[g(X)], and apply the linearity properties of expectation.
+\item By the end of this chapter I can compute the variance Var(X) using Var(X) = E(X²) − [E(X)]² and apply the properties Var(aX + b) = a²Var(X).
+\item By the end of this chapter I can construct and use the cumulative distribution function F(x) = P(X ≤ x), and recover the p.m.f from it.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Discrete random variables and probability distributions
+\item The probability mass function and expectation
+\item Variance and standard deviation of a discrete random variable
+\item The cumulative distribution function, mode and median
+\item Moment generating functions
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define a discrete random variable and distinguish it from a continuous one.
+\item By the end of this chapter I can construct the probability mass function (p.m.f) of a discrete random variable from a described experiment and present it as a table or formula.
+\item By the end of this chapter I can verify and use the two conditions for a valid p.m.f (non-negativity and total probability equal to 1), including finding unknown constants.
+\item By the end of this chapter I can compute the expectation E(X) and the expectation of a function E[g(X)], and apply the linearity properties of expectation.
+\item By the end of this chapter I can compute the variance Var(X) using Var(X) = E(X²) − [E(X)]² and apply the properties Var(aX + b) = a²Var(X).
+\item By the end of this chapter I can construct and use the cumulative distribution function F(x) = P(X ≤ x), and recover the p.m.f from it.
+\item By the end of this chapter I can determine the mode and the median of a discrete random variable from its distribution.
+\item By the end of this chapter I can define the moment generating function M(t) = E(e\^{}(tX)), compute it for simple distributions, and use it to obtain E(X) and Var(X).
+\item By the end of this chapter I can model simple real-life situations (games of chance, counts of events) with a discrete random variable and interpret E(X) and Var(X) in context.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Elementary probability from Lower Sixth: sample spaces, events, P(A), addition and multiplication rules, conditional probability and independence.
+\item Sigma notation and manipulation of finite sums.
+\item Basic algebra: solving linear and quadratic equations, manipulating indices and the exponential function e\^{}x.
+\item Functions and their graphs (Lower Sixth pure mathematics), including piecewise-defined functions.
+\item Simple differentiation of polynomials and exponentials (needed for moment generating functions).
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Discrete random variables and probability distributions}
+
+At the Mokolo market in Yaoundé, a trader selling phone credit cards never knows in advance how many customers will come each day: some days 3, some days 27. Yet she must decide every morning how many cards to stock, because unsold cards tie up her money while shortages lose her customers. How can she summarise this uncertainty with a single table, compute the `average' number of customers to expect, and measure how wildly the demand fluctuates? The mathematics of \cle{discrete random variables} — probability distributions, expectation, variance, cumulative functions, modes, medians and moment generating functions — gives her exactly the tools she needs, and gives you the tools the GCE Advanced Level examiners will demand. In this first section we build the foundation: what a random variable is, and how its probability distribution is defined, displayed and used.
+
+\courssub{Random experiments revisited}
+
+A \cle{random experiment} is any process whose outcome cannot be predicted with certainty in advance, even though the set of all possible outcomes is known. Tossing a coin, rolling a die, counting the number of customers at the Mokolo stall in one day: all are random experiments.
+
+Recall from Lower Sixth probability:
+
+\begin{itemize}
+\item The \cle{sample space} $\Omega$ is the set of all possible outcomes of the experiment.
+\item An \cle{outcome} $\omega$ is a single element of $\Omega$.
+\item An \cle{event} $A$ is a subset of $\Omega$; its probability $P(A)$ satisfies $0 \le P(A) \le 1$, with $P(\Omega) = 1$.
+\end{itemize}
+
+For example, when two fair coins are tossed, $\Omega = \{HH, HT, TH, TT\}$, and since the coins are fair, each outcome has probability $\tfrac{1}{4}$.
+
+The difficulty is that outcomes like $HT$ or ``rain in Bamenda tomorrow'' are not numbers. To do serious mathematics — to average, to compare, to optimise — we must attach \emph{numbers} to outcomes. This is exactly what a random variable does.
+
+\courssub{What is a random variable?}
+
+\begin{definition}[Random variable]
+A \cle{random variable} $X$ on a sample space $\Omega$ is a \textbf{function}
+\[ X : \Omega \longrightarrow \mathbb{R}, \qquad \omega \longmapsto X(\omega), \]
+which assigns to each outcome $\omega$ of a random experiment a real number $X(\omega)$.
+\end{definition}
+
+The key word is \emph{function}. A random variable is neither random nor a variable in the algebraic sense: it is a perfectly deterministic rule that converts outcomes into numbers. The randomness lies in the experiment, not in the rule.
+
+\begin{exemplebox}[Number of heads in two coin tosses]
+Toss two fair coins, so $\Omega = \{HH, HT, TH, TT\}$. Define $X$ = ``number of heads obtained''. Then
+\[ X(HH) = 2, \quad X(HT) = 1, \quad X(TH) = 1, \quad X(TT) = 0. \]
+Notice that two different outcomes, $HT$ and $TH$, are mapped to the \emph{same} value $1$. A random variable need not be one-to-one.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+grow=right, level distance=2.6cm,
+level 1/.style={sibling distance=2.2cm},
+level 2/.style={sibling distance=1.1cm},
+every node/.style={font=\small, circle, draw, minimum width=1.2cm}]
+\node {Start}
+child { node {T}
+  child { node {T} edge from parent node[above,sloped]{$\frac12$} }
+  child { node {H} edge from parent node[below,sloped]{$\frac12$} }
+  edge from parent node[above]{$\frac12$}
+}
+child { node {H}
+  child { node {T} edge from parent node[above,sloped]{$\frac12$} }
+  child { node {H} edge from parent node[below,sloped]{$\frac12$} }
+  edge from parent node[above]{$\frac12$}
+};
+\end{tikzpicture}
+\end{center}
+\legende{Tree diagram for two fair coins. The four final nodes represent $TT, TH, HT, HH$ (left to right).}
+\end{popfigure}
+
+The mapping is clearer when drawn explicitly:
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node (hh) at (0,3) {$HH$};
+\node (ht) at (0,2) {$HT$};
+\node (th) at (0,1) {$TH$};
+\node (tt) at (0,0) {$TT$};
+\node (x2) at (4,3) {$2$};
+\node (x1) at (4,1.5) {$1$};
+\node (x0) at (4,0) {$0$};
+\draw[->, popblue, thick] (hh) -- (x2);
+\draw[->, poporange, thick] (ht) -- (x1);
+\draw[->, poporange, thick] (th) -- (x1);
+\draw[->, popgreen, thick] (tt) -- (x0);
+\node[popmuted] at (0,3.8) {outcomes $\omega \in \Omega$};
+\node[popmuted] at (4,3.8) {values $X(\omega)$};
+\end{tikzpicture}
+\end{center}
+\legende{The random variable $X$ as a function from $\Omega$ to $\mathbb{R}$: $HT$ and $TH$ both map to $1$.}
+\end{popfigure}
+
+\courssub{Discrete versus continuous random variables}
+
+\begin{definition}[Discrete random variable]
+A random variable $X$ is \cle{discrete} if it takes only \textbf{finitely many} values or \textbf{countably many} values (that is, values that can be listed $x_1, x_2, x_3, \dots$, like the natural numbers).
+\end{definition}
+
+By contrast, a \cle{continuous} random variable can take any value in an interval of $\mathbb{R}$; it is studied in a later chapter.
+
+\begin{exemplebox}[Discrete or continuous? Cameroonian situations]
+\begin{itemize}
+\item The number of goals scored by the Indomitable Lions in one match: $0, 1, 2, \dots$ — \textbf{discrete}.
+\item The number of students passing the GCE in a school in Buea: $0, 1, 2, \dots$ — \textbf{discrete}.
+\item The number of customers at the Mokolo stall in one day — \textbf{discrete}.
+\item The height of a randomly chosen Upper Sixth student, which could be $1.72$ m, $1.723$ m, $1.7234$ m, \dots — \textbf{continuous}.
+\item The time a bus takes from Douala to Yaoundé — \textbf{continuous}.
+\end{itemize}
+The test is simple: if you \emph{count}, the variable is discrete; if you \emph{measure}, it is continuous.
+\end{exemplebox}
+
+\courssub{Notation: the variable $X$ and the event $\{X = x\}$}
+
+We always use a \textbf{capital letter} $X$ (or $Y$, $T$, \dots) for the random variable itself — the function — and a \textbf{small letter} $x$ for a particular numerical value it may take.
+
+Because $X$ is a function on $\Omega$, the statement ``$X$ takes the value $x$'' describes an \emph{event}:
+\[ \{X = x\} = \{\omega \in \Omega : X(\omega) = x\}. \]
+Its probability is written $P(X = x)$. For the two coins:
+\[ P(X = 1) = P(\{HT, TH\}) = \tfrac{1}{4} + \tfrac{1}{4} = \tfrac{1}{2}. \]
+
+\begin{attention}[Do not confuse $x$ with $P(X=x)$]
+A very common mistake at GCE is to mix up the \emph{value} $x$ of the variable with its \emph{probability} $P(X = x)$. The value $x$ is a number the variable can take (e.g. $2$ heads); the probability $P(X = x)$ is a number between $0$ and $1$ telling how likely that value is. In a distribution table, the first row contains values, the second row contains probabilities — never the reverse.
+\end{attention}
+
+\courssub{The probability distribution of a discrete random variable}
+
+\begin{definition}[Probability distribution and p.m.f.]
+Let $X$ be a discrete random variable taking values $x_1, x_2, \dots$. The \cle{probability distribution} of $X$ is the set of all pairs
+\[ \bigl(x_i,\; P(X = x_i)\bigr). \]
+The function $p$ defined by $p(x) = P(X = x)$ is called the \cle{probability mass function} (p.m.f.) of $X$.
+\end{definition}
+
+A distribution can be presented in three equivalent ways.
+
+\textbf{1. As a table.} For $X$ = number of heads in two coin tosses:
+
+\begin{center}
+\begin{tabular}{|c|ccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ \\
+\hline
+$P(X = x)$ & $\tfrac{1}{4}$ & $\tfrac{1}{2}$ & $\tfrac{1}{4}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{2. As a formula.} The same distribution is given by
+\[ P(X = x) = \binom{2}{x}\left(\tfrac12\right)^2, \qquad x = 0, 1, 2. \]
+
+\textbf{3. As a bar chart (probability histogram).} Each value $x$ is represented by a bar whose height equals $P(X = x)$.
+
+\begin{exemplebox}[The sum of two dice]
+Roll two fair dice and let $X$ be the sum of the two scores. There are $36$ equally likely outcomes, and counting those giving each sum yields:
+
+\begin{center}
+\begin{tabular}{|c|ccccccccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ & $10$ & $11$ & $12$ \\
+\hline
+$36\,P(X{=}x)$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $5$ & $4$ & $3$ & $2$ & $1$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The famous triangular shape appears clearly on the bar chart below.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+ybar, bar width=8pt,
+width=11cm, height=6cm,
+xlabel={$x$ (sum of two dice)}, ylabel={$P(X = x)$},
+xtick={2,3,4,5,6,7,8,9,10,11,12},
+ymin=0, ymax=0.19,
+ytick={0,0.0278,0.0556,0.0833,0.1111,0.1389,0.1667},
+yticklabels={$0$,$\frac{1}{36}$,$\frac{2}{36}$,$\frac{3}{36}$,$\frac{4}{36}$,$\frac{5}{36}$,$\frac{6}{36}$},
+axis lines=left, tick label style={font=\small},
+]
+\addplot[fill=popblue, draw=popdark] coordinates {
+(2,0.0278) (3,0.0556) (4,0.0833) (5,0.1111) (6,0.1389)
+(7,0.1667) (8,0.1389) (9,0.1111) (10,0.0833) (11,0.0556) (12,0.0278)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Probability histogram of $X$ = sum of two fair dice: a symmetric triangular distribution peaking at $x = 7$.}
+\end{popfigure}
+
+\courssub{The two fundamental conditions}
+
+Not every list of numbers can be a probability distribution. Since probabilities are numbers between $0$ and $1$, and since the events $\{X = x_i\}$ partition the whole sample space, we must have:
+
+\begin{propriete}[Fundamental conditions for a probability distribution]
+A function $p(x) = P(X = x)$ is the p.m.f. of a discrete random variable if and only if
+\begin{enumerate}
+\item $p(x) \ge 0$ for every value $x$ (in fact $0 \le p(x) \le 1$);
+\item $\displaystyle\sum_{\text{all } x} p(x) = 1$.
+\end{enumerate}
+(Not examinable as a proof; it follows directly from the axioms of probability, since the events $\{X = x_i\}$ are mutually exclusive and exhaustive.)
+\end{propriete}
+
+\begin{attention}[Probabilities must sum to 1]
+The most frequent error in GCE scripts is presenting a ``distribution'' whose probabilities do not add up to $1$ — for example after a rounding error, or after forgetting one value of $X$. \textbf{Always check the total} before moving on; examiners award a mark for this verification.
+\end{attention}
+
+\courssub{Finding an unknown constant in a p.m.f.}
+
+A classic GCE question gives a p.m.f. containing an unknown constant $k$ and asks you to find it. The only tool needed is the condition $\sum p(x) = 1$.
+
+\begin{methode}[Finding an unknown constant in a p.m.f.]
+\begin{enumerate}
+\item Write down every value $x$ that $X$ can take and the expression for $p(x)$ in terms of $k$.
+\item Impose the condition $\displaystyle\sum_x p(x) = 1$ and solve the resulting equation for $k$.
+\item \textbf{Check} that with this value of $k$, every probability satisfies $0 \le p(x) \le 1$.
+\item Rewrite the complete distribution table with numerical probabilities.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Finding the constant $k$]
+A discrete random variable $X$ has probability mass function
+\[ P(X = x) = kx, \qquad x = 1, 2, 3, 4. \]
+(a) Find the value of $k$. \quad (b) Write out the probability distribution of $X$ in a table.
+\tcblower
+\textbf{(a)} The probabilities are $P(X=1) = k$, $P(X=2) = 2k$, $P(X=3) = 3k$, $P(X=4) = 4k$. Imposing the total probability condition:
+\begin{align*}
+\sum_x P(X = x) = 1 &\implies k + 2k + 3k + 4k = 1 \\
+&\implies 10k = 1 \implies k = \tfrac{1}{10}.
+\end{align*}
+Check: all probabilities $\tfrac{1}{10}, \tfrac{2}{10}, \tfrac{3}{10}, \tfrac{4}{10}$ lie in $[0,1]$. \checkmark
+
+\textbf{(b)} The distribution is:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $1$ & $2$ & $3$ & $4$ \\
+\hline
+$P(X = x)$ & $0.1$ & $0.2$ & $0.3$ & $0.4$ \\
+\hline
+\end{tabular}
+\end{center}
+Total: $0.1 + 0.2 + 0.3 + 0.4 = 1$. \checkmark
+\end{exoresolu}
+
+\courssub{Computing probabilities of compound events}
+
+Once the distribution is known, the probability of any event defined by $X$ is found by \textbf{adding} the probabilities of the individual values inside the event (the events $\{X = x\}$ are mutually exclusive). In particular:
+
+\begin{propriete}[Probabilities of compound events]
+For a discrete random variable $X$:
+\[ P(X \ge a) = \sum_{x \ge a} P(X = x), \qquad
+P(a < X \le b) = \sum_{a < x \le b} P(X = x), \]
+\[ P(X \ne a) = 1 - P(X = a). \]
+\end{propriete}
+
+\begin{exoresolu}[Using the distribution of the sum of two dice]
+Using the distribution of $X$ = sum of two fair dice, find (a) $P(X \ge 10)$; (b) $P(4 < X \le 7)$; (c) $P(X \ne 7)$.
+\tcblower
+From the table, $P(X = x) = \dfrac{6 - |x - 7|}{36}$ for $x = 2, \dots, 12$.
+
+\textbf{(a)} $P(X \ge 10) = P(X=10) + P(X=11) + P(X=12) = \dfrac{3}{36} + \dfrac{2}{36} + \dfrac{1}{36} = \dfrac{6}{36} = \dfrac{1}{6}$.
+
+\textbf{(b)} The event $4 < X \le 7$ contains the values $5, 6, 7$:
+\[ P(4 < X \le 7) = \frac{4}{36} + \frac{5}{36} + \frac{6}{36} = \frac{15}{36} = \frac{5}{12}. \]
+
+\textbf{(c)} By the complement rule:
+\[ P(X \ne 7) = 1 - P(X = 7) = 1 - \frac{6}{36} = \frac{5}{6}. \]
+\end{exoresolu}
+
+\begin{attention}[Strict versus non-strict inequalities]
+Be careful with the boundary: $P(X \ge 10)$ \emph{includes} $x = 10$, while $P(X > 10)$ \emph{excludes} it. For a discrete variable these are different numbers — unlike for continuous variables. Read the inequality sign twice before adding.
+\end{attention}
+
+\begin{exercice}[Practice]
+A discrete random variable $X$ takes the values $0, 1, 2, 3$ with
+\[ P(X = x) = k(x + 1), \qquad x = 0, 1, 2, 3. \]
+\begin{enumerate}
+\item Show that $k = \tfrac{1}{10}$ and write out the full distribution table.
+\item Find $P(X \ge 2)$, $P(0 < X \le 2)$ and $P(X \ne 1)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $\sum p(x) = k(1 + 2 + 3 + 4) = 10k = 1$, so $k = \tfrac{1}{10}$. The table is:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ \\
+\hline
+$P(X = x)$ & $0.1$ & $0.2$ & $0.3$ & $0.4$ \\
+\hline
+\end{tabular}
+\end{center}
+All probabilities are in $[0,1]$ and sum to $1$. \checkmark
+
+\textbf{2.} $P(X \ge 2) = 0.3 + 0.4 = 0.7$; \; $P(0 < X \le 2) = P(X=1) + P(X=2) = 0.2 + 0.3 = 0.5$; \; $P(X \ne 1) = 1 - 0.2 = 0.8$.
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A \cle{random variable} is a function $X : \Omega \to \mathbb{R}$ assigning a number to each outcome; it is \cle{discrete} if its values can be listed.
+\item The \cle{probability distribution} of $X$ is the set of pairs $(x, P(X = x))$; it may be given as a table, a formula, or a bar chart.
+\item Every distribution satisfies $0 \le P(X = x) \le 1$ and $\sum_x P(X = x) = 1$.
+\item An unknown constant in a p.m.f. is found by solving $\sum p(x) = 1$, then checking non-negativity.
+\item Compound probabilities are sums: $P(X \ge a) = \sum_{x \ge a} p(x)$, and $P(X \ne a) = 1 - P(X = a)$.
+\end{itemize}
+\end{aretenir}
+
+Our Mokolo trader now has her ``single table'': the list of possible daily demands with their probabilities. But a table alone does not tell her how many cards to stock. For that she needs a summary number — the \emph{expected} demand — which is the subject of the next section.
+
+\coursec{The probability mass function and expectation}
+
+\courssub{From distributions to the of a random variable}
+In Section 1, we defined a \cle{} of a, and a discrete random variable $X$, as the function$p$defined by $p(x=P(X=x)$, where $x$ is a. The function $p$ is called the probability mass function (p.m.f). We now make this idea precise.
+
+\courssub{The probability of a random variable} is a random variable, and the p.m.f of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a of a
+
+\coursec{Variance and standard deviation of a discrete random variable}
+
+In the previous section we defined the \cle{expectation} $E(X)$ of a discrete random variable and saw that it plays the role of an average value: it tells us where the distribution is \emph{centred}. But two distributions can be centred at the very same point and yet behave completely differently. A trader in Bamenda whose daily profit is always close to 5\,000 FCFA and a trader whose profit swings wildly between $-2\,000$ and $12\,000$ FCFA may have the \emph{same} average profit of 5\,000 FCFA. The mean alone cannot see this difference. We need a second number that measures the \cle{spread} of a distribution around its mean. That number is the \cle{variance}, and its square root, the \cle{standard deviation}.
+
+\courssub{Why the mean is not enough: a motivating example}
+
+\begin{exemplebox}[Two games, one mean]
+Consider two games of chance at a school fair. In Game A you win a random amount $X$; in Game B you win $Y$. Their distributions are:
+
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$x$ & $1$ & $2$ & $3$ & $4$ & $5$ \\ \hline
+$P(X=x)$ & $0.1$ & $0.2$ & $0.4$ & $0.2$ & $0.1$ \\ \hline
+\end{tabular}
+\qquad
+\begin{tabular}{|c|ccccc|}
+\hline
+$y$ & $1$ & $2$ & $3$ & $4$ & $5$ \\ \hline
+$P(Y=y)$ & $0.3$ & $0.2$ & $0$ & $0.2$ & $0.3$ \\ \hline
+\end{tabular}
+\end{center}
+
+A quick computation gives
+\[ E(X) = 1(0.1)+2(0.2)+3(0.4)+4(0.2)+5(0.1) = 3, \]
+\[ E(Y) = 1(0.3)+2(0.2)+3(0)+4(0.2)+5(0.3) = 3. \]
+Both games have the same mean $\mu = 3$. Yet Game A usually pays close to 3, while Game B frequently pays the extreme values 1 or 5 and \emph{never} pays 3. If you dislike risk, you prefer Game A. The expectation cannot distinguish them; the variance will.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=7pt,
+  width=0.48\linewidth, height=5.2cm,
+  ymin=0, ymax=0.5,
+  xtick={1,2,3,4,5}, ytick={0.1,0.2,0.3,0.4},
+  title={Game A: $\mathrm{Var}(X)=1.2$},
+  title style={font=\small},
+  xlabel={$x$}, ylabel={$p(x)$},
+  label style={font=\small}, tick label style={font=\small},
+  every axis plot/.append style={fill=popblue, draw=popblue}
+]
+\addplot coordinates {(1,0.1) (2,0.2) (3,0.4) (4,0.2) (5,0.1)};
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=7pt,
+  width=0.48\linewidth, height=5.2cm,
+  ymin=0, ymax=0.5,
+  xtick={1,2,3,4,5}, ytick={0.1,0.2,0.3,0.4},
+  title={Game B: $\mathrm{Var}(Y)=2.8$},
+  title style={font=\small},
+  xlabel={$y$}, ylabel={$p(y)$},
+  label style={font=\small}, tick label style={font=\small},
+  every axis plot/.append style={fill=poporange, draw=poporange}
+]
+\addplot coordinates {(1,0.3) (2,0.2) (3,0) (4,0.2) (5,0.3)};
+\end{axis}
+\end{tikzpicture}
+\legende{Two distributions with the same mean $\mu=3$ but different spreads. Game A is concentrated around the mean (small variance); Game B is spread out (large variance).}
+\end{popfigure}
+
+\courssub{Definition of the variance and the standard deviation}
+
+How should we measure spread? A natural idea is to look at the \emph{deviation} of each value from the mean, $x - \mu$. But the average deviation is useless:
+\[ E(X-\mu) = E(X) - \mu = \mu - \mu = 0, \]
+because positive and negative deviations cancel out. To kill the signs we \emph{square} the deviations (squaring also penalises large deviations more heavily than small ones, which is exactly what we want). This leads to the official definition.
+
+\begin{definition}[Variance and standard deviation]
+Let $X$ be a discrete random variable with mean $\mu = E(X)$. The \cle{variance} of $X$ is
+\[ \mathrm{Var}(X) = E\!\left[(X-\mu)^2\right] = \sum_x (x-\mu)^2\, p(x), \]
+where the sum runs over all values of $X$ and $p(x) = P(X=x)$. The \cle{standard deviation} of $X$ is
+\[ \sigma = \sqrt{\mathrm{Var}(X)}. \]
+\end{definition}
+
+\begin{attention}[Units]
+The variance is measured in \emph{squared} units: if $X$ is a profit in FCFA, $\mathrm{Var}(X)$ is in FCFA$^2$, which has no direct interpretation. The standard deviation $\sigma$ is in the \emph{same units as $X$} (FCFA), so it is $\sigma$ that we quote when interpreting spread in a real context: ``the daily profit is 5\,000 FCFA on average, with a standard deviation of 800 FCFA''.
+\end{attention}
+
+\courssub{The computational formula}
+
+Applying the definition directly forces us to compute every deviation $(x-\mu)$, square it, and multiply by $p(x)$: long and error-prone, especially when $\mu$ is not an integer. The following theorem gives a much faster route.
+
+\begin{propriete}[Computational formula for the variance (proof examinable)]
+For any discrete random variable $X$,
+\[ \mathrm{Var}(X) = E(X^2) - [E(X)]^2. \]
+\textbf{Proof.} Write $\mu = E(X)$. By definition and linearity of expectation,
+\begin{align*}
+\mathrm{Var}(X) &= E\!\left[(X-\mu)^2\right] = E\!\left[X^2 - 2\mu X + \mu^2\right] \\
+&= E(X^2) - 2\mu\,E(X) + \mu^2 \\
+&= E(X^2) - 2\mu^2 + \mu^2 = E(X^2) - \mu^2 = E(X^2) - [E(X)]^2. \qquad\square
+\end{align*}
+\end{propriete}
+
+\begin{attention}[A classic bracket error]
+Never write $\mathrm{Var}(X) = E(X^2) - E(X)^2$ carelessly: the \emph{mean} is squared, $[E(X)]^2$, not the variable. $E(X^2)$ (mean of the squares) and $[E(X)]^2$ (square of the mean) are different numbers, and their difference is precisely the variance. Note also that since $(X-\mu)^2 \ge 0$, we always have $E(X^2) \ge [E(X)]^2$.
+\end{attention}
+
+\begin{methode}[Computing $\mathrm{Var}(X)$ from a table]
+\begin{enumerate}
+\item Build a table with columns $x$, $p(x)$, $x\,p(x)$ and $x^2\,p(x)$.
+\item Sum the third column to get $E(X)$; sum the fourth column to get $E(X^2)$.
+\item Check that the $p(x)$ column sums to $1$.
+\item Apply $\mathrm{Var}(X) = E(X^2) - [E(X)]^2$, then $\sigma = \sqrt{\mathrm{Var}(X)}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Computing $E(X)$, $E(X^2)$, $\mathrm{Var}(X)$ and $\sigma$]
+The number $X$ of phones sold per day by a shop in Douala has distribution:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\ \hline
+$p(x)$ & $0.1$ & $0.3$ & $0.3$ & $0.2$ & $0.1$ \\ \hline
+\end{tabular}
+\end{center}
+Find $E(X)$, $E(X^2)$, $\mathrm{Var}(X)$ and the standard deviation $\sigma$.
+\tcblower
+\textbf{Solution.} Extend the table:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ & $p(x)$ & $x\,p(x)$ & $x^2\,p(x)$ \\ \hline
+$0$ & $0.1$ & $0$ & $0$ \\ \hline
+$1$ & $0.3$ & $0.3$ & $0.3$ \\ \hline
+$2$ & $0.3$ & $0.6$ & $1.2$ \\ \hline
+$3$ & $0.2$ & $0.6$ & $1.8$ \\ \hline
+$4$ & $0.1$ & $0.4$ & $1.6$ \\ \hline
+\rowcolor{popblueL} Total & $1$ & $1.9$ & $4.9$ \\ \hline
+\end{tabular}
+\end{center}
+Hence $E(X) = 1.9$ and $E(X^2) = 4.9$. By the computational formula,
+\[ \mathrm{Var}(X) = E(X^2) - [E(X)]^2 = 4.9 - (1.9)^2 = 4.9 - 3.61 = 1.29, \]
+\[ \sigma = \sqrt{1.29} \approx 1.14 \text{ phones}. \]
+\emph{Interpretation:} the shop sells about $1.9$ phones per day on average, and the daily sales typically fluctuate by about $1.1$ phone around this mean.
+\end{exoresolu}
+
+\courssub{Properties of the variance}
+
+\begin{propriete}[Basic properties of the variance]
+Let $X$ be a discrete random variable and $a, b \in \mathbb{R}$.
+\begin{enumerate}
+\item $\mathrm{Var}(X) \ge 0$.
+\item $\mathrm{Var}(X) = 0$ if and only if $X$ is \emph{constant} (takes a single value with probability $1$).
+\item $\mathrm{Var}(aX + b) = a^2\,\mathrm{Var}(X)$.
+\end{enumerate}
+\textbf{Proof of (3).} Recall $E(aX+b) = a\mu + b$. Then
+\begin{align*}
+\mathrm{Var}(aX+b) &= E\!\left[\big((aX+b) - (a\mu+b)\big)^2\right] = E\!\left[a^2(X-\mu)^2\right] \\
+&= a^2 E\!\left[(X-\mu)^2\right] = a^2\,\mathrm{Var}(X). \qquad\square
+\end{align*}
+\end{propriete}
+
+Property (3) has a very intuitive meaning:
+\begin{itemize}
+\item \emph{Adding a constant $b$ shifts the whole distribution} without changing its shape: the spread is unchanged, so $b$ disappears from the variance.
+\item \emph{Multiplying by $a$ stretches the axis by $|a|$}; since variance involves \emph{squared} deviations, it is multiplied by $a^2$. Consequently the standard deviation is multiplied by $|a|$: $\sigma_{aX+b} = |a|\,\sigma_X$.
+\end{itemize}
+
+\begin{attention}[The two most frequent mistakes]
+\begin{itemize}
+\item $\mathrm{Var}(aX) = a^2\mathrm{Var}(X)$, \textbf{not} $a\,\mathrm{Var}(X)$. For example $\mathrm{Var}(2X) = 4\,\mathrm{Var}(X)$.
+\item $\mathrm{Var}(X + b) = \mathrm{Var}(X)$, \textbf{not} $\mathrm{Var}(X) + b$. A translation does not change the spread.
+\end{itemize}
+Contrast carefully with expectation:
+\[ E(aX+b) = aE(X) + b \qquad\text{versus}\qquad \mathrm{Var}(aX+b) = a^2\mathrm{Var}(X). \]
+\end{attention}
+
+\begin{propriete}[Variance of a sum of independent variables (extension, useful for the GCE)]
+If $X$ and $Y$ are \emph{independent} random variables, then
+\[ \mathrm{Var}(X+Y) = \mathrm{Var}(X) + \mathrm{Var}(Y). \]
+The proof uses the fact that for independent variables $E(XY) = E(X)E(Y)$; it is not examinable but the result is extremely useful. Beware: independence is essential — the formula can fail otherwise.
+\end{propriete}
+
+\begin{exoresolu}[Finding unknowns given $E(X)$ and $\mathrm{Var}(X)$]
+A random variable $X$ takes the values $1$, $2$ and $k$ with probabilities
+\[ P(X=1) = 0.5, \qquad P(X=2) = 0.3, \qquad P(X=k) = 0.2, \]
+where $k > 2$. Given that $E(X) = 2.1$, find $k$, then compute $\mathrm{Var}(X)$ and $\sigma$.
+\tcblower
+\textbf{Solution.} From the expectation:
+\[ E(X) = 1(0.5) + 2(0.3) + 0.2k = 1.1 + 0.2k = 2.1 \;\Longrightarrow\; 0.2k = 1 \;\Longrightarrow\; k = 5. \]
+Now compute $E(X^2)$:
+\[ E(X^2) = 1^2(0.5) + 2^2(0.3) + 5^2(0.2) = 0.5 + 1.2 + 5 = 6.7. \]
+Therefore
+\[ \mathrm{Var}(X) = E(X^2) - [E(X)]^2 = 6.7 - (2.1)^2 = 6.7 - 4.41 = 2.29, \]
+\[ \sigma = \sqrt{2.29} \approx 1.51. \]
+\end{exoresolu}
+
+\courssub{Interpreting the standard deviation in context}
+
+The standard deviation measures a \emph{typical distance} from the mean. For most distributions met at this level, the great majority of the probability lies within $\mu \pm 2\sigma$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+\draw[->, thick, popdark] (0,0) -- (10.4,0);
+\foreach \x/\lab in {2/{$\mu-2\sigma$}, 4/{$\mu-\sigma$}, 6/{$\mu$}, 8/{$\mu+\sigma$}, 10/{$\mu+2\sigma$}}{
+  \draw[thick, popdark] (\x,0.12) -- (\x,-0.12);
+  \node[below, font=\small] at (\x,-0.12) {\lab};
+}
+\draw[thick, popblue] (6,0.55) -- (4,0.55);
+\draw[thick, popblue] (6,0.55) -- (8,0.55);
+\draw[thick, popblue] (4,0.45) -- (4,0.65);
+\draw[thick, popblue] (8,0.45) -- (8,0.65);
+\node[above, popblue, font=\small] at (5,0.6) {$\sigma$};
+\node[above, popblue, font=\small] at (7,0.6) {$\sigma$};
+\draw[thick, poporange] (6,1.15) -- (2,1.15);
+\draw[thick, poporange] (6,1.15) -- (10,1.15);
+\draw[thick, poporange] (2,1.05) -- (2,1.25);
+\draw[thick, poporange] (10,1.05) -- (10,1.25);
+\node[above, poporange, font=\small] at (4,1.2) {$2\sigma$};
+\node[above, poporange, font=\small] at (8,1.2) {$2\sigma$};
+\fill[popdark] (6,0) circle (2pt);
+\end{tikzpicture}
+\end{center}
+\legende{Number line showing the mean $\mu$ and the bands $\mu \pm \sigma$ and $\mu \pm 2\sigma$. The standard deviation is the natural ``ruler'' for measuring spread around the mean.}
+\end{popfigure}
+
+In applications, variance quantifies \cle{risk} and \cle{consistency}:
+\begin{itemize}
+\item \emph{Finance and trade.} Two investments with the same expected gain are not equivalent: the one with the smaller variance is safer. A trader whose daily sales have a small standard deviation can plan stock confidently.
+\item \emph{Quality control.} A machine filling 50\,cl bottles in a Douala factory must have a small standard deviation of the filled volume, otherwise many bottles are under- or over-filled.
+\item \emph{Measurements.} Repeated measurements of the same quantity give a small variance when the instrument is reliable.
+\end{itemize}
+
+\begin{exemplebox}[Using the linearity properties]
+Let $X$ be the daily profit (in thousands of FCFA) of a kiosk, with $E(X) = 5$ and $\mathrm{Var}(X) = 4$. A tax of $1$ (thousand FCFA) is charged daily, and the remaining profit is doubled by a new sales strategy: $Y = 2(X - 1) = 2X - 2$. Then
+\[ E(Y) = 2E(X) - 2 = 8, \qquad \mathrm{Var}(Y) = 2^2\,\mathrm{Var}(X) = 16, \qquad \sigma_Y = 4. \]
+Note how the shift by $-2$ changed the mean but left the variance untouched, while doubling quadrupled the variance.
+\end{exemplebox}
+
+\begin{exercice}[Practice]
+A discrete random variable $X$ has distribution
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+$x$ & $-1$ & $0$ & $1$ & $2$ \\ \hline
+$p(x)$ & $0.2$ & $0.1$ & $0.3$ & $0.4$ \\ \hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item Compute $E(X)$, $E(X^2)$, $\mathrm{Var}(X)$ and $\sigma$.
+\item Let $Y = 3X + 2$. Find $E(Y)$, $\mathrm{Var}(Y)$ and $\sigma_Y$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $E(X) = -1(0.2) + 0(0.1) + 1(0.3) + 2(0.4) = 0.9$.
+$E(X^2) = 1(0.2) + 0(0.1) + 1(0.3) + 4(0.4) = 2.1$.
+$\mathrm{Var}(X) = 2.1 - (0.9)^2 = 2.1 - 0.81 = 1.29$; $\sigma = \sqrt{1.29} \approx 1.14$.
+
+\textbf{2.} $E(Y) = 3E(X) + 2 = 3(0.9) + 2 = 4.7$.
+$\mathrm{Var}(Y) = 3^2\,\mathrm{Var}(X) = 9 \times 1.29 = 11.61$; $\sigma_Y = 3\sigma = 3\sqrt{1.29} \approx 3.41$.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item The variance measures the spread of $X$ around its mean: $\mathrm{Var}(X) = E[(X-\mu)^2] = \sum (x-\mu)^2 p(x)$.
+\item In practice use the computational formula $\mathrm{Var}(X) = E(X^2) - [E(X)]^2$.
+\item The standard deviation $\sigma = \sqrt{\mathrm{Var}(X)}$ is expressed in the same units as $X$; it is the quantity used for interpretation.
+\item $\mathrm{Var}(X) \ge 0$, with equality only when $X$ is constant.
+\item $E(aX+b) = aE(X) + b$ but $\mathrm{Var}(aX+b) = a^2\mathrm{Var}(X)$: the constant $b$ vanishes and $a$ is squared.
+\item If $X$ and $Y$ are independent, $\mathrm{Var}(X+Y) = \mathrm{Var}(X) + \mathrm{Var}(Y)$.
+\end{itemize}
+\end{aretenir}
+
+\coursec{The cumulative distribution function, mode and median}
+
+In the previous section we summarised a discrete random variable by two numbers: its expectation $E(X)$, which locates the ``centre'' of the distribution, and its variance $\mathrm{Var}(X)$, which measures the spread around that centre. But a single number can never tell the whole story. Suppose a student at GBHS Bamenda wants to know: \emph{what is the probability that the number of goals scored in a match is at most $2$?} Or: \emph{what is the most likely number of children in a household?} Or: \emph{what value splits the distribution into two halves?} To answer such questions efficiently we need a new tool that \emph{accumulates} probabilities: the \cle{cumulative distribution function}, and two new summary values: the \cle{mode} and the \cle{median}.
+
+\courssub{The cumulative distribution function}
+
+\textbf{Motivation.}\par
+A fair die is rolled and $X$ is the score obtained. The probability mass function is $p(x) = \tfrac{1}{6}$ for $x = 1, 2, \dots, 6$. If we ask for $P(X \le 3)$, we must add $p(1) + p(2) + p(3) = \tfrac{3}{6}$. If we then ask for $P(X \le 4)$, we add one more term. Rather than redoing these sums every time, we compute them \emph{once and for all} and store the results in a function $F$: this is the cumulative distribution function.
+
+\begin{definition}[Cumulative distribution function]
+Let $X$ be a discrete random variable with probability mass function $p(x) = P(X = x)$. The \cle{cumulative distribution function} (c.d.f) of $X$ is the function $F$ defined for \emph{every real number} $x$ by
+\[ F(x) = P(X \le x) = \sum_{t \le x} p(t). \]
+\end{definition}
+
+\begin{attention}[The c.d.f is defined for ALL real $x$]
+A very common mistake is to define $F$ only at the values taken by $X$. The c.d.f is defined on the whole of $\mathbb{R}$: for example, with the die above, $F(3.7) = P(X \le 3.7) = p(1)+p(2)+p(3) = \tfrac{1}{2}$, and $F(-2) = 0$, $F(100) = 1$. Between two consecutive values of $X$, $F$ is \emph{constant}.
+\end{attention}
+
+\begin{exemplebox}[Constructing $F$ step by step]
+Let $X$ have p.m.f given by the table
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ \\
+\hline
+$p(x)$ & $0.1$ & $0.3$ & $0.4$ & $0.2$ \\
+\hline
+\end{tabular}
+\end{center}
+Accumulating the probabilities from left to right:
+\[ F(0) = 0.1, \quad F(1) = 0.1 + 0.3 = 0.4, \quad F(2) = 0.4 + 0.4 = 0.8, \quad F(3) = 0.8 + 0.2 = 1. \]
+Since $F$ is defined for all real $x$, we write it piecewise:
+\[ F(x) = \begin{cases} 0 & \text{if } x < 0, \\ 0.1 & \text{if } 0 \le x < 1, \\ 0.4 & \text{if } 1 \le x < 2, \\ 0.8 & \text{if } 2 \le x < 3, \\ 1 & \text{if } x \ge 3. \end{cases} \]
+Note the shape: $F$ is a \emph{step function}, constant on each interval, jumping at each value taken by $X$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm, height=7cm,
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$F(x)$},
+    xmin=-1.2, xmax=4.4, ymin=-0.08, ymax=1.15,
+    xtick={0,1,2,3}, ytick={0.1,0.4,0.8,1},
+    yticklabels={$0.1$,$0.4$,$0.8$,$1$},
+    every axis x label/.style={at={(ticklabel* cs:1)}, anchor=west},
+    every axis y label/.style={at={(ticklabel* cs:1)}, anchor=south},
+]
+\addplot[popblue, very thick] coordinates {(-1.2,0) (0,0)};
+\addplot[popblue, very thick] coordinates {(0,0.1) (1,0.1)};
+\addplot[popblue, very thick] coordinates {(1,0.4) (2,0.4)};
+\addplot[popblue, very thick] coordinates {(2,0.8) (3,0.8)};
+\addplot[popblue, very thick] coordinates {(3,1) (4.4,1)};
+\addplot[popblue, mark=*, mark size=2pt, only marks] coordinates {(0,0.1) (1,0.4) (2,0.8) (3,1)};
+\addplot[popblue, mark=o, mark size=2pt, only marks] coordinates {(0,0) (1,0.1) (2,0.4) (3,0.8)};
+\draw[poporange, dashed] (axis cs:0,0) -- (axis cs:0,0.1);
+\draw[poporange, dashed] (axis cs:1,0.1) -- (axis cs:1,0.4);
+\draw[poporange, dashed] (axis cs:2,0.4) -- (axis cs:2,0.8);
+\draw[poporange, dashed] (axis cs:3,0.8) -- (axis cs:3,1);
+\node[poporange, anchor=west, font=\small] at (axis cs:0.05,0.05) {$p(0)=0.1$};
+\node[poporange, anchor=west, font=\small] at (axis cs:1.05,0.25) {$p(1)=0.3$};
+\node[poporange, anchor=west, font=\small] at (axis cs:2.05,0.6) {$p(2)=0.4$};
+\node[poporange, anchor=west, font=\small] at (axis cs:3.05,0.9) {$p(3)=0.2$};
+\end{axis}
+\end{tikzpicture}
+\legende{The c.d.f $F(x)$ is a step function: closed dots show the value taken at each jump (right-continuity); each jump height equals the p.m.f value $p(x)$.}
+\end{center}
+\end{popfigure}
+
+\begin{propriete}[Properties of the c.d.f]
+For any discrete random variable $X$ with c.d.f $F$:
+\begin{enumerate}
+\item $0 \le F(x) \le 1$ for every real $x$;
+\item $F$ is \cle{non-decreasing}: if $a \le b$ then $F(a) \le F(b)$;
+\item $F(x) \to 0$ as $x \to -\infty$ and $F(x) \to 1$ as $x \to +\infty$; in fact $F(x) = 0$ below the smallest value of $X$ and $F(x) = 1$ from the largest value of $X$ onwards;
+\item $F$ is \cle{right-continuous}: at each jump point $a$, $F(a)$ equals the value \emph{after} the jump (the closed dot is on the upper step).
+\end{enumerate}
+These properties are not examinable as formal proofs, but you must be able to \emph{verify} them on a given function.
+\end{propriete}
+
+\begin{propriete}[Computing probabilities with $F$]
+For real numbers $a < b$:
+\[ P(a < X \le b) = F(b) - F(a), \qquad P(X > a) = 1 - F(a), \qquad P(X = a) = F(a) - F(a^-), \]
+where $F(a^-)$ denotes the limit of $F$ as $x$ approaches $a$ from the left (the value just \emph{before} the jump).
+\end{propriete}
+
+\textbf{Justification.} The event $\{X \le b\}$ is the disjoint union of $\{X \le a\}$ and $\{a < X \le b\}$, so $F(b) = F(a) + P(a < X \le b)$, which gives the first formula. The second is the complementary event of $\{X \le a\}$. The third says that the probability of a single value is exactly the \emph{height of the jump} of $F$ at that point.
+
+\courssub{Recovering the p.m.f from the c.d.f}
+
+This is a classic GCE question: the c.d.f is given piecewise and you are asked to find the probability distribution of $X$.
+
+\begin{methode}[From the c.d.f to the p.m.f]
+\begin{enumerate}
+\item Locate the \cle{jump points} of $F$: these are the values where the formula changes; they are the values taken by $X$.
+\item At each jump point $x$, compute the jump height $p(x) = F(x) - F(x^-)$, i.e.\ the value of $F$ on that step minus the value on the previous step.
+\item Present the p.m.f in a table and \emph{check} that the probabilities sum to $1$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[A complete GCE-style problem]
+The c.d.f of a discrete random variable $X$ is
+\[ F(x) = \begin{cases} 0 & x < 1, \\ 0.2 & 1 \le x < 2, \\ 0.5 & 2 \le x < 4, \\ 0.9 & 4 \le x < 5, \\ 1 & x \ge 5. \end{cases} \]
+Find (a) the p.m.f of $X$; (b) $P(2 < X \le 4)$; (c) $E(X)$ and $\mathrm{Var}(X)$.
+\tcblower
+\textbf{(a)} The jump points are $x = 1, 2, 4, 5$. The jump heights are:
+\begin{align*}
+p(1) &= 0.2 - 0 = 0.2, & p(2) &= 0.5 - 0.2 = 0.3, \\
+p(4) &= 0.9 - 0.5 = 0.4, & p(5) &= 1 - 0.9 = 0.1.
+\end{align*}
+Check: $0.2 + 0.3 + 0.4 + 0.1 = 1$. \checkmark
+
+\textbf{(b)} $P(2 < X \le 4) = F(4) - F(2) = 0.9 - 0.5 = 0.4$. (Indeed only $X = 4$ lies in $(2, 4]$.)
+
+\textbf{(c)} Expectation:
+\[ E(X) = 1(0.2) + 2(0.3) + 4(0.4) + 5(0.1) = 0.2 + 0.6 + 1.6 + 0.5 = 2.9. \]
+Second moment:
+\[ E(X^2) = 1(0.2) + 4(0.3) + 16(0.4) + 25(0.1) = 0.2 + 1.2 + 6.4 + 2.5 = 10.3. \]
+Hence
+\[ \mathrm{Var}(X) = E(X^2) - [E(X)]^2 = 10.3 - 2.9^2 = 10.3 - 8.41 = 1.89. \]
+\end{exoresolu}
+
+\begin{attention}[Exam tip: check $F$ before using it]
+When $F$ is given piecewise, always check first that the \emph{final piece equals $1$}, that the first piece equals $0$, and that $F$ is \emph{non-decreasing}. If one of these fails, either the question contains an unknown constant to determine first, or there is an error. For example, if the third piece were $0.9 + k$ instead of $0.9$, you would use the condition ``last piece $=1$'' together with the jump structure to find $k$.
+\end{attention}
+
+\courssub{The mode of a discrete distribution}
+
+\textbf{Motivation.}\par
+A trader at Mokolo market records the number $X$ of bags of garri sold per day. For her stock decisions, the most useful number is not the mean but the \emph{most frequent} daily sale: the value of $X$ that occurs with the greatest probability.
+
+\begin{definition}[Mode]
+The \cle{mode} of a discrete random variable $X$ is the value of $x$ with the greatest probability:
+\[ \text{mode} = \arg\max_x \, p(x). \]
+A distribution with one mode is called \cle{unimodal}; if two values share the same maximal probability, the distribution is \cle{bimodal} (and both values are modes).
+\end{definition}
+
+\begin{exemplebox}[Unimodal and bimodal distributions]
+For the distribution $p(0)=0.1$, $p(1)=0.3$, $p(2)=0.4$, $p(3)=0.2$, the largest probability is $p(2) = 0.4$, so the mode is $2$ (unimodal).
+
+For the distribution $p(1) = 0.3$, $p(2) = 0.2$, $p(3) = 0.3$, $p(4) = 0.2$, both $p(1)$ and $p(3)$ equal $0.3$: the distribution is bimodal with modes $1$ and $3$.
+\end{exemplebox}
+
+\courssub{The median of a discrete distribution}
+
+\textbf{Motivation.}\par
+The mean can be dragged away from the ``typical'' value by a few extreme outcomes. The \cle{median} is a centre that resists this: it is a value $m$ such that at least half the probability lies at or below $m$, and at least half lies at or above $m$.
+
+\begin{definition}[Median]
+A \cle{median} of a discrete random variable $X$ is any value $m$ such that
+\[ P(X \le m) \ge \tfrac{1}{2} \quad \text{and} \quad P(X \ge m) \ge \tfrac{1}{2}. \]
+In practice, the median is read from the c.d.f: it is the \emph{smallest} value $m$ of $X$ such that
+\[ F(m) \ge \tfrac{1}{2}. \]
+\end{definition}
+
+\begin{exemplebox}[Reading the median from $F$]
+For the distribution $p(0)=0.1$, $p(1)=0.3$, $p(2)=0.4$, $p(3)=0.2$, the cumulative probabilities are $F(0) = 0.1$, $F(1) = 0.4$, $F(2) = 0.8$, $F(3) = 1$. The smallest $x$ with $F(x) \ge 0.5$ is $x = 2$ (since $F(1) = 0.4 < 0.5$ but $F(2) = 0.8 \ge 0.5$). Hence the median is $m = 2$. Check the definition: $P(X \le 2) = 0.8 \ge 0.5$ and $P(X \ge 2) = 0.4 + 0.2 = 0.6 \ge 0.5$. \checkmark
+\end{exemplebox}
+
+\begin{attention}[What the median is NOT]
+The median is \emph{not} necessarily $\dfrac{\text{smallest} + \text{largest}}{2}$, and it is \emph{not} necessarily equal to the mean. It must be read from the \emph{cumulative} probabilities. Also beware: if $F$ takes the value exactly $0.5$ on a whole step, say $F(2) = 0.5$ and $F(3) = 0.7$, then every real number in $[2, 3)$ satisfies the two inequalities and is a median; by convention at GCE level we quote the smallest value of $X$ with $F(m) \ge 0.5$, here $m = 2$.
+\end{attention}
+
+\courssub{Comparing mean, median and mode}
+
+For a perfectly symmetric distribution, the mean, median and mode coincide. For a \cle{skewed} distribution they separate in a characteristic order:
+\begin{itemize}
+\item if the distribution has a long tail to the \emph{right} (positively skewed), then typically $\text{mode} < \text{median} < \text{mean}$;
+\item if the tail is to the \emph{left} (negatively skewed), the order is reversed.
+\end{itemize}
+The mean is pulled towards the tail because large values, even rare ones, contribute heavily to $\sum x\,p(x)$. The median and mode are \emph{robust}: they ignore the size of extreme values.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm, height=7cm,
+    ybar, bar width=14pt,
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$p(x)$},
+    xmin=-0.6, xmax=6.6, ymin=0, ymax=0.45,
+    xtick={0,1,2,3,4,5,6},
+    every axis x label/.style={at={(ticklabel* cs:1)}, anchor=west},
+    every axis y label/.style={at={(ticklabel* cs:1)}, anchor=south},
+]
+\addplot[fill=popblueL, draw=popblue] coordinates {(0,0.35) (1,0.28) (2,0.17) (3,0.10) (4,0.06) (5,0.03) (6,0.01)};
+\draw[poporange, very thick, dashed] (axis cs:0,0) -- (axis cs:0,0.42) node[above, font=\small]{mode $=0$};
+\draw[popgreen, very thick, dashed] (axis cs:1,0) -- (axis cs:1,0.42) node[above, font=\small]{median $=1$};
+\draw[poppurple, very thick, dashed] (axis cs:1.36,0) -- (axis cs:1.36,0.42) node[above, font=\small]{mean $=1.36$};
+\end{axis}
+\end{tikzpicture}
+\legende{A right-skewed p.m.f with $p(0)=0.35$, $p(1)=0.28$, $p(2)=0.17$, $p(3)=0.10$, $p(4)=0.06$, $p(5)=0.03$, $p(6)=0.01$: mode $<$ median $<$ mean. The mean is pulled towards the tail.}
+\end{center}
+\end{popfigure}
+
+\textbf{Choosing the right summary in context.}\par
+\begin{itemize}
+\item Use the \cle{mode} when the question is ``which outcome is most likely?'' (stock planning, most common number of children per family).
+\item Use the \cle{median} when you want a typical value unaffected by rare extremes (incomes, waiting times).
+\item Use the \cle{mean} when totals matter: the mean multiplied by the number of trials gives the expected total (expected total revenue, expected number of successes in $n$ games).
+\end{itemize}
+
+\begin{exoresolu}[Mode, median and mean from a c.d.f]
+The c.d.f of the number $X$ of customers served per hour in a cybercaf\'e in Yaound\'e is
+\[ F(x) = \begin{cases} 0 & x < 0, \\ 0.15 & 0 \le x < 1, \\ 0.45 & 1 \le x < 2, \\ 0.75 & 2 \le x < 3, \\ 0.92 & 3 \le x < 4, \\ 1 & x \ge 4. \end{cases} \]
+Find the p.m.f, the mode, the median and the mean, and comment on the skewness.
+\tcblower
+\textbf{p.m.f} (jump heights): $p(0) = 0.15$, $p(1) = 0.45 - 0.15 = 0.30$, $p(2) = 0.75 - 0.45 = 0.30$, $p(3) = 0.92 - 0.75 = 0.17$, $p(4) = 1 - 0.92 = 0.08$. Sum: $1$. \checkmark
+
+\textbf{Mode}: $p(1) = p(2) = 0.30$ are both maximal, so the distribution is bimodal with modes $1$ and $2$.
+
+\textbf{Median}: $F(1) = 0.45 < 0.5$ and $F(2) = 0.75 \ge 0.5$, so the median is $m = 2$.
+
+\textbf{Mean}:
+\[ E(X) = 0(0.15) + 1(0.30) + 2(0.30) + 3(0.17) + 4(0.08) = 0.30 + 0.60 + 0.51 + 0.32 = 1.73. \]
+\textbf{Comment}: the mean ($1.73$) is slightly below the median ($2$): the distribution is mildly skewed to the left, the small values pulling the mean down.
+\end{exoresolu}
+
+\begin{exercice}[Consolidation]
+A discrete random variable $X$ has c.d.f
+\[ F(x) = \begin{cases} 0 & x < 1, \\ 0.1 & 1 \le x < 3, \\ 0.4 & 3 \le x < 6, \\ 0.85 & 6 \le x < 8, \\ 1 & x \ge 8. \end{cases} \]
+\begin{enumerate}
+\item Write down the p.m.f of $X$ in a table.
+\item Compute $P(3 < X \le 6)$ and $P(X > 3)$.
+\item Find the mode and the median of $X$.
+\item Compute $E(X)$ and $\mathrm{Var}(X)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Jump heights: $p(1) = 0.1$, $p(3) = 0.4 - 0.1 = 0.3$, $p(6) = 0.85 - 0.4 = 0.45$, $p(8) = 1 - 0.85 = 0.15$. Sum $= 1$. \checkmark
+
+\textbf{2.} $P(3 < X \le 6) = F(6) - F(3) = 0.85 - 0.4 = 0.45$; $P(X > 3) = 1 - F(3) = 1 - 0.4 = 0.6$.
+
+\textbf{3.} Mode: largest probability is $p(6) = 0.45$, so the mode is $6$. Median: $F(3) = 0.4 < 0.5$ and $F(6) = 0.85 \ge 0.5$, so the median is $6$.
+
+\textbf{4.} $E(X) = 1(0.1) + 3(0.3) + 6(0.45) + 8(0.15) = 0.1 + 0.9 + 2.7 + 1.2 = 4.9$.
+$E(X^2) = 1(0.1) + 9(0.3) + 36(0.45) + 64(0.15) = 0.1 + 2.7 + 16.2 + 9.6 = 28.6$.
+$\mathrm{Var}(X) = 28.6 - 4.9^2 = 28.6 - 24.01 = 4.59$.
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item The c.d.f is $F(x) = P(X \le x) = \sum_{t \le x} p(t)$, defined for \emph{every} real $x$; it is a non-decreasing, right-continuous step function with $F \to 0$ at $-\infty$ and $F \to 1$ at $+\infty$.
+\item $P(a < X \le b) = F(b) - F(a)$ and $P(X > a) = 1 - F(a)$.
+\item The p.m.f is recovered from the jumps: $p(x) = F(x) - F(x^-)$.
+\item The \cle{mode} is the value with the greatest probability (a distribution may be bimodal).
+\item The \cle{median} is the smallest value $m$ with $F(m) \ge \tfrac12$; it is read from cumulative probabilities, never computed as an average of extreme values.
+\item For right-skewed distributions: mode $<$ median $<$ mean; choose the summary according to the context.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Why medians matter in real life]
+When newspapers report ``average income'', they often quote the \emph{median} rather than the mean: a few very high salaries would pull the mean far above what a typical worker earns, while the median stays at the level of the person in the middle. The same robustness makes the median essential in medicine (survival times) and in queueing studies (waiting times at a hospital or a mobile-money kiosk). Knowing how to read it from a cumulative distribution is a genuinely useful life skill, not just an exam technique!
+\end{savaistu}
+
+\coursec{Moment generating functions}
+
+In the previous section we met the cumulative distribution function, the mode and the median --- tools that describe a distribution \emph{globally}. We now introduce a single function that \emph{encodes the whole distribution in one formula}: the \cle{moment generating function} (m.g.f). Its power is this: by simply differentiating one function and substituting $t=0$, we recover the expectation, the second moment, and hence the variance --- no long sums of $x\,p(x)$ or $x^2p(x)$ needed. This is a favourite GCE Advanced Level topic because it rewards careful algebra and clean differentiation.
+
+\courssub{Moments of a distribution}
+
+\begin{experience}[Why ``moments''?]
+Think of the marks of a class in a Further Mathematics mock examination. The \emph{mean} tells you the ``centre'' of the marks. But two classes can have the same mean and very different spreads: one class where everyone scored near $12/20$, another with marks scattered from $3$ to $19$. To describe the spread we need information about $X^2$ as well as $X$. More generally, the quantities $E(X)$, $E(X^2)$, $E(X^3)$, \dots\ capture progressively finer features of the distribution. They are called the \cle{moments} of $X$, by analogy with the moments of masses in mechanics.
+\end{experience}
+
+\begin{definition}[Moment of order $r$]
+Let $X$ be a discrete random variable. The \cle{moment of order $r$} (or \emph{$r$-th moment about the origin}) of $X$ is
+\[
+\mu_r' = E(X^r) = \sum_x x^r\, P(X=x),
+\]
+provided the sum exists. In particular:
+\begin{itemize}
+\item the first moment is the expectation: $\mu_1' = E(X)$;
+\item the second moment is $\mu_2' = E(X^2)$, which appears in the variance formula $\operatorname{Var}(X) = E(X^2) - [E(X)]^2 = \mu_2' - (\mu_1')^2$.
+\end{itemize}
+\end{definition}
+
+So computing expectations and variances is really the task of computing moments. The moment generating function is a machine that produces \emph{all} the moments at once.
+
+\courssub{Definition of the moment generating function}
+
+\begin{definition}[Moment generating function]
+Let $X$ be a discrete random variable with probability mass function $p(x) = P(X=x)$. The \cle{moment generating function} of $X$ is
+\[
+M_X(t) = E\!\left(e^{tX}\right) = \sum_x e^{tx}\, p(x),
+\]
+defined for all real values of $t$ for which this sum exists (converges). The set of such $t$ always contains an interval around $0$.
+\end{definition}
+
+\begin{attention}[It is $e^{tx}$, not $e^t$]
+The expression $e^{tX}$ means the exponential of the \emph{product} $tX$. A very common error is to compute $\sum_x e^{t}\,p(x)$ instead of $\sum_x e^{tx}\,p(x)$. The exponent must contain the value $x$ of the random variable: each value $x$ contributes $e^{tx}\,p(x)$. Since $\sum_x e^t p(x) = e^t \sum_x p(x) = e^t$, that mistake destroys all the information about the distribution.
+\end{attention}
+
+\begin{propriete}[Value at $t=0$]
+For every random variable $X$,
+\[
+M_X(0) = 1.
+\]
+\end{propriete}
+
+\textbf{Proof (examinable, one line).} Substituting $t=0$: $M_X(0) = \sum_x e^{0}\,p(x) = \sum_x p(x) = 1$, since the probabilities of a distribution sum to $1$. \hfill$\blacksquare$
+
+This gives an instant sanity check: whatever m.g.f you compute, setting $t=0$ must give $1$.
+
+\courssub{Computing the m.g.f of simple distributions}
+
+\begin{exemplebox}[Single-point distribution]
+Let $X$ take the single value $c$ with probability $1$. Then
+\[
+M_X(t) = e^{tc}\cdot 1 = e^{tc}.
+\]
+Check: $M_X(0) = e^0 = 1$. \checkmark
+\end{exemplebox}
+
+\begin{exemplebox}[Two-point (Bernoulli-type) distribution]
+Let $X$ take the value $1$ with probability $p$ and $0$ with probability $q = 1-p$. Then
+\[
+M_X(t) = e^{t\cdot 0}q + e^{t\cdot 1}p = q + pe^{t}.
+\]
+Check: $M_X(0) = q + p = 1$. \checkmark
+\end{exemplebox}
+
+\begin{exemplebox}[Uniform distribution on $\{1,2,\dots,n\}$]
+Let $P(X=k) = \dfrac{1}{n}$ for $k = 1, 2, \dots, n$. Then
+\[
+M_X(t) = \frac{1}{n}\sum_{k=1}^{n} e^{tk} = \frac{1}{n}\left(e^t + e^{2t} + \cdots + e^{nt}\right).
+\]
+For $t \neq 0$ this is a geometric series with ratio $e^t$, so
+\[
+M_X(t) = \frac{e^t\left(e^{nt}-1\right)}{n\left(e^t - 1\right)}.
+\]
+At $t=0$ the formula is understood as the limit $M_X(0)=1$ (or directly from the definition).
+\end{exemplebox}
+
+\begin{exoresolu}[M.g.f of a geometric-type distribution]
+A random variable $X$ has p.m.f
+\[
+P(X=k) = \left(\tfrac{1}{2}\right)^{k}, \qquad k = 1, 2, 3, \dots
+\]
+Find the moment generating function of $X$ and state the values of $t$ for which it exists.
+\tcblower
+\textbf{Solution.} By definition,
+\[
+M_X(t) = \sum_{k=1}^{\infty} e^{tk}\left(\tfrac{1}{2}\right)^{k} = \sum_{k=1}^{\infty} \left(\frac{e^t}{2}\right)^{k}.
+\]
+This is a geometric series with first term $\dfrac{e^t}{2}$ and common ratio $r = \dfrac{e^t}{2}$. It converges if and only if $|r| < 1$, i.e. $e^t < 2$, i.e. $t < \ln 2$. Summing the series:
+\[
+M_X(t) = \frac{\dfrac{e^t}{2}}{1 - \dfrac{e^t}{2}} = \frac{e^t}{2 - e^t}, \qquad t < \ln 2.
+\]
+Check: $M_X(0) = \dfrac{1}{2-1} = 1$. \checkmark
+\end{exoresolu}
+
+\courssub{Why it works: the series expansion}
+
+The secret of the m.g.f is the power series of the exponential. Recall that for every real $u$,
+\[
+e^{u} = 1 + u + \frac{u^2}{2!} + \frac{u^3}{3!} + \cdots = \sum_{r=0}^{\infty} \frac{u^r}{r!}.
+\]
+Applying this with $u = tX$ and taking expectations term by term (justified because the series converges absolutely for $t$ in an interval around $0$):
+\[
+M_X(t) = E\!\left(e^{tX}\right) = E\!\left(\sum_{r=0}^{\infty} \frac{t^r X^r}{r!}\right) = \sum_{r=0}^{\infty} \frac{t^r}{r!}\, E(X^r).
+\]
+
+\begin{aretenir}[The m.g.f as a storehouse of moments]
+\[
+M_X(t) = \sum_{r=0}^{\infty} \frac{t^r}{r!}\, E(X^r) = 1 + t\,E(X) + \frac{t^2}{2!}\,E(X^2) + \frac{t^3}{3!}\,E(X^3) + \cdots
+\]
+The moment $E(X^r)$ is the coefficient of $\dfrac{t^r}{r!}$ in the expansion of $M_X(t)$. The m.g.f ``generates'' the moments --- hence its name.
+\end{aretenir}
+
+\courssub{Extracting moments by differentiation}
+
+Differentiate the expansion with respect to $t$:
+\[
+M_X'(t) = E(X) + t\,E(X^2) + \frac{t^2}{2!}\,E(X^3) + \cdots
+\]
+Setting $t = 0$ kills every term except the first: $M_X'(0) = E(X)$. Differentiating again,
+\[
+M_X''(t) = E(X^2) + t\,E(X^3) + \cdots \quad\Longrightarrow\quad M_X''(0) = E(X^2).
+\]
+Continuing in this way gives the general result.
+
+\begin{propriete}[Moments from the m.g.f]
+If the m.g.f $M_X(t)$ exists in an interval around $t = 0$, then for every positive integer $r$,
+\[
+E(X^r) = M_X^{(r)}(0),
+\]
+where $M_X^{(r)}$ denotes the $r$-th derivative of $M_X$ with respect to $t$. In particular,
+\[
+E(X) = M_X'(0), \qquad E(X^2) = M_X''(0), \qquad \operatorname{Var}(X) = M_X''(0) - \left[M_X'(0)\right]^2.
+\]
+(The derivation above, via the series expansion, is examinable.)
+\end{propriete}
+
+\begin{methode}[Finding moments from an m.g.f]
+\begin{enumerate}
+\item Write down $M_X(t)$ and check that $M_X(0) = 1$.
+\item Differentiate with respect to $t$ to obtain $M_X'(t)$, then $M_X''(t)$, differentiating as many times as the moment required.
+\item \textbf{Only now} substitute $t = 0$: read off $E(X) = M_X'(0)$, $E(X^2) = M_X''(0)$.
+\item Compute $\operatorname{Var}(X) = M_X''(0) - [M_X'(0)]^2$.
+\end{enumerate}
+\emph{Never substitute $t = 0$ before differentiating}: $M_X(0) = 1$ is a constant, and the derivative of a constant is $0$ --- you would wrongly conclude that every expectation is zero!
+\end{methode}
+
+\begin{attention}[Differentiate first, substitute after]
+A classic GCE error: candidates compute $M_X(0) = 1$, then ``differentiate'' to get $0$ and write $E(X) = 0$. The substitution $t=0$ must come \emph{after} all differentiations. Also remember the quotient/product rules when differentiating expressions like $\dfrac{e^t}{2-e^t}$.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.72\linewidth, height=6cm,
+  axis lines=middle,
+  xlabel={$t$}, ylabel={$M_X(t)$},
+  xmin=-1.6, xmax=1.6, ymin=0, ymax=4.2,
+  xtick={0}, ytick={1},
+  domain=-1.5:1.5, samples=100,
+  every axis x label/.style={at={(ticklabel* cs:1.02)}, anchor=west},
+  every axis y label/.style={at={(ticklabel* cs:1.02)}, anchor=south},
+]
+\addplot[popblue, very thick] {0.6 + 0.4*exp(x)};
+\addplot[poporange, thick, dashed] {1 + 0.4*x};
+\addplot[only marks, mark=*, popdark] coordinates {(0,1)};
+\node[popdark, anchor=west] at (axis cs:0.06,0.82) {$(0,1)$};
+\node[popblue, anchor=south west, align=left] at (axis cs:-1.5,2.6) {$M_X(t)=0.6+0.4e^{t}$};
+\node[poporange, anchor=north west, align=left] at (axis cs:0.35,0.55) {tangent at $t=0$:\\ slope $=M_X'(0)=E(X)=0.4$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The m.g.f $M_X(t) = 0.6 + 0.4e^{t}$ of the two-point distribution $P(X=0)=0.6$, $P(X=1)=0.4$. Every m.g.f passes through $(0,1)$; the slope of the tangent there is $M_X'(0) = E(X)$.}
+\end{popfigure}
+
+\courssub{Two powerful properties}
+
+\begin{propriete}[M.g.f of a sum of independent variables]
+If $X$ and $Y$ are \emph{independent} random variables, then
+\[
+M_{X+Y}(t) = M_X(t)\, M_Y(t).
+\]
+Indeed, $M_{X+Y}(t) = E(e^{t(X+Y)}) = E(e^{tX}e^{tY}) = E(e^{tX})\,E(e^{tY})$ by independence. Moreover (stated without proof): \emph{the m.g.f determines the distribution uniquely} --- two random variables with the same m.g.f (on an interval around $0$) have the same distribution. This is why recognising a computed m.g.f as that of a known distribution allows you to identify the distribution immediately.
+\end{propriete}
+
+\courssub{Synthesis worked example}
+
+\begin{exoresolu}[From p.m.f to m.g.f to moments --- full synthesis]
+A discrete random variable $X$ has probability mass function
+\[
+P(X=0) = \tfrac{1}{4}, \qquad P(X=1) = \tfrac{1}{2}, \qquad P(X=2) = \tfrac{1}{4}.
+\]
+\begin{enumerate}
+\item Find the moment generating function $M_X(t)$.
+\item Use $M_X$ to find $E(X)$ and $\operatorname{Var}(X)$.
+\item Cross-check your answers directly from the p.m.f.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{1. The m.g.f.} By definition,
+\[
+M_X(t) = \sum_x e^{tx}p(x) = \tfrac{1}{4}e^{0} + \tfrac{1}{2}e^{t} + \tfrac{1}{4}e^{2t} = \frac{1}{4} + \frac{1}{2}e^{t} + \frac{1}{4}e^{2t}.
+\]
+Check: $M_X(0) = \tfrac14 + \tfrac12 + \tfrac14 = 1$. \checkmark\ (One may also factorise: $M_X(t) = \tfrac{1}{4}(1+e^t)^2$ --- note this is $\left(\tfrac12 + \tfrac12 e^t\right)^2$, the square of a Bernoulli m.g.f, confirming that $X$ is the sum of two independent Bernoulli$\left(\tfrac12\right)$ variables.)
+
+\textbf{2. Moments by differentiation.} Differentiate with respect to $t$:
+\[
+M_X'(t) = \frac{1}{2}e^{t} + \frac{1}{2}e^{2t}, \qquad M_X''(t) = \frac{1}{2}e^{t} + e^{2t}.
+\]
+Now substitute $t = 0$:
+\[
+E(X) = M_X'(0) = \frac{1}{2} + \frac{1}{2} = 1, \qquad E(X^2) = M_X''(0) = \frac{1}{2} + 1 = \frac{3}{2}.
+\]
+Hence
+\[
+\operatorname{Var}(X) = M_X''(0) - [M_X'(0)]^2 = \frac{3}{2} - 1^2 = \frac{1}{2}.
+\]
+
+\textbf{3. Direct cross-check from the p.m.f.}
+\[
+E(X) = 0\cdot\tfrac14 + 1\cdot\tfrac12 + 2\cdot\tfrac14 = 1, \qquad
+E(X^2) = 0\cdot\tfrac14 + 1\cdot\tfrac12 + 4\cdot\tfrac14 = \tfrac32,
+\]
+so $\operatorname{Var}(X) = \tfrac32 - 1 = \tfrac12$. Both methods agree. \checkmark
+\end{exoresolu}
+
+\begin{attention}[Exam tip: always cross-check]
+Whenever a GCE question asks you to find $E(X)$ and $\operatorname{Var}(X)$ via the m.g.f, quickly recompute $E(X)$ and $E(X^2)$ directly from the p.m.f on the side of your script. If $M_X'(0) \neq \sum x\,p(x)$, you have made a differentiation or algebra error --- this simple check catches most sign and coefficient mistakes before they cost you marks.
+\end{attention}
+
+\begin{exercice}[Practice]
+A random variable $X$ has p.m.f $P(X=1) = \tfrac{1}{3}$, $P(X=2) = \tfrac{2}{3}$.
+\begin{enumerate}
+\item Show that $M_X(t) = \dfrac{e^t + 2e^{2t}}{3}$ and verify that $M_X(0)=1$.
+\item Find $E(X)$ and $\operatorname{Var}(X)$ using the m.g.f.
+\item Confirm your results directly from the p.m.f.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $M_X(t) = \tfrac13 e^{t} + \tfrac23 e^{2t} = \dfrac{e^t + 2e^{2t}}{3}$; $M_X(0) = \dfrac{1+2}{3} = 1$. \checkmark
+
+\textbf{2.} $M_X'(t) = \dfrac{e^t + 4e^{2t}}{3}$, so $E(X) = M_X'(0) = \dfrac{1+4}{3} = \dfrac{5}{3}$. $M_X''(t) = \dfrac{e^t + 8e^{2t}}{3}$, so $E(X^2) = M_X''(0) = \dfrac{9}{3} = 3$. Hence $\operatorname{Var}(X) = 3 - \left(\dfrac{5}{3}\right)^2 = 3 - \dfrac{25}{9} = \dfrac{2}{9}$.
+
+\textbf{3.} Directly: $E(X) = \tfrac13(1) + \tfrac23(2) = \tfrac53$; $E(X^2) = \tfrac13(1) + \tfrac23(4) = 3$; $\operatorname{Var}(X) = 3 - \tfrac{25}{9} = \tfrac29$. Agreement confirmed. \checkmark
+\end{corrige}
+
+\courssub{Chapter synthesis and GCE revision}
+
+The whole chapter fits into one picture: the p.m.f is the fundamental object; everything else is derived from it.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=3.1cm, align=center, minimum height=1.1cm, font=\small},
+  arr/.style={-{stealth}, thick, popdark},
+  lbl/.style={font=\scriptsize, align=center, text width=2.6cm, popdark}
+]
+\node[box, align=center] (pmf) at (0,0){\textbf{p.m.f}\\ $p(x)=P(X=x)$};
+\node[box, align=center] (cdf) at (5.2,0){\textbf{c.d.f.}\\ $F(x)=\sum_{u\le x} p(u)$};
+\node[box, align=center] (mom) at (0,-2.6){\textbf{moments}\\ $E(X^r)=\sum x^r p(x)$};
+\node[box, align=center] (mgf) at (5.2,-2.6){\textbf{m.g.f.}\\ $M_X(t)=\sum e^{tx}p(x)$};
+\draw[arr] (pmf) -- (cdf) node[midway, above, lbl]{sum the probabilities};
+\draw[arr] (pmf) -- (mom) node[midway, left, lbl]{weight by $x^r$};
+\draw[arr] (pmf) -- (mgf) node[midway, above, sloped, lbl, text width=2.2cm]{weight by $e^{tx}$};
+\draw[arr] (mgf) -- (mom) node[midway, below, lbl]{$E(X^r)=M_X^{(r)}(0)$};
+\end{tikzpicture}
+\end{center}
+\legende{Concept map of the chapter: the p.m.f generates the c.d.f., the moments and the m.g.f.; the m.g.f hands the moments back by differentiation.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Tool} & \textbf{Definition} & \textbf{Use} \\
+\hline
+p.m.f. & $p(x) = P(X=x)$, with $\sum p(x) = 1$ & Defines the distribution completely. \\
+\hline
+Expectation & $E(X) = \sum x\,p(x)$ & Average value; first moment. \\
+\hline
+Variance & $\operatorname{Var}(X) = E(X^2) - [E(X)]^2$ & Measures spread about the mean. \\
+\hline
+c.d.f. & $F(x) = P(X \le x)$, a step function & Gives cumulative probabilities; $P(a < X \le b) = F(b) - F(a)$. \\
+\hline
+Mode & Value(s) of $x$ with largest $p(x)$ & Most likely value. \\
+\hline
+Median & Any $m$ with $P(X \le m) \ge \tfrac12$ and $P(X \ge m) \ge \tfrac12$ & Middle value; read from the c.d.f. \\
+\hline
+m.g.f. & $M_X(t) = \sum e^{tx}p(x)$ & Generates all moments: $E(X^r) = M_X^{(r)}(0)$; identifies distributions. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[GCE exam techniques for this chapter]
+\begin{itemize}
+\item Always check $\sum p(x) = 1$ first --- it often determines an unknown constant in the p.m.f.
+\item Use $\operatorname{Var}(X) = E(X^2) - [E(X)]^2$; never confuse $E(X^2)$ with $[E(X)]^2$.
+\item For the c.d.f., remember it is a \emph{step function}, constant between consecutive values of $X$, right-continuous at jumps.
+\item For the m.g.f.: differentiate first, substitute $t = 0$ afterwards; check $M_X(0) = 1$; cross-check $M_X'(0)$ and $M_X''(0)$ against direct computation.
+\item If you recognise an m.g.f as that of a known distribution, state the distribution --- uniqueness guarantees you are right.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Why ``generating'' functions matter]
+Generating functions are one of the great unifying ideas of mathematics: a whole sequence of numbers (here the moments $E(X), E(X^2), E(X^3), \dots$) is packed into a single function whose algebra mirrors the structure of the sequence. The same idea powers the study of the binomial and Poisson distributions you will meet in statistics, and even appears in combinatorics and number theory. Mastering $M_X(t)$ now will make those later chapters feel remarkably easy.
+\end{savaistu}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: The Mobile Money Agent's Dilemma}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter by bringing \emph{all} the notions studied together in a single, authentic decision-making problem. By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item construct a \cle{probability mass function} (p.m.f) from observed frequencies and verify that it defines a valid probability distribution;
+\item compute the \cle{expectation} $E(X)$, $E(X^2)$, the \cle{variance} $\mathrm{Var}(X)$ and the \cle{standard deviation} $\sigma(X)$, and interpret each of them in a concrete business context;
+\item build and sketch the \cle{cumulative distribution function} (c.d.f) $F(x)$, and read from it the \cle{mode} and the \cle{median} of the distribution;
+\item use the \cle{linearity of expectation} and the rule $\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)$ to analyse a profit function of the form $Y=aX+b$;
+\item (extension) write down the \cle{moment generating function} $M_X(t)$ and re-derive $E(X)$ and $\mathrm{Var}(X)$ from $M_X'(0)$ and $M_X''(0)$;
+\item communicate a justified, quantitative piece of advice to a decision-maker, as expected in the GCE Advanced Level examination.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+p.m.f $\rightarrow$ validity check $\rightarrow$ $E(X)$, $E(X^2)$, $\mathrm{Var}(X)$, $\sigma$ $\rightarrow$ c.d.f table and step graph $\rightarrow$ mode and median $\rightarrow$ expectation and variance of $aX+b$ $\rightarrow$ m.g.f and its derivatives at $t=0$.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{The Mobile Money Agent's Dilemma.}\par
+
+Madame Etongwe runs a small mobile money kiosk at Molyko Junction in Buea. Her main source of income is the commission paid on \emph{cash withdrawals}: for each withdrawal transaction she processes, the operator pays her a commission of $200$~FCFA. However, simply keeping the kiosk open (rent contribution, electricity for the point-of-sale terminal, float management, security) costs her $500$~FCFA per hour, whether customers come or not.
+
+Business is irregular: some hours are quiet, others are busy. To understand her situation, Madame Etongwe records, over a large number of working hours spread across several weeks, the number $X$ of cash-withdrawal customers served per hour. She summarises her observations as relative frequencies, which — because the record covers a long period — she decides to treat as probabilities:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} Number of withdrawals $x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\hline Relative frequency (probability) & $0.10$ & $0.20$ & $0.30$ & $0.25$ & $0.15$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+Madame Etongwe asks herself two questions:
+\begin{enumerate}
+\item ``Is my kiosk viable? On average, do I earn more than it costs me to stay open?''
+\item ``How risky is the business? Are my hourly earnings stable or wildly unpredictable?''
+\end{enumerate}
+
+Working in groups, you will answer her questions rigorously, using the full toolkit of this chapter: the p.m.f, expectation, variance, the c.d.f, the mode, the median, and the moment generating function. Each group will then present its advice to the class, justifying every numerical claim.
+
+\courssub{Tasks}
+
+\textbf{Part A — Building the probability distribution}\par
+
+\begin{enumerate}
+\item Let $X$ be the number of cash-withdrawal customers served in a randomly chosen hour. Write down the p.m.f of $X$ in a table, giving $P(X=x)$ for each possible value of $x$.
+\item Verify that this table defines a valid probability distribution, stating precisely the two conditions you check.
+\item Represent the p.m.f by a bar chart (probability on the vertical axis, $x$ on the horizontal axis).
+\end{enumerate}
+
+\textbf{Part B — Expectation and variance of $X$}\par
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Compute $E(X)$. Interpret the result in one sentence that Madame Etongwe can understand.
+\item Compute $E(X^2)$, then deduce $\mathrm{Var}(X)$ using the formula $\mathrm{Var}(X)=E(X^2)-[E(X)]^2$.
+\item Compute the standard deviation $\sigma(X)$, correct to $2$ decimal places. What does it tell the agent about the variability of her hourly customer flow?
+\end{enumerate}
+
+\textbf{Part C — The c.d.f, the mode and the median}\par
+
+\begin{enumerate}
+\setcounter{enumi}{6}
+\item Construct the cumulative distribution function $F(x)=P(X\le x)$ as a table for $x=0,1,2,3,4$, and write $F(x)$ as a piecewise function valid for all real $x$.
+\item Sketch the graph of $F$ (a step function), marking clearly the closed and open ends of each step.
+\item Read from the p.m.f the \cle{mode} of $X$, and from the c.d.f the \cle{median} of $X$, justifying each answer with the definitions.
+\end{enumerate}
+
+\textbf{Part D — The profit analysis}\par
+
+\begin{enumerate}
+\setcounter{enumi}{9}
+\item The hourly profit (in FCFA) is $Y=200X-500$. Using the linearity of expectation, compute $E(Y)$. Is the kiosk viable on average?
+\item Using $\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)$, compute $\mathrm{Var}(Y)$ and $\sigma(Y)$ (to $2$ decimal places).
+\item Compute $P(Y>0)$, the probability that a randomly chosen hour is profitable, using the c.d.f.
+\item Write a short advisory note (three to five sentences) to Madame Etongwe: is the kiosk viable, how large is the risk, and what concrete change (e.g.\ negotiating a higher commission or reducing hourly costs) would make the expected profit positive?
+\end{enumerate}
+
+\textbf{Part E — Extension: the moment generating function}\par
+
+\begin{enumerate}
+\setcounter{enumi}{13}
+\item Write down the m.g.f $M_X(t)=E\!\left(e^{tX}\right)$ of $X$ as a finite sum.
+\item Compute $M_X'(t)$ and verify that $M_X'(0)=E(X)$.
+\item Compute $M_X''(t)$ and verify that $M_X''(0)=E(X^2)$, then recover $\mathrm{Var}(X)$.
+\end{enumerate}
+
+\courssub{Model Answer}
+
+\textbf{Part A — The probability distribution.}\par
+
+\textbf{1.} The p.m.f of $X$ is:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\hline $P(X=x)$ & $0.10$ & $0.20$ & $0.30$ & $0.25$ & $0.15$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{2.} A table defines a valid probability distribution if (i) every probability satisfies $0\le P(X=x)\le 1$ and (ii) $\sum_x P(X=x)=1$. Here all five values lie in $[0,1]$, and
+\[ 0.10+0.20+0.30+0.25+0.15 = 1.00. \]
+Both conditions hold, so the table is a valid p.m.f.
+
+\textbf{3.} Bar chart of the p.m.f:
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm, height=6cm,
+    ybar, bar width=0.5cm,
+    ymin=0, ymax=0.35,
+    xtick={0,1,2,3,4},
+    xlabel={$x$}, ylabel={$P(X=x)$},
+    axis lines=left,
+    every axis plot/.append style={fill=popblue, draw=popdark}
+]
+\addplot coordinates {(0,0.10) (1,0.20) (2,0.30) (3,0.25) (4,0.15)};
+\end{axis}
+\end{tikzpicture}
+\legende{Probability mass function of the hourly number of withdrawals $X$.}
+\end{popfigure}
+
+\textbf{Part B — Expectation and variance.}\par
+
+\textbf{4.} By definition, $E(X)=\sum_x x\,P(X=x)$:
+\begin{align*}
+E(X) &= 0(0.10)+1(0.20)+2(0.30)+3(0.25)+4(0.15)\\
+&= 0+0.20+0.60+0.75+0.60 = 2.15.
+\end{align*}
+\emph{Interpretation:} over a long period, the agent serves on average $2.15$ withdrawal customers per hour.
+
+\textbf{5.} First compute $E(X^2)=\sum_x x^2 P(X=x)$:
+\begin{align*}
+E(X^2) &= 0(0.10)+1(0.20)+4(0.30)+9(0.25)+16(0.15)\\
+&= 0+0.20+1.20+2.25+2.40 = 6.05.
+\end{align*}
+Then
+\[ \mathrm{Var}(X)=E(X^2)-[E(X)]^2 = 6.05-(2.15)^2 = 6.05-4.6225 = 1.4275. \]
+
+\textbf{6.} $\sigma(X)=\sqrt{1.4275}\approx 1.19$ customers. The hourly number of withdrawals typically fluctuates by about $1.2$ customers around the mean of $2.15$: the flow is fairly variable relative to its average.
+
+\textbf{Part C — The c.d.f, mode and median.}\par
+
+\textbf{7.} Accumulating the probabilities:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\hline $F(x)=P(X\le x)$ & $0.10$ & $0.30$ & $0.60$ & $0.85$ & $1.00$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+As a piecewise function:
+\[ F(x)= \begin{cases}
+0 & \text{if } x<0,\\
+0.10 & \text{if } 0\le x<1,\\
+0.30 & \text{if } 1\le x<2,\\
+0.60 & \text{if } 2\le x<3,\\
+0.85 & \text{if } 3\le x<4,\\
+1 & \text{if } x\ge 4.
+\end{cases} \]
+
+\textbf{8.} Graph of $F$:
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm, height=6cm,
+    xmin=-0.5, xmax=5,
+    ymin=0, ymax=1.1,
+    xtick={0,1,2,3,4},
+    ytick={0,0.1,0.3,0.6,0.85,1},
+    xlabel={$x$}, ylabel={$F(x)$},
+    axis lines=left,
+    clip=false,
+    every axis plot/.append style={very thick, popblue},
+    mark=*, mark size=2.5pt,
+    mark options={solid, fill=popblue}
+]
+% Step function using const plot mark left
+\addplot+[const plot mark left, mark=*] coordinates {
+    (0,0.10) (1,0.30) (2,0.60) (3,0.85) (4,1) (5,1)
+};
+% Open circles at the right end of each horizontal segment (except last)
+\addplot+[only marks, mark=*, mark options={fill=white, draw=popblue, mark size=2.5pt}] coordinates {
+    (1,0.10) (2,0.30) (3,0.60) (4,0.85)
+};
+% Horizontal line for x < 0
+\draw[very thick, popblue] (-0.5,0) -- (0,0);
+\fill[popblue] (0,0) circle (2.5pt);
+\draw[popblue, fill=white] (0,0) circle (2.5pt); % Actually at x=0, F(0)=0.1, so left of 0 is 0. The point (0,0) is open? Wait: F(x)=0 for x<0, and F(0)=0.1. So at x=0, there is a jump from 0 to 0.1. The horizontal line for x<0 is at y=0, ending at (0,0) with open circle? Actually F(0)=0.1, so the value at 0 is 0.1. The limit from left is 0. So we need a horizontal line at y=0 for x<0, with an open circle at (0,0). Then a closed circle at (0,0.1). The const plot mark left above starts at (0,0.10) with a closed mark. We need to add the left part.
+% Let's adjust: add a separate plot for x<0.
+\addplot+[const plot mark left, mark=*, mark options={fill=popblue}] coordinates {(-0.5,0) (0,0)};
+\addplot+[only marks, mark=*, mark options={fill=white, draw=popblue}] coordinates {(0,0)};
+% Closed circle at (0,0.10) is already drawn by the first plot (mark at left).
+\end{axis}
+\end{tikzpicture}
+\legende{Cumulative distribution function of $X$ (closed dots included, open dots excluded).}
+\end{popfigure}
+
+\textbf{9.} \emph{Mode:} the mode is the value with the largest probability. Since $P(X=2)=0.30$ is the greatest entry, the mode is $\boxed{2}$ withdrawals per hour. \emph{Median:} the median is the smallest value $m$ such that $F(m)\ge 0.5$. Here $F(1)=0.30<0.5$ and $F(2)=0.60\ge 0.5$, so the median is $\boxed{2}$. In half of the hours, at most $2$ withdrawal customers arrive.
+
+\textbf{Part D — Profit analysis.}\par
+
+\textbf{10.} With $Y=200X-500$:
+\[ E(Y)=200\,E(X)-500 = 200(2.15)-500 = 430-500 = -70\ \mathrm{FCFA}. \]
+On average, the kiosk \emph{loses} $70\ \mathrm{FCFA}$ per hour: as things stand, it is \textbf{not viable}.
+
+\textbf{11.} $\mathrm{Var}(Y)=200^2\,\mathrm{Var}(X)=40\,000\times 1.4275 = 57\,100\ \mathrm{FCFA}^2$, so
+\[ \sigma(Y)=\sqrt{57\,100}\approx 238.96\ \mathrm{FCFA}. \]
+The hourly profit fluctuates by roughly $239\ \mathrm{FCFA}$ around its (negative) mean: the risk is large compared with the average loss.
+
+\textbf{12.} $Y>0 \iff 200X>500 \iff X\ge 3$. Hence
+\[ P(Y>0)=P(X\ge 3)=1-F(2)=1-0.60=0.40. \]
+Only $40\%$ of hours are profitable.
+
+\textbf{13.} \emph{Advisory note.} Madame, your kiosk serves on average $2.15$ withdrawal customers per hour, giving an expected hourly income of $430\ \mathrm{FCFA}$ against fixed costs of $500\ \mathrm{FCFA}$: you lose on average $70\ \mathrm{FCFA}$ every hour, and only $4$ hours out of $10$ are profitable. The standard deviation of your profit, about $239\ \mathrm{FCFA}$, shows that good hours cannot be relied upon to compensate. To break even you need $E(X)\ge 2.5$ customers per hour; we advise you either to negotiate a commission of at least $\frac{500}{2.15}\approx 233\ \mathrm{FCFA}$ per withdrawal, or to cut hourly costs by at least $70\ \mathrm{FCFA}$, or to attract about $0.35$ more customers per hour through advertising.
+
+\textbf{Part E — Extension: the m.g.f.}\par
+
+\textbf{14.} $M_X(t)=E(e^{tX})=\sum_x e^{tx}P(X=x)$:
+\[ M_X(t)=0.10+0.20e^{t}+0.30e^{2t}+0.25e^{3t}+0.15e^{4t}. \]
+
+\textbf{15.} Differentiating term by term:
+\[ M_X'(t)=0.20e^{t}+0.60e^{2t}+0.75e^{3t}+0.60e^{4t}, \]
+\[ M_X'(0)=0.20+0.60+0.75+0.60 = 2.15 = E(X). \checkmark \]
+
+\textbf{16.} Differentiating again:
+\[ M_X''(t)=0.20e^{t}+1.20e^{2t}+2.25e^{3t}+2.40e^{4t}, \]
+\[ M_X''(0)=0.20+1.20+2.25+2.40 = 6.05 = E(X^2). \checkmark \]
+Therefore
+\[ \mathrm{Var}(X)=M_X''(0)-\left[M_X'(0)\right]^2 = 6.05-(2.15)^2 = 1.4275, \]
+exactly as found in Part B.
+
+\begin{attention}[Common mistakes to avoid in your presentation]
+\begin{itemize}
+\item Forgetting to square $x$ when computing $E(X^2)$: $x^2P(X=x)$, not $xP(X=x)$.
+\item Writing $\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)+b$: the constant $b$ shifts the profit but does \emph{not} change its variance.
+\item Reading the median from the p.m.f instead of the c.d.f: the median is defined through $F(m)\ge 0.5$.
+\item Concluding ``viable'' because $P(Y>0)=0.40$ is ``almost half'': viability is judged by $E(Y)$, and here $E(Y)=-70\ \mathrm{FCFA}$.
+\item In the m.g.f, differentiating $e^{tx}$ with respect to $x$ instead of $t$.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Why this matters beyond the classroom]
+Mobile money agents across Cameroon — in Buea, Douala, Bamenda and Yaoundé — face exactly this trade-off between commission income and fixed operating costs. Modelling the hourly customer flow as a discrete random variable, and summarising it by its expectation and variance, is precisely how operators and agents decide where to open kiosks and how much float to hold. The same mathematics drives inventory planning, insurance pricing and call-centre staffing worldwide.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Discrete Random Variables}
+
+\courssub{Discrete random variables and probability distributions}
+
+\begin{definition}[Discrete random variable]
+A \cle{discrete random variable} $X$ is a function that assigns a real number to each outcome of a random experiment, where the set of possible values is either finite or countably infinite. We denote the values by $x_1, x_2, \dots$ and the corresponding probabilities by $P(X=x_i)$.
+\end{definition}
+
+\begin{definition}[Probability mass function (p.m.f.)]
+The \cle{probability mass function} (p.m.f.) of a discrete random variable $X$ is the function $p(x) = P(X=x)$ satisfying:
+\begin{enumerate}
+\item $p(x) \ge 0$ for all $x$,
+\item $\sum_{x} p(x) = 1$, where the sum is over all possible values of $X$.
+\end{enumerate}
+The collection of pairs $(x, p(x))$ is called the \cle{probability distribution} of $X$.
+\end{definition}
+
+\begin{attention}[p.m.f. vs p.d.f.]
+The term \emph{probability density function} (p.d.f.) is reserved for \emph{continuous} random variables. For discrete variables we always say \emph{probability mass function} (p.m.f.). The syllabus mentions both names; in examinations, use \textbf{p.m.f.} for discrete distributions.
+\end{attention}
+
+\begin{methode}[Determining the p.m.f.\ of a discrete random variable]
+\begin{enumerate}
+\item Identify the \cle{sample space} of the experiment and list all possible values $x_1, x_2, \dots$ that $X$ can take (count carefully — use a table of outcomes or a tree diagram if needed).
+\item For each value $x$, compute $P(X=x)$ by counting equally likely favourable outcomes or by multiplying probabilities along a tree.
+\item Present the results in a \cle{probability distribution table}:
+\[
+\begin{array}{c|cccc}
+x & x_1 & x_2 & \dots & x_n \\ \hline
+P(X=x) & p_1 & p_2 & \dots & p_n
+\end{array}
+\]
+\item \textbf{Check:} every $p_i \geq 0$ and $\sum p_i = 1$. If an unknown constant $k$ appears, use $\sum p_i = 1$ to find it.
+\end{enumerate}
+\textbf{Reflex:} if probabilities are given as expressions in $k$, write the equation $\sum P(X=x)=1$ immediately — it is almost always the key to the first marks.
+\end{methode}
+
+\begin{exoresolu}[Finding an unknown constant and probabilities]
+A discrete random variable $X$ has probability distribution
+\[
+P(X=x) = \begin{cases} kx, & x = 1, 2, 3, 4, \\ 0, & \text{otherwise}. \end{cases}
+\]
+(a) Find the value of $k$. \quad (b) Find $P(X \geq 3)$ and $P(1 < X \leq 3)$.
+\tcblower
+\textbf{(a)} The values taken by $X$ are $1, 2, 3, 4$ with probabilities $k, 2k, 3k, 4k$. Since the sum of all probabilities equals $1$:
+\[
+k + 2k + 3k + 4k = 1 \;\Longrightarrow\; 10k = 1 \;\Longrightarrow\; k = \tfrac{1}{10}.
+\]
+The distribution is therefore
+\[
+\begin{array}{c|cccc}
+x & 1 & 2 & 3 & 4 \\ \hline
+P(X=x) & 0.1 & 0.2 & 0.3 & 0.4
+\end{array}
+\]
+\textbf{(b)} $P(X \geq 3) = P(X=3) + P(X=4) = 0.3 + 0.4 = 0.7$.
+
+$P(1 < X \leq 3) = P(X=2) + P(X=3) = 0.2 + 0.3 = 0.5$.
+
+\textbf{Check:} probabilities are all non-negative and sum to $0.1+0.2+0.3+0.4 = 1$. $\checkmark$
+\end{exoresolu}
+
+\courssub{The probability mass function and expectation}
+
+\begin{definition}[Expectation (mean) of a discrete random variable]
+The \cle{expectation} (or \cle{mean}) of a discrete random variable $X$ is
+\[
+E(X) = \mu = \sum_{x} x\,P(X=x),
+\]
+provided the series converges absolutely. It represents the long-run average value of $X$ over many independent repetitions of the experiment.
+\end{definition}
+
+\begin{aretenir}[Law of the unconscious statistician]
+For any function $g$,
+\[
+E(g(X)) = \sum_{x} g(x)\,P(X=x).
+\]
+Do \emph{not} compute the distribution of $g(X)$ first — work directly with the table of $X$.
+\end{aretenir}
+
+\begin{propriete}[Linearity of expectation]
+For any constants $a, b \in \mathbb{R}$,
+\[
+E(aX + b) = aE(X) + b.
+\]
+If $X$ and $Y$ are any two random variables (independent or not),
+\[
+E(X+Y) = E(X) + E(Y).
+\]
+\end{propriete}
+
+\begin{methode}[Expectation of $X$ and of a function of $X$]
+\begin{enumerate}
+\item Write the distribution table of $X$.
+\item Compute the \cle{expectation} (mean):
+\[
+E(X) = \mu = \sum_x x\,P(X=x).
+\]
+\item For a function $g(X)$, use the \cle{law of the unconscious statistician}:
+\[
+E(g(X)) = \sum_x g(x)\,P(X=x).
+\]
+\item Remember linearity: $E(aX+b) = aE(X) + b$.
+\end{enumerate}
+\textbf{Reflex:} $E(X)$ is a \emph{weighted average}; it need not be one of the values of $X$.
+\end{methode}
+
+\begin{exoresolu}[Expectation in a game of chance]
+A stall at the Yaoundé annual trade fair offers the following game. A player pays $500$ FCFA and spins a wheel. The wheel lands on $0$, $1$, $2$ or $3$ with probabilities $0.5$, $0.3$, $0.15$ and $0.05$ respectively, and the player receives $1000x$ FCFA, where $x$ is the number shown. Let $G$ be the player's \emph{net gain} in FCFA. Find $E(G)$ and state whether the game is fair.
+\tcblower
+The gross gain is $1000X$ and the player paid $500$, so $G = 1000X - 500$.
+
+\textbf{Step 1:} compute $E(X)$.
+\[
+E(X) = 0(0.5) + 1(0.3) + 2(0.15) + 3(0.05) = 0 + 0.3 + 0.3 + 0.15 = 0.75.
+\]
+\textbf{Step 2:} use linearity of expectation.
+\[
+E(G) = E(1000X - 500) = 1000\,E(X) - 500 = 1000(0.75) - 500 = 250.
+\]
+\textbf{Conclusion:} $E(G) = 250$ FCFA $> 0$, so the game is \emph{not fair}; it is favourable to the player, who gains on average $250$ FCFA per game in the long run. (A fair game would require $E(G) = 0$, i.e.\ a stake of $750$ FCFA.)
+\end{exoresolu}
+
+\courssub{Variance and standard deviation of a discrete random variable}
+
+\begin{definition}[Variance and standard deviation]
+The \cle{variance} of $X$ measures the spread of the distribution about the mean:
+\[
+\mathrm{Var}(X) = E\!\left[(X-\mu)^2\right] = \sum_x (x-\mu)^2 P(X=x).
+\]
+The \cle{standard deviation} is $\sigma = \sqrt{\mathrm{Var}(X)}$ (same units as $X$).
+\end{definition}
+
+\begin{propriete}[Computational formula and properties]
+\[
+\mathrm{Var}(X) = E(X^2) - [E(X)]^2.
+\]
+For constants $a,b$:
+\[
+\mathrm{Var}(aX+b) = a^2\,\mathrm{Var}(X).
+\]
+If $X$ and $Y$ are \emph{independent}:
+\[
+\mathrm{Var}(X+Y) = \mathrm{Var}(X) + \mathrm{Var}(Y).
+\]
+\end{propriete}
+
+\begin{attention}
+Never write $\mathrm{Var}(aX+b) = a\,\mathrm{Var}(X) + b$ — this is a classic GCE error. The constant $b$ disappears and $a$ is \emph{squared}. Also $\mathrm{Var}(X) \geq 0$ always; a negative answer signals an arithmetic slip.
+\end{attention}
+
+\begin{methode}[Variance $\mathrm{Var}(X)$]
+\begin{enumerate}
+\item Compute $\mu = E(X)$.
+\item Compute $E(X^2) = \sum_x x^2 P(X=x)$ — build a row of $x^2$ values under the distribution table.
+\item Apply the \cle{computational formula}:
+\[
+\mathrm{Var}(X) = E(X^2) - [E(X)]^2.
+\]
+\item The \cle{standard deviation} is $\sigma = \sqrt{\mathrm{Var}(X)}$.
+\item Properties to remember: $\mathrm{Var}(aX+b) = a^2\,\mathrm{Var}(X)$ (adding a constant changes nothing); if $X$ and $Y$ are independent, $\mathrm{Var}(X+Y) = \mathrm{Var}(X) + \mathrm{Var}(Y)$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Mean, variance and a linear transformation]
+A discrete random variable $X$ has distribution
+\[
+\begin{array}{c|cccc}
+x & -1 & 0 & 1 & 2 \\ \hline
+P(X=x) & 0.2 & 0.3 & 0.4 & 0.1
+\end{array}
+\]
+(a) Find $E(X)$ and $\mathrm{Var}(X)$. \quad (b) If $Y = 3X - 2$, find $E(Y)$, $\mathrm{Var}(Y)$ and the standard deviation of $Y$.
+\tcblower
+\textbf{(a) Mean:}
+\[
+E(X) = (-1)(0.2) + 0(0.3) + 1(0.4) + 2(0.1) = -0.2 + 0 + 0.4 + 0.2 = 0.4.
+\]
+\textbf{Second moment:} the squares of the values are $1, 0, 1, 4$, so
+\[
+E(X^2) = 1(0.2) + 0(0.3) + 1(0.4) + 4(0.1) = 0.2 + 0 + 0.4 + 0.4 = 1.0.
+\]
+\textbf{Variance:}
+\[
+\mathrm{Var}(X) = E(X^2) - [E(X)]^2 = 1.0 - (0.4)^2 = 1.0 - 0.16 = 0.84.
+\]
+\textbf{(b)} Using $E(aX+b) = aE(X)+b$ and $\mathrm{Var}(aX+b) = a^2\mathrm{Var}(X)$ with $a=3$, $b=-2$:
+\[
+E(Y) = 3(0.4) - 2 = -0.8, \qquad \mathrm{Var}(Y) = 3^2 \times 0.84 = 9 \times 0.84 = 7.56.
+\]
+\[
+\sigma_Y = \sqrt{7.56} \approx 2.75 \quad (3\ \text{s.f.})
+\]
+\textbf{Remark:} subtracting $2$ shifts every value but does not spread them out — only the factor $3$ affects the variance, through $3^2$.
+\end{exoresolu}
+
+\courssub{The cumulative distribution function, mode and median}
+
+\begin{definition}[Cumulative distribution function (c.d.f.)]
+The \cle{cumulative distribution function} (c.d.f.) of a discrete random variable $X$ is
+\[
+F(x) = P(X \le x) = \sum_{x_i \le x} P(X=x_i), \quad x \in \mathbb{R}.
+\]
+\end{definition}
+
+\begin{propriete}[Properties of the c.d.f.]
+For a discrete random variable:
+\begin{enumerate}
+\item $F$ is non-decreasing: if $a < b$ then $F(a) \le F(b)$.
+\item $F$ is right-continuous: $F(x) = \lim_{h \to 0^+} F(x+h)$.
+\item $\lim_{x \to -\infty} F(x) = 0$, $\lim_{x \to +\infty} F(x) = 1$.
+\item $P(X = x_i) = F(x_i) - F(x_i^-)$ (the jump at $x_i$).
+\item $P(a < X \le b) = F(b) - F(a)$.
+\end{enumerate}
+\end{propriete}
+
+\begin{methode}[The cumulative distribution function $F(x)$]
+\begin{enumerate}
+\item Order the values of $X$: $x_1 < x_2 < \dots < x_n$.
+\item The \cle{c.d.f.} is $F(x) = P(X \leq x) = \sum_{x_i \leq x} p_i$: accumulate probabilities from left to right.
+\item Write $F$ as a \cle{step function}:
+\[
+F(x) = \begin{cases} 0, & x < x_1, \\ p_1, & x_1 \leq x < x_2, \\ p_1 + p_2, & x_2 \leq x < x_3, \\ \vdots & \\ 1, & x \geq x_n. \end{cases}
+\]
+\item To recover the p.m.f.\ from $F$: $P(X = x_i) = F(x_i) - F(x_{i-1})$ (the \emph{jump} at $x_i$).
+\item Useful: $P(X > x) = 1 - F(x)$ and $P(a < X \leq b) = F(b) - F(a)$.
+\end{enumerate}
+\textbf{Reflex:} $F$ is non-decreasing, right-continuous, with $F \to 0$ on the far left and $F \to 1$ on the far right.
+\end{methode}
+
+\begin{exoresolu}[From p.m.f.\ to c.d.f.\ and back]
+The number $X$ of goals scored per match by a school team in Bamenda has distribution
+\[
+\begin{array}{c|cccc}
+x & 0 & 1 & 2 & 3 \\ \hline
+P(X=x) & 0.25 & 0.40 & 0.25 & 0.10
+\end{array}
+\]
+(a) Construct the c.d.f.\ $F(x)$ and sketch its graph. (b) Use $F$ to find $P(X \leq 1)$, $P(X > 1)$ and $P(0 < X \leq 2)$. (c) Verify that $F(2) - F(1)$ gives $P(X=2)$.
+\tcblower
+\textbf{(a)} Accumulate the probabilities: $0.25$; $0.25+0.40 = 0.65$; $0.65+0.25 = 0.90$; $0.90+0.10 = 1.00$. Hence
+\[
+F(x) = \begin{cases} 0, & x < 0, \\ 0.25, & 0 \leq x < 1, \\ 0.65, & 1 \leq x < 2, \\ 0.90, & 2 \leq x < 3, \\ 1, & x \geq 3. \end{cases}
+\]
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\draw[->, popline] (-1,0) -- (4.3,0) node[below left] {$x$};
+\draw[->, popline] (0,-0.15) -- (0,1.35) node[below left] {$F(x)$};
+\foreach \y/\lab in {0.25/0.25, 0.65/0.65, 0.90/0.90, 1/1}
+  \draw[popline] (-0.05,\y) node[left, popmuted] {\scriptsize \lab} -- (0.05,\y);
+\draw[very thick, popblue] (-1,0) -- (0,0);
+\draw[very thick, popblue] (0,0.25) -- (1,0.25);
+\draw[very thick, popblue] (1,0.65) -- (2,0.65);
+\draw[very thick, popblue] (2,0.90) -- (3,0.90);
+\draw[very thick, popblue] (3,1) -- (4.2,1);
+\fill[popblue] (0,0.25) circle (1.6pt); \draw[popblue, fill=white] (0,0) circle (1.6pt);
+\fill[popblue] (1,0.65) circle (1.6pt); \draw[popblue, fill=white] (1,0.25) circle (1.6pt);
+\fill[popblue] (2,0.90) circle (1.6pt); \draw[popblue, fill=white] (2,0.65) circle (1.6pt);
+\fill[popblue] (3,1) circle (1.6pt); \draw[popblue, fill=white] (3,0.90) circle (1.6pt);
+\foreach \x in {1,2,3} \draw[popline] (\x,0.02) -- (\x,-0.02) node[below, popmuted] {\scriptsize \x};
+\end{tikzpicture}
+\end{center}
+\legende{Step graph of the c.d.f.: closed dots on the left of each step (right-continuity).}
+\end{popfigure}
+\textbf{(b)} $P(X \leq 1) = F(1) = 0.65$.
+
+$P(X > 1) = 1 - F(1) = 1 - 0.65 = 0.35$.
+
+$P(0 < X \leq 2) = F(2) - F(0) = 0.90 - 0.25 = 0.65$ (indeed $P(X=1)+P(X=2) = 0.40+0.25$).
+
+\textbf{(c)} $F(2) - F(1) = 0.90 - 0.65 = 0.25 = P(X=2)$. $\checkmark$\ The jump of $F$ at $x=2$ is exactly the probability mass there.
+\end{exoresolu}
+
+\begin{definition}[Mode and median]
+The \cle{mode} of a discrete random variable is any value $x$ for which $P(X=x)$ is maximal. There may be more than one mode (bimodal, multimodal).
+
+A \cle{median} $m$ is any value satisfying
+\[
+P(X \le m) \ge \tfrac{1}{2} \quad \text{and} \quad P(X \ge m) \ge \tfrac{1}{2}.
+\]
+Equivalently, the median is the smallest $x$ such that $F(x) \ge 0.5$.
+\end{definition}
+
+\begin{methode}[Mode and median of a discrete random variable]
+\begin{enumerate}
+\item \textbf{Mode:} scan the p.m.f.; the \cle{mode} is any value $x$ with the \emph{largest} probability. There may be two modes (bimodal).
+\item \textbf{Median:} compute the c.d.f.\ $F$. A \cle{median} $m$ is any value such that
+\[
+P(X \leq m) \geq \tfrac{1}{2} \quad \text{and} \quad P(X \geq m) \geq \tfrac{1}{2}.
+\]
+Equivalently, find the \emph{smallest} $x$ with $F(x) \geq 0.5$.
+\item If $F$ jumps from below $0.5$ to above $0.5$ at $x_k$, the median is $x_k$. If $F(x_k) = 0.5$ exactly, every value in $[x_k, x_{k+1}]$ is a median (by GCE convention we usually quote the interval or the smallest value, as required).
+\end{enumerate}
+\textbf{Reflex:} mode = highest \emph{bar} of the p.m.f.; median = where the c.d.f.\ \emph{crosses} $0.5$.
+\end{methode}
+
+\begin{exoresolu}[Mode and median]
+The number $X$ of candidates absent per day in an Upper Sixth class has distribution
+\[
+\begin{array}{c|ccccc}
+x & 0 & 1 & 2 & 3 & 4 \\ \hline
+P(X=x) & 0.10 & 0.35 & 0.30 & 0.15 & 0.10
+\end{array}
+\]
+Find (a) the mode, (b) the median, (c) the mean, and comment briefly.
+\tcblower
+\textbf{(a) Mode:} the largest probability is $0.35$ at $x = 1$. Hence $\text{mode} = 1$.
+
+\textbf{(b) Median:} build the c.d.f.:
+\[
+F(0) = 0.10, \quad F(1) = 0.45, \quad F(2) = 0.75, \quad F(3) = 0.90, \quad F(4) = 1.
+\]
+The smallest $x$ with $F(x) \geq 0.5$ is $x = 2$ (since $F(1) = 0.45 < 0.5$ and $F(2) = 0.75 \geq 0.5$). Check both conditions:
+\[
+P(X \leq 2) = 0.75 \geq \tfrac12, \qquad P(X \geq 2) = 0.30 + 0.15 + 0.10 = 0.55 \geq \tfrac12.
+\]
+Hence the median is $m = 2$.
+
+\textbf{(c) Mean:}
+\[
+E(X) = 0(0.10) + 1(0.35) + 2(0.30) + 3(0.15) + 4(0.10) = 0.35 + 0.60 + 0.45 + 0.40 = 1.80.
+\]
+\textbf{Comment:} mode $(1) <$ median $(2)$; the mean $(1.8)$ lies between them, pulled slightly above the mode by the right tail — typical of a distribution skewed to the right.
+\end{exoresolu}
+
+\courssub{Moment generating functions}
+
+\begin{definition}[Moment generating function (m.g.f.)]
+The \cle{moment generating function} of a discrete random variable $X$ is
+\[
+M_X(t) = E\!\left(e^{tX}\right) = \sum_x e^{tx}\,P(X=x),
+\]
+defined for all $t$ in an interval containing $0$ where the sum converges. Always $M_X(0)=1$.
+\end{definition}
+
+\begin{propriete}[Properties of the m.g.f.]
+\begin{enumerate}
+\item \textbf{Moments:} $E(X) = M_X'(0)$, $E(X^2) = M_X''(0)$, and in general $E(X^n) = M_X^{(n)}(0)$.
+\item \textbf{Variance:} $\mathrm{Var}(X) = M_X''(0) - [M_X'(0)]^2$.
+\item \textbf{Uniqueness:} the m.g.f. uniquely determines the distribution (if it exists in a neighbourhood of $0$).
+\item \textbf{Sum of independent variables:} if $X$ and $Y$ are independent, $M_{X+Y}(t) = M_X(t)\,M_Y(t)$.
+\item \textbf{Linear transformation:} $M_{aX+b}(t) = e^{bt} M_X(at)$.
+\end{enumerate}
+\end{propriete}
+
+\begin{methode}[Moment generating function $M_X(t)$]
+\begin{enumerate}
+\item The \cle{moment generating function} is
+\[
+M_X(t) = E\!\left(e^{tX}\right) = \sum_x e^{tx}\,P(X=x),
+\]
+defined for all $t$ where this sum converges (always at $t=0$, with $M_X(0)=1$).
+\item \textbf{Extracting moments:} differentiate and evaluate at $t = 0$:
+\[
+E(X) = M_X'(0), \qquad E(X^2) = M_X''(0), \qquad \mathrm{Var}(X) = M_X''(0) - \left[M_X'(0)\right]^2.
+\]
+\item \textbf{Recovering the distribution:} expand $M_X(t)$ as a sum of exponentials; the coefficient of $e^{tx}$ is $P(X=x)$.
+\item \textbf{Sums of independent variables:} if $X$ and $Y$ are independent,
+\[
+M_{X+Y}(t) = M_X(t)\,M_Y(t).
+\]
+\end{enumerate}
+\textbf{Reflex:} the m.g.f.\ packages \emph{all} moments in one function — differentiate, then set $t=0$.
+\end{methode}
+
+\begin{exoresolu}[M.g.f.\ of a small distribution]
+A random variable $X$ takes the value $0$ with probability $\tfrac13$ and the value $2$ with probability $\tfrac23$.
+(a) Find $M_X(t)$. (b) Use $M_X$ to find $E(X)$ and $\mathrm{Var}(X)$. (c) Verify directly from the distribution.
+\tcblower
+\textbf{(a)} By definition,
+\[
+M_X(t) = E(e^{tX}) = \tfrac13 e^{0} + \tfrac23 e^{2t} = \tfrac13 + \tfrac23 e^{2t}.
+\]
+\textbf{(b)} Differentiate with respect to $t$:
+\[
+M_X'(t) = \tfrac23 \cdot 2e^{2t} = \tfrac43 e^{2t} \;\Longrightarrow\; E(X) = M_X'(0) = \tfrac43.
+\]
+\[
+M_X''(t) = \tfrac43 \cdot 2e^{2t} = \tfrac83 e^{2t} \;\Longrightarrow\; E(X^2) = M_X''(0) = \tfrac83.
+\]
+Hence
+\[
+\mathrm{Var}(X) = M_X''(0) - [M_X'(0)]^2 = \tfrac83 - \left(\tfrac43\right)^2 = \tfrac83 - \tfrac{16}{9} = \tfrac{24 - 16}{9} = \tfrac89.
+\]
+\textbf{(c) Direct check:}
+\[
+E(X) = 0 \cdot \tfrac13 + 2 \cdot \tfrac23 = \tfrac43, \qquad E(X^2) = 0 \cdot \tfrac13 + 4 \cdot \tfrac23 = \tfrac83,
+\]
+\[
+\mathrm{Var}(X) = \tfrac83 - \tfrac{16}{9} = \tfrac89. \quad\checkmark
+\]
+The two methods agree, as they must.
+\end{exoresolu}
+
+\courssub{Synoptic GCE-style problem}
+
+\begin{methode}[Tackling a full examination question]
+\begin{enumerate}
+\item \textbf{Read twice} and define $X$ precisely; list its values.
+\item Use $\sum p_i = 1$ for any unknown constant.
+\item Answer each part with the right tool: table $\to$ p.m.f.; accumulated sums $\to$ c.d.f.; $\sum x p_i$, $\sum x^2 p_i \to$ mean and variance; highest bar $\to$ mode; crossing of $0.5$ $\to$ median; $E(e^{tX})$ $\to$ m.g.f.
+\item Keep \emph{exact fractions} as long as possible; round only at the end, to the accuracy demanded.
+\item Conclude each part with a sentence in the context of the question.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Comprehensive problem — GCE style]
+A bag contains $3$ red and $2$ blue marbles. Two marbles are drawn at random \emph{without replacement}. Let $X$ be the number of red marbles drawn.
+(a) Show that the probability distribution of $X$ is given by
+\[
+P(X=0) = \tfrac{1}{10}, \qquad P(X=1) = \tfrac{6}{10}, \qquad P(X=2) = \tfrac{3}{10}.
+\]
+(b) Write down the c.d.f.\ $F(x)$ of $X$.
+(c) Find the mode and the median of $X$.
+(d) Calculate $E(X)$ and $\mathrm{Var}(X)$.
+(e) Find the moment generating function $M_X(t)$ and verify that $M_X'(0) = E(X)$.
+(f) Two independent repetitions of the experiment are performed, giving $X_1$ and $X_2$. Write down $M_{X_1+X_2}(t)$.
+\tcblower
+\textbf{(a)} Total marbles: $5$. The number of ways of choosing $2$ marbles from $5$ is $\binom{5}{2} = 10$.
+\[
+P(X=0) = \frac{\binom{3}{0}\binom{2}{2}}{\binom{5}{2}} = \frac{1 \times 1}{10} = \tfrac{1}{10},
+\]
+\[
+P(X=1) = \frac{\binom{3}{1}\binom{2}{1}}{\binom{5}{2}} = \frac{3 \times 2}{10} = \tfrac{6}{10}, \qquad
+P(X=2) = \frac{\binom{3}{2}\binom{2}{0}}{\binom{5}{2}} = \frac{3 \times 1}{10} = \tfrac{3}{10}.
+\]
+Check: $\tfrac{1}{10} + \tfrac{6}{10} + \tfrac{3}{10} = 1$. $\checkmark$
+
+\textbf{(b)} Accumulating:
+\[
+F(x) = \begin{cases} 0, & x < 0, \\ \tfrac{1}{10}, & 0 \leq x < 1, \\ \tfrac{7}{10}, & 1 \leq x < 2, \\ 1, & x \geq 2. \end{cases}
+\]
+
+\textbf{(c) Mode:} the largest probability is $\tfrac{6}{10}$ at $x=1$, so the mode is $1$.
+
+\textbf{Median:} $F(0) = \tfrac{1}{10} < 0.5$ and $F(1) = \tfrac{7}{10} \geq 0.5$; also $P(X \geq 1) = \tfrac{9}{10} \geq \tfrac12$. Hence the median is $1$.
+
+\textbf{(d)}
+\[
+E(X) = 0 \cdot \tfrac{1}{10} + 1 \cdot \tfrac{6}{10} + 2 \cdot \tfrac{3}{10} = \tfrac{12}{10} = \tfrac65 = 1.2.
+\]
+\[
+E(X^2) = 0 \cdot \tfrac{1}{10} + 1 \cdot \tfrac{6}{10} + 4 \cdot \tfrac{3}{10} = \tfrac{18}{10} = \tfrac95.
+\]
+\[
+\mathrm{Var}(X) = \tfrac95 - \left(\tfrac65\right)^2 = \tfrac95 - \tfrac{36}{25} = \tfrac{45 - 36}{25} = \tfrac{9}{25} = 0.36.
+\]
+
+\textbf{(e)}
+\[
+M_X(t) = E(e^{tX}) = \tfrac{1}{10}e^{0} + \tfrac{6}{10}e^{t} + \tfrac{3}{10}e^{2t} = \tfrac{1}{10}\left(1 + 6e^t + 3e^{2t}\right).
+\]
+Differentiate:
+\[
+M_X'(t) = \tfrac{1}{10}\left(6e^t + 6e^{2t}\right) \;\Longrightarrow\; M_X'(0) = \tfrac{1}{10}(6 + 6) = \tfrac{12}{10} = \tfrac65 = E(X). \quad\checkmark
+\]
+
+\textbf{(f)} Since $X_1$ and $X_2$ are independent, the m.g.f.\ of the sum is the product:
+\[
+M_{X_1+X_2}(t) = M_{X_1}(t)\,M_{X_2}(t) = \left[\tfrac{1}{10}\left(1 + 6e^t + 3e^{2t}\right)\right]^2 = \tfrac{1}{100}\left(1 + 6e^t + 3e^{2t}\right)^2.
+\]
+\textbf{Contextual remark:} on average $1.2$ red marbles are drawn, the most likely outcome is exactly one red, and the spread about the mean is $\sigma = \sqrt{0.36} = 0.6$ marble.
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice]
+A discrete random variable $X$ takes the values $0, 1, 2$ with probabilities $0.3$, $0.5$ and $0.2$ respectively. The value of $E(X)$ is:
+\begin{enumerate}
+\item \textbf{A)}\; $0.8$
+\item \textbf{B)}\; $0.9$
+\item \textbf{C)}\; $1.0$
+\item \textbf{D)}\; $1.1$
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+For each statement, say whether it is \textbf{true} or \textbf{false} and justify your answer.
+\begin{enumerate}
+\item If $p(x)$ is the p.m.f of a discrete random variable $X$, then $\sum_x p(x) = 1$.
+\item For any discrete random variable $X$, $\mathrm{Var}(X) = E(X^2) - E(X)$.
+\item The cumulative distribution function $F(x)$ of a discrete random variable is always an increasing function of $x$.
+\item If $M_X(t)$ is the moment generating function of $X$, then $E(X) = M_X'(0)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Give a precise definition of each of the following, illustrating each one with a small example:
+\begin{enumerate}
+\item the \cle{probability mass function} of a discrete random variable $X$;
+\item the \cle{cumulative distribution function} of $X$;
+\item the \cle{mode} and the \cle{median} of a discrete random variable.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+Given that $E(X) = 4$ and $\mathrm{Var}(X) = 9$, find:
+\begin{enumerate}
+\item $E(3X - 2)$;
+\item $\mathrm{Var}(3X - 2)$;
+\item $E(X^2)$;
+\item $\mathrm{Var}(5 - 2X)$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Finding the constant of a p.m.f]
+A discrete random variable $X$ has p.m.f
+\[ p(x) = kx \quad \text{for } x = 1, 2, 3, 4, \qquad p(x) = 0 \text{ otherwise.} \]
+\begin{enumerate}
+\item Find the value of the constant $k$.
+\item Compute $E(X)$ and $\mathrm{Var}(X)$.
+\item Determine the mode and the median of $X$.
+\item Sketch the cumulative distribution function $F(x)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[From the c.d.f to the p.m.f]
+The cumulative distribution function of a discrete random variable $X$ is given by
+\[ F(x) = \begin{cases} 0 & x < 1 \\ 0.2 & 1 \le x < 2 \\ 0.5 & 2 \le x < 3 \\ 0.8 & 3 \le x < 4 \\ 1 & x \ge 4 \end{cases} \]
+\begin{enumerate}
+\item Determine the p.m.f of $X$ and present it in a table.
+\item Compute $E(X)$ and $\mathrm{Var}(X)$.
+\item Find the median of $X$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[A fair game?]
+A game at a school fair in Buea costs $100$ FCFA to play. A player wins $500$ FCFA with probability $\tfrac{1}{10}$, wins $200$ FCFA with probability $\tfrac{1}{5}$, and wins nothing otherwise.
+\begin{enumerate}
+\item Let $G$ be the player's net gain (winnings minus the stake). Write down the probability distribution of $G$.
+\item Compute the expected gain $E(G)$ and the standard deviation of $G$.
+\item Is the game fair? If not, find the stake that would make it fair.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Linear combinations of independent variables]
+Two independent random variables $X$ and $Y$ satisfy
+\[ E(X) = 2, \quad \mathrm{Var}(X) = 1, \quad E(Y) = 5, \quad \mathrm{Var}(Y) = 4. \]
+\begin{enumerate}
+\item Find $E(2X + 3Y)$.
+\item Find $\mathrm{Var}(2X + 3Y)$, stating clearly at which step the independence of $X$ and $Y$ is used.
+\item Find also $E(X - Y)$ and $\mathrm{Var}(X - Y)$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Moment generating function of a Bernoulli variable \hfill (10 marks)]
+A random variable $X$ takes the value $1$ with probability $p$ and the value $0$ with probability $1 - p$, where $0 < p < 1$.
+\begin{enumerate}
+\item Show that the moment generating function of $X$ is $M(t) = (1 - p) + pe^{t}$. \hfill (3 marks)
+\item By differentiating $M(t)$, derive $E(X)$ and $E(X^2)$. \hfill (4 marks)
+\item Hence show that $\mathrm{Var}(X) = p(1 - p)$. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Recovering a distribution from its moments \hfill (12 marks)]
+A random variable $X$ takes the values $1, 2, 3$ with probabilities $a, b, c$ respectively. It is given that
+\[ E(X) = 2 \qquad \text{and} \qquad E(X^2) = \frac{14}{3}. \]
+\begin{enumerate}
+\item Set up three equations satisfied by $a, b$ and $c$. \hfill (3 marks)
+\item Solve these equations to find $a$, $b$ and $c$. \hfill (4 marks)
+\item Determine the median and the mode of $X$. \hfill (2 marks)
+\item Construct the cumulative distribution function $F(x)$ of $X$ and sketch its graph. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Defective items in a sample — GCE style \hfill (16 marks)]
+A trader at Mokolo market receives items in batches. The number $X$ of defective items in a random sample of $3$ items has the following probability distribution:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ \\
+\hline
+$P(X = x)$ & $0.512$ & $k$ & $0.096$ & $0.008$ \\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item Find the value of the constant $k$. \hfill (2 marks)
+\item Compute $E(X)$ and $\mathrm{Var}(X)$. \hfill (5 marks)
+\item Construct the cumulative distribution function $F(x)$ and sketch its graph. \hfill (4 marks)
+\item State the mode and the median of $X$. \hfill (2 marks)
+\item Write down the moment generating function $M_X(t)$ of $X$ and use it to verify the value of $E(X)$ found in part 2. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice]
+The expectation of a discrete random variable is \(E(X)=\sum x\,P(X=x)\).
+\[
+E(X)=0\times0.3+1\times0.5+2\times0.2=0+0.5+0.4=0.9.
+\]
+The correct answer is \textbf{B)} \(0.9\).
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false — justify]
+\begin{enumerate}
+\item \textbf{True.} By definition, the probability mass function \(p(x)=P(X=x)\) satisfies \(\sum_x p(x)=1\) because the probabilities of all possible outcomes must sum to \(1\).
+\item \textbf{False.} The correct formula is \(\operatorname{Var}(X)=E(X^2)-[E(X)]^2\). The given expression misses the square on \(E(X)\).
+\item \textbf{False.} The cumulative distribution function \(F(x)=P(X\le x)\) is \emph{non-decreasing} (it never decreases), but it is not strictly increasing; it is constant between possible values of \(X\) and jumps at each value.
+\item \textbf{True.} The moment generating function is \(M_X(t)=E(e^{tX})\). Differentiating under the expectation gives \(M_X'(t)=E(Xe^{tX})\), so \(M_X'(0)=E(X)\).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Probability mass function (p.m.f)} of a discrete random variable \(X\) is the function \(p(x)=P(X=x)\) for each possible value \(x\). It satisfies \(p(x)\ge0\) for all \(x\) and \(\sum_x p(x)=1\).\\
+\emph{Example:} Let \(X\) be the outcome of a fair die. Then \(p(x)=\frac16\) for \(x=1,2,3,4,5,6\) and \(0\) otherwise.
+\item \textbf{Cumulative distribution function (c.d.f)} of \(X\) is \(F(x)=P(X\le x)\) for all real \(x\). It is non-decreasing, \emph{right-continuous}, with \(\lim_{x\to-\infty}F(x)=0\) and \(\lim_{x\to+\infty}F(x)=1\).\\
+\emph{Example:} For the fair die, \(F(x)=0\) for \(x<1\), \(\frac16\) for \(1\le x<2\), \(\frac26\) for \(2\le x<3\), …, \(1\) for \(x\ge6\).
+\item \textbf{Mode} of \(X\) is the value \(x\) that maximises \(p(x)\) (the most probable value). \textbf{Median} is any value \(m\) such that \(P(X\le m)\ge\frac12\) and \(P(X\ge m)\ge\frac12\); for a discrete variable we usually take the smallest such \(m\).\\
+\emph{Example:} If \(P(X=1)=0.2,\;P(X=2)=0.5,\;P(X=3)=0.3\), the mode is \(2\) and the median is \(2\) (since \(P(X\le2)=0.7\ge0.5\) and \(P(X\ge2)=0.8\ge0.5\)).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+Given \(E(X)=4\) and \(\operatorname{Var}(X)=9\).
+\begin{enumerate}
+\item \(E(3X-2)=3E(X)-2=3\times4-2=10\).
+\item \(\operatorname{Var}(3X-2)=3^2\operatorname{Var}(X)=9\times9=81\).
+\item \(E(X^2)=\operatorname{Var}(X)+[E(X)]^2=9+16=25\).
+\item \(\operatorname{Var}(5-2X)=(-2)^2\operatorname{Var}(X)=4\times9=36\).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Finding the constant of a p.m.f]
+\begin{enumerate}
+\item The p.m.f is \(p(x)=kx\) for \(x=1,2,3,4\). Since \(\sum_x p(x)=1\):
+\[
+k(1+2+3+4)=10k=1 \quad\Rightarrow\quad k=0.1.
+\]
+\item Expectation and variance:
+\[
+E(X)=\sum x\,p(x)=0.1(1^2+2^2+3^2+4^2)=0.1\times30=3.
+\]
+\[
+E(X^2)=\sum x^2p(x)=0.1(1^3+2^3+3^3+4^3)=0.1\times100=10.
+\]
+\[
+\operatorname{Var}(X)=E(X^2)-[E(X)]^2=10-9=1.
+\]
+\item \textbf{Mode:} The probabilities are \(p(1)=0.1,\;p(2)=0.2,\;p(3)=0.3,\;p(4)=0.4\). The maximum is at \(x=4\), so mode \(=4\).\\
+\textbf{Median:} Cumulative probabilities: \(F(1)=0.1,\;F(2)=0.3,\;F(3)=0.6,\;F(4)=1\). The smallest \(x\) with \(F(x)\ge0.5\) is \(x=3\), so median \(=3\).
+\item \textbf{Sketch of \(F(x)\):} Step function with jumps at \(1,2,3,4\):
+\[
+F(x)=
+\begin{cases}
+0 & x<1\\
+0.1 & 1\le x<2\\
+0.3 & 2\le x<3\\
+0.6 & 3\le x<4\\
+1 & x\ge4
+\end{cases}
+\]
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8, >=stealth]
+\draw[->] (-0.5,0) -- (5.5,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$F(x)$};
+\foreach \x in {1,2,3,4} \draw (\x,0.02) -- (\x,-0.02) node[below] {\x};
+\foreach \y in {0.1,0.3,0.6,1} \draw (0.02,\y) -- (-0.02,\y) node[left] {\y};
+% Horizontal segments
+\draw[thick, popblue] (-0.5,0) -- (1,0);
+\draw[thick, popblue] (1,0.1) -- (2,0.1);
+\draw[thick, popblue] (2,0.3) -- (3,0.3);
+\draw[thick, popblue] (3,0.6) -- (4,0.6);
+\draw[thick, popblue] (4,1) -- (5.5,1);
+% Vertical jumps
+\draw[thick, popblue, dashed] (1,0) -- (1,0.1);
+\draw[thick, popblue, dashed] (2,0.1) -- (2,0.3);
+\draw[thick, popblue, dashed] (3,0.3) -- (3,0.6);
+\draw[thick, popblue, dashed] (4,0.6) -- (4,1);
+% Filled circles (right-continuous)
+\foreach \x/\y in {1/0.1, 2/0.3, 3/0.6, 4/1}
+  \fill[popblue] (\x,\y) circle (2pt);
+% Hollow circles (left limits)
+\foreach \x/\y in {1/0, 2/0.1, 3/0.3, 4/0.6}
+  \draw[popblue, fill=white] (\x,\y) circle (2pt);
+\end{tikzpicture}
+\legende{Cumulative distribution function for Exercise 5}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — From the c.d.f to the p.m.f]
+\begin{enumerate}
+\item The p.m.f is obtained from the jumps of \(F\):
+\[
+P(X=1)=F(1)-F(1^-)=0.2-0=0.2,
+\]
+\[
+P(X=2)=F(2)-F(2^-)=0.5-0.2=0.3,
+\]
+\[
+P(X=3)=F(3)-F(3^-)=0.8-0.5=0.3,
+\]
+\[
+P(X=4)=F(4)-F(4^-)=1-0.8=0.2.
+\]
+Table:
+\[
+\begin{array}{|c|cccc|}\hline
+\rowcolor{popblueL} x & 1 & 2 & 3 & 4 \\ \hline
+P(X=x) & 0.2 & 0.3 & 0.3 & 0.2 \\ \hline
+\end{array}
+\]
+\item Expectation and variance:
+\[
+E(X)=1(0.2)+2(0.3)+3(0.3)+4(0.2)=0.2+0.6+0.9+0.8=2.5.
+\]
+\[
+E(X^2)=1^2(0.2)+2^2(0.3)+3^2(0.3)+4^2(0.2)=0.2+1.2+2.7+3.2=7.3.
+\]
+\[
+\operatorname{Var}(X)=7.3-(2.5)^2=7.3-6.25=1.05.
+\]
+\item \textbf{Median:} \(F(1)=0.2<0.5\), \(F(2)=0.5\ge0.5\). The smallest \(x\) with \(F(x)\ge0.5\) is \(x=2\), so median \(=2\).
+\item \textbf{Graph of \(F(x)\):}
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8, >=stealth]
+\draw[->] (-0.5,0) -- (5.5,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$F(x)$};
+\foreach \x in {1,2,3,4} \draw (\x,0.02) -- (\x,-0.02) node[below] {\x};
+\foreach \y in {0.2,0.5,0.8,1} \draw (0.02,\y) -- (-0.02,\y) node[left] {\y};
+% Horizontal segments
+\draw[thick, popblue] (-0.5,0) -- (1,0);
+\draw[thick, popblue] (1,0.2) -- (2,0.2);
+\draw[thick, popblue] (2,0.5) -- (3,0.5);
+\draw[thick, popblue] (3,0.8) -- (4,0.8);
+\draw[thick, popblue] (4,1) -- (5.5,1);
+% Vertical jumps
+\draw[thick, popblue, dashed] (1,0) -- (1,0.2);
+\draw[thick, popblue, dashed] (2,0.2) -- (2,0.5);
+\draw[thick, popblue, dashed] (3,0.5) -- (3,0.8);
+\draw[thick, popblue, dashed] (4,0.8) -- (4,1);
+% Filled circles
+\foreach \x/\y in {1/0.2, 2/0.5, 3/0.8, 4/1}
+  \fill[popblue] (\x,\y) circle (2pt);
+% Hollow circles
+\foreach \x/\y in {1/0, 2/0.2, 3/0.5, 4/0.8}
+  \draw[popblue, fill=white] (\x,\y) circle (2pt);
+\end{tikzpicture}
+\legende{Cumulative distribution function for Exercise 6}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — A fair game?]
+\begin{enumerate}
+\item Net gain \(G = \text{winnings} - 100\).
+\[
+\begin{array}{|c|ccc|}\hline
+\rowcolor{popblueL} g & 400 & 100 & -100 \\ \hline
+P(G=g) & \frac{1}{10}=0.1 & \frac{1}{5}=0.2 & 1-0.1-0.2=0.7 \\ \hline
+\end{array}
+\]
+\item \(E(G)=400(0.1)+100(0.2)+(-100)(0.7)=40+20-70=-10\).
+\[
+E(G^2)=400^2(0.1)+100^2(0.2)+(-100)^2(0.7)=16000+2000+7000=25000.
+\]
+\[
+\operatorname{Var}(G)=25000-(-10)^2=24900,\quad \sigma_G=\sqrt{24900}\approx157.8.
+\]
+\item The game is \textbf{not fair} because \(E(G)=-10\neq0\) (the player loses on average \(10\ \mathrm{FCFA}\)).\\
+For a fair game, the stake \(s\) must satisfy \(E(\text{winnings})-s=0\). \(E(\text{winnings})=500(0.1)+200(0.2)=50+40=90\). Hence a fair stake is \(90\ \mathrm{FCFA}\).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Linear combinations of independent variables]
+\(X\) and \(Y\) independent, \(E(X)=2,\;\operatorname{Var}(X)=1,\;E(Y)=5,\;\operatorname{Var}(Y)=4\).
+\begin{enumerate}
+\item \(E(2X+3Y)=2E(X)+3E(Y)=2(2)+3(5)=4+15=19\).
+\item \(\operatorname{Var}(2X+3Y)=2^2\operatorname{Var}(X)+3^2\operatorname{Var}(Y)=4(1)+9(4)=4+36=40\).\\
+Independence is used to assert \(\operatorname{Cov}(X,Y)=0\), so the variance of the sum is the sum of the variances (no covariance term).
+\item \(E(X-Y)=E(X)-E(Y)=2-5=-3\).\\
+\(\operatorname{Var}(X-Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)=1+4=5\) (again using independence to drop the covariance term).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Moment generating function of a Bernoulli variable \hfill (10 marks)]
+\begin{enumerate}
+\item \textbf{(3 marks)} \(X\sim\mathrm{Bernoulli}(p)\): \(P(X=1)=p,\;P(X=0)=1-p\).
+\[
+M_X(t)=E(e^{tX})=(1-p)e^{t\cdot0}+p\,e^{t\cdot1}=1-p+pe^t.
+\]
+\item \textbf{(4 marks)} Differentiate:
+\[
+M_X'(t)=pe^t,\quad M_X''(t)=pe^t.
+\]
+Then \(E(X)=M_X'(0)=p\). \(E(X^2)=M_X''(0)=p\) (since \(X^2=X\) for Bernoulli).
+\item \textbf{(3 marks)} \(\operatorname{Var}(X)=E(X^2)-[E(X)]^2=p-p^2=p(1-p)\).
+\end{enumerate}
+\textbf{Mark scheme:} 3 marks for correct MGF derivation; 4 marks for correct differentiation and evaluation at 0; 3 marks for correct variance derivation. Examiner expects clear statement of \(M_X(t)\), correct differentiation, and explicit use of \(M_X'(0)=E(X)\), \(M_X''(0)=E(X^2)\).
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Recovering a distribution from its moments \hfill (12 marks)]
+\begin{enumerate}
+\item \textbf{(3 marks)} Probabilities \(a,b,c\) for \(x=1,2,3\):
+\[
+\begin{cases}
+a+b+c=1 & \text{(sum of probabilities)}\\
+a+2b+3c=2 & \text{(\(E(X)=2\))}\\
+a+4b+9c=\frac{14}{3} & \text{(\(E(X^2)=\frac{14}{3}\))}
+\end{cases}
+\]
+\item \textbf{(4 marks)} Subtract first from second: \(b+2c=1\). Subtract second from third: \(2b+6c=\frac{8}{3}\Rightarrow b+3c=\frac{4}{3}\). Subtract: \(c=\frac{1}{3}\). Then \(b=1-2c=\frac{1}{3}\), \(a=1-b-c=\frac{1}{3}\). So \(a=b=c=\frac{1}{3}\).
+\item \textbf{(2 marks)} All probabilities equal \(\frac{1}{3}\). \textbf{Mode:} every value \(1,2,3\) is a mode (or the distribution has no unique mode). \textbf{Median:} \(F(1)=\frac{1}{3}<0.5\), \(F(2)=\frac{2}{3}\ge0.5\) \(\Rightarrow\) median \(=2\).
+\item \textbf{(3 marks)} CDF:
+\[
+F(x)=
+\begin{cases}
+0 & x<1\\
+\frac{1}{3} & 1\le x<2\\
+\frac{2}{3} & 2\le x<3\\
+1 & x\ge3
+\end{cases}
+\]
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8, >=stealth]
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$F(x)$};
+\foreach \x in {1,2,3} \draw (\x,0.02) -- (\x,-0.02) node[below] {\x};
+\foreach \y in {0.333,0.667,1} \draw (0.02,\y) -- (-0.02,\y) node[left] {\pgfmathprintnumber[fixed,precision=3]{\y}};
+% Horizontal segments
+\draw[thick, popblue] (-0.5,0) -- (1,0);
+\draw[thick, popblue] (1,0.333) -- (2,0.333);
+\draw[thick, popblue] (2,0.667) -- (3,0.667);
+\draw[thick, popblue] (3,1) -- (4.5,1);
+% Vertical jumps
+\draw[thick, popblue, dashed] (1,0) -- (1,0.333);
+\draw[thick, popblue, dashed] (2,0.333) -- (2,0.667);
+\draw[thick, popblue, dashed] (3,0.667) -- (3,1);
+% Filled circles
+\foreach \x/\y in {1/0.333, 2/0.667, 3/1}
+  \fill[popblue] (\x,\y) circle (2pt);
+% Hollow circles
+\foreach \x/\y in {1/0, 2/0.333, 3/0.667}
+  \draw[popblue, fill=white] (\x,\y) circle (2pt);
+\end{tikzpicture}
+\legende{Cumulative distribution function for Exercise 10}
+\end{popfigure}
+\end{enumerate}
+\textbf{Mark scheme:} 3 marks for setting up three correct equations; 4 marks for solving correctly; 2 marks for correct mode and median; 3 marks for correct CDF and sketch. Examiner expects clear algebraic steps and recognition of uniform distribution.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Defective items in a sample — GCE style \hfill (16 marks)]
+\begin{enumerate}
+\item \textbf{(2 marks)} Sum of probabilities \(=1\):
+\[
+0.512+k+0.096+0.008=1 \;\Rightarrow\; 0.616+k=1 \;\Rightarrow\; k=0.384.
+\]
+\item \textbf{(5 marks)}
+\[
+E(X)=0(0.512)+1(0.384)+2(0.096)+3(0.008)=0.384+0.192+0.024=0.6.
+\]
+\[
+E(X^2)=0^2(0.512)+1^2(0.384)+4(0.096)+9(0.008)=0.384+0.384+0.072=0.84.
+\]
+\[
+\operatorname{Var}(X)=0.84-0.6^2=0.84-0.36=0.48.
+\]
+\item \textbf{(4 marks)} CDF:
+\[
+F(x)=
+\begin{cases}
+0 & x<0\\
+0.512 & 0\le x<1\\
+0.896 & 1\le x<2\\
+0.992 & 2\le x<3\\
+1 & x\ge3
+\end{cases}
+\]
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8, >=stealth]
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$F(x)$};
+\foreach \x in {0,1,2,3} \draw (\x,0.02) -- (\x,-0.02) node[below] {\x};
+\foreach \y in {0.512,0.896,0.992,1} \draw (0.02,\y) -- (-0.02,\y) node[left] {\pgfmathprintnumber[fixed,precision=3]{\y}};
+% Horizontal segments
+\draw[thick, popblue] (-0.5,0) -- (0,0);
+\draw[thick, popblue] (0,0.512) -- (1,0.512);
+\draw[thick, popblue] (1,0.896) -- (2,0.896);
+\draw[thick, popblue] (2,0.992) -- (3,0.992);
+\draw[thick, popblue] (3,1) -- (4.5,1);
+% Vertical jumps
+\draw[thick, popblue, dashed] (0,0) -- (0,0.512);
+\draw[thick, popblue, dashed] (1,0.512) -- (1,0.896);
+\draw[thick, popblue, dashed] (2,0.896) -- (2,0.992);
+\draw[thick, popblue, dashed] (3,0.992) -- (3,1);
+% Filled circles
+\foreach \x/\y in {0/0.512, 1/0.896, 2/0.992, 3/1}
+  \fill[popblue] (\x,\y) circle (2pt);
+% Hollow circles
+\foreach \x/\y in {0/0, 1/0.512, 2/0.896, 3/0.992}
+  \draw[popblue, fill=white] (\x,\y) circle (2pt);
+\end{tikzpicture}
+\legende{Cumulative distribution function for Exercise 11}
+\end{popfigure}
+\item \textbf{(2 marks)} \textbf{Mode:} \(x=0\) (probability \(0.512\) is largest). \textbf{Median:} \(F(0)=0.512\ge0.5\) \(\Rightarrow\) median \(=0\).
+\item \textbf{(3 marks)} MGF:
+\[
+M_X(t)=0.512e^{0}+0.384e^{t}+0.096e^{2t}+0.008e^{3t}.
+\]
+\[
+M_X'(t)=0.384e^{t}+0.192e^{2t}+0.024e^{3t}.
+\]
+\[
+M_X'(0)=0.384+0.192+0.024=0.6=E(X). \quad\text{(Verified)}
+\]
+\end{enumerate}
+\textbf{Mark scheme:} 2 marks for \(k\); 5 marks for \(E(X)\) and \(\operatorname{Var}(X)\) (2 for \(E(X)\), 2 for \(E(X^2)\), 1 for \(\operatorname{Var}\)); 4 marks for CDF (2 for correct values, 2 for sketch); 2 marks for mode and median; 3 marks for MGF and verification. Examiner expects clear arithmetic, correct CDF definition, and proper use of MGF to find \(E(X)\).
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\coursec{Discrete Random Variables}
+
+\courssub{Discrete random variables and probability distributions}
+
+\begin{definition}[Discrete random variable]
+A \cle{discrete random variable} (DRV) $X$ is a function that assigns a real number to each outcome in a sample space $\Omega$, such that the set of possible values $\{x_1, x_2, \dots\}$ is either finite or countably infinite. We write $X : \Omega \to \mathbb{R}$.
+\end{definition}
+
+\begin{exemplebox}[Examples of discrete random variables]
+\begin{itemize}
+\item Number of heads when tossing a coin three times: $X \in \{0,1,2,3\}$.
+\item Score on a fair six-sided die: $X \in \{1,2,3,4,5,6\}$.
+\item Number of customers arriving at a shop in one hour: $X \in \{0,1,2,\dots\}$ (countably infinite).
+\item Number of defective items in a batch of 20: $X \in \{0,1,\dots,20\}$.
+\end{itemize}
+\end{exemplebox}
+
+\begin{definition}[Probability mass function (p.m.f.)]
+The \cle{probability mass function} (p.m.f.) of a discrete random variable $X$ is the function $p(x) = P(X = x)$ defined for all $x \in \mathbb{R}$. It satisfies:
+\begin{enumerate}
+\item $p(x_i) \ge 0$ for every possible value $x_i$,
+\item $\displaystyle\sum_{\text{all } x_i} p(x_i) = 1$.
+\end{enumerate}
+The collection of pairs $(x_i, p(x_i))$ is called the \cle{probability distribution} of $X$.
+\end{definition}
+
+\begin{propriete}[Probability distribution table]
+The probability distribution of a DRV is conventionally presented as a table:
+\[
+\begin{array}{c|cccc}
+x_i & x_1 & x_2 & \cdots & x_n \\ \hline
+P(X = x_i) & p_1 & p_2 & \cdots & p_n
+\end{array}
+\]
+with $\sum_{i=1}^n p_i = 1$. Always verify this sum as a validity check.
+\end{propriete}
+
+\begin{methode}[Constructing a probability distribution]
+\begin{enumerate}
+\item Identify the sample space $\Omega$ of the random experiment.
+\item Define the random variable $X$ and list all its possible values $x_1, x_2, \dots$.
+\item Compute $p(x_i) = P(X = x_i)$ for each value using the rules of probability.
+\item Present the distribution in a table and verify $\sum p(x_i) = 1$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Constructing a distribution]
+A fair die is rolled twice. Let $X$ be the \emph{maximum} of the two scores. Find the probability distribution of $X$.
+\tcblower
+\textbf{Solution.}
+The sample space has $6 \times 6 = 36$ equally likely outcomes. $X$ takes values $1,2,3,4,5,6$.
+\begin{itemize}
+\item $P(X=1) = P(\text{both scores are }1) = \frac{1}{36}$.
+\item $P(X=2) = P(\text{max}=2) = P(\text{both}\le 2) - P(\text{both}\le 1) = \frac{4}{36} - \frac{1}{36} = \frac{3}{36}$.
+\item Similarly: $P(X=3)=\frac{5}{36}$, $P(X=4)=\frac{7}{36}$, $P(X=5)=\frac{9}{36}$, $P(X=6)=\frac{11}{36}$.
+\end{itemize}
+Distribution table:
+\[
+\begin{array}{c|cccccc}
+x & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline
+P(X=x) & \frac{1}{36} & \frac{3}{36} & \frac{5}{36} & \frac{7}{36} & \frac{9}{36} & \frac{11}{36}
+\end{array}
+\]
+Check: $\frac{1+3+5+7+9+11}{36} = \frac{36}{36} = 1$. \quad $\checkmark$
+\end{exoresolu}
+
+\begin{exercice}[Finding an unknown constant]
+A discrete random variable $X$ has probability distribution given by
+\[
+\begin{array}{c|ccccc}
+x & 1 & 2 & 3 & 4 & 5 \\ \hline
+P(X=x) & k & 2k & 3k & 2k & k
+\end{array}
+\]
+Find the value of $k$ and hence write down the full distribution.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$\sum P(X=x) = k + 2k + 3k + 2k + k = 9k = 1 \implies k = \frac{1}{9}$.
+Distribution:
+\[
+\begin{array}{c|ccccc}
+x & 1 & 2 & 3 & 4 & 5 \\ \hline
+P(X=x) & \frac{1}{9} & \frac{2}{9} & \frac{3}{9} & \frac{2}{9} & \frac{1}{9}
+\end{array}
+\]
+\end{corrige}
+
+\courssub{The probability mass function and expectation}
+
+\begin{definition}[Expectation (mean) of a discrete random variable]
+The \cle{expectation} or \cle{mean} of a discrete random variable $X$, denoted $E(X)$ or $\mu$, is
+\[
+E(X) = \sum_{\text{all } x_i} x_i \, P(X = x_i) = \sum_i x_i p_i,
+\]
+provided the series converges absolutely.
+\end{definition}
+
+\begin{propriete}[Expectation of a function of $X$]
+For any real-valued function $g$,
+\[
+E[g(X)] = \sum_i g(x_i) \, p(x_i).
+\]
+In particular, $E(X^2) = \sum_i x_i^2 p_i$.
+\end{propriete}
+
+\begin{propriete}[Linearity of expectation]
+For any constants $a, b \in \mathbb{R}$ and any discrete random variables $X, Y$ (independent or not):
+\begin{align*}
+E(aX + b) &= a E(X) + b, \\
+E(X + Y) &= E(X) + E(Y).
+\end{align*}
+\end{propriete}
+
+\begin{exemplebox}[Computing $E(X)$ and $E(X^2)$]
+Using the distribution from the previous worked example (maximum of two dice):
+\[
+\begin{array}{c|cccccc|c|c}
+x & 1 & 2 & 3 & 4 & 5 & 6 & x p(x) & x^{2} p(x) \\ \hline
+p(x) & \frac{1}{36} & \frac{3}{36} & \frac{5}{36} & \frac{7}{36} & \frac{9}{36} & \frac{11}{36} & \frac{161}{36} & \frac{791}{36} \\ \hline
+\end{array}
+\]
+\end{exemplebox}
+
+\findecours
+
+\end{document}

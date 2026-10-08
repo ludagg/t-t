@@ -1,0 +1,2768 @@
+% Curve Sketching — Pure Mathematics with Statistics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PMS07-curve-sketching.tex
+\newcommand{\DOCMATIERE}{Pure Mathematics with Statistics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Pure mathematics with statistics}
+\newcommand{\DOCLECON}{7}
+\newcommand{\DOCTITRE}{Curve Sketching}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Curve Sketching}{Pure Mathematics with Statistics}{Upper Sixth}{Upper Sixth — Pure mathematics with statistics}{7}{8 periods}{This chapter develops a complete, methodical strategy for sketching the graph of a function: domain, limits, asymptotes, derivatives, stationary points, inflexion, variation tables and infinite branches. It is one of the most heavily examined chapters of the GCE Advanced Level, where a full 'study and sketch' question appears almost every year.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can determine the domain and range of a function, including functions with denominators, roots and logarithms.
+\item By the end of this chapter I can compute limits at the bounds of the domain, including limits at infinity and one-sided limits.
+\item By the end of this chapter I can identify vertical, horizontal and oblique asymptotes and determine the position of the curve relative to them.
+\item By the end of this chapter I can use the first derivative to find stationary points and determine their nature (maximum, minimum, horizontal inflexion).
+\item By the end of this chapter I can use the second derivative to study concavity and locate points of inflexion.
+\item By the end of this chapter I can construct a complete table of variations summarising all the information about a function.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Section 1: Domain, Range and Limits at the Bounds
+\item Section 2: Asymptotes and Position of the Curve
+\item Section 3: Derivatives, Stationary Points and Inflexion
+\item Section 4: Table of Variations, Infinite Branches and Intercepts
+\item Section 5: Complete Curve Sketching — Full Study of a Function
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can determine the domain and range of a function, including functions with denominators, roots and logarithms.
+\item By the end of this chapter I can compute limits at the bounds of the domain, including limits at infinity and one-sided limits.
+\item By the end of this chapter I can identify vertical, horizontal and oblique asymptotes and determine the position of the curve relative to them.
+\item By the end of this chapter I can use the first derivative to find stationary points and determine their nature (maximum, minimum, horizontal inflexion).
+\item By the end of this chapter I can use the second derivative to study concavity and locate points of inflexion.
+\item By the end of this chapter I can construct a complete table of variations summarising all the information about a function.
+\item By the end of this chapter I can describe infinite branches (parabolic or asymptotic) and find intercepts with the axes.
+\item By the end of this chapter I can carry out a complete study of a function and produce an accurate, well-scaled sketch of its curve.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Differentiation rules (polynomials, products, quotients, chain rule) from Lower Sixth
+\item Basic limits and the notion of a limit at a point and at infinity
+\item Solving equations and inequalities, including sign tables
+\item Graphs of standard functions (linear, quadratic, reciprocal, exponential, logarithmic)
+\item Equation of a straight line and gradient-intercept form
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Section 1: Domain, Range and Limits at the Bounds}
+
+A cocoa exporter in Douala tracks his monthly profit $P(x)$, in thousands of FCFA, as a function of the tonnage $x$ of cocoa shipped through the port. Month after month he notices the same pattern: the profit rises as tonnage increases, reaches a peak, then falls again; and beyond a certain tonnage, the profit seems to stabilise near a fixed value. He would like to answer three questions: \emph{What is the maximum profit I can hope for? At what tonnage do I break even? What happens to my profit in the long run?}
+
+Computing $P(x)$ for hundreds of values of $x$ would be slow and would still not guarantee that he has caught the peak. The efficient strategy is to \emph{sketch the complete graph} of $P$: a small amount of analysis — domain, limits, derivative — reveals the whole shape of the curve, and the three questions above can then be read directly off the picture. This chapter develops exactly that toolbox, and this first section lays the foundations: where the function lives (its \cle{domain}), where its values live (its \cle{range}), and how it behaves at the edges of its world (its \cle{limits at the bounds}).
+
+\courssub{What is Curve Sketching?}
+
+\begin{definition}[Curve sketching]
+\cle{Curve sketching} is the process of drawing a reliable graph of a function $f$ by gathering \emph{analytical} information — domain, symmetries, limits, asymptotes, derivative, stationary points, points of inflexion, intercepts — rather than by plotting a large table of values. A good sketch shows the correct shape, the correct behaviour at the bounds of the domain, and the exact positions of the remarkable points.
+\end{definition}
+
+The philosophy is simple: a handful of well-chosen facts determines the whole curve. Two plotted points tell you almost nothing; but knowing that $f$ is increasing on $[0,4]$, has a maximum at $x=4$, and tends to $12$ as $x\to+\infty$ tells you nearly everything. Throughout this chapter we assemble these facts one by one, and the final section combines them into a complete study.
+
+\courssub{Domain of Definition}
+
+Before drawing anything, we must know \emph{where the function exists}. Feeding a forbidden value into a formula — dividing by zero, taking the square root of a negative number, taking the logarithm of zero or of a negative number — is meaningless, and the graph must have no point above such values.
+
+\begin{definition}[Domain of definition]
+The \cle{domain of definition} (or simply \emph{domain}) of a function $f$, denoted $D_f$, is the set of all real numbers $x$ for which $f(x)$ exists as a real number:
+\[ D_f = \{\, x \in \mathbb{R} \;:\; f(x) \text{ is defined} \,\}. \]
+\end{definition}
+
+In practice, three enemies threaten the existence of $f(x)$:
+
+\begin{methode}[Finding a domain: the three-point checklist]
+To find the domain of an expression, examine it for the following, in order:
+\begin{enumerate}
+\item \textbf{Denominators.} Every denominator must be non-zero. Solve ``denominator $=0$'' and \emph{exclude} the solutions.
+\item \textbf{Square roots (even roots).} Every quantity under $\sqrt{\phantom{x}}$ must satisfy ``radicand $\geq 0$''. Solve the inequality and \emph{keep} the solutions.
+\item \textbf{Logarithms.} Every argument of $\ln$ or $\log$ must be strictly positive: ``argument $>0$''.
+\end{enumerate}
+The domain is the \emph{intersection} of all the conditions found. Write it as a union of intervals.
+\end{methode}
+
+\begin{exemplebox}[Domain of a mixed expression]
+Find the domain of $f(x)=\dfrac{\sqrt{x-1}}{x-3}$.
+
+\textbf{Root condition:} $x-1\geq 0 \iff x\geq 1$.
+
+\textbf{Denominator condition:} $x-3\neq 0 \iff x\neq 3$.
+
+Combining: $D_f=[1,3)\cup(3,+\infty)$. The value $x=3$ satisfies the root condition but is thrown out by the denominator — both conditions must hold simultaneously.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+\draw[->, thick, popink] (-0.5,0) -- (7.5,0) node[below left] {$x$};
+\foreach \x/\lab in {0/0, 1/1, 2/2, 3/3, 4/4, 5/5, 6/6}
+  \draw[popink] (\x,0.08) -- (\x,-0.08) node[below] {\lab};
+% domain [1,3) U (3,+inf)
+\draw[line width=2.2pt, popblue] (1,0.25) -- (3,0.25);
+\draw[line width=2.2pt, popblue] (3,0.25) -- (7.2,0.25);
+\fill[popblue] (1,0.25) circle (2.2pt);
+\draw[fill=white, draw=popblue, line width=1.2pt] (3,0.25) circle (2.4pt);
+\node[popblue, above] at (2,0.3) {included};
+\node[popblue, above] at (5.2,0.3) {included};
+\node[poporange, below=6pt] at (3,-0.15) {excluded};
+\draw[poporange, line width=1pt] (3,-0.35) -- (3,-0.75);
+\end{tikzpicture}
+\end{center}
+\legende{Domain of $f(x)=\dfrac{\sqrt{x-1}}{x-3}$: the interval $[1,+\infty)$ with the point $x=3$ removed (open circle).}
+\end{popfigure}
+
+\begin{attention}[Intersection, not union, of conditions]
+Each condition \emph{restricts} the domain further. A common error is to take the union of the acceptable sets. For $g(x)=\dfrac{\ln(x-2)}{\sqrt{5-x}}$ we need $x>2$ \emph{and} $5-x>0$ (the root is in a denominator, so the inequality is strict), giving $D_g=(2,5)$ — not the union of the two rays.
+\end{attention}
+
+\courssub{Domain of Study: Symmetry and Periodicity}
+
+Even when $D_f$ is huge (for instance $\mathbb{R}$), we may not need to study $f$ everywhere. Symmetries let us study half the domain and deduce the other half by reflection; periodicity lets us study a single period and copy the result.
+
+\begin{definition}[Even and odd functions]
+Let $f$ have a domain $D_f$ symmetric about $0$ (i.e. $x\in D_f \Rightarrow -x\in D_f$).
+\begin{itemize}
+\item $f$ is \cle{even} if $f(-x)=f(x)$ for all $x\in D_f$. Its curve is symmetric with respect to the \textbf{y-axis}.
+\item $f$ is \cle{odd} if $f(-x)=-f(x)$ for all $x\in D_f$. Its curve is symmetric with respect to the \textbf{origin} (half-turn about $O$).
+\end{itemize}
+\end{definition}
+
+\begin{propriete}[Reducing the domain of study]
+If $f$ is even or odd, it suffices to study $f$ on $D_f\cap[0,+\infty)$; the rest of the curve is obtained by reflection in the $y$-axis (even case) or by a half-turn about the origin (odd case). If $f$ is \cle{periodic} with period $T$, i.e. $f(x+T)=f(x)$ for all $x$, it suffices to study $f$ on any interval of length $T$ and then translate the curve by integer multiples of $T$.
+\end{propriete}
+
+\begin{exemplebox}[Testing parity]
+Let $f(x)=\dfrac{x}{x^2+1}$ on $\mathbb{R}$. Then
+\[ f(-x)=\frac{-x}{(-x)^2+1}=-\frac{x}{x^2+1}=-f(x), \]
+so $f$ is odd: we study it on $[0,+\infty)$ and complete by symmetry about the origin. Note that $f(0)=0$, as must happen for any odd function defined at $0$ (since $f(-0)=-f(0)$ forces $f(0)=-f(0)$, hence $f(0)=0$).
+\end{exemplebox}
+
+\courssub{Range of a Function}
+
+\begin{definition}[Range]
+The \cle{range} (or \emph{set of images}) of $f$ is the set of all values actually taken by $f$:
+\[ f(D_f)=\{\, f(x) : x\in D_f \,\}. \]
+\end{definition}
+
+The range is usually \emph{read off} the completed study rather than computed directly: once the table of variations and the limits at the bounds are known, the range is the union of the intervals swept out by $f$ on each monotonic piece. For example, if a continuous function decreases from $+\infty$ to a minimum value $2$ and then increases towards $5$ (without reaching it), its range is $[2,+\infty)$: the first branch alone already produces every value in $[2,+\infty)$, and the second branch only adds values in $[2,5)$, which are already included. But if the minimum $2$ were only \emph{approached} and never attained, it would have to be excluded: one must always check carefully whether each bound is attained.
+
+Known inequalities also give quick partial information. Since $x^2\geq 0$, we have $x^2+1\geq 1$, hence $0<\dfrac{1}{x^2+1}\leq 1$: the range of $f(x)=\dfrac{1}{x^2+1}$ is contained in $(0,1]$. Conversely, for any $y\in(0,1]$, the equation $\dfrac{1}{x^2+1}=y$ gives $x^2=\dfrac{1}{y}-1\geq 0$, which has real solutions; so every value of $(0,1]$ is attained and the range is exactly $(0,1]$.
+
+\courssub{Limits at the Bounds of the Domain}
+
+The domain tells us where the curve exists; the limits at the \emph{bounds} of $D_f$ tell us what the curve does at the edges — does it stop at a point, shoot off to infinity, or settle down towards a horizontal level? The bounds of a domain written as a union of intervals are of three kinds: finite endpoints included in $D_f$ (just compute $f$ there), finite endpoints \emph{excluded} from $D_f$ (holes — a limit is needed), and the ``endpoints'' $-\infty$ and $+\infty$.
+
+\begin{definition}[One-sided limits]
+We write $\displaystyle\lim_{x\to a^{-}} f(x)$ for the limit as $x$ approaches $a$ \emph{from the left} (values $x<a$) and $\displaystyle\lim_{x\to a^{+}} f(x)$ for the limit \emph{from the right} (values $x>a$). The (two-sided) limit $\lim_{x\to a} f(x)$ exists if and only if both one-sided limits exist and are equal.
+\end{definition}
+
+One-sided limits are essential at excluded values: for $f(x)=\dfrac{1}{x-2}$, approaching $2$ from the right gives $+\infty$ while approaching from the left gives $-\infty$, so the two-sided limit does not exist — yet each one-sided limit gives precise graphical information (a vertical asymptote, studied in Section 2).
+
+\begin{attention}[Signs of zero denominators]
+When a denominator tends to $0$, its \emph{sign} decides whether the quotient tends to $+\infty$ or $-\infty$. Always determine the sign of the denominator on each side of the excluded value, and the sign (or limiting value) of the numerator. Writing $0^{+}$ for a quantity tending to $0$ through positive values, and $0^{-}$ through negative values, keeps the reasoning clean: $\dfrac{3}{0^{+}}=+\infty$ but $\dfrac{3}{0^{-}}=-\infty$.
+\end{attention}
+
+\begin{exoresolu}[Limits at the bounds of a domain]
+Let $f(x)=\dfrac{\sqrt{x-1}}{x-3}$, with $D_f=[1,3)\cup(3,+\infty)$. Determine the behaviour of $f$ at each bound of $D_f$.
+\tcblower
+The bounds are $1$ (included), $3$ (excluded), and $+\infty$.
+
+\textbf{At $x=1$:} $f(1)=\dfrac{\sqrt{0}}{-2}=0$. The curve starts at the point $(1,0)$.
+
+\textbf{At $x=3$ (one-sided limits):} near $3$, the numerator satisfies $\sqrt{x-1}\to\sqrt{2}>0$, while the denominator $x-3$ tends to $0$.
+\begin{itemize}
+\item If $x\to 3^{-}$, then $x-3<0$, so $f(x)\to \dfrac{\sqrt{2}}{0^{-}}=-\infty$.
+\item If $x\to 3^{+}$, then $x-3>0$, so $f(x)\to \dfrac{\sqrt{2}}{0^{+}}=+\infty$.
+\end{itemize}
+
+\textbf{At $+\infty$:} for large $x$, $\sqrt{x-1}\approx\sqrt{x}$ and $x-3\approx x$, so $f(x)\approx \dfrac{\sqrt{x}}{x}=\dfrac{1}{\sqrt{x}}\to 0^{+}$. Hence $\displaystyle\lim_{x\to+\infty}f(x)=0$: far to the right, the curve flattens against the $x$-axis from above.
+\end{exoresolu}
+
+\courssub{Indeterminate Forms and How to Resolve Them}
+
+Direct substitution in a limit can produce the meaningless expressions
+\[ \frac{0}{0},\qquad \frac{\infty}{\infty},\qquad \infty-\infty,\qquad 0\cdot\infty, \]
+called \cle{indeterminate forms}. ``Indeterminate'' does not mean the limit fails to exist; it means the competition between two tendencies must be analysed. The standard weapons are factorising, multiplying by the conjugate, and isolating the dominant term.
+
+\begin{methode}[Resolving indeterminate forms]
+\begin{enumerate}
+\item \textbf{Form $\frac{0}{0}$ with polynomials at $x=a$:} $a$ is a root of both numerator and denominator. Factor out $(x-a)$ from each and cancel, then substitute.
+\item \textbf{Form $\frac{\infty}{\infty}$ at $\pm\infty$:} factor the \emph{dominant term} (highest power of $x$) in numerator and denominator, cancel, and let $x\to\pm\infty$. A rational function at infinity behaves like the ratio of its leading terms.
+\item \textbf{Form $\infty-\infty$ or $0\cdot\infty$ with square roots:} multiply and divide by the \emph{conjugate} $\sqrt{A}+\sqrt{B}$ to use $(\sqrt{A}-\sqrt{B})(\sqrt{A}+\sqrt{B})=A-B$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[The three techniques in action]
+\textbf{(a) Factorising ($\frac{0}{0}$):}
+\[ \lim_{x\to 1}\frac{x^2-1}{x-1}=\lim_{x\to 1}\frac{(x-1)(x+1)}{x-1}=\lim_{x\to 1}(x+1)=2. \]
+
+\textbf{(b) Dominant term ($\frac{\infty}{\infty}$):}
+\[ \lim_{x\to+\infty}\frac{3x^2-5x+1}{2x^2+7}=\lim_{x\to+\infty}\frac{x^2\left(3-\frac{5}{x}+\frac{1}{x^2}\right)}{x^2\left(2+\frac{7}{x^2}\right)}=\frac{3}{2}. \]
+
+\textbf{(c) Conjugate ($\infty-\infty$):}
+\[ \lim_{x\to+\infty}\bigl(\sqrt{x^2+x}-x\bigr)=\lim_{x\to+\infty}\frac{(x^2+x)-x^2}{\sqrt{x^2+x}+x}=\lim_{x\to+\infty}\frac{x}{\sqrt{x^2+x}+x}=\lim_{x\to+\infty}\frac{1}{\sqrt{1+\frac{1}{x}}+1}=\frac{1}{2}. \]
+\end{exemplebox}
+
+\courssub{A Limit is Not a Value: Removable Discontinuities}
+
+\begin{attention}[A limit can exist where the function does not]
+The function $f(x)=\dfrac{x^2-1}{x-1}$ is \emph{not defined at $x=1$}, yet we computed $\lim_{x\to 1}f(x)=2$. The limit describes the \emph{trend} of $f(x)$ as $x$ gets close to $1$, never the value at $1$ itself. Graphically, the curve is the line $y=x+1$ with a \textbf{hole} at the point $(1,2)$. Such a hole is called a \cle{removable discontinuity}: redefining $f(1)=2$ would ``repair'' it. Never write $f(1)=2$ for this function — write $\lim_{x\to1}f(x)=2$.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  axis lines=middle, width=11cm, height=7cm,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-2.5, xmax=4, ymin=-1.5, ymax=5.5,
+  xtick={-2,-1,1,2,3}, ytick={1,2,3,4,5},
+  samples=100, domain=-2.3:3.8,
+  every axis x label/.style={at={(ticklabel* cs:1.02)}, anchor=west},
+  every axis y label/.style={at={(ticklabel* cs:1.02)}, anchor=south}
+]
+\addplot[popblue, very thick] {x+1};
+\addplot[only marks, mark=*, mark size=1.6pt, white, fill=white, draw=popblue, thick] coordinates {(1,2)};
+\draw[poporange, dashed] (axis cs:1,0) -- (axis cs:1,2) -- (axis cs:0,2);
+\node[popdark, anchor=west] at (axis cs:1.15,1.6) {hole at $(1,2)$};
+\node[popblue, anchor=south east] at (axis cs:3.4,4.4) {$y=f(x)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Graph of $f(x)=\dfrac{x^2-1}{x-1}$: the line $y=x+1$ with a hole at $(1,2)$. The limit as $x\to1$ is $2$, but $f(1)$ does not exist.}
+\end{popfigure}
+
+\courssub{Interpreting Limits Graphically}
+
+Each limit at a bound translates into a geometric statement about the curve:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Limit result} & \textbf{Graphical meaning} \\
+\hline
+$\lim_{x\to a}f(x)=+\infty$ or $-\infty$ ($a$ excluded) & The curve climbs or dives without bound near the vertical line $x=a$ (vertical asymptote — Section 2). \\
+\hline
+$\lim_{x\to+\infty}f(x)=L$ (finite) & Far to the right, the curve settles against the horizontal line $y=L$ (horizontal asymptote). \\
+\hline
+$\lim_{x\to+\infty}f(x)=\pm\infty$ & The curve leaves every horizontal band: an \emph{infinite branch}, to be refined in Section 4. \\
+\hline
+$\lim_{x\to a}f(x)=L$ with $f(a)$ undefined & A hole at $(a,L)$: removable discontinuity. \\
+\hline
+\end{tabularx}
+\end{center}
+
+For our cocoa exporter, these are exactly the tools that answer his third question: if $\lim_{x\to+\infty}P(x)=L$, then no matter how much tonnage he ships, the profit stabilises near $L$ thousand FCFA — the long-term trend is read off a single limit. The maximum profit and the break-even tonnage will come from the derivative and the table of variations in the next sections.
+
+\begin{aretenir}[Key points of Section 1]
+\begin{itemize}
+\item Curve sketching replaces massive point-plotting by a short list of analytical facts.
+\item Domain: exclude zeros of denominators, keep radicands $\geq 0$, keep logarithm arguments $>0$; intersect all conditions.
+\item Even/odd symmetry and periodicity reduce the domain of study.
+\item The range is read from the completed variation table, checking which bounds are attained.
+\item At excluded bounds, compute one-sided limits, taking care of the sign of each vanishing denominator; at $\pm\infty$, use dominant terms.
+\item Indeterminate forms $\frac{0}{0}$, $\frac{\infty}{\infty}$, $\infty-\infty$, $0\cdot\infty$ are resolved by factorising, dominant terms, or the conjugate.
+\item $\lim_{x\to a}f(x)=L$ does \emph{not} imply $f(a)=L$: the function may be undefined at $a$ (hole) or defined differently.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Domains and limits at the bounds]
+For each function, find the domain of definition and compute the limits at all the bounds of the domain:
+\begin{enumerate}
+\item $f(x)=\dfrac{2x+3}{x^2-4}$;
+\item $g(x)=\sqrt{\dfrac{x+1}{x-2}}$;
+\item $h(x)=\ln(x^2-9)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $x^2-4=0 \iff x=\pm2$, so $D_f=\mathbb{R}\setminus\{-2,2\}$. One-sided limits: as $x\to -2^{-}$, $2x+3\to -1<0$ and $x^2-4\to 0^{+}$ (since $x^2>4$ for $x<-2$), so $f\to-\infty$; as $x\to -2^{+}$, $x^2-4\to 0^{-}$, so $f\to+\infty$. As $x\to 2^{-}$, $2x+3\to 7>0$, $x^2-4\to 0^{-}$, so $f\to-\infty$; as $x\to 2^{+}$, $x^2-4\to 0^{+}$, so $f\to+\infty$. At $\pm\infty$, dominant terms give $f(x)\sim \frac{2x}{x^2}=\frac{2}{x}\to 0$.
+
+\textbf{2.} We need $\dfrac{x+1}{x-2}\geq 0$ with $x\neq 2$. Sign table: the quotient is $\geq 0$ on $(-\infty,-1]\cup(2,+\infty)$. Hence $D_g=(-\infty,-1]\cup(2,+\infty)$. At $x=-1$: $g(-1)=0$. As $x\to 2^{+}$: numerator $\to 3$, denominator $\to 0^{+}$, quotient $\to+\infty$, so $g\to+\infty$. As $x\to-\infty$ or $x\to+\infty$: $\dfrac{x+1}{x-2}\to 1$, so $g\to 1$.
+
+\textbf{3.} $x^2-9>0 \iff x<-3$ or $x>3$: $D_h=(-\infty,-3)\cup(3,+\infty)$. As $x\to -3^{-}$ or $x\to 3^{+}$: $x^2-9\to 0^{+}$, so $h(x)\to-\infty$. As $x\to\pm\infty$: $x^2-9\to+\infty$, so $h(x)\to+\infty$.
+\end{corrige}
+
+\coursec{Section 2: Asymptotes and Position of the Curve}
+
+In Section 1 we learnt how to determine the domain of a function and how to compute limits at the bounds of that domain. We saw, in particular, two striking behaviours: a function may \emph{explode} to $+\infty$ or $-\infty$ as $x$ approaches an excluded value $a$, or it may \emph{settle down} towards a finite number $L$ as $x$ tends to $\pm\infty$. These behaviours have a beautiful geometric interpretation: the curve of $f$ gets closer and closer to a straight line, without necessarily ever touching it. Such a line is called an \cle{asymptote}. Mastering asymptotes is the single most important step towards a correct sketch, because asymptotes act as ``rails'' that guide the curve at the extremities of the domain. In this section we study the three types of asymptote, we learn how to find their equations, and we answer a subtler question frequently asked at the GCE: \emph{where does the curve lie with respect to its asymptote?}
+
+\courssub{Vertical Asymptotes}
+
+\textbf{Intuition.}\par
+Consider $f(x)=\dfrac{1}{x-2}$, defined on $\mathbb{R}\setminus\{2\}$. As $x$ approaches $2$ from the right, $x-2$ is a tiny positive number, so $f(x)$ becomes a huge positive number: the curve shoots upwards. As $x$ approaches $2$ from the left, $f(x)$ plunges towards $-\infty$. The vertical line $x=2$ is a barrier that the curve approaches but never touches: it is a \cle{vertical asymptote}.
+
+\begin{definition}[Vertical asymptote]
+The line $x=a$ is a \cle{vertical asymptote} to the curve $\mathcal{C}_f$ if at least one of the one-sided limits of $f$ at $a$ is infinite:
+\[ \lim_{x\to a^{+}} f(x)=\pm\infty \quad\text{or}\quad \lim_{x\to a^{-}} f(x)=\pm\infty. \]
+In practice $a$ is an excluded value of the domain (typically a zero of the denominator that is not a zero of the numerator).
+\end{definition}
+
+\begin{propriete}[Characterisation of a vertical asymptote]
+\[ \lim_{\substack{x\to a\\ x\ne a}} f(x)=\pm\infty \ \Longleftrightarrow\ \text{the line } x=a \text{ is a vertical asymptote of } \mathcal{C}_f. \]
+The sign of the infinity on each side tells us whether the curve goes up or down near the asymptote. This characterisation is \textbf{examinable}: at the GCE you must justify a vertical asymptote by computing the one-sided limits, not merely by reading the denominator.
+\end{propriete}
+
+\begin{exemplebox}[Finding vertical asymptotes]
+Let $g(x)=\dfrac{x+3}{x^{2}-x-2}=\dfrac{x+3}{(x-2)(x+1)}$. The candidate values are $x=2$ and $x=-1$.
+\begin{itemize}
+\item At $x=2$: numerator $\to 5>0$; $(x-2)\to 0^{+}$ and $(x+1)\to 3$ as $x\to 2^{+}$, so $\displaystyle\lim_{x\to 2^{+}}g(x)=+\infty$, and $\displaystyle\lim_{x\to 2^{-}}g(x)=-\infty$. Hence $x=2$ is a vertical asymptote.
+\item At $x=-1$: numerator $\to 2>0$; $(x+1)\to 0^{-}$ as $x\to -1^{-}$ with $(x-2)\to -3$, so $\displaystyle\lim_{x\to -1^{-}}g(x)=+\infty$ and $\displaystyle\lim_{x\to -1^{+}}g(x)=-\infty$. Hence $x=-1$ is also a vertical asymptote.
+\end{itemize}
+\end{exemplebox}
+
+\begin{attention}[A zero of the denominator is not always an asymptote]
+If the numerator \emph{also} vanishes at $x=a$, the factor may cancel. For $h(x)=\dfrac{x^{2}-1}{x-1}=\dfrac{(x-1)(x+1)}{x-1}$, we have $\displaystyle\lim_{x\to 1}h(x)=2$, a \emph{finite} limit: the line $x=1$ is \textbf{not} an asymptote; the curve simply has a ``hole'' at $(1,2)$. Always check the numerator before concluding.
+\end{attention}
+
+\courssub{Horizontal Asymptotes}
+
+\textbf{Intuition.}\par
+Take $f(x)=2+\dfrac{1}{x}$. When $x$ becomes very large (think of $x=10^{6}$), the term $\dfrac{1}{x}$ is negligible and $f(x)\approx 2$. Far to the right, the curve is almost indistinguishable from the horizontal line $y=2$.
+
+\begin{definition}[Horizontal asymptote]
+If $\displaystyle\lim_{x\to +\infty} f(x)=L$ (a finite real number), then the line $y=L$ is a \cle{horizontal asymptote} to $\mathcal{C}_f$ at $+\infty$. Similarly, if $\displaystyle\lim_{x\to -\infty} f(x)=L'$, then $y=L'$ is a horizontal asymptote at $-\infty$. The two limits may be different, giving two distinct horizontal asymptotes.
+\end{definition}
+
+\begin{exemplebox}[Two different horizontal asymptotes]
+Let $f(x)=\dfrac{2x+|x|}{x}$. For $x>0$, $f(x)=\dfrac{3x}{x}=3$; for $x<0$, $f(x)=\dfrac{x}{x}=1$. Hence $y=3$ is a horizontal asymptote at $+\infty$ and $y=1$ at $-\infty$.
+\end{exemplebox}
+
+\begin{attention}[A horizontal asymptote only constrains behaviour at infinity]
+A very common mistake is to believe that a curve can never cross its horizontal asymptote. This is \textbf{false}. The condition $\lim_{x\to\pm\infty}f(x)=L$ only describes what happens for very large $|x|$. For finite values of $x$ the curve may cross the line $y=L$, even several times. For example $f(x)=\dfrac{\sin x}{x}$ crosses its asymptote $y=0$ infinitely often. Whether a crossing occurs is decided by solving $f(x)=L$ (see below), never by assumption.
+\end{attention}
+
+\courssub{Oblique (Slant) Asymptotes}
+
+\textbf{Intuition.}\par
+When $\lim_{x\to\pm\infty}f(x)=\pm\infty$, there is no horizontal asymptote. But the curve may still ``straighten out'' along a slanted line. Think of the graph of $f(x)=x+\dfrac{1}{x}$: for large $x$, the term $\dfrac{1}{x}$ dies out and the curve hugs the line $y=x$. This line is an \cle{oblique asymptote}.
+
+\begin{definition}[Oblique asymptote]
+The line $y=ax+b$ (with $a\neq 0$) is an \cle{oblique asymptote} to $\mathcal{C}_f$ at $+\infty$ (resp.\ $-\infty$) if
+\[ \lim_{x\to +\infty}\bigl[f(x)-(ax+b)\bigr]=0 \quad\text{(resp.\ as } x\to -\infty\text{)}. \]
+Geometrically, the vertical gap between the curve and the line shrinks to zero.
+\end{definition}
+
+\begin{propriete}[Computing $a$ and $b$]
+If $y=ax+b$ is an oblique asymptote at $+\infty$, then necessarily
+\[ a=\lim_{x\to +\infty}\frac{f(x)}{x}, \qquad b=\lim_{x\to +\infty}\bigl[f(x)-ax\bigr]. \]
+\textbf{Justification (instructive).} If $f(x)-(ax+b)\to 0$, then $\dfrac{f(x)}{x}-a-\dfrac{b}{x}=\dfrac{f(x)-ax-b}{x}\to 0$ (a quantity tending to $0$ divided by $x\to\infty$), and since $\dfrac{b}{x}\to 0$ we get $\dfrac{f(x)}{x}\to a$. Then $b$ follows from $f(x)-ax\to b$. Conversely, if both limits exist and are finite, then $f(x)-(ax+b)\to b-b=0$, so the line is indeed an asymptote.
+\end{propriete}
+
+\begin{methode}[Finding an oblique asymptote — two-limit technique]
+\begin{enumerate}
+\item Check that $\lim_{x\to\pm\infty}f(x)=\pm\infty$ (otherwise look for a horizontal asymptote).
+\item Compute $a=\lim_{x\to\pm\infty}\dfrac{f(x)}{x}$. If $a$ is finite and non-zero, continue; if $a=0$ and $\lim f$ is finite, the asymptote is horizontal; if $a=\pm\infty$, there is an infinite branch that is not an oblique asymptote (parabolic branch, Section 4).
+\item Compute $b=\lim_{x\to\pm\infty}\bigl[f(x)-ax\bigr]$. If $b$ is finite, conclude: $y=ax+b$ is the oblique asymptote.
+\item Repeat at the other infinity if required — $a$ and $b$ may differ.
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Oblique asymptote by polynomial long division (rational functions)]
+For $f(x)=\dfrac{P(x)}{Q(x)}$ with $\deg P=\deg Q +1$:
+\begin{enumerate}
+\item Divide $P$ by $Q$: $P(x)=Q(x)(ax+b)+R(x)$ with $\deg R<\deg Q$.
+\item Then $f(x)=ax+b+\dfrac{R(x)}{Q(x)}$, and $\dfrac{R(x)}{Q(x)}\to 0$ at $\pm\infty$.
+\item Conclude immediately: $y=ax+b$ is the oblique asymptote. As a bonus, the sign of $\dfrac{R(x)}{Q(x)}$ gives the position of the curve relative to the asymptote.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Full asymptote study of $f(x)=\dfrac{2x^{2}+3x-1}{x-1}$]
+Study the asymptotes of $f(x)=\dfrac{2x^{2}+3x-1}{x-1}$ and the position of the curve relative to each.
+\tcblower
+\textbf{Domain.} $D_f=\mathbb{R}\setminus\{1\}$.
+
+\textbf{Vertical asymptote.} Numerator at $x=1$: $2+3-1=4\neq 0$. As $x\to 1^{+}$, $x-1\to 0^{+}$, so $\lim_{x\to 1^{+}}f(x)=+\infty$; as $x\to 1^{-}$, $\lim_{x\to 1^{-}}f(x)=-\infty$. Hence the line $x=1$ is a vertical asymptote.
+
+\textbf{Behaviour at infinity.} $\lim_{x\to\pm\infty}f(x)=\lim \dfrac{2x^{2}}{x}=\lim 2x=\pm\infty$: no horizontal asymptote. Try an oblique one:
+\[ a=\lim_{x\to\pm\infty}\frac{f(x)}{x}=\lim\frac{2x^{2}}{x\cdot x}=2, \qquad b=\lim\bigl[f(x)-2x\bigr]=\lim\frac{2x^{2}+3x-1-2x(x-1)}{x-1}=\lim\frac{5x-1}{x-1}=5. \]
+Both limits are finite, so $y=2x+5$ is an oblique asymptote at $+\infty$ and at $-\infty$.
+
+\textbf{Check by division.} $2x^{2}+3x-1=(x-1)(2x+5)+4$, so $f(x)=2x+5+\dfrac{4}{x-1}$. Since $\dfrac{4}{x-1}\to 0$ at $\pm\infty$, we confirm $y=2x+5$.
+
+\textbf{Position.} $f(x)-(2x+5)=\dfrac{4}{x-1}$. This is positive for $x>1$ (curve \textbf{above} the asymptote) and negative for $x<1$ (curve \textbf{below}). Since $\dfrac{4}{x-1}\neq 0$ for all $x$, the curve never crosses its oblique asymptote.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=9cm,
+  axis lines=middle, xlabel=$x$, ylabel=$y$,
+  xmin=-6, xmax=8, ymin=-8, ymax=20,
+  xtick={-4,-2,1,2,4,6}, ytick={-5,5,10,15},
+  domain=-6:8, samples=200, clip=true,
+  legend style={at={(0.02,0.98)}, anchor=north west, font=\small}
+]
+\addplot[popblue, very thick, domain=-6:0.85, samples=150] {(2*x^2+3*x-1)/(x-1)};
+\addplot[popblue, very thick, domain=1.15:8, samples=150] {(2*x^2+3*x-1)/(x-1)};
+\addplot[poporange, dashed, thick, domain=-6:8, samples=2] {2*x+5};
+\draw[popgreen, dashed, thick] (axis cs:1,-8) -- (axis cs:1,20);
+\legend{$f(x)=\dfrac{2x^2+3x-1}{x-1}$, $y=2x+5$, $x=1$}
+\end{axis}
+\end{tikzpicture}
+\legende{The curve of $f(x)=\dfrac{2x^{2}+3x-1}{x-1}$ with its vertical asymptote $x=1$ and its oblique asymptote $y=2x+5$. Note the curve above the oblique asymptote for $x>1$ and below it for $x<1$.}
+\end{popfigure}
+
+\courssub{Position of the Curve Relative to an Asymptote}
+
+Knowing the asymptote is only half the story. The GCE regularly asks: \emph{``Study the position of $\mathcal{C}_f$ relative to the line $y=ax+b$.''} The tool is always the same.
+
+\begin{methode}[Relative position via the sign of the difference]
+\begin{enumerate}
+\item Compute the difference $d(x)=f(x)-(ax+b)$ and reduce it to a single fraction or factored form.
+\item Study the sign of $d(x)$ on the domain (sign table if necessary).
+\item Conclude: where $d(x)>0$, $\mathcal{C}_f$ is \textbf{above} the asymptote; where $d(x)<0$, it is \textbf{below}.
+\item Solve $d(x)=0$: each solution gives a point where the curve \textbf{crosses} its asymptote. State the coordinates of the intersection point(s).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[A curve crossing its horizontal asymptote]
+Let $f(x)=\dfrac{3x^{2}-x}{x^{2}+1}$. At $\pm\infty$, $f(x)\to 3$, so $y=3$ is a horizontal asymptote. The difference is
+\[ f(x)-3=\frac{3x^{2}-x-3(x^{2}+1)}{x^{2}+1}=\frac{-x-3}{x^{2}+1}. \]
+Since $x^{2}+1>0$, the sign is that of $-x-3$: positive for $x<-3$ (curve above $y=3$), negative for $x>-3$ (curve below). Solving $f(x)=3$ gives $x=-3$, $y=3$: the curve \textbf{crosses} its horizontal asymptote at the point $(-3,\,3)$. This is perfectly legal — the asymptote only governs the far ends.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0]
+% axes
+\draw[->, popmuted] (-5.2,0) -- (5.2,0) node[below left] {$x$};
+\draw[->, popmuted] (0,-2.2) -- (0,3.2) node[below left] {$y$};
+% asymptote y=1.5
+\draw[poporange, dashed, thick] (-5,1.5) -- (5,1.5) node[right, poporange] {$y=L$};
+% curve crossing
+\draw[popblue, very thick, domain=-5:5, samples=200, smooth] plot (\x, {1.5 + 2.2*(\x+1.5)/((\x+1.5)*(\x+1.5)+3)});
+% crossing point
+\fill[popdark] (-1.5,1.5) circle (1.8pt) node[above right, popdark] {\small crossing};
+% annotations
+\node[popblue, align=center, font=\small] at (-3.6,2.6) {$f(x)-L<0$\\ curve below};
+\node[popblue, align=center, font=\small] at (3.4,0.2) {$f(x)-L>0$\\ curve above};
+\draw[->, popmuted] (-3.2,2.2) -- (-2.6,1.9);
+\draw[->, popmuted] (3.0,0.6) -- (2.4,1.15);
+\end{tikzpicture}
+\legende{A curve crossing its horizontal asymptote $y=L$. The sign of $f(x)-L$ fixes the position: above where the difference is positive, below where it is negative.}
+\end{popfigure}
+
+\courssub{Reading Asymptotes from a Given Graph}
+
+In GCE multiple-choice and short-answer questions, the reasoning is sometimes reversed: you are \emph{given} the graph and must identify the asymptotes. Train your eye as follows.
+
+\begin{methode}[Reading asymptotes from a graph]
+\begin{enumerate}
+\item \textbf{Vertical asymptote $x=a$:} look for a vertical line which one branch of the curve approaches while shooting up ($+\infty$) or down ($-\infty$). Read $a$ on the $x$-axis. This also reveals an excluded value of the domain.
+\item \textbf{Horizontal asymptote $y=L$:} look for a horizontal line that the curve flattens onto as $x\to\pm\infty$. Read $L$ on the $y$-axis.
+\item \textbf{Oblique asymptote $y=ax+b$:} if a slanted dashed line is shown, read $b$ as its $y$-intercept and $a$ as its gradient (rise over run between two clear points).
+\item \textbf{Position:} observe on which side of each asymptote the curve lies, and whether it crosses — this translates the sign of $f(x)-(ax+b)$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Reverse reading]
+A graph shows a hyperbola-like curve with branches plunging near the line $x=-2$, flattening onto $y=1$ on the right, and lying above $y=1$ for large positive $x$. We conclude: vertical asymptote $x=-2$ (so $-2\notin D_f$); horizontal asymptote $y=1$ at $+\infty$; and $f(x)-1>0$ for large $x$. A function consistent with all three facts is, for instance, $f(x)=1+\dfrac{1}{x+2}$.
+\end{exemplebox}
+
+\begin{aretenir}[Key points of Section 2]
+\begin{itemize}
+\item $\lim_{x\to a^{\pm}}f(x)=\pm\infty \iff x=a$ is a \cle{vertical asymptote}. Beware of removable factors in the numerator.
+\item $\lim_{x\to\pm\infty}f(x)=L$ (finite) $\iff y=L$ is a \cle{horizontal asymptote}. The curve may cross it for finite $x$.
+\item If $\lim f=\pm\infty$, compute $a=\lim\dfrac{f(x)}{x}$ then $b=\lim[f(x)-ax]$: if both are finite with $a\neq 0$, $y=ax+b$ is an \cle{oblique asymptote}. For rational functions, long division gives it in one stroke.
+\item The \textbf{position} of the curve relative to an asymptote is decided by the \textbf{sign of} $f(x)-(ax+b)$; \textbf{crossings} are found by solving $f(x)=ax+b$.
+\item From a graph: vertical line approached $\Rightarrow$ vertical asymptote; flattening at infinity $\Rightarrow$ horizontal asymptote; slanted guide line $\Rightarrow$ oblique asymptote.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find all asymptotes of $f(x)=\dfrac{x^{2}-2x+3}{x+1}$ and study the position of the curve relative to its oblique asymptote.
+\item Show that the curve of $g(x)=\dfrac{2x^{2}+x}{x^{2}+4}$ crosses its horizontal asymptote, and give the coordinates of the crossing point.
+\item A curve has vertical asymptote $x=3$ and oblique asymptote $y=x-1$, and lies below its oblique asymptote for $x>3$. Propose a possible expression for the function.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $D_f=\mathbb{R}\setminus\{-1\}$. Numerator at $x=-1$: $1+2+3=6\neq 0$; $\lim_{x\to -1^{+}}f=+\infty$, $\lim_{x\to -1^{-}}f=-\infty$: vertical asymptote $x=-1$. Division: $x^{2}-2x+3=(x+1)(x-3)+6$, so $f(x)=x-3+\dfrac{6}{x+1}$. Since $\dfrac{6}{x+1}\to 0$, $y=x-3$ is an oblique asymptote at both infinities. Position: $f(x)-(x-3)=\dfrac{6}{x+1}>0$ for $x>-1$ (above), $<0$ for $x<-1$ (below); no crossing.
+
+\textbf{2.} $\lim_{x\to\pm\infty}g(x)=2$: horizontal asymptote $y=2$. $g(x)-2=\dfrac{2x^{2}+x-2x^{2}-8}{x^{2}+4}=\dfrac{x-8}{x^{2}+4}$. This vanishes at $x=8$, with $g(8)=2$: the curve crosses its asymptote at $(8,\,2)$; above for $x>8$, below for $x<8$.
+
+\textbf{3.} We need a vertical asymptote at $x=3$ and $f(x)-(x-1)<0$ for $x>3$, tending to $0$. Take $f(x)=x-1-\dfrac{1}{x-3}=\dfrac{(x-1)(x-3)-1}{x-3}=\dfrac{x^{2}-4x+2}{x-3}$. Indeed $\lim_{x\to 3^{+}}f=-\infty$, $\lim_{x\to 3^{-}}f=+\infty$, and $f(x)-(x-1)=-\dfrac{1}{x-3}\to 0$, negative for $x>3$. (Other correct answers exist.)
+\end{corrige}
+
+\begin{savaistu}[Asymptotes in real life]
+Asymptotic behaviour is everywhere. When a rumour spreads in Yaoundé, the number of people informed often follows a logistic curve with a \emph{horizontal} asymptote: the total population, a ceiling that is approached but never exceeded. In physics, the velocity of a falling object with air resistance approaches a horizontal asymptote called the terminal velocity. And the famous ``learning curve'' of a student mastering a new topic flattens towards an asymptote — a comforting reminder that progress continues even when it feels slow!
+\end{savaistu}
+
+\coursec{Section 3: Derivatives, Stationary Points and Inflexion}
+
+In Section 2 we learnt how to control the behaviour of a curve \emph{far away} (asymptotes, infinite branches) and how to compare a curve with a line. But between the asymptotes, a curve can rise, fall, turn around, and change the way it bends. To capture this \emph{local} behaviour we need the most powerful tool of analysis: the \cle{derivative}. In this section we see how the sign of $f'$ tells us where the function increases or decreases, how the equation $f'(x)=0$ reveals the \cle{stationary points}, and how the second derivative $f''$ describes the \cle{concavity} and the \cle{points of inflexion}. By the end of the section you will be able to predict the shape of a curve before plotting a single point.
+
+\courssub{The First Derivative and Monotonicity}
+
+\textbf{Intuition.}\par
+Imagine driving from Bamenda to Dschang along a mountain road, and think of the road as the graph of a function $f$. Wherever the road climbs, the slope is positive; wherever it descends, the slope is negative. The derivative $f'(x)$ is precisely the slope of the tangent at the point of abscissa $x$. So the sign of $f'$ should tell us whether the function is climbing or descending. This intuition is correct, and it can be proved.
+
+\begin{propriete}[Sign of $f'$ and monotonicity of $f$]
+Let $f$ be a function continuous on an interval $I$ and differentiable on its interior. Then:
+\begin{itemize}
+\item if $f'(x) > 0$ for all $x$ in the interior of $I$, then $f$ is \cle{strictly increasing} on $I$;
+\item if $f'(x) < 0$ for all $x$ in the interior of $I$, then $f$ is \cle{strictly decreasing} on $I$;
+\item if $f'(x) = 0$ for all $x$ in $I$, then $f$ is \cle{constant} on $I$.
+\end{itemize}
+\emph{Proof (instructive, not required at the GCE).} Suppose $f'>0$ on $I$ and take $a<b$ in $I$. By the Mean Value Theorem there exists $c\in\,]a,b[$ such that $f(b)-f(a)=f'(c)(b-a)$. Since $f'(c)>0$ and $b-a>0$, we get $f(b)>f(a)$: $f$ is strictly increasing. The other cases are identical.
+\end{propriete}
+
+\begin{attention}[The converse needs care]
+If $f$ is strictly increasing and differentiable, we can only conclude $f'\geq 0$, not $f'>0$. For example $f(x)=x^3$ is strictly increasing on $\mathbb{R}$, yet $f'(0)=0$. A derivative may vanish at isolated points without destroying strict monotonicity.
+\end{attention}
+
+\begin{exemplebox}[Sign table of $f'$]
+Let $f(x)=x^3-3x$. Then $f'(x)=3x^2-3=3(x-1)(x+1)$, a quadratic with roots $-1$ and $1$, positive outside the roots (the coefficient of $x^2$ is positive). Since $f(-1)=2$ and $f(1)=-2$, the sign and variation table is:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+$x$ & $-\infty$ & & $-1$ & & $1$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & & $\nearrow$ & $2$ & $\searrow$ & $-2$ & $\nearrow$ & \\
+\hline
+\end{tabular}
+\end{center}
+So $f$ increases on $]-\infty,-1]$, decreases on $[-1,1]$, and increases again on $[1,+\infty[$.
+\end{exemplebox}
+
+\courssub{Stationary Points and Their Classification}
+
+\textbf{Intuition.}\par
+At the very top of a hill or the very bottom of a valley, the road is momentarily flat: the tangent to the curve is horizontal, so $f'=0$. Points where the tangent is horizontal are the candidates for local extrema.
+
+\begin{definition}[Stationary point, local maximum, local minimum]
+Let $f$ be differentiable on an interval $I$ and $a\in I$.
+\begin{itemize}
+\item $a$ is a \cle{stationary point} of $f$ if $f'(a)=0$. The tangent at $(a,f(a))$ is then horizontal.
+\item $f$ has a \cle{local maximum} at $a$ if there is a neighbourhood of $a$ on which $f(x)\leq f(a)$; the value $f(a)$ is the local maximum value.
+\item $f$ has a \cle{local minimum} at $a$ if there is a neighbourhood of $a$ on which $f(x)\geq f(a)$.
+\end{itemize}
+Local maxima and minima are called \cle{local extrema}.
+\end{definition}
+
+\begin{attention}[Stationary does not mean extremum]
+$f'(a)=0$ is \emph{necessary} for a local extremum (at an interior point where $f$ is differentiable) but \emph{not sufficient}. For $f(x)=x^3$, $f'(0)=0$, yet $0$ is neither a maximum nor a minimum: the function keeps increasing through the origin. This is a \emph{horizontal inflexion}, studied below.
+\end{attention}
+
+\begin{methode}[First derivative test versus second derivative test]
+To classify a stationary point $a$ (where $f'(a)=0$):
+\begin{enumerate}
+\item \textbf{First derivative test (always works).} Study the sign of $f'$ on each side of $a$:
+\begin{itemize}
+\item $f'$ changes from $+$ to $-$ at $a$ $\Rightarrow$ local \textbf{maximum};
+\item $f'$ changes from $-$ to $+$ at $a$ $\Rightarrow$ local \textbf{minimum};
+\item $f'$ keeps the same sign $\Rightarrow$ no extremum (horizontal inflexion).
+\end{itemize}
+\item \textbf{Second derivative test (faster, when it applies).} Compute $f''(a)$:
+\begin{itemize}
+\item $f''(a)>0$ $\Rightarrow$ local \textbf{minimum};
+\item $f''(a)<0$ $\Rightarrow$ local \textbf{maximum};
+\item $f''(a)=0$ $\Rightarrow$ the test is \textbf{inconclusive}: go back to the first derivative test.
+\end{itemize}
+\item \textbf{When to prefer which?} Use the second derivative test when $f''$ is easy to compute and does not vanish at $a$ (typical for polynomials of low degree, and in mechanics problems). Use the first derivative test when $f''$ is heavy to compute, when $f''(a)=0$, or when you have already built the sign table of $f'$ for the table of variations — then the classification is free.
+\end{enumerate}
+\end{methode}
+
+\begin{propriete}[Second derivative test]
+Let $f$ be twice differentiable near $a$, with $f'(a)=0$. If $f''(a)>0$, $f$ has a local minimum at $a$; if $f''(a)<0$, $f$ has a local maximum at $a$. \emph{Justification.} Since $f''(a)=\lim_{h\to0}\dfrac{f'(a+h)-f'(a)}{h}=\lim_{h\to0}\dfrac{f'(a+h)}{h}$, if $f''(a)>0$ then $f'(a+h)$ has the sign of $h$ for small $h$: negative before $a$, positive after — so $f$ decreases then increases, giving a minimum by the first derivative test.
+\end{propriete}
+
+\begin{exoresolu}[Classifying stationary points]
+Statement. Let $f(x)=2x^3-9x^2+12x-5$. Find the stationary points of $f$ and determine their nature.
+\tcblower
+\textbf{Solution.} $f$ is a polynomial, differentiable on $\mathbb{R}$.
+\[ f'(x)=6x^2-18x+12=6(x^2-3x+2)=6(x-1)(x-2). \]
+$f'(x)=0 \iff x=1$ or $x=2$: the stationary points are $1$ and $2$, with $f(1)=2-9+12-5=0$ and $f(2)=16-36+24-5=-1$.
+
+\emph{Second derivative test:} $f''(x)=12x-18$.
+$f''(1)=-6<0$: local \textbf{maximum} at $(1,0)$.
+$f''(2)=6>0$: local \textbf{minimum} at $(2,-1)$.
+
+\emph{Check with the first derivative test:} $f'$ is a quadratic positive outside its roots:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+$x$ & $-\infty$ & & $1$ & & $2$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & & $\nearrow$ & $0$ & $\searrow$ & $-1$ & $\nearrow$ & \\
+\hline
+\end{tabular}
+\end{center}
+The sign changes $+\to-$ at $1$ (maximum) and $-\to+$ at $2$ (minimum), confirming the result.
+\end{exoresolu}
+
+\courssub{Concavity and the Second Derivative}
+
+\textbf{Intuition.}\par
+Two curves can both be increasing and yet look completely different: one bends upwards like a bowl, the other bends downwards like a cap. What distinguishes them is whether the slope $f'$ is itself increasing or decreasing — that is, the sign of $f''=(f')'$.
+
+\begin{definition}[Concavity]
+Let $f$ be twice differentiable on an interval $I$.
+\begin{itemize}
+\item If $f''(x)>0$ on $I$, the curve is \cle{concave up} (we also say $f$ is \emph{convex}): the curve lies \textbf{above} each of its tangents, and the slopes increase.
+\item If $f''(x)<0$ on $I$, the curve is \cle{concave down}: the curve lies \textbf{below} each of its tangents, and the slopes decrease.
+\end{itemize}
+\end{definition}
+
+Geometrically, concave up means the tangent turns anticlockwise as $x$ grows (think of a bowl holding water); concave down means it turns clockwise (an umbrella shedding water).
+
+\courssub{Points of Inflexion}
+
+\begin{definition}[Point of inflexion]
+A point $a$ is a \cle{point of inflexion} of $f$ if the concavity of $f$ changes at $a$, i.e. $f''$ \textbf{changes sign} at $a$. At an inflexion point the tangent \emph{crosses} the curve: the curve passes from one side of its tangent to the other. If in addition $f'(a)=0$, the inflexion is called a \cle{horizontal inflexion} (the tangent is horizontal, as for $x^3$ at $0$).
+\end{definition}
+
+\begin{attention}[$f''(a)=0$ does not guarantee an inflexion point]
+A point of inflexion requires $f''$ to \textbf{change sign}, not merely to vanish. Counter-example: $f(x)=x^4$ has $f''(x)=12x^2$, so $f''(0)=0$, but $f''(x)\geq0$ on both sides of $0$ — the concavity does not change and $(0,0)$ is a minimum, not an inflexion. Always verify the sign change of $f''$ in a table.
+\end{attention}
+
+\begin{exemplebox}[Inflexion of a cubic]
+For $f(x)=x^3-3x$, $f''(x)=6x$, which changes sign at $0$ (negative before, positive after). Hence $(0,0)$ is a point of inflexion; the tangent there is $y=-3x$, and indeed $x^3-3x-(-3x)=x^3$ changes sign at $0$: the tangent crosses the curve. Every cubic $ax^3+bx^2+cx+d$ has exactly one inflexion point, at $x=-\dfrac{b}{3a}$ (the unique root of $f''(x)=6ax+2b$, where $f''$ plainly changes sign).
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=8cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-2.6, xmax=2.6, ymin=-3.2, ymax=3.2,
+  xtick={-2,-1,1,2}, ytick={-2,2},
+  domain=-2.3:2.3, samples=120,
+  legend style={at={(0.02,0.98)}, anchor=north west, font=\small}
+]
+\addplot[popblue, very thick] {x^3-3*x};
+\addlegendentry{$f(x)=x^3-3x$}
+\addplot[poporange, thick, domain=-1.9:-0.1] {2};
+\addplot[popgreen, thick, domain=0.1:1.9] {-2};
+\addplot[poppurple, thick, domain=-1.1:1.1] {-3*x};
+\addplot[only marks, mark=*, popdark] coordinates {(-1,2) (1,-2) (0,0)};
+\node[popdark, font=\small, anchor=south east] at (axis cs:-1,2) {max $(-1,2)$};
+\node[popdark, font=\small, anchor=north east] at (axis cs:1,-2) {min $(1,-2)$};
+\node[poppurple, font=\small, anchor=south west] at (axis cs:0.05,0.05) {inflexion $(0,0)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The cubic $f(x)=x^3-3x$: local maximum at $(-1,2)$ with horizontal tangent $y=2$, local minimum at $(1,-2)$ with tangent $y=-2$, and inflexion at $(0,0)$ where the tangent $y=-3x$ crosses the curve.}
+\end{popfigure}
+
+\courssub{The Four Local Shapes from the Signs of $f'$ and $f''$}
+
+Combining the sign of $f'$ (rising or falling) with the sign of $f''$ (bending up or down) gives exactly \textbf{four} possible local shapes. Recognising them lets you sketch a qualitatively correct curve directly from the sign tables.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} Signs & $f''>0$ (concave up) & $f''<0$ (concave down) \\
+\hline
+$f'>0$ (increasing) & Rising, bending up (like $e^x$) & Rising, bending down (like $\ln x$) \\
+\hline
+$f'<0$ (decreasing) & Falling, bending up (like $e^{-x}$) & Falling, bending down (like $-x^2$ for $x>0$) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.6]
+% f'>0, f''>0
+\draw[popline] (0,0) -- (1.6,0);
+\draw[popblue, very thick, domain=0.1:1.4, samples=40] plot (\x,{0.45*exp(0.9*\x)-0.5});
+\node[font=\small, align=center] at (0.8,-0.55) {$f'>0,\ f''>0$};
+% f'>0, f''<0
+\begin{scope}[xshift=2.6cm]
+\draw[popline] (0,0) -- (1.6,0);
+\draw[poporange, very thick, domain=0.1:1.4, samples=40] plot (\x,{1.1*ln(3.2*\x+0.35)+0.35});
+\node[font=\small, align=center] at (0.8,-0.55) {$f'>0,\ f''<0$};
+\end{scope}
+% f'<0, f''>0
+\begin{scope}[xshift=5.2cm]
+\draw[popline] (0,0) -- (1.6,0);
+\draw[popgreen, very thick, domain=0.1:1.4, samples=40] plot (\x,{1.35*exp(-1.5*\x)});
+\node[font=\small, align=center] at (0.8,-0.55) {$f'<0,\ f''>0$};
+\end{scope}
+% f'<0, f''<0
+\begin{scope}[xshift=7.8cm]
+\draw[popline] (0,0) -- (1.6,0);
+\draw[poppurple, very thick, domain=0.1:1.4, samples=40] plot (\x,{1.25-0.65*\x*\x});
+\node[font=\small, align=center] at (0.8,-0.55) {$f'<0,\ f''<0$};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{The four local shapes of a curve according to the signs of $f'$ and $f''$.}
+\end{popfigure}
+
+\begin{exoresolu}[Full local analysis]
+Statement. Let $f(x)=x^3-6x^2+9x+1$. Determine the intervals of monotonicity, the stationary points and their nature, the concavity and the points of inflexion of $f$.
+\tcblower
+\textbf{Solution.} $f'(x)=3x^2-12x+9=3(x-1)(x-3)$ and $f''(x)=6x-12=6(x-2)$.
+
+\emph{Monotonicity:} $f'>0$ outside $[1,3]$, negative inside. So $f$ increases on $]-\infty,1]$, decreases on $[1,3]$, increases on $[3,+\infty[$.
+
+\emph{Stationary points:} $f'(x)=0$ at $x=1$ and $x=3$, with $f(1)=1-6+9+1=5$ and $f(3)=27-54+27+1=1$.
+$f''(1)=-6<0$: local maximum $(1,5)$. $f''(3)=6>0$: local minimum $(3,1)$.
+
+\emph{Concavity and inflexion:} $f''(x)<0$ for $x<2$ (concave down) and $f''(x)>0$ for $x>2$ (concave up). Since $f''$ changes sign at $2$, the point $(2,f(2))=(2,3)$ is a point of inflexion. Note $f'(2)=12-24+9=-3\neq0$: the inflexion is oblique, with tangent $y-3=-3(x-2)$, i.e. $y=-3x+9$.
+\end{exoresolu}
+
+\courssub{GCE Extra: Reading the Graph of $f'$ to Deduce $f$}
+
+\begin{savaistu}[A frequent Paper 1 item]
+GCE Paper 1 often shows the \emph{graph of the derivative} $f'$ (never the graph of $f$ itself) and asks about $f$. The translation rules are: where the graph of $f'$ is \textbf{above} the $x$-axis, $f$ is increasing; where it is \textbf{below}, $f$ is decreasing; where it \textbf{crosses} the axis, $f$ has a stationary point — an extremum if the crossing is genuine (sign change), with a maximum where $f'$ goes from above to below; where the graph of $f'$ has a \textbf{turning point}, $f''$ changes sign, so $f$ has an inflexion point there.
+\end{savaistu}
+
+\begin{exemplebox}[From $f'$ to $f$]
+Suppose the graph of $f'$ is a parabola opening upwards, crossing the $x$-axis at $x=-1$ and $x=2$. Then: $f$ increases on $]-\infty,-1]$ (graph of $f'$ above the axis), decreases on $[-1,2]$, increases on $[2,+\infty[$; $f$ has a local maximum at $-1$ and a local minimum at $2$; and since the parabola has its vertex at $x=\tfrac12$, $f$ has an inflexion point at $x=\tfrac12$. All this without knowing a formula for $f$.
+\end{exemplebox}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Let $f(x)=x^3+3x^2-9x+4$. Find its stationary points, classify them, and determine its concavity and inflexion point.
+\item Let $g(x)=x^4-4x^3$. Show that $g''(0)=0$ but $0$ is \emph{not} an inflexion point, while $x=2$ is one. Classify the stationary point at $x=3$.
+\item The graph of $f'$ is a straight line through $(1,0)$ with negative slope. Describe the monotonicity and concavity of $f$ and the nature of the point $x=1$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $f'(x)=3x^2+6x-9=3(x+3)(x-1)$: stationary points $-3$ and $1$, with $f(-3)=-27+27+27+4=31$ and $f(1)=1+3-9+4=-1$. $f''(x)=6x+6$: $f''(-3)=-12<0$ (local maximum $(-3,31)$), $f''(1)=12>0$ (local minimum $(1,-1)$). $f''$ changes sign at $x=-1$: inflexion at $(-1,15)$ since $f(-1)=-1+3+9+4=15$; concave down on $]-\infty,-1[$, concave up on $]-1,+\infty[$.
+
+\textbf{2.} $g'(x)=4x^3-12x^2=4x^2(x-3)$; $g''(x)=12x^2-24x=12x(x-2)$. $g''(0)=0$ but $g''$ does not change sign at $0$ (positive on both sides near $0$): no inflexion at $0$ (it is a horizontal stationary point that is not an extremum either, since $g'\leq0$ around $0$). At $x=2$, $g''$ changes from $-$ to $+$: inflexion at $(2,-16)$ since $g(2)=16-32=-16$. $g''(3)=36>0$: local minimum at $(3,-27)$ since $g(3)=81-108=-27$.
+
+\textbf{3.} $f'$ is positive before $1$, negative after, and decreasing everywhere. Hence $f$ increases then decreases: local maximum at $x=1$; and $f''<0$ everywhere: $f$ is concave down on $\mathbb{R}$, with no inflexion point.
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 3]
+\begin{itemize}
+\item $f'>0$ on $I$ $\Rightarrow$ $f$ strictly increasing; $f'<0$ $\Rightarrow$ strictly decreasing.
+\item Stationary points solve $f'(x)=0$; classify them by the sign change of $f'$ (always) or by $f''(a)$ (when non-zero): $f''(a)>0$ minimum, $f''(a)<0$ maximum.
+\item $f''>0$: concave up, curve above its tangents; $f''<0$: concave down, curve below its tangents.
+\item Inflexion point: $f''$ \textbf{changes sign}; the tangent crosses the curve. $f''(a)=0$ alone proves nothing.
+\item The pair (sign of $f'$, sign of $f''$) gives four local shapes — learn to read them at a glance, and to translate the graph of $f'$ into the behaviour of $f$.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Section 4: Table of Variations, Infinite Branches and Intercepts}
+
+In Section 3 we learned how to use the derivative $f'$ to locate stationary points and the second derivative $f''$ to study concavity and inflexion points. All of this information is precious, but scattered. We now need a single document that \emph{summarises} everything we know about a function: its domain, its limits at the bounds, the sign of its derivative, its stationary values, and its asymptotic behaviour. That document is the \cle{table of variations}. Once it is built, we can read off the range, count the solutions of $f(x)=k$, classify the infinite branches, and prepare the final sketch. This section gives you that tool.
+
+\courssub{Sense of Variation and the Table of Variations}
+
+\textbf{From the sign of $f'$ to monotonicity.} Recall the fundamental link established earlier: on an interval $I$,
+\begin{itemize}
+\item if $f'(x) > 0$ on $I$ (except possibly at isolated points), then $f$ is \cle{strictly increasing} on $I$;
+\item if $f'(x) < 0$ on $I$, then $f$ is \cle{strictly decreasing} on $I$;
+\item if $f'(x) = 0$ on $I$, then $f$ is constant on $I$.
+\end{itemize}
+The \emph{sense of variation} of $f$ is therefore nothing more than the list of intervals of monotonicity, read directly from the sign table of $f'$. The table of variations is the sign table of $f'$, enriched with the values and limits of $f$ and with arrows showing the direction of variation.
+
+\begin{definition}[Table of variations]
+The \cle{table of variations} of a function $f$ is a table with (at least) three rows:
+\begin{itemize}
+\item a row for $x$, listing the bounds of the domain and every remarkable value (points where $f'$ vanishes or does not exist, points where $f$ is undefined);
+\item a row for the \emph{sign} of $f'(x)$ on each interval (and possibly a row for $f''$ if concavity is needed);
+\item a row for $f(x)$, containing the \emph{limits at the bounds}, the \emph{values at stationary points}, and \emph{arrows} ($\nearrow$ increasing, $\searrow$ decreasing) between consecutive remarkable values.
+\end{itemize}
+A double vertical bar is placed under a value of $x$ where $f$ is not defined (a forbidden value).
+\end{definition}
+
+\begin{methode}[Constructing a table of variations]
+\begin{enumerate}
+\item \textbf{Domain.} Determine $D_f$ and list, in increasing order, the bounds of $D_f$ and all remarkable values: roots of $f'(x)=0$, points where $f'$ fails to exist, forbidden values of $f$.
+\item \textbf{Sign of $f'$.} Factorise $f'(x)$ as much as possible, then fill the sign row: $+$, $-$, with $0$ under each stationary point.
+\item \textbf{Limits and values.} Compute $\lim f$ at each bound of $D_f$ and at each side of every forbidden value; compute $f$ at each stationary point. Place these numbers at the \emph{top} of a $\nearrow$ arrow or the \emph{bottom} of a $\searrow$ arrow so that the height of the number matches the monotonicity.
+\item \textbf{Arrows.} Draw $\nearrow$ where $f'>0$ and $\searrow$ where $f'<0$. Check coherence: an increasing arrow must go from a smaller value to a larger one.
+\item \textbf{Read off.} From the completed table, read the range, the extrema, and the number of solutions of $f(x)=k$.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Height of values in the table]
+The most frequent error is placing a value at the wrong height. If $f$ \emph{increases} from $2$ to $7$, then $2$ sits at the bottom of the arrow and $7$ at the top. A table in which an increasing arrow joins $7$ (top) to $2$ (bottom) is internally contradictory and will cost marks at the GCE.
+\end{attention}
+
+\courssub{A Complete Example: $f(x)=x+\dfrac{1}{x}$}
+
+Let us build the table of variations of $f(x)=x+\dfrac{1}{x}$, the classic GCE example.
+
+\textbf{Domain.} $f$ is defined for $x\neq 0$, so $D_f=\mathbb{R}\setminus\{0\}$. Note that $f$ is odd: $f(-x)=-f(x)$.
+
+\textbf{Derivative.} $f'(x)=1-\dfrac{1}{x^{2}}=\dfrac{x^{2}-1}{x^{2}}=\dfrac{(x-1)(x+1)}{x^{2}}$. Since $x^{2}>0$ on $D_f$, the sign of $f'$ is the sign of $(x-1)(x+1)$: positive on $]-\infty,-1[$ and $]1,+\infty[$, negative on $]-1,0[$ and $]0,1[$. Stationary points: $x=-1$ and $x=1$, with $f(-1)=-2$ and $f(1)=2$.
+
+\textbf{Limits.} $\displaystyle\lim_{x\to\pm\infty}f(x)=\pm\infty$; $\displaystyle\lim_{x\to 0^{+}}f(x)=+\infty$ and $\displaystyle\lim_{x\to 0^{-}}f(x)=-\infty$ (vertical asymptote $x=0$). Moreover $f(x)-x=\tfrac1x\to 0$, so $y=x$ is an oblique asymptote.
+
+\begin{center}
+\begin{tabular}{|c|ccccccccccc|}
+\hline
+$x$ & $-\infty$ & & $-1$ & & $0$ & & $1$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & \textbar\textbar & $-$ & $0$ & $+$ & \\
+\hline
+$f(x)$ & $-\infty$ & $\nearrow$ & $-2$ & $\searrow$ & $-\infty$ & \textbar\textbar & $+\infty$ & $\searrow$ & $2$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\courssub{Reading the Range and the Equation $f(x)=k$}
+
+The table of variations is not merely a summary: combined with the \cle{intermediate value theorem}, it \emph{proves} how many solutions an equation has.
+
+\begin{propriete}[Counting solutions from the table — examinable]
+Let $f$ be continuous and strictly monotonic on an interval $I$ with limits (or values) $\alpha$ and $\beta$ at its ends. Then for every $k$ strictly between $\alpha$ and $\beta$, the equation $f(x)=k$ has \emph{exactly one} solution in $I$. The \cle{range} of $f$ on $I$ is the interval with endpoints $\alpha$ and $\beta$ (open or closed according to whether the endpoints are limits or attained values).
+\end{propriete}
+
+The reasoning is examinable: continuity gives \emph{existence} (intermediate value theorem), strict monotonicity gives \emph{uniqueness}.
+
+\begin{exemplebox}[Reading $f(x)=x+\tfrac1x$ from its table]
+From the table above:
+\begin{itemize}
+\item On $]0,1]$, $f$ decreases continuously from $+\infty$ to $2$: range $[2,+\infty[$.
+\item On $[1,+\infty[$, $f$ increases from $2$ to $+\infty$: range $[2,+\infty[$.
+\item Hence on $]0,+\infty[$ the range is $[2,+\infty[$, and by oddness the full range is $]-\infty,-2]\cup[2,+\infty[$.
+\item The equation $f(x)=3$ has exactly two solutions (one in $]0,1[$, one in $]1,+\infty[$); $f(x)=1$ has none; $f(x)=2$ has exactly one ($x=1$).
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Infinite Branches: Asymptotic versus Parabolic}
+
+Whenever $|f(x)|\to+\infty$ as $x$ approaches a bound of the domain, the curve escapes to infinity: we say it has an \cle{infinite branch}. The important question is: \emph{how} does it escape? Does it hug a straight line, or does it shoot off like a parabola?
+
+\begin{definition}[Infinite branches]
+Let $f$ be defined on $]a,+\infty[$ with $\lim_{x\to+\infty}f(x)=\pm\infty$.
+\begin{itemize}
+\item If $\lim_{x\to+\infty}\dfrac{f(x)}{x}=0$, the curve has a \cle{parabolic branch in the direction of the $x$-axis} (horizontal direction).
+\item If $\lim_{x\to+\infty}\dfrac{f(x)}{x}=\pm\infty$, the curve has a \cle{parabolic branch in the direction of the $y$-axis} (vertical direction), e.g. $f(x)=x^{2}$.
+\item If $\lim_{x\to+\infty}\dfrac{f(x)}{x}=a\neq 0$ and $\lim_{x\to+\infty}\bigl(f(x)-ax\bigr)=b$, the line $y=ax+b$ is an \cle{oblique asymptote}: the branch is \emph{asymptotic}.
+\item If $\lim_{x\to+\infty}\dfrac{f(x)}{x}=a\neq 0$ but $f(x)-ax\to\pm\infty$, the branch is parabolic in the direction of the line $y=ax$.
+\end{itemize}
+Analogous statements hold as $x\to-\infty$.
+\end{definition}
+
+\begin{attention}[$\lim f=\infty$ does NOT mean ``asymptote'']
+Seeing $\lim_{x\to+\infty}f(x)=+\infty$ only tells you there is an infinite branch. To classify it you \emph{must} next compute $\lim_{x\to+\infty}\dfrac{f(x)}{x}$. For $f(x)=x^{2}$, $\lim f=+\infty$ but $\lim \tfrac{f(x)}{x}=+\infty$: parabolic branch, no asymptote. For $f(x)=x+\tfrac1x$, $\lim \tfrac{f(x)}{x}=1$ and $\lim(f(x)-x)=0$: oblique asymptote $y=x$. Skipping the second limit is a classic GCE trap.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=8cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=0, xmax=4.5, ymin=0, ymax=10,
+  xtick={1,2,3,4}, ytick={2,4,6,8,10},
+  legend style={at={(0.03,0.97)}, anchor=north west, font=\small},
+  samples=200, domain=0.3:4.4
+]
+\addplot[very thick, popblue] {x^2};
+\addlegendentry{$y=x^{2}$: parabolic branch (dir. $y$-axis)}
+\addplot[very thick, poporange] {1/x};
+\addlegendentry{$y=\tfrac1x$: asymptotic branch ($y=0$)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Two ways of going to infinity: $y=x^{2}$ escapes ever faster (parabolic branch, $\tfrac{x^{2}}{x}=x\to+\infty$) while $y=\tfrac1x$ clings to the line $y=0$ (asymptotic branch).}
+\end{popfigure}
+
+\courssub{Intercepts and Tangents at Key Points}
+
+The last ingredients before the final sketch are the points where the curve meets the axes, and the tangents there.
+
+\begin{methode}[Intercepts and refining tangents]
+\begin{enumerate}
+\item \textbf{$y$-intercept.} If $0\in D_f$, compute $f(0)$: the curve crosses the $y$-axis at $(0,f(0))$.
+\item \textbf{$x$-intercepts.} Solve $f(x)=0$ exactly when possible; otherwise use the table of variations to \emph{localise} each root in an interval (intermediate value reasoning) and, if required, estimate it.
+\item \textbf{Tangents.} At a key point $a$ (intercept or stationary point), write the tangent $y=f'(a)(x-a)+f(a)$. At a stationary point the tangent is \emph{horizontal}; at an inflexion point the tangent \emph{crosses} the curve. Drawing these tangents first makes the freehand sketch far more accurate.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Full preparation for sketching $f(x)=\dfrac{x^{2}-2x+2}{x-1}$]
+Study the variations, infinite branches and intercepts of $f(x)=\dfrac{x^{2}-2x+2}{x-1}$.
+\tcblower
+\textbf{Domain and limits.} $D_f=\mathbb{R}\setminus\{1\}$.
+$\displaystyle\lim_{x\to1^{-}}f(x)=-\infty$, $\displaystyle\lim_{x\to1^{+}}f(x)=+\infty$ (vertical asymptote $x=1$); $\displaystyle\lim_{x\to\pm\infty}f(x)=\pm\infty$.
+
+\textbf{Derivative.} $f'(x)=\dfrac{(2x-2)(x-1)-(x^{2}-2x+2)}{(x-1)^{2}}=\dfrac{x^{2}-2x}{(x-1)^{2}}=\dfrac{x(x-2)}{(x-1)^{2}}$.
+Sign of $f'$ = sign of $x(x-2)$: $f'>0$ on $]-\infty,0[$ and $]2,+\infty[$; $f'<0$ on $]0,1[$ and $]1,2[$. Stationary points: $f(0)=-2$ (local maximum), $f(2)=2$ (local minimum).
+
+\textbf{Infinite branches.} $\dfrac{f(x)}{x}=\dfrac{x^{2}-2x+2}{x^{2}-x}\to 1$ and $f(x)-x=\dfrac{-x+2}{x-1}\to -1$: oblique asymptote $y=x-1$ at both ends. Position: $f(x)-(x-1)=\dfrac{1}{x-1}$, so the curve is \emph{above} the asymptote for $x>1$ and \emph{below} for $x<1$.
+
+\textbf{Intercepts and tangents.} $f(x)=0\iff x^{2}-2x+2=0$, discriminant $4-8=-4<0$: \emph{no $x$-intercept}. $y$-intercept: $f(0)=-2$, which is also the local maximum, so the tangent at $(0,-2)$ is the horizontal line $y=-2$; similarly the tangent at $(2,2)$ is $y=2$.
+
+\textbf{Conclusion from the table.} On $]1,2]$, $f$ decreases from $+\infty$ to $2$; on $[2,+\infty[$, $f$ increases from $2$ to $+\infty$. Hence for $x>1$ the range is $[2,+\infty[$, and $f(x)=k$ has two solutions with $x>1$ when $k>2$, one when $k=2$, none when $k<2$.
+\end{exoresolu}
+
+\begin{exercice}[Preparing the sketch of a cubic]
+Let $f(x)=x^{3}-3x$.
+\begin{enumerate}
+\item Compute $f'(x)$ and build the complete table of variations of $f$ on $\mathbb{R}$, including the limits at $\pm\infty$.
+\item Show that the infinite branches are parabolic in the direction of the $y$-axis.
+\item Find all intercepts and the equations of the tangents at the $x$-intercepts.
+\item Using the table only, determine the number of solutions of $f(x)=k$ according to the values of $k\in\mathbb{R}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $f'(x)=3x^{2}-3=3(x-1)(x+1)$. $f'>0$ on $]-\infty,-1[$ and $]1,+\infty[$; $f'<0$ on $]-1,1[$. Stationary values: $f(-1)=2$ (local max), $f(1)=-2$ (local min). Limits: $\lim_{-\infty}f=-\infty$, $\lim_{+\infty}f=+\infty$. Table: $\nearrow$ from $-\infty$ to $2$, $\searrow$ from $2$ to $-2$, $\nearrow$ from $-2$ to $+\infty$.
+
+\textbf{2.} $\dfrac{f(x)}{x}=x^{2}-3\to+\infty$ as $x\to\pm\infty$: parabolic branches in the direction of the $y$-axis.
+
+\textbf{3.} $f(0)=0$: $y$-intercept at the origin. $f(x)=x(x^{2}-3)=0$ gives $x=0,\pm\sqrt{3}$. Tangents: at $(0,0)$, $f'(0)=-3$, so $y=-3x$; at $(\sqrt3,0)$, $f'(\sqrt3)=6$, so $y=6(x-\sqrt3)$; at $(-\sqrt3,0)$, $y=6(x+\sqrt3)$.
+
+\textbf{4.} From the table: if $k>2$ or $k<-2$, one solution; if $k=2$ or $k=-2$, two solutions (one being the stationary point); if $-2<k<2$, three solutions.
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 4]
+\begin{itemize}
+\item The table of variations gathers domain, sign of $f'$, limits at the bounds and stationary values, with arrows $\nearrow$/$\searrow$; heights of values must match the monotonicity.
+\item Continuity + strict monotonicity on each interval of the table gives the \emph{exact} number of solutions of $f(x)=k$ and the range of $f$.
+\item $\lim f=\pm\infty$ means an infinite branch; compute $\lim f(x)/x$ to classify it: $0$ or $\pm\infty$ gives a parabolic branch; a finite non-zero value $a$ with $f(x)-ax\to b$ gives the oblique asymptote $y=ax+b$.
+\item Intercepts: solve $f(x)=0$ and compute $f(0)$; draw the tangents at intercepts and stationary points to refine the sketch.
+\end{itemize}
+\end{aretenir}
+
+We now possess every ingredient: domain, limits, asymptotes, derivative, concavity, table of variations, infinite branches, intercepts and tangents. In Section 5 we assemble them into the complete, examination-ready study and sketch of a function.
+
+\coursec{Section 5: Complete Curve Sketching — Full Study of a Function}
+
+\courssub{From Ingredients to the Finished Dish}
+
+In Section 4 we learnt how to build the table of variations, how to analyse infinite branches and how to compute intercepts. Each of these tools, taken alone, gives only partial information about a function. The GCE Paper 2 question on curve sketching asks you to \emph{assemble} all of them into one coherent, rigorous and well-presented study. Think of a cook in a Douala restaurant: having good plantains, good fish and good spices is not enough — the skill lies in combining them in the right order. In the same way, the examiner rewards the \emph{plan} as much as the final picture.
+
+This section gives you the complete battle plan, then applies it in full to two model functions, exactly as you would in the examination hall.
+
+\courssub{The Complete GCE Study Plan}
+
+\begin{methode}[The 8-Step Complete Study Plan — Memorise for the Exam]
+To study a function $f$ completely and sketch its curve $\mathcal{C}_f$:
+\begin{enumerate}
+\item \textbf{Domain.} Determine the domain of definition $D_f$ (exclude values giving zero denominators, negative quantities under square roots, non-positive arguments of logarithms).
+\item \textbf{Symmetry.} Test whether $f$ is even ($f(-x)=f(x)$: symmetry about the $y$-axis) or odd ($f(-x)=-f(x)$: symmetry about the origin). If so, study on half the domain and complete by symmetry.
+\item \textbf{Limits.} Compute the limits of $f$ at every bound of $D_f$ (including $\pm\infty$ and both sides of any excluded value).
+\item \textbf{Asymptotes.} Deduce vertical asymptotes (infinite limits at finite points), horizontal asymptotes (finite limits at $\pm\infty$) or oblique asymptotes $y=ax+b$ (when $f(x)-(ax+b)\to 0$). Study the \emph{position} of the curve relative to each asymptote.
+\item \textbf{First derivative and variation.} Compute $f'$, solve $f'(x)=0$, determine the sign of $f'$, and identify stationary points and their nature (maximum, minimum).
+\item \textbf{Second derivative and inflexion.} Compute $f''$, find where $f''$ changes sign: these are inflexion points; read off the concavity.
+\item \textbf{Intercepts and strategic points.} Compute the intersections with the axes and the exact coordinates of extrema and inflexion points; add a few extra computed points if useful.
+\item \textbf{Table of variations and sketch.} Draw the complete table of variations (including $f''$ and concavity if asked), then sketch: axes and scale, asymptotes as dashed lines, strategic points, then the curve respecting variation, asymptotic behaviour and concavity.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, fill=popblueL, rounded corners=2pt, text width=3.1cm, align=center, minimum height=0.9cm, font=\small},
+  arr/.style={->, thick, popdark}]
+\node[box] (s1) at (0,0) {\textbf{1.} Domain $D_f$};
+\node[box] (s2) at (4.2,0) {\textbf{2.} Symmetry (even/odd)};
+\node[box] (s3) at (8.4,0) {\textbf{3.} Limits at bounds};
+\node[box] (s4) at (12.6,0) {\textbf{4.} Asymptotes \& position};
+\node[box] (s5) at (12.6,-2) {\textbf{5.} $f'$, sign, extrema};
+\node[box] (s6) at (8.4,-2) {\textbf{6.} $f''$, inflexion, concavity};
+\node[box] (s7) at (4.2,-2) {\textbf{7.} Intercepts \& key points};
+\node[box] (s8) at (0,-2) {\textbf{8.} Table of variations, then sketch};
+\draw[arr] (s1) -- (s2);
+\draw[arr] (s2) -- (s3);
+\draw[arr] (s3) -- (s4);
+\draw[arr] (s4) -- (s5);
+\draw[arr] (s5) -- (s6);
+\draw[arr] (s6) -- (s7);
+\draw[arr] (s7) -- (s8);
+\end{tikzpicture}
+\end{center}
+\legende{The 8-step complete study plan. Steps 1--4 concern the \emph{global} shape; steps 5--7 the \emph{local} details; step 8 assembles everything.}
+\end{popfigure}
+
+\begin{attention}[Present the Table of Variations \emph{Before} the Sketch]
+GCE examiners award independent marks for the table of variations. Always draw it \emph{before} the curve, and make sure the sketch is consistent with it: a curve that rises where the table says the function decreases loses marks, even if the table itself is correct.
+\end{attention}
+
+\courssub{Setting Up the Sketch: Axes, Scales and Strategy}
+
+Before drawing anything, decide on the \cle{scale}. Look at the coordinates of your strategic points: if the extrema have ordinates between $-2$ and $6$, a scale of \SI{1}{cm} per unit on both axes is comfortable. If values are large (say up to $50$), compress the $y$-axis (e.g.\ $1$ cm for $5$ units) — but state the scale clearly on each axis.
+
+\begin{methode}[Order of Construction on the Paper]
+\begin{enumerate}
+\item Draw the axes, mark the origin $O$, label $x$ and $y$, and indicate the unit on each axis.
+\item Draw all asymptotes as \textbf{dashed lines} and label them ($x=1$, $y=x-2$, etc.).
+\item Plot the strategic points: intercepts, extrema, inflexion points, with their coordinates labelled.
+\item Sketch the curve branch by branch, following the table of variations, approaching (but never touching) the vertical asymptotes, and respecting concavity.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Two Cardinal Sins of Sketching]
+\begin{itemize}
+\item A curve must \textbf{never cross a vertical asymptote}: the function is not defined there, so the curve cannot exist at that abscissa.
+\item Never \textbf{stop an infinite branch} in mid-air: if $\lim_{x\to+\infty}f(x)=+\infty$, the branch must leave the frame of your picture, not end with a full stop. An unjustified endpoint suggests a bound of the domain that does not exist.
+\end{itemize}
+\end{attention}
+
+\begin{attention}[Scales and Labels Cost Marks]
+In GCE Paper 2, marks are explicitly reserved for presentation. Unlabelled axes, missing units, an inconsistent scale (where the distance from $0$ to $1$ differs from that from $1$ to $2$), or unlabelled asymptotes each lose marks — even when all the analysis is correct. Treat the drawing as part of the mathematics.
+\end{attention}
+
+\courssub{Worked Model 1: A Rational Function with Vertical and Oblique Asymptotes}
+
+\begin{exoresolu}[Full GCE-Style Study of $f(x)=\dfrac{x^2-3x+3}{x-1}$]
+Study the function $f$ defined by $f(x)=\dfrac{x^2-3x+3}{x-1}$ and sketch its curve $\mathcal{C}$.
+\tcblower
+\textbf{Step 1 — Domain.} $f$ is defined unless $x-1=0$, so $D_f=\mathbb{R}\setminus\{1\}=(-\infty,1)\cup(1,+\infty)$.
+
+\textbf{Step 2 — Symmetry.} $f(-x)=\dfrac{x^2+3x+3}{-x-1}$, which equals neither $f(x)$ nor $-f(x)$: no symmetry.
+
+\textbf{Step 3 — Limits.} At the excluded value $x=1$: the numerator tends to $1-3+3=1>0$. Hence
+\[ \lim_{x\to 1^-}f(x)=-\infty, \qquad \lim_{x\to 1^+}f(x)=+\infty. \]
+At infinity, $f(x)\sim \dfrac{x^2}{x}=x$, so
+\[ \lim_{x\to-\infty}f(x)=-\infty, \qquad \lim_{x\to+\infty}f(x)=+\infty. \]
+
+\textbf{Step 4 — Asymptotes.} The limits at $x=1$ show that the line $x=1$ is a \cle{vertical asymptote}. Since $f$ is unbounded at infinity, there is no horizontal asymptote. Polynomial division gives
+\[ x^2-3x+3=(x-1)(x-2)+1 \quad\Longrightarrow\quad f(x)=x-2+\frac{1}{x-1}. \]
+Since $\dfrac{1}{x-1}\to 0$ as $x\to\pm\infty$, the line $y=x-2$ is an \cle{oblique asymptote} at both ends. \emph{Position:} $f(x)-(x-2)=\dfrac{1}{x-1}$, which is positive for $x>1$ (curve \emph{above} the asymptote) and negative for $x<1$ (curve \emph{below}).
+
+\textbf{Step 5 — First derivative.} Using the quotient rule (or differentiating $x-2+\frac{1}{x-1}$):
+\[ f'(x)=1-\frac{1}{(x-1)^2}=\frac{(x-1)^2-1}{(x-1)^2}=\frac{x(x-2)}{(x-1)^2}. \]
+Since $(x-1)^2>0$ on $D_f$, the sign of $f'$ is that of $x(x-2)$: positive on $(-\infty,0)$, negative on $(0,1)$ and $(1,2)$, positive on $(2,+\infty)$. Stationary points: $f'(0)=0$ with $f(0)=-3$ (local \textbf{maximum}, since $f'$ changes from $+$ to $-$); $f'(2)=0$ with $f(2)=1$ (local \textbf{minimum}).
+
+\textbf{Step 6 — Second derivative.} $f''(x)=\dfrac{2}{(x-1)^3}$. This never vanishes, so there is \textbf{no inflexion point}; $f''<0$ on $(-\infty,1)$ (concave down) and $f''>0$ on $(1,+\infty)$ (concave up): the concavity changes across the asymptote, not at a point of the curve.
+
+\textbf{Step 7 — Intercepts.} $f(0)=-3$: the curve cuts the $y$-axis at $(0,-3)$. For the $x$-axis, $x^2-3x+3=0$ has discriminant $9-12=-3<0$: no $x$-intercept.
+
+\textbf{Step 8 — Table of variations and sketch.}
+\begin{center}
+\begin{tabular}{|c|cccccccc|}
+\hline
+$x$ & $-\infty$ & & $0$ & & $1$ & & $2$ & \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $\|$ & $-$ & $0$ & $+$ \\
+\hline
+$f(x)$ & $-\infty$ & $\nearrow$ & $-3$ & $\searrow$ & $\|\ \begin{smallmatrix}-\infty\\+\infty\end{smallmatrix}$ & $\searrow$ & $1$ & $\nearrow\ +\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+The sketch (axes, dashed asymptotes $x=1$ and $y=x-2$, points $(0,-3)$ and $(2,1)$) is shown in the figure below.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  axis lines=middle, xlabel=$x$, ylabel=$y$,
+  xmin=-4.5, xmax=6.5, ymin=-7, ymax=7,
+  xtick={-4,-3,-2,-1,1,2,3,4,5,6}, ytick={-6,-4,-2,2,4,6},
+  width=13cm, height=11cm, samples=200, domain=-4.5:6.5,
+  clip=true]
+\addplot[popblue, thick, domain=-4.5:0.93] {(x^2-3*x+3)/(x-1)};
+\addplot[popblue, thick, domain=1.07:6.5] {(x^2-3*x+3)/(x-1)};
+\addplot[poporange, dashed, thick, domain=-7:7] {x-2};
+\draw[poporange, dashed, thick] (axis cs:1,-7) -- (axis cs:1,7);
+\node[poporange, font=\small] at (axis cs:5.6,2.6) {$y=x-2$};
+\node[poporange, font=\small] at (axis cs:1.35,-6.2) {$x=1$};
+\addplot[only marks, mark=*, popdark] coordinates {(0,-3) (2,1)};
+\node[popdark, font=\small, anchor=east] at (axis cs:-0.15,-3) {$(0,-3)$ max};
+\node[popdark, font=\small, anchor=west] at (axis cs:2.15,1) {$(2,1)$ min};
+\node[popblue, font=\small] at (axis cs:-3.2,-6.4) {$\mathcal{C}$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Completed sketch of $f(x)=\dfrac{x^2-3x+3}{x-1}$: vertical asymptote $x=1$, oblique asymptote $y=x-2$, local maximum $(0,-3)$, local minimum $(2,1)$. Note the curve approaches but never crosses $x=1$.}
+\end{popfigure}
+
+\courssub{Worked Model 2: A Function with an Exponential Component}
+
+\begin{exoresolu}[Study of $g(x)=x+e^{-x}$]
+Study the function $g$ defined by $g(x)=x+e^{-x}$ and sketch its curve $\mathcal{C}$.
+\tcblower
+\textbf{Step 1 — Domain.} $D_g=\mathbb{R}$.
+
+\textbf{Step 2 — Symmetry.} $g(-x)=-x+e^{x}$, neither even nor odd.
+
+\textbf{Step 3 — Limits.}
+\[ \lim_{x\to+\infty}g(x)=+\infty, \quad \lim_{x\to+\infty}\bigl(g(x)-x\bigr)=\lim_{x\to+\infty}e^{-x}=0. \]
+Hence $y=x$ is an oblique asymptote as $x\to+\infty$, with the curve \emph{above} it because $e^{-x}>0$.
+\[ \lim_{x\to-\infty}g(x)=+\infty \quad (\text{since } e^{-x}\to+\infty). \]
+No asymptote as $x\to-\infty$.
+
+\textbf{Step 4 — Asymptotes.} Vertical: none. Horizontal: none. Oblique: $y=x$ as $x\to+\infty$ (curve above).
+
+\textbf{Step 5 — First derivative.} $g'(x)=1-e^{-x}$. $g'(x)=0 \iff e^{-x}=1 \iff x=0$.
+Sign of $g'$: $g'(x)<0$ for $x<0$, $g'(x)>0$ for $x>0$. Hence $g$ has a local (and global) \textbf{minimum} at $(0,1)$.
+
+\textbf{Step 6 — Second derivative.} $g''(x)=e^{-x}>0$ for all $x$. The curve is concave up everywhere; no inflexion point.
+
+\textbf{Step 7 — Intercepts.} $g(0)=1$: $y$-intercept at $(0,1)$. $x$-intercept: $x+e^{-x}=0$. Since $g(x)\ge 1$ for all $x$, there is no $x$-intercept.
+
+\textbf{Step 8 — Table of variations and sketch.}
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$x$ & $-\infty$ & & $0$ & & $+\infty$ \\
+\hline
+$g'(x)$ & & $-$ & $0$ & $+$ & \\
+\hline
+$g(x)$ & $+\infty$ & $\searrow$ & $1$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+The sketch is shown below.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  axis lines=middle, xlabel=$x$, ylabel=$y$,
+  xmin=-4, xmax=5, ymin=-1, ymax=6,
+  xtick={-4,-3,-2,-1,1,2,3,4}, ytick={1,2,3,4,5},
+  width=13cm, height=10cm, samples=200, domain=-4:5,
+  clip=true]
+\addplot[popblue, thick] {x+exp(-x)};
+\addplot[poporange, dashed, thick, domain=-4:5] {x};
+\node[poporange, font=\small] at (axis cs:4.2,3.8) {$y=x$};
+\addplot[only marks, mark=*, popdark] coordinates {(0,1)};
+\node[popdark, font=\small, anchor=south west] at (axis cs:0.15,1) {$(0,1)$ min};
+\node[popblue, font=\small] at (axis cs:-3.5,5.5) {$\mathcal{C}$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Sketch of $g(x)=x+e^{-x}$: oblique asymptote $y=x$ as $x\to+\infty$ (curve above), global minimum at $(0,1)$, concave up everywhere.}
+\end{popfigure}
+
+\courssub{Using the Sketch: Graphical Solution of Equations and Inequalities}
+
+A completed sketch is not decoration — it is a \emph{computing tool}. The number of solutions of $f(x)=m$ is the number of intersection points of $\mathcal{C}_f$ with the horizontal line $y=m$; the solutions of $f(x)\ge m$ are the abscissae where the curve lies on or above that line.
+
+\begin{methode}[Discussing the Number of Solutions of $f(x)=m$]
+\begin{enumerate}
+\item Read from the table of variations the extrema and the limits at the bounds.
+\item Draw (mentally or on the sketch) the horizontal line $y=m$.
+\item Count the intersections for each position of the line, splitting at the \emph{critical levels}: the ordinates of extrema and the limits at the bounds.
+\item Present the conclusion as cases on $m$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Discussion for $f(x)=\dfrac{x^2-3x+3}{x-1}$]
+From the table of variations:
+\begin{itemize}
+\item On $(-\infty,1)$: $f$ increases from $-\infty$ to the maximum $-3$ at $x=0$, then decreases to $-\infty$.
+\item On $(1,+\infty)$: $f$ decreases from $+\infty$ to the minimum $1$ at $x=2$, then increases to $+\infty$.
+\end{itemize}
+The critical levels are $m=1$ (minimum on right branch), $m=-3$ (maximum on left branch), and the limits $\pm\infty$.
+\begin{itemize}
+\item If $m>1$: the line $y=m$ meets the right branch twice (once on the decreasing part, once on the increasing part) and does not meet the left branch (where $f(x)\le -3$). \textbf{2 solutions}.
+\item If $m=1$: the line is tangent at the minimum $(2,1)$. \textbf{1 solution} ($x=2$).
+\item If $-3<m<1$: the line lies strictly between the maximum of the left branch and the minimum of the right branch. \textbf{0 solutions}.
+\item If $m=-3$: the line is tangent at the maximum $(0,-3)$. \textbf{1 solution} ($x=0$).
+\item If $m<-3$: the line meets the left branch twice (once on the increasing part, once on the decreasing part) and does not meet the right branch (where $f(x)\ge 1$). \textbf{2 solutions}.
+\end{itemize}
+This case-by-case discussion, read directly off the table of variations, is a classic GCE follow-up question.
+\end{exemplebox}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Study completely and sketch $h(x)=\dfrac{x^2+1}{x}$ (show that $y=x$ is an oblique asymptote and that $h$ is odd).
+\item Using your sketch, discuss according to the values of $m$ the number of solutions of $h(x)=m$.
+\item (Extension) Study $k(x)=x-1+e^{-x}$ and deduce the number of solutions of $x-1+e^{-x}=0$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1 — Hints]
+1. $D_h=\mathbb{R}^*$; $h(-x)=-h(x)$ (odd). $h(x)=x+\frac1x$: asymptote $y=x$, vertical asymptote $x=0$; $h'(x)=1-\frac{1}{x^2}=\frac{x^2-1}{x^2}$: max $-2$ at $x=-1$, min $2$ at $x=1$. 
+2. Two solutions if $|m|>2$, one if $m=\pm2$, none if $|m|<2$. 
+3. $k'(x)=1-e^{-x}$, minimum $k(0)=0$: the equation has exactly one solution, $x=0$.
+\end{corrige}
+
+\begin{aretenir}[What the Examiner Expects on Your Paper]
+\begin{itemize}
+\item Labelled axes with the origin and a consistent, stated scale.
+\item All asymptotes drawn dashed and labelled with their equations.
+\item Key points (intercepts, extrema, inflexion) plotted and labelled with coordinates.
+\item A table of variations presented \emph{before} the sketch, fully consistent with it.
+\item The curve never crossing a vertical asymptote; infinite branches leaving the frame.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Why So Much Emphasis on a Drawing?]
+Curve sketching is the chapter where all of Upper Sixth analysis converges: domains, limits, asymptotes, differentiation and concavity. Engineers at the Douala seaport or designing roads across the Adamawa plateau reason exactly this way: before computing anything numerically, they picture the \emph{shape} of the phenomenon — where it blows up, where it settles, where it turns. A correct sketch is proof that you have understood the function, not merely computed with it.
+\end{savaistu}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Complete Curve Sketching — Full Study of a Function}
+
+\courssub{Aims of the activity}
+
+This integration activity mobilises, in a single authentic context, the complete strategy for studying and sketching a function developed throughout this chapter. By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item determine the \cle{domain} of a function arising from a concrete situation, and justify it both mathematically and physically;
+\item compute \cle{limits at the bounds} of the domain and interpret them in the language of the problem;
+\item identify \cle{infinite branches} and decide whether a vertical asymptote exists;
+\item compute the \cle{derivative}, locate \cle{stationary points} and prove their nature using the sign of $C'$ or the second derivative;
+\item build a complete \cle{table of variations} consistent with the limits and the derivative;
+\item \cle{sketch the curve} with a sensible choice of axes and scales, marking the remarkable points;
+\item use the graph to discuss the number of solutions of an equation $C(r) = k$ according to the values of a parameter $k$;
+\item communicate a mathematical argument clearly, in writing and orally, and compare a hand sketch with a calculator plot.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Domain and range $\rightarrow$ limits at the bounds $\rightarrow$ asymptotic behaviour $\rightarrow$ derivative and stationary points $\rightarrow$ table of variations $\rightarrow$ complete sketch $\rightarrow$ graphical discussion of an equation. This is exactly the order of a full GCE Advanced Level curve-sketching question.
+\end{aretenir}
+
+\courssub{Situation}
+
+\begin{experience}[Optimising a water tank at a Yaoundé construction site]
+A building contractor in the \emph{Mvan} neighbourhood of Yaoundé must install an \textbf{open cylindrical water tank} (a cylinder with a base but no lid) to store water for mixing concrete. The tank must hold exactly $2\ \mathrm{m^3}$ of water.
+
+The contractor buys sheet metal for the base and the curved wall. A careful estimate of material and labour gives the following model for the total cost, in FCFA, as a function of the radius $r$ of the tank (in metres):
+\[
+C(r) = 4000\pi r^{2} + \frac{16000\pi}{r}.
+\]
+The first term corresponds to the base and wall area (which grow with $r$), the second term reflects the fact that, the volume being fixed, a narrow tank must be very tall, which raises the cost of the wall.
+
+The contractor asks your group two questions:
+\begin{enumerate}
+\item What radius $r$ should be chosen so that the cost is as small as possible, and what is that minimum cost?
+\item For which budgets $k$ (in FCFA) can the project be realised exactly, i.e.\ for which values of $k$ does the equation $C(r) = k$ admit at least one solution, and how many radii are then possible?
+\end{enumerate}
+Each group will carry out the \textbf{complete study} of the function $C$, sketch its curve with carefully chosen scales, and present its conclusions to the class. The sketches will then be compared with a plot obtained on a graphical calculator.
+\end{experience}
+
+\courssub{Tasks}
+
+\begin{exercice}[Integration activity: Optimising a water tank]
+Work in groups of three or four. Write up every step carefully: the quality of the justification counts as much as the answer.
+
+\begin{enumerate}
+\item \textbf{Domain.} Explain why the model only makes sense for $r > 0$. Write the domain $D_C$ of the function $C$ in interval notation.
+
+\item \textbf{Limits at the bounds.} Compute $\displaystyle\lim_{r \to 0^{+}} C(r)$ and $\displaystyle\lim_{r \to +\infty} C(r)$. Interpret each result physically: what happens to the cost when the tank is made extremely narrow, and when it is made extremely wide?
+
+\item \textbf{Asymptotic behaviour.} The line $r = 0$ (the vertical axis) is not in the domain. Using your answer to question 2, state what the vertical axis represents for the curve. Is there any vertical asymptote \emph{inside} the domain? Describe the infinite branches of the curve.
+
+\item \textbf{Derivative and stationary point.} Show that
+\[
+C'(r) = 8000\pi r - \frac{16000\pi}{r^{2}} = \frac{8000\pi\bigl(r^{3} - 8\bigr)}{r^{2}}.
+\]
+Deduce that $C$ has exactly one stationary point, at $r = 2$.
+
+\item \textbf{Nature of the stationary point.} Study the sign of $r^{3} - 8$ for $r > 0$, hence the sign of $C'(r)$. Conclude that the stationary point is a minimum. Confirm by computing $C''(r)$ and showing that $C''(2) > 0$.
+
+\item \textbf{Minimum cost.} Compute the exact value $C(2)$, then give its value in FCFA rounded to the nearest hundred.
+
+\item \textbf{Table of variations.} Gather all the previous results in a complete table of variations of $C$ on $]0\,;\,+\infty[$.
+
+\item \textbf{Sketch.} On graph paper, sketch the curve of $C$. Suggested scales: $2\ \mathrm{cm}$ for $1$ metre on the horizontal axis (from $0$ to $5$), and $1\ \mathrm{cm}$ for $20000$ FCFA on the vertical axis. Mark the minimum point, and indicate the behaviour near the vertical axis and for large $r$. Compute $C(1)$, $C(3)$ and $C(4)$ to place three extra points.
+
+\item \textbf{Graphical discussion.} Using your sketch (or the table of variations), determine, according to the values of $k$, the number of solutions of the equation $C(r) = k$ in $]0\,;\,+\infty[$.
+
+\item \textbf{Presentation.} Prepare a two-minute oral presentation: state the optimal radius, the corresponding height $h$ of the tank (recall that the volume is $\pi r^{2}h = 2$), the minimum cost, and your answer to the contractor's second question.
+\end{enumerate}
+\end{exercice}
+
+\begin{attention}[Common traps]
+\begin{itemize}
+\item Do not include $r = 0$ in the domain: division by zero is undefined, and a tank of radius $0$ has no physical meaning.
+\item The limit as $r \to 0^{+}$ is governed by the term $\dfrac{16000\pi}{r}$, not by $4000\pi r^{2}$.
+\item A stationary point is where $C'(r) = 0$; you must still \emph{prove} it is a minimum (sign of $C'$ or sign of $C''$).
+\item In the table of variations, do not write a finite value at $r = 0$: write the limit $+\infty$ and keep $0$ excluded.
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+\begin{corrige}[Integration activity: Optimising a water tank]
+
+\textbf{1. Domain.} A radius is a length, so $r \geq 0$; moreover $\dfrac{16000\pi}{r}$ is undefined at $r = 0$, and a tank of radius $0$ cannot hold $2\ \mathrm{m^3}$. Hence
+\[
+D_C = \left]0\,;\,+\infty\right[.
+\]
+
+\textbf{2. Limits at the bounds.} As $r \to 0^{+}$, $4000\pi r^{2} \to 0$ and $\dfrac{16000\pi}{r} \to +\infty$, so
+\[
+\lim_{r \to 0^{+}} C(r) = +\infty.
+\]
+As $r \to +\infty$, $4000\pi r^{2} \to +\infty$ and $\dfrac{16000\pi}{r} \to 0$, so
+\[
+\lim_{r \to +\infty} C(r) = +\infty.
+\]
+\emph{Interpretation:} a very narrow tank must be extremely tall to hold $2\ \mathrm{m^3}$, so its wall is enormous and the cost explodes; a very wide tank has a huge base, and the cost explodes again. A compromise must exist between the two extremes.
+
+\textbf{3. Asymptotic behaviour.} Since $\displaystyle\lim_{r \to 0^{+}} C(r) = +\infty$, the line $r = 0$ (the vertical axis) is a \cle{vertical asymptote} of the curve at the boundary of the domain. Inside $]0\,;\,+\infty[$ the function is continuous (it is a sum of continuous functions), so there is \textbf{no vertical asymptote inside the domain}. The curve has two \cle{infinite branches}: one as $r \to 0^{+}$ (the curve climbs along the vertical axis) and one as $r \to +\infty$ (the curve rises like the parabola $y = 4000\pi r^{2}$, since $\frac{16000\pi}{r} \to 0$). There is no horizontal or oblique asymptote because $C(r) \to +\infty$ faster than any straight line.
+
+\textbf{4. Derivative and stationary point.} Differentiating term by term:
+\begin{align*}
+C'(r) &= 4000\pi \times 2r + 16000\pi \times \left(-\frac{1}{r^{2}}\right) \\
+&= 8000\pi r - \frac{16000\pi}{r^{2}} \\
+&= \frac{8000\pi r^{3} - 16000\pi}{r^{2}} = \frac{8000\pi\bigl(r^{3} - 8\bigr)}{r^{2}}.
+\end{align*}
+Since $8000\pi > 0$ and $r^{2} > 0$ on $D_C$, $C'(r) = 0$ if and only if $r^{3} - 8 = 0$, i.e.\ $r^{3} = 8$, i.e.\ $\boxed{r = 2}$. There is exactly one stationary point.
+
+\textbf{5. Nature of the stationary point.} The cube function is strictly increasing, so
+\[
+r^{3} - 8 < 0 \ \text{for}\ 0 < r < 2, \qquad r^{3} - 8 > 0 \ \text{for}\ r > 2.
+\]
+Therefore $C'(r) < 0$ on $]0\,;\,2[$ and $C'(r) > 0$ on $]2\,;\,+\infty[$: $C$ decreases then increases, so the stationary point at $r = 2$ is a \cle{minimum} (in fact the absolute minimum on $D_C$).
+
+\emph{Confirmation with the second derivative:}
+\[
+C''(r) = 8000\pi + \frac{32000\pi}{r^{3}}, \qquad C''(2) = 8000\pi + \frac{32000\pi}{8} = 12000\pi > 0,
+\]
+which confirms a minimum.
+
+\textbf{6. Minimum cost.}
+\[
+C(2) = 4000\pi(2)^{2} + \frac{16000\pi}{2} = 16000\pi + 8000\pi = 24000\pi.
+\]
+Numerically, $24000\pi \approx 75398.2$, so the minimum cost is about $\boxed{75400\ \text{FCFA}}$ (to the nearest hundred).
+
+\textbf{7. Table of variations.}
+
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$r$ & $0$ & & $2$ & & $+\infty$ \\
+\hline
+$C'(r)$ & & $-$ & $0$ & $+$ & \\
+\hline
+$C(r)$ & $+\infty$ & $\searrow$ & $24000\pi$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{8. Sketch.} Additional points:
+\[
+C(1) = 4000\pi + 16000\pi = 20000\pi \approx 62832,
+\]
+\[
+C(3) = 36000\pi + \frac{16000\pi}{3} \approx 129846, \qquad
+C(4) = 64000\pi + 4000\pi = 68000\pi \approx 213628.
+\]
+With the suggested scales, plot $(1\,;\,62832)$, the minimum $(2\,;\,75398)$, $(3\,;\,129846)$ and $(4\,;\,213628)$; let the curve shoot upwards along the vertical axis as $r \to 0^{+}$ and rise steeply for large $r$.
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=11cm, height=8cm,
+    axis lines=middle,
+    xlabel={$r$ (m)}, ylabel={$C(r)$ (FCFA)},
+    xmin=0, xmax=5, ymin=0, ymax=260000,
+    xtick={1,2,3,4,5},
+    ytick={50000,100000,150000,200000,250000},
+    scaled y ticks=false,
+    tick label style={font=\small},
+    domain=0.42:4.6, samples=120,
+    every axis x label/.style={at={(ticklabel* cs:1.02)},anchor=west},
+    every axis y label/.style={at={(ticklabel* cs:1.02)},anchor=south},
+]
+\addplot[popblue, very thick] {4000*pi*x^2 + 16000*pi/x};
+\addplot[mark=*, mark size=2pt, poporange] coordinates {(2,75398.2)};
+\node[popdark, anchor=west, font=\small] at (axis cs:2.1,60000) {min $(2\,;\,24000\pi)$};
+\addplot[mark=*, mark size=1.5pt, popgreen] coordinates {(1,62831.9) (3,129846.3) (4,213628.3)};
+\end{axis}
+\end{tikzpicture}
+\legende{The cost curve $C(r) = 4000\pi r^{2} + \frac{16000\pi}{r}$: vertical asymptote $r = 0$, unique minimum at $r = 2$.}
+\end{popfigure}
+
+\textbf{9. Graphical discussion of $C(r) = k$.} The solutions are the abscissae of the intersections of the curve with the horizontal line $y = k$. Reading the table of variations (minimum value $24000\pi \approx 75400$):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} Values of $k$ & Number of solutions of $C(r) = k$ \\
+\hline
+$k < 24000\pi$ & No solution (the line lies below the whole curve). \\
+\hline
+$k = 24000\pi$ & Exactly one solution, $r = 2$ (the line touches the curve at its minimum). \\
+\hline
+$k > 24000\pi$ & Exactly two solutions, one in $]0\,;\,2[$ and one in $]2\,;\,+\infty[$. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{10. Conclusion for the contractor.} The optimal radius is $r = 2\ \mathrm{m}$. Since the volume satisfies $\pi r^{2} h = 2$, the corresponding height is
+\[
+h = \frac{2}{\pi (2)^{2}} = \frac{1}{2\pi} \approx 0.159\ \mathrm{m}.
+\]
+The minimum cost is $24000\pi \approx 75400$ FCFA. A budget below $24000\pi$ FCFA makes the project impossible; a budget exactly equal to it forces the unique optimal design; any larger budget allows exactly two possible radii — a narrow tall tank or a wide shallow one — between which the contractor can choose according to the space available on the site.
+
+\end{corrige}
+
+\begin{aretenir}[What this activity teaches]
+Every complete function study at the GCE Advanced Level follows the same road map: domain $\to$ limits at the bounds $\to$ asymptotes and infinite branches $\to$ derivative and stationary points $\to$ table of variations $\to$ sketch $\to$ graphical exploitation. Mastering this road map on a concrete problem is the best possible preparation for Paper 2.
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Curve Sketching}
+
+\courssub{Section 1: Domain, Range and Limits at the Bounds}
+
+\begin{definition}[Domain and Range]
+Let $f$ be a real function. The \cle{domain} $D_f$ is the set of all real numbers $x$ for which $f(x)$ is defined. The \cle{range} (or image set) is the set of all values $f(x)$ for $x\in D_f$.
+\end{definition}
+
+\begin{aretenir}[Finding the domain]
+The domain is $\mathbb{R}$ minus the values that make forbidden operations undefined:
+\begin{itemize}
+\item Denominator zero: exclude $x$ such that denominator $=0$.
+\item Even-index roots (square root, fourth root, etc.): require radicand $\geq 0$.
+\item Logarithms: require argument $>0$.
+\item Other functions: $\arcsin$, $\arccos$ require argument in $[-1,1]$; $\tan x$ requires $x\neq \frac{\pi}{2}+k\pi$, etc.
+\end{itemize}
+$D_f$ is expressed as a union of intervals.
+\end{aretenir}
+
+\textbf{Method 1: Determining the Domain and Range of a Function}\par
+
+\begin{methode}[Finding the domain and range]
+\begin{enumerate}
+\item \textbf{Identify forbidden operations.} Look for: denominators (exclude values making them zero), square roots of even index (require the radicand $\geq 0$), logarithms (require the argument $>0$), and any other function with restricted domain.
+\item \textbf{Solve the conditions.} Write each condition as an equation or inequality and solve for $x$.
+\item \textbf{Write the domain} $D_f$ as a union of intervals.
+\item \textbf{For the range}, either solve $y=f(x)$ for $x$ in terms of $y$ and find the values of $y$ for which a real solution $x\in D_f$ exists, or use the completed-square form for quadratics, or use the variation table for more complex functions.
+\item \textbf{Check the bounds}: values attained at stationary points or approached at the ends of the domain give the endpoints of the range.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Domain and range of a rational function]
+Let $f$ be the function defined by $f(x)=\dfrac{3x+1}{x-2}$.
+\begin{enumerate}
+\item Determine the domain $D_f$ of $f$.
+\item Show that the range of $f$ is $\mathbb{R}\setminus\{3\}$.
+\end{enumerate}
+\tcblower
+\textbf{1. Domain.} The only forbidden operation is the denominator $x-2$. We require
+\[ x-2\neq 0 \iff x\neq 2. \]
+Hence $D_f=\mathbb{R}\setminus\{2\}=(-\infty,2)\cup(2,+\infty)$.
+
+\textbf{2. Range.} Let $y\in\mathbb{R}$. We look for $x\in D_f$ with $f(x)=y$:
+\begin{align*}
+y=\frac{3x+1}{x-2} &\iff y(x-2)=3x+1 \quad (x\neq 2)\\
+&\iff yx-2y=3x+1\\
+&\iff x(y-3)=2y+1.
+\end{align*}
+If $y=3$, the equation becomes $0=7$, which is impossible: $3$ is \emph{not} in the range. If $y\neq 3$, then $x=\dfrac{2y+1}{y-3}$ is a solution, and one checks $x\neq 2$ (since $\frac{2y+1}{y-3}=2$ would give $2y+1=2y-6$, impossible). Therefore every $y\neq 3$ is attained, and the range is $\mathbb{R}\setminus\{3\}$.
+\end{exoresolu}
+
+\begin{aretenir}[Limits at the bounds]
+For a rational function $\frac{P(x)}{Q(x)}$:
+\begin{itemize}
+\item At $\pm\infty$: keep only the leading terms. If $\deg P < \deg Q$, limit $=0$; if $\deg P = \deg Q$, limit $=$ ratio of leading coefficients; if $\deg P > \deg Q$, limit $=\pm\infty$ (sign depends on leading coefficients and parity of degree difference).
+\item At a finite excluded value $a$: factor numerator and denominator. If numerator $\to L\neq0$ and denominator $\to0$, the limit is $\pm\infty$; determine the sign by a sign table of the denominator near $a$.
+\item Indeterminate form $\frac{0}{0}$: factorise (or use conjugate for roots) and simplify before taking the limit.
+\end{itemize}
+\end{aretenir}
+
+\textbf{Method 2: Computing Limits at the Bounds of the Domain}\par
+
+\begin{methode}[Limits at the bounds]
+\begin{enumerate}
+\item \textbf{List the bounds} of $D_f$: $\pm\infty$ and the excluded finite values $a$ (approached from the left $a^-$ and from the right $a^+$).
+\item \textbf{At $\pm\infty$}: for polynomials and rational functions, keep only the \cle{highest degree terms}:
+\[ \lim_{x\to\pm\infty}\frac{P(x)}{Q(x)}=\lim_{x\to\pm\infty}\frac{\text{leading term of }P}{\text{leading term of }Q}. \]
+\item \textbf{At a finite excluded value $a$}: compute the sign of the numerator (usually a non-zero constant) and the \emph{sign} of the denominator on each side of $a$ using a sign table; conclude $\pm\infty$.
+\item \textbf{Indeterminate forms} $\frac{0}{0}$: factorise (or use the conjugate for roots) and simplify before taking the limit.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Limits at the bounds]
+Let $g(x)=\dfrac{2x^2-3x}{x^2-4}$.
+\begin{enumerate}
+\item Give the domain of $g$.
+\item Compute the limits of $g$ at $+\infty$, at $2^-$ and at $2^+$.
+\end{enumerate}
+\tcblower
+\textbf{1.} $x^2-4=0\iff x=\pm2$, so $D_g=\mathbb{R}\setminus\{-2,2\}$.
+
+\textbf{2.} At $+\infty$, keep the leading terms:
+\[ \lim_{x\to+\infty}g(x)=\lim_{x\to+\infty}\frac{2x^2}{x^2}=2. \]
+At $x=2$: the numerator $2x^2-3x=x(2x-3)$ tends to $2(1)=2>0$. The denominator factorises: $x^2-4=(x-2)(x+2)$. Near $2$, $x+2>0$, and:
+\begin{itemize}
+\item for $x\to2^-$, $x-2<0$, so the denominator $\to0^-$, hence $g(x)\to\dfrac{2}{0^-}=-\infty$;
+\item for $x\to2^+$, $x-2>0$, so the denominator $\to0^+$, hence $g(x)\to+\infty$.
+\end{itemize}
+So $\displaystyle\lim_{x\to2^-}g(x)=-\infty$ and $\displaystyle\lim_{x\to2^+}g(x)=+\infty$.
+\end{exoresolu}
+
+\courssub{Section 2: Asymptotes and Position of the Curve}
+
+\begin{definition}[Asymptotes]
+Let $\mathcal{C}$ be the curve of a function $f$.
+\begin{itemize}
+\item A \cle{vertical asymptote} is a line $x=a$ such that $\lim_{x\to a^-}f(x)=\pm\infty$ or $\lim_{x\to a^+}f(x)=\pm\infty$.
+\item A \cle{horizontal asymptote} is a line $y=b$ such that $\lim_{x\to+\infty}f(x)=b$ or $\lim_{x\to-\infty}f(x)=b$ (finite).
+\item An \cle{oblique asymptote} is a line $y=mx+c$ ($m\neq0$) such that $\lim_{x\to\pm\infty}[f(x)-(mx+c)]=0$.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Asymptote search algorithm]
+For a rational function $f(x)=\frac{P(x)}{Q(x)}$:
+\begin{enumerate}
+\item Vertical asymptotes: real zeros of $Q(x)$ that are not zeros of $P(x)$ (or zeros of higher multiplicity in $Q$).
+\item Horizontal asymptote: if $\deg P \leq \deg Q$, $y=\lim_{x\to\pm\infty}f(x)$.
+\item Oblique asymptote: if $\deg P = \deg Q + 1$, perform polynomial long division: $f(x)=mx+c+\frac{R(x)}{Q(x)}$; the asymptote is $y=mx+c$.
+\item If $\deg P > \deg Q + 1$, there is no oblique asymptote; the curve has a \cle{parabolic branch} (or higher degree polynomial branch).
+\end{enumerate}
+\end{aretenir}
+
+\textbf{Method 3: Asymptotes and Position of the Curve Relative to a Line}\par
+
+\begin{methode}[Finding asymptotes and relative position]
+\begin{enumerate}
+\item \textbf{Vertical asymptote} $x=a$: occurs when $\lim_{x\to a^-}f(x)=\pm\infty$ or $\lim_{x\to a^+}f(x)=\pm\infty$.
+\item \textbf{Horizontal asymptote} $y=b$: occurs when $\lim_{x\to\pm\infty}f(x)=b$ (finite).
+\item \textbf{Oblique asymptote} $y=mx+c$: if $\lim_{x\to\pm\infty}f(x)=\pm\infty$, compute $m=\lim_{x\to\pm\infty}\dfrac{f(x)}{x}$; if $m$ is finite and non-zero, compute $c=\lim_{x\to\pm\infty}[f(x)-mx]$. If $c$ is finite, $y=mx+c$ is an oblique asymptote. (For rational functions, polynomial long division gives $f(x)=mx+c+\dfrac{r(x)}{d(x)}$ directly.)
+\item \textbf{Position of the curve}: study the sign of the difference $f(x)-(mx+c)$: positive $\Rightarrow$ curve above the asymptote; negative $\Rightarrow$ below.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Oblique asymptote and relative position]
+Let $f(x)=\dfrac{x^2-3x+5}{x-1}$ and let $\mathcal{C}$ be its curve.
+\begin{enumerate}
+\item Find constants $a,b,c$ such that $f(x)=ax+b+\dfrac{c}{x-1}$.
+\item Deduce the asymptotes of $\mathcal{C}$.
+\item Study the position of $\mathcal{C}$ relative to its oblique asymptote.
+\end{enumerate}
+\tcblower
+\textbf{1.} Divide $x^2-3x+5$ by $x-1$: $x^2-3x+5=(x-1)(x-2)+3$. Hence
+\[ f(x)=x-2+\frac{3}{x-1}, \qquad a=1,\ b=-2,\ c=3. \]
+
+\textbf{2.} Domain: $D_f=\mathbb{R}\setminus\{1\}$. Since $\lim_{x\to1^-}f(x)=-\infty$ and $\lim_{x\to1^+}f(x)=+\infty$ (numerator tends to $3>0$), the line $x=1$ is a \cle{vertical asymptote}.
+
+At $\pm\infty$, $f(x)-(x-2)=\dfrac{3}{x-1}\to0$, so the line $y=x-2$ is an \cle{oblique asymptote} both at $+\infty$ and at $-\infty$.
+
+\textbf{3.} The difference is $f(x)-(x-2)=\dfrac{3}{x-1}$, which has the sign of $x-1$:
+\begin{itemize}
+\item for $x>1$: difference $>0$, so $\mathcal{C}$ is \textbf{above} the asymptote;
+\item for $x<1$: difference $<0$, so $\mathcal{C}$ is \textbf{below} the asymptote.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Section 3: Derivatives, Stationary Points and Inflexion}
+
+\begin{definition}[Stationary point]
+A point $x_0\in D_f$ is a \cle{stationary point} of $f$ if $f$ is differentiable at $x_0$ and $f'(x_0)=0$. The tangent at a stationary point is horizontal.
+\end{definition}
+
+\begin{aretenir}[Nature of a stationary point]
+Let $x_0$ be a stationary point ($f'(x_0)=0$).
+\begin{itemize}
+\item \textbf{First derivative test (always works)}: examine the sign of $f'$ on intervals around $x_0$.
+  \begin{itemize}
+  \item $f'$ changes $+\to-$ $\Rightarrow$ local maximum.
+  \item $f'$ changes $-\to+$ $\Rightarrow$ local minimum.
+  \item $f'$ does not change sign $\Rightarrow$ stationary point of inflexion (horizontal tangent, but not extremum).
+  \end{itemize}
+\item \textbf{Second derivative test (if $f''$ exists)}:
+  \begin{itemize}
+  \item $f''(x_0)>0$ $\Rightarrow$ local minimum.
+  \item $f''(x_0)<0$ $\Rightarrow$ local maximum.
+  \item $f''(x_0)=0$ $\Rightarrow$ inconclusive; revert to first derivative test.
+  \end{itemize}
+\end{itemize}
+\end{aretenir}
+
+\textbf{Method 4: Stationary Points and Their Nature}\par
+
+\begin{methode}[Stationary points]
+\begin{enumerate}
+\item Compute $f'(x)$ and simplify (factorise if possible).
+\item Solve $f'(x)=0$ in $D_f$: the solutions are the abscissae of the \cle{stationary points}.
+\item \textbf{Nature — first derivative test}: make the sign table of $f'$. If $f'$ changes $+\to-$ at $x_0$: local maximum; $-\to+$: local minimum; no change: stationary point of inflexion (horizontal tangent).
+\item \textbf{Alternative — second derivative test}: if $f''(x_0)>0$: minimum; $f''(x_0)<0$: maximum; $f''(x_0)=0$: inconclusive, revert to the sign of $f'$.
+\item Compute the ordinates $f(x_0)$ to give the coordinates of the points.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Stationary points of a cubic]
+Let $f(x)=x^3-3x^2-9x+2$.
+\begin{enumerate}
+\item Find the stationary points of $f$.
+\item Determine their nature.
+\end{enumerate}
+\tcblower
+\textbf{1.} $f$ is a polynomial, differentiable on $\mathbb{R}$:
+\[ f'(x)=3x^2-6x-9=3(x^2-2x-3)=3(x-3)(x+1). \]
+$f'(x)=0\iff x=-1$ or $x=3$. The stationary points have ordinates
+\[ f(-1)=-1-3+9+2=7, \qquad f(3)=27-27-27+2=-25. \]
+So the stationary points are $A(-1,7)$ and $B(3,-25)$.
+
+\textbf{2.} Sign of $f'(x)=3(x-3)(x+1)$: positive outside the roots, negative between them.
+\begin{center}
+\begin{tabular}{|c|cccccccc|}
+\hline
+$x$ & $-\infty$ & & $-1$ & & $3$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+\end{tabular}
+\end{center}
+Since $f'$ changes from $+$ to $-$ at $x=-1$, $A(-1,7)$ is a \cle{local maximum}. Since $f'$ changes from $-$ to $+$ at $x=3$, $B(3,-25)$ is a \cle{local minimum}.
+\end{exoresolu}
+
+\begin{definition}[Concavity, Convexity and Point of Inflexion]
+Let $f$ be twice differentiable on an interval $I$.
+\begin{itemize}
+\item $f$ is \cle{convex} (concave up, $\cup$) on $I$ if $f''(x)\geq0$ on $I$ (strictly convex if $f''(x)>0$).
+\item $f$ is \cle{concave} (concave down, $\cap$) on $I$ if $f''(x)\leq0$ on $I$ (strictly concave if $f''(x)<0$).
+\item A \cle{point of inflexion} is a point where the curve crosses its tangent, i.e. where $f''$ \textbf{changes sign}. $f''(x_0)=0$ alone is not sufficient — the sign change is essential.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Inflexion point criterion]
+A point $x_0$ is an inflexion point iff $f''$ changes sign at $x_0$ (from $+$ to $-$ or $-$ to $+$). For a cubic $ax^3+bx^2+cx+d$, the unique inflexion point has abscissa $x=-\frac{b}{3a}$, which is the midpoint of the stationary points (if they exist).
+\end{aretenir}
+
+\textbf{Method 5: Points of Inflexion and Concavity}\par
+
+\begin{methode}[Inflexion and concavity]
+\begin{enumerate}
+\item Compute $f''(x)$.
+\item Solve $f''(x)=0$ and study the \textbf{sign} of $f''$ on each interval.
+\item $f''(x)>0$ on $I$ $\Rightarrow$ $f$ is \cle{convex} (concave up, $\cup$) on $I$; $f''(x)<0$ $\Rightarrow$ $f$ is \cle{concave} (concave down, $\cap$) on $I$.
+\item A \cle{point of inflexion} is a point where $f''$ \textbf{changes sign} (the curve crosses its tangent there). $f''(x_0)=0$ alone is not sufficient — the sign change is essential.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Concavity and inflexion point]
+Let $f(x)=x^3-3x^2-9x+2$ (same function as above). Study the concavity of $f$ and find its point(s) of inflexion.
+\tcblower
+We have $f'(x)=3x^2-6x-9$, so
+\[ f''(x)=6x-6=6(x-1). \]
+$f''(x)=0\iff x=1$. Sign of $f''$: negative for $x<1$, positive for $x>1$.
+\begin{itemize}
+\item On $(-\infty,1)$: $f''<0$, so $f$ is \textbf{concave} (concave down).
+\item On $(1,+\infty)$: $f''>0$, so $f$ is \textbf{convex} (concave up).
+\end{itemize}
+Since $f''$ changes sign at $x=1$, the point $I(1,f(1))$ is a point of inflexion, with $f(1)=1-3-9+2=-9$. Hence the unique inflexion point is $I(1,-9)$.
+
+\emph{Remark:} for a cubic, the inflexion point is always midway (in $x$) between the two stationary points: here $\frac{-1+3}{2}=1$. This is a useful checking reflex.
+\end{exoresolu}
+
+\courssub{Section 4: Table of Variations, Infinite Branches and Intercepts}
+
+\begin{aretenir}[Building a complete table of variations]
+The table must contain:
+\begin{itemize}
+\item First row: $x$ with all remarkable values (bounds of $D_f$, zeros of $f'$, excluded values marked by a double vertical bar $\|$).
+\item Second row: sign of $f'$ on each interval, $0$ at stationary points.
+\item Third row: variation of $f$ ($\nearrow$ or $\searrow$) with the \textbf{limit values} at the bounds and the values $f(x_0)$ at stationary points.
+\end{itemize}
+\end{aretenir}
+
+\textbf{Method 6: Building the Table of Variations}\par
+
+\begin{methode}[Building the table of variations]
+\begin{enumerate}
+\item Gather in one row all remarkable values: bounds of $D_f$, zeros of $f'$, excluded values (draw a double vertical bar in the table).
+\item Row of $f'$: signs on each interval, $0$ at stationary points.
+\item Row of $f$: arrows $\nearrow$/$\searrow$, with the \textbf{limit values} at the bounds and the values $f(x_0)$ at stationary points.
+\item \textbf{Infinite branches}: each infinite limit must be interpreted geometrically: finite limit at $\pm\infty$ $\to$ horizontal asymptote; infinite limit at finite $a$ $\to$ vertical asymptote; $\lim f(x)=\pm\infty$ at $\pm\infty$ $\to$ check $\lim f(x)/x$ (oblique asymptote or parabolic branch).
+\item \textbf{Intercepts}: $y$-intercept $=f(0)$ (if $0\in D_f$); $x$-intercepts: solve $f(x)=0$ (exactly or by locating between two values using the monotonicity and the Intermediate Value Theorem).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Table of variations and intercepts]
+Let $f(x)=x^3-3x^2-9x+2$.
+\begin{enumerate}
+\item Draw the complete table of variations of $f$.
+\item Show that the equation $f(x)=0$ has exactly three real solutions, and locate the largest one between two consecutive integers.
+\end{enumerate}
+\tcblower
+\textbf{1.} From the previous work: $f'(x)=3(x-3)(x+1)$, local max $f(-1)=7$, local min $f(3)=-25$. Limits: $\lim_{-\infty}f=-\infty$, $\lim_{+\infty}f=+\infty$ (leading term $x^3$).
+\begin{center}
+\begin{tabular}{|c|cccccccc|}
+\hline
+$x$ & $-\infty$ & & $-1$ & & $3$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+$f(x)$ & $-\infty$ & $\nearrow$ & $7$ & $\searrow$ & $-25$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+There are no asymptotes; at both ends $\frac{f(x)}{x}=x^2-3-\dots\to+\infty$: parabolic branches in the direction of the $y$-axis.
+
+\textbf{2.} On $(-\infty,-1)$, $f$ is continuous and strictly increasing from $-\infty$ to $7>0$: by the IVT, exactly one root $\alpha<-1$. On $(-1,3)$, $f$ strictly decreases from $7>0$ to $-25<0$: exactly one root $\beta\in(-1,3)$. On $(3,+\infty)$, $f$ strictly increases from $-25<0$ to $+\infty$: exactly one root $\gamma>3$. Hence exactly three real roots.
+
+For $\gamma$: $f(5)=125-75-45+2=7>0$ and $f(4)=64-48-36+2=-18<0$, so $\gamma\in(4,5)$.
+\end{exoresolu}
+
+\courssub{Section 5: Complete Curve Sketching — Full Study of a Function}
+
+\begin{methode}[Full curve sketching — the GCE plan]
+\begin{enumerate}
+\item \textbf{Domain} $D_f$; note symmetries (even/odd) to reduce the study interval.
+\item \textbf{Limits} at all bounds of $D_f$.
+\item \textbf{Asymptotes} and infinite branches; position of the curve relative to oblique/horizontal asymptotes.
+\item \textbf{Derivative} $f'$, sign, stationary points and their nature; \textbf{second derivative}, concavity, inflexion points.
+\item \textbf{Table of variations} complete (with limits).
+\item \textbf{Key points}: intercepts, stationary points, inflexion points, a few extra plotted points.
+\item \textbf{Sketch}: draw axes with a clear scale, draw asymptotes (dashed), plot the key points, then draw the curve respecting the table of variations and concavity.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Complete study — GCE style]
+The function $f$ is defined by $f(x)=\dfrac{x^2-3x+5}{x-1}$ and $\mathcal{C}$ is its curve in an orthonormal frame.
+\begin{enumerate}
+\item Determine $D_f$ and the limits of $f$ at the bounds of $D_f$.
+\item Show that $f'(x)=\dfrac{(x-1)^2-3}{(x-1)^2}$ and find the stationary points and their nature.
+\item Draw the table of variations of $f$.
+\item Sketch $\mathcal{C}$ with its asymptotes.
+\end{enumerate}
+\tcblower
+\textbf{1.} $D_f=\mathbb{R}\setminus\{1\}$. From Method 3's example: $\lim_{1^-}f=-\infty$, $\lim_{1^+}f=+\infty$ (vertical asymptote $x=1$). At $\pm\infty$: $\lim f(x)=\lim \frac{x^2}{x}=\pm\infty$; and $f(x)=x-2+\frac{3}{x-1}$ gives the oblique asymptote $y=x-2$.
+
+\textbf{2.} Using the quotient rule on $f(x)=x-2+\frac{3}{x-1}$:
+\[ f'(x)=1-\frac{3}{(x-1)^2}=\frac{(x-1)^2-3}{(x-1)^2}. \]
+
+$f'(x)=0\iff (x-1)^2=3\iff x=1-\sqrt{3}$ or $x=1+\sqrt{3}$. Since $(x-1)^2>0$, $f'$ has the sign of $(x-1)^2-3$: positive outside $[1-\sqrt3,1+\sqrt3]$, negative inside.
+\begin{itemize}
+\item At $x=1-\sqrt3\approx-0.73$: $f'$ goes $+\to-$: local maximum, $f(1-\sqrt3)=(1-\sqrt3)-2+\frac{3}{-\sqrt3}=-1-\sqrt3-\sqrt3=-1-2\sqrt3\approx-4.46$.
+\item At $x=1+\sqrt3\approx2.73$: $f'$ goes $-\to+$: local minimum, $f(1+\sqrt3)=-1+2\sqrt3\approx2.46$.
+\end{itemize}
+
+\textbf{3.} Table of variations:
+\begin{center}
+\begin{tabular}{|c|cccccccccc|}
+\hline
+$x$ & $-\infty$ & & $1-\sqrt3$ & & $1$ & & $1+\sqrt3$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $\|$ & $-$ & $0$ & $+$ & \\
+\hline
+$f(x)$ & $-\infty$ & $\nearrow$ & $-1-2\sqrt3$ & $\searrow$ & $\|$ & $\searrow$ & $-1+2\sqrt3$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+with $\lim_{1^-}f=-\infty$, $\lim_{1^+}f=+\infty$ at the double bar.
+
+\textbf{4.} Sketch: draw the dashed lines $x=1$ and $y=x-2$; plot the maximum $(-0.73,-4.46)$ and minimum $(2.73,2.46)$; the left branch lies below $y=x-2$ (since $x<1$), the right branch above it.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\begin{axis}[axis lines=middle, xlabel=$x$, ylabel=$y$, xmin=-4, xmax=6, ymin=-8, ymax=8, width=11cm, height=9cm, tick label style={font=\small}]
+\addplot[domain=-4:0.9, samples=80, thick, popblue] {(x*x-3*x+5)/(x-1)};
+\addplot[domain=1.1:6, samples=80, thick, popblue] {(x*x-3*x+5)/(x-1)};
+\addplot[domain=-4:6, dashed, poporange] {x-2};
+\draw[dashed, poporange] (axis cs:1,-8) -- (axis cs:1,8);
+\addplot[mark=*, popdark] coordinates {(-0.732,-4.464) (2.732,2.464)};
+\end{axis}
+\end{tikzpicture}
+\legende{Curve of $f(x)=\dfrac{x^2-3x+5}{x-1}$ with asymptotes $x=1$ and $y=x-2$}
+\end{center}
+\end{popfigure}
+\end{exoresolu}
+
+\begin{attention}[Frequent traps in curve sketching]
+\begin{itemize}
+\item Concluding "asymptote" from an infinite limit at $\pm\infty$ alone: you must examine $\frac{f(x)}{x}$ to distinguish an oblique asymptote from a parabolic branch.
+\item Claiming an inflexion point merely because $f''(x_0)=0$ — a \textbf{sign change} of $f''$ is required (e.g. $f(x)=x^4$ has $f''(0)=0$ but no inflexion).
+\item Forgetting the double bar for excluded values in the table of variations, or writing a single limit where left and right limits differ.
+\item Mixing up the position of the curve: always study the sign of $f(x)-(mx+c)$, never guess from the graph.
+\item Incorrect column count in variation tables: each remarkable value and each interval between them must have its own column. The first column is for the label ($x$, $f'$, $f$).
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Domain and asymptotes]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item The domain of $f(x)=\dfrac{x+1}{x^{2}-4}$ is:
+\begin{enumerate}
+\item $\mathbb{R}$
+\item $\mathbb{R}\setminus\{-2,2\}$
+\item $\mathbb{R}\setminus\{2\}$
+\item $\mathbb{R}\setminus\{-1\}$
+\end{enumerate}
+\item If $\lim_{x\to +\infty}f(x)=2$, then the curve of $f$ has:
+\begin{enumerate}
+\item a vertical asymptote $x=2$
+\item a horizontal asymptote $y=2$
+\item an oblique asymptote $y=2x$
+\item no asymptote
+\end{enumerate}
+\item If $f'(a)=0$ and $f''(a)<0$, then the point $(a,f(a))$ is:
+\begin{enumerate}
+\item a point of inflexion
+\item a local minimum
+\item a local maximum
+\item none of these
+\end{enumerate}
+\item The curve of $f(x)=\dfrac{x^{2}+1}{x}$ has as oblique asymptote the line:
+\begin{enumerate}
+\item $y=x$
+\item $y=1$
+\item $y=x+1$
+\item $y=0$
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+Answer \emph{true} or \emph{false}, justifying each answer with a short argument or a counter-example.
+\begin{enumerate}
+\item If $f'(x)>0$ on an interval $I$, then $f$ is strictly increasing on $I$.
+\item If $f''(c)=0$, then the curve of $f$ necessarily has a point of inflexion at $x=c$.
+\item A curve can never cross its horizontal asymptote.
+\item If $\lim_{x\to 3^{-}}f(x)=-\infty$, then the line $x=3$ is a vertical asymptote of the curve of $f$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Give a precise definition of each of the following, and illustrate each one with a small example.
+\begin{enumerate}
+\item The domain of definition of a function.
+\item A stationary point of a differentiable function.
+\item A point of inflexion of a curve.
+\item An oblique asymptote of a curve.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Find the domain of $f(x)=\dfrac{2x-3}{x^{2}-x-6}$.
+\item Compute $\lim_{x\to +\infty}\dfrac{3x^{2}-x}{x^{2}+4}$ and interpret the result graphically.
+\item Find the stationary points of $g(x)=x^{3}-12x+5$.
+\item Determine the concavity of $h(x)=x^{3}-3x^{2}+2$ on $\mathbb{R}$ and locate any point of inflexion.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Stationary points of a cubic]
+Let $f(x)=x^{3}-3x^{2}-9x+1$.
+\begin{enumerate}
+\item Compute $f'(x)$ and find the stationary points of $f$.
+\item Compute $f''(x)$ and determine the nature of each stationary point.
+\item Locate the point of inflexion of the curve and justify that it is one.
+\item Sketch the curve of $f$, marking the remarkable points.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Oblique asymptote and relative position]
+Let $f(x)=x-1+\dfrac{4}{x+2}$.
+\begin{enumerate}
+\item State the domain of $f$ and compute the limits at its bounds.
+\item Show that the line $y=x-1$ is an oblique asymptote of the curve of $f$.
+\item Study the position of the curve relative to this asymptote.
+\item Find the point(s) where the curve meets the asymptote.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[From limits to a variation table]
+A function $f$ is defined on $\mathbb{R}\setminus\{1\}$ and satisfies
+\[ \lim_{x\to +\infty}f(x)=3,\qquad \lim_{x\to -\infty}f(x)=3,\qquad \lim_{x\to 1^{+}}f(x)=-\infty,\qquad \lim_{x\to 1^{-}}f(x)=+\infty. \]
+\begin{enumerate}
+\item State all the asymptotes of the curve of $f$.
+\item Assuming $f'(x)<0$ on each interval of the domain, construct a table of variations of $f$ consistent with all the given information.
+\item Sketch a possible curve of $f$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Graphical discussion]
+Let $f(x)=x+\dfrac{4}{x}$ on $(0,+\infty)$.
+\begin{enumerate}
+\item Study the variations of $f$ (limits at the bounds, derivative, table of variations).
+\item Sketch the curve of $f$ on $(0,+\infty)$.
+\item Using your sketch, determine the number of strictly positive solutions of the equation $x+\dfrac{4}{x}=m$ according to the values of the real parameter $m$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Full study of a rational function \hfill (20 marks)]
+Consider the function
+\[ f(x)=\frac{x^{2}+x-2}{x-2}. \]
+\begin{enumerate}
+\item Determine the domain of definition of $f$. \hfill (2 marks)
+\item Compute the limits of $f$ at the bounds of its domain and deduce all vertical and horizontal asymptotes, if any. \hfill (4 marks)
+\item Show that there exist real numbers $a$, $b$ and $c$ such that $f(x)=ax+b+\dfrac{c}{x-2}$, and deduce an oblique asymptote of the curve. \hfill (4 marks)
+\item Study the position of the curve relative to its oblique asymptote. \hfill (2 marks)
+\item Compute $f'(x)$, study its sign and draw up the complete table of variations of $f$. \hfill (4 marks)
+\item Find the intercepts of the curve with the coordinate axes, then sketch the curve carefully (axes, scales, asymptotes, remarkable points). \hfill (4 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[From a variation table to a curve \hfill (15 marks)]
+The table below is the table of variations of an unknown function $g$ defined on $\mathbb{R}\setminus\{-1\}$:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+$x$ & $-\infty$ & & $-3$ & & $-1$ & & $+\infty$ \\
+\hline
+$g'(x)$ & & $+$ & $0$ & $-$ & & $-$ & \\
+\hline
+$g$ & $1$ & $\nearrow$ & $4$ & $\searrow$ & $-\infty \;\big|\; +\infty$ & $\searrow$ & $1$ \\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item State the asymptotes of the curve of $g$, justifying from the table. \hfill (3 marks)
+\item Sketch a possible curve of $g$, respecting all the information in the table. \hfill (4 marks)
+\item State the range of $g$. \hfill (2 marks)
+\item Discuss, according to the values of the real number $k$, the number of solutions of the equation $g(x)=k$. \hfill (6 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE extra: reading the graph of the derivative \hfill (15 marks)]
+The figure below shows the graph of the \emph{derivative} $f'$ of a function $f$ defined and twice differentiable on $\mathbb{R}$. The curve of $f'$ crosses the $x$-axis at $x=-1$ and $x=2$ only, has a local minimum at $x=0.5$, and $\lim_{x\to\pm\infty}f'(x)=+\infty$.
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\draw[->, popmuted] (-3,0) -- (3.5,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-2.2) -- (0,3.2) node[below left]{$y$};
+\draw[very thick, popblue, domain=-2.4:2.9, samples=120] plot (\x, {0.5*(\x+1)*(\x-2)});
+\node[popblue] at (2.6,2.6) {$f'$};
+\foreach \x in {-1,2}{\draw[popmuted] (\x,0.06) -- (\x,-0.06) node[below]{$\x$};}
+\draw[popmuted, dashed] (0.5,0) node[above left=-1pt]{$0.5$} -- (0.5,-1.125);
+\end{tikzpicture}
+\end{center}
+\begin{enumerate}
+\item Using the graph, determine the sign of $f'(x)$ on $\mathbb{R}$. \hfill (3 marks)
+\item Deduce the table of variations of $f$ and state its stationary points and their nature. \hfill (5 marks)
+\item Explain how the concavity of $f$ can be read from the graph of $f'$, and deduce the abscissa of the point of inflexion of the curve of $f$. \hfill (4 marks)
+\item Sketch a possible shape of the curve of $f$. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Domain and asymptotes]
+\begin{enumerate}
+\item \textbf{Answer (b):} $\mathbb{R}\setminus\{-2,2\}$. The denominator $x^{2}-4=(x-2)(x+2)$ vanishes at $x=2$ and $x=-2$; both values must be excluded. The numerator $x+1$ vanishing at $x=-1$ is irrelevant to the domain.
+\item \textbf{Answer (b):} a horizontal asymptote $y=2$. By definition, $\lim_{x\to+\infty}f(x)=2$ (a finite number) means the line $y=2$ is a horizontal asymptote at $+\infty$.
+\item \textbf{Answer (c):} a local maximum. The second derivative test: $f'(a)=0$ (stationary point) and $f''(a)<0$ (concave down near $a$) imply a local maximum at $(a,f(a))$.
+\item \textbf{Answer (a):} $y=x$. Indeed $f(x)=\dfrac{x^{2}+1}{x}=x+\dfrac{1}{x}$, and $\lim_{x\to\pm\infty}\big(f(x)-x\big)=\lim_{x\to\pm\infty}\dfrac{1}{x}=0$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{True.} This is a standard theorem: if $f'(x)>0$ for all $x$ in an interval $I$, then $f$ is strictly increasing on $I$ (consequence of the Mean Value Theorem: for $a<b$ in $I$, $f(b)-f(a)=f'(c)(b-a)>0$).
+\item \textbf{False.} $f''(c)=0$ is necessary (for twice differentiable $f$) but \emph{not} sufficient: $f''$ must also \textbf{change sign} at $c$. Counter-example: $f(x)=x^{4}$ at $c=0$: $f''(0)=0$, but $f''(x)=12x^{2}\geq 0$ on both sides, so the curve stays concave up and $(0,0)$ is a minimum, not an inflexion point.
+\item \textbf{False.} A horizontal asymptote describes behaviour at $\pm\infty$ only; the curve may cross it for finite $x$. Counter-example: $f(x)=2+\dfrac{\sin x}{x}$ has asymptote $y=2$ at $\pm\infty$, yet crosses it infinitely often (whenever $\sin x=0$). A simpler algebraic example: $f(x)=\dfrac{x^{2}+x}{x^{2}+1}=1+\dfrac{x-1}{x^{2}+1}$ has asymptote $y=1$ and crosses it at $x=1$.
+\item \textbf{True.} By definition, if one of the one-sided limits of $f$ at $x=3$ is infinite ($+\infty$ or $-\infty$), the line $x=3$ is a vertical asymptote. Here $\lim_{x\to 3^{-}}f(x)=-\infty$ suffices.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Domain of definition:} the set of all real numbers $x$ for which $f(x)$ exists (is a well-defined real number). \emph{Example:} for $f(x)=\sqrt{x-1}$, we need $x-1\geq 0$, so $D_f=[1,+\infty)$.
+\item \textbf{Stationary point:} a point $(a,f(a))$ of the curve of a differentiable function $f$ where $f'(a)=0$; the tangent there is horizontal. \emph{Example:} $f(x)=x^{2}$ has $f'(x)=2x=0$ at $x=0$; $(0,0)$ is a stationary point (a minimum).
+\item \textbf{Point of inflexion:} a point where the curve crosses its tangent, i.e. where the concavity changes (from concave up to concave down or conversely); for twice differentiable $f$, $f''$ changes sign there. \emph{Example:} $f(x)=x^{3}$ at $(0,0)$: $f''(x)=6x$ changes sign at $0$.
+\item \textbf{Oblique asymptote:} a line $y=ax+b$ (with $a\neq 0$) such that $\lim_{x\to\pm\infty}\big(f(x)-(ax+b)\big)=0$; the curve approaches this line arbitrarily closely at infinity. \emph{Example:} $f(x)=x+\dfrac{1}{x}$ has the oblique asymptote $y=x$ since $f(x)-x=\dfrac{1}{x}\to 0$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item We solve $x^{2}-x-6=0$: $\Delta=1+24=25$, $x=\dfrac{1\pm 5}{2}$, giving $x=3$ or $x=-2$. Hence
+\[ D_f=\mathbb{R}\setminus\{-2,\,3\}. \]
+\item Divide numerator and denominator by $x^{2}$:
+\[ \lim_{x\to+\infty}\frac{3x^{2}-x}{x^{2}+4}=\lim_{x\to+\infty}\frac{3-\frac{1}{x}}{1+\frac{4}{x^{2}}}=\frac{3-0}{1+0}=3. \]
+\emph{Graphical interpretation:} the line $y=3$ is a horizontal asymptote of the curve at $+\infty$.
+\item $g'(x)=3x^{2}-12=3(x^{2}-4)=3(x-2)(x+2)$. So $g'(x)=0\iff x=2$ or $x=-2$. The stationary points are
+\[ (-2,\;g(-2))=(-2,\,21)\quad\text{and}\quad (2,\;g(2))=(2,\,-11). \]
+\item $h'(x)=3x^{2}-6x$, $h''(x)=6x-6=6(x-1)$. So $h''(x)<0$ for $x<1$ (concave down on $(-\infty,1)$) and $h''(x)>0$ for $x>1$ (concave up on $(1,+\infty)$). Since $h''$ changes sign at $x=1$, the point $(1,h(1))=(1,0)$ is a \cle{point of inflexion}.
+\end{enumerate}
+
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+$x$ & $-\infty$ & & $-2$ & & $2$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & $-\infty$ & $\nearrow$ & $21$ & $\searrow$ & $-11$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Stationary points of a cubic]
+\begin{enumerate}
+\item $f'(x)=3x^{2}-6x-9=3(x^{2}-2x-3)=3(x-3)(x+1)$. Thus $f'(x)=0\iff x=-1$ or $x=3$. The stationary points are
+\[ (-1,\,f(-1))=(-1,\,6)\quad\text{and}\quad (3,\,f(3))=(3,\,-26). \]
+\item $f''(x)=6x-6$. At $x=-1$: $f''(-1)=-12<0$, so $(-1,6)$ is a \cle{local maximum}. At $x=3$: $f''(3)=12>0$, so $(3,-26)$ is a \cle{local minimum}.
+\item $f''(x)=6(x-1)$ changes sign at $x=1$ (negative before, positive after), so the concavity changes at $x=1$: the point $(1,f(1))=(1,-10)$ is a point of inflexion.
+\item Sketch: cubic rising to the local max $(-1,6)$, falling through the inflexion $(1,-10)$ to the local min $(3,-26)$, then rising; $y$-intercept $(0,1)$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.32]
+\draw[->, popmuted] (-3.5,0) -- (5.5,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-28) -- (0,10) node[below left]{$y$};
+\draw[very thick, popblue, domain=-2.35:4.6, samples=120] plot (\x, {(\x)^3-3*(\x)^2-9*\x+1});
+\fill[poporange] (-1,6) circle (4pt) node[above left, popdark]{$(-1,6)$};
+\fill[poporange] (3,-26) circle (4pt) node[below right, popdark]{$(3,-26)$};
+\fill[poppurple] (1,-10) circle (4pt) node[right, popdark]{$(1,-10)$};
+\fill[popgreen] (0,1) circle (4pt) node[above right, popdark]{$(0,1)$};
+\end{tikzpicture}
+\legende{Curve of $f(x)=x^{3}-3x^{2}-9x+1$ with its remarkable points.}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Oblique asymptote and relative position]
+\begin{enumerate}
+\item $f$ is undefined at $x=-2$, so $D_f=\mathbb{R}\setminus\{-2\}$. Limits:
+\[ \lim_{x\to\pm\infty}f(x)=\pm\infty\ (\text{since } x-1\to\pm\infty,\ \tfrac{4}{x+2}\to 0); \]
+\[ \lim_{x\to -2^{+}}f(x)=+\infty\ (\tfrac{4}{x+2}\to+\infty),\qquad \lim_{x\to -2^{-}}f(x)=-\infty. \]
+Hence the line $x=-2$ is a \cle{vertical asymptote}.
+\item Compute the difference:
+\[ f(x)-(x-1)=\frac{4}{x+2}\xrightarrow[x\to\pm\infty]{}0. \]
+Therefore the line $y=x-1$ is an \cle{oblique asymptote} at both $+\infty$ and $-\infty$.
+\item The sign of $f(x)-(x-1)=\dfrac{4}{x+2}$ gives the position:
+\begin{itemize}
+\item for $x>-2$: $f(x)-(x-1)>0$, the curve is \textbf{above} the asymptote;
+\item for $x<-2$: $f(x)-(x-1)<0$, the curve is \textbf{below} the asymptote.
+\end{itemize}
+\item The curve meets the asymptote where $f(x)-(x-1)=0$, i.e. $\dfrac{4}{x+2}=0$. This equation has \textbf{no solution}: the curve never meets its oblique asymptote.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — From limits to a variation table]
+\begin{enumerate}
+\item $\lim_{x\to\pm\infty}f(x)=3$ (finite): the line $y=3$ is a \cle{horizontal asymptote} at both ends. $\lim_{x\to 1^{-}}f(x)=+\infty$ and $\lim_{x\to 1^{+}}f(x)=+\infty$: the line $x=1$ is a \cle{vertical asymptote} (both one-sided limits are $+\infty$).
+\item The hypothesis ``$f'(x)<0$ on $(-\infty,1)$ and on $(1,+\infty)$'' is \textbf{inconsistent} with the limits $\lim_{x\to-\infty}f(x)=3$ and $\lim_{x\to1^{-}}f(x)=+\infty$ (a decreasing function cannot go from $3$ up to $+\infty$). The intended consistent data (as expected in the examination) are: $f'(x)>0$ on $(-\infty,1)$ and $f'(x)<0$ on $(1,+\infty)$, with $\lim_{x\to1^{+}}f(x)=+\infty$. The correct variation table is then:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$x$ & $-\infty$ & & $1$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & & $-$ & \\
+\hline
+$f$ & $3$ & $\nearrow$ & $+\infty\;\big|\;+\infty$ & $\searrow$ & $3$ \\
+\hline
+\end{tabular}
+\end{center}
+\item Sketch: two branches separated by the vertical asymptote $x=1$, both approaching the horizontal asymptote $y=3$ at the extremes; left branch rises from $y=3$ to $+\infty$, right branch falls from $+\infty$ to $y=3$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.7]
+\draw[->, popmuted] (-4,0) -- (5,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-1) -- (0,6) node[below left]{$y$};
+\draw[popmuted, dashed] (-4,3) -- (5,3) node[right]{$y=3$};
+\draw[popmuted, dashed] (1,-1) -- (1,6) node[above]{$x=1$};
+\draw[very thick, popblue, domain=-4:0.9, samples=100] plot (\x, {3+1/(1-\x)});
+\draw[very thick, popblue, domain=1.1:5, samples=100] plot (\x, {3+1/(\x-1)});
+\end{tikzpicture}
+\legende{A possible curve consistent with the corrected limits and monotonicity.}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Graphical discussion]
+\begin{enumerate}
+\item Domain $(0,+\infty)$. Bounds: $\lim_{x\to 0^{+}}f(x)=+\infty$ (vertical asymptote $x=0$, the $y$-axis) and $\lim_{x\to+\infty}f(x)=+\infty$ with $f(x)-x=\tfrac{4}{x}\to 0$ (oblique asymptote $y=x$). Derivative:
+\[ f'(x)=1-\frac{4}{x^{2}}=\frac{x^{2}-4}{x^{2}}=\frac{(x-2)(x+2)}{x^{2}}. \]
+On $(0,+\infty)$: $f'(x)<0$ for $0<x<2$ and $f'(x)>0$ for $x>2$; $f'(2)=0$ with $f(2)=4$.
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+$x$ & $0$ & & $2$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & $+\infty$ & $\searrow$ & $4$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+\item Sketch on $(0,+\infty)$: the curve falls from $+\infty$ along the $y$-axis to the minimum $(2,4)$, then rises, approaching the line $y=x$ from above.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8]
+\draw[->, popmuted] (-0.5,0) -- (6,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-0.5) -- (0,7) node[below left]{$y$};
+\draw[popmuted, dashed] (0,0) -- (5.5,5.5) node[below right]{$y=x$};
+\draw[very thick, popblue, domain=0.62:5.5, samples=120] plot (\x, {\x+4/\x});
+\fill[poporange] (2,4) circle (2.5pt) node[below left, popdark]{$(2,4)$};
+\end{tikzpicture}
+\legende{Curve of $f(x)=x+\frac{4}{x}$ on $(0,+\infty)$.}
+\end{popfigure}
+\item The equation $f(x)=m$ counts intersections of the curve with the horizontal line $y=m$:
+\begin{itemize}
+\item if $m<4$: \textbf{no} positive solution;
+\item if $m=4$: \textbf{exactly one} solution ($x=2$, a double root);
+\item if $m>4$: \textbf{exactly two} strictly positive solutions.
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Full study of a rational function (20 marks)]
+\emph{Examiner's expectations and indicative mark scheme are given after each part.}
+\begin{enumerate}
+\item $f$ is undefined when $x-2=0$, i.e. $x=2$. Hence $D_f=\mathbb{R}\setminus\{2\}$. \hfill \textbf{(2 marks: 1 for the condition, 1 for the answer)}
+\item Limits at the bounds. At infinity, polynomial division of leading terms: $\dfrac{x^{2}}{x}=x$, so
+\[ \lim_{x\to\pm\infty}f(x)=\pm\infty \quad(\text{no horizontal asymptote}). \]
+At $x=2$: numerator $x^{2}+x-2\to 4>0$; denominator $x-2\to 0^{\pm}$:
+\[ \lim_{x\to 2^{+}}f(x)=+\infty,\qquad \lim_{x\to 2^{-}}f(x)=-\infty. \]
+Hence the line $x=2$ is a \cle{vertical asymptote}. \hfill \textbf{(4 marks: 1 per limit correctly computed, 1 for the asymptote conclusion)}
+\item Polynomial division of $x^{2}+x-2$ by $x-2$: $x^{2}+x-2=(x-2)(x+3)+4$. Therefore
+\[ f(x)=x+3+\frac{4}{x-2},\qquad\text{so } a=1,\ b=3,\ c=4. \]
+Since $f(x)-(x+3)=\dfrac{4}{x-2}\to 0$ as $x\to\pm\infty$, the line $y=x+3$ is an \cle{oblique asymptote} at both ends. \hfill \textbf{(4 marks: 2 for the division, 1 for $a,b,c$, 1 for justifying the asymptote)}
+\item Position: $f(x)-(x+3)=\dfrac{4}{x-2}$.
+\begin{itemize}
+\item For $x>2$: difference $>0$, curve \textbf{above} the asymptote;
+\item for $x<2$: difference $<0$, curve \textbf{below} the asymptote.
+\end{itemize}
+The curve never meets the asymptote ($\frac{4}{x-2}\neq 0$). \hfill \textbf{(2 marks)}
+\item From $f(x)=x+3+\dfrac{4}{x-2}$:
+\[ f'(x)=1-\frac{4}{(x-2)^{2}}=\frac{(x-2)^{2}-4}{(x-2)^{2}}=\frac{x(x-4)}{(x-2)^{2}}. \]
+Since $(x-2)^{2}>0$ on $D_f$, the sign of $f'$ is that of $x(x-4)$: positive on $(-\infty,0)$ and $(4,+\infty)$, negative on $(0,2)$ and $(2,4)$. Stationary points: $f(0)=1$ (local max), $f(4)=9$ (local min).
+\begin{center}
+\begin{tabular}{|c|ccccccccc|}
+\hline
+$x$ & $-\infty$ & & $0$ & & $2$ & & $4$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & $-\infty$ & $\nearrow$ & $1$ & $\searrow$ & $-\infty\;\big|\;+\infty$ & $\searrow$ & $9$ & $\nearrow$ & $+\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+\hfill \textbf{(4 marks: 1 for $f'$, 1 for factoring, 1 for the sign study, 1 for the table)}
+\item Intercepts: with the $y$-axis, $f(0)=1$, point $(0,1)$. With the $x$-axis, $f(x)=0\iff x^{2}+x-2=0\iff (x-1)(x+2)=0$, giving $(1,0)$ and $(-2,0)$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.55]
+\draw[->, popmuted] (-7,0) -- (8,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-10) -- (0,14) node[below left]{$y$};
+\draw[popmuted, dashed] (2,-10) -- (2,14) node[above left=2pt]{$x=2$};
+\draw[popmuted, dashed] (-6.5,-3.5) -- (7.5,10.5) node[below right=2pt]{$y=x+3$};
+\draw[very thick, popblue, domain=-7:1.5, samples=150] plot (\x, {\x+3+4/(\x-2)});
+\draw[very thick, popblue, domain=2.5:8, samples=150] plot (\x, {\x+3+4/(\x-2)});
+\fill[poporange] (0,1) circle (3pt) node[above left, popdark]{$(0,1)$};
+\fill[poporange] (4,9) circle (3pt) node[above right, popdark]{$(4,9)$};
+\fill[popgreen] (-2,0) circle (3pt) node[below, popdark]{$(-2,0)$};
+\fill[popgreen] (1,0) circle (3pt) node[below, popdark]{$(1,0)$};
+\end{tikzpicture}
+\legende{Complete sketch of $f(x)=\dfrac{x^{2}+x-2}{x-2}$.}
+\end{popfigure}
+\hfill \textbf{(4 marks: 1 for the intercepts, 3 for a sketch showing both branches, both asymptotes, the extrema and the intercepts)}
+\end{enumerate}
+\emph{Typical examiner remark:} candidates often forget that the local minimum value $9$ is \emph{greater} than the local maximum value $1$ — this is perfectly possible because the function is not defined (and not continuous) at $x=2$; extrema are only \emph{local}.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — From a variation table to a curve (15 marks)]
+\begin{enumerate}
+\item From the table: $g(x)\to 1$ as $x\to\pm\infty$, so the line $y=1$ is a \cle{horizontal asymptote} at both ends. As $x\to -1^{-}$, $g(x)\to -\infty$ and as $x\to -1^{+}$, $g(x)\to +\infty$, so the line $x=-1$ is a \cle{vertical asymptote}. \hfill \textbf{(3 marks: 1 per asymptote with justification)}
+\item A possible curve must: start near $y=1$ at $-\infty$, rise to the maximum $(-3,4)$, decrease to $-\infty$ as $x\to -1^{-}$; reappear from $+\infty$ at $x=-1^{+}$, decrease, and tend to $1$ at $+\infty$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8, declare function={
+    gleft(\x) = 1 + (93*\x+165)/((\x+1)*(\x*\x+10));
+    gright(\x) = 1 + 3/(\x+1);
+}]
+\draw[->, popmuted] (-6,0) -- (4.5,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-5) -- (0,6) node[below left]{$y$};
+\draw[popmuted, dashed] (-6,1) -- (4.5,1) node[right]{$y=1$};
+\draw[popmuted, dashed] (-1,-5) -- (-1,6) node[above]{$x=-1$};
+\draw[very thick, popblue, domain=-6:-1.2, samples=200] plot (\x, {gleft(\x)});
+\draw[very thick, popblue, domain=-0.8:4.5, samples=150] plot (\x, {gright(\x)});
+\fill[poporange] (-3,4) circle (2.5pt) node[above, popdark]{$(-3,4)$};
+\end{tikzpicture}
+\legende{A possible curve of $g$ respecting the table of variations.}
+\end{popfigure}
+\hfill \textbf{(4 marks: shape of each branch, maximum at $(-3,4)$, both asymptotes respected)}
+\item On $(-\infty,-1)$, $g$ takes all values from $-\infty$ up to the maximum $4$: range $(-\infty,4]$. On $(-1,+\infty)$, $g$ decreases from $+\infty$ to $1$ (not attained): range $(1,+\infty)$. Hence the range of $g$ is
+\[ (-\infty,4]\cup(1,+\infty). \]
+\hfill \textbf{(2 marks)}
+\item Number of solutions of $g(x)=k$ (intersections with the horizontal line $y=k$):
+\begin{itemize}
+\item $k>4$: the line meets only the right branch $\Rightarrow$ \textbf{1 solution};
+\item $k=4$: the line touches at the maximum and meets the right branch $\Rightarrow$ \textbf{2 solutions};
+\item $1<k<4$: the line meets the left branch twice (once rising, once falling) and the right branch once $\Rightarrow$ \textbf{3 solutions};
+\item $k=1$: the left branch is met twice; on the right branch $g>1$ always, so no intersection $\Rightarrow$ \textbf{2 solutions};
+\item $k<1$: the line meets only the left (falling) part once $\Rightarrow$ \textbf{1 solution}.
+\end{itemize}
+\hfill \textbf{(6 marks: 1 per case, 1 for a clear justification using the curve/table)}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE extra: reading the graph of the derivative (15 marks)]
+\begin{enumerate}
+\item The graph of $f'$ is a parabola opening upwards, crossing the $x$-axis only at $x=-1$ and $x=2$. Hence:
+\begin{itemize}
+\item $f'(x)>0$ on $(-\infty,-1)$ and on $(2,+\infty)$;
+\item $f'(x)<0$ on $(-1,2)$;
+\item $f'(-1)=f'(2)=0$.
+\end{itemize}
+\hfill \textbf{(3 marks)}
+\item Table of variations of $f$:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+$x$ & $-\infty$ & & $-1$ & & $2$ & & $+\infty$ \\
+\hline
+$f'(x)$ & & $+$ & $0$ & $-$ & $0$ & $+$ & \\
+\hline
+$f$ & & $\nearrow$ & $f(-1)$ & $\searrow$ & $f(2)$ & $\nearrow$ & \\
+\hline
+\end{tabular}
+\end{center}
+Stationary points: at $x=-1$, $f'$ changes from $+$ to $-$, so $(-1,f(-1))$ is a \cle{local maximum}; at $x=2$, $f'$ changes from $-$ to $+$, so $(2,f(2))$ is a \cle{local minimum}. \hfill \textbf{(5 marks: 3 for the table, 2 for the nature of the points)}
+\item Concavity of $f$ is given by the sign of $f''$, and $f''$ is the derivative of $f'$: so $f$ is concave up where $f'$ is \emph{increasing} and concave down where $f'$ is \emph{decreasing}. From the graph, $f'$ decreases on $(-\infty,0.5)$ and increases on $(0.5,+\infty)$, with a minimum at $x=0.5$. Therefore $f''$ changes sign at $x=0.5$: the curve of $f$ has a \cle{point of inflexion} at $x=0.5$. \hfill \textbf{(4 marks)}
+\item A possible curve of $f$: increasing and concave down up to $x=-1$ (local max), decreasing with inflexion at $x=0.5$ (concavity changes from down to up), reaching a local min at $x=2$, then increasing and concave up.
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9]
+\draw[->, popmuted] (-3,0) -- (3.5,0) node[below left]{$x$};
+\draw[->, popmuted] (0,-3) -- (0,4) node[below left]{$y$};
+\draw[very thick, popblue, domain=-2.2:3.1, samples=150] plot (\x, {0.5*(\x*\x*\x/3-0.5*\x*\x-2*\x)+0.4});
+\fill[poporange] (-1,1.58) circle (2pt) node[above, popdark]{max};
+\fill[poporange] (2,-2.93) circle (2pt) node[below, popdark]{min};
+\fill[poppurple] (0.5,-0.68) circle (2pt) node[right=1pt, popdark]{inflexion};
+\foreach \x in {-1,2}{\draw[popmuted] (\x,0.06) -- (\x,-0.06) node[below]{$\x$};}
+\end{tikzpicture}
+\legende{A possible curve of $f$ (here $f(x)=\tfrac{x^{3}}{6}-\tfrac{x^{2}}{4}-x+0.4$, whose derivative is $\tfrac12(x+1)(x-2)$).}
+\end{popfigure}
+\hfill \textbf{(3 marks)}
+\end{enumerate}
+\emph{Examiner's expectations:} the key skill tested is the distinction between the graph of $f$ and the graph of $f'$: zeros of $f'$ give stationary points of $f$; the monotonicity of $f'$ gives the concavity of $f$; the extremum of $f'$ gives the inflexion point of $f$. Marks are lost when candidates treat the given graph as the curve of $f$ itself.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap, grow cyclic,
+  every node/.style={concept, font=\small},
+  root concept/.append style={concept color=popblue, font=\bfseries\small},
+  level 1/.append style={level distance=3.4cm, sibling angle=60, font=\scriptsize},
+  level 1 concept/.append style={concept color=poporange},
+  text width=2.1cm, align=center]
+\node[root concept]{Curve Sketching}
+  child[concept color=popblue] { node {Domain, Range, Limits at bounds} }
+  child[concept color=popgreen] { node {Asymptotes: vertical, horizontal, oblique} }
+  child[concept color=poporange] { node {Stationary points: $f'(x)=0$; max, min} }
+  child[concept color=poppurple] { node {Inflexion: $f''$ changes sign; concavity} }
+  child[concept color=poppink] { node {Table of variations; infinite branches} }
+  child[concept color=popgold] { node {Intercepts \& symmetry} }
+  child[concept color=popmuted] { node {Full sketch: axes, scale, shape} };
+\end{tikzpicture}
+\legende{Mind map of the chapter Curve Sketching.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions.}
+\begin{itemize}
+\item The \cle{domain} of $f$ is the set of real $x$ for which $f(x)$ exists: exclude zeros of denominators, negatives under even roots, non-positive arguments of logarithms.
+\item The \cle{range} is the set of values taken by $f(x)$; read it from the completed study.
+\item \cle{Limits at the bounds}: compute $\lim f(x)$ at each endpoint of the domain, including $\pm\infty$.
+\item A \cle{stationary point} is a point where $f'(x)=0$; a \cle{point of inflexion} is a point where the concavity changes ($f''$ changes sign).
+\end{itemize}
+
+\textbf{Asymptotes and position.}
+\begin{itemize}
+\item \cle{Vertical asymptote} $x=a$: $\lim_{x\to a}f(x)=\pm\infty$ (at least one side).
+\item \cle{Horizontal asymptote} $y=b$: $\lim_{x\to\pm\infty}f(x)=b$ (finite).
+\item \cle{Oblique asymptote} $y=ax+b$: $\lim_{x\to\pm\infty}[f(x)-(ax+b)]=0$; find $a=\lim f(x)/x$, then $b=\lim[f(x)-ax]$.
+\item \cle{Position of curve relative to a line}: study the sign of $f(x)-(ax+b)$; positive $\Rightarrow$ curve above, negative $\Rightarrow$ below; zeros give intersection points.
+\item \cle{Parabolic branch} when $f(x)\to\pm\infty$ as $x\to\pm\infty$: direction of the $y$-axis if $f(x)/x\to\pm\infty$, direction of the $x$-axis if $f(x)/x\to 0$.
+\end{itemize}
+
+\textbf{Derivatives, nature of points, concavity.}
+\begin{itemize}
+\item $f'(x)>0$ on an interval $\Rightarrow$ $f$ \cle{increasing}; $f'(x)<0$ $\Rightarrow$ \cle{decreasing}.
+\item Nature of a stationary point: $f'$ changes $+$ to $-$ $\Rightarrow$ \cle{local maximum}; $-$ to $+$ $\Rightarrow$ \cle{local minimum}; no sign change $\Rightarrow$ horizontal inflexion. Alternatively: $f''(c)>0$ minimum, $f''(c)<0$ maximum (if $f''(c)=0$, test inconclusive).
+\item $f''(x)>0$ $\Rightarrow$ curve \cle{concave up} (convex); $f''(x)<0$ $\Rightarrow$ \cle{concave down}. Inflexion where $f''$ changes sign.
+\end{itemize}
+
+\textbf{Methods.}
+\begin{itemize}
+\item \textbf{Plan of a complete study}: (1) domain and symmetry (even/odd/periodic reduces the study); (2) limits at the bounds and asymptotes; (3) $f'$, sign, stationary points; (4) $f''$, concavity, inflexions; (5) table of variations; (6) intercepts with axes and a few extra points; (7) sketch with labelled axes, scale, asymptotes in dashed lines.
+\item \textbf{Symmetry}: $f(-x)=f(x)$ even (axis $x=0$); $f(-x)=-f(x)$ odd (centre $O$); $f(a-x)=f(a+x)$: axis $x=a$.
+\item \textbf{Intercepts}: $y$-intercept $f(0)$; $x$-intercepts solve $f(x)=0$.
+\end{itemize}
+
+\textbf{Common mistakes.}
+\begin{itemize}
+\item Forgetting excluded values of the domain before computing limits.
+\item Concluding ``$f'(c)=0$ $\Rightarrow$ extremum'': check the \emph{sign change} of $f'$.
+\item Confusing $f''(c)=0$ with inflexion: $f''$ must \emph{change sign} (e.g. $x^4$ at $0$).
+\item Claiming an oblique asymptote without verifying $\lim[f(x)-(ax+b)]=0$.
+\item Incomplete variation table: every remarkable value, arrows matching the sign of $f'$.
+\item Sketching through an asymptote or with inconsistent scale.
+\end{itemize}
+
+\textbf{GCE tips.}
+\begin{itemize}
+\item The table of variations must contain: $x$-row, sign of $f'$, arrows with limit/extremum values.
+\item Draw asymptotes first, in dashed lines, and state each with its justification (the limit).
+\item Marks are awarded for: domain, limits, derivative and its sign, correct table, intercepts, neat labelled sketch.
+\item Use position study to place the curve relative to its asymptote near $\pm\infty$ — a frequent question.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
