@@ -383,6 +383,7 @@ def us_fix(body):
             out.append(l)
         return "\n".join(out)
     body = _boxed(body)
+    body = re.sub(r"\\clip\[[^\]\n]*\]", lambda _m: "\\clip", body)   # \clip n'accepte pas d'options
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"(?<![\w}])\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
@@ -967,6 +968,10 @@ def degenerate(t):
         return "charabia"
     if "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
         return "marqueurs parasites"
+    for l in t.splitlines():
+        opts = re.findall(r"\b([a-z ]+=[0-9a-z.]+(?:em|cm|pt|mm)?)\b", l)
+        if opts and max(opts.count(o) for o in set(opts)) >= 6:
+            return "options répétées"
     lines = [l.strip() for l in t.splitlines() if len(l.strip()) > 3]
     if len(lines) > 30 and len(set(lines)) < 0.6 * len(lines):
         return "répétitions"
