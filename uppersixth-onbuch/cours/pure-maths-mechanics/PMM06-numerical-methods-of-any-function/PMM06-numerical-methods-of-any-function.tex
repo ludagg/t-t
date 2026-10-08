@@ -1,0 +1,2666 @@
+% Numerical methods of any function — Pure Mathematics with Mechanics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PMM06-numerical-methods-of-any-function.tex
+\newcommand{\DOCMATIERE}{Pure Mathematics with Mechanics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Pure mathematics with mechanics}
+\newcommand{\DOCLECON}{6}
+\newcommand{\DOCTITRE}{Numerical methods of any function}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Numerical methods of any function}{Pure Mathematics with Mechanics}{Upper Sixth}{Upper Sixth — Pure mathematics with mechanics}{6}{5 periods}{This chapter introduces numerical methods for solving equations f(x) = 0 when exact algebraic solutions are impossible or impractical. Students learn to locate roots graphically and by sign change, then refine them systematically using the bisection method and the Newton–Raphson iteration, with careful attention to accuracy, convergence and GCE-style applications.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can explain why numerical methods are needed and what an approximate root is.
+\item By the end of this chapter I can locate a root of f(x) = 0 in an interval using a change of sign of a continuous function.
+\item By the end of this chapter I can rearrange an equation into the form f(x) = 0 and sketch graphs to count and locate roots.
+\item By the end of this chapter I can carry out the bisection method step by step and state the accuracy of the approximation after n steps.
+\item By the end of this chapter I can derive and apply the Newton–Raphson formula x\_{n+1} = x\_n - f(x\_n)/f'(x\_n).
+\item By the end of this chapter I can interpret the Newton–Raphson process geometrically using tangent lines.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Why numerical methods? Locating roots
+\item The bisection method
+\item The Newton–Raphson method
+\item Accuracy, error control and applications
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can explain why numerical methods are needed and what an approximate root is.
+\item By the end of this chapter I can locate a root of f(x) = 0 in an interval using a change of sign of a continuous function.
+\item By the end of this chapter I can rearrange an equation into the form f(x) = 0 and sketch graphs to count and locate roots.
+\item By the end of this chapter I can carry out the bisection method step by step and state the accuracy of the approximation after n steps.
+\item By the end of this chapter I can derive and apply the Newton–Raphson formula x\_{n+1} = x\_n - f(x\_n)/f'(x\_n).
+\item By the end of this chapter I can interpret the Newton–Raphson process geometrically using tangent lines.
+\item By the end of this chapter I can recognise situations where Newton–Raphson fails or converges slowly.
+\item By the end of this chapter I can decide the accuracy of a numerical answer and justify a conclusion 'to 3 decimal places'.
+\item By the end of this chapter I can apply numerical methods to contextual problems (rates, areas, motion) typical of GCE Paper questions.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Differentiation of polynomials, exponentials, logarithms and trigonometric functions (Lower Sixth)
+\item Equation of the tangent to a curve at a point
+\item Graph sketching and intersection of two graphs
+\item Continuous functions and the idea of a sign change (intermediate value property)
+\item Manipulation of inequalities, absolute values and rounding to a given number of decimal places
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Why numerical methods? Locating roots}
+
+\courssub{Equations that no formula can solve}
+
+A mobile money agent in Bamenda wants to know the exact monthly interest rate hidden in a loan formula, but the equation he obtains --- a mix of powers and exponentials --- cannot be solved by any algebraic trick he knows. An engineer sizing a water pipe for a village near Bafoussam faces the same wall: the flow equation has no exact solution. Yet both answers can be found to any desired accuracy using only repeated, simple calculations. This chapter reveals how mathematicians ``trap'' solutions of equations $f(x) = 0$ between ever-narrower bounds, and how a clever tangent-line idea makes the search astonishingly fast. By the end, you will solve equations that no formula in the world can solve exactly.
+
+\begin{experience}[Three equations, three walls]
+Try to solve each of these equations exactly, using everything you know from Lower and Upper Sixth:
+\begin{enumerate}
+\item $x^3 + x - 3 = 0$;
+\item $e^x = 3x$;
+\item $\cos x = x$.
+\end{enumerate}
+The first is a cubic: there is a cubic formula, but it is far beyond our syllabus and gives ugly surds. The second mixes an exponential with a linear term: no algebraic manipulation can isolate $x$. The third mixes a trigonometric function with a polynomial: again, no exact method exists. These are not exotic equations --- they appear naturally in physics, economics and engineering. We need a new strategy: instead of searching for an \cle{exact} answer, we search for an \cle{approximate} answer that is as accurate as we demand.
+\end{experience}
+
+\begin{definition}[Exact and approximate solutions]
+An \cle{exact solution} of an equation is a value expressed in closed form (integers, fractions, surds, $\pi$, $e$, logarithms\ldots) that satisfies the equation perfectly. An \cle{approximate solution} is a decimal value that satisfies the equation to a stated degree of accuracy (for example, correct to 3 decimal places).
+\end{definition}
+
+The philosophy of numerical methods is simple and powerful: \emph{if we cannot write the answer down exactly, we can still compute it to 5, 10 or 100 decimal places} --- which for every practical purpose (an interest rate, a pipe diameter) is just as good.
+
+\courssub{The standard form $f(x) = 0$ and the notion of a root}
+
+Every equation in one unknown, however it is written, can be rearranged so that the right-hand side is zero. This is the \cle{standard form}.
+
+\begin{exemplebox}[Reducing equations to standard form]
+\begin{enumerate}
+\item $x^3 + x = 3 \iff x^3 + x - 3 = 0$, so $f(x) = x^3 + x - 3$.
+\item $e^x = 3x \iff e^x - 3x = 0$, so $f(x) = e^x - 3x$.
+\item $\cos x = x \iff \cos x - x = 0$, so $f(x) = \cos x - x$.
+\end{enumerate}
+\end{exemplebox}
+
+\begin{definition}[Root of an equation / zero of a function]
+A \cle{root} of the equation $f(x) = 0$ is a value $\alpha$ such that
+\[ f(\alpha) = 0. \]
+We also say that $\alpha$ is a \cle{zero} of the function $f$. Geometrically, $\alpha$ is the $x$-coordinate of a point where the graph of $y = f(x)$ meets the $x$-axis.
+\end{definition}
+
+\begin{attention}[Root versus solution of the original equation]
+The root $\alpha$ of $f(x) = 0$ is exactly the solution of the original equation, \emph{provided the rearrangement is valid}. Always rearrange first, then work with $f$.
+\end{attention}
+
+\courssub{Graphical location of roots}
+
+Since a root of $f(x) = 0$ is an $x$-intercept of the curve $y = f(x)$, a quick sketch already tells us \emph{how many} roots there are and \emph{roughly where} they lie.
+
+\begin{exemplebox}[Locating the root of $x^3 + x - 3 = 0$ graphically]
+The curve $y = x^3 + x - 3$ crosses the $x$-axis exactly once, between $x = 1$ and $x = 2$. So the equation has exactly one real root, and it lies in $(1, 2)$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.5, xmax=2.5, ymin=-6, ymax=8,
+  xtick={1,2}, ytick={-3,5},
+  domain=-0.3:2.3, samples=100,
+  grid=both, grid style={popline, very thin},
+]
+\addplot[popblue, very thick] {x^3 + x - 3};
+\addplot[poporange, dashed, thick] coordinates {(1,-5) (1,0)};
+\addplot[poporange, dashed, thick] coordinates {(2,0) (2,7)};
+\addplot[only marks, mark=*, mark size=2pt, popdark] coordinates {(1.2134,0)};
+\node[popdark, anchor=south west] at (axis cs:1.25,0.3) {$\alpha$};
+\node[popblue, anchor=west] at (axis cs:1.6,-3.5) {$y=x^3+x-3$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The curve $y = x^3 + x - 3$ crosses the $x$-axis once, between $x = 1$ and $x = 2$: the root $\alpha$ lies in $(1,2)$.}
+\end{popfigure}
+
+Sometimes it is more convenient \emph{not} to bring everything to one side, but to \cle{split} the equation into two familiar functions, $g(x) = h(x)$, and look for the \emph{intersections} of the two graphs.
+
+\begin{exemplebox}[Splitting $e^x = 3x$]
+Keep the equation as $e^x = 3x$ and sketch $y = e^x$ and $y = 3x$ on the same axes. The two curves meet twice: once between $x = 0$ and $x = 1$, and once between $x = 1$ and $x = 2$. Hence $e^x = 3x$ has two real roots, one in $(0,1)$ and one in $(1,2)$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.5, xmax=2.5, ymin=-1, ymax=9,
+  xtick={1,2}, ytick={1,3,6},
+  domain=-0.4:2.2, samples=100,
+  grid=both, grid style={popline, very thin},
+  legend style={at={(0.03,0.97)}, anchor=north west, draw=popline},
+]
+\addplot[popblue, very thick] {exp(x)};
+\addlegendentry{$y=e^x$}
+\addplot[poporange, very thick] {3*x};
+\addlegendentry{$y=3x$}
+\addplot[only marks, mark=*, mark size=2pt, popdark] coordinates {(0.619,1.857) (1.512,4.536)};
+\node[popdark, anchor=south] at (axis cs:0.619,2.0) {$\alpha_1$};
+\node[popdark, anchor=south west] at (axis cs:1.512,4.7) {$\alpha_2$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The intersections of $y = e^x$ and $y = 3x$ give the two roots $\alpha_1 \in (0,1)$ and $\alpha_2 \in (1,2)$ of $e^x = 3x$.}
+\end{popfigure}
+
+\begin{methode}[Counting roots from a sketch before choosing an interval]
+\begin{enumerate}
+\item Rearrange the equation either as $f(x) = 0$ (look for $x$-intercepts) or as $g(x) = h(x)$ with two familiar functions (look for intersections).
+\item Sketch the graph(s), using your knowledge of polynomials, exponentials, logarithms and trigonometric curves.
+\item Count the crossing points: this is the number of real roots.
+\item Read off an interval of width 1 (between consecutive integers) containing each root.
+\end{enumerate}
+\end{methode}
+
+\courssub{The sign-change criterion}
+
+A sketch is convincing but not rigorous. The tool that turns a graphical observation into a proof is the \cle{sign-change criterion}, a direct consequence of the Intermediate Value Theorem: a continuous curve cannot get from below the $x$-axis to above it without crossing it.
+
+\begin{propriete}[Sign-change rule (location of roots)]
+Let $f$ be \cle{continuous} on the closed interval $[a, b]$. If $f(a)$ and $f(b)$ have \emph{opposite signs}, i.e.
+\[ f(a)\,f(b) < 0, \]
+then the equation $f(x) = 0$ has \textbf{at least one root} in the open interval $(a, b)$.
+\end{propriete}
+
+The proof (the Intermediate Value Theorem) is not examinable, but you must be able to \emph{use} the result and to state its hypotheses precisely: \textbf{continuity} on $[a,b]$ and \textbf{opposite signs} at the endpoints.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\draw[->, popmuted] (-0.5,0) -- (6.5,0) node[right] {$x$};
+\draw[->, popmuted] (0,-2.2) -- (0,2.8) node[above] {$y$};
+\draw[popblue, very thick] (1,-1.5) .. controls (2.2,-1.8) and (2.6,1.2) .. (3.4,0.6) .. controls (4.2,0.1) and (4.6,1.6) .. (5.5,2.2);
+\fill[poporange] (1,-1.5) circle (2pt);
+\fill[poporange] (5.5,2.2) circle (2pt);
+\draw[dashed, popmuted] (1,-1.5) -- (1,0) node[above, popdark] {$a$};
+\draw[dashed, popmuted] (5.5,2.2) -- (5.5,0) node[below, popdark] {$b$};
+\node[poporange, anchor=east] at (0.95,-1.5) {$f(a)<0$};
+\node[poporange, anchor=west] at (5.55,2.2) {$f(b)>0$};
+\fill[popdark] (3.05,0.02) circle (2pt) node[below right, popdark] {$\alpha$};
+\node[popblue, anchor=south west] at (4.0,1.7) {$y=f(x)$};
+\end{tikzpicture}
+\end{center}
+\legende{A continuous curve with $f(a) < 0$ and $f(b) > 0$ must cross the $x$-axis at least once in $(a,b)$: a root $\alpha$ is trapped inside.}
+\end{popfigure}
+
+\begin{exoresolu}[Showing that $x^3 + x - 3 = 0$ has a root in $(1, 2)$]
+Show that the equation $x^3 + x - 3 = 0$ has a root between $1$ and $2$.
+\tcblower
+Let $f(x) = x^3 + x - 3$. As a polynomial, $f$ is continuous everywhere, in particular on $[1, 2]$. We evaluate:
+\begin{align*}
+f(1) &= 1 + 1 - 3 = -1 < 0,\\
+f(2) &= 8 + 2 - 3 = 7 > 0.
+\end{align*}
+Since $f(1)\,f(2) = -7 < 0$, by the sign-change rule there is at least one root of $f(x) = 0$ in $(1, 2)$. \hfill$\blacksquare$
+\end{exoresolu}
+
+\courssub{Systematic search: tables of values}
+
+How do we find a suitable interval $[a, b]$ in the first place, and how do we narrow it down? By \cle{tabulating} $f(x)$ at regular steps and watching for sign changes.
+
+\begin{methode}[Locating roots by tabulation]
+\begin{enumerate}
+\item Choose a starting point and a step $h$ (for example $h = 1$, then $h = 0.1$).
+\item Compute $f(x)$ at $x = a,\ a+h,\ a+2h,\ \dots$
+\item Each time the sign of $f$ changes between two consecutive values, a root is bracketed in that interval.
+\item To locate the root more precisely, repeat with a smaller step inside the bracket.
+\item Confirm with a sketch that no root has been missed.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Tabulating $f(x) = x^3 + x - 3$]
+With step $h = 1$:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\hline
+$f(x)$ & $-3$ & $-1$ & $7$ & $27$ & $65$ \\
+\hline
+sign & $-$ & $-$ & $+$ & $+$ & $+$ \\
+\hline
+\end{tabular}
+\end{center}
+The only sign change occurs between $x = 1$ and $x = 2$: the root lies in $(1, 2)$. Refining with step $h = 0.1$:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $1.0$ & $1.1$ & $1.2$ & $1.3$ \\
+\hline
+$f(x)$ & $-1$ & $-0.569$ & $-0.072$ & $0.497$ \\
+\hline
+sign & $-$ & $-$ & $-$ & $+$ \\
+\hline
+\end{tabular}
+\end{center}
+The sign change is now between $1.2$ and $1.3$: the root lies in $(1.2, 1.3)$. We have trapped it in an interval ten times narrower.
+\end{exemplebox}
+
+\begin{exoresolu}[Locating the roots of $e^x = 3x$ to one decimal place]
+Show that $e^x = 3x$ has a root between $0.6$ and $0.7$, and another between $1.5$ and $1.6$.
+\tcblower
+Write the equation in standard form: $f(x) = e^x - 3x$, continuous on $\mathbb{R}$. 
+
+First, tabulate near the first root with step $0.1$ (values to 3 d.p.):
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0.5$ & $0.6$ & $0.7$ & $0.8$ \\
+\hline
+$f(x)$ & $0.149$ & $0.022$ & $-0.086$ & $-0.187$ \\
+\hline
+sign & $+$ & $+$ & $-$ & $-$ \\
+\hline
+\end{tabular}
+\end{center}
+A sign change occurs between $0.6$ and $0.7$.
+
+Second, tabulate near the second root with step $0.1$:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $x$ & $1.4$ & $1.5$ & $1.6$ & $1.7$ \\
+\hline
+$f(x)$ & $-0.145$ & $-0.018$ & $0.153$ & $0.374$ \\
+\hline
+sign & $-$ & $-$ & $+$ & $+$ \\
+\hline
+\end{tabular}
+\end{center}
+A sign change occurs between $1.5$ and $1.6$.
+
+Since $f$ is continuous on $\mathbb{R}$, the sign-change rule guarantees a root in $(0.6, 0.7)$ and a root in $(1.5, 1.6)$. \hfill$\blacksquare$
+\end{exoresolu}
+
+\courssub{Limitations of the sign-change test}
+
+The sign-change rule is powerful, but it must be used with care. Two traps appear again and again in the GCE examination.
+
+\begin{attention}[No sign change does NOT prove there is no root]
+The rule is one-directional: a sign change \emph{guarantees} a root, but the absence of a sign change proves \emph{nothing}. The interval may contain:
+\begin{itemize}
+\item a \cle{double root}, where the curve touches the axis and turns back (e.g. $f(x) = (x-1)^2$ on $[0, 2]$: $f(0) = 1 > 0$ and $f(2) = 1 > 0$, yet $x = 1$ is a root);
+\item an \cle{even number of roots}: two crossings inside the interval can cancel the sign change (e.g. $f(x) = x^2 - 2$ on $[-2, 2]$: $f(-2) = f(2) = 2 > 0$, yet there are two roots, $\pm\sqrt{2}$).
+\end{itemize}
+This is why a \emph{sketch first} is essential: it tells you how many roots to expect.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm, height=6.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.5, xmax=2.6, ymin=-0.6, ymax=2.2,
+  xtick={1}, ytick=\empty,
+  domain=-0.3:2.4, samples=100,
+]
+\addplot[popblue, very thick] {(x-1)^2};
+\addplot[only marks, mark=*, mark size=2pt, poporange] coordinates {(0,1) (2,1)};
+\addplot[only marks, mark=*, mark size=2pt, popdark] coordinates {(1,0)};
+\node[popdark, anchor=north] at (axis cs:1,-0.08) {$\alpha$ (double root)};
+\node[poporange, anchor=south east] at (axis cs:0,1) {$f(a)>0$};
+\node[poporange, anchor=south west] at (axis cs:2,1) {$f(b)>0$};
+\node[popblue, anchor=west] at (axis cs:1.7,1.3) {$y=(x-1)^2$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The curve $y = (x-1)^2$ touches the axis at the double root $\alpha = 1$: $f(a)$ and $f(b)$ have the same sign, so the sign-change test detects nothing.}
+\end{popfigure}
+
+\begin{attention}[A sign change across a discontinuity does NOT imply a root]
+The rule requires $f$ to be \textbf{continuous} on the \emph{whole} interval $[a, b]$. Take $f(x) = \dfrac{1}{x}$ on $[-1, 1]$:
+\[ f(-1) = -1 < 0, \qquad f(1) = 1 > 0, \]
+yet $\dfrac{1}{x} = 0$ has \emph{no} solution! The ``sign change'' happens across the vertical asymptote at $x = 0$, where $f$ is not continuous (it jumps from $-\infty$ to $+\infty$). Always check continuity before applying the rule --- especially with rational functions, $\tan x$, and logarithms.
+\end{attention}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item Many equations (e.g. $e^x = 3x$, $\cos x = x$) have \textbf{no exact solution}; numerical methods find approximate solutions to any desired accuracy.
+\item Every equation can be written in the standard form $f(x) = 0$; a \textbf{root} is a value $\alpha$ with $f(\alpha) = 0$, i.e. an $x$-intercept of $y = f(x)$.
+\item \textbf{Sign-change rule:} if $f$ is continuous on $[a,b]$ and $f(a)f(b) < 0$, then $f(x) = 0$ has at least one root in $(a,b)$.
+\item \textbf{Tabulation} with a chosen step brackets roots; halving the step refines the bracket.
+\item \textbf{Warnings:} no sign change does not exclude roots (double roots, even numbers of roots); a sign change across a discontinuity (e.g. $\tfrac1x$ near $0$) does not imply a root. Always sketch first.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Locating roots]
+\begin{enumerate}
+\item Show that the equation $x^3 - 2x - 5 = 0$ has exactly one real root and that it lies in $(2, 3)$.
+\item By tabulating $f(x) = \cos x - x$ (with $x$ in radians) at steps of $0.1$ between $0$ and $1$, bracket the root of $\cos x = x$ in an interval of width $0.1$.
+\item Explain, with a sketch, why the equation $(x-2)^2 = 0$ cannot be located by the sign-change rule on $[1, 3]$.
+\item A student claims that $f(x) = \dfrac{x^2 - 1}{x}$ has a root in $(-2, 2)$ because $f(-2) = -1.5 < 0$ and $f(2) = 1.5 > 0$. Criticise this reasoning and find the actual roots.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Let $f(x) = x^3 - 2x - 5$. As a polynomial, $f$ is continuous on $\mathbb{R}$. We have $f(2) = 8 - 4 - 5 = -1 < 0$ and $f(3) = 27 - 6 - 5 = 16 > 0$, so by the sign-change rule there is at least one root in $(2,3)$.
+
+To prove it is the \emph{only} real root, study the derivative: $f'(x) = 3x^2 - 2$. The critical points are $x = \pm\sqrt{2/3} \approx \pm 0.816$.
+\begin{itemize}
+\item For $x \le 0$: $f$ increases on $(-\infty, -\sqrt{2/3}]$ to a local maximum $f(-\sqrt{2/3}) = -\frac{4}{3}\sqrt{2/3} - 5 < 0$, then decreases on $[-\sqrt{2/3}, 0]$ to $f(0) = -5 < 0$. Hence $f(x) < 0$ for all $x \le 0$; no root there.
+\item For $x \ge 0$: $f$ decreases on $[0, \sqrt{2/3}]$ to a local minimum $f(\sqrt{2/3}) = -\frac{4}{3}\sqrt{2/3} - 5 < 0$, then increases strictly on $[\sqrt{2/3}, \infty)$. Since $f(2) = -1 < 0$ and $f(3) = 16 > 0$, and $f$ is strictly increasing on $[2,3]$, there is exactly one root in $(2,3)$ and no root in $[0,2]$.
+\end{itemize}
+Therefore the equation has exactly one real root, and it lies in $(2,3)$.
+
+\item With $f(x) = \cos x - x$ (radians): 
+$f(0.7) = \cos 0.7 - 0.7 \approx 0.7648 - 0.7 = 0.0648 > 0$,
+$f(0.8) = \cos 0.8 - 0.8 \approx 0.6967 - 0.8 = -0.1033 < 0$.
+Sign change between $0.7$ and $0.8$: the root lies in $(0.7, 0.8)$.
+
+\item $f(x) = (x-2)^2 \ge 0$ for all $x$: the parabola \emph{touches} the $x$-axis at $x = 2$ without crossing it (double root). $f(1) = 1 > 0$ and $f(3) = 1 > 0$: same sign at the endpoints, so the sign-change test gives no information even though the root $x = 2$ lies inside $[1,3]$.
+
+\item The function $f(x) = \frac{x^2-1}{x}$ is \textbf{not continuous} on $[-2, 2]$: it is undefined at $x = 0$ (vertical asymptote). The sign-change rule does not apply. The actual roots come from solving $x^2 - 1 = 0$ with $x \neq 0$, giving $x = 1$ and $x = -1$, both in $(-2, 2)$. The student's conclusion was accidentally correct but the reasoning was invalid.
+\end{enumerate}
+\end{corrige}
+
+\begin{savaistu}[Why bankers and engineers love brackets]
+The idea of trapping an unknown quantity between two bounds and squeezing the interval is ancient: Babylonian clay tablets already contained iterative recipes for square roots nearly four thousand years ago. Today, every calculator, every spreadsheet ``Goal Seek'' tool, and every flight-simulation program uses descendants of the methods in this chapter. The mobile money agent in Bamenda and the engineer near Bafoussam are using, without knowing it, the same mathematics you are learning now.
+\end{savaistu}
+
+\coursec{The bisection method}
+
+In the previous section we saw that many equations $f(x)=0$ cannot be solved exactly, but that a \cle{sign change} of a continuous function $f$ on an interval $[a,b]$ guarantees the existence of at least one root inside that interval (the Intermediate Value Theorem). Locating a root, however, is only the beginning: the interval $[a,b]$ may be quite wide, say $[2,3]$, whereas the GCE will typically ask for the root \emph{correct to 2 or 3 decimal places}. We therefore need a systematic procedure that starts from a sign-change interval and squeezes it down until the root is pinned to the required accuracy. The simplest such procedure --- and the one that \emph{never fails} --- is the \cle{bisection method}.
+
+\courssub{Principle of the method}
+
+\begin{experience}[A guessing game]
+Think of a number between $1$ and $100$. A friend tries to guess it, and after each guess you only answer ``too big'' or ``too small''. The clever strategy is to guess the \emph{middle} of the current range: $50$, then $25$ or $75$, and so on. Each guess halves the range of possibilities, so the hidden number is found very quickly. The bisection method is exactly this game, played against the equation $f(x)=0$: the ``hidden number'' is the root $\alpha$, and the answers ``too big / too small'' are replaced by the \emph{sign} of $f$ at the midpoint.
+\end{experience}
+
+Suppose $f$ is continuous on $[a,b]$ and $f(a)$ and $f(b)$ have opposite signs, so a root $\alpha$ lies in $(a,b)$. Compute the midpoint $m=\dfrac{a+b}{2}$ and the sign of $f(m)$. Exactly one of the following holds:
+
+\begin{itemize}
+\item $f(m)=0$: we have found the root exactly (rare in practice);
+\item $f(a)$ and $f(m)$ have opposite signs: the sign change, and hence the root, lies in $[a,m]$;
+\item otherwise the sign change lies in $[m,b]$.
+\end{itemize}
+
+In every case we keep the half-interval that still contains a sign change, and we discard the other half. The root is now trapped in an interval of width $\dfrac{b-a}{2}$. Repeating the operation traps it in an interval of width $\dfrac{b-a}{4}$, then $\dfrac{b-a}{8}$, and so on. The intervals are \emph{nested}, each one half the previous one, and they shrink onto the root.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+% axis
+\draw[->,popline] (-0.3,0) -- (10.6,0) node[below left,popmuted] {$x$};
+% ticks for 2 and 3
+\draw[popink] (1,0.12) -- (1,-0.12) node[below] {$2$};
+\draw[popink] (9,0.12) -- (9,-0.12) node[below] {$3$};
+% interval 1
+\draw[line width=2.2pt,popblue] (1,0.9) -- (9,0.9);
+\fill[popblue] (1,0.9) circle (2pt); \fill[popblue] (9,0.9) circle (2pt);
+\node[popblue,above] at (5,0.95) {$[a_1,b_1]=[2,\ 3]$};
+% interval 2
+\draw[line width=2.2pt,poporange] (1,2.0) -- (5,2.0);
+\fill[poporange] (1,2.0) circle (2pt); \fill[poporange] (5,2.0) circle (2pt);
+\node[poporange,above] at (3,2.05) {$[a_2,b_2]=[2,\ 2.5]$};
+% interval 3
+\draw[line width=2.2pt,popgreen] (1,3.1) -- (3,3.1);
+\fill[popgreen] (1,3.1) circle (2pt); \fill[popgreen] (3,3.1) circle (2pt);
+\node[popgreen,above] at (2,3.15) {$[a_3,b_3]=[2,\ 2.25]$};
+% root marker
+\draw[dashed,popdark] (1.76,0) -- (1.76,3.9);
+\fill[popdark] (1.76,0) circle (2.4pt);
+\node[popdark,below] at (1.76,-0.15) {$\alpha$};
+\end{tikzpicture}
+\end{center}
+\legende{Nested intervals produced by bisection for $f(x)=x^3-2x-5$: each new interval is one half of the previous one, and all of them contain the root $\alpha\approx2.0946$.}
+\end{popfigure}
+
+\courssub{The bisection algorithm}
+
+\begin{methode}[Bisection algorithm]
+To solve $f(x)=0$, given $f$ continuous on $[a,b]$ with $f(a)f(b)<0$:
+\begin{enumerate}
+\item \textbf{Check the sign change.} Compute $f(a)$ and $f(b)$; confirm they have opposite signs.
+\item \textbf{Compute the midpoint} $m=\dfrac{a+b}{2}$ and evaluate $f(m)$.
+\item \textbf{Choose the correct half.}
+\begin{itemize}
+\item If $f(a)f(m)<0$, the root is in $[a,m]$: set $b=m$.
+\item Otherwise the root is in $[m,b]$: set $a=m$.
+\end{itemize}
+\item \textbf{Test the stopping criterion.} If the interval width $b-a$ is small enough (or the endpoints agree to the required number of decimal places), stop and take the midpoint as the approximation.
+\item Otherwise, \textbf{repeat} from step 2 with the new interval $[a,b]$.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Check continuity first]
+The whole method rests on the Intermediate Value Theorem, which requires $f$ to be \textbf{continuous} on $[a,b]$. If $f$ has a discontinuity inside the interval (for example $f(x)=\dfrac{1}{x}$ on $[-1,1]$, where $f(-1)<0$ and $f(1)>0$ but there is no root), a sign change does \emph{not} guarantee a root, and bisection may converge to the discontinuity instead. Always state, in an examination, that $f$ is continuous on the starting interval.
+\end{attention}
+
+\courssub{Organising the computations in a table}
+
+Bisection involves many similar calculations; a clear table prevents sign errors and earns method marks in the GCE. Each row records the current interval, the midpoint, the relevant signs, and the decision taken.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $n$ & $a$ & $b$ & $m=\frac{a+b}{2}$ & sign of $f(m)$ & decision \\
+\hline
+$1$ & $a_1$ & $b_1$ & $m_1$ & $+$ or $-$ & keep $[a_1,m_1]$ or $[m_1,b_1]$ \\
+\hline
+$2$ & $a_2$ & $b_2$ & $m_2$ & $+$ or $-$ & \dots \\
+\hline
+\end{tabularx}
+\end{center}
+
+Only the \emph{sign} of $f(m)$ is needed for the decision, but recording the value of $f(m)$ is useful: it lets you detect arithmetic slips (the values of $|f(m)|$ should generally decrease as you approach the root).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11.5cm, height=7.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=1.8, xmax=3.1, ymin=-3, ymax=17,
+  xtick={2,2.25,2.5,3},
+  xticklabels={$2$,$2.25$,$2.5$,$3$},
+  ytick={-2,5,10,15},
+  tick label style={font=\small},
+  label style={font=\small},
+  samples=100, domain=1.8:3.1,
+  every axis plot/.append style={line width=1.1pt}
+]
+% shaded retained half-intervals
+\draw[fill=popblueL, draw=none] (axis cs:2,0) rectangle (axis cs:3,17);
+\draw[fill=popgreenL, draw=none] (axis cs:2,0) rectangle (axis cs:2.5,17);
+\draw[fill=popblue!25, draw=none] (axis cs:2,0) rectangle (axis cs:2.25,17);
+% curve
+\addplot[popink] {x^3 - 2*x - 5};
+% midpoints
+\addplot[only marks, mark=*, poporange, mark size=2.2pt] coordinates {(2.5,5.625)};
+\addplot[only marks, mark=*, poppurple, mark size=2.2pt] coordinates {(2.25,1.890625)};
+\addplot[only marks, mark=*, popgreen, mark size=2.2pt] coordinates {(2.125,0.345703125)};
+\node[poporange, font=\small, anchor=west] at (axis cs:2.52,5.9) {$m_1=2.5$};
+\node[poppurple, font=\small, anchor=west] at (axis cs:2.27,2.2) {$m_2=2.25$};
+\node[popgreen, font=\small, anchor=south east] at (axis cs:2.12,0.6) {$m_3=2.125$};
+% root
+\addplot[only marks, mark=*, popdark, mark size=2.4pt] coordinates {(2.0946,0)};
+\node[popdark, font=\small, anchor=south east] at (axis cs:2.08,0.4) {$\alpha$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The curve $y=x^3-2x-5$ with the first three midpoints $m_1$, $m_2$, $m_3$. The shaded bands show the successive retained half-intervals shrinking onto the root $\alpha$.}
+\end{popfigure}
+
+\courssub{A complete worked example}
+
+\begin{exoresolu}[Solving $x^3-2x-5=0$ by bisection, to 2 decimal places]
+The equation $x^3-2x-5=0$ has a root $\alpha$ in $[2,3]$. Use the bisection method to find $\alpha$ correct to 2 decimal places.
+\tcblower
+\textbf{Solution.} Let $f(x)=x^3-2x-5$; $f$ is a polynomial, hence continuous everywhere. We check the sign change:
+\[ f(2)=8-4-5=-1<0, \qquad f(3)=27-6-5=16>0, \]
+so a root lies in $[2,3]$. We apply the algorithm, recording each step. Throughout, $a$ denotes the endpoint where $f(a)<0$ and $b$ the endpoint where $f(b)>0$.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $a$ ($f(a)<0$) & $b$ ($f(b)>0$) & $m$ & $f(m)$ & new interval \\
+\hline
+$2$ & $3$ & $2.5$ & $5.6250>0$ & $[2,\ 2.5]$ \\
+\hline
+$2$ & $2.5$ & $2.25$ & $1.8906>0$ & $[2,\ 2.25]$ \\
+\hline
+$2$ & $2.25$ & $2.125$ & $0.3457>0$ & $[2,\ 2.125]$ \\
+\hline
+$2$ & $2.125$ & $2.0625$ & $-0.3516<0$ & $[2.0625,\ 2.125]$ \\
+\hline
+$2.0625$ & $2.125$ & $2.09375$ & $-0.0088<0$ & $[2.09375,\ 2.125]$ \\
+\hline
+$2.09375$ & $2.125$ & $2.109375$ & $0.1630>0$ & $[2.09375,\ 2.109375]$ \\
+\hline
+$2.09375$ & $2.109375$ & $2.1015625$ & $0.0767>0$ & $[2.09375,\ 2.1015625]$ \\
+\hline
+$2.09375$ & $2.1015625$ & $2.09765625$ & $0.0338>0$ & $[2.09375,\ 2.09765625]$ \\
+\hline
+$2.09375$ & $2.09765625$ & $2.095703125$ & $0.0123>0$ & $[2.09375,\ 2.095703125]$ \\
+\hline
+\end{tabular}
+\end{center}
+
+At this stage the endpoints $2.09375$ and $2.095703125$ do \emph{not} yet round to the same value ($2.09$ and $2.10$ respectively), so we continue:
+\[ m=2.094726563,\quad f(m)\approx 0.0017>0 \ \Rightarrow\ [2.09375,\ 2.094726563], \]
+\[ m=2.094238281,\quad f(m)\approx -0.0036<0 \ \Rightarrow\ [2.094238281,\ 2.094726563]. \]
+Now \emph{both} endpoints round to $2.09$. Since $\alpha\in[2.094238281,\,2.094726563]$, every possible value of $\alpha$ rounds to $2.09$. Hence
+\[ \boxed{\alpha = 2.09 \ \text{correct to 2 decimal places}} \qquad (\text{indeed } \alpha \approx 2.0946). \]
+\end{exoresolu}
+
+\begin{attention}[Two lessons from the example above]
+\begin{itemize}
+\item \textbf{Evaluate $f(m)$ with full calculator precision and double-check each sign.} One wrong sign sends the whole process into the wrong half, and every subsequent row is wasted. For instance, here $f(2.25)=2.25^3-2(2.25)-5=11.390625-4.5-5=1.890625$ is \emph{positive}; misreading it as negative would send you to $[2.25,2.5]$, which contains no root, and your final answer would be wrong.
+\item \textbf{Do not stop just because $f(m)$ is small.} A small value of $|f(m)|$ does not by itself guarantee that $m$ is close to the root to the required number of decimal places (the curve might be very flat or very steep). Stop only when the \emph{interval width} guarantees the required accuracy, or when both endpoints round to the same value.
+\end{itemize}
+\end{attention}
+
+\courssub{Error bound and number of steps}
+
+Each bisection halves the interval. Starting from $[a,b]$ of width $b-a$, after $n$ steps the root is trapped in an interval of width $\dfrac{b-a}{2^n}$.
+
+\begin{propriete}[Error bound for bisection]
+Let $f$ be continuous on $[a,b]$ with $f(a)f(b)<0$. After $n$ bisection steps, the root $\alpha$ lies in an interval $[a_n,b_n]$ of width
+\[ b_n-a_n=\frac{b-a}{2^n}. \]
+Consequently, if we take the midpoint $m_n=\dfrac{a_n+b_n}{2}$ as our approximation, then
+\[ |m_n-\alpha|\ \le\ \frac{b-a}{2^{n+1}}. \]
+\emph{Proof (instructive, not required for the examination).} The width is halved at each step, so after $n$ steps it equals $(b-a)/2^n$ by immediate induction. Since $\alpha\in[a_n,b_n]$ and $m_n$ is the centre of this interval, the distance from $m_n$ to any point of the interval --- in particular to $\alpha$ --- is at most half the width, i.e. $(b-a)/2^{n+1}$. $\blacksquare$
+\end{propriete}
+
+This formula tells us \emph{in advance} how many steps are needed.
+
+\begin{exemplebox}[How many bisections for a given accuracy?]
+Starting from $[2,3]$ (width $1$), how many steps guarantee an error below $5\times10^{-3}$ (enough for 2 d.p.)?
+We need $\dfrac{1}{2^{n+1}}<0.005$, i.e. $2^{n+1}>200$. Since $2^7=128<200$ and $2^8=256>200$, we need $n+1=8$, that is $n=7$ steps at least. In our worked example about $10$ rows were needed, because we required the endpoints to \emph{round} to the same value --- a slightly stronger demand than a mere error bound.
+\end{exemplebox}
+
+\courssub{Proving a root correct to $k$ decimal places}
+
+Examiners often ask: ``\emph{show that $\alpha=1.23$ correct to 2 decimal places}''. The rigorous justification is a sign change on an interval whose endpoints both round to $1.23$.
+
+\begin{methode}[Justifying a root to $k$ decimal places]
+To prove that $\alpha = 1.23$ to 2 d.p.:
+\begin{enumerate}
+\item Form the interval $[1.225,\ 1.235]$: every number in it rounds to $1.23$.
+\item Compute $f(1.225)$ and $f(1.235)$.
+\item Show $f(1.225)f(1.235)<0$ and state that $f$ is continuous.
+\item Conclude: by the Intermediate Value Theorem, $\alpha\in(1.225,1.235)$, so $\alpha=1.23$ correct to 2 d.p.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Verifying our answer]
+For $f(x)=x^3-2x-5$: $f(2.085)=2.085^3-2(2.085)-5\approx -0.105<0$ and $f(2.095)=2.095^3-2(2.095)-5\approx 0.011>0$. Since $f$ is continuous and changes sign on $[2.085,2.095]$, the root lies in this interval, and every number in it rounds to $2.09$. Hence $\alpha=2.09$ to 2 d.p. $\checkmark$
+\end{exemplebox}
+
+\courssub{Advantages and drawbacks}
+
+\begin{aretenir}[Bisection: strengths and weaknesses]
+\textbf{Advantages}
+\begin{itemize}
+\item \emph{Always converges}: provided $f$ is continuous and the starting interval contains a sign change, the method cannot fail.
+\item \emph{Simple}: only evaluations of $f$ and sign comparisons are needed --- no derivative.
+\item \emph{Guaranteed error bound}: after $n$ steps the error is at most $(b-a)/2^{n+1}$, known in advance.
+\end{itemize}
+\textbf{Drawbacks}
+\begin{itemize}
+\item \emph{Slow}: each step gains only one binary digit (about $3$--$4$ steps per decimal digit). High accuracy requires many iterations.
+\item It needs a \emph{bracketing} interval with a sign change to start, and it finds only \emph{one} root in that interval.
+\item It ignores the \emph{magnitude} of $f(m)$, using only its sign --- information that faster methods (such as Newton--Raphson, studied next) exploit.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Bisection in real life]
+The ``halving'' idea is one of the oldest algorithms in mathematics and is still used daily: the \emph{binary search} that locates a name in a sorted list on your phone is exactly bisection. Engineers also use bisection as a safe ``fallback'': when a fast method like Newton--Raphson misbehaves, software switches back to bisection because it is guaranteed to converge.
+\end{savaistu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Show that the equation $x^3+x-3=0$ has a root in $[1,2]$, and use bisection to find it correct to 1 decimal place.
+\item Starting from $[1,2]$, how many bisection steps are needed to guarantee an error less than $10^{-4}$?
+\item The equation $\cos x = x$ (radians) has a root in $[0,1]$. Perform three bisection steps and state the interval containing the root.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$f(x)=x^3+x-3$ is continuous; $f(1)=-1<0$, $f(2)=7>0$: root in $[1,2]$.
+$m=1.5$: $f(1.5)=1.875>0 \Rightarrow [1,1.5]$. $m=1.25$: $f(1.25)=0.203>0 \Rightarrow [1,1.25]$. $m=1.125$: $f(1.125)\approx-0.451<0 \Rightarrow [1.125,1.25]$. $m=1.1875$: $f(1.1875)\approx-0.138<0 \Rightarrow [1.1875,1.25]$. $m=1.21875$: $f(1.21875)\approx0.030>0 \Rightarrow [1.1875,1.21875]$. Both endpoints round to $1.2$, so the root is $1.2$ to 1 d.p.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+We need $\dfrac{2-1}{2^{n+1}}<10^{-4}$, i.e. $2^{n+1}>10^{4}$. Since $2^{13}=8192<10^4$ and $2^{14}=16384>10^4$, we need $n+1=14$, so $n=13$ steps.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$f(x)=\cos x - x$ is continuous; $f(0)=1>0$, $f(1)=\cos1-1\approx-0.460<0$.
+$m_1=0.5$: $f(0.5)\approx0.878-0.5=0.378>0 \Rightarrow [0.5,1]$.
+$m_2=0.75$: $f(0.75)\approx0.732-0.75=-0.018<0 \Rightarrow [0.5,0.75]$.
+$m_3=0.625$: $f(0.625)\approx0.811-0.625=0.186>0 \Rightarrow [0.625,0.75]$.
+After three steps the root lies in $[0.625,\,0.75]$ (true value $\approx 0.739$).
+\end{corrige}
+
+The bisection method is therefore our reliable workhorse: slow but certain. In the next section we study the \cle{Newton--Raphson method}, which uses the tangent to the curve to converge much faster --- at the price of requiring more care.
+
+\coursec{The Newton--Raphson method}
+
+The bisection method of the previous section has one great virtue: it \emph{always} works, provided we start with an interval on which $f$ changes sign. But it has one great weakness: it is \emph{slow}. Each step only halves the interval, so gaining one extra decimal place of accuracy costs roughly three or four iterations. If we need a root to six decimal places, we may need twenty or more steps of careful arithmetic.
+
+In this section we meet a much faster idea, due in spirit to Isaac Newton and refined by Joseph Raphson. Instead of trapping the root inside a shrinking interval, we use the \emph{shape} of the curve itself --- specifically its tangent --- to jump straight towards the root. The price we pay is that the method can fail if used carelessly; understanding when and why it fails is just as examinable as using it.
+
+\courssub{The geometric idea: sliding down the tangent}
+
+Suppose we want to solve $f(x)=0$, that is, to find where the curve $y=f(x)$ crosses the $x$-axis. Imagine you are standing on the curve at the point $(x_0, f(x_0))$, where $x_0$ is a rough guess at the root. You cannot see the root directly, but you \emph{can} see the direction in which the curve is heading: that direction is given by the \cle{tangent} to the curve at your point.
+
+The key idea is this:
+
+\begin{quote}
+Near the point of contact, the tangent line is an excellent approximation to the curve. So instead of asking \emph{``where does the curve cross the $x$-axis?''} --- which we cannot answer exactly --- we ask \emph{``where does the tangent cross the $x$-axis?''} --- which is a simple linear problem. The answer, $x_1$, is our improved estimate of the root.
+\end{quote}
+
+We then repeat the process: stand on the curve at $(x_1, f(x_1))$, draw the new tangent, and find where \emph{it} crosses the axis. This gives $x_2$, and so on. Provided the guess $x_0$ is reasonable, the estimates $x_0, x_1, x_2, \dots$ rush towards the root remarkably quickly.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+  \draw[->, popmuted] (-0.6,0) -- (5.2,0) node[below left] {$x$};
+  \draw[->, popmuted] (0,-0.8) -- (0,3.4) node[below left] {$y$};
+  \draw[very thick, popblue, domain=0.7:4.6, samples=100] plot (\x, {0.28*(\x-1.6)*(\x-1.6) - 0.35});
+  \node[popblue] at (4.3,2.6) {$y=f(x)$};
+  \fill[popdark] (2.718,0) circle (1.6pt);
+  \node[below, popdark] at (2.85,-0.02) {$\alpha$};
+  \pgfmathsetmacro{\xzero}{4.2}
+  \pgfmathsetmacro{\yzero}{0.28*(\xzero-1.6)*(\xzero-1.6)-0.35}
+  \fill[poporange] (\xzero,\yzero) circle (2pt);
+  \node[right, poporange] at (\xzero,\yzero) {$(x_0,f(x_0))$};
+  \draw[dashed, popmuted] (\xzero,0) -- (\xzero,\yzero);
+  \node[below] at (\xzero,0) {$x_0$};
+  \pgfmathsetmacro{\slope}{0.56*(\xzero-1.6)}
+  \pgfmathsetmacro{\xone}{\xzero-\yzero/\slope}
+  \draw[thick, poporange, domain=2.2:4.8] plot (\x, {\yzero + \slope*(\x-\xzero)});
+  \node[poporange] at (4.75,2.0) {tangent};
+  \fill[popgreen] (\xone,0) circle (2pt);
+  \node[below, popgreen] at (\xone,0) {$x_1$};
+\end{tikzpicture}
+\end{center}
+\legende{One step of the Newton--Raphson method: the tangent at $(x_0,f(x_0))$ meets the $x$-axis at $x_1$, much closer to the true root $\alpha$.}
+\end{popfigure}
+
+\courssub{Derivation of the iteration formula}
+
+The geometric picture translates into a formula using nothing more than the equation of a straight line.
+
+The tangent to $y=f(x)$ at the point $(x_n, f(x_n))$ has gradient $f'(x_n)$. Its equation is therefore
+\[ y - f(x_n) = f'(x_n)\,(x - x_n). \]
+The next estimate $x_{n+1}$ is where this tangent crosses the $x$-axis, i.e.\ where $y=0$:
+\[ 0 - f(x_n) = f'(x_n)\,(x_{n+1} - x_n). \]
+Assuming $f'(x_n) \neq 0$, we divide through by $f'(x_n)$:
+\[ x_{n+1} - x_n = -\frac{f(x_n)}{f'(x_n)}, \]
+and rearranging gives the famous iteration.
+
+\begin{propriete}[Newton--Raphson formula]
+Let $f$ be differentiable and let $\alpha$ be a root of $f(x)=0$ with $f'(\alpha)\neq 0$. Starting from an estimate $x_0$ sufficiently close to $\alpha$, generate the sequence
+\[ \boxed{\; x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}, \qquad n = 0, 1, 2, \dots \;} \]
+provided $f'(x_n) \neq 0$ at each step. Then, under suitable conditions, $x_n \to \alpha$. \emph{(The derivation from the tangent equation, as above, is examinable.)}
+\end{propriete}
+
+\begin{aretenir}[Reading the formula]
+The correction term $\dfrac{f(x_n)}{f'(x_n)}$ has a natural meaning: $f(x_n)$ measures \emph{how far above or below the axis} we are, and $f'(x_n)$ measures \emph{how steeply} the curve is moving. A steep curve needs only a small horizontal step to reach the axis; a flat curve needs a large one.
+\end{aretenir}
+
+\courssub{Choosing the starting value $x_0$}
+
+Newton--Raphson does not come with a built-in guarantee, so the choice of $x_0$ matters. Two reliable strategies, both familiar from earlier lessons:
+
+\begin{itemize}
+  \item \textbf{Sign change.} Locate an interval $[a,b]$ where $f(a)f(b)<0$, then take $x_0$ as the endpoint where $|f|$ is smaller, or the midpoint.
+  \item \textbf{Sketch.} Sketch $y=f(x)$ (or split the equation as $y=g(x)$ and $y=h(x)$ and look for an intersection), and read off an approximate root.
+\end{itemize}
+
+A good $x_0$ is one that is \emph{close to the intended root} and where the curve is \emph{not too flat} (i.e.\ $f'(x_0)$ is comfortably away from zero).
+
+\begin{methode}[Applying Newton--Raphson]
+\begin{enumerate}
+  \item Rearrange the equation into the form $f(x)=0$.
+  \item \textbf{Differentiate carefully first}: compute $f'(x)$ and write it down before iterating. Most errors in examinations happen here.
+  \item Choose $x_0$ from a sign change or a sketch.
+  \item Compute $x_1 = x_0 - f(x_0)/f'(x_0)$, keeping \textbf{at least two more decimal places} than the accuracy requested.
+  \item Iterate: $x_2, x_3, \dots$, keeping full calculator precision between steps.
+  \item Stop when two successive iterates \textbf{agree to the required accuracy}; then round the final answer.
+  \item \textbf{Check}: substitute back, or verify a sign change of $f$ across your rounded answer.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Keep extra digits]
+Never round intermediate iterates to the final accuracy. If the question asks for 3 decimal places, work with at least 5 or 6, and only round at the very end. Premature rounding can push the last digit of your answer wrong.
+\end{attention}
+
+\courssub{Worked examples}
+
+\begin{exoresolu}[A polynomial equation]
+Show that the equation $x^3 - 3x - 5 = 0$ has a root between $2$ and $3$, and use the Newton--Raphson method to find this root correct to $4$ decimal places.
+\tcblower
+\textbf{Solution.} Let $f(x) = x^3 - 3x - 5$. Then
+\[ f(2) = 8 - 6 - 5 = -3 < 0, \qquad f(3) = 27 - 9 - 5 = 13 > 0. \]
+Since $f$ is continuous and changes sign on $[2,3]$, there is a root in $(2,3)$.
+
+Differentiate: $f'(x) = 3x^2 - 3$. The iteration is
+\[ x_{n+1} = x_n - \frac{x_n^3 - 3x_n - 5}{3x_n^2 - 3}. \]
+Since $|f(2)| < |f(3)|$, the root is probably nearer $2$; take $x_0 = 2$ and work to $6$ decimal places.
+\begin{align*}
+x_1 &= 2 - \frac{-3}{9} = 2.333333 \\
+x_2 &= 2.333333 - \frac{f(2.333333)}{f'(2.333333)} = 2.333333 - \frac{0.703704}{13.333333} = 2.280556 \\
+x_3 &= 2.280556 - \frac{0.019535}{12.602805} = 2.279006 \\
+x_4 &= 2.279006 - \frac{-0.000110}{12.581604} = 2.279009 \\
+x_5 &= 2.279009 \quad \text{(unchanged to 6 d.p.)}
+\end{align*}
+The iterates $x_4$ and $x_5$ agree to $6$ decimal places, so they certainly agree to $4$. The root is $\boxed{x = 2.2790}$ (4 d.p.).
+
+\emph{Check:} $f(2.27895) \approx -0.00085 < 0$ and $f(2.27905) \approx +0.00065 > 0$: the sign change across the rounded value confirms the rounding.
+\end{exoresolu}
+
+Notice the speed: after $x_2$ we already had 2 correct decimal places, after $x_3$ about 4, after $x_4$ about 7. Compare with bisection, which would need about $14$ steps to guarantee 4 decimal places from an interval of width 1.
+
+\begin{exoresolu}[A transcendental equation]
+The equation $e^x - 3x = 0$ has a root between $1.5$ and $2$. Use Newton--Raphson to find it correct to $5$ decimal places.
+\tcblower
+\textbf{Solution.} Let $f(x) = e^x - 3x$, so $f'(x) = e^x - 3$. The iteration is
+\[ x_{n+1} = x_n - \frac{e^{x_n} - 3x_n}{e^{x_n} - 3}. \]
+Take $x_0 = 1.5$ (working to 7 decimal places):
+\begin{align*}
+x_1 &= 1.5 - \frac{e^{1.5} - 4.5}{e^{1.5} - 3} = 1.5 - \frac{-0.0183109}{1.4816891} = 1.5123582 \\
+x_2 &= 1.5123582 - \frac{e^{1.5123582} - 4.5370746}{e^{1.5123582} - 3} = 1.5123582 - \frac{-0.0000680}{1.5370066} = 1.5124024 \\
+x_3 &= 1.5124024 - \frac{-9.4\times 10^{-10}}{1.5371346} = 1.5124024
+\end{align*}
+The values have stabilised: the root is $\boxed{x = 1.51240}$ (5 d.p.).
+\end{exoresolu}
+
+\begin{exoresolu}[An equation with a trigonometric function]
+Find, correct to 6 decimal places, the root of $\cos x - x = 0$ (with $x$ in radians).
+\tcblower
+\textbf{Solution.} Sketching $y=\cos x$ and $y=x$ shows a single intersection near $x \approx 0.7$. Let $f(x) = \cos x - x$, so $f'(x) = -\sin x - 1$. The iteration is
+\[ x_{n+1} = x_n - \frac{\cos x_n - x_n}{-\sin x_n - 1} = x_n + \frac{\cos x_n - x_n}{\sin x_n + 1}. \]
+With $x_0 = 0.7$:
+\begin{align*}
+x_1 &= 0.7 + \frac{\cos 0.7 - 0.7}{\sin 0.7 + 1} = 0.7 + \frac{0.0648422}{1.6442177} = 0.7394365 \\
+x_2 &= 0.7394365 + \frac{-0.0003515}{1.6735475} = 0.7390851 \\
+x_3 &= 0.7390851 + \frac{1.1\times 10^{-10}}{1.6736120} = 0.7390851
+\end{align*}
+The root is $\boxed{x = 0.739085}$ (6 d.p.). This number is sometimes called the \emph{Dottie number}: it is the unique fixed point of the cosine function.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.15]
+  \draw[->, popmuted] (-0.4,0) -- (4.6,0) node[below left] {$x$};
+  \draw[->, popmuted] (0,-0.7) -- (0,3.2) node[below left] {$y$};
+  \draw[very thick, popblue, domain=0.6:4.2, samples=100] plot (\x, {0.30*(\x-1.5)*(\x-1.5) - 0.30});
+  \node[popblue] at (3.9,2.5) {$y=f(x)$};
+  \fill[popdark] (2.5,0) circle (1.6pt);
+  \node[below, popdark] at (2.62,0) {$\alpha$};
+  \pgfmathsetmacro{\xa}{4.0}
+  \pgfmathsetmacro{\ya}{0.30*(\xa-1.5)*(\xa-1.5)-0.30}
+  \pgfmathsetmacro{\ma}{0.60*(\xa-1.5)}
+  \pgfmathsetmacro{\xb}{\xa-\ya/\ma}
+  \pgfmathsetmacro{\yb}{0.30*(\xb-1.5)*(\xb-1.5)-0.30}
+  \pgfmathsetmacro{\mb}{0.60*(\xb-1.5)}
+  \pgfmathsetmacro{\xc}{\xb-\yb/\mb}
+  \draw[thick, poporange, domain=2.35:4.35] plot (\x, {\ya + \ma*(\x-\xa)});
+  \fill[poporange] (\xa,\ya) circle (1.8pt);
+  \draw[dashed, popmuted] (\xa,0) -- (\xa,\ya);
+  \node[below] at (\xa,0) {$x_0$};
+  \fill[poporange] (\xb,0) circle (1.8pt);
+  \node[below, poporange] at (\xb,-0.02) {$x_1$};
+  \draw[thick, popgreen, domain=2.35:3.35] plot (\x, {\yb + \mb*(\x-\xb)});
+  \fill[popgreen] (\xb,\yb) circle (1.8pt);
+  \draw[dashed, popmuted] (\xb,0) -- (\xb,\yb);
+  \fill[popgreen] (\xc,0) circle (1.8pt);
+  \node[below, popgreen] at (\xc,-0.02) {$x_2$};
+  \draw[->, popmuted, densely dotted] (\xa,\ya) -- (\xb,\ya);
+\end{tikzpicture}
+\end{center}
+\legende{Successive tangents: $x_0 \to x_1 \to x_2$, converging rapidly to the root $\alpha$. Each new tangent is drawn at the point where the previous tangent met the axis.}
+\end{popfigure}
+
+\courssub{How fast is it? Quadratic convergence (enrichment)}
+
+Look again at the worked examples: the number of correct decimal places roughly \emph{doubled} at each step --- 1, then 2, then 4, then 8. This is not a coincidence.
+
+\begin{propriete}[Quadratic convergence --- enrichment, not examinable]
+If $x_n \to \alpha$ under Newton--Raphson, with $f'(\alpha)\neq 0$ and $f''$ continuous near $\alpha$, then the errors $\varepsilon_n = x_n - \alpha$ satisfy
+\[ \varepsilon_{n+1} \approx \frac{f''(\alpha)}{2f'(\alpha)}\,\varepsilon_n^{\,2}. \]
+Because the error is \emph{squared} at each step, the number of correct digits approximately doubles per iteration once we are near the root. This is called \cle{quadratic convergence}. (Bisection, by contrast, is only \emph{linear}: it gains accuracy at a fixed slow rate.)
+\end{propriete}
+
+\courssub{When Newton--Raphson fails}
+
+The method's speed comes from trusting the tangent completely --- and the tangent can betray us. You must know the classic failure cases.
+
+\textbf{(a) The tangent is horizontal or nearly horizontal.} If $f'(x_n) = 0$, the formula divides by zero: the tangent never meets the axis. If $f'(x_n)$ is merely \emph{small}, the correction $f(x_n)/f'(x_n)$ is enormous, and $x_{n+1}$ is flung far away from the root.
+
+\begin{attention}[Flat tangents are dangerous]
+If $f'(x_n)$ is zero or very small, the method breaks down or jumps far away. This typically happens when $x_n$ lands near a stationary point of $f$. Remedy: choose a better starting value, closer to the root and away from turning points.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+  \draw[->, popmuted] (-0.5,0) -- (7.6,0) node[below left] {$x$};
+  \draw[->, popmuted] (0,-1.6) -- (0,2.6) node[below left] {$y$};
+  \draw[very thick, popblue, domain=0.4:6.9, samples=150] plot (\x, {0.9*tanh(1.1*(\x-5.2)) + 0.35*exp(-(\x-2)*(\x-2)/0.8) - 0.1});
+  \node[popblue] at (1.1,2.2) {$y=f(x)$};
+  \fill[popdark] (5.31,0) circle (1.6pt);
+  \node[below, popdark] at (5.45,0) {$\alpha$};
+  \pgfmathsetmacro{\xa}{2.0}
+  \pgfmathsetmacro{\ya}{0.9*tanh(1.1*(\xa-5.2)) + 0.35*exp(-(\xa-2)*(\xa-2)/0.8) - 0.1}
+  \fill[poporange] (\xa,\ya) circle (2pt);
+  \draw[dashed, popmuted] (\xa,0) -- (\xa,\ya);
+  \node[below] at (\xa,0) {$x_0$};
+  \draw[thick, poporange, domain=0.8:7.3] plot (\x, {\ya - 0.045*(\x-\xa)});
+  \pgfmathsetmacro{\xb}{\xa + \ya/0.045}
+  \node[poporange, align=center] at (7.0,0.75) {tangent};
+  \draw[->, poppink, thick] (\xb,0.28) -- (\xb,0.02);
+  \node[above, poppink, align=center, text width=2.6cm] at (7.0,0.35) {$x_1$ far away};
+\end{tikzpicture}
+\end{center}
+\legende{Failure case: at $x_0$ the tangent is almost horizontal ($f'(x_0)\approx 0$), so it meets the axis at an $x_1$ far from the intended root $\alpha$.}
+\end{popfigure}
+
+\textbf{(b) Starting too far from the root.} Far from the root, the tangent may be a poor guide: the sequence can wander, or \emph{oscillate} between two regions, or diverge altogether.
+
+\textbf{(c) Cycling.} For some functions and starting points, the iterates bounce back and forth: $x_2 = x_0$, $x_3 = x_1$, \dots, never settling (see Exercise 3 below for a spectacular example).
+
+\textbf{(d) Convergence to a different root.} The method converges to \emph{a} root --- not necessarily the one you wanted.
+
+\begin{attention}[The wrong root]
+If an equation has several roots, a badly chosen $x_0$ may send the sequence to a different root from the one the question asks about. For example, $e^x - 3x = 0$ has \emph{two} positive roots ($\approx 0.619$ and $\approx 1.512$); starting at $x_0 = 1.5$ finds the larger one, but starting at $x_0 = 0.5$ finds the smaller. Always localise the intended root first with a sign change or a sketch.
+\end{attention}
+
+\courssub{The wider viewpoint: fixed-point iteration (extension)}
+
+Newton--Raphson is one member of a large family. Any equation $f(x)=0$ can be rearranged as $x = g(x)$, and then iterated:
+\[ x_{n+1} = g(x_n). \]
+This is called \cle{fixed-point iteration}, because a solution satisfies $x = g(x)$: the value is \emph{fixed} by $g$. Such a scheme converges to a root $\alpha$ provided $|g'(\alpha)| < 1$ near the root. Newton--Raphson is exactly the fixed-point iteration with
+\[ g(x) = x - \frac{f(x)}{f'(x)}, \]
+and one can check that $g'(\alpha) = 0$ at the root --- the strongest possible case of the condition $|g'(\alpha)|<1$, which explains the quadratic speed. This viewpoint is \emph{extension material}, very useful for further study of numerical analysis, but not required for the GCE paper.
+
+\courssub{Newton--Raphson versus bisection}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} & \textbf{Bisection} & \textbf{Newton--Raphson} \\
+\hline
+Needs & Sign change on $[a,b]$; $f$ continuous & A good $x_0$; $f$ differentiable, $f'(x_n)\neq 0$ \\
+\hline
+Guaranteed? & Yes, always converges & No: can diverge, cycle, or find another root \\
+\hline
+Speed & Slow (linear): $\sim 3$--$4$ steps per decimal place & Very fast (quadratic): digits double per step \\
+\hline
+Per step & One evaluation of $f$ & Evaluations of $f$ \emph{and} $f'$ \\
+\hline
+Best use & Locating and bracketing a root safely & Polishing a located root to high accuracy \\
+\hline
+\end{tabularx}
+\end{center}
+
+A sound examination strategy combines the two: use a \textbf{sign change} (or a few bisection steps) to locate the root and justify its existence, then use \textbf{Newton--Raphson} to refine it quickly to the required accuracy.
+
+\begin{methode}[Exam technique for Newton--Raphson questions]
+\begin{enumerate}
+  \item Write down $f(x)$ and the formula $x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}$ \emph{explicitly}.
+  \item Show the derivative $f'(x)$ separately --- method marks are attached to it.
+  \item State your starting value $x_0$ and justify it if asked (sign change or graph).
+  \item Show \textbf{at least the first two iterations with full substitution} (values of $f(x_n)$ and $f'(x_n)$ visible), then list later iterates.
+  \item Stop when successive values agree to one more decimal place than requested; round and box the answer.
+\end{enumerate}
+\end{methode}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+  \item Show that $x^3 + x - 7 = 0$ has a root between $1$ and $2$. Starting from $x_0 = 2$, apply Newton--Raphson to find the root correct to 4 decimal places.
+  \item The equation $x - \tan x = 0$ has a root between $4.4$ and $4.5$ (radians). Starting from $x_0 = 4.5$, find it correct to 5 decimal places. Why would $x_0 = \pi/2$ be a disastrous starting value for the \emph{smallest} positive root?
+  \item The equation $x^3 - 2x + 2 = 0$ has a root near $-1.77$. Show that starting Newton--Raphson at $x_0 = 0$ produces $x_1 = 1$, $x_2 = 0$: a cycle. Explain geometrically why the method fails here.
+  \item Use Newton--Raphson to find $\sqrt[3]{10}$ correct to 6 decimal places by solving $x^3 - 10 = 0$ with $x_0 = 2$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$f(x)=x^3+x-7$; $f(1)=-5<0$, $f(2)=3>0$, so a root lies in $(1,2)$. $f'(x)=3x^2+1$. Iteration: $x_{n+1}=x_n-\dfrac{x_n^3+x_n-7}{3x_n^2+1}$.
+$x_1 = 2 - \dfrac{3}{13} = 1.769231$; $x_2 = 1.769231 - \dfrac{0.307623}{10.390533} = 1.739625$; $x_3 = 1.739625 - \dfrac{0.004244}{10.078886} = 1.739204$; $x_4 = 1.739204$ (stable to 6 d.p.). Root: $x = 1.7392$ (4 d.p.).
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$f(x)=x-\tan x$, $f'(x)=1-\sec^2 x = -\tan^2 x$. With $x_0=4.5$: $\tan 4.5 \approx 4.637332$, so
+$x_1 = 4.5 - \dfrac{4.5 - 4.637332}{-21.504855} = 4.5 - 0.006386 = 4.493614$; then $x_2 \approx 4.493409$ and $x_3 \approx 4.493409$ (stable). Root: $x = 4.49341$ (5 d.p.). At $x_0=\pi/2$, $\tan x$ is undefined (vertical asymptote) and $f'(x)$ is enormous and erratic nearby: the tangent approximation is meaningless, so the method breaks down.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$f(x)=x^3-2x+2$, $f'(x)=3x^2-2$. $x_0=0$: $x_1 = 0 - \dfrac{2}{-2} = 1$. $x_1=1$: $x_2 = 1 - \dfrac{1}{1} = 0$. So the iterates alternate $0,1,0,1,\dots$ forever. Geometrically, the tangent at $x=0$ happens to cross the axis exactly at $x=1$, and the tangent at $x=1$ crosses back exactly at $x=0$: the two tangents trap the sequence in a 2-cycle, and it never approaches the root near $-1.77$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+$f(x)=x^3-10$, $f'(x)=3x^2$. $x_{n+1}=x_n-\dfrac{x_n^3-10}{3x_n^2}$. $x_1 = 2-\dfrac{-2}{12}=2.166667$; $x_2 = 2.166667-\dfrac{0.171296}{14.083333}=2.154504$; $x_3 = 2.154504-\dfrac{0.000965}{13.925661}=2.154435$; $x_4 = 2.154435$ (stable). Hence $\sqrt[3]{10} = 2.154435$ (6 d.p.).
+\end{corrige}
+
+\begin{savaistu}[Newton's method in your pocket]
+The ``Newton--Raphson'' idea is built into every calculator and computer. When your calculator evaluates $\sqrt{N}$ or $1/N$, the chip typically iterates a Newton-type formula in hardware --- for square roots, $x_{n+1} = \tfrac12\!\left(x_n + \dfrac{N}{x_n}\right)$, a rule already known to Babylonian scribes nearly four thousand years ago. Newton's contribution (around 1669) and Raphson's cleaner formulation (1690) turned an ancient trick into a general method for \emph{any} differentiable equation --- the same mathematics that today guides satellite orbits and, closer to home, helps engineers at the Song Loulou and Memve'ele hydroelectric schemes solve the nonlinear flow equations of the turbines.
+\end{savaistu}
+
+\begin{aretenir}[Summary of the section]
+\begin{itemize}
+  \item Newton--Raphson replaces the curve by its \textbf{tangent} at the current estimate; the tangent's intercept is the next estimate: $x_{n+1} = x_n - \dfrac{f(x_n)}{f'(x_n)}$.
+  \item Choose $x_0$ from a sign change or a sketch, near the intended root and away from stationary points.
+  \item The method is \textbf{quadratically convergent}: correct digits roughly double per step --- far faster than bisection.
+  \item It can \textbf{fail}: $f'(x_n)=0$ or tiny, poor $x_0$, cycling, divergence, or convergence to the wrong root.
+  \item Best strategy: locate with bisection/sign change, then polish with Newton--Raphson.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Accuracy, error control and applications}
+
+In the previous sections we met the bisection and Newton--Raphson methods. A fast method is useless if we cannot \emph{prove} how accurate its answer is. In the GCE examination, a numerical answer without a justification of its accuracy earns only part of the marks. This final section answers the question every examiner silently asks: \emph{``How do you know your answer is correct to the accuracy you claim?''} We address it with the notions of error and tolerance, the sign-change test, and a sensible strategy for choosing between bisection and Newton--Raphson. We finish with applications, including a mechanics link, and a full GCE-style synthesis.
+
+\courssub{Exact root, approximation and absolute error}
+
+Let $\alpha$ be the \cle{exact root} of $f(x)=0$ and let $x_n$ be an \cle{approximation} produced by some numerical method (bisection, Newton--Raphson, trial and improvement, \dots). Since $\alpha$ is usually an irrational number that we can never write down exactly, the quality of $x_n$ is measured by how far it is from $\alpha$.
+
+\begin{definition}[Absolute error and tolerance]
+The \cle{absolute error} of an approximation $x_n$ to the exact root $\alpha$ is
+\[ |x_n - \alpha|. \]
+A \cle{tolerance} $\varepsilon$ is a prescribed bound on this error: we seek an approximation satisfying
+\[ |x_n - \alpha| < \varepsilon. \]
+For example, ``correct to 2 decimal places'' corresponds to the tolerance $\varepsilon = 0.005$, because any number within $0.005$ of $\alpha$ rounds to the same 2 d.p.\ value as $\alpha$.
+\end{definition}
+
+The difficulty is that $\alpha$ is unknown, so we cannot compute $|x_n-\alpha|$ directly. The whole art of this section is to \emph{bound} the error without knowing $\alpha$.
+
+\begin{attention}[Error is not the same as the residual]
+Do not confuse the absolute error $|x_n - \alpha|$ with the \emph{residual} $|f(x_n)|$. A small value of $|f(x_n)|$ does not by itself guarantee that $x_n$ is close to $\alpha$ (think of a very flat curve crossing the axis). The safe tool for certifying accuracy is the \textbf{sign-change test} below, not the size of $f(x_n)$.
+\end{attention}
+
+\courssub{Justifying accuracy: the sign-change test}
+
+The sign-change test is the examiner's favourite way of asking you to \emph{prove} an accuracy claim. The idea is intuitive: to say that $\alpha = 1.23$ correct to 2 d.p.\ means that $\alpha$ lies among all the numbers that round to $1.23$, namely the interval $[1.225,\,1.235]$. If $f$ is continuous and changes sign on this interval, the Intermediate Value Theorem forces a root inside it.
+
+\begin{methode}[Proving a root correct to $k$ decimal places]
+To claim that $\alpha = c$ correct to $k$ decimal places:
+\begin{enumerate}
+\item Write $h = 10^{-k}$ (for 2 d.p., $h = 0.01$) and form the interval $\left[c - \tfrac{h}{2},\, c + \tfrac{h}{2}\right]$ of all values that round to $c$.
+\item Evaluate $f\!\left(c - \tfrac{h}{2}\right)$ and $f\!\left(c + \tfrac{h}{2}\right)$, keeping several guard digits.
+\item Check that the two values have \textbf{opposite signs}.
+\item Conclude: since $f$ is continuous and changes sign on $\left[c - \tfrac{h}{2}, c + \tfrac{h}{2}\right]$, there is a root $\alpha$ in this interval, and every number in this interval rounds to $c$. Hence $\alpha = c$ to $k$ d.p.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Proving $\alpha = 1.23$ to 2 d.p. -- a deliberate trap]
+Let $f(x) = x^3 - x - 1$ (the equation of Sections 2 and 3). We claim the root is $1.23$ to 2 d.p. The interval of values rounding to $1.23$ is $[1.225, 1.235]$. Compute:
+\begin{align*}
+f(1.225) &= 1.225^3 - 1.225 - 1 = 1.8382\ldots - 2.225 = -0.3868\ldots < 0,\\
+f(1.235) &= 1.235^3 - 1.235 - 1 = 1.8835\ldots - 2.235 = -0.3514\ldots < 0.
+\end{align*}
+Both values are negative! This tells us $1.23$ is \emph{not} correct: the true root is larger. Indeed $f(1.32) = 2.2999\ldots - 2.32 < 0$ and $f(1.33) = 2.3526\ldots - 2.33 > 0$, so the root lies in $(1.32, 1.33)$ and equals $1.32$ to 2 d.p. The test has caught a wrong claim — exactly its purpose.
+\end{exemplebox}
+
+\begin{exoresolu}[Sign-change proof of accuracy]
+Show that the root $\alpha$ of $x^3 - x - 1 = 0$ is $1.32$ correct to 2 decimal places.
+\tcblower
+\textbf{Solution.} The values rounding to $1.32$ form the interval $[1.315, 1.325]$. With $f(x) = x^3 - x - 1$:
+\begin{align*}
+f(1.315) &= 1.315^3 - 1.315 - 1 = 2.2746\ldots - 2.315 = -0.0404\ldots < 0,\\
+f(1.325) &= 1.325^3 - 1.325 - 1 = 2.3267\ldots - 2.325 = 0.0017\ldots > 0.
+\end{align*}
+Since $f$ is continuous (a polynomial) and changes sign on $[1.315, 1.325]$, there is a root $\alpha \in (1.315, 1.325)$. Every number in this interval rounds to $1.32$, so $\alpha = 1.32$ correct to 2 d.p. \hfill $\blacksquare$
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+% Zoom diagram of [1.315, 1.325]
+\draw[thick, popink] (0,0) -- (10,0);
+\foreach \x/\lab in {0/{1.315}, 5/{1.320}, 10/{1.325}}{
+  \draw[thick, popink] (\x,-0.15) -- (\x,0.15);
+  \node[below, popink] at (\x,-0.2) {\small $\lab$};
+}
+% curve crossing
+\draw[very thick, popblue, domain=0:10, samples=50] plot (\x, {1.6*(\x/10) - 0.85});
+\fill[poporange] (5.3,0) circle (2.2pt);
+\node[above, poporange] at (5.3,0.1) {\small $\alpha$};
+\node[popblue, align=center] at (8.6,1.1) {\small $f(x)=x^3-x-1$};
+\node[popmuted, align=center] at (1.2,-1.0) {\small $f(1.315)<0$};
+\node[popmuted, align=center] at (8.8,-1.0) {\small $f(1.325)>0$};
+\draw[<->, popgreen, thick] (0,1.6) -- (10,1.6);
+\node[popgreen, align=center] at (5,1.95) {\small all values here round to $1.32$ (2 d.p.)};
+\end{tikzpicture}
+\legende{Zoom on the interval $[1.315, 1.325]$: the sign change of $f$ traps the root $\alpha$ among the numbers that round to $1.32$.}
+\end{center}
+\end{popfigure}
+
+\courssub{Decimal places versus significant figures}
+
+When reporting a numerical answer, be precise about what is being asked.
+
+\begin{aretenir}[Decimal places vs significant figures]
+\begin{itemize}
+\item \textbf{Decimal places (d.p.)} count digits \emph{after the decimal point}: $1.3247$ to 2 d.p.\ is $1.32$. This measures \emph{absolute} accuracy: the error is at most half a unit of the last decimal place.
+\item \textbf{Significant figures (s.f.)} count digits \emph{from the first non-zero digit}: $0.004782$ to 2 s.f.\ is $0.0048$. This measures \emph{relative} accuracy and is natural for very large or very small quantities (e.g.\ an interest rate $r = 0.0734$ is best given to 3 s.f.).
+\end{itemize}
+For a root near $1$, ``3 d.p.'' and ``3 s.f.'' nearly coincide; for a root near $0.001$ they differ enormously. Read the question!
+\end{aretenir}
+
+\courssub{How many bisection steps? Predicting the work}
+
+One great advantage of bisection is that its accuracy is \emph{predictable in advance}. Starting from an interval $[a,b]$ of length $b-a$ containing $\alpha$, each step halves the interval, so after $n$ steps the interval has length $\dfrac{b-a}{2^n}$, and its midpoint $x_n$ satisfies
+\[ |x_n - \alpha| \le \frac{b-a}{2^{n+1}} \quad\text{(midpoint)}, \qquad\text{or simply the interval length } \frac{b-a}{2^n} \text{ bounds the error of either endpoint.} \]
+
+\begin{propriete}[Number of bisection steps for a target tolerance]
+To guarantee an error at most $\varepsilon$ starting from $[a,b]$, it is enough to choose $n$ such that
+\[ \frac{b-a}{2^n} \le \varepsilon
+\quad\Longleftrightarrow\quad
+2^n \ge \frac{b-a}{\varepsilon}
+\quad\Longleftrightarrow\quad
+n \ge \frac{\ln\!\left(\dfrac{b-a}{\varepsilon}\right)}{\ln 2}. \]
+Take the smallest integer $n$ satisfying this. (This derivation — taking logarithms of both sides — is examinable.)
+\end{propriete}
+
+\begin{exemplebox}[Predicting the steps]
+The root of $x^3 - x - 1 = 0$ lies in $[1, 2]$. How many bisection steps guarantee accuracy to 2 d.p., i.e.\ tolerance $\varepsilon = 0.005$?
+\[ n \ge \frac{\ln\!\left(\dfrac{1}{0.005}\right)}{\ln 2} = \frac{\ln 200}{\ln 2} = \frac{5.298\ldots}{0.693\ldots} = 7.64\ldots \]
+So $n = 8$ steps suffice. Each extra decimal place costs about $\dfrac{\ln 10}{\ln 2} \approx 3.3$ more steps — bisection is reliable but slow.
+\end{exemplebox}
+
+\courssub{Choosing a method: bisection or Newton--Raphson?}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Bisection} & \textbf{Newton--Raphson} \\
+\hline
+Requirements & $f$ continuous, sign change on $[a,b]$ & $f$ differentiable, formula for $f'$, good starting value \\
+\hline
+Convergence & Slow (linear): one binary digit per step & Very fast (quadratic): correct digits roughly double each step \\
+\hline
+Safety & Always converges if a sign change exists & Can diverge or cycle if $x_0$ is poor or $f'$ is near zero \\
+\hline
+Accuracy control & Error bound $\dfrac{b-a}{2^n}$ known in advance & Estimated from successive iterates; confirm with sign-change test \\
+\hline
+Typical use & Reliable first estimate; exam-friendly & Refining a root quickly once located \\
+\hline
+\end{tabularx}
+\end{center}
+
+A good strategy, often rewarded in the GCE: \textbf{locate} the root by a sign change, \textbf{refine} it by one or two Newton--Raphson iterations (or a few bisections), then \textbf{certify} the accuracy by a final sign-change test.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{semilogyaxis}[
+  width=0.86\linewidth, height=6.2cm,
+  xlabel={Iteration $n$}, ylabel={Error $|x_n-\alpha|$},
+  xmin=0, xmax=6, ymin=1e-10, ymax=1,
+  xtick={0,1,2,3,4,5,6},
+  legend style={at={(0.97,0.97)}, anchor=north east, font=\small},
+  grid=both, grid style={popline!40},
+]
+% Bisection: error halves each step, start 0.5
+\addplot[mark=*, popblue, thick] coordinates {(0,0.5) (1,0.25) (2,0.125) (3,0.0625) (4,0.03125) (5,0.015625) (6,0.0078125)};
+\addlegendentry{Bisection}
+% Newton-Raphson on x^3-x-1 from x0=1.5: errors approx
+\addplot[mark=square*, poporange, thick] coordinates {(0,0.175) (1,0.0224) (2,0.000388) (3,0.00000012) (4,1e-14)};
+\addlegendentry{Newton--Raphson}
+\end{semilogyaxis}
+\end{tikzpicture}
+\legende{Error against iteration number (log scale) for $x^3 - x - 1 = 0$: bisection halves the error each step, while Newton--Raphson (from $x_0 = 1.5$) crushes it in three iterations.}
+\end{center}
+\end{popfigure}
+
+\begin{savaistu}[Historical note and Cameroon context]
+The Newton--Raphson method was discovered by Isaac Newton in 1669 (published 1711) and independently by Joseph Raphson in 1690. In modern Cameroon, numerical methods are essential in civil engineering for solving transcendental equations arising in cable-sag calculations for bridges (e.g., the Wouri Bridge), and in finance for determining implicit interest rates on microfinance loans where no algebraic formula exists.
+\end{savaistu}
+
+\courssub{Using your calculator efficiently and honestly}
+
+\begin{attention}[Premature rounding destroys accuracy]
+Rounding intermediate iterates too early can ruin the final answer. For example, in Newton--Raphson, if you round $x_1$ to 2 d.p.\ before computing $x_2$, the error you introduce is \emph{amplified or carried} into every later step.
+\begin{itemize}
+\item Keep \textbf{guard digits}: work with at least 2 more digits than the required accuracy (use the calculator's memory or the ANS key).
+\item Only round at the \textbf{very end}, when writing the final answer.
+\item \textbf{Record your iterations} in a table ($n$, $x_n$, $f(x_n)$): the examiner awards method marks for visible, correct iterates, even if the last digit slips.
+\end{itemize}
+\end{attention}
+
+\courssub{Applications}
+
+Numerical methods earn their keep whenever an equation has \textbf{no algebraic solution formula}. Three classic GCE contexts:
+
+\textbf{1. Interest rates and loans.} If a loan of $P$ francs CFA is repaid by $n$ equal annual instalments of $A$, the implicit interest rate $r$ satisfies $P = A\,\dfrac{1 - (1+r)^{-n}}{r}$, which is transcendental in $r$: there is no formula for $r$, so we locate a sign change and apply bisection or Newton--Raphson.
+
+\textbf{2. Dimensions from area or volume constraints.} A water tank in a Yaound\'e workshop must have volume \SI{2}{m^3}; if its height is $x$ metres and the design imposes $x^3 + 2x = 9$, then $x$ is found numerically: $f(1.6) = -0.704$, $f(1.7) = 0.513$, so $x \in (1.6, 1.7)$, and one Newton step from $x_0 = 1.65$ gives $x \approx 1.6511$ m.
+
+\textbf{3. Times in kinematics (Mechanics link — exam-useful).} When air resistance or a varying force is modelled, the equation for the time at which a particle reaches a position is often transcendental. For instance, a particle projected such that its displacement is $s(t) = 20t - 5e^{0.4t}$ reaches $s = 30$ m when $20t - 5e^{0.4t} = 30$. Setting $g(t) = 20t - 5e^{0.4t} - 30$: $g(2) = -1.13 < 0$, $g(2.1) = 0.42 > 0$, so $t \in (2, 2.1)$ s, and Newton--Raphson refines this to $t \approx 2.07$ s. \emph{You cannot solve this by algebra — a numerical method is the only route.}
+
+\courssub{Synthesis: a full GCE-style problem}
+
+\begin{exoresolu}[GCE-style synthesis]
+\begin{enumerate}
+\item[(a)] Show that the equation $x^3 + 2x - 9 = 0$ has exactly one real root $\alpha$, and that $\alpha \in (1, 2)$.
+\item[(b)] Starting from $x_0 = 1.5$, perform \textbf{two} iterations of the Newton--Raphson method to approximate $\alpha$, giving your iterates to 5 decimal places.
+\item[(c)] Prove that $\alpha = 1.76$ correct to 2 decimal places.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\textbf{(a)} Let $f(x) = x^3 + 2x - 9$. Then $f(1) = -6 < 0$ and $f(2) = 3 > 0$; since $f$ is continuous, a root lies in $(1,2)$. Moreover $f'(x) = 3x^2 + 2 > 0$ for all $x$, so $f$ is strictly increasing on $\mathbb{R}$ and can cross the axis \emph{at most once}. Hence exactly one real root, in $(1,2)$.
+
+\textbf{(b)} With $f'(x) = 3x^2 + 2$, the iteration is
+\[ x_{n+1} = x_n - \frac{x_n^3 + 2x_n - 9}{3x_n^2 + 2}. \]
+\begin{align*}
+x_0 &= 1.5, \quad f(1.5) = -2.625, \quad f'(1.5) = 8.75,\\
+x_1 &= 1.5 - \frac{-2.625}{8.75} = 1.80000,\\
+f(1.8) &= 0.432, \quad f'(1.8) = 11.72,\\
+x_2 &= 1.8 - \frac{0.432}{11.72} = 1.76314.
+\end{align*}
+(Keeping full calculator precision throughout; values shown to 5 d.p.)
+
+\textbf{(c)} The values rounding to $1.76$ form $[1.755, 1.765]$:
+\begin{align*}
+f(1.755) &= 1.755^3 + 2(1.755) - 9 = 5.407\ldots + 3.51 - 9 = -0.082\ldots < 0,\\
+f(1.765) &= 1.765^3 + 2(1.765) - 9 = 5.498\ldots + 3.53 - 9 = 0.028\ldots > 0.
+\end{align*}
+Since $f$ is continuous and changes sign on $[1.755, 1.765]$, there is a root $\alpha \in (1.755, 1.765)$. Every number in this interval rounds to $1.76$, so
+\[ \boxed{\alpha = 1.76 \text{ correct to 2 d.p.}} \]
+consistent with $x_2 = 1.76314$. \hfill $\blacksquare$
+\end{exoresolu}
+
+\begin{exercice}[Error control in practice]
+\begin{enumerate}
+\item The equation $e^x = 3x$ has a root $\beta$ in $(1.5, 2)$. How many bisection steps guarantee an error below $0.0005$?
+\item Starting from $x_0 = 1.5$, compute two Newton--Raphson iterates for $\beta$ (give 5 d.p.).
+\item Prove that $\beta = 1.51$ correct to 2 decimal places.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Here $b - a = 0.5$, $\varepsilon = 0.0005$:
+$n \ge \dfrac{\ln(0.5/0.0005)}{\ln 2} = \dfrac{\ln 1000}{\ln 2} = \dfrac{6.908}{0.693} \approx 9.97$, so $n = 10$ steps.
+
+\textbf{2.} With $g(x) = e^x - 3x$, $g'(x) = e^x - 3$:
+$x_1 = 1.5 - \dfrac{e^{1.5} - 4.5}{e^{1.5} - 3} = 1.5 - \dfrac{-0.01831}{1.48169} = 1.51236$;
+$x_2 = 1.51236 - \dfrac{e^{1.51236} - 4.53708}{e^{1.51236} - 3} = 1.51213$.
+
+\textbf{3.} On $[1.505, 1.515]$: $g(1.505) = e^{1.505} - 4.515 = -0.0089\ldots < 0$ and $g(1.515) = e^{1.515} - 4.545 = 0.0061\ldots > 0$. Sign change, so $\beta \in (1.505, 1.515)$, hence $\beta = 1.51$ to 2 d.p.
+\end{corrige}
+
+\begin{attention}[Exam tip: always justify the accuracy]
+Always end a numerical-methods question with a \textbf{sentence justifying the stated accuracy}, not just the final number. A sign-change test on the rounding interval, or the bound $\dfrac{b-a}{2^n}$, is what converts a guess into a proved result — and converts partial marks into full marks.
+\end{attention}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item Absolute error: $|x_n - \alpha|$; tolerance $\varepsilon$ means we require $|x_n - \alpha| < \varepsilon$.
+\item To prove $\alpha = c$ to $k$ d.p., exhibit a sign change of $f$ on $\left[c - \tfrac{h}{2}, c + \tfrac{h}{2}\right]$ with $h = 10^{-k}$.
+\item Bisection needs $n \ge \dfrac{\ln((b-a)/\varepsilon)}{\ln 2}$ steps — predictable but slow; Newton--Raphson is fast but needs $f'$ and a good start.
+\item Keep guard digits, record iterations, round only at the end, and finish every question with an accuracy justification.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+By the end of this group activity, you should be able to:
+
+\begin{itemize}
+\item translate a real financial situation into an equation of the form $f(r)=0$ that \textbf{cannot} be solved by algebraic manipulation;
+\item \cle{locate} a root of a function by tabulating values and detecting a \cle{change of sign};
+\item apply the \cle{bisection method} systematically to reduce an interval containing the root to a prescribed width;
+\item apply the \cle{Newton--Raphson method} from a well-chosen starting value and observe its rapid convergence;
+\item \textbf{prove} that a numerical answer is correct to a given number of decimal places using a final sign-change check;
+\item compare the efficiency of the two methods and justify which one a bank's computer would prefer.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Sign-change rule for continuous functions; bisection algorithm; Newton--Raphson iteration formula $r_{n+1}=r_n-\dfrac{f(r_n)}{f'(r_n)}$; differentiation of $(1+r)^{-3}$; error bounds and decimal-place accuracy; interpretation of a numerical result in context.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{The Mobile Money Rate Mystery.}\par
+Mama Fotso runs a provisions store near March\'e Central in Douala. To restock her shop before the festive season, she borrows $\SI{500000}{FCFA}$ from a microfinance cooperative that operates through a mobile money platform. The cooperative does not state the monthly interest rate openly; it only tells her:
+
+\begin{quote}
+``You will repay \textbf{three equal monthly instalments of $\SI{180000}{FCFA}$}, the first instalment exactly one month after receiving the money.''
+\end{quote}
+
+Mama Fotso wants to know the \textbf{monthly interest rate} $r$ she is really being charged, so that she can compare this offer with a bank loan.
+
+Her son, an Upper Sixth student, reasons as follows. If the monthly rate is $r$ (as a decimal), then one month after the loan the debt has grown to $500000(1+r)$; after paying the first instalment of $180000$, the remaining debt is $500000(1+r)-180000$. Continuing this reasoning month by month, and requiring the debt to be exactly zero after the third payment, he obtains the \emph{present value} condition: the loan must equal the sum of the discounted instalments,
+\[
+500000=\frac{180000}{1+r}+\frac{180000}{(1+r)^{2}}+\frac{180000}{(1+r)^{3}},
+\]
+which, multiplying both sides by $(1+r)^{3}$ and simplifying (or equivalently using the geometric series formula), reduces to
+\[
+500000\,r=180000\bigl(1-(1+r)^{-3}\bigr).
+\]
+
+\begin{attention}[An equation with no exact solution]
+This equation involves $r$ both as a multiplier and inside a power. No algebraic technique (factorisation, logarithms, polynomial formulas) can isolate $r$ exactly. \textbf{Numerical methods are the only way forward.} Note also that $r=0$ satisfies the multiplied equation but is a \emph{spurious} solution introduced when clearing denominators: with $r=0$ the repayments would total $3\times180000=540000\neq 500000$. We therefore seek a root in $(0,\,0.1)$.
+\end{attention}
+
+The class works in groups of three or four. Each group needs a scientific calculator, the result table provided by the teacher, and forty minutes.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Modelling.} Starting from $500000\,r=180000\bigl(1-(1+r)^{-3}\bigr)$, define $f(r)=180000\bigl(1-(1+r)^{-3}\bigr)-500000\,r$. Explain why a positive solution of $f(r)=0$ gives the monthly rate, and why $f$ is continuous on $(0,0.1)$.
+\item \textbf{Locating the root.} Copy and complete the table below, giving $f(r)$ to one decimal place. Hence locate the root in an interval of width $0.01$, justifying your answer with the sign-change rule.
+\begin{center}
+\begin{tabular}{|l|*{6}{c|}}
+\hline
+\rowcolor{popblueL} $r$ & $0.01$ & $0.02$ & $0.03$ & $0.04$ & $0.05$ & $0.06$ \\
+\hline $f(r)$ & & & & & & \\
+\hline
+\end{tabular}
+\end{center}
+\item \textbf{Bisection.} Starting from your interval of width $0.01$, apply the bisection method until the root is trapped in an interval of width at most $0.001$. Record each step in a table with columns: endpoints $a,b$; midpoint $m$; sign of $f(m)$; new interval. How many iterations were needed?
+\item \textbf{Newton--Raphson.} Show that $f'(r)=540000(1+r)^{-4}-500000$. Taking $r_0=0.04$, perform \textbf{two} Newton--Raphson iterations, keeping at least six decimal places throughout. Write down $r_1$ and $r_2$.
+\item \textbf{Proving the accuracy.} Mama Fotso wants the rate correct to \textbf{three decimal places}. By checking the sign of $f$ at $0.0385$ and at $0.0395$, prove that the root rounds to $0.039$ to three decimal places.
+\item \textbf{Comparison and conclusion.} Express the monthly rate as a percentage. Compare the number of evaluations needed by bisection and by Newton--Raphson to reach the same accuracy. Which method would a bank's computer prefer, and why? What assumption about $f'$ makes Newton--Raphson reliable here?
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{1. Modelling.} The equation $500000\,r=180000\bigl(1-(1+r)^{-3}\bigr)$ rearranges directly to
+\[
+f(r)=180000\bigl(1-(1+r)^{-3}\bigr)-500000\,r=0.
+\]
+Any positive root $r$ of $f$ is exactly the monthly rate that makes the three discounted instalments equal to the loan. For $r>0$, $1+r\neq0$, so $(1+r)^{-3}$ is continuous, and $f$ is a sum of continuous functions: $f$ is continuous on $(0,0.1)$ and the sign-change rule applies.
+
+\textbf{2. Locating the root.} For example, at $r=0.03$: $(1.03)^{-3}=0.915142$, so
+\[
+f(0.03)=180000(1-0.915142)-500000(0.03)=180000(0.084858)-15000=+274.4.
+\]
+Completing the table in the same way:
+
+\begin{center}
+\begin{tabular}{|l|*{6}{c|}}
+\hline
+\rowcolor{popblueL} $r$ & $0.01$ & $0.02$ & $0.03$ & $0.04$ & $0.05$ & $0.06$ \\
+\hline $f(r)$ & $+293.8$ & $+382.0$ & $+274.4$ & $-19.3$ & $-490.8$ & $-1131.4$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Since $f$ is continuous and $f(0.03)>0$ while $f(0.04)<0$, there is a root in $(0.03,\,0.04)$.
+
+\textbf{3. Bisection.} Each step halves the interval: we evaluate $f$ at the midpoint $m=\dfrac{a+b}{2}$ and keep the half-interval on which $f$ changes sign.
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|l|}
+\hline
+\rowcolor{popblueL} Step & $a$ & $b$ & $m$ & sign of $f(m)$ & New interval \\
+\hline 1 & $0.03$ & $0.04$ & $0.035$ & $+\ (150.3)$ & $[0.035,\,0.04]$ \\
+\hline 2 & $0.035$ & $0.04$ & $0.0375$ & $+\ (71.0)$ & $[0.0375,\,0.04]$ \\
+\hline 3 & $0.0375$ & $0.04$ & $0.03875$ & $+\ (27.4)$ & $[0.03875,\,0.04]$ \\
+\hline 4 & $0.03875$ & $0.04$ & $0.039375$ & $+\ (4.5)$ & $[0.039375,\,0.04]$ \\
+\hline
+\end{tabular}
+\end{center}
+
+After \textbf{4 iterations} the interval $[0.039375,\,0.04]$ has width $0.000625<0.001$, as required. (Theory predicts this: $\dfrac{0.01}{2^{n}}\le 0.001$ requires $2^{n}\ge 10$, i.e. $n\ge 4$.)
+
+\textbf{4. Newton--Raphson.} Differentiating term by term, using $\dfrac{d}{dr}(1+r)^{-3}=-3(1+r)^{-4}$,
+\[
+f'(r)=180000\times 3(1+r)^{-4}-500000=540000(1+r)^{-4}-500000.
+\]
+With $r_0=0.04$: $f(0.04)=-19.35$ and
+\[
+f'(0.04)=540000(1.04)^{-4}-500000=540000(0.854804)-500000=-38405.7,
+\]
+so
+\[
+r_1=0.04-\frac{-19.35}{-38405.7}=0.04-0.000504=0.039496.
+\]
+Then $f(0.039496)\approx-0.61$ and $f'(0.039496)\approx-37580$, giving
+\[
+r_2=0.039496-\frac{-0.61}{-37580}=0.039496-0.000016=0.039480.
+\]
+Two iterations already stabilise the value at $r\approx 0.03948$.
+
+\textbf{5. Proving the accuracy.} To prove the root rounds to $0.039$ (3 d.p.), it is enough to show it lies in $[0.0385,\,0.0395)$, since every number in this interval rounds to $0.039$:
+\[
+f(0.0385)=180000\bigl(1-(1.0385)^{-3}\bigr)-19250=19286.3-19250=+36.3>0,
+\]
+\[
+f(0.0395)=180000\bigl(1-(1.0395)^{-3}\bigr)-19750=19749.6-19750=-0.4<0.
+\]
+$f$ is continuous and changes sign on $[0.0385,0.0395]$, so the root lies in this interval, and every number in it rounds to $\mathbf{0.039}$ to three decimal places. $\blacksquare$
+
+\textbf{6. Comparison and conclusion.} The monthly rate is $r\approx 0.0395$, i.e. about $\mathbf{3.9\%}$ per month (more precisely $3.948\%$ before rounding) -- a very expensive loan, which is exactly why Mama Fotso needed the calculation!
+
+Bisection needed 4 iterations (about 9 function evaluations including the location table) merely to reach width $0.001$; Newton--Raphson reached $6$ decimal places in \textbf{2 iterations}. Newton--Raphson converges \emph{quadratically}: the number of correct digits roughly doubles at each step, whereas bisection gains less than one decimal digit every three steps. A bank's computer therefore prefers \textbf{Newton--Raphson}: it is far faster, and here $f'(r)\approx-38000$ is large and non-zero near the root, so the iteration is stable and reliable. Bisection remains valuable as a safe \emph{starter} to bracket the root before Newton--Raphson is launched.
+
+\begin{attention}[Exam tip]
+A numerical answer is only accepted with \textbf{justification}: always conclude with a sign-change check on the appropriate interval when a specific accuracy is requested, as in Task 5. Keep at least two more decimal places in your working than are required in the final answer, and never round intermediate values.
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Why numerical methods? Locating roots}
+
+\courssub{Introduction to numerical methods}
+
+\begin{definition}[Numerical method]
+A \cle{numerical method} is an algorithm that produces approximate solutions to mathematical problems (such as solving equations, evaluating integrals, or solving differential equations) using a finite number of arithmetic operations. In this chapter we focus on finding \cle{roots} (or \cle{zeros}) of a real-valued function $f$, i.e. values $\alpha$ such that $f(\alpha)=0$.
+\end{definition}
+
+\begin{aretenir}[Why do we need numerical methods?]
+Many equations arising in science and engineering cannot be solved exactly by algebraic manipulation. Examples:
+\begin{itemize}
+\item Transcendental equations: $\cos x = x$, $x\mathrm{e}^x = 1$, $\ln x = 2-x$.
+\item Higher-degree polynomials (degree $\ge 5$) with no general algebraic formula.
+\item Equations involving special functions or implicit relations.
+\end{itemize}
+Numerical methods give approximate roots to any desired accuracy, provided the function is sufficiently well-behaved.
+\end{aretenir}
+
+\courssub{Locating a root by a change of sign}
+
+\begin{propriete}[Intermediate Value Theorem (IVT)]
+If $f$ is \cle{continuous} on a closed interval $[a,b]$ and $f(a)$ and $f(b)$ have opposite signs (i.e. $f(a)f(b)<0$), then there exists at least one $\alpha \in (a,b)$ such that $f(\alpha)=0$.
+\end{propriete}
+
+\begin{methode}[Locating a root in an interval]
+To show that the equation $f(x)=0$ has a root in an interval $[a,b]$:
+\begin{enumerate}
+\item Check that $f$ is \cle{continuous} on $[a,b]$ (polynomials, exponentials, $\sin$, $\cos$ are continuous everywhere; beware of denominators that vanish or piecewise definitions).
+\item Evaluate $f(a)$ and $f(b)$ accurately.
+\item If $f(a)$ and $f(b)$ have \textbf{opposite signs}, conclude by the IVT: there exists at least one $\alpha\in(a,b)$ with $f(\alpha)=0$.
+\item To narrow the location, evaluate $f$ at intermediate points (integers, then tenths, hundredths, etc.) until the sign change is trapped in an interval of the required width.
+\end{enumerate}
+\textbf{Reflex:} a sign change proves \emph{existence} of a root; it does \emph{not} prove \emph{uniqueness}. For uniqueness, add monotonicity ($f'$ of constant sign on the interval).
+\end{methode}
+
+\begin{exoresolu}[Locating a root of a cubic]
+Show that the equation $x^{3}+2x-7=0$ has exactly one real root $\alpha$, and find an interval of width $0.5$ containing $\alpha$.
+\tcblower
+Let $f(x)=x^{3}+2x-7$; $f$ is a polynomial, hence continuous on $\mathbb{R}$.
+
+\textbf{Existence.} Compute:
+\[ f(1)=1+2-7=-4<0,\qquad f(2)=8+4-7=5>0. \]
+Since $f(1)f(2)<0$, by the IVT there is a root $\alpha\in(1,2)$.
+
+\textbf{Uniqueness.} $f'(x)=3x^{2}+2>0$ for all $x$, so $f$ is strictly increasing on $\mathbb{R}$: the root is \textbf{unique}.
+
+\textbf{Narrowing to width $0.5$.}
+\[ f(1.5)=3.375+3-7=-0.625<0. \]
+Since $f(1.5)<0$ and $f(2)>0$, the root lies in $(1.5,\,2)$. Checking $f(1.75)=5.359375+3.5-7=1.859375>0$, we conclude
+\[ \boxed{\alpha\in(1.5,\;1.75)} \]
+an interval of width $0.25$, better than required.
+\end{exoresolu}
+
+\begin{attention}[Sign change does not guarantee uniqueness]
+The function $f(x)=x^3-x$ on $[-2,2]$ satisfies $f(-2)=-6<0$, $f(2)=6>0$, yet it has three roots ($-1,0,1$). Always check monotonicity (or use the derivative) if uniqueness is required.
+\end{attention}
+
+\begin{exemplebox}[Locating a root of a transcendental equation]
+Show that $\cos x = x$ has a unique root in $\left[0,\frac{\pi}{2}\right]$.
+Let $f(x)=\cos x - x$. $f$ is continuous. $f(0)=1>0$, $f(\frac{\pi}{2})=-\frac{\pi}{2}<0$ $\Rightarrow$ root exists. $f'(x)=-\sin x -1 <0$ on $(0,\frac{\pi}{2})$ $\Rightarrow$ strictly decreasing $\Rightarrow$ unique root.
+\end{exemplebox}
+
+\coursec{The bisection method}
+
+\courssub{Principle and algorithm}
+
+\begin{methode}[Applying the bisection method]
+Given $f$ continuous on $[a,b]$ with $f(a)f(b)<0$:
+\begin{enumerate}
+\item Compute the midpoint $c=\dfrac{a+b}{2}$ and evaluate $f(c)$.
+\item If $f(c)=0$, stop: $c$ is the root. Otherwise compare signs:
+\begin{itemize}
+\item if $f(a)f(c)<0$, the root is in $[a,c]$: set $b=c$;
+\item if $f(c)f(b)<0$, the root is in $[c,b]$: set $a=c$.
+\end{itemize}
+\item Repeat until the interval width $b-a$ is less than the required tolerance $\varepsilon$.
+\item Take the \textbf{midpoint of the final interval} as the approximation; the error is then at most $\dfrac{b-a}{2}$.
+\end{enumerate}
+\textbf{Key facts:} after $n$ steps the interval has width $\dfrac{b-a}{2^{n}}$. To guarantee an error below $\varepsilon$ using the midpoint, choose $n$ with $\dfrac{b-a}{2^{n+1}}\leq\varepsilon$. Record every step in a table: $a$, $b$, $c$, $f(c)$, new interval.
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-1.5) -- (0,2.5) node[above] {$y$};
+\draw[popblue, thick, domain=0:4, samples=100] plot (\x, {0.5*(\x-1)*(\x-3)});
+\draw[popline] (1,0) node[below] {$a$} -- (1,0.5);
+\draw[popline] (3,0) node[below] {$b$} -- (3,-0.5);
+\draw[poporange, dashed] (2, -1) -- (2, 1.5) node[above] {$c_1$};
+\draw[popgreen, dashed] (1.5, -1) -- (1.5, 1) node[above] {$c_2$};
+\draw[poppurple, dashed] (1.25, -1) -- (1.25, 0.8) node[above] {$c_3$};
+\node[popblue] at (0.5,2) {$f(x)$};
+\end{tikzpicture}
+\legende{Bisection method: successive midpoints $c_1, c_2, c_3,\ldots$ narrow the interval containing the root.}
+\end{popfigure}
+
+\courssub{Error analysis and number of iterations}
+
+\begin{propriete}[Error bound after $n$ bisections]
+If the initial interval is $[a_0,b_0]$ and we perform $n$ bisections, the final interval $[a_n,b_n]$ has width
+\[ w_n = \frac{b_0-a_0}{2^n}. \]
+If the approximation is taken as the midpoint $c_n = \frac{a_n+b_n}{2}$, the maximum error is
+\[ |c_n - \alpha| \le \frac{w_n}{2} = \frac{b_0-a_0}{2^{n+1}}. \]
+\end{propriete}
+
+\begin{methode}[Deciding the number of bisection steps]
+To find how many bisections are needed for a target accuracy $\varepsilon$:
+\begin{enumerate}
+\item Write the error bound after $n$ steps: $E_n = \dfrac{b-a}{2^{n+1}}$ (if using the midpoint) or $E_n = \dfrac{b-a}{2^{n}}$ (if using an endpoint).
+\item Require $E_n \le \varepsilon$ and solve for $n$ using logarithms.
+\item Round \textbf{up} to the next integer.
+\end{enumerate}
+\textbf{Reflex:} each bisection gains roughly one binary digit; about $3$ to $4$ iterations are needed per decimal digit.
+\end{methode}
+
+\begin{exoresolu}[Bisection on a transcendental equation]
+The equation $x^{3}-x-1=0$ has a root $\alpha$ in $[1,2]$. Use the bisection method to find $\alpha$ correct to $1$ decimal place, showing all steps in a table.
+\tcblower
+Let $f(x)=x^{3}-x-1$, continuous everywhere. Check: $f(1)=-1<0$, $f(2)=5>0$. Good: a sign change on $[1,2]$.
+
+To give $\alpha$ correct to $1$ d.p. we need the final interval width at most $0.1$ (so that both endpoints round to the same tenth, or the midpoint has error $\le 0.05$).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & $a$ & $b$ & $c=\frac{a+b}{2}$ & $f(c)$ \\
+\hline
+1 & $1$ & $2$ & $1.5$ & $0.875>0$ \\
+\hline
+2 & $1$ & $1.5$ & $1.25$ & $-0.296875<0$ \\
+\hline
+3 & $1.25$ & $1.5$ & $1.375$ & $0.224609>0$ \\
+\hline
+4 & $1.25$ & $1.375$ & $1.3125$ & $-0.051514<0$ \\
+\hline
+5 & $1.3125$ & $1.375$ & $1.34375$ & $0.082581>0$ \\
+\hline
+\end{tabular}
+\end{center}
+
+After step 5 the root lies in $(1.3125,\,1.34375)$, of width $0.03125<0.1$. Both endpoints round to $1.3$, hence
+\[ \boxed{\alpha\approx 1.3\ \text{(1 d.p.)}} \]
+(The true value is $\alpha\approx1.3247$; the midpoint $1.328125$ has error below $0.016$.)
+\end{exoresolu}
+
+\begin{exoresolu}[How many iterations?]
+A root of $f(x)=0$ is known to lie in $[2,5]$. How many bisection steps are needed to approximate the root by the midpoint of the final interval with an error less than $10^{-3}$?
+\tcblower
+Here $b-a = 5-2 = 3$. The error using the midpoint after $n$ steps is
+\[ E_n = \frac{b-a}{2^{n+1}} = \frac{3}{2^{n+1}}. \]
+We require
+\[ \frac{3}{2^{n+1}} < 10^{-3} \quad\Longleftrightarrow\quad 2^{n+1} > 3000. \]
+Taking logarithms (base $e$ or $10$):
+\[ (n+1)\ln 2 > \ln 3000 \quad\Longleftrightarrow\quad n+1 > \frac{\ln 3000}{\ln 2} \approx \frac{8.006}{0.6931} \approx 11.55. \]
+Hence $n+1 \ge 12$, i.e. $\boxed{n = 11}$ bisection steps. Check: $\dfrac{3}{2^{12}} = \dfrac{3}{4096} \approx 7.32\times10^{-4} < 10^{-3}$. \checkmark
+\end{exoresolu}
+
+\coursec{The Newton--Raphson method}
+
+\courssub{Derivation and geometric interpretation}
+
+\begin{propriete}[Newton--Raphson iteration formula]
+Let $f$ be differentiable near a root $\alpha$. Starting from an approximation $x_0$, the tangent to the curve $y=f(x)$ at $(x_n, f(x_n))$ crosses the $x$-axis at
+\[ x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}. \]
+This defines the \cle{Newton--Raphson iteration}.
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-1.5) -- (0,2.5) node[above] {$y$};
+\draw[popblue, thick, domain=0:4, samples=100] plot (\x, {0.5*(\x-1)*(\x-3)});
+\draw[poporange, thick] (0.5, 1.125) -- (3.5, -0.875) node[right] {tangent at $x_n$};
+\draw[popline] (2,0) node[below] {$x_n$} -- (2,1);
+\draw[popline] (1.25,0) node[below] {$x_{n+1}$} -- (1.25,0.2);
+\draw[popline] (1.5,0) node[below] {$\alpha$} -- (1.5,-0.2);
+\node[popblue] at (0.5,2) {$y=f(x)$};
+\end{tikzpicture}
+\legende{Geometric idea: $x_{n+1}$ is the $x$-intercept of the tangent at $(x_n,f(x_n))$.}
+\end{popfigure}
+
+\courssub{Algorithm and convergence}
+
+\begin{methode}[Applying the Newton--Raphson method]
+To solve $f(x)=0$ starting from an approximation $x_0$ near the root:
+\begin{enumerate}
+\item Compute $f'(x)$ and form the iteration formula
+\[ x_{n+1}=x_{n}-\frac{f(x_n)}{f'(x_n)}. \]
+\item Choose $x_0$ close to the root (use a sign-change interval first).
+\item Iterate, keeping \textbf{at least two more decimal places} than required, until two successive iterates agree to the required accuracy.
+\item Verify by substitution that $f$ changes sign across the final answer.
+\end{enumerate}
+\textbf{Convergence:} The method converges very fast (the number of correct decimals roughly doubles each step) \emph{provided} $f'(x_n)\neq 0$ and $x_0$ is close enough. This is called \cle{quadratic convergence}.
+\end{methode}
+
+\begin{aretenir}[Convergence properties]
+\begin{itemize}
+\item If $f'(\alpha)\neq 0$ and $x_0$ is sufficiently close, Newton--Raphson converges quadratically.
+\item If $f'(\alpha)=0$ (multiple root), convergence becomes linear.
+\item The method may fail or diverge if $f'(x_n)=0$ or is very small, if $x_0$ is too far, or near an inflection point where iterates can cycle.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Deriving specific formulas}
+
+\begin{methode}[Deriving a Newton--Raphson formula for a specific equation]
+In the GCE, you are often asked to \emph{show} that Newton--Raphson applied to a given equation leads to a stated formula:
+\begin{enumerate}
+\item Write the equation in the form $f(x)=0$ and compute $f'(x)$.
+\item Substitute into $x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)}$.
+\item Simplify algebraically (common denominator, factorisation) until you reach the target formula.
+\end{enumerate}
+\textbf{Reflex:} for $\sqrt[k]{a}$, solve $x^{k}-a=0$; the formula becomes $x_{n+1}=\dfrac{1}{k}\left[(k-1)x_n+\dfrac{a}{x_n^{k-1}}\right]$.
+\end{methode}
+
+\begin{exoresolu}[Deriving and using a formula for a cube root]
+\begin{enumerate}
+\item Show that the Newton--Raphson iteration for solving $x^{3}=10$ can be written
+\[ x_{n+1}=\frac{2x_n^{3}+10}{3x_n^{2}}. \]
+\item Taking $x_0=2$, compute $x_1$ and $x_2$, giving $x_2$ to $4$ decimal places.
+\end{enumerate}
+\tcblower
+\textbf{1.} Write $f(x)=x^{3}-10$, so $f'(x)=3x^{2}$. Then
+\[ x_{n+1}=x_n-\frac{x_n^{3}-10}{3x_n^{2}}=\frac{3x_n^{3}-(x_n^{3}-10)}{3x_n^{2}}=\frac{2x_n^{3}+10}{3x_n^{2}}. \qquad\blacksquare \]
+
+\textbf{2.} With $x_0=2$:
+\[ x_1=\frac{2(8)+10}{3(4)}=\frac{26}{12}=2.166666\ldots \]
+\[ x_2=\frac{2(2.166666\ldots)^{3}+10}{3(2.166666\ldots)^{2}}=\frac{2(10.171296)+10}{3(4.694444)}=\frac{30.342592}{14.083333}=2.154503\ldots \]
+Hence $\boxed{x_2\approx 2.1545}$ (4 d.p.). Note $\sqrt[3]{10}=2.154434\ldots$: already excellent after two steps.
+\end{exoresolu}
+
+\courssub{Worked examples}
+
+\begin{exoresolu}[Newton--Raphson on a polynomial]
+Using the Newton--Raphson method with $x_0=2$, find the root of $x^{3}-3x-5=0$ in $[2,3]$ correct to $3$ decimal places.
+\tcblower
+Let $f(x)=x^{3}-3x-5$, so $f'(x)=3x^{2}-3$. The iteration is
+\[ x_{n+1}=x_n-\frac{x_n^{3}-3x_n-5}{3x_n^{2}-3}. \]
+
+\textbf{Iteration 1:} $x_0=2$:
+\[ f(2)=8-6-5=-3,\qquad f'(2)=12-3=9,\qquad x_1=2-\frac{-3}{9}=2.333333. \]
+
+\textbf{Iteration 2:} $x_1=2.333333$:
+\[ f(x_1)=12.703704-7-5=0.703704,\qquad f'(x_1)=13.333333, \]
+\[ x_2=2.333333-\frac{0.703704}{13.333333}=2.280556. \]
+
+\textbf{Iteration 3:} $x_2=2.280556$:
+\[ f(x_2)=11.86243-6.841667-5=0.020763,\qquad f'(x_2)=12.6029, \]
+\[ x_3=2.280556-\frac{0.020763}{12.6029}=2.278915. \]
+
+\textbf{Iteration 4:} $x_3=2.278915$: $f(x_3)\approx 0.00002$, giving $x_4\approx 2.278915$.
+
+The iterates agree to $3$ d.p.: $\boxed{\alpha\approx 2.279}$.
+
+\textbf{Check:} $f(2.2785)\approx-0.0011<0$, $f(2.2795)\approx0.0041>0$: sign change confirmed. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Newton--Raphson with a trigonometric equation]
+The equation $\cos x - x = 0$ has exactly one root $\alpha$ in $\left[0,\dfrac{\pi}{2}\right]$.
+\begin{enumerate}
+\item Verify this by a sign-change argument.
+\item Use Newton--Raphson with $x_0=0.7$ (radians) to find $\alpha$ correct to $4$ decimal places, and justify the accuracy.
+\end{enumerate}
+\tcblower
+\textbf{1.} Let $f(x)=\cos x - x$, continuous everywhere.
+\[ f(0)=\cos 0 - 0 = 1 > 0,\qquad f\!\left(\tfrac{\pi}{2}\right)=0-\tfrac{\pi}{2}=-1.5708<0. \]
+Sign change $\Rightarrow$ a root exists in $\left(0,\tfrac{\pi}{2}\right)$. Moreover $f'(x)=-\sin x - 1<0$ on $\left(0,\tfrac{\pi}{2}\right)$, so $f$ is strictly decreasing: the root is unique.
+
+\textbf{2.} $f(x)=\cos x - x$, $f'(x)=-\sin x - 1$. Iteration:
+\[ x_{n+1}=x_n-\frac{\cos x_n - x_n}{-\sin x_n - 1}=x_n+\frac{\cos x_n - x_n}{\sin x_n + 1}. \]
+
+\textbf{Step 1:} $x_0=0.7$: $\cos 0.7=0.764842$, $\sin 0.7=0.644218$.
+\[ x_1=0.7+\frac{0.764842-0.7}{0.644218+1}=0.7+\frac{0.064842}{1.644218}=0.739436. \]
+
+\textbf{Step 2:} $x_1=0.739436$: $\cos x_1=0.738469$, $\sin x_1=0.674288$.
+\[ x_2=0.739436+\frac{0.738469-0.739436}{1.674288}=0.739436-\frac{0.000967}{1.674288}=0.738859. \]
+
+\textbf{Step 3:} $x_2=0.738859$: $\cos x_2=0.739085$, $\sin x_2=0.673610$.
+\[ x_3=0.738859+\frac{0.739085-0.738859}{1.673610}=0.738859+0.000135=0.738994. \]
+
+\textbf{Step 4:} $x_3=0.738994$: $\cos x_3=0.739085$, $\sin x_3=0.673680$.
+\[ x_4=0.738994+\frac{0.739085-0.738994}{1.673680}=0.738994+0.000054=0.739048. \]
+
+\textbf{Step 5:} $x_4=0.739048$: $\cos x_4=0.739085$, $\sin x_4=0.673700$.
+\[ x_5=0.739048+\frac{0.739085-0.739048}{1.673700}=0.739048+0.000022=0.739070. \]
+
+\textbf{Step 6:} $x_5=0.739070$: $\cos x_5=0.739085$, $\sin x_5=0.673708$.
+\[ x_6=0.739070+\frac{0.739085-0.739070}{1.673708}=0.739070+0.000009=0.739079. \]
+
+The iterates stabilise at $\boxed{\alpha\approx 0.7391}$ (4 d.p.).
+
+\textbf{Justification:} $f(0.73905)=\cos(0.73905)-0.73905\approx 0.00002>0$ and $f(0.73915)\approx -0.00008<0$: the sign change across $[0.73905,\,0.73915]$ confirms $\alpha=0.7391$ to $4$ d.p. \checkmark
+\end{exoresolu}
+
+\coursec{Accuracy, error control and applications}
+
+\courssub{Controlling accuracy}
+
+\begin{methode}[Controlling and justifying accuracy]
+To state an answer "correct to $k$ decimal places" with confidence:
+\begin{enumerate}
+\item Iterate until two successive approximations agree to $k$ d.p. (necessary but not sufficient).
+\item \textbf{Confirm with a sign change:} if the answer is $x^{\ast}$ to $k$ d.p., check that $f$ changes sign between $x^{\ast}-\tfrac12\times10^{-k}$ and $x^{\ast}+\tfrac12\times10^{-k}$.
+\item For bisection, the error bound is automatic: $\lvert x_n-\alpha\rvert\leq\dfrac{b-a}{2^{n+1}}$ (midpoint).
+\end{enumerate}
+\textbf{Warning (failure of Newton--Raphson):} the method fails or diverges if $f'(x_n)=0$ or is very small (horizontal tangent), if $x_0$ is too far from the root, or near a point of inflexion where iterates can cycle. Always start from a sign-change interval.
+\end{methode}
+
+\begin{attention}[Frequent traps in the examination]
+\begin{itemize}
+\item Forgetting to verify \textbf{continuity} before invoking a sign change.
+\item Claiming uniqueness from a sign change alone — monotonicity is needed.
+\item In bisection, quoting the last computed midpoint instead of the midpoint of the \emph{final} interval, or stopping before the width is below the tolerance.
+\item In Newton--Raphson, rounding too early: keep at least $2$ extra decimal places during iterations.
+\item Using degrees instead of \textbf{radians} with trigonometric functions.
+\item Dividing by $f'(x_n)$ without checking it is non-zero.
+\end{itemize}
+\end{attention}
+
+\courssub{Failure cases of Newton--Raphson}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+\draw[->] (-2.5,0) -- (2.5,0) node[right] {$x$};
+\draw[->] (0,-2) -- (0,2.5) node[above] {$y$};
+\draw[popblue, thick, domain=-2:2, samples=100] plot (\x, {\x*\x*\x});
+\draw[poporange, thick] (-2, -4) -- (2, 4) node[right] {tangent at $x_0=1$};
+\draw[popline] (1,0) node[below] {$x_0=1$} -- (1,1);
+\draw[popline] (-0.5,0) node[below] {$x_1=-0.5$} -- (-0.5,-0.125);
+\draw[popline] (0,0) node[below left] {$\alpha=0$};
+\node[popblue] at (-2,2) {$y=x^3$};
+\end{tikzpicture}
+\legende{Newton--Raphson on $f(x)=x^3$: starting at $x_0=1$, the tangent crosses at $x_1=-0.5$, then $x_2=0.25$, oscillating and converging slowly (linear) because $f'(0)=0$.}
+\end{popfigure}
+
+\begin{experience}[When Newton--Raphson fails]
+Consider $f(x)=x^{1/3}$ (or $x^3=0$). The iteration becomes $x_{n+1} = x_n - \frac{x_n^{1/3}}{(1/3)x_n^{-2/3}} = -2x_n$, which diverges for any $x_0\neq0$. This illustrates the danger of a zero derivative at the root.
+\end{experience}
+
+\courssub{Comparing methods}
+
+\begin{exoresolu}[Comparing methods — GCE synthesis]
+The equation $x\mathrm{e}^{x}=1$ has a root $\alpha$ in $[0,1]$.
+\begin{enumerate}
+\item Perform three bisection steps starting from $[0,1]$ and state the resulting interval.
+\item Apply Newton--Raphson once with $x_0=0.5$ to obtain $x_1$.
+\item Comment on the relative speed of the two methods.
+\end{enumerate}
+\tcblower
+Write $f(x)=x\mathrm{e}^{x}-1$, continuous; $f(0)=-1<0$, $f(1)=\mathrm{e}-1=1.718>0$.
+
+\textbf{1. Bisection.}
+\begin{itemize}
+\item $c_1=0.5$: $f(0.5)=0.5\mathrm{e}^{0.5}-1=0.82436-1=-0.17564<0$ $\Rightarrow$ root in $[0.5,1]$.
+\item $c_2=0.75$: $f(0.75)=0.75\mathrm{e}^{0.75}-1=1.58775-1=0.58775>0$ $\Rightarrow$ root in $[0.5,0.75]$.
+\item $c_3=0.625$: $f(0.625)=0.625\mathrm{e}^{0.625}-1=1.16765-1=0.16765>0$ $\Rightarrow$ root in $[0.5,0.625]$.
+\end{itemize}
+After three steps: $\alpha\in[0.5,\,0.625]$, width $0.125$.
+
+\textbf{2. Newton--Raphson.} $f'(x)=\mathrm{e}^{x}+x\mathrm{e}^{x}=(x+1)\mathrm{e}^{x}$.
+\[ x_1=0.5-\frac{0.5\mathrm{e}^{0.5}-1}{1.5\,\mathrm{e}^{0.5}}=0.5-\frac{-0.17564}{2.47308}=0.5+0.07102=0.57102. \]
+(Indeed $\alpha=0.56714\ldots$; one Newton step already beats three bisections.)
+
+\textbf{3. Comment.} Bisection is \emph{slow but safe}: it always converges when a sign change exists, halving the interval each time. Newton--Raphson is \emph{much faster} (quadratic convergence: correct decimals roughly double per step) but requires $f'$ and a good starting value, and can fail if $f'(x_n)\approx0$. A sound GCE strategy: locate the root by sign change, refine by Newton--Raphson.
+\end{exoresolu}
+
+\courssub{Applications}
+
+\begin{experience}[Real-world application: solving a mechanics equation]
+A projectile is launched with initial speed $u$ at angle $\theta$. With air resistance proportional to velocity, the time of flight $T$ satisfies
+\[ \frac{mg}{k}\left(1-e^{-kT/m}\right) = u\sin\theta\, T. \]
+Given $m=0.1\,\mathrm{kg}$, $k=0.02\,\mathrm{N\,s/m}$, $u=20\,\mathrm{m/s}$, $\theta=30^\circ$, $g=9.8\,\mathrm{m/s^2}$, find $T$ to $2$ d.p. using Newton--Raphson.
+\textit{Solution outline:} Rearrange to $f(T)=0$, compute $f'(T)$, choose $T_0$ from the no-drag formula $T=2u\sin\theta/g\approx2.04\,\mathrm{s}$, iterate.
+\end{experience}
+
+\begin{savaistu}[Historical note]
+The Newton--Raphson method was discovered by Isaac Newton in 1669 (published 1711) and independently by Joseph Raphson in 1690. It is one of the most widely used root-finding algorithms in scientific computing. The bisection method, based on the Intermediate Value Theorem (Bolzano, 1817), is the simplest guaranteed-convergence method.
+\end{savaistu}
+
+\coursec{Exercises}
+
+\begin{exercice}[Exercise 1]
+The equation $x^3 - 2x - 5 = 0$ has a root $\alpha$ in $[2,3]$.
+\begin{enumerate}
+\item Verify the existence and uniqueness of $\alpha$ in $[2,3]$.
+\item Use the bisection method to find $\alpha$ correct to $2$ decimal places. Show your working in a table.
+\item How many bisection steps are needed to guarantee an error less than $10^{-4}$ using the midpoint?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Exercise 2]
+\begin{enumerate}
+\item Show that the Newton--Raphson iteration for solving $x^2 - a = 0$ ($a>0$) reduces to $x_{n+1} = \frac{1}{2}\left(x_n + \frac{a}{x_n}\right)$.
+\item Use this formula with $x_0=3$ to compute $\sqrt{10}$ correct to $4$ decimal places.
+\item Explain why the method fails if $x_0=0$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Exercise 3]
+The equation $\ln x = 4 - x$ has a root $\alpha$ in $[2,3]$.
+\begin{enumerate}
+\item Verify the sign change.
+\item Perform two iterations of the Newton--Raphson method starting from $x_0=2.5$.
+\item Estimate the error in your approximation after two iterations.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $f(x)=x^3-2x-5$, continuous. $f(2)=-1<0$, $f(3)=16>0$ $\Rightarrow$ root exists. $f'(x)=3x^2-2>0$ on $[2,3]$ $\Rightarrow$ strictly increasing $\Rightarrow$ unique.
+\textbf{2.} Bisection table:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & $a$ & $b$ & $c$ & $f(c)$ \\
+\hline
+1 & 2 & 3 & 2.5 & 5.625>0 \\
+\hline
+2 & 2 & 2.5 & 2.25 & 1.8906>0 \\
+\hline
+3 & 2 & 2.25 & 2.125 & 0.3418>0 \\
+\hline
+4 & 2 & 2.125 & 2.0625 & -0.347<0 \\
+\hline
+5 & 2.0625 & 2.125 & 2.09375 & -0.004<0 \\
+\hline
+6 & 2.09375 & 2.125 & 2.109375 & 0.168>0 \\
+\hline
+\end{tabular}
+\end{center}
+After step 6, interval $[2.09375, 2.109375]$ width $0.015625<0.01$? Actually need width $<0.01$ for 2 d.p. Continue one more step: step 7 gives $[2.09375, 2.1015625]$ width $0.0078<0.01$. Midpoint $2.09765625$ rounds to $2.10$. So $\alpha\approx 2.10$ (2 d.p.).
+\textbf{3.} Error $<10^{-4}$: $\frac{1}{2^{n+1}}<10^{-4}$ $\Rightarrow$ $2^{n+1}>10000$ $\Rightarrow$ $n+1\ge14$ $\Rightarrow$ $n=13$ steps.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+\textbf{1.} $f(x)=x^2-a$, $f'(x)=2x$. $x_{n+1}=x_n-\frac{x_n^2-a}{2x_n}=\frac{2x_n^2-x_n^2+a}{2x_n}=\frac{x_n^2+a}{2x_n}=\frac{1}{2}\left(x_n+\frac{a}{x_n}\right)$.
+\textbf{2.} $a=10$, $x_0=3$: $x_1=\frac{1}{2}(3+10/3)=3.166667$, $x_2=\frac{1}{2}(3.166667+10/3.166667)=3.162281$, $x_3=\frac{1}{2}(3.162281+10/3.162281)=3.162278$. Agrees to 4 d.p.: $\sqrt{10}\approx 3.1623$.
+\textbf{3.} If $x_0=0$, $f'(0)=0$, division by zero in the formula. The tangent is horizontal and never crosses the $x$-axis.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+\textbf{1.} $f(x)=\ln x + x - 4$. $f(2)=\ln2-2\approx -1.307<0$, $f(3)=\ln3-1\approx 0.099>0$. Sign change $\Rightarrow$ root in $(2,3)$.
+\textbf{2.} $f'(x)=1/x+1$. $x_0=2.5$: $f(2.5)=\ln2.5-1.5\approx -0.583$, $f'(2.5)=1.4$. $x_1=2.5-(-0.583)/1.4=2.9164$. $x_1=2.9164$: $f(2.9164)=\ln2.9164-1.0836\approx 0.083$, $f'(2.9164)=1.343$. $x_2=2.9164-0.083/1.343=2.8546$.
+\textbf{3.} True root $\alpha\approx 2.928$. Error after two iterations $\approx 0.073$. (Quadratic convergence would give much smaller error after one more step.)
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: locating a root]
+Let $f(x) = x^{3} + x - 3$. Which of the following intervals is guaranteed, by the Intermediate Value Theorem, to contain a root of $f(x) = 0$?
+\begin{enumerate}
+\item $(0, 1)$
+\item $(1, 2)$
+\item $(2, 3)$
+\item $(-1, 0)$
+\end{enumerate}
+Justify your choice by computing the appropriate values of $f$.
+\end{exercice}
+
+\begin{exercice}[True or false?]
+For each statement, say whether it is \textbf{true} or \textbf{false}, and justify your answer briefly.
+\begin{enumerate}
+\item If $f(a)$ and $f(b)$ have the same sign, then the equation $f(x) = 0$ has no root in $(a, b)$.
+\item After $n$ steps of the bisection method applied to an interval of width $b - a$, the error is at most $\dfrac{b-a}{2^{n}}$.
+\item The Newton--Raphson iteration formula is $x_{n+1} = x_{n} - \dfrac{f(x_{n})}{f'(x_{n})}$.
+\item The Newton--Raphson method always converges, whatever the starting value $x_{0}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Key definitions]
+\begin{enumerate}
+\item State the \cle{Intermediate Value Theorem} (change of sign rule) as used to locate a root of a continuous function.
+\item Explain what is meant by saying that a root has been found ``correct to $2$ decimal places''.
+\item Write down the Newton--Raphson iteration formula and state the condition on $f'(x_{n})$ for the iteration to be defined.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Given $f(x) = x^{2} - 5$, compute one step of the bisection method on the interval $[2, 3]$: find the midpoint, evaluate $f$ there, and state the new interval containing $\sqrt{5}$.
+\item Given $f(x) = x^{2} - 5$ and $x_{0} = 2$, compute $x_{1}$ and $x_{2}$ using the Newton--Raphson formula, giving each value to $4$ decimal places.
+\item How many bisection steps are needed to reduce an interval of width $1$ to a width less than $0.01$?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Locating three roots]
+\begin{enumerate}
+\item Show that the equation $x^{3} - 3x + 1 = 0$ has three real roots, and locate each root in an interval of width $0.5$ with integer or half-integer endpoints.
+\item Use the bisection method to find the \emph{largest} of these roots correct to $2$ decimal places, showing the midpoint and sign of $f$ at each step.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Newton--Raphson with an exponential]
+The equation $e^{x} - 4x = 0$ has a root between $0$ and $1$.
+\begin{enumerate}
+\item Verify the change of sign of $f(x) = e^{x} - 4x$ on $[0, 1]$.
+\item Use the Newton--Raphson method with $x_{0} = 1.5$ to find the root of $e^{x} - 4x = 0$ correct to $4$ decimal places, showing all iterations $x_{1}, x_{2}, x_{3}, \ldots$ in a table.
+\item Comment on the number of iterations needed, compared with the bisection method on $[0, 1]$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Counting bisection steps]
+Given that $f(x) = x^{3} - 2x - 5$ has a root near $x = 2$:
+\begin{enumerate}
+\item Verify that the root lies in the interval $(2, 3)$.
+\item Determine how many bisection steps, starting from $[2, 3]$, are needed to guarantee an error less than $10^{-4}$.
+\item Carry out the first three steps of the bisection method, presenting your results in a table (interval, midpoint, sign of $f$ at the midpoint, new interval).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Failure of Newton--Raphson]
+Let $f(x) = x^{3} - 2x + 2$.
+\begin{enumerate}
+\item Compute $f'(x)$ and explain, with the aid of a sketch, why the Newton--Raphson method fails when started at $x_{0} = 0$.
+\item Show that the equation $f(x) = 0$ has a root in the interval $(-2, -1)$.
+\item Suggest a better starting value $x_{0}$ and compute the first two Newton--Raphson iterates.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[GCE-style: quartic equation \hfill (12 marks)]
+Consider the equation $x^{4} - x - 10 = 0$.
+\begin{enumerate}
+\item Show that the equation has a root $\alpha$ in the interval $(1, 2)$. \hfill (2 marks)
+\item Show that the Newton--Raphson iteration for this equation can be written
+\[ x_{n+1} = \frac{3x_{n}^{4} + 10}{4x_{n}^{3} - 1}. \] \hfill (3 marks)
+\item Starting from $x_{0} = 2$, use two Newton--Raphson iterations to obtain an estimate of $\alpha$, giving your iterates to $4$ decimal places. \hfill (4 marks)
+\item By considering the sign of $f(x) = x^{4} - x - 10$ at two suitably chosen values, prove that your answer is correct to $2$ decimal places. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE-style: $\cos x = x$ \hfill (10 marks)]
+The equation $\cos x = x$, where $x$ is in radians, has exactly one root.
+\begin{enumerate}
+\item By sketching the graphs of $y = \cos x$ and $y = x$ on the same axes, or otherwise, explain why the equation has exactly one real root. \hfill (2 marks)
+\item Show that this root lies between two consecutive multiples of $0.1$, and state these values. \hfill (3 marks)
+\item Taking $x_{0} = 0.75$, use the Newton--Raphson method to refine the root, showing all your iterations. \hfill (3 marks)
+\item Justify, using a change-of-sign argument, that your answer is correct to $3$ decimal places. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE-style: mechanics application \hfill (12 marks)]
+A ball is thrown vertically upwards from the top of a building in Yaound\'e. Its height above the ground, in metres, at time $t$ seconds is modelled by
+\[ h(t) = 20t - 5t^{2} - e^{-t}. \]
+\begin{enumerate}
+\item Compute $h(0)$ and interpret the result physically. \hfill (2 marks)
+\item Show that the equation $h(t) = 5$ has a positive solution in the interval $(0, 1)$ and another in the interval $(3, 4)$. \hfill (3 marks)
+\item Use the bisection method on the interval $(0, 1)$ to find the \emph{smaller} positive time at which $h(t) = 5$, correct to $2$ decimal places. Show each step in a table. \hfill (4 marks)
+\item Interpret the two positive solutions of $h(t) = 5$ in the context of the motion of the ball. \hfill (2 marks)
+\item State one reason why a numerical method is preferable to an exact algebraic method for this equation. \hfill (1 mark)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\courssub{I check my knowledge}
+
+\begin{corrige}[Exercise 1 — MCQ: locating a root]
+We compute $f(x) = x^{3} + x - 3$ at the endpoints of each proposed interval:
+\begin{align*}
+f(-1) &= -1 - 1 - 3 = -5, & f(0) &= -3,\\
+f(1) &= 1 + 1 - 3 = -1, & f(2) &= 8 + 2 - 3 = 7,\\
+f(3) &= 27 + 3 - 3 = 27.
+\end{align*}
+The only change of sign occurs between $x = 1$ and $x = 2$: $f(1) = -1 < 0$ and $f(2) = 7 > 0$. Since $f$ is a polynomial, it is continuous everywhere, so the \cle{Intermediate Value Theorem} guarantees a root in $(1, 2)$.
+
+\textbf{Answer: (b) $(1, 2)$.}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false?]
+\begin{enumerate}
+\item \textbf{False.} The change of sign is a \emph{sufficient} condition for a root, not a necessary one. Counter-example: $f(x) = x^{2}$ on $(-1, 2)$: $f(-1) = 1 > 0$ and $f(2) = 4 > 0$, yet $x = 0 \in (-1, 2)$ is a root. A function can cross the axis an \emph{even} number of times (or touch it) without a sign change at the endpoints.
+\item \textbf{True.} Each bisection step halves the width of the interval. Starting from width $b - a$, after $n$ steps the width is $\dfrac{b-a}{2^{n}}$, and the root lies inside this final interval, so the midpoint (or any endpoint used as estimate) carries an error of at most $\dfrac{b-a}{2^{n}}$.
+\item \textbf{True.} This is exactly the Newton--Raphson formula, obtained by taking the tangent line to the curve at $(x_{n}, f(x_{n}))$ and finding where it cuts the $x$-axis: $0 - f(x_{n}) = f'(x_{n})(x_{n+1} - x_{n})$.
+\item \textbf{False.} Convergence depends on the starting value and on the shape of $f$. The method fails or diverges if $f'(x_{n}) = 0$ (horizontal tangent), if the iterates enter a cycle (see Exercise 8), or if $x_{0}$ is chosen too far from the root so that the tangents lead away from it.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Key definitions]
+\begin{enumerate}
+\item \textbf{Intermediate Value Theorem (change of sign rule).} If $f$ is \emph{continuous} on $[a, b]$ and $f(a)$ and $f(b)$ have \emph{opposite signs} (i.e. $f(a)\,f(b) < 0$), then there exists at least one number $c \in (a, b)$ such that $f(c) = 0$.
+\item Saying a root $\alpha$ has been found ``correct to $2$ decimal places'' means we have a decimal value $r$ such that $|\alpha - r| \leq 0.005$: the true root and $r$ round to the same $2$-decimal-place number. In practice one proves it by exhibiting a sign change on an interval $[p, q]$ whose endpoints both round to $r$ (e.g. $f(1.855) < 0 < f(1.865)$ implies $\alpha = 1.86$ to $2$ d.p.).
+\item The Newton--Raphson formula is
+\[ x_{n+1} = x_{n} - \frac{f(x_{n})}{f'(x_{n})}. \]
+It is defined only when $f'(x_{n}) \neq 0$: if $f'(x_{n}) = 0$ the tangent at $x_{n}$ is horizontal and never meets the $x$-axis, so the iteration breaks down.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item On $[2, 3]$: $f(2) = 4 - 5 = -1 < 0$ and $f(3) = 9 - 5 = 4 > 0$. The midpoint is $m = \dfrac{2+3}{2} = 2.5$, and
+\[ f(2.5) = 6.25 - 5 = 1.25 > 0. \]
+The sign change is now between $2$ and $2.5$, so the new interval containing $\sqrt{5}$ is $[2,\ 2.5]$.
+\item With $f(x) = x^{2} - 5$, $f'(x) = 2x$, so $x_{n+1} = x_{n} - \dfrac{x_{n}^{2} - 5}{2x_{n}}$.
+\begin{align*}
+x_{1} &= 2 - \frac{4 - 5}{4} = 2 + 0.25 = 2.2500,\\
+x_{2} &= 2.25 - \frac{2.25^{2} - 5}{2(2.25)} = 2.25 - \frac{0.0625}{4.5} = 2.25 - 0.013889 = 2.2361 \ \text{(4 d.p.)}.
+\end{align*}
+(Note: $\sqrt{5} = 2.23607\ldots$ — already excellent after two steps.)
+\item After $n$ steps the width is $\dfrac{1}{2^{n}}$. We need $\dfrac{1}{2^{n}} < 0.01$, i.e. $2^{n} > 100$. Since $2^{6} = 64 < 100$ and $2^{7} = 128 > 100$, we need $\boxed{n = 7}$ steps.
+\end{enumerate}
+\end{corrige}
+
+\courssub{I practise}
+
+\begin{corrige}[Exercise 5 — Locating three roots]
+Let $f(x) = x^{3} - 3x + 1$.
+\begin{enumerate}
+\item We scan integer and half-integer values:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $-2$ & $-1.5$ & $0$ & $0.5$ & $1$ & $1.5$ & $2$ \\
+\hline
+$f(x)$ & $-1$ & $2.125$ & $1$ & $-0.375$ & $-1$ & $-0.125$ & $3$ \\
+\hline
+\end{tabular}
+\end{center}
+There are three changes of sign: between $-2$ and $-1.5$, between $0$ and $0.5$, and between $1.5$ and $2$. Since $f$ is continuous, there is a root in each of
+\[ (-2,\ -1.5), \qquad (0,\ 0.5), \qquad (1.5,\ 2). \]
+A cubic has at most three real roots, so these are \emph{exactly} the three real roots.
+\item Largest root: bisection on $[1.5, 2]$ with $f(1.5) = -0.125 < 0$, $f(2) = 3 > 0$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Midpoint $m$ & $f(m)$ & Sign & New interval \\
+\hline
+$1.75$ & $1.1094$ & $+$ & $[1.5,\ 1.75]$ \\
+$1.625$ & $0.4160$ & $+$ & $[1.5,\ 1.625]$ \\
+$1.5625$ & $0.1272$ & $+$ & $[1.5,\ 1.5625]$ \\
+$1.53125$ & $-0.0027$ & $-$ & $[1.53125,\ 1.5625]$ \\
+$1.546875$ & $0.0610$ & $+$ & $[1.53125,\ 1.546875]$ \\
+\hline
+\end{tabular}
+\end{center}
+Both endpoints of the final interval round to $1.53$, so the largest root is $\boxed{1.53}$ correct to $2$ decimal places.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Newton--Raphson with an exponential]
+Let $f(x) = e^{x} - 4x$, so $f'(x) = e^{x} - 4$.
+\begin{enumerate}
+\item $f(0) = e^{0} - 0 = 1 > 0$ and $f(1) = e - 4 \approx -1.2817 < 0$. Since $f$ is continuous, there is a root in $(0, 1)$.
+\item The iteration is $x_{n+1} = x_{n} - \dfrac{e^{x_{n}} - 4x_{n}}{e^{x_{n}} - 4}$. Starting from $x_{0} = 1.5$:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $n$ & $x_{n}$ & $f(x_{n})$ & $f'(x_{n})$ \\
+\hline
+$0$ & $1.5$ & $-1.5183$ & $0.4817$ \\
+$1$ & $4.6520$ & $86.1811$ & $100.7811$ \\
+$2$ & $3.7969$ & $29.3999$ & $40.5868$ \\
+$3$ & $3.0725$ & $9.3185$ & $17.6085$ \\
+$4$ & $2.5433$ & $2.5488$ & $8.7215$ \\
+$5$ & $2.2511$ & $0.4944$ & $5.4990$ \\
+$6$ & $2.1612$ & $0.0370$ & $4.6812$ \\
+$7$ & $2.1533$ & $0.0002$ & $4.6135$ \\
+\hline
+\end{tabular}
+\end{center}
+The iterates stabilise at $x = 2.1533$ (4 d.p.).
+
+\textbf{Important observation:} the method has converged, but \emph{not} to the root in $(0,1)$! The equation $e^{x} = 4x$ has \emph{two} positive roots ($\approx 0.3574$ and $\approx 2.1533$), and the starting value $x_{0} = 1.5$ lies in the basin of attraction of the \emph{larger} root. To reach the smaller root one should start nearer to it, e.g. $x_{0} = 0.5$, which gives $x_{1} = 0.5 - \dfrac{1.6487 - 2}{1.6487 - 4} = 0.3506$, then $x_{2} = 0.3574$, $x_{3} = 0.3574$: the root in $(0,1)$ is $0.3574$ (4 d.p.).
+\item Newton--Raphson needed only $3$ iterations from a good starting value ($7$ from the poor one), whereas bisection on $[0,1]$ needs $\dfrac{1}{2^{n}} < 5\times 10^{-5}$, i.e. $2^{n} > 20\,000$, so $n = 15$ steps, for $4$-decimal accuracy. Newton--Raphson is far faster \emph{when it converges to the intended root} — but the choice of $x_{0}$ is critical.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Counting bisection steps]
+Let $f(x) = x^{3} - 2x - 5$.
+\begin{enumerate}
+\item $f(2) = 8 - 4 - 5 = -1 < 0$ and $f(3) = 27 - 6 - 5 = 16 > 0$. Since $f$ is continuous, there is a root in $(2, 3)$.
+\item After $n$ steps the error is at most $\dfrac{3-2}{2^{n}} = \dfrac{1}{2^{n}}$. We require $\dfrac{1}{2^{n}} < 10^{-4}$, i.e. $2^{n} > 10\,000$. Since $2^{13} = 8192 < 10\,000$ and $2^{14} = 16\,384 > 10\,000$, we need $\boxed{n = 14}$ steps.
+\item First three steps:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & Interval & Midpoint $m$ & $f(m)$ & New interval \\
+\hline
+$1$ & $[2, 3]$ & $2.5$ & $5.625\ (+)$ & $[2,\ 2.5]$ \\
+$2$ & $[2, 2.5]$ & $2.25$ & $1.8906\ (+)$ & $[2,\ 2.25]$ \\
+$3$ & $[2, 2.25]$ & $2.125$ & $0.3457\ (+)$ & $[2,\ 2.125]$ \\
+\hline
+\end{tabular}
+\end{center}
+(The root is $2.0946$ to $4$ d.p., consistent with the final interval.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Failure of Newton--Raphson]
+Let $f(x) = x^{3} - 2x + 2$.
+\begin{enumerate}
+\item $f'(x) = 3x^{2} - 2$. Starting at $x_{0} = 0$:
+\[ x_{1} = 0 - \frac{f(0)}{f'(0)} = 0 - \frac{2}{-2} = 1, \qquad
+x_{2} = 1 - \frac{f(1)}{f'(1)} = 1 - \frac{1}{1} = 0 = x_{0}. \]
+The iterates \emph{oscillate forever} between $0$ and $1$: the tangent at $x = 0$ sends us to $x = 1$, and the tangent at $x = 1$ sends us straight back to $x = 0$. Geometrically, the curve has a local maximum at $x = -\sqrt{2/3}$ and a local minimum at $x = +\sqrt{2/3}$ with $f(\sqrt{2/3}) > 0$; starting near the minimum, the tangents ``bounce'' across the hump instead of sliding towards the root. The method \textbf{fails to converge}.
+\item $f(-2) = -8 + 4 + 2 = -2 < 0$ and $f(-1) = -1 + 2 + 2 = 3 > 0$. Since $f$ is continuous, there is a root in $(-2, -1)$.
+\item Choose $x_{0} = -1.5$, close to the sign change:
+\begin{align*}
+x_{1} &= -1.5 - \frac{f(-1.5)}{f'(-1.5)} = -1.5 - \frac{-3.375 + 3 + 2}{6.75 - 2} = -1.5 - \frac{1.625}{4.75} = -1.8421,\\
+x_{2} &= -1.8421 - \frac{f(-1.8421)}{f'(-1.8421)} = -1.8421 - \frac{-0.5667}{8.1800} = -1.7728.
+\end{align*}
+The iterates now converge (the root is $-1.7693$ to $4$ d.p.).
+\end{enumerate}
+\end{corrige}
+
+\courssub{I prepare for the GCE}
+
+\begin{corrige}[Exercise 9 — GCE-style: quartic equation]
+Let $f(x) = x^{4} - x - 10$.
+\begin{enumerate}
+\item $f(1) = 1 - 1 - 10 = -10 < 0$ and $f(2) = 16 - 2 - 10 = 4 > 0$. Since $f$ is a polynomial, it is continuous on $[1, 2]$; by the Intermediate Value Theorem there is a root $\alpha \in (1, 2)$. \hfill \textbf{[M1 A1]}
+\item With $f'(x) = 4x^{3} - 1$:
+\begin{align*}
+x_{n+1} &= x_{n} - \frac{x_{n}^{4} - x_{n} - 10}{4x_{n}^{3} - 1} = \frac{x_{n}(4x_{n}^{3} - 1) - (x_{n}^{4} - x_{n} - 10)}{4x_{n}^{3} - 1}\\
+&= \frac{4x_{n}^{4} - x_{n} - x_{n}^{4} + x_{n} + 10}{4x_{n}^{3} - 1} = \frac{3x_{n}^{4} + 10}{4x_{n}^{3} - 1}. \qquad \textbf{[M1 A1 A1]}
+\end{align*}
+\item From $x_{0} = 2$:
+\[ x_{1} = \frac{3(16) + 10}{4(8) - 1} = \frac{58}{31} = 1.8710 \ \text{(4 d.p.)} \qquad \textbf{[M1 A1]} \]
+\[ x_{2} = \frac{3(1.8710)^{4} + 10}{4(1.8710)^{3} - 1} = \frac{3(12.2545) + 10}{4(6.5495) - 1} = \frac{46.7635}{25.1980} = 1.8558 \ \text{(4 d.p.)} \qquad \textbf{[M1 A1]} \]
+\item Test the values $1.85$ and $1.86$ (the $2$-d.p. boundaries around $1.8558$):
+\[ f(1.85) = 11.7135 - 1.85 - 10 = -0.1365 < 0, \]
+\[ f(1.86) = 11.9688 - 1.86 - 10 = 0.1088 > 0. \qquad \textbf{[M1 A1]} \]
+The sign change shows $\alpha \in (1.85, 1.86)$, so $\alpha = 1.86$ correct to $2$ decimal places, confirming our estimate. \hfill \textbf{[A1]}
+\end{enumerate}
+\textbf{Examiner's expectations:} clear statement of the sign change with continuity invoked; algebraic derivation of the iteration shown (not just quoted); iterates given to the required accuracy; the final justification must use \emph{two} values straddling the claimed rounded answer — merely iterating again earns no marks.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — GCE-style: $\cos x = x$]
+Let $f(x) = \cos x - x$ ($x$ in radians).
+\begin{enumerate}
+\item The roots of $\cos x = x$ are the $x$-coordinates of the intersections of $y = \cos x$ and $y = x$. The line $y = x$ is strictly increasing, while on $[0, \pi/2]$ the curve $y = \cos x$ decreases from $1$ to $0$; hence they cross \emph{exactly once} there. For $x > \pi/2$, $x > 1 \geq \cos x$, so no intersection; for $x < 0$, $\cos x > 0 > x$, so no intersection. Hence exactly one real root. \hfill \textbf{[B1 B1]}
+\item $f(0.7) = \cos(0.7) - 0.7 = 0.7648 - 0.7 = 0.0648 > 0$;
+$f(0.8) = \cos(0.8) - 0.8 = 0.6967 - 0.8 = -0.1033 < 0$.
+The sign change shows the root lies between the consecutive multiples $\boxed{0.7 \text{ and } 0.8}$. \hfill \textbf{[M1 A1 A1]}
+\item $f'(x) = -\sin x - 1$, so $x_{n+1} = x_{n} + \dfrac{\cos x_{n} - x_{n}}{\sin x_{n} + 1}$. With $x_{0} = 0.75$:
+\begin{align*}
+x_{1} &= 0.75 - \frac{\cos 0.75 - 0.75}{-\sin 0.75 - 1} = 0.75 - \frac{-0.01831}{-1.68164} = 0.73911,\\
+x_{2} &= 0.73911 - \frac{\cos(0.73911) - 0.73911}{-\sin(0.73911) - 1} = 0.73911 - \frac{-0.00004}{-1.67358} = 0.73909.
+\end{align*}
+The iterates have stabilised: $x = 0.7391$ (4 d.p.). \hfill \textbf{[M1 A1 A1]}
+\item Test the $3$-d.p. boundaries:
+\[ f(0.7385) = \cos(0.7385) - 0.7385 = 0.73948 - 0.7385 = +0.00098 > 0, \]
+\[ f(0.7395) = \cos(0.7395) - 0.7395 = 0.73880 - 0.7395 = -0.00070 < 0. \qquad \textbf{[M1]} \]
+The sign change on $(0.7385, 0.7395)$ proves the root is $0.739$ correct to $3$ decimal places. \hfill \textbf{[A1]}
+\end{enumerate}
+\textbf{Examiner's expectations:} radians must be used throughout (state it); the uniqueness argument must address \emph{all} $x$, not only $[0, \pi/2]$; the final change-of-sign check is compulsory for the accuracy mark.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE-style: mechanics application]
+\begin{enumerate}
+\item $h(0) = 0 - 0 - e^{0} = -1$ metre. Physically the model places the ball $1$ m \emph{below} the ground level at the instant of projection, which is unrealistic: it shows the model is only an approximation, valid for $t > 0$ while the ball is in the air. \hfill \textbf{[B1 B1]}
+\item Write $g(t) = h(t) - 5 = 20t - 5t^{2} - e^{-t} - 5$, continuous everywhere.
+\[ g(0) = -6 < 0, \qquad g(1) = 20 - 5 - e^{-1} - 5 = 9.6321 > 0: \]
+sign change, so a solution in $(0, 1)$. \hfill \textbf{[M1 A1]}
+\[ g(3) = 60 - 45 - e^{-3} - 5 = 9.9502 > 0, \qquad g(4) = 80 - 80 - e^{-4} - 5 = -5.0183 < 0: \]
+sign change, so a solution in $(3, 4)$. \hfill \textbf{[A1]}
+\item Bisection on $(0, 1)$ with $g(0) = -6 < 0$, $g(1) = 9.6321 > 0$:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Midpoint $m$ & $g(m)$ & Sign & New interval \\
+\hline
+$0.5$ & $3.1435$ & $+$ & $[0,\ 0.5]$ \\
+$0.25$ & $-1.0913$ & $-$ & $[0.25,\ 0.5]$ \\
+$0.375$ & $1.1096$ & $+$ & $[0.25,\ 0.375]$ \\
+$0.3125$ & $0.0301$ & $+$ & $[0.25,\ 0.3125]$ \\
+$0.28125$ & $-0.5253$ & $-$ & $[0.28125,\ 0.3125]$ \\
+$0.296875$ & $-0.2463$ & $-$ & $[0.296875,\ 0.3125]$ \\
+$0.3046875$ & $-0.1078$ & $-$ & $[0.3046875,\ 0.3125]$ \\
+$0.30859375$ & $-0.0387$ & $-$ & $[0.30859375,\ 0.3125]$ \\
+\hline
+\end{tabular}
+\end{center}
+Both endpoints of the last interval round to $0.31$, so the smaller positive time is $\boxed{t = 0.31\ \text{s}}$ correct to $2$ decimal places. \hfill \textbf{[M1 A1 A1 A1]}
+\item The ball is at height $5$ m \emph{twice}: at $t \approx 0.31$ s while \textbf{rising}, and at $t \approx 3.73$ s (the root in $(3,4)$; indeed $g(3.73) = 74.6 - 69.5645 - 0.0240 - 5 \approx 0.01$) while \textbf{falling back} towards the ground. \hfill \textbf{[B1 B1]}
+\item The equation $20t - 5t^{2} - e^{-t} = 5$ mixes a polynomial with an exponential: it is \emph{transcendental} and cannot be solved by algebraic manipulation (factorisation, quadratic formula, etc.), so a numerical method is the only practical approach. \hfill \textbf{[B1]}
+\end{enumerate}
+\textbf{Examiner's expectations:} correct handling of $e^{-t}$ values (at least $4$ significant figures); a bisection table with midpoint, value and sign at \emph{every} step; the final answer justified by both endpoints rounding to the same value; interpretation marks require reference to the motion (up then down), not just the numbers.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+\node[draw=popdark, fill=popblue, text=white, rounded corners=4pt, align=center, font=\bfseries] (C) at (0,0) {Numerical\\Methods};
+\node[draw=poporange, fill=poporange!25, rounded corners=3pt, align=center, text width=3.1cm] (A) at (-5.4,2.6) {Why numerical?\\No exact formula\\$\Rightarrow$ approximate};
+\node[draw=poppurple, fill=poppurple!20, rounded corners=3pt, align=center, text width=3.1cm] (B) at (-5.6,-2.4) {Locating roots\\Change of sign\\$f(a)f(b)<0$};
+\node[draw=popgreen, fill=popgreen!25, rounded corners=3pt, align=center, text width=3.3cm] (D) at (0,3.4) {Bisection\\$c=\dfrac{a+b}{2}$, halve the\\interval each step};
+\node[draw=popblue, fill=popblue!20, rounded corners=3pt, align=center, text width=3.4cm] (E) at (5.6,2.6) {Newton--Raphson\\$x_{n+1}=x_n-\dfrac{f(x_n)}{f'(x_n)}$};
+\node[draw=poppink, fill=poppink!25, rounded corners=3pt, align=center, text width=3.2cm] (F) at (5.6,-2.4) {Accuracy \& errors\\$|x_n-\alpha|<\tfrac12(b_n-a_n)$\\decimal places};
+\node[draw=popgold, fill=popgold!30, rounded corners=3pt, align=center, text width=3.1cm] (G) at (0,-3.4) {Applications\\$\sqrt{2}$, $\pi$, equations\\$x=\cos x$, $e^x=3x$};
+\draw[very thick, popline] (C) -- (A);
+\draw[very thick, popline] (C) -- (B);
+\draw[very thick, popline] (C) -- (D);
+\draw[very thick, popline] (C) -- (E);
+\draw[very thick, popline] (C) -- (F);
+\draw[very thick, popline] (C) -- (G);
+\end{tikzpicture}
+\legende{Mind map of the chapter: from locating a root to controlling the accuracy of the approximation.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item A \cle{root} (or zero) of $f$ is a number $\alpha$ such that $f(\alpha)=0$; it is the $x$-coordinate of an intersection of the curve $y=f(x)$ with the $x$-axis.
+\item A \cle{numerical method} is a step-by-step (iterative) procedure giving an \emph{approximation} of a root to any required accuracy, used when no algebraic formula exists (e.g.\ $x=\cos x$, $e^x=3x$).
+\item \cle{Location of a root}: if $f$ is \textbf{continuous} on $[a,b]$ and $f(a)$ and $f(b)$ have \textbf{opposite signs} ($f(a)f(b)<0$), then $f$ has at least one root in $(a,b)$ (Intermediate Value Theorem).
+\item An \cle{iteration} $x_{n+1}=g(x_n)$ generates a sequence $x_0,x_1,x_2,\dots$ which we hope converges to the root $\alpha$.
+\end{itemize}
+
+\textbf{Formulas and results to know}
+\begin{itemize}
+\item \textbf{Sign-change test:} $f$ continuous, $f(a)f(b)<0 \Rightarrow$ root in $(a,b)$. A sign change \emph{between integers} locates the root to the nearest unit.
+\item \textbf{Bisection method:} start from $[a_0,b_0]$ with $f(a_0)f(b_0)<0$; compute the midpoint
+\[ c_n=\frac{a_n+b_n}{2}. \]
+If $f(c_n)=0$, stop. Otherwise keep the half-interval where the sign changes: if $f(a_n)f(c_n)<0$ set $[a_{n+1},b_{n+1}]=[a_n,c_n]$; else set $[a_{n+1},b_{n+1}]=[c_n,b_n]$.
+\item \textbf{Error bound for bisection:} after $n$ steps the root lies in an interval of length
+\[ b_n-a_n=\frac{b_0-a_0}{2^n}, \qquad |c_n-\alpha|\le \frac{b_0-a_0}{2^{n+1}}. \]
+Bisection \emph{always converges} but slowly (about $3$--$4$ iterations per extra decimal place).
+\item \textbf{Newton--Raphson formula:}
+\[ x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}, \qquad f'(x_n)\neq 0. \]
+Geometric meaning: $x_{n+1}$ is where the \textbf{tangent} to $y=f(x)$ at $(x_n,f(x_n))$ crosses the $x$-axis. Convergence is very fast (quadratic: the number of correct digits roughly doubles) when $x_0$ is close to $\alpha$ and $f'(\alpha)\neq0$.
+\item \textbf{Accuracy:} ``correct to $k$ decimal places'' means the error is less than $\tfrac12\times10^{-k}$; stop iterating when two successive approximations agree to $k+1$ decimal places, then round.
+\end{itemize}
+
+\textbf{Methods (exam routines)}
+\begin{enumerate}
+\item \emph{Show a root lies in $(a,b)$:} compute $f(a)$ and $f(b)$, state $f$ is continuous, conclude by the sign change.
+\item \emph{Bisection:} tabulate $a_n$, $b_n$, $c_n$, sign of $f(c_n)$; keep the sign-changing half; stop when the interval is narrow enough.
+\item \emph{Newton--Raphson:} compute $f'(x)$, write the iteration formula, choose $x_0$ from the located interval, iterate keeping \textbf{all} calculator digits, round only at the end.
+\end{enumerate}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Concluding a root exists without checking that $f$ is \textbf{continuous} on the interval.
+\item Believing ``no sign change $\Rightarrow$ no root'': a root of even multiplicity (e.g.\ $f(x)=(x-1)^2$) gives no sign change.
+\item In bisection, keeping the wrong half-interval: always keep the half where the \emph{signs differ}.
+\item In Newton--Raphson, rounding intermediate values, or starting at a point where $f'(x_0)=0$ (the tangent is horizontal: the method fails).
+\item Forgetting that Newton--Raphson may diverge or converge to another root if $x_0$ is badly chosen.
+\item Giving the final answer to fewer decimal places than requested, or rounding before the iterations have stabilised.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Always \emph{state the continuity hypothesis} when using a sign change --- it earns a mark.
+\item Present bisection in a neat table; examiners reward clear organisation.
+\item Quote the Newton--Raphson formula \emph{before} substituting your function.
+\item Keep at least $6$--$8$ significant figures during iterations; round only the final answer.
+\item If asked to ``verify'' an approximation $\alpha$ to $k$ d.p., show a sign change of $f$ over $\left[\alpha-\tfrac12\times10^{-k},\ \alpha+\tfrac12\times10^{-k}\right]$.
+\item Typical GCE equations: $x^3+x-3=0$, $e^x=3x$, $x=\cos x$ (radians!), $\ln x = 2-x$. Check your calculator is in the correct angle mode.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

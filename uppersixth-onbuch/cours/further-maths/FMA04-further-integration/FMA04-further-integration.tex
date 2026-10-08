@@ -1,0 +1,3266 @@
+% Further Integration — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA04-further-integration.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{4}
+\newcommand{\DOCTITRE}{Further Integration}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Further Integration}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{4}{6 periods}{This chapter develops integration as the inverse process of differentiation, from primitives and definite integrals to the standard techniques of the GCE Advanced Level: integration of rational functions, substitution, symmetry arguments and reduction formulae. It equips students with the computational toolkit required for area, volume and applied problems in the examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define a primitive of a function and write the indefinite integral with its constant of integration.
+\item By the end of this chapter I can evaluate definite integrals using the Fundamental Theorem of Calculus and interpret them as areas.
+\item By the end of this chapter I can integrate rational functions using algebraic division and partial fractions.
+\item By the end of this chapter I can choose and carry out a suitable substitution to transform an integral into a standard form.
+\item By the end of this chapter I can exploit the symmetry of odd and even functions to simplify definite integrals over symmetric intervals.
+\item By the end of this chapter I can establish and use simple reduction formulae to compute integrals of powers of standard functions.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Primitives and the Indefinite Integral
+\item Definite Integrals and the Fundamental Theorem
+\item Integration of Rational Functions
+\item Integration by Substitution and Symmetry
+\item Reduction Formulae and Synthesis
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define a primitive of a function and write the indefinite integral with its constant of integration.
+\item By the end of this chapter I can evaluate definite integrals using the Fundamental Theorem of Calculus and interpret them as areas.
+\item By the end of this chapter I can integrate rational functions using algebraic division and partial fractions.
+\item By the end of this chapter I can choose and carry out a suitable substitution to transform an integral into a standard form.
+\item By the end of this chapter I can exploit the symmetry of odd and even functions to simplify definite integrals over symmetric intervals.
+\item By the end of this chapter I can establish and use simple reduction formulae to compute integrals of powers of standard functions.
+\item By the end of this chapter I can verify an integral by differentiating the result.
+\item By the end of this chapter I can select the most efficient integration technique for a given GCE-style problem.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Differentiation of polynomials, trigonometric, exponential and logarithmic functions (Lower Sixth Pure Mathematics).
+\item The chain rule, product rule and quotient rule for derivatives.
+\item Standard derivatives table and algebraic manipulation of fractions and indices.
+\item Partial fractions decomposition (Lower Sixth algebra).
+\item Basic trigonometric identities, including double-angle formulae.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Primitives and the Indefinite Integral}
+
+An engineer at the SONARA refinery in Limbe must estimate the quantity of crude oil flowing through a pipe whose flow rate varies with time, while a farmer in Bafoussam wants to know the area of an irregular plot bounded by a curved river bank. In both cases, the quantity sought is an \emph{accumulation}: knowing a \emph{rate of change}, how do we recover the \emph{total}? Integration answers this question, and this chapter turns the reverse of differentiation into a powerful computational machine. From rational fractions arising in electrical circuits to clever substitutions that tame complicated expressions, you will learn the techniques that make the GCE Advanced Level integrals collapse in a few lines.
+
+The first step is to understand the simplest possible reversal of differentiation: given a function $f$, can we find a function $F$ whose derivative is exactly $f$? Such a function is called a \cle{primitive} (or \emph{antiderivative}) of $f$, and the whole of this section is devoted to it.
+
+\courssub{The notion of a primitive}
+
+\textbf{Intuition.} Suppose a car travels along the Bamenda--Bafoussam road and its speed at time $t$ is $v(t)$. The position of the car, $s(t)$, satisfies $s'(t) = v(t)$: position is a quantity whose rate of change is the speed. If we know the speed at every instant, can we reconstruct the position? Almost: we also need to know where the car started. Two cars with identical speed profiles but different starting points have position functions that differ by a constant. This simple observation is the entire content of the theory of primitives.
+
+\begin{definition}[Primitive of a function]
+Let $f$ be a function defined on an interval $I$. A \cle{primitive} of $f$ on $I$ is any differentiable function $F$ such that
+\[
+F'(x) = f(x) \qquad \text{for every } x \in I.
+\]
+We also say that $F$ is an \emph{antiderivative} of $f$.
+\end{definition}
+
+\begin{exemplebox}[Spotting primitives]
+\begin{enumerate}
+\item $F(x) = x^3$ is a primitive of $f(x) = 3x^2$ on $\mathbb{R}$, since $F'(x) = 3x^2$.
+\item $F(x) = \sin x$ is a primitive of $f(x) = \cos x$ on $\mathbb{R}$.
+\item $F(x) = \ln x$ is a primitive of $f(x) = \dfrac{1}{x}$ on $]0, +\infty[$.
+\end{enumerate}
+\end{exemplebox}
+
+Notice immediately that a primitive is never unique: since the derivative of a constant is zero, if $F$ is a primitive of $f$, then so is $F + C$ for any constant $C$. What is remarkable is that there are \emph{no other} primitives.
+
+\begin{propriete}[Two primitives differ by a constant]
+Let $f$ be a function admitting primitives on an \emph{interval} $I$. If $F$ and $G$ are two primitives of $f$ on $I$, then there exists a constant $C \in \mathbb{R}$ such that
+\[
+G(x) = F(x) + C \qquad \text{for all } x \in I.
+\]
+Consequently, if $F$ is one primitive of $f$, then \emph{all} primitives of $f$ are exactly the functions $F + C$, $C \in \mathbb{R}$.
+\end{propriete}
+
+\textbf{Proof (examinable).} Let $H = G - F$. Then $H$ is differentiable on $I$ and
+\[
+H'(x) = G'(x) - F'(x) = f(x) - f(x) = 0 \quad \text{for all } x \in I.
+\]
+A function whose derivative is zero on an \emph{interval} is constant there (this is a consequence of the Mean Value Theorem: for $a < b$ in $I$, there exists $c \in ]a,b[$ with $H(b) - H(a) = H'(c)(b-a) = 0$, so $H(b) = H(a)$). Hence $H(x) = C$ for some constant $C$, that is, $G(x) = F(x) + C$. \hfill$\blacksquare$
+
+\begin{attention}[The word ``interval'' matters]
+The conclusion fails on a union of disjoint intervals. On $]-\infty,0[ \cup ]0,+\infty[$, the function defined by $H(x) = 1$ for $x>0$ and $H(x) = -1$ for $x<0$ has derivative $0$ everywhere on its domain, yet it is not constant. At the GCE, primitives are always sought on an interval, so you may safely write ``$+\,C$''.
+\end{attention}
+
+The geometric meaning is beautiful: all the curves $y = F(x) + C$ are vertical translates of one another, and at any fixed abscissa $x_0$ they all have parallel tangents, since the slope $F'(x_0) = f(x_0)$ does not depend on $C$.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.05]
+\draw[->,gray] (-0.4,0) -- (4.6,0) node[right]{$x$};
+\draw[->,gray] (0,-0.6) -- (0,4.4) node[above]{$y$};
+\foreach \c/\col in {0/popblue, 0.9/poporange, 1.8/popgreen}{
+  \draw[thick,\col,domain=0.15:4.3,samples=60] plot (\x, {0.25*(\x-2)*(\x-2)+0.4+\c});
+}
+\draw[dashed,popmuted] (2.6,0) -- (2.6,3.4);
+\node[below,popmuted] at (2.6,0) {$x_0$};
+\foreach \c/\col in {0/popblue, 0.9/poporange, 1.8/popgreen}{
+  \draw[\col,thick] (2.0,{0.25*0.36+0.4+\c-0.3*0.6}) -- (3.2,{0.25*0.36+0.4+\c+0.3*0.6});
+  \fill[\col] (2.6,{0.25*0.36+0.4+\c}) circle (1.6pt);
+}
+\node[right,popdark] at (4.35,2.6) {$y=F(x)+C$};
+\node[popmuted,align=center,text width=3.4cm] at (2.6,-0.9) {parallel tangents at $x_0$:\ same slope $f(x_0)$};
+\end{tikzpicture}
+\legende{A family of primitives $y = F(x) + C$: vertical translates with the same tangent slope at each abscissa.}
+\end{popfigure}
+
+\courssub{The indefinite integral}
+
+\begin{definition}[Indefinite integral]
+The \cle{indefinite integral} of $f$ on an interval $I$ is the set of all its primitives. We write
+\[
+\int f(x)\,dx = F(x) + C,
+\]
+where $F$ is any one primitive of $f$ and $C$ is an arbitrary constant, called the \cle{constant of integration}. The symbol $\int$ is the \emph{integral sign}, $f$ is the \emph{integrand}, and $dx$ indicates the variable of integration.
+\end{definition}
+
+The notation $\int f(x)\,dx$ therefore denotes an entire \emph{family} of functions, not a single function. The constant $C$ is not a decorative detail: it is precisely what distinguishes one primitive from another, and it is what allows us to fit an initial condition later.
+
+\begin{attention}[Never omit the constant $C$]
+In an indefinite integral, forgetting ``$+\,C$'' means claiming that $f$ has only one primitive, which is false. At the GCE Advanced Level, a missing constant of integration systematically costs a mark, even if everything else is correct. Write it every single time.
+\end{attention}
+
+\courssub{Table of standard primitives}
+
+Every differentiation formula read backwards gives an integration formula. The following table must be known \emph{by heart}; it is the toolbox for the whole chapter.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Function $f(x)$} & \textbf{A primitive $F(x)$} & \textbf{Valid on} \\
+\hline
+$x^n \ (n \neq -1)$ & $\dfrac{x^{n+1}}{n+1}$ & $\mathbb{R}$ (or $\mathbb{R}^*$ if $n < 0$) \\
+\hline
+$\dfrac{1}{x}$ & $\ln|x|$ & $]0,+\infty[$ or $]-\infty,0[$ \\
+\hline
+$e^x$ & $e^x$ & $\mathbb{R}$ \\
+\hline
+$\cos x$ & $\sin x$ & $\mathbb{R}$ \\
+\hline
+$\sin x$ & $-\cos x$ & $\mathbb{R}$ \\
+\hline
+$\sec^2 x = \dfrac{1}{\cos^2 x}$ & $\tan x$ & intervals where $\cos x \neq 0$ \\
+\hline
+$\dfrac{1}{1+x^2}$ & $\arctan x$ & $\mathbb{R}$ \\
+\hline
+$\dfrac{1}{\sqrt{1-x^2}}$ & $\arcsin x$ & $]-1,1[$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{attention}[$\ln|x|$, not $\ln x$]
+The primitive of $\dfrac{1}{x}$ is $\ln|x| + C$. Indeed, for $x < 0$, the derivative of $\ln(-x)$ is $\dfrac{-1}{-x} = \dfrac{1}{x}$. Writing $\ln x$ alone excludes all negative values of $x$ and is marked wrong whenever the interval contains negative numbers.
+\end{attention}
+
+\begin{propriete}[Linearity of integration]
+For any functions $f, g$ admitting primitives on $I$ and any constants $\alpha, \beta \in \mathbb{R}$,
+\[
+\int \bigl(\alpha f(x) + \beta g(x)\bigr)\,dx = \alpha \int f(x)\,dx + \beta \int g(x)\,dx.
+\]
+This follows immediately from the linearity of differentiation. In practice: integrate term by term, and pull constants out.
+\end{propriete}
+
+\begin{exoresolu}[A first indefinite integral]
+Find $\displaystyle \int \left(6x^2 - \frac{4}{x} + 3\cos x\right) dx$ on $]0,+\infty[$.
+\tcblower
+\textbf{Solution.} By linearity we integrate term by term:
+\begin{align*}
+\int \left(6x^2 - \frac{4}{x} + 3\cos x\right) dx
+&= 6\int x^2\,dx - 4\int \frac{dx}{x} + 3\int \cos x\,dx \\
+&= 6\cdot\frac{x^3}{3} - 4\ln x + 3\sin x + C \\
+&= 2x^3 - 4\ln x + 3\sin x + C.
+\end{align*}
+\textbf{Check:} $\dfrac{d}{dx}\left(2x^3 - 4\ln x + 3\sin x + C\right) = 6x^2 - \dfrac{4}{x} + 3\cos x$. \checkmark
+\end{exoresolu}
+
+\courssub{Integration as the reverse of the chain rule}
+
+Many integrands are secretly the result of a chain-rule differentiation. Since $\dfrac{d}{dx}\,G(f(x)) = f'(x)\,G'(f(x))$, any integrand of the form ``derivative of the inside $\times$ function of the inside'' can be integrated at once. Three patterns appear constantly at the GCE.
+
+\begin{propriete}[Reverse chain rule: three key patterns]
+Let $f$ be differentiable on $I$.
+\begin{enumerate}
+\item \textbf{Power form:} $\displaystyle \int f'(x)\,[f(x)]^n\,dx = \frac{[f(x)]^{n+1}}{n+1} + C \quad (n \neq -1)$.
+\item \textbf{Logarithmic form:} $\displaystyle \int \frac{f'(x)}{f(x)}\,dx = \ln|f(x)| + C$ \ (where $f$ does not vanish).
+\item \textbf{Exponential form:} $\displaystyle \int f'(x)\,e^{f(x)}\,dx = e^{f(x)} + C$.
+\end{enumerate}
+Each formula is proved by differentiating the right-hand side with the chain rule and recovering the integrand.
+\end{propriete}
+
+\begin{methode}[Recognising a reverse chain rule]
+\begin{enumerate}
+\item Identify a ``block'' $f(x)$ inside the integrand (inside a power, a denominator, an exponential, a square root\dots).
+\item Compute $f'(x)$ and check whether the rest of the integrand is $f'(x)$, possibly up to a constant factor.
+\item Adjust the constant: if the integrand contains $k\,f'(x)$ instead of $f'(x)$, divide your answer by $k$ (or factor $k$ out).
+\item Apply the matching pattern and add $C$.
+\item \textbf{Always verify by differentiating your answer.}
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Reverse chain rule in action]
+Determine the following indefinite integrals.
+\begin{enumerate}
+\item $\displaystyle \int 6x\,(x^2+1)^2\,dx$
+\item $\displaystyle \int \frac{2x+1}{x^2+x+3}\,dx$
+\item $\displaystyle \int x\,e^{x^2}\,dx$
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item The block is $f(x) = x^2+1$ with $f'(x) = 2x$. The integrand is $3\cdot 2x\,(x^2+1)^2 = 3f'(x)[f(x)]^2$, so
+\[
+\int 6x\,(x^2+1)^2\,dx = 3\cdot\frac{(x^2+1)^3}{3} + C = (x^2+1)^3 + C.
+\]
+Check: $\dfrac{d}{dx}(x^2+1)^3 = 3(x^2+1)^2\cdot 2x = 6x(x^2+1)^2$. \checkmark
+\item The denominator is $f(x) = x^2+x+3$ and its derivative $f'(x) = 2x+1$ is exactly the numerator. Hence
+\[
+\int \frac{2x+1}{x^2+x+3}\,dx = \ln\bigl(x^2+x+3\bigr) + C,
+\]
+where the absolute value may be dropped because $x^2+x+3 > 0$ for all $x$ (its discriminant is $1-12 = -11 < 0$).
+\item The block is $f(x) = x^2$ with $f'(x) = 2x$; the integrand contains only $x$, i.e.\ $\tfrac12 f'(x)$. Therefore
+\[
+\int x\,e^{x^2}\,dx = \frac{1}{2}\,e^{x^2} + C.
+\]
+Check: $\dfrac{d}{dx}\left(\tfrac12 e^{x^2}\right) = \tfrac12\cdot 2x\,e^{x^2} = x\,e^{x^2}$. \checkmark
+\end{enumerate}
+\end{exoresolu}
+
+\begin{attention}[You may only adjust \emph{constant} factors]
+Writing $\displaystyle \int x\,e^{x^2}dx = \frac{1}{2x}\cdot 2x\,e^{x^2} \to \frac{e^{x^2}}{2x}$ is a classic blunder: a factor involving $x$ cannot be pulled out of the integral. If the missing factor is not a constant, the reverse chain rule does not apply directly — another technique (substitution, parts) is needed.
+\end{attention}
+
+\courssub{Determining the constant: primitives through a given point}
+
+Because the primitives of $f$ form a one-parameter family $F + C$, a single extra condition fixes the primitive uniquely. In applications this condition is physical (initial position, initial charge) or geometric (the curve passes through a given point).
+
+\begin{methode}[Finding the primitive satisfying $F(x_0) = y_0$]
+\begin{enumerate}
+\item Compute the general primitive: $F(x) = G(x) + C$, where $G$ is any particular primitive.
+\item Substitute the condition: $G(x_0) + C = y_0$, and solve for $C$.
+\item Write the final answer $F(x) = G(x) + C$ with the value of $C$ found, and check by differentiation plus the condition.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Curve through a given point]
+A curve $y = F(x)$ has gradient $\dfrac{dy}{dx} = 3x^2 - \dfrac{2}{x^2}$ for $x > 0$, and passes through the point $(1, 5)$. Find the equation of the curve.
+\tcblower
+\textbf{Solution.} Integrate term by term:
+\[
+F(x) = \int\left(3x^2 - \frac{2}{x^2}\right)dx = x^3 + \frac{2}{x} + C.
+\]
+(Recall $\dfrac{-2}{x^2} = -2x^{-2}$ has primitive $-2\cdot\dfrac{x^{-1}}{-1} = \dfrac{2}{x}$.)
+
+The curve passes through $(1,5)$, so $F(1) = 5$:
+\[
+1^3 + \frac{2}{1} + C = 5 \implies 3 + C = 5 \implies C = 2.
+\]
+Hence the curve is
+\[
+F(x) = x^3 + \frac{2}{x} + 2.
+\]
+Check: $F'(x) = 3x^2 - \dfrac{2}{x^2}$ \checkmark\ and $F(1) = 1 + 2 + 2 = 5$ \checkmark.
+\end{exoresolu}
+
+\courssub{Verification: differentiate your answer}
+
+Integration has a priceless feature that most algebraic manipulations lack: \emph{every answer can be checked exactly}. Since $F$ is a primitive of $f$ precisely when $F' = f$, differentiating your final answer must return the integrand.
+
+\begin{methode}[The verification reflex]
+\begin{enumerate}
+\item Differentiate your proposed primitive $F(x) + C$ completely (chain rule included).
+\item Simplify and compare with the integrand $f(x)$.
+\item If they coincide, the integration is correct; if not, locate the discrepancy (usually a missing constant factor) and correct it.
+\end{enumerate}
+This takes less than a minute in the examination and eliminates the most common source of lost marks.
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11.5cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.3, xmax=3.2, ymin=-0.5, ymax=4.5,
+  xtick={1,2,3}, ytick={1,2,3,4},
+  legend style={at={(0.03,0.97)},anchor=north west,draw=none,fill=none},
+  samples=100, domain=0.05:3.1
+]
+\addplot[thick,poporange] {2*x} ;
+\addlegendentry{$f(x)=2x$}
+\addplot[thick,popblue] {x*x} ;
+\addlegendentry{$F(x)=x^2$ (a primitive)}
+\addplot[dashed,popmuted] coordinates {(1.5,0) (1.5,2.25)};
+\addplot[thick,popdark] coordinates {(0.9,0.45) (2.1,4.05)};
+\addplot[only marks,mark=*,popblue] coordinates {(1.5,2.25)};
+\node[popdark,anchor=west] at (axis cs:2.12,3.9) {slope $=f(1.5)=3$};
+\node[popmuted,anchor=north] at (axis cs:1.5,0) {$x_0$};
+\end{axis}
+\end{tikzpicture}
+\legende{The function $f(x) = 2x$ and its primitive $F(x) = x^2$: the slope of the tangent to $F$ at $x_0$ equals the value $f(x_0)$.}
+\end{popfigure}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A \cle{primitive} of $f$ on an interval $I$ is a function $F$ with $F'(x) = f(x)$ for all $x \in I$.
+\item Two primitives of the same function on an interval differ by a \cle{constant}; hence $\displaystyle \int f(x)\,dx = F(x) + C$.
+\item The table of standard primitives (powers, $\tfrac1x$, $e^x$, $\sin$, $\cos$, $\sec^2$, $\tfrac{1}{1+x^2}$, $\tfrac{1}{\sqrt{1-x^2}}$) must be memorised.
+\item Integration is \cle{linear}: integrate term by term and pull out constants.
+\item Master the reverse chain rule: $\int f'[f]^n = \frac{[f]^{n+1}}{n+1}$, $\int \frac{f'}{f} = \ln|f|$, $\int f'e^{f} = e^{f}$ (all $+\,C$).
+\item An initial condition $F(x_0) = y_0$ fixes $C$ uniquely.
+\item Always \cle{verify} an integration by differentiating the answer.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find $\displaystyle \int\left(4x^3 - \frac{3}{x} + \frac{2}{1+x^2}\right)dx$ on $]0,+\infty[$.
+\item Find $\displaystyle \int \frac{3x^2}{x^3+5}\,dx$ and $\displaystyle \int \cos x\, e^{\sin x}\,dx$.
+\item A curve has gradient $\dfrac{dy}{dx} = 2x + \dfrac{1}{\sqrt{x}}$ for $x>0$ and passes through $(1, 4)$. Find its equation.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item $\displaystyle \int\left(4x^3 - \frac{3}{x} + \frac{2}{1+x^2}\right)dx = x^4 - 3\ln x + 2\arctan x + C$.
+\item $\displaystyle \int \frac{3x^2}{x^3+5}\,dx = \ln|x^3+5| + C$ (numerator $=$ derivative of denominator); $\displaystyle \int \cos x\, e^{\sin x}\,dx = e^{\sin x} + C$ (pattern $\int f'e^f$ with $f = \sin x$).
+\item $y = x^2 + 2\sqrt{x} + C$; the condition $y(1) = 4$ gives $1 + 2 + C = 4$, so $C = 1$ and $y = x^2 + 2\sqrt{x} + 1$.
+\end{enumerate}
+\end{corrige}
+
+\begin{savaistu}[From Leibniz to Limbe]
+The elongated ``S'' of the integral sign $\int$ was introduced by Gottfried Wilhelm Leibniz in 1675: it stands for \emph{summa}, the Latin word for sum, because an integral is the limit of a sum of infinitely many tiny contributions. The same idea powers modern engineering: the flow meters at SONARA essentially compute $\int (\text{rate})\,dt$ continuously to totalise the oil delivered. Every time you write $\int f(x)\,dx = F(x) + C$, you are using a tool that is three and a half centuries old — and still indispensable.
+\end{savaistu}
+
+\coursec{Definite Integrals and the Fundamental Theorem}
+
+In the previous section we learnt how to \emph{find} primitives: given a function $f$, we looked for every function $F$ such that $F'(x) = f(x)$, and we wrote the answer as the indefinite integral $\displaystyle\int f(x)\,dx = F(x) + C$. That was a purely \emph{algebraic} game — reversing differentiation. We now give integration a \emph{geometric} life: the \cle{definite integral} $\displaystyle\int_a^b f(x)\,dx$ is a \emph{number}, and that number measures the signed area trapped between the curve $y = f(x)$ and the $x$-axis. The miracle — one of the most beautiful results in all of mathematics — is that this geometric number is computed using the primitives we have just studied. This is the \cle{Fundamental Theorem of Calculus}.
+
+\courssub{From Area to the Definite Integral}
+
+\textbf{An intuitive observation.}\par
+Suppose a car travels along the Bamenda–Bafoussam road with \emph{constant} velocity $v = 60\ \mathrm{km\,h^{-1}}$ for $2\ \mathrm{h}$. The distance covered is $60 \times 2 = 120\ \mathrm{km}$ — the \emph{area of a rectangle} under the velocity graph. Now suppose the velocity varies, $v = v(t)$. The distance is no longer a simple product, but we can approximate it: split the time interval into tiny slices of duration $\Delta t$; on each slice the velocity is nearly constant, so the distance covered is about $v(t_i)\,\Delta t$, the area of a thin rectangle. Adding all the thin rectangles gives an approximation of the total distance — and of the total area under the curve. As $\Delta t \to 0$, the approximation becomes exact.
+
+\begin{definition}[Definite integral as a limit of a sum]
+Let $f$ be continuous on $[a, b]$. Divide $[a, b]$ into $n$ equal subintervals of width $\Delta x = \dfrac{b-a}{n}$, and choose a point $x_i$ in each subinterval. The \cle{definite integral} of $f$ from $a$ to $b$ is
+\[
+\int_a^b f(x)\,dx \;=\; \lim_{n \to +\infty} \sum_{i=1}^{n} f(x_i)\,\Delta x.
+\]
+The symbol $\int$ is an elongated ``S'' for \emph{sum}; $a$ and $b$ are the \emph{limits of integration}; $x$ is a \emph{dummy variable}: $\displaystyle\int_a^b f(x)\,dx = \int_a^b f(t)\,dt$. The limit exists and is independent of the choice of the points $x_i$ because $f$ is continuous.
+\end{definition}
+
+When $f \geq 0$ on $[a,b]$, this limit is exactly the \cle{area} of the region bounded by the curve $y = f(x)$, the $x$-axis, and the vertical lines $x = a$ and $x = b$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=6.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xtick={1,4}, xticklabels={$a$,$b$},
+  ytick=\empty,
+  xmin=0, xmax=5.4, ymin=0, ymax=3.4,
+  domain=0.4:5, samples=100,
+  clip=false
+]
+\addplot[draw=none, fill=popblueL] {0.15*(x-1.5)^2 + 0.9} \closedcycle;
+\addplot[very thick, popblue] {0.15*(x-1.5)^2 + 0.9};
+\draw[thick, popink] (axis cs:1,0) -- (axis cs:1,1.0125);
+\draw[thick, popink] (axis cs:4,0) -- (axis cs:4,1.8375);
+\node[popdark] at (axis cs:2.5,0.55) {$\displaystyle\int_a^b f(x)\,dx$};
+\node[popblue, anchor=south west] at (axis cs:3.6,2.3) {$y=f(x)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{For $f \geq 0$, the definite integral $\int_a^b f(x)\,dx$ is the area of the shaded region under the curve.}
+\end{popfigure}
+
+\courssub{The Fundamental Theorem of Calculus}
+
+Computing limits of sums directly is painful. The Fundamental Theorem replaces all that work by a simple subtraction.
+
+\begin{propriete}[Fundamental Theorem of Calculus]
+Let $f$ be continuous on $[a, b]$ and let $F$ be \emph{any} primitive of $f$ on $[a, b]$. Then
+\[
+\int_a^b f(x)\,dx = F(b) - F(a), \qquad \text{written } \Big[F(x)\Big]_a^b.
+\]
+\end{propriete}
+
+\textbf{Why it is true (instructive sketch).}\par
+Define the ``area-so-far'' function $A(x) = \displaystyle\int_a^x f(t)\,dt$. When $x$ increases by a small amount $h$, the extra area $A(x+h) - A(x)$ is a thin strip of width $h$ and height about $f(x)$, so $A(x+h) - A(x) \approx f(x)\,h$, i.e.
+\[
+\frac{A(x+h)-A(x)}{h} \approx f(x) \;\xrightarrow[h \to 0]{}\; A'(x) = f(x).
+\]
+Thus $A$ is a primitive of $f$. Since two primitives differ by a constant, $A(x) = F(x) + C$. Now $A(a) = 0$ gives $C = -F(a)$, and therefore
+\[
+\int_a^b f(x)\,dx = A(b) = F(b) - F(a).
+\]
+Note that the constant of integration cancels: $(F(b)+C) - (F(a)+C) = F(b) - F(a)$. This is why \emph{any} primitive works and why we never write ``$+C$'' in a definite integral.
+
+\begin{exemplebox}[First computations]
+\begin{enumerate}
+\item $\displaystyle\int_1^3 x^2\,dx = \left[\frac{x^3}{3}\right]_1^3 = \frac{27}{3} - \frac{1}{3} = \frac{26}{3}$.
+\item $\displaystyle\int_0^{\pi} \sin x\,dx = \Big[-\cos x\Big]_0^{\pi} = (-\cos\pi) - (-\cos 0) = 1 + 1 = 2$.
+\item $\displaystyle\int_0^2 e^{3x}\,dx = \left[\frac{e^{3x}}{3}\right]_0^2 = \frac{e^6 - 1}{3}$.
+\end{enumerate}
+\end{exemplebox}
+
+\begin{attention}[No ``$+C$'' in definite integrals]
+A definite integral is a \emph{number}. Writing $\displaystyle\int_0^1 2x\,dx = x^2 + C$ is a classic error: substitute the bounds and the $C$ disappears. Reserve the constant for \emph{indefinite} integrals only.
+\end{attention}
+
+\courssub{Properties of the Definite Integral}
+
+All the properties below follow directly from $\int_a^b f = F(b) - F(a)$.
+
+\begin{propriete}[Algebraic properties]
+Let $f, g$ be continuous and $\lambda, \mu \in \mathbb{R}$.
+\begin{enumerate}
+\item \textbf{Inversion of bounds:} $\displaystyle\int_b^a f(x)\,dx = -\int_a^b f(x)\,dx$, and $\displaystyle\int_a^a f(x)\,dx = 0$.
+\item \textbf{Linearity:} $\displaystyle\int_a^b \big(\lambda f(x) + \mu g(x)\big)\,dx = \lambda\int_a^b f(x)\,dx + \mu \int_a^b g(x)\,dx$.
+\item \textbf{Positivity:} if $f(x) \geq 0$ on $[a,b]$ with $a < b$, then $\displaystyle\int_a^b f(x)\,dx \geq 0$. More generally, $f \leq g$ on $[a,b]$ implies $\displaystyle\int_a^b f \leq \int_a^b g$.
+\end{enumerate}
+\end{propriete}
+
+\begin{propriete}[Chasles relation]
+For any real numbers $a, b, c$ (in any order, provided $f$ is continuous on an interval containing them),
+\[
+\int_a^b f(x)\,dx = \int_a^c f(x)\,dx + \int_c^b f(x)\,dx.
+\]
+\end{propriete}
+
+\textbf{Proof (examinable and one line).} If $F$ is a primitive of $f$, then
+\[
+\int_a^c f + \int_c^b f = \big(F(c) - F(a)\big) + \big(F(b) - F(c)\big) = F(b) - F(a) = \int_a^b f. \qquad \blacksquare
+\]
+
+The Chasles relation is the tool we use to \emph{split} an integral at points where the behaviour of $f$ changes — for example at the zeros of $f$ when computing areas.
+
+\courssub{Area Between a Curve and the $x$-Axis}
+
+Here is the crucial distinction. The integral $\displaystyle\int_a^b f(x)\,dx$ counts area \emph{positively} where $f > 0$ and \emph{negatively} where $f < 0$. An \emph{area}, however, is always a non-negative number.
+
+\begin{methode}[Area between a curve and the $x$-axis]
+To find the area enclosed by $y = f(x)$, the $x$-axis, $x = a$ and $x = b$:
+\begin{enumerate}
+\item Solve $f(x) = 0$ on $[a, b]$ to locate where the curve crosses the axis.
+\item Study the sign of $f$ on each subinterval (a sign table is ideal).
+\item Split the integral with the Chasles relation at each zero.
+\item Take the \textbf{absolute value} of each piece that comes out negative, then add.
+\end{enumerate}
+In short: $\text{Area} = \displaystyle\int_a^b \big|f(x)\big|\,dx$, computed piecewise.
+\end{methode}
+
+\begin{exoresolu}[Area with a sign change]
+Find the area of the region bounded by the curve $y = x^2 - 1$, the $x$-axis, and the lines $x = 0$ and $x = 2$.
+\tcblower
+\textbf{Step 1 — zeros.} $x^2 - 1 = 0 \iff x = \pm 1$. On $[0,2]$, only $x = 1$ matters.
+
+\textbf{Step 2 — sign.} On $[0, 1]$, $x^2 - 1 \leq 0$ (curve below the axis); on $[1, 2]$, $x^2 - 1 \geq 0$.
+
+\textbf{Step 3 — split (Chasles) and take absolute values.} A primitive is $F(x) = \dfrac{x^3}{3} - x$.
+\[
+\int_0^1 (x^2-1)\,dx = \left[\frac{x^3}{3} - x\right]_0^1 = \frac{1}{3} - 1 = -\frac{2}{3},
+\qquad
+\int_1^2 (x^2-1)\,dx = \left(\frac{8}{3} - 2\right) - \left(-\frac{2}{3}\right) = \frac{4}{3}.
+\]
+\textbf{Step 4 — area.}
+\[
+\text{Area} = \left|-\frac{2}{3}\right| + \frac{4}{3} = \frac{6}{3} = 2 \text{ square units}.
+\]
+\textbf{Remark.} The ``naive'' integral $\displaystyle\int_0^2 (x^2-1)\,dx = -\frac{2}{3} + \frac{4}{3} = \frac{2}{3}$ is \emph{not} the area: the two regions partially cancel. Examiners test exactly this trap.
+\end{exoresolu}
+
+\begin{attention}[Integral $\neq$ area]
+A definite integral may be negative or zero even when a large region is involved; an area is always $\geq 0$. In GCE answers, write clearly: ``the \emph{integral} equals $\frac{2}{3}$'' versus ``the \emph{area} equals $2$ square units''. Confusing the two costs marks every year.
+\end{attention}
+
+\courssub{Area Between Two Curves}
+
+Let $f$ and $g$ be continuous on $[a,b]$ with $f(x) \geq g(x)$. Slice the region between the two curves into thin vertical strips of width $dx$: each strip is approximately a rectangle of height $f(x) - g(x)$. Summing and passing to the limit:
+
+\begin{propriete}[Area between two curves]
+If $f(x) \geq g(x)$ on $[a,b]$, the area of the region bounded by the two curves and the lines $x = a$, $x = b$ is
+\[
+\text{Area} = \int_a^b \big(f(x) - g(x)\big)\,dx.
+\]
+If the curves cross inside $[a,b]$, split at the intersection points (found by solving $f(x) = g(x)$) so that on each piece the same curve stays on top.
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xtick={0.5,3}, xticklabels={$a$,$b$},
+  ytick=\empty,
+  xmin=-0.3, xmax=4, ymin=0, ymax=4.6,
+  domain=0:3.6, samples=100, clip=false
+]
+\addplot[draw=none, fill=popgreenL, domain=0.5:3] {-(x-1.5)^2+4} \closedcycle;
+\addplot[draw=none, fill=white, domain=0.5:3] {0.4*x+0.6} \closedcycle;
+\addplot[very thick, popblue] {-(x-1.5)^2+4};
+\addplot[very thick, poporange] {0.4*x+0.6};
+\fill[popdark] (axis cs:2,0) rectangle (axis cs:2.12,4);
+\fill[white] (axis cs:2,0) rectangle (axis cs:2.12,1.4);
+\draw[popdark, thick] (axis cs:2,1.4) -- (axis cs:2,3.75);
+\draw[popdark, thick] (axis cs:2.12,1.4) -- (axis cs:2.12,3.75);
+\node[popdark, anchor=west, font=\small] at (axis cs:2.2,2.6) {$f(x)-g(x)$};
+\node[popdark, anchor=north, font=\small] at (axis cs:2.06,-0.15) {$dx$};
+\node[popblue, anchor=south east, font=\small] at (axis cs:0.7,4.1) {$y=f(x)$};
+\node[poporange, anchor=west, font=\small] at (axis cs:3.05,1.9) {$y=g(x)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Area between two curves: a strip of width $dx$ has height $f(x)-g(x)$; the integral sums all the strips.}
+\end{popfigure}
+
+\begin{exoresolu}[Area between a parabola and a line]
+Find the area enclosed by $y = 4 - x^2$ and $y = x + 2$.
+\tcblower
+\textbf{Intersections:} $4 - x^2 = x + 2 \iff x^2 + x - 2 = 0 \iff (x-1)(x+2) = 0$, so $x = -2$ and $x = 1$.
+
+\textbf{Which curve is on top?} Test $x = 0$: $4 - 0^2 = 4 > 2 = 0 + 2$. So $4 - x^2 \geq x + 2$ on $[-2, 1]$.
+
+\textbf{Integrate the difference:}
+\begin{align*}
+\text{Area} &= \int_{-2}^{1} \big((4 - x^2) - (x + 2)\big)\,dx
+= \int_{-2}^{1} \big(2 - x - x^2\big)\,dx \\
+&= \left[2x - \frac{x^2}{2} - \frac{x^3}{3}\right]_{-2}^{1}
+= \left(2 - \frac{1}{2} - \frac{1}{3}\right) - \left(-4 - 2 + \frac{8}{3}\right)
+= \frac{7}{6} + \frac{10}{3} = \frac{9}{2}.
+\end{align*}
+The enclosed area is $\dfrac{9}{2}$ square units.
+\end{exoresolu}
+
+\courssub{Mean Value of a Function}
+
+What is the ``average temperature'' over a day, when the temperature varies continuously? Add up and divide — but continuously.
+
+\begin{definition}[Mean value of a function]
+The \cle{mean value} of a continuous function $f$ over $[a, b]$ is
+\[
+\mu = \frac{1}{b-a}\int_a^b f(x)\,dx.
+\]
+\end{definition}
+
+\textbf{Geometric interpretation.} Rewriting, $\mu \times (b - a) = \displaystyle\int_a^b f(x)\,dx$: the rectangle of width $(b-a)$ and height $\mu$ has \emph{exactly the same area} as the region under the curve. The mean value is the ``level height'' of the function.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=6.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xtick={1,4}, xticklabels={$a$,$b$},
+  ytick={1.35}, yticklabels={$\mu$},
+  xmin=0, xmax=5.4, ymin=0, ymax=3.2,
+  domain=0.4:5, samples=100, clip=false
+]
+\addplot[draw=none, fill=popblueL, domain=1:4] {0.15*(x-1.5)^2 + 0.9} \closedcycle;
+\addplot[very thick, popblue] {0.15*(x-1.5)^2 + 0.9};
+\draw[very thick, poporange, dashed] (axis cs:1,1.35) -- (axis cs:4,1.35);
+\draw[poporange] (axis cs:1,0) rectangle (axis cs:4,1.35);
+\addplot[draw=none, fill=popblueL, domain=1:4] {0.15*(x-1.5)^2 + 0.9} \closedcycle;
+\addplot[very thick, popblue] {0.15*(x-1.5)^2 + 0.9};
+\draw[very thick, poporange, dashed] (axis cs:1,1.35) -- (axis cs:4,1.35);
+\node[poporange, anchor=south, font=\small] at (axis cs:2.5,1.42) {rectangle of equal area};
+\node[popblue, anchor=south west, font=\small] at (axis cs:3.7,2.1) {$y=f(x)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The mean value $\mu$ is the height of the rectangle over $[a,b]$ whose area equals $\int_a^b f(x)\,dx$.}
+\end{popfigure}
+
+\begin{exemplebox}[Computing a mean value]
+The mean value of $f(x) = x^2$ over $[0, 3]$ is
+\[
+\mu = \frac{1}{3-0}\int_0^3 x^2\,dx = \frac{1}{3}\left[\frac{x^3}{3}\right]_0^3 = \frac{1}{3} \times 9 = 3.
+\]
+Check the intuition: $x^2$ ranges from $0$ to $9$ on $[0,3]$, and $3$ is a plausible ``level height''.
+\end{exemplebox}
+
+\courssub{GCE Extra: Kinematics — Displacement from Velocity}
+
+\begin{savaistu}[Why physicists love the definite integral]
+Differentiation turns position into velocity: $v(t) = \dfrac{ds}{dt}$. Integration reverses this. Since a primitive of $v$ is the position $s$, the Fundamental Theorem gives
+\[
+\int_{t_1}^{t_2} v(t)\,dt = s(t_2) - s(t_1) = \text{\cle{displacement}}.
+\]
+Similarly, $\displaystyle\int_{t_1}^{t_2} a(t)\,dt = v(t_2) - v(t_1)$: the integral of acceleration is the change in velocity. Beware: the \emph{total distance travelled} is $\displaystyle\int_{t_1}^{t_2} |v(t)|\,dt$ — split at the instants where $v$ changes sign, exactly as for areas.
+\end{savaistu}
+
+\begin{exoresolu}[Displacement and distance]
+A particle moves along a straight line with velocity $v(t) = 3t^2 - 12$ (in $\mathrm{m\,s^{-1}}$, $t$ in $\mathrm{s}$). Find (a) the displacement between $t = 0$ and $t = 3$; (b) the total distance travelled in that time.
+\tcblower
+\textbf{(a) Displacement.}
+\[
+s(3) - s(0) = \int_0^3 (3t^2 - 12)\,dt = \Big[t^3 - 12t\Big]_0^3 = 27 - 36 = -9\ \mathrm{m}.
+\]
+The particle ends $9\ \mathrm{m}$ behind its starting point.
+
+\textbf{(b) Distance.} $v(t) = 3(t^2 - 4) = 0$ at $t = 2$ (in $[0,3]$). On $[0,2]$, $v < 0$; on $[2,3]$, $v > 0$.
+\[
+\int_0^2 v\,dt = \Big[t^3 - 12t\Big]_0^2 = 8 - 24 = -16, \qquad
+\int_2^3 v\,dt = -9 - (-16) = 7.
+\]
+\[
+\text{Distance} = |-16| + |7| = 23\ \mathrm{m}.
+\]
+The contrast is striking: displacement $-9\ \mathrm{m}$, but distance travelled $23\ \mathrm{m}$ — the particle reversed direction at $t = 2$.
+\end{exoresolu}
+
+\begin{exercice}[Consolidation]
+\begin{enumerate}
+\item Evaluate: (a) $\displaystyle\int_1^4 \frac{1}{\sqrt{x}}\,dx$; (b) $\displaystyle\int_0^{\pi/2} \cos 2x\,dx$; (c) $\displaystyle\int_{-1}^2 |x|\,dx$.
+\item Find the area bounded by $y = x^2 - 4x + 3$, the $x$-axis, $x = 0$ and $x = 3$.
+\item Find the area enclosed between $y = x^2$ and $y = 2x$.
+\item Find the mean value of $f(x) = \sin x$ over $[0, \pi]$.
+\item A body has velocity $v(t) = 2t - 6\ \mathrm{m\,s^{-1}}$. Find its displacement and the distance travelled between $t = 0$ and $t = 5\ \mathrm{s}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item (a) $\displaystyle\int_1^4 x^{-1/2}\,dx = \Big[2\sqrt{x}\Big]_1^4 = 4 - 2 = 2$.
+(b) $\displaystyle\int_0^{\pi/2} \cos 2x\,dx = \left[\frac{\sin 2x}{2}\right]_0^{\pi/2} = \frac{\sin\pi - \sin 0}{2} = 0$.
+(c) Split at $0$: $\displaystyle\int_{-1}^0 (-x)\,dx + \int_0^2 x\,dx = \frac{1}{2} + 2 = \frac{5}{2}$.
+\item $x^2 - 4x + 3 = (x-1)(x-3)$: positive on $[0,1]$, negative on $[1,3]$. With $F(x) = \frac{x^3}{3} - 2x^2 + 3x$: $\int_0^1 = \frac{4}{3}$, $\int_1^3 = -\frac{4}{3}$. Area $= \frac{4}{3} + \frac{4}{3} = \frac{8}{3}$ square units.
+\item Intersections: $x^2 = 2x$ gives $x = 0, 2$; line on top. Area $= \displaystyle\int_0^2 (2x - x^2)\,dx = \left[x^2 - \frac{x^3}{3}\right]_0^2 = 4 - \frac{8}{3} = \frac{4}{3}$.
+\item $\mu = \dfrac{1}{\pi}\displaystyle\int_0^{\pi} \sin x\,dx = \dfrac{2}{\pi}$.
+\item Displacement: $\Big[t^2 - 6t\Big]_0^5 = 25 - 30 = -5\ \mathrm{m}$. Zero of $v$ at $t = 3$: $\int_0^3 = 9 - 18 = -9$, $\int_3^5 = -5 - (-9) = 4$. Distance $= 9 + 4 = 13\ \mathrm{m}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item $\displaystyle\int_a^b f(x)\,dx$ is a \emph{number}: the limit of sums of thin rectangles; for $f \geq 0$ it is the area under the curve.
+\item \textbf{Fundamental Theorem:} $\displaystyle\int_a^b f(x)\,dx = F(b) - F(a)$ for any primitive $F$ — never write $+C$.
+\item $\displaystyle\int_b^a f = -\int_a^b f$; \textbf{Chasles:} $\displaystyle\int_a^b = \int_a^c + \int_c^b$; linearity; positivity.
+\item \textbf{Area} $= \displaystyle\int_a^b |f(x)|\,dx$: split at the zeros of $f$ and take absolute values. An integral can be negative; an area cannot.
+\item Area between two curves: $\displaystyle\int_a^b (f - g)\,dx$ where $f \geq g$; split at intersection points.
+\item Mean value: $\mu = \dfrac{1}{b-a}\displaystyle\int_a^b f(x)\,dx$ — the height of the rectangle of equal area.
+\item Kinematics: displacement $= \displaystyle\int_{t_1}^{t_2} v\,dt$; distance $= \displaystyle\int_{t_1}^{t_2} |v|\,dt$.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Integration of Rational Functions}
+
+In the previous section we met the Fundamental Theorem of Calculus, which tells us that evaluating a definite integral amounts to finding \emph{any} primitive of the integrand. That theorem shifts the whole burden of integration onto one question: \emph{how do we actually find primitives?} In this section we answer that question completely for one of the most important families of functions in the GCE syllabus: the \cle{rational functions}, that is, quotients of two polynomials,
+\[
+f(x)=\frac{P(x)}{Q(x)}, \qquad P,Q \text{ polynomials}.
+\]
+Rational functions appear everywhere: in the growth of populations, in electric circuits, in the motion of a particle with air resistance. The beautiful news is that \emph{every} rational function you will meet at Advanced Level can be integrated in closed form, and the answer is always built from only three ingredients: polynomials, logarithms and arctangents. Our job in this section is to learn the machinery that produces them.
+
+\courssub{The Two Standard Forms}
+
+Everything in this section rests on two standard primitives, which you must know instantly and in both directions.
+
+\begin{propriete}[Standard primitives for rational functions]
+For $a\neq 0$ and $x$ in an interval where the integrand is defined:
+\[
+\int \frac{dx}{x-a}=\ln|x-a|+C,
+\qquad
+\int \frac{dx}{x^{2}+a^{2}}=\frac{1}{a}\arctan\!\left(\frac{x}{a}\right)+C .
+\]
+\end{propriete}
+
+The first formula follows because $\dfrac{d}{dx}\ln|x-a|=\dfrac{1}{x-a}$. For the second, differentiate: with $u=x/a$,
+\[
+\frac{d}{dx}\left[\frac{1}{a}\arctan\!\left(\frac{x}{a}\right)\right]
+=\frac{1}{a}\cdot\frac{1}{1+(x/a)^{2}}\cdot\frac{1}{a}
+=\frac{1}{a^{2}+x^{2}}.
+\]
+The absolute value in $\ln|x-a|$ is essential: it makes the formula valid on \emph{both} sides of the vertical asymptote $x=a$.
+
+\begin{attention}[Do not forget the factor $1/a$]
+A very frequent GCE error is to write $\int \frac{dx}{x^{2}+a^{2}}=\arctan(x/a)+C$. The chain rule brings out a factor $1/a$, so the correct primitive carries $\frac{1}{a}$ in front. Check by differentiating whenever you are unsure.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=6.2cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-3.2, xmax=3.2, ymin=0, ymax=1.25,
+  xtick={-1,0,1}, ytick={0.5,1},
+  samples=200, domain=-3.2:3.2,
+  every axis x label/.style={at={(ticklabel* cs:1.02)}, anchor=west},
+]
+\addplot[popblue, very thick] {1/(1+x^2)};
+\addplot[fill=popblueL, draw=none, domain=0:1] {1/(1+x^2)} \closedcycle;
+\addplot[popblue, very thick] {1/(1+x^2)};
+\node[popdark, align=center] at (axis cs:0.5,0.28) {\small area $=\arctan 1$};
+\node[popdark] at (axis cs:0.5,0.14) {\small $=\pi/4$};
+\node[popblue] at (axis cs:-2.1,0.55) {\small $y=\dfrac{1}{1+x^{2}}$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The area under $y=\frac{1}{1+x^{2}}$ from $0$ to $1$ equals $\arctan 1=\frac{\pi}{4}$: the arctangent primitive has a direct geometric meaning.}
+\end{popfigure}
+
+\courssub{Step One: Compare the Degrees}
+
+Before any clever technique, look at the degrees. If the numerator's degree is greater than or equal to the denominator's, the fraction is \emph{improper}, and the first move is always \cle{polynomial long division}.
+
+\begin{methode}[Improper fraction? Divide first]
+If $\deg P \geq \deg Q$, perform polynomial long division to write
+\[
+\frac{P(x)}{Q(x)}=S(x)+\frac{R(x)}{Q(x)}, \qquad \deg R < \deg Q .
+\]
+Then integrate the polynomial $S(x)$ term by term, and treat the \emph{proper} remainder $\frac{R}{Q}$ by the methods below. Never attempt partial fractions on an improper fraction: the decomposition simply does not exist in that form.
+\end{methode}
+
+\begin{exemplebox}[Long division before integrating]
+Compute $\displaystyle I=\int \frac{x^{2}+3x+1}{x+1}\,dx$.
+
+The numerator has degree $2$, the denominator degree $1$: we divide. $x^{2}+3x+1=(x+1)(x+2)-1$, so
+\[
+\frac{x^{2}+3x+1}{x+1}=x+2-\frac{1}{x+1}.
+\]
+Hence
+\[
+I=\int\left(x+2-\frac{1}{x+1}\right)dx=\frac{x^{2}}{2}+2x-\ln|x+1|+C .
+\]
+\end{exemplebox}
+
+\courssub{Partial Fractions: Distinct Linear Factors}
+
+Suppose now the fraction is proper and the denominator factorises into \emph{distinct} linear factors. Then the fraction splits into a sum of simple pieces, each of which integrates into a logarithm.
+
+\begin{propriete}[Decomposition into partial fractions]
+If $Q(x)$ factorises over $\mathbb{R}$ and $\deg P < \deg Q$, then $\dfrac{P(x)}{Q(x)}$ is a sum of partial fractions whose denominators are the factors of $Q(x)$: a term $\dfrac{A}{x-a}$ for each linear factor, terms $\dfrac{A}{x-a}+\dfrac{B}{(x-a)^{2}}+\cdots$ for a repeated factor, and a term $\dfrac{Cx+D}{x^{2}+px+q}$ for each irreducible quadratic factor. Every one of these pieces has a primitive that is a logarithm, a power, or an arctangent. (The existence of the decomposition is assumed; finding the constants is the examinable skill.)
+\end{propriete}
+
+\begin{exoresolu}[Distinct linear factors]
+Evaluate $\displaystyle I=\int \frac{5x-4}{(x-1)(x-2)}\,dx$.
+\tcblower
+\textbf{Step 1: decompose.} The fraction is proper with distinct linear factors, so we seek
+\[
+\frac{5x-4}{(x-1)(x-2)}=\frac{A}{x-1}+\frac{B}{x-2}.
+\]
+Multiplying through by $(x-1)(x-2)$: $5x-4=A(x-2)+B(x-1)$.
+
+\textbf{Step 2: find the constants} by the cover-up method. Setting $x=1$: $1=-A$, so $A=-1$. Setting $x=2$: $6=B$.
+
+\textbf{Step 3: integrate term by term.}
+\[
+I=\int\left(\frac{-1}{x-1}+\frac{6}{x-2}\right)dx
+=-\ln|x-1|+6\ln|x-2|+C
+=\ln\left|\frac{(x-2)^{6}}{x-1}\right|+C .
+\]
+\end{exoresolu}
+
+\courssub{Repeated Linear Factors and Irreducible Quadratics}
+
+\begin{attention}[A repeated factor needs a \emph{ladder} of terms]
+If the denominator contains $(x-a)^{2}$, the decomposition must contain \textbf{both} $\dfrac{A}{x-a}$ \textbf{and} $\dfrac{B}{(x-a)^{2}}$. Omitting the second term is one of the most common errors at the GCE: with only one constant you will generally find that the identity cannot be satisfied.
+\end{attention}
+
+\begin{attention}[$\dfrac{1}{(x-a)^{2}}$ is a power, not a logarithm]
+\[
+\int \frac{dx}{(x-a)^{2}}=\int (x-a)^{-2}\,dx=-\frac{1}{x-a}+C .
+\]
+Only the \emph{first} power $\frac{1}{x-a}$ produces a logarithm. Any higher power integrates as an ordinary power of $x$.
+\end{attention}
+
+\begin{exemplebox}[Repeated linear factor]
+Compute $\displaystyle I=\int \frac{2x+3}{(x-1)^{2}}\,dx$.
+
+We write $\dfrac{2x+3}{(x-1)^{2}}=\dfrac{A}{x-1}+\dfrac{B}{(x-1)^{2}}$, giving $2x+3=A(x-1)+B$. Setting $x=1$: $B=5$. Comparing coefficients of $x$: $A=2$. Therefore
+\[
+I=\int\left(\frac{2}{x-1}+\frac{5}{(x-1)^{2}}\right)dx
+=2\ln|x-1|-\frac{5}{x-1}+C .
+\]
+Notice how the two pieces behave completely differently: one logarithm, one power.
+\end{exemplebox}
+
+When the denominator contains an \emph{irreducible} quadratic factor $x^{2}+px+q$ (discriminant negative), the corresponding partial fraction has a \emph{linear} numerator:
+\[
+\frac{Cx+D}{x^{2}+px+q}.
+\]
+
+\begin{exoresolu}[An irreducible quadratic factor]
+Evaluate $\displaystyle I=\int \frac{3x^{2}+2x+5}{(x+1)(x^{2}+4)}\,dx$.
+\tcblower
+\textbf{Step 1: decompose.} Since $x^{2}+4$ is irreducible, we write
+\[
+\frac{3x^{2}+2x+5}{(x+1)(x^{2}+4)}=\frac{A}{x+1}+\frac{Cx+D}{x^{2}+4}.
+\]
+Multiplying by $(x+1)(x^{2}+4)$:
+\[
+3x^{2}+2x+5=A(x^{2}+4)+(Cx+D)(x+1).
+\]
+\textbf{Step 2: constants.} Setting $x=-1$: $3-2+5=5A$, so $A=\frac{6}{5}$. Comparing $x^{2}$ terms: $3=A+C$, so $C=\frac{9}{5}$. Comparing constants: $5=4A+D$, so $D=\frac{1}{5}$.
+
+\textbf{Step 3: integrate.}
+\[
+I=\frac{6}{5}\ln|x+1|+\frac{1}{5}\int\frac{9x+1}{x^{2}+4}\,dx .
+\]
+For the remaining integral, split the numerator into a derivative part and a constant part:
+\[
+\int\frac{9x+1}{x^{2}+4}\,dx
+=\frac{9}{2}\int\frac{2x}{x^{2}+4}\,dx+\int\frac{dx}{x^{2}+4}
+=\frac{9}{2}\ln(x^{2}+4)+\frac{1}{2}\arctan\!\frac{x}{2}.
+\]
+Finally,
+\[
+I=\frac{6}{5}\ln|x+1|+\frac{9}{10}\ln(x^{2}+4)+\frac{1}{10}\arctan\!\frac{x}{2}+C .
+\]
+\end{exoresolu}
+
+\courssub{The Derivative-of-Denominator Trick}
+
+A large proportion of GCE integrals with a quadratic denominator are won or lost on the following observation.
+
+\begin{propriete}[Numerator equal to the derivative of the denominator]
+\[
+\int \frac{2ax+b}{ax^{2}+bx+c}\,dx=\ln\left|ax^{2}+bx+c\right|+C,
+\]
+because the integrand has exactly the form $\dfrac{u'(x)}{u(x)}$ with $u(x)=ax^{2}+bx+c$.
+\end{propriete}
+
+\begin{methode}[Split the numerator: derivative part $+$ constant part]
+To integrate $\dfrac{\alpha x+\beta}{ax^{2}+bx+c}$:
+\begin{enumerate}
+\item Compute the derivative of the denominator: $(ax^{2}+bx+c)'=2ax+b$.
+\item Write $\alpha x+\beta = A(2ax+b)+B$ and identify $A=\dfrac{\alpha}{2a}$, then $B=\beta-Ab$.
+\item Split the integral:
+\[
+\int\frac{\alpha x+\beta}{ax^{2}+bx+c}\,dx
+=A\ln\left|ax^{2}+bx+c\right|+B\int\frac{dx}{ax^{2}+bx+c}.
+\]
+\item Treat the remaining constant-numerator integral by completing the square (below).
+\end{enumerate}
+\end{methode}
+
+\courssub{Completing the Square}
+
+A constant numerator over a quadratic, $\displaystyle\int\frac{dx}{ax^{2}+bx+c}$, is handled by \cle{completing the square}. Two cases arise.
+
+\textbf{Case 1: negative discriminant (no real roots).} The quadratic writes as $a\big[(x-h)^{2}+k^{2}\big]$, and the integral becomes an \emph{arctangent}:
+\[
+\int\frac{dx}{(x-h)^{2}+k^{2}}=\frac{1}{k}\arctan\!\left(\frac{x-h}{k}\right)+C .
+\]
+
+\textbf{Case 2: positive discriminant.} The quadratic factorises, and partial fractions give \emph{logarithms}. Equivalently, completing the square produces a difference of squares, $\int\frac{dx}{(x-h)^{2}-k^{2}}=\frac{1}{2k}\ln\left|\frac{x-h-k}{x-h+k}\right|+C$.
+
+\begin{exemplebox}[Completing the square to an arctangent]
+Compute $\displaystyle I=\int \frac{dx}{x^{2}+4x+13}$.
+
+Complete the square: $x^{2}+4x+13=(x+2)^{2}+9=(x+2)^{2}+3^{2}$. Hence
+\[
+I=\int\frac{dx}{(x+2)^{2}+3^{2}}=\frac{1}{3}\arctan\!\left(\frac{x+2}{3}\right)+C .
+\]
+\end{exemplebox}
+
+\begin{exoresolu}[Full strategy: split, then complete the square]
+Evaluate $\displaystyle I=\int_{0}^{1}\frac{x+5}{x^{2}+2x+5}\,dx$, giving the answer in exact form.
+\tcblower
+\textbf{Step 1: split the numerator.} The derivative of the denominator is $2x+2$, and
+\[
+x+5=\tfrac{1}{2}(2x+2)+4 .
+\]
+\textbf{Step 2: split the integral.}
+\[
+I=\frac{1}{2}\int_{0}^{1}\frac{2x+2}{x^{2}+2x+5}\,dx+4\int_{0}^{1}\frac{dx}{x^{2}+2x+5}.
+\]
+\textbf{Step 3: logarithmic part.}
+\[
+\frac{1}{2}\Big[\ln\left|x^{2}+2x+5\right|\Big]_{0}^{1}=\frac{1}{2}\big(\ln 8-\ln 5\big)=\frac{1}{2}\ln\frac{8}{5}.
+\]
+\textbf{Step 4: arctangent part.} Since $x^{2}+2x+5=(x+1)^{2}+2^{2}$,
+\[
+4\int_{0}^{1}\frac{dx}{(x+1)^{2}+4}
+=4\cdot\frac{1}{2}\Big[\arctan\frac{x+1}{2}\Big]_{0}^{1}
+=2\left(\arctan 1-\arctan\tfrac{1}{2}\right).
+\]
+\textbf{Conclusion.}
+\[
+I=\frac{1}{2}\ln\frac{8}{5}+2\left(\frac{\pi}{4}-\arctan\frac{1}{2}\right)
+=\frac{1}{2}\ln\frac{8}{5}+\frac{\pi}{2}-2\arctan\frac{1}{2}.
+\]
+\end{exoresolu}
+
+\courssub{Choosing the Right Treatment: A Strategy}
+
+In the examination, no one tells you which method to use. Train yourself to run through the following decision tree every time you meet a rational integrand.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=4.6cm, align=center, inner sep=5pt, font=\small},
+  dec/.style={draw=poporange, thick, diamond, aspect=2.4, fill=white, align=center, inner sep=1pt, font=\small},
+  res/.style={draw=popgreen, thick, rounded corners, fill=popgreenL, text width=4.2cm, align=center, inner sep=5pt, font=\small},
+  arr/.style={->, thick, popdark}
+]
+\node[dec] (d1) at (0,0) {$\deg P \geq \deg Q$?};
+\node[box] (div) at (0,-1.8) {Polynomial long division: $\frac{P}{Q}=S+\frac{R}{Q}$, $\deg R<\deg Q$};
+\node[dec] (d2) at (0,-3.6) {Is the numerator a multiple of $Q'(x)$?};
+\node[res] (log1) at (5.5,-3.6) {$\displaystyle\int\frac{Q'}{Q}= \ln|Q|+C$};
+\node[dec] (d3) at (0,-5.4) {Does $Q$ factorise into linear factors?};
+\node[box] (pf) at (5.5,-5.4) {Partial fractions $\to$ logarithms and powers $-\frac{1}{x-a}$};
+\node[dec] (d4) at (0,-7.2) {Constant numerator?};
+\node[res] (atan) at (5.5,-7.2) {Complete the square $\to$ $\frac{1}{k}\arctan\frac{x-h}{k}+C$};
+\node[box] (split) at (0,-9.0) {Split numerator: $A\,Q'(x)+B$, then log $+$ arctan};
+\draw[arr] (d1) -- node[right, font=\small]{yes} (div);
+\draw[arr] (d1.east) -- ++(1.6,0) node[above, font=\small]{no} |- (d2.east);
+\draw[arr] (div) -- (d2);
+\draw[arr] (d2) -- node[above, font=\small]{yes} (log1);
+\draw[arr] (d2) -- node[right, font=\small]{no} (d3);
+\draw[arr] (d3) -- node[above, font=\small]{yes} (pf);
+\draw[arr] (d3) -- node[right, font=\small]{no} (d4);
+\draw[arr] (d4) -- node[above, font=\small]{yes} (atan);
+\draw[arr] (d4) -- node[right, font=\small]{no} (split);
+\end{tikzpicture}
+\end{center}
+\legende{Decision tree for integrating a rational function $\frac{P(x)}{Q(x)}$: compare degrees, divide if necessary, then look for the derivative pattern, factorise, and finish with logarithms, powers or arctangents.}
+\end{popfigure}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item $\displaystyle\int\frac{dx}{x-a}=\ln|x-a|+C$ and $\displaystyle\int\frac{dx}{x^{2}+a^{2}}=\frac{1}{a}\arctan\frac{x}{a}+C$.
+\item If $\deg P\geq\deg Q$, \textbf{divide first}; partial fractions apply only to proper fractions.
+\item Distinct linear factors give pure logarithms; a repeated factor $(x-a)^{2}$ needs both $\frac{A}{x-a}$ and $\frac{B}{(x-a)^{2}}$, and the second integrates to $-\frac{B}{x-a}$, \emph{not} a logarithm.
+\item An irreducible quadratic factor takes a linear numerator $\frac{Cx+D}{x^{2}+px+q}$.
+\item Numerator $=A\times(\text{derivative of denominator})+B$: the $A$-part gives a logarithm, the $B$-part gives an arctangent after completing the square.
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Frequent examination traps]
+\begin{itemize}
+\item Forgetting the absolute value in $\ln|x-a|$, or writing $\ln(x^{2}+4)$ with an absolute value that is unnecessary (a sum of squares is always positive).
+\item Attempting partial fractions on an improper fraction.
+\item Writing $\int\frac{dx}{(x-2)^{2}}=\ln|x-2|^{2}+C$: this is wrong; it is a power integral.
+\item Dropping the factor $\frac{1}{a}$ in the arctangent formula.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Compute $\displaystyle\int\frac{3x-1}{(x+1)(x-3)}\,dx$.
+\item Compute $\displaystyle\int\frac{x^{3}}{x-2}\,dx$ (divide first).
+\item Compute $\displaystyle\int\frac{4x+1}{x^{2}+2x+10}\,dx$.
+\item Evaluate $\displaystyle\int_{1}^{2}\frac{x+2}{x(x+1)^{2}}\,dx$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercises 1--4]
+\textbf{1.} Write $\frac{3x-1}{(x+1)(x-3)}=\frac{A}{x+1}+\frac{B}{x-3}$. Then $3x-1=A(x-3)+B(x+1)$. Setting $x=-1$: $-4=-4A$, so $A=1$. Setting $x=3$: $8=4B$, so $B=2$. Hence the integral is $\ln|x+1|+2\ln|x-3|+C$.
+
+\textbf{2.} Long division: $x^{3}=(x-2)(x^{2}+2x+4)+8$, so $\frac{x^{3}}{x-2}=x^{2}+2x+4+\frac{8}{x-2}$. Integrating: $\frac{x^{3}}{3}+x^{2}+4x+8\ln|x-2|+C$.
+
+\textbf{3.} Derivative of the denominator: $2x+2$. Write $4x+1=2(2x+2)-3$. Then
+\[
+\int\frac{4x+1}{x^{2}+2x+10}\,dx=2\ln(x^{2}+2x+10)-3\int\frac{dx}{(x+1)^{2}+9}
+=2\ln(x^{2}+2x+10)-\arctan\frac{x+1}{3}+C .
+\]
+
+\textbf{4.} Decompose: $\frac{x+2}{x(x+1)^{2}}=\frac{A}{x}+\frac{B}{x+1}+\frac{C}{(x+1)^{2}}$. Multiplying out: $x+2=A(x+1)^{2}+Bx(x+1)+Cx$. Setting $x=0$: $A=2$. Setting $x=-1$: $1=-C$, so $C=-1$. Comparing $x^{2}$: $0=A+B$, so $B=-2$. Then
+\[
+\int_{1}^{2}\left(\frac{2}{x}-\frac{2}{x+1}-\frac{1}{(x+1)^{2}}\right)dx
+=\left[2\ln x-2\ln(x+1)+\frac{1}{x+1}\right]_{1}^{2}
+=2\ln\frac{4}{3}-\frac{1}{6}.
+\]
+\end{corrige}
+
+With rational functions now under control, we turn next to a technique that dramatically widens the class of functions we can integrate: \emph{substitution}, together with the elegant shortcuts offered by symmetric integrands.
+
+\coursec{Integration by Substitution and Symmetry}
+
+In the previous section we mastered the integration of rational functions by partial fractions.  Many integrals, however, do not present themselves as rational functions.  A composite function like $\sin(x^2)\cdot 2x$ or $\dfrac{e^x}{1+e^{2x}}$ can be integrated by recognising an inner function and its derivative.  This is the essence of \cle{integration by substitution} (or \cle{change of variable}).  We will also see how the \cle{symmetry} of a function over an interval $[-a,a]$ can instantly give the value of a definite integral without any computation.
+
+\courssub{The Substitution Rule for Indefinite Integrals}
+
+Consider the integral $\int \sin(x^2)\cdot 2x\,dx$.  The integrand is a product of a composite function $\sin(x^2)$ and the derivative of the inner function $x^2$, namely $2x$.  If we set $u = x^2$, then $du = 2x\,dx$ and the integral becomes $\int \sin u\,du = -\cos u + C = -\cos(x^2)+C$.  This is the \cle{substitution rule} in action: it reverses the chain rule for differentiation.
+
+\begin{propriete}[Substitution Rule (Indefinite Integrals)]
+If $u = g(x)$ is a differentiable function whose range is an interval $I$, and $f$ is continuous on $I$, then
+\[
+\int f(g(x))\,g'(x)\,dx = \int f(u)\,du \quad\text{where } u = g(x).
+\]
+In practice we write $du = g'(x)\,dx$ and replace every occurrence of $x$ and $dx$ by $u$ and $du$.
+\end{propriete}
+
+\begin{exemplebox}[Basic Substitution]
+Evaluate $\displaystyle\int \frac{e^x}{1+e^{2x}}\,dx$.
+\begin{align*}
+\text{Let } u &= e^x, \quad du = e^x\,dx. \\
+\int \frac{e^x}{1+e^{2x}}\,dx &= \int \frac{1}{1+u^2}\,du = \arctan u + C = \arctan(e^x) + C.
+\end{align*}
+\end{exemplebox}
+
+\begin{attention}[The Most Common GCE Error]
+When making a substitution, you must replace \emph{every} $x$ and $dx$ in the integral.  Leaving an $x$ inside the integral after writing $du$ is a fatal mistake.  Always check: after the substitution, the integrand should contain \emph{only} $u$ and $du$.
+\end{attention}
+
+\courssub{Substitution in Definite Integrals: Changing the Limits}
+
+For a definite integral $\int_a^b f(g(x))g'(x)\,dx$, we can either find an antiderivative in $x$ and then apply the limits, or (more efficiently) change the limits directly to $u$-values and never return to $x$.  The latter method avoids the need to back-substitute and is strongly recommended for GCE examinations.
+
+\begin{methode}[Substitution for Definite Integrals — Change Limits]
+\begin{enumerate}
+\item Choose a substitution $u = g(x)$.
+\item Compute $du = g'(x)\,dx$.
+\item Change the limits: when $x = a$, $u = g(a)$; when $x = b$, $u = g(b)$.
+\item Write the new integral $\int_{g(a)}^{g(b)} f(u)\,du$.
+\item Evaluate it directly in terms of $u$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Definite Integral with Change of Limits]
+Evaluate $\displaystyle\int_0^1 \frac{2x}{1+x^2}\,dx$.
+\begin{align*}
+\text{Let } u &= 1+x^2, \quad du = 2x\,dx. \\
+\text{When } x=0,\; u &= 1; \quad \text{when } x=1,\; u = 2. \\
+\int_0^1 \frac{2x}{1+x^2}\,dx &= \int_1^2 \frac{1}{u}\,du = \bigl[\ln u\bigr]_1^2 = \ln 2 - \ln 1 = \ln 2.
+\end{align*}
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Pipeline diagram
+\node[draw, rounded corners, fill=popblueL, text width=3.5cm, align=center] (start) at (0,0) {Original integral\\ $\int_a^b f(g(x))g'(x)\,dx$};
+\node[draw, rounded corners, fill=poporange!20, text width=3.5cm, align=center] (sub) at (5,0) {Substitution\\ $u=g(x),\; du=g'(x)dx$};
+\node[draw, rounded corners, fill=popgreenL, text width=3.5cm, align=center] (limits) at (10,0) {Change limits\\ $u(a), u(b)$};
+\node[draw, rounded corners, fill=poppink!20, text width=3.5cm, align=center] (eval) at (15,0) {Evaluate\\ $\int_{u(a)}^{u(b)} f(u)\,du$};
+\draw[->, thick, popdark] (start.east) -- (sub.west) node[midway, above] {1};
+\draw[->, thick, popdark] (sub.east) -- (limits.west) node[midway, above] {2};
+\draw[->, thick, popdark] (limits.east) -- (eval.west) node[midway, above] {3};
+\end{tikzpicture}
+\legende{The substitution pipeline for definite integrals: never substitute back to $x$.}
+\end{popfigure}
+
+\courssub{Standard Substitutions and Trigonometric Substitutions}
+
+Experience teaches us to recognise certain patterns.  The table below summarises the most frequent substitutions in GCE examinations.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Integrand contains} & \textbf{Try substitution} & \textbf{Because} \\
+\hline
+$f(ax+b)$ & $u = ax+b$ & $du = a\,dx$ \\
+\hline
+$x^n$ with $n\neq -1$ & $u = x^{n+1}$ or $u = x^n$ & simplifies power \\
+\hline
+$e^x$ or $e^{kx}$ & $u = e^x$ & $du = e^x dx$ \\
+\hline
+$\sin x$ or $\cos x$ & $u = \sin x$ or $u = \cos x$ & derivative is the other \\
+\hline
+$\tan x$ & $u = \tan x$ & $du = \sec^2 x\,dx$ \\
+\hline
+$\ln x$ & $u = \ln x$ & $du = \frac{1}{x}dx$ \\
+\hline
+$\sqrt{a^2-x^2}$ & $x = a\sin\theta$ & $\sqrt{a^2-a^2\sin^2\theta}=a\cos\theta$ \\
+\hline
+$\sqrt{a^2+x^2}$ & $x = a\tan\theta$ & $\sqrt{a^2+a^2\tan^2\theta}=a\sec\theta$ \\
+\hline
+$\sqrt{x^2-a^2}$ & $x = a\sec\theta$ & $\sqrt{a^2\sec^2\theta-a^2}=a\tan\theta$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[Trigonometric Substitutions — GCE Useful Extra]
+The three trigonometric substitutions above are not explicitly listed in the syllabus but appear regularly in GCE papers to integrate expressions involving $\sqrt{a^2\pm x^2}$.  Master them; they turn algebraic square roots into simple trigonometric integrals.  For $x=a\sin\theta$, restrict $\theta\in[-\pi/2,\pi/2]$ so that $\cos\theta\ge0$; for $x=a\tan\theta$, $\theta\in(-\pi/2,\pi/2)$; for $x=a\sec\theta$, $\theta\in[0,\pi/2)\cup(\pi/2,\pi]$ with $\tan\theta\ge0$ on the relevant branch.
+\end{aretenir}
+
+\begin{exemplebox}[Trigonometric Substitution]
+Evaluate $\displaystyle\int \frac{dx}{\sqrt{9-x^2}}$.
+\begin{align*}
+\text{Let } x &= 3\sin\theta,\quad dx = 3\cos\theta\,d\theta,\quad \sqrt{9-x^2} = 3\cos\theta \quad (\cos\theta\ge0). \\
+\int \frac{dx}{\sqrt{9-x^2}} &= \int \frac{3\cos\theta}{3\cos\theta}\,d\theta = \int d\theta = \theta + C = \arcsin\!\left(\frac{x}{3}\right) + C.
+\end{align*}
+\end{exemplebox}
+
+\courssub{Symmetry of Functions: Even and Odd}
+
+Before evaluating a definite integral over a symmetric interval $[-a,a]$, always check the \cle{parity} of the integrand.
+
+\begin{definition}[Even and Odd Functions]
+A function $f$ is \textbf{even} if $f(-x)=f(x)$ for all $x$ in its domain (symmetric about the $y$-axis).\\
+A function $f$ is \textbf{odd} if $f(-x)=-f(x)$ for all $x$ in its domain (symmetric about the origin).
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.45\linewidth, height=5cm,
+    axis lines=middle, xlabel=$x$, ylabel=$y$,
+    xmin=-2.5, xmax=2.5, ymin=-1.5, ymax=1.5,
+    xtick={-2,-1,1,2}, ytick={-1,1},
+    domain=-2:2, samples=100,
+    clip=false
+]
+\addplot[popblue, thick] {x^2*cos(deg(x))};
+\addplot[popblue!30, fill opacity=0.3] coordinates {(-2,-1.6646) (-2,0) (0,0) (0,0)} \closedcycle;
+\addplot[popblue!30, fill opacity=0.3] coordinates {(0,0) (0,0) (2,-1.6646) (2,0)} \closedcycle;
+\node[popblue, anchor=south] at (0,1.3) {$f(x)=x^2\cos x$ (even)};
+\node[popdark, anchor=north] at (-1,-0.3) {Area $A$};
+\node[popdark, anchor=north] at (1,-0.3) {Area $A$};
+\end{axis}
+\end{tikzpicture}
+\hfill
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.45\linewidth, height=5cm,
+    axis lines=middle, xlabel=$x$, ylabel=$y$,
+    xmin=-3.5, xmax=3.5, ymin=-1.5, ymax=1.5,
+    xtick={-3.14,-1.57,1.57,3.14}, xticklabels={$-\pi$,$-\pi/2$,$\pi/2$,$\pi$},
+    ytick={-1,1},
+    domain=-3.14:3.14, samples=100,
+    clip=false
+]
+\addplot[poporange!30, fill opacity=0.3, domain=-3.14:0] {sin(deg(x))} \closedcycle;
+\addplot[poporange!30, fill opacity=0.3, domain=0:3.14] {sin(deg(x))} \closedcycle;
+\addplot[poporange, thick] {sin(deg(x))};
+\node[poporange, anchor=north] at (0,-1.3) {$f(x)=\sin x$ (odd)};
+\node[popdark, anchor=south] at (-1.57,0.7) {$+A$};
+\node[popdark, anchor=north] at (1.57,-0.7) {$-A$};
+\end{axis}
+\end{tikzpicture}
+\legende{Left: even function — equal areas on $[-a,0]$ and $[0,a]$. Right: odd function — signed areas cancel.}
+\end{popfigure}
+
+\begin{propriete}[Symmetry Theorem for Definite Integrals]
+Let $f$ be integrable on $[-a,a]$.
+\begin{itemize}
+\item If $f$ is \textbf{even}: $\displaystyle\int_{-a}^{a} f(x)\,dx = 2\int_{0}^{a} f(x)\,dx$.
+\item If $f$ is \textbf{odd}: $\displaystyle\int_{-a}^{a} f(x)\,dx = 0$.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Using Symmetry]
+Evaluate $\displaystyle\int_{-\pi/2}^{\pi/2} \bigl(x^3\cos x + \sin x\bigr)\,dx$.
+The function $x^3\cos x$ is odd (odd $\times$ even = odd), $\sin x$ is odd. Sum of odd functions is odd. Hence the integral over $[-\pi/2,\pi/2]$ is $0$.
+\end{exemplebox}
+
+\begin{methode}[Always Test Parity First]
+Before computing any definite integral over $[-a,a]$:
+\begin{enumerate}
+\item Check if the integrand is even, odd, or neither.
+\item If odd $\rightarrow$ answer is $0$ immediately.
+\item If even $\rightarrow$ compute $2\int_0^a f(x)\,dx$ (often simpler).
+\item If neither $\rightarrow$ proceed with standard methods (substitution, parts, etc.).
+\end{enumerate}
+\end{methode}
+
+\courssub{Combining Substitution and Symmetry}
+
+Symmetry and substitution are not mutually exclusive; they often work together.  A substitution can transform an integral into one over a symmetric interval, or reveal parity that was not obvious in the original variable.
+
+\begin{exoresolu}[Substitution Reveals Symmetry]
+Evaluate $\displaystyle\int_{-1}^{1} \frac{x^3}{\sqrt{1-x^2}}\,dx$.
+The integrand $f(x)=\frac{x^3}{\sqrt{1-x^2}}$ is odd because $f(-x) = \frac{-x^3}{\sqrt{1-x^2}} = -f(x)$.  The interval $[-1,1]$ is symmetric.  Hence
+\[
+\int_{-1}^{1} \frac{x^3}{\sqrt{1-x^2}}\,dx = 0.
+\]
+(No substitution needed; parity alone gives the answer.)
+\end{exoresolu}
+
+\begin{exoresolu}[Substitution Creates Symmetric Limits]
+Evaluate $\displaystyle\int_{0}^{\pi} \frac{\sin x}{1+\cos^2 x}\,dx$.
+Let $u = \cos x$, $du = -\sin x\,dx$.  When $x=0$, $u=1$; when $x=\pi$, $u=-1$.
+\[
+\int_{0}^{\pi} \frac{\sin x}{1+\cos^2 x}\,dx = \int_{1}^{-1} \frac{-du}{1+u^2} = \int_{-1}^{1} \frac{du}{1+u^2}.
+\]
+The new integrand $\frac{1}{1+u^2}$ is even, limits symmetric:
+\[
+\int_{-1}^{1} \frac{du}{1+u^2} = 2\int_{0}^{1} \frac{du}{1+u^2} = 2\bigl[\arctan u\bigr]_0^1 = 2\cdot\frac{\pi}{4} = \frac{\pi}{2}.
+\]
+\end{exoresolu}
+
+\begin{exemplebox}[Trigonometric Substitution + Symmetry]
+Evaluate $\displaystyle\int_{-2}^{2} \sqrt{4-x^2}\,dx$.
+The integrand $\sqrt{4-x^2}$ is even.  So
+\[
+\int_{-2}^{2} \sqrt{4-x^2}\,dx = 2\int_{0}^{2} \sqrt{4-x^2}\,dx.
+\]
+Use $x = 2\sin\theta$, $dx = 2\cos\theta\,d\theta$.  When $x=0$, $\theta=0$; when $x=2$, $\theta=\pi/2$.
+\[
+2\int_{0}^{\pi/2} \sqrt{4-4\sin^2\theta}\cdot 2\cos\theta\,d\theta = 2\int_{0}^{\pi/2} 4\cos^2\theta\,d\theta = 8\int_{0}^{\pi/2} \frac{1+\cos2\theta}{2}\,d\theta = 4\Bigl[\theta+\frac{\sin2\theta}{2}\Bigr]_0^{\pi/2} = 4\cdot\frac{\pi}{2} = 2\pi.
+\]
+(Geometrically this is the area of a semicircle of radius $2$: $\frac{1}{2}\pi(2)^2 = 2\pi$.)
+\end{exemplebox}
+
+\courssub{Synthesis and Examination Tips}
+
+\begin{aretenir}[Key Points for GCE]
+\begin{itemize}
+\item \textbf{Substitution}: always change $dx$ and the limits (definite case).  Never leave $x$ in the $u$-integral.
+\item \textbf{Standard substitutions}: $u=ax+b$, $u=e^x$, $u=\ln x$, $u=\sin x$, $u=\cos x$, $u=\tan x$.
+\item \textbf{Trigonometric substitutions}: $x=a\sin\theta$ for $\sqrt{a^2-x^2}$; $x=a\tan\theta$ for $\sqrt{a^2+x^2}$; $x=a\sec\theta$ for $\sqrt{x^2-a^2}$.
+\item \textbf{Symmetry}: test parity first on $[-a,a]$.  Odd $\rightarrow 0$; Even $\rightarrow 2\int_0^a$.
+\item \textbf{Combination}: a substitution can turn an asymmetric integral into a symmetric one (as in the $\sin x/(1+\cos^2 x)$ example).
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Common Traps]
+\begin{itemize}
+\item Forgetting to change the limits in a definite integral and then substituting back to $x$ — this wastes time and often introduces errors.
+\item Misidentifying parity: $f(x)=x^2\sin x$ is odd (even $\times$ odd), not even.
+\item Using $x=a\sin\theta$ for $\sqrt{x^2-a^2}$ (wrong substitution).
+\item In trigonometric substitution, forgetting to change $dx$ and the limits.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Evaluate $\displaystyle\int_0^1 \frac{x}{\sqrt{1-x^2}}\,dx$.
+\item Evaluate $\displaystyle\int_{-\pi}^{\pi} x^2\sin x\,dx$.
+\item Evaluate $\displaystyle\int_0^{\pi/2} \frac{\sin 2x}{1+\cos^2 x}\,dx$.
+\item Evaluate $\displaystyle\int_{-1}^{1} \frac{x^5}{\sqrt{1-x^2}}\,dx$.
+\item Evaluate $\displaystyle\int_0^2 \frac{x^2}{\sqrt{4-x^2}}\,dx$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Let $u=1-x^2$, $du=-2x\,dx$.  When $x=0$, $u=1$; when $x=1$, $u=0$.
+$\int_0^1 \frac{x}{\sqrt{1-x^2}}\,dx = \int_1^0 \frac{-du/2}{\sqrt{u}} = \frac12\int_0^1 u^{-1/2}\,du = \frac12[2u^{1/2}]_0^1 = 1$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$f(x)=x^2\sin x$ is odd (even $\times$ odd).  Symmetric interval $[-\pi,\pi] \Rightarrow$ integral $= 0$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Let $u=\cos x$, $du=-\sin x\,dx$.  $\sin 2x = 2\sin x\cos x = 2\sin x\, u$.
+When $x=0$, $u=1$; when $x=\pi/2$, $u=0$.
+$\int_0^{\pi/2} \frac{\sin 2x}{1+\cos^2 x}\,dx = \int_1^0 \frac{2u(-du)}{1+u^2} = 2\int_0^1 \frac{u}{1+u^2}\,du = [\ln(1+u^2)]_0^1 = \ln 2$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Integrand is odd (odd/even = odd).  Symmetric interval $[-1,1] \Rightarrow 0$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+Even integrand on $[0,2]$.  Use $x=2\sin\theta$, $dx=2\cos\theta\,d\theta$.  Limits: $0\to\pi/2$.
+$\int_0^2 \frac{x^2}{\sqrt{4-x^2}}\,dx = \int_0^{\pi/2} \frac{4\sin^2\theta}{2\cos\theta}\cdot 2\cos\theta\,d\theta = 4\int_0^{\pi/2} \sin^2\theta\,d\theta = 4\int_0^{\pi/2} \frac{1-\cos2\theta}{2}\,d\theta = 2[\theta-\frac{\sin2\theta}{2}]_0^{\pi/2} = \pi$.
+\end{corrige}
+
+\begin{savaistu}[Did You Know?]
+The substitution $x = a\tan\theta$ for $\sqrt{a^2+x^2}$ is the key to deriving the formula for the length of a catenary curve (the shape of a hanging chain).  In Cameroon, the cables of the \emph{Pont de la Wouri} in Douala follow a catenary; engineers use exactly these integrals to compute cable length and tension.
+\end{savaistu}
+
+\coursec{Reduction Formulae and Synthesis}
+
+In the previous section we learnt to simplify integrals by substitution and to exploit symmetry. But some families of integrals resist every substitution: think of $\int \sin^{7}x\,dx$ or $\int x^{5}e^{x}\,dx$. Computing each power separately would be painfully repetitive. The idea of this final section is to be \emph{lazy in a clever way}: instead of computing each integral from scratch, we find a \cle{recurrence relation} that reduces the power step by step until we reach a trivial integral. This is the technique of \cle{reduction formulae}, a favourite topic of GCE Paper 2, where it is almost always combined with integration by parts. We close the chapter with a synthesis that trains you to choose, at a glance, the right tool among all those studied in this chapter.
+
+\courssub{What is a Reduction Formula?}
+
+\textbf{Observation.} Suppose you must compute $I_n=\displaystyle\int_0^{\pi/2}\sin^n x\,dx$ for $n=1,2,3,4$. The graph below shows the curves $y=\sin^n x$ on $[0,\pi/2]$: as $n$ grows, the curve is squeezed towards the axes, so the area under it shrinks regularly. This regular shrinkage suggests that $I_n$ is linked to $I_{n-2}$ by a simple factor — and indeed we shall prove $I_n=\frac{n-1}{n}I_{n-2}$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.1, xmax=1.8, ymin=-0.05, ymax=1.15,
+  xtick={0, 1.5708}, xticklabels={$0$, $\frac{\pi}{2}$},
+  ytick={1},
+  legend style={at={(0.97,0.97)}, anchor=north east, font=\small},
+  samples=120, domain=0:1.5708
+]
+\addplot[thick, popblue] {sin(deg(x))};
+\addlegendentry{$\sin x$}
+\addplot[thick, poporange] {sin(deg(x))^2};
+\addlegendentry{$\sin^2 x$}
+\addplot[thick, popgreen] {sin(deg(x))^3};
+\addlegendentry{$\sin^3 x$}
+\addplot[thick, poppurple] {sin(deg(x))^4};
+\addlegendentry{$\sin^4 x$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The curves $y=\sin^n x$ on $[0,\pi/2]$ for $n=1,2,3,4$: the area under each curve shrinks regularly as $n$ increases, which is exactly what the reduction formula $W_n=\frac{n-1}{n}W_{n-2}$ captures.}
+\end{popfigure}
+
+\begin{definition}[Reduction formula]
+Let $(I_n)_{n\in\mathbb{N}}$ be a family of integrals depending on an integer parameter $n$, for example $I_n=\int x^n e^x\,dx$. A \cle{reduction formula} is a \cle{recurrence relation} expressing $I_n$ in terms of one or more integrals of lower index, typically $I_{n-1}$ or $I_{n-2}$:
+\[ I_n = f(n,x) + g(n)\,I_{n-1} \qquad\text{or}\qquad I_n = f(n,x) + g(n)\,I_{n-2}. \]
+Together with an explicitly computed \cle{base case} ($I_0$ or $I_1$), the formula allows one to compute $I_n$ for any $n$ by iteration.
+\end{definition}
+
+The main tool for building reduction formulae is \cle{integration by parts}, which we recall here as prerequisite consolidation.
+
+\begin{aretenir}[Integration by parts — reminder]
+For differentiable functions $u$ and $v$,
+\[ \int u\,\dfrac{dv}{dx}\,dx = uv - \int v\,\dfrac{du}{dx}\,dx, \qquad\text{and for definite integrals}\qquad \int_a^b u\,\dfrac{dv}{dx}\,dx = \Big[uv\Big]_a^b - \int_a^b v\,\dfrac{du}{dx}\,dx. \]
+The golden rule: choose $u$ to be the factor that becomes \emph{simpler} when differentiated (powers of $x$, powers of $\ln x$, powers of $\sin x$ or $\cos x$).
+\end{aretenir}
+
+\begin{methode}[Building a reduction formula]
+\begin{enumerate}
+\item Write $I_n$ and isolate one power: e.g. $\sin^n x = \sin^{n-1}x\cdot \sin x$.
+\item Integrate by parts, choosing $u$ so that \textbf{differentiation lowers the power} (e.g. $u=\sin^{n-1}x$, $dv=\sin x\,dx$).
+\item Use identities (e.g. $\cos^2 x = 1-\sin^2 x$) to make $I_n$ or $I_{n-2}$ reappear on the right-hand side.
+\item Solve for $I_n$: gather the $I_n$ terms on the left and divide by their coefficient.
+\item Compute the base case $I_0$ or $I_1$ explicitly, then iterate.
+\end{enumerate}
+\end{methode}
+
+\courssub{Classical Reduction Formulae}
+
+\textbf{1. The family $I_n=\displaystyle\int x^n e^x\,dx$.}
+Differentiating $x^n$ lowers the power, so take $u=x^n$, $dv=e^x\,dx$, hence $du = nx^{n-1}\,dx$, $v=e^x$:
+\[ I_n = x^n e^x - n\int x^{n-1}e^x\,dx \quad\Longrightarrow\quad \boxed{I_n = x^n e^x - n\,I_{n-1}}, \qquad I_0 = e^x + C. \]
+
+\textbf{2. The family $I_n=\displaystyle\int (\ln x)^n\,dx$.}
+Take $u=(\ln x)^n$, $dv = dx$, so $du = \dfrac{n}{x}(\ln x)^{n-1}\,dx$ and $v=x$:
+\[ I_n = x(\ln x)^n - n\int (\ln x)^{n-1}\,dx \quad\Longrightarrow\quad \boxed{I_n = x(\ln x)^n - n\,I_{n-1}}, \qquad I_0 = x + C. \]
+
+\textbf{3. The family $I_n=\displaystyle\int \sin^n x\,dx$ ($n\ge 2$).}
+Write $\sin^n x = \sin^{n-1}x\cdot \sin x$ and take $u=\sin^{n-1}x$, $dv=\sin x\,dx$, so $du=(n-1)\sin^{n-2}x\cos x\,dx$, $v=-\cos x$:
+\begin{align*}
+I_n &= -\cos x\,\sin^{n-1}x + (n-1)\int \sin^{n-2}x\cos^2 x\,dx \\
+&= -\cos x\,\sin^{n-1}x + (n-1)\int \sin^{n-2}x\,(1-\sin^2 x)\,dx \\
+&= -\cos x\,\sin^{n-1}x + (n-1)I_{n-2} - (n-1)I_n.
+\end{align*}
+Bringing $(n-1)I_n$ to the left: $nI_n = -\cos x\sin^{n-1}x + (n-1)I_{n-2}$, hence
+\[ \boxed{I_n = -\dfrac{\cos x\,\sin^{n-1}x}{n} + \dfrac{n-1}{n}\,I_{n-2}}. \]
+
+\textbf{4. The family $I_n=\displaystyle\int \cos^n x\,dx$ ($n\ge 2$).}
+The identical manipulation with $\cos^n x = \cos^{n-1}x\cdot\cos x$ (taking $u=\cos^{n-1}x$, $dv=\cos x\,dx$, so $v=\sin x$) gives
+\[ \boxed{I_n = \dfrac{\sin x\,\cos^{n-1}x}{n} + \dfrac{n-1}{n}\,I_{n-2}}. \]
+
+\begin{attention}[Show the integration by parts step!]
+In the GCE, reduction formulae are usually \emph{given} in the question or \emph{asked to be proved}. When asked to prove one, write the integration by parts step \textbf{explicitly}: state your $u$, $dv$, $du$, $v$, apply the formula, then use the trigonometric identity and solve for $I_n$. Method marks are awarded for these intermediate lines — jumping straight to the boxed result earns almost nothing.
+\end{attention}
+
+\courssub{Iterating Down to the Base Case}
+
+A reduction formula is a ladder: each application moves you down one or two rungs, until you land on $I_0$ or $I_1$, which you must compute directly.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1, every node/.style={font=\small}]
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.6cm] (n) at (0,4) {$I_n$};
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.6cm] (n2) at (3.2,2.6) {$I_{n-2}$};
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.6cm] (n4) at (6.4,1.2) {$I_{n-4}$};
+\node (dots) at (8.6,0.6) {$\cdots$};
+\node[draw=poporange, thick, rounded corners, minimum width=2.9cm] (base) at (10.6,-0.4) {$I_0$ or $I_1$};
+\draw[->, thick, popdark] (n) -- (n2) node[midway, above, sloped] {$\times\,\frac{n-1}{n}$};
+\draw[->, thick, popdark] (n2) -- (n4) node[midway, above, sloped] {$\times\,\frac{n-3}{n-2}$};
+\draw[->, thick, popdark] (n4) -- (dots);
+\draw[->, thick, popdark] (dots) -- (base);
+\node[align=center, text width=4.2cm, font=\footnotesize] at (5.4,-1.1) {base case computed directly:\\ $I_0=\int dx$,\; $I_1=\int\sin x\,dx$, \dots};
+\end{tikzpicture}
+\end{center}
+\legende{The reduction ladder: each step lowers the index (here by $2$), until the base case $I_0$ or $I_1$ is reached.}
+\end{popfigure}
+
+\begin{methode}[Using a reduction formula cleanly]
+\begin{enumerate}
+\item \textbf{State the base case first}: compute $I_0$ (and $I_1$ if the step is $-2$) before any iteration. An incorrect base case ruins the whole chain: every subsequent value inherits the error. Examiners award a specific mark for a correct $I_0$ or $I_1$ — claim it.
+\item Apply the formula step by step, writing one line per reduction; do not skip rungs.
+\item Substitute back progressively, keeping exact fractions.
+\item For indefinite integrals, do not forget the constant $C$ at the very end.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Computing $\int x^3 e^x\,dx$ by reduction]
+Let $I_n=\int x^n e^x\,dx$. Given $I_n = x^n e^x - nI_{n-1}$, compute $\int x^3 e^x\,dx$.
+\tcblower
+\textbf{Solution.} Base case: $I_0=\int e^x\,dx = e^x$. Iterating:
+\begin{align*}
+I_1 &= x e^x - I_0 = xe^x - e^x,\\
+I_2 &= x^2 e^x - 2I_1 = x^2 e^x - 2xe^x + 2e^x,\\
+I_3 &= x^3 e^x - 3I_2 = x^3 e^x - 3x^2 e^x + 6xe^x - 6e^x.
+\end{align*}
+Hence $\displaystyle\int x^3 e^x\,dx = e^x\big(x^3 - 3x^2 + 6x - 6\big) + C$. \textbf{Check} (good habit): differentiating $e^x(x^3-3x^2+6x-6)$ gives $e^x(x^3-3x^2+6x-6) + e^x(3x^2-6x+6) = x^3 e^x$. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Computing $\int \sin^4 x\,dx$ by reduction]
+Using $I_n = -\dfrac{\cos x\,\sin^{n-1}x}{n} + \dfrac{n-1}{n}I_{n-2}$ for $I_n=\int\sin^n x\,dx$, find $\int\sin^4 x\,dx$.
+\tcblower
+\textbf{Solution.} Base case: $I_0=\int dx = x$. Then
+\[ I_2 = -\frac{\cos x\,\sin x}{2} + \frac{1}{2}I_0 = -\frac{\cos x\sin x}{2} + \frac{x}{2}, \]
+\[ I_4 = -\frac{\cos x\,\sin^3 x}{4} + \frac{3}{4}I_2 = -\frac{\cos x\,\sin^3 x}{4} - \frac{3\cos x\sin x}{8} + \frac{3x}{8}. \]
+Hence $\displaystyle\int\sin^4 x\,dx = -\tfrac{1}{4}\cos x\sin^3 x - \tfrac{3}{8}\cos x\sin x + \tfrac{3}{8}x + C$, which agrees with the result obtained by linearising $\sin^4 x$ with double-angle formulas.
+\end{exoresolu}
+
+\courssub{Definite-Integral Reduction: the Wallis Integrals}
+
+When the integral is taken over $\big[0,\tfrac{\pi}{2}\big]$, the boundary term in the reduction of $\int\sin^n x\,dx$ vanishes (since $\cos\frac{\pi}{2}=0$ and $\sin 0 = 0$), leaving a beautifully simple relation.
+
+\begin{propriete}[Wallis integrals]
+Let $W_n=\displaystyle\int_0^{\pi/2}\sin^n x\,dx$ for $n\in\mathbb{N}$. Then
+\[ W_n = \frac{n-1}{n}\,W_{n-2} \quad (n\ge 2), \qquad W_0 = \frac{\pi}{2}, \qquad W_1 = 1. \]
+Consequently:
+\begin{itemize}
+\item if $n=2p$ is \textbf{even}: $\;W_{2p}=\dfrac{(2p-1)(2p-3)\cdots 3\cdot 1}{(2p)(2p-2)\cdots 4\cdot 2}\cdot\dfrac{\pi}{2}$;
+\item if $n=2p+1$ is \textbf{odd}: $\;W_{2p+1}=\dfrac{(2p)(2p-2)\cdots 4\cdot 2}{(2p+1)(2p-1)\cdots 5\cdot 3}$.
+\end{itemize}
+The same values hold for $\int_0^{\pi/2}\cos^n x\,dx$ (by the substitution $x\mapsto \frac{\pi}{2}-x$, which swaps $\sin$ and $\cos$ while preserving the interval).
+\end{propriete}
+
+\textbf{Proof (examinable).} From the reduction for $I_n=\int\sin^n x\,dx$ established above, evaluating between $0$ and $\frac{\pi}{2}$:
+\[ \Big[-\cos x\,\sin^{n-1}x\Big]_0^{\pi/2} = \big(-0\cdot 1\big) - \big(-1\cdot 0\big) = 0, \qquad\text{so}\qquad W_n = \frac{n-1}{n}W_{n-2}. \]
+For $n$ even, iterating down to $W_0=\int_0^{\pi/2}dx=\frac{\pi}{2}$ gives the even formula; for $n$ odd, iterating down to $W_1=\int_0^{\pi/2}\sin x\,dx = [-\cos x]_0^{\pi/2}=1$ gives the odd formula. $\blacksquare$
+
+\begin{exemplebox}[Two Wallis computations]
+$W_4 = \dfrac{3}{4}\cdot\dfrac{1}{2}\cdot\dfrac{\pi}{2} = \dfrac{3\pi}{16}$ (even, ends with $\frac{\pi}{2}$); \quad $W_5 = \dfrac{4}{5}\cdot\dfrac{2}{3}\cdot 1 = \dfrac{8}{15}$ (odd, ends with $1$).
+\end{exemplebox}
+
+\begin{attention}[Even vs odd — the classic trap]
+The \textbf{even} chain ends at $W_0=\frac{\pi}{2}$, so the answer contains $\pi$; the \textbf{odd} chain ends at $W_1=1$, so the answer is a plain fraction. Students who stop the chain one step too early (or too late) systematically get the wrong form. Always check: does my answer contain $\pi$ exactly when $n$ is even?
+\end{attention}
+
+\begin{savaistu}[Wallis and $\pi$]
+The English mathematician John Wallis used these very integrals in 1655 to obtain his famous infinite product $\dfrac{\pi}{2}=\dfrac{2\cdot 2\cdot 4\cdot 4\cdot 6\cdot 6\cdots}{1\cdot 3\cdot 3\cdot 5\cdot 5\cdot 7\cdots}$, one of the first exact formulas for $\pi$ — a beautiful example of how a simple recurrence can unlock deep mathematics.
+\end{savaistu}
+
+\courssub{Synthesis: Choosing the Right Technique in the Exam}
+
+GCE Paper 2 integration questions rarely announce their method. Train yourself to run this checklist:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{What you see} & \textbf{First technique to try} \\
+\hline
+Polynomial, exponential, trig, $\ln$ alone & Direct integration (standard primitives) \\
+\hline
+Rational function $\frac{P(x)}{Q(x)}$ & Degree check, then partial fractions \\
+\hline
+$f(g(x))\,g'(x)$, or $\sqrt{a^2-x^2}$, $\frac{1}{a^2+x^2}$ & Substitution ($u=g(x)$, $x=a\sin\theta$, $x=a\tan\theta$) \\
+\hline
+Odd/even integrand on $[-a,a]$ & Symmetry: odd $\Rightarrow 0$; even $\Rightarrow 2\int_0^a$ \\
+\hline
+Power $n$ in the integrand, family $I_n$ & Reduction formula via integration by parts \\
+\hline
+Product $x^n e^x$, $x^n\sin x$, $x^n\ln x$ & Integration by parts (once or via reduction) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{exoresolu}[Exam-style synthesis]
+(a) Evaluate $\displaystyle\int_{-1}^{1} x^3\cos^2 x\,dx$. \quad (b) Given that $W_n=\int_0^{\pi/2}\cos^n x\,dx$ satisfies $W_n=\frac{n-1}{n}W_{n-2}$, evaluate $\displaystyle\int_0^{\pi/2}\cos^6 x\,dx$.
+\tcblower
+\textbf{Solution.} (a) $x^3$ is odd and $\cos^2 x$ is even, so the product $x^3\cos^2 x$ is \textbf{odd} on the symmetric interval $[-1,1]$: the integral equals $\boxed{0}$ — no computation needed. (b) $n=6$ is even, so the chain ends at $W_0=\frac{\pi}{2}$:
+\[ W_6 = \frac{5}{6}\cdot\frac{3}{4}\cdot\frac{1}{2}\cdot W_0 = \frac{15}{48}\cdot\frac{\pi}{2} = \boxed{\frac{5\pi}{32}}. \]
+\end{exoresolu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Prove that $I_n=\int(\ln x)^n\,dx$ satisfies $I_n = x(\ln x)^n - nI_{n-1}$, and deduce $\int(\ln x)^2\,dx$.
+\item Using $W_n=\frac{n-1}{n}W_{n-2}$, compute $W_3$, $W_6$ and $\displaystyle\int_0^{\pi/2}\sin^7 x\,dx$.
+\item Evaluate $\displaystyle\int_{-\pi/4}^{\pi/4}\sin^5 x\,dx$ in one line, justifying your answer.
+\item Let $I_n=\int_0^1 x^n e^x\,dx$. Show that $I_n = e - nI_{n-1}$, and deduce the exact value of $I_2$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+1. $u=(\ln x)^n$, $dv=dx$ give $du=\frac{n}{x}(\ln x)^{n-1}dx$, $v=x$, so $I_n = x(\ln x)^n - n\int(\ln x)^{n-1}dx$. Then $I_2 = x(\ln x)^2 - 2\big(x\ln x - x\big) = x(\ln x)^2 - 2x\ln x + 2x + C$.
+2. $W_3=\frac{2}{3}\cdot 1=\frac{2}{3}$; $W_6=\frac{5}{6}\cdot\frac{3}{4}\cdot\frac{1}{2}\cdot\frac{\pi}{2}=\frac{5\pi}{32}$; $W_7=\frac{6}{7}\cdot\frac{4}{5}\cdot\frac{2}{3}\cdot 1=\frac{16}{35}$.
+3. $\sin^5 x$ is odd and the interval $[-\frac{\pi}{4},\frac{\pi}{4}]$ is symmetric about $0$, so the integral is $0$.
+4. By parts with $u=x^n$, $dv=e^x dx$ on $[0,1]$: $I_n = \big[x^n e^x\big]_0^1 - nI_{n-1} = e - nI_{n-1}$. Base case $I_0 = e-1$; then $I_1 = e - (e-1) = 1$ and $I_2 = e - 2$.
+\end{corrige}
+
+\begin{attention}[Time-management and presentation tips for Paper 2]
+\begin{itemize}
+\item If a reduction formula is \textbf{given}, do not re-prove it unless asked — quote it and iterate; save your time.
+\item Prove it only when the question says ``show that'': then write the full by-parts step.
+\item Keep fractions exact until the final line; premature decimals cost accuracy marks.
+\item Budget roughly 2 minutes per mark: a 6-mark reduction question deserves about 12 minutes, no more.
+\item When stuck on a definite integral, check symmetry \emph{before} attempting heavy computation — it may be zero.
+\end{itemize}
+\end{attention}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item A reduction formula links $I_n$ to $I_{n-1}$ or $I_{n-2}$; it is built by \textbf{integration by parts}, choosing $u$ so that differentiation lowers the power.
+\item Core formulas: $\int x^n e^x\,dx$: $I_n = x^n e^x - nI_{n-1}$; $\int(\ln x)^n\,dx$: $I_n = x(\ln x)^n - nI_{n-1}$; $\int\sin^n x\,dx$: $I_n = -\frac{\cos x\sin^{n-1}x}{n}+\frac{n-1}{n}I_{n-2}$; $\int\cos^n x\,dx$: $I_n = \frac{\sin x\cos^{n-1}x}{n}+\frac{n-1}{n}I_{n-2}$.
+\item Wallis: $W_n=\frac{n-1}{n}W_{n-2}$, with $W_0=\frac{\pi}{2}$, $W_1=1$; even $n$ gives a multiple of $\pi$, odd $n$ a plain fraction.
+\item Always compute and state the base case first, iterate line by line, and check the final answer by differentiation when possible.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This activity is a \cle{modelling task} that brings together, in one coherent problem, almost every skill of the chapter \emph{Further Integration}. By the end of the group work, you should be able to:
+
+\begin{itemize}
+\item recognise and \textbf{prove} the parity (odd or even character) of a function, and use it to simplify a definite integral over a symmetric interval;
+\item distinguish carefully between a \cle{signed integral} $\int_a^b f(x)\,dx$ and a \cle{geometric area}, and explain the difference in a concrete situation;
+\item carry out a \textbf{simple substitution} (here $u = x^2 + 4$) to find a primitive of a rational function of the form $\dfrac{u'}{u}$;
+\item compute the \textbf{mean value} of a function on an interval and interpret it physically;
+\item use the standard primitive $\displaystyle\int \frac{dx}{x^2+a^2} = \frac{1}{a}\arctan\frac{x}{a} + C$ in a real context;
+\item present a complete, rigorous chain of reasoning orally and in writing, as expected at the GCE Advanced Level.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Parity of functions $\rightarrow$ symmetry of integrals $\rightarrow$ substitution $u = x^2+4$ $\rightarrow$ primitives of rational functions $\rightarrow$ mean value $\rightarrow$ arctangent form. One single situation, five lessons of the chapter.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{The Nkam River crossing.}\par\medskip
+
+The Nkam river, in the Littoral Region, is crossed daily by heavy traffic between Douala and the West Region. As part of the rehabilitation of a bridge over the river, a contractor must build an \textbf{approach ramp}: an embankment of compacted laterite that rises gently from the flood plain on one side, crosses the abutment, and descends on the other side.
+
+The design engineer models the \emph{profile} (the centre-line elevation) of the ramp, in a coordinate system whose origin is at the abutment, by the curve
+\[
+y = f(x) = \frac{x}{x^2+4}, \qquad x \in [-4,\,4],
+\]
+where the unit on both axes is \textbf{ten metres} (so $x = 4$ corresponds to $40$ m from the abutment, and $y = 1$ to a height of $10$ m). Negative values of $y$ correspond to a cutting (the ground must be excavated) and positive values to an embankment (fill must be brought in).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.85\linewidth, height=6cm,
+  axis lines=middle, xlabel={$x$ (tens of m)}, ylabel={$y$ (tens of m)},
+  xmin=-4.6, xmax=4.6, ymin=-0.45, ymax=0.45,
+  xtick={-4,-2,0,2,4}, ytick={-0.25,0.25},
+  domain=-4:4, samples=120, thick]
+% Excavation area (negative part)
+\addplot[popgreenL, opacity=0.3, domain=-4:0] {x/(x^2+4)} \closedcycle;
+% Embankment area (positive part)
+\addplot[poporange, opacity=0.3, domain=0:4] {x/(x^2+4)} \closedcycle;
+% Function curve
+\addplot[popblue, very thick] {x/(x^2+4)};
+% Dashed line joining the turning points
+\addplot[poporange, dashed] coordinates {(-2,-0.25) (2,0.25)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Profile of the approach ramp $y=\dfrac{x}{x^2+4}$: excavation on $[-4,0]$ (green), embankment on $[0,4]$ (orange).}
+\end{popfigure}
+
+The contractor needs answers to three practical questions.
+
+\begin{enumerate}
+\item \textbf{Earthworks balance.} A quick calculation of $\displaystyle\int_{-4}^{4} f(x)\,dx$ seems to give zero. The site manager concludes: ``the excavated soil exactly compensates the fill, so no laterite needs to be purchased.'' Is he right?
+\item \textbf{Facing wall.} The side face of the ramp (the vertical wall following the profile, on $[0,4]$) must be covered with masonry. What is its true area?
+\item \textbf{Drainage.} A drainage channel running along the ramp has a cross-section modelled by $g(x) = \dfrac{1}{x^2+4}$ for $x\in[-2,2]$ (same units). What is the area of this cross-section?
+\end{enumerate}
+
+All numerical answers should be given exactly, then rounded to $3$ decimal places, and finally converted into \textbf{real units} (square metres, metres).
+
+\courssub{Tasks}
+
+Work in groups of three or four. Write up every step: at the GCE Advanced Level, the reasoning is marked, not only the final number.
+
+\textbf{Part A — Parity and the signed integral.}
+
+\begin{enumerate}
+\item Show that for all $x\in[-4,4]$, $f(-x) = -f(x)$. What do we call such a function? What is the symmetry of its graph?
+\item State the symmetry property of definite integrals for an odd function on $[-a,a]$, and deduce the value of $\displaystyle I = \int_{-4}^{4}\frac{x}{x^2+4}\,dx$.
+\item Explain, in two or three sentences addressed to the site manager, why a \emph{zero signed integral} does \textbf{not} mean that the volumes of excavation and fill cancel out in practice. What quantity should have been computed instead?
+\end{enumerate}
+
+\textbf{Part B — The true area of the side face.}
+
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Justify that the area of the side face on $[-4,4]$ is $\mathcal{A} = \displaystyle\int_{-4}^{4} \left|\frac{x}{x^2+4}\right| dx$, and use parity to reduce this to $\mathcal{A} = 2\displaystyle\int_{0}^{4}\frac{x}{x^2+4}\,dx$.
+\item Compute $J = \displaystyle\int_{0}^{4}\frac{x}{x^2+4}\,dx$ using the substitution $u = x^2+4$ (remember to change the bounds). Recognise the form $\dfrac{u'}{u}$.
+\item Deduce $\mathcal{A}$ exactly, then in $\mathrm{m}^2$ (beware of the unit: one unit of area on the graph equals $10\ \mathrm{m}\times 10\ \mathrm{m}$).
+\end{enumerate}
+
+\textbf{Part C — Mean height of the ramp.}
+
+\begin{enumerate}
+\setcounter{enumi}{6}
+\item Recall the formula for the mean value of a continuous function on $[a,b]$. Compute the mean height $\bar{y}$ of the ramp on $[0,4]$, and convert it to metres. Give a one-sentence physical interpretation for the contractor.
+\end{enumerate}
+
+\textbf{Part D — Extension: the drainage channel.}
+
+\begin{enumerate}
+\setcounter{enumi}{7}
+\item Show that $g$ is even and reduce $\displaystyle K=\int_{-2}^{2}\frac{dx}{x^2+4}$ to an integral over $[0,2]$.
+\item Using $\displaystyle\int\frac{dx}{x^2+a^2} = \frac{1}{a}\arctan\frac{x}{a} + C$ with $a=2$, compute $K$ exactly (a multiple of $\pi$ is expected), then in $\mathrm{m}^2$.
+\item \textbf{Synthesis.} Prepare a five-minute board presentation: parity argument, substitution, mean value, arctangent result, and the answer to the site manager's error.
+\end{enumerate}
+
+\begin{attention}[Pitfalls to avoid]
+\begin{itemize}
+\item Confusing $\displaystyle\int_{-a}^{a} f$ (signed) with $\displaystyle\int_{-a}^{a} |f|$ (area). An odd function has a zero signed integral but generally a \emph{non-zero} area.
+\item Forgetting to change the bounds when substituting $u = x^2+4$.
+\item Writing $\ln(x^2+4)$ without absolute value is acceptable here since $x^2+4>0$, but say so explicitly.
+\item Forgetting the factor $\dfrac{1}{2}$ coming from $du = 2x\,dx$.
+\item Giving the area in ``square units'' and forgetting the conversion: $1$ square unit $= 100\ \mathrm{m}^2$.
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+\textbf{Part A.}\par
+\textbf{1.} For all $x\in[-4,4]$,
+\[
+f(-x) = \frac{-x}{(-x)^2+4} = \frac{-x}{x^2+4} = -f(x).
+\]
+Hence $f$ is an \cle{odd function}; its graph is symmetric with respect to the \textbf{origin} of the coordinate system (central symmetry).
+
+\textbf{2.} Symmetry property: if $f$ is odd and continuous on $[-a,a]$, then $\displaystyle\int_{-a}^{a} f(x)\,dx = 0$. (Proof: with $x=-t$ on $[-a,0]$, $\int_{-a}^{0}f(x)\,dx = \int_{a}^{0}f(-t)(-dt) = -\int_{0}^{a}f(t)\,dt$.) Therefore
+\[
+I = \int_{-4}^{4}\frac{x}{x^2+4}\,dx = 0.
+\]
+
+\textbf{3.} The signed integral counts the region below the axis ($x<0$, excavation) \emph{negatively} and the region above ($x>0$, fill) \emph{positively}; the two contributions cancel algebraically. Physically, however, excavation and embankment are two separate quantities of material, both positive: excavated soil is rarely reusable as compacted structural fill, and in any case the contractor must pay for \emph{both} operations. The relevant quantity is the integral of $|f|$, not of $f$.
+
+\textbf{Part B.}\par
+\textbf{4.} On $[-4,0]$, $f(x)\le 0$; on $[0,4]$, $f(x)\ge 0$. The geometric area is therefore $\mathcal{A} = \int_{-4}^{4}|f(x)|\,dx$. Since $f$ is odd, $|f|$ is \textbf{even} ($|f(-x)| = |-f(x)| = |f(x)|$), so by symmetry of even functions:
+\[
+\mathcal{A} = 2\int_{0}^{4}\frac{x}{x^2+4}\,dx.
+\]
+
+\textbf{5.} Let $u = x^2+4$, so $du = 2x\,dx$, i.e.\ $x\,dx = \dfrac{du}{2}$. Bounds: $x=0 \Rightarrow u=4$; $x=4 \Rightarrow u=20$. Then
+\[
+J = \int_{0}^{4}\frac{x\,dx}{x^2+4} = \frac{1}{2}\int_{4}^{20}\frac{du}{u} = \frac{1}{2}\Big[\ln u\Big]_{4}^{20} = \frac{1}{2}\ln\frac{20}{4} = \frac{1}{2}\ln 5.
+\]
+(Note: $u>0$ on $[4,20]$, so the absolute value inside the logarithm is not needed.)
+
+\textbf{6.} Hence
+\[
+\mathcal{A} = 2J = \ln 5 \approx 1.609 \text{ square units}.
+\]
+Converting: $\mathcal{A} = 100\ln 5 \approx 160.944\ \mathrm{m}^2$ of masonry facing.
+
+\textbf{Part C.}\par
+\textbf{7.} The mean value of $f$ on $[0,4]$ is
+\[
+\bar{y} = \frac{1}{4-0}\int_{0}^{4} f(x)\,dx = \frac{J}{4} = \frac{\ln 5}{8} \approx 0.201 \text{ units},
+\]
+i.e.\ $\bar{y} \approx 2.012\ \mathrm{m}$. Interpretation: a rectangular embankment of constant height $2.01$ m over the $40$ m stretch would present the same side area as the real curved ramp.
+
+\textbf{Part D.}\par
+\textbf{8.} $g(-x) = \dfrac{1}{(-x)^2+4} = g(x)$: $g$ is \textbf{even}, so
+\[
+K = \int_{-2}^{2}\frac{dx}{x^2+4} = 2\int_{0}^{2}\frac{dx}{x^2+4}.
+\]
+
+\textbf{9.} With $a=2$, a primitive is $\dfrac{1}{2}\arctan\dfrac{x}{2}$. Thus
+\[
+K = 2\left[\frac{1}{2}\arctan\frac{x}{2}\right]_{0}^{2} = \arctan 1 - \arctan 0 = \frac{\pi}{4} \approx 0.785 \text{ square units},
+\]
+that is $K = 25\pi \approx 78.540\ \mathrm{m}^2$ for the channel cross-section.
+
+\textbf{10. Synthesis (expected presentation outline).}
+\begin{itemize}
+\item $f$ odd $\Rightarrow$ signed integral zero, but \emph{area} uses $|f|$ — the site manager's conclusion is wrong;
+\item substitution $u = x^2+4$ turns $\dfrac{x}{x^2+4}$ into $\dfrac{1}{2}\cdot\dfrac{u'}{u}$, giving logarithms;
+\item mean height $= \dfrac{1}{b-a}\displaystyle\int_a^b f$;
+\item $\dfrac{1}{x^2+a^2}$ integrates to an arctangent, giving the exact value $\dfrac{\pi}{4}$.
+\end{itemize}
+
+\begin{savaistu}[Did you know?]
+The identity $\arctan 1 = \dfrac{\pi}{4}$ used above is the simplest case of the \emph{Machin-type formulae}, once used to compute thousands of digits of $\pi$ by hand. Every time a GCE candidate integrates $\dfrac{1}{x^2+a^2}$, a little piece of $\pi$ appears — a reminder that the arctangent function is the bridge between rational functions and the geometry of the circle.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Primitives and the Indefinite Integral}
+
+\begin{savaistu}[Historical Note]
+The notation $\int f(x)\,dx$ for the indefinite integral was introduced by Gottfried Wilhelm Leibniz in 1675. The elongated 'S' stands for \emph{summa} (sum), reflecting the integral's origin as a limit of sums. The constant of integration $C$ was emphasised by Euler, who recognised that differentiation loses constant information.
+\end{savaistu}
+
+\begin{definition}[Primitive and Indefinite Integral]
+A function $F$ is a \cle{primitive} (or \cle{antiderivative}) of $f$ on an interval $I$ if $F'(x)=f(x)$ for all $x\in I$. The \cle{indefinite integral} of $f$ is the family of all its primitives, denoted
+\[
+\int f(x)\,dx = F(x) + C,\qquad C\in\mathbb{R}.
+\]
+The function $f$ is the \cle{integrand}, $x$ is the \cle{variable of integration}, and $C$ is the \cle{arbitrary constant}.
+\end{definition}
+
+\begin{propriete}[Linearity of the Indefinite Integral]
+For any functions $f,g$ integrable on an interval and constants $a,b\in\mathbb{R}$,
+\[
+\int \bigl[ a f(x) + b g(x) \bigr]\,dx = a\int f(x)\,dx + b\int g(x)\,dx.
+\]
+\emph{Proof:} Differentiate the right-hand side using linearity of the derivative.
+\end{propriete}
+
+\begin{aretenir}[Table of Standard Primitives (Memorise)]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\textbf{Function $f(x)$} & \textbf{Primitive $\int f(x)\,dx$} \\ \hline
+$x^n\ (n\neq -1)$ & $\dfrac{x^{n+1}}{n+1}+C$ \\ \hline
+$\dfrac{1}{x}$ & $\ln|x|+C$ \\ \hline
+$e^{ax}$ & $\dfrac{1}{a}e^{ax}+C$ \\ \hline
+$a^x\ (a>0,a\neq1)$ & $\dfrac{a^x}{\ln a}+C$ \\ \hline
+$\sin(ax)$ & $-\dfrac{1}{a}\cos(ax)+C$ \\ \hline
+$\cos(ax)$ & $\dfrac{1}{a}\sin(ax)+C$ \\ \hline
+$\sec^2(ax)$ & $\dfrac{1}{a}\tan(ax)+C$ \\ \hline
+$\csc^2(ax)$ & $-\dfrac{1}{a}\cot(ax)+C$ \\ \hline
+$\sec(ax)\tan(ax)$ & $\dfrac{1}{a}\sec(ax)+C$ \\ \hline
+$\csc(ax)\cot(ax)$ & $-\dfrac{1}{a}\csc(ax)+C$ \\ \hline
+$\dfrac{1}{a^2+x^2}$ & $\dfrac{1}{a}\arctan\dfrac{x}{a}+C$ \\ \hline
+$\dfrac{1}{\sqrt{a^2-x^2}}$ & $\arcsin\dfrac{x}{a}+C$ \\ \hline
+$\dfrac{1}{x\sqrt{x^2-a^2}}$ & $\dfrac{1}{a}\operatorname{arcsec}\dfrac{|x|}{a}+C$ \\ \hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{methode}[Finding Primitives: Standard Forms and Linearity]
+\textbf{Goal:} Determine $\int f(x)\,dx = F(x)+C$ where $F'(x)=f(x)$.
+\par\noindent\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Identify the form:} Match the integrand to a standard derivative result (power, exponential, trigonometric, logarithmic, inverse trigonometric).
+    \item \textbf{Apply Linearity:} Split sums/differences; pull out constants.
+    \item \textbf{Adjust for Chain Rule (Mental Substitution):} If the integrand is $f(ax+b)$, the primitive is $\frac{1}{a}F(ax+b)+C$. \emph{Check by differentiating mentally.}
+    \item \textbf{Add the constant $C$:} Never forget the arbitrary constant for indefinite integrals.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Algebraic and Trigonometric Combination]
+Find the following indefinite integrals:
+\begin{enumerate}
+    \item $\displaystyle \int \left( 3x^2 - \frac{4}{x} + 5e^{2x} \right) dx$
+    \item $\displaystyle \int \frac{\sin 2x}{\cos^2 2x}\,dx$
+    \item $\displaystyle \int \frac{x^3+2x^2-x+1}{x^2}\,dx$
+\end{enumerate}
+\end{exemplebox}
+
+\begin{exoresolu}[Indefinite Integration: Worked Solutions]
+\textbf{(a)} Apply linearity and standard forms term by term.
+\[
+\int \left( 3x^2 - \frac{4}{x} + 5e^{2x} \right) dx = 3\int x^2\,dx - 4\int \frac{1}{x}\,dx + 5\int e^{2x}\,dx
+\]
+\[
+= 3\left(\frac{x^3}{3}\right) - 4\ln|x| + 5\left(\frac{e^{2x}}{2}\right) + C = \boxed{x^3 - 4\ln|x| + \frac{5}{2}e^{2x} + C}
+\]
+
+\textbf{(b)} Recognise the derivative of $\sec 2x$ or use substitution $u=\cos 2x$.
+\emph{Method 1 (Inspection):} $\frac{d}{dx}(\sec 2x) = 2\sec 2x \tan 2x = \frac{2\sin 2x}{\cos^2 2x}$.
+The integrand is $\frac{1}{2}$ of this derivative.
+\[
+\int \frac{\sin 2x}{\cos^2 2x}\,dx = \frac{1}{2}\sec 2x + C
+\]
+\emph{Method 2 (Substitution $u=\cos 2x$, $du=-2\sin 2x\,dx$):}
+\[
+\int \frac{\sin 2x}{\cos^2 2x}\,dx = \int \frac{-1/2\, du}{u^2} = -\frac{1}{2}\int u^{-2}\,du = -\frac{1}{2}\left(\frac{u^{-1}}{-1}\right)+C = \frac{1}{2u}+C = \boxed{\frac{1}{2}\sec 2x + C}
+\]
+
+\textbf{(c)} The degree of numerator ($\ge$ degree of denominator). Perform long division first.
+\[
+\frac{x^3+2x^2-x+1}{x^2} = x + 2 - \frac{1}{x} + \frac{1}{x^2}
+\]
+Now integrate term by term:
+\[
+\int \left( x + 2 - x^{-1} + x^{-2} \right) dx = \frac{x^2}{2} + 2x - \ln|x| + \frac{x^{-1}}{-1} + C
+\]
+\[
+= \boxed{\frac{x^2}{2} + 2x - \ln|x| - \frac{1}{x} + C}
+\]
+\end{exoresolu}
+
+\begin{attention}[Common Mistakes]
+\begin{itemize}
+    \item Forgetting the absolute value in $\ln|x|$ when integrating $1/x$.
+    \item Forgetting the factor $1/a$ when integrating $f(ax+b)$ (e.g. $\int \cos 3x\,dx = \frac{1}{3}\sin 3x + C$, not $\sin 3x + C$).
+    \item Omitting the constant $C$ in indefinite integrals.
+    \item Not simplifying the integrand before integrating (e.g. long division, trigonometric identities).
+\end{itemize}
+\end{attention}
+
+\coursec{Definite Integrals and the Fundamental Theorem}
+
+\begin{definition}[Definite Integral]
+Let $f$ be continuous on $[a,b]$. The \cle{definite integral} of $f$ from $a$ to $b$ is
+\[
+\int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{i=1}^n f(x_i^*)\Delta x,
+\]
+where $\Delta x = \frac{b-a}{n}$ and $x_i^*$ is a sample point in the $i$-th subinterval. It represents the \cle{signed area} between the curve $y=f(x)$ and the $x$-axis on $[a,b]$.
+\end{definition}
+
+\begin{propriete}[Fundamental Theorem of Calculus (FTC)]
+If $f$ is continuous on $[a,b]$ and $F$ is any primitive of $f$ on $[a,b]$, then
+\[
+\int_a^b f(x)\,dx = F(b) - F(a) = \Big[F(x)\Big]_a^b.
+\]
+\emph{Proof (examinable):} Define $A(x)=\int_a^x f(t)\,dt$. Show $A'(x)=f(x)$ using the Mean Value Theorem for integrals. Then $A(x)=F(x)+C$; evaluate at $x=a$ to find $C=-F(a)$; then $A(b)=F(b)-F(a)$.
+\end{propriete}
+
+\begin{propriete}[Properties of Definite Integrals]
+For $f,g$ continuous on $[a,b]$ and $c\in[a,b]$:
+\begin{enumerate}
+    \item $\int_a^b f(x)\,dx = -\int_b^a f(x)\,dx$
+    \item $\int_a^a f(x)\,dx = 0$
+    \item $\int_a^b f(x)\,dx = \int_a^c f(x)\,dx + \int_c^b f(x)\,dx$
+    \item $\int_a^b [f(x)\pm g(x)]\,dx = \int_a^b f(x)\,dx \pm \int_a^b g(x)\,dx$
+    \item $\int_a^b k f(x)\,dx = k\int_a^b f(x)\,dx$
+\end{enumerate}
+\end{propriete}
+
+\begin{methode}[Evaluating Definite Integrals: FTC]
+\textbf{Goal:} Compute $\int_a^b f(x)\,dx = F(b)-F(a)$.
+\par\noindent\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Find the Primitive $F(x)$:} Compute $\int f(x)\,dx$ (omit $+C$).
+    \item \textbf{Apply Limits:} Write $\Big[F(x)\Big]_a^b$. Substitute upper limit $b$, then subtract value at lower limit $a$.
+    \item \textbf{Simplify:} Combine logarithms ($\ln A - \ln B = \ln\frac{A}{B}$), rationalise denominators, evaluate trig functions at standard angles exactly.
+    \item \textbf{Check Continuity:} FTC requires $f$ continuous on $[a,b]$. If $f$ has a vertical asymptote inside $[a,b]$, the integral is \emph{improper} (split at asymptote, take limits).
+\end{enumerate}
+\textbf{Reflex:} Always write the square bracket notation $\Big[F(x)\Big]_a^b$ before substituting numbers to avoid sign errors.
+\end{methode}
+
+\begin{exoresolu}[Definite Integrals: Exponential, Rational and Trigonometric]
+Evaluate exactly:
+\begin{enumerate}
+    \item $\displaystyle \int_0^1 \frac{e^x + e^{-x}}{2}\,dx$
+    \item $\displaystyle \int_1^2 \frac{2x+3}{x^2+3x}\,dx$
+    \item $\displaystyle \int_0^{\pi/4} \tan x\,dx$
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solutions:}
+
+\textbf{(a)} Recognise the hyperbolic cosine: $\cosh x = \frac{e^x+e^{-x}}{2}$.
+Primitive: $\int \cosh x\,dx = \sinh x = \frac{e^x-e^{-x}}{2}$.
+\[
+\int_0^1 \cosh x\,dx = \Big[\sinh x\Big]_0^1 = \sinh 1 - \sinh 0 = \frac{e^1-e^{-1}}{2} - 0 = \boxed{\frac{e - e^{-1}}{2}}
+\]
+\textit{Alternative without hyperbolic functions:}
+\[
+\int_0^1 \frac{e^x+e^{-x}}{2}\,dx = \frac{1}{2}\Big[ e^x - e^{-x} \Big]_0^1 = \frac{1}{2}\left( (e - e^{-1}) - (1 - 1) \right) = \frac{e - e^{-1}}{2}
+\]
+
+\textbf{(b)} The numerator is the derivative of the denominator.
+Let $u = x^2+3x$, $du = (2x+3)\,dx$.
+Limits: $x=1 \Rightarrow u=4$; $x=2 \Rightarrow u=10$.
+\[
+\int_1^2 \frac{2x+3}{x^2+3x}\,dx = \int_4^{10} \frac{du}{u} = \Big[\ln|u|\Big]_4^{10} = \ln 10 - \ln 4 = \ln\frac{10}{4} = \boxed{\ln\frac{5}{2}}
+\]
+\textit{Directly:} $\Big[\ln|x^2+3x|\Big]_1^2 = \ln|10| - \ln|4| = \ln\frac{5}{2}$.
+
+\textbf{(c)} $\tan x = \frac{\sin x}{\cos x}$. Primitive is $-\ln|\cos x|$ (or $\ln|\sec x|$).
+\[
+\int_0^{\pi/4} \tan x\,dx = \Big[-\ln|\cos x|\Big]_0^{\pi/4} = -\ln\left(\cos\frac{\pi}{4}\right) + \ln(\cos 0)
+\]
+\[
+= -\ln\left(\frac{\sqrt{2}}{2}\right) + \ln(1) = -\ln(2^{-1/2}) = \frac{1}{2}\ln 2 = \boxed{\frac{1}{2}\ln 2}
+\]
+\end{exoresolu}
+
+\begin{experience}[Area Interpretation]
+Use graphing software (or sketch by hand) to plot $y=\frac{e^x+e^{-x}}{2}$ on $[0,1]$. The area under the curve equals $\frac{e-e^{-1}}{2}\approx 1.175$. Compare with the rectangle of height $1$ (area $1$) and the trapezoid joining $(0,1)$ and $(1,\cosh 1)$ (area $\approx 1.27$). The integral lies between them, as expected for a convex function.
+\end{experience}
+
+\coursec{Integration of Rational Functions}
+
+\begin{definition}[Rational Function]
+A \cle{rational function} is a quotient $R(x)=\frac{P(x)}{Q(x)}$ where $P,Q$ are polynomials. It is \cle{proper} if $\deg P < \deg Q$, otherwise \cle{improper}.
+\end{definition}
+
+\begin{methode}[Integration of Rational Functions: Partial Fractions]
+\textbf{Goal:} Integrate $\int \frac{P(x)}{Q(x)}\,dx$.
+\par\noindent\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Check Degree:} If $\deg P \ge \deg Q$, perform \textbf{polynomial long division}. Write $\frac{P}{Q} = S(x) + \frac{R(x)}{Q(x)}$ with $\deg R < \deg Q$.
+    \item \textbf{Factorise Denominator $Q(x)$:} Over $\mathbb{R}$ into linear factors $(ax+b)^m$ and irreducible quadratics $(ax^2+bx+c)^n$ ($\Delta < 0$).
+    \item \textbf{Set up Partial Fractions Decomposition:}
+    \begin{itemize}
+        \item Linear factor $(px+q)^m$: $\frac{A_1}{px+q} + \frac{A_2}{(px+q)^2} + \dots + \frac{A_m}{(px+q)^m}$
+        \item Quadratic factor $(ax^2+bx+c)^n$: $\frac{B_1x+C_1}{ax^2+bx+c} + \dots + \frac{B_nx+C_n}{(ax^2+bx+c)^n}$
+    \end{itemize}
+    \item \textbf{Determine Constants:} Use \emph{Heaviside cover-up} for distinct linear factors, or equate coefficients / substitute convenient $x$-values for repeated/quadratic factors.
+    \item \textbf{Integrate Each Term:}
+    \[
+    \int \frac{A}{(px+q)^k}\,dx = \begin{cases} \frac{A}{p}\ln|px+q| & k=1 \\ \frac{A}{p(1-k)}(px+q)^{1-k} & k>1 \end{cases}
+    \]
+    For $\int \frac{Bx+C}{ax^2+bx+c}\,dx$: Split into $\frac{B}{2a}\frac{2ax+b}{ax^2+bx+c} + \text{constant} \times \frac{1}{ax^2+bx+c}$. The first part gives a logarithm; the second gives an arctan (complete the square).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Rational Functions: Partial Fractions with Repeated and Quadratic Factors]
+Evaluate $\displaystyle \int \frac{3x^3 + 2x^2 + 7x + 4}{(x^2+1)(x+1)^2}\,dx$.
+\tcblower
+\textbf{Detailed Solution:}
+
+\textbf{Step 1: Check Degree.} Numerator degree 3, Denominator degree 4. Proper fraction. No long division needed.
+
+\textbf{Step 2: Factorise Denominator.} $(x^2+1)$ (irreducible quadratic), $(x+1)^2$ (repeated linear).
+
+\textbf{Step 3: Set up Decomposition.}
+\[
+\frac{3x^3 + 2x^2 + 7x + 4}{(x^2+1)(x+1)^2} = \frac{Ax+B}{x^2+1} + \frac{C}{x+1} + \frac{D}{(x+1)^2}
+\]
+
+\textbf{Step 4: Find Constants $A, B, C, D$.}
+Multiply by $(x^2+1)(x+1)^2$:
+\[
+3x^3 + 2x^2 + 7x + 4 = (Ax+B)(x+1)^2 + C(x^2+1)(x+1) + D(x^2+1)
+\]
+\emph{Substitute $x=-1$ (Cover-up for $D$):}
+LHS $= 3(-1)+2(1)+7(-1)+4 = -3+2-7+4 = -4$.
+RHS $= D(1+1) = 2D \Rightarrow D = -2$.
+
+\emph{Substitute $x=0$:}
+LHS $= 4$. RHS $= B(1) + C(1)(1) + D(1) = B + C - 2 \Rightarrow B + C = 6$. \quad (Eq 1)
+
+\emph{Substitute $x=1$:}
+LHS $= 3+2+7+4=16$. RHS $= (A+B)(4) + C(2)(2) + D(2) = 4A+4B+4C-4$.
+$4A+4B+4C = 20 \Rightarrow A+B+C = 5$. \quad (Eq 2)
+
+\emph{Compare $x^3$ coefficients:}
+LHS: $3$. RHS: $A$ (from $Ax\cdot x^2$) $+ C$ (from $C\cdot x^2\cdot x$) $= A+C$.
+$\Rightarrow A + C = 3$. \quad (Eq 3)
+
+\textbf{Solve System:}
+Eq 2 - Eq 1: $(A+B+C) - (B+C) = 5 - 6 \Rightarrow A = -1$.
+Eq 3: $-1 + C = 3 \Rightarrow C = 4$.
+Eq 1: $B + 4 = 6 \Rightarrow B = 2$.
+
+\textbf{Decomposition:}
+\[
+\frac{-x+2}{x^2+1} + \frac{4}{x+1} - \frac{2}{(x+1)^2}
+\]
+
+\textbf{Step 5: Integrate.}
+\[
+\int \frac{-x+2}{x^2+1}\,dx + \int \frac{4}{x+1}\,dx - \int \frac{2}{(x+1)^2}\,dx
+\]
+Split first integral: $\int \frac{-x}{x^2+1}\,dx + \int \frac{2}{x^2+1}\,dx$.
+\begin{align*}
+\int \frac{-x}{x^2+1}\,dx &= -\frac{1}{2}\ln(x^2+1) \quad (\text{sub } u=x^2+1) \\
+\int \frac{2}{x^2+1}\,dx &= 2\arctan x \\
+\int \frac{4}{x+1}\,dx &= 4\ln|x+1| \\
+\int \frac{-2}{(x+1)^2}\,dx &= \frac{2}{x+1} \quad (\text{power rule})
+\end{align*}
+\textbf{Final Answer:}
+\[
+\boxed{-\frac{1}{2}\ln(x^2+1) + 2\arctan x + 4\ln|x+1| + \frac{2}{x+1} + C}
+\]
+\end{exoresolu}
+
+\begin{attention}[Partial Fractions Traps]
+\begin{itemize}
+    \item Always check degree first! Long division is mandatory for improper fractions.
+    \item For irreducible quadratics, the numerator must be \emph{linear} ($Bx+C$), not constant.
+    \item When completing the square for $\int\frac{dx}{ax^2+bx+c}$, ensure the coefficient of $x^2$ is $1$ before applying $\int\frac{du}{u^2+a^2}=\frac{1}{a}\arctan\frac{u}{a}$.
+    \item Don't forget absolute values in logarithms of linear factors.
+\end{itemize}
+\end{attention}
+
+\coursec{Integration by Substitution and Symmetry}
+
+\begin{propriete}[Change of Variable Theorem (Substitution Rule)]
+If $u=g(x)$ is differentiable on $[a,b]$ and $f$ is continuous on the range of $g$, then
+\[
+\int_a^b f(g(x))g'(x)\,dx = \int_{g(a)}^{g(b)} f(u)\,du.
+\]
+For indefinite integrals: $\int f(g(x))g'(x)\,dx = \int f(u)\,du$ with $u=g(x)$, then back-substitute.
+\end{propriete}
+
+\begin{methode}[Integration by Substitution (Change of Variable)]
+\textbf{Goal:} Simplify $\int f(g(x))g'(x)\,dx$ or $\int f(x)\,dx$ by letting $x = g(u)$ or $u = g(x)$.
+\par\noindent\textbf{Steps (Indefinite Integral):}
+\begin{enumerate}
+    \item \textbf{Choose $u$:} Identify an ``inner function'' $g(x)$ whose derivative $g'(x)$ appears (up to a constant factor) in the integrand. Common choices: $u = \text{radicand}$, $u = \text{denominator}$, $u = \text{trig argument}$.
+    \item \textbf{Compute $du$:} $du = g'(x)\,dx \implies dx = \frac{du}{g'(x)}$.
+    \item \textbf{Substitute:} Replace \emph{all} $x$ and $dx$ with $u$ and $du$. The new integral must be purely in $u$.
+    \item \textbf{Integrate w.r.t $u$:} Find $\int F(u)\,du = G(u) + C$.
+    \item \textbf{Back-substitute:} Replace $u$ with $g(x)$ to express answer in terms of $x$.
+\end{enumerate}
+\textbf{Steps (Definite Integral $\int_a^b f(x)\,dx$):}
+\begin{enumerate}
+    \item Choose $u=g(x)$, find $du$.
+    \item \textbf{Change Limits:} $u_{\text{lower}} = g(a)$, $u_{\text{upper}} = g(b)$.
+    \item Integrate w.r.t $u$ with new limits. \textbf{No back-substitution needed.}
+\end{enumerate}
+\textbf{Standard Trigonometric Substitutions (for $\sqrt{\cdot}$):}
+\begin{itemize}
+    \item $\sqrt{a^2 - x^2} \Rightarrow x = a\sin\theta$ ($dx = a\cos\theta\,d\theta$), $\theta\in[-\pi/2,\pi/2]$
+    \item $\sqrt{a^2 + x^2} \Rightarrow x = a\tan\theta$ ($dx = a\sec^2\theta\,d\theta$), $\theta\in(-\pi/2,\pi/2)$
+    \item $\sqrt{x^2 - a^2} \Rightarrow x = a\sec\theta$ ($dx = a\sec\theta\tan\theta\,d\theta$), $\theta\in[0,\pi/2)\cup(\pi/2,\pi]$
+\end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Substitution: Algebraic and Trigonometric]
+Evaluate:
+\begin{enumerate}
+    \item $\displaystyle \int_0^1 \frac{x}{\sqrt{1+x^2}}\,dx$
+    \item $\displaystyle \int \frac{dx}{\sqrt{4 - x^2}}$
+    \item $\displaystyle \int_0^{\pi/6} \frac{\cos x}{(1+\sin x)^2}\,dx$
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solutions:}
+
+\textbf{(a) Definite Integral: Algebraic Substitution.}
+Let $u = 1+x^2 \Rightarrow du = 2x\,dx \Rightarrow x\,dx = \frac{1}{2}du$.
+Change limits: $x=0 \Rightarrow u=1$; $x=1 \Rightarrow u=2$.
+\[
+\int_0^1 \frac{x}{\sqrt{1+x^2}}\,dx = \int_1^2 \frac{1}{\sqrt{u}}\cdot\frac{1}{2}\,du = \frac{1}{2}\int_1^2 u^{-1/2}\,du
+\]
+\[
+= \frac{1}{2}\Big[ 2u^{1/2} \Big]_1^2 = \Big[ \sqrt{u} \Big]_1^2 = \sqrt{2} - 1 = \boxed{\sqrt{2} - 1}
+\]
+
+\textbf{(b) Indefinite Integral: Trigonometric Substitution.}
+Form $\sqrt{a^2 - x^2}$ with $a=2$. Use $x = 2\sin\theta$, $dx = 2\cos\theta\,d\theta$, $\theta \in [-\pi/2, \pi/2] \implies \cos\theta \ge 0$.
+\[
+\sqrt{4-x^2} = \sqrt{4-4\sin^2\theta} = \sqrt{4\cos^2\theta} = 2\cos\theta
+\]
+\[
+\int \frac{dx}{\sqrt{4-x^2}} = \int \frac{2\cos\theta\,d\theta}{2\cos\theta} = \int d\theta = \theta + C
+\]
+Back-substitute: $\sin\theta = \frac{x}{2} \Rightarrow \theta = \arcsin\frac{x}{2}$.
+\[
+\boxed{\arcsin\frac{x}{2} + C}
+\]
+
+\textbf{(c) Definite Integral: Direct Substitution.}
+Let $u = 1+\sin x \Rightarrow du = \cos x\,dx$.
+Change limits: $x=0 \Rightarrow u=1$; $x=\pi/6 \Rightarrow u=1+\frac{1}{2}=\frac{3}{2}$.
+\[
+\int_0^{\pi/6} \frac{\cos x}{(1+\sin x)^2}\,dx = \int_1^{3/2} \frac{du}{u^2} = \int_1^{3/2} u^{-2}\,du = \Big[ -u^{-1} \Big]_1^{3/2}
+\]
+\[
+= -\frac{1}{3/2} - (-1) = -\frac{2}{3} + 1 = \boxed{\frac{1}{3}}
+\]
+\end{exoresolu}
+
+\begin{methode}[Definite Integrals of Symmetric Functions]
+\textbf{Goal:} Exploit symmetry to evaluate $\int_{-a}^a f(x)\,dx$ quickly.
+\par\noindent\textbf{Properties (Proof Examinable):}
+Let $f$ be integrable on $[-a, a]$.
+\begin{itemize}
+    \item \textbf{Even Function} ($f(-x)=f(x)$): $\displaystyle \int_{-a}^a f(x)\,dx = 2\int_0^a f(x)\,dx$. Graph symmetric about $y$-axis.
+    \item \textbf{Odd Function} ($f(-x)=-f(x)$): $\displaystyle \int_{-a}^a f(x)\,dx = 0$. Graph symmetric about origin; signed areas cancel.
+\end{itemize}
+\textbf{Strategy:}
+\begin{enumerate}
+    \item Check if limits are symmetric $[-a, a]$.
+    \item Determine parity of $f(x)$: compute $f(-x)$.
+    \item If Even: Halve the interval, multiply by 2.
+    \item If Odd: Answer is 0 immediately.
+    \item If Neither: Split $f = f_{\text{even}} + f_{\text{odd}}$ (e.g. $x^3+x^2 \to x^3$ (odd) + $x^2$ (even)). Integral of odd part is 0.
+\end{enumerate}
+\textbf{Warning:} Only applies if $f$ is \emph{defined and integrable} on the whole interval $[-a,a]$. If there is a vertical asymptote at $x=0$, the integral is improper; symmetry does not guarantee cancellation (e.g. $\int_{-1}^1 \frac{1}{x}\,dx$ diverges).
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+% Even function
+\begin{scope}[xshift=-4cm]
+\draw[->] (-1.5,0) -- (1.5,0) node[right] {$x$};
+\draw[->] (0,-0.5) -- (0,2) node[above] {$y$};
+\draw[domain=-1.2:1.2, smooth, variable=\x, popblue, thick] plot ({\x}, {0.8*\x*\x+0.5});
+\draw[dashed] (-1,0) node[below] {$-a$} -- (-1,1.3);
+\draw[dashed] (1,0) node[below] {$a$} -- (1,1.3);
+\node at (0,2.3) {Even: $f(-x)=f(x)$};
+\node at (0,-0.8) {Area = $2\int_0^a f(x)dx$};
+\end{scope}
+% Odd function
+\begin{scope}[xshift=4cm]
+\draw[->] (-1.5,0) -- (1.5,0) node[right] {$x$};
+\draw[->] (0,-1.5) -- (0,1.5) node[above] {$y$};
+\draw[domain=-1.2:1.2, smooth, variable=\x, poporange, thick] plot ({\x}, {0.8*\x*\x*\x});
+\draw[dashed] (-1,0) node[below] {$-a$} -- (-1,-0.8);
+\draw[dashed] (1,0) node[below] {$a$} -- (1,0.8);
+\node at (0,1.8) {Odd: $f(-x)=-f(x)$};
+\node at (0,-1.8) {Area = $0$};
+\end{scope}
+\end{tikzpicture}
+\legende{Symmetry properties of definite integrals.}
+\end{popfigure}
+
+\begin{exoresolu}[Symmetry: Even, Odd, and Mixed Functions]
+Evaluate:
+\begin{enumerate}
+    \item $\displaystyle \int_{-2}^2 (x^5 - 3x^3 + 2x)\,dx$
+    \item $\displaystyle \int_{-\pi/2}^{\pi/2} (x^2 \cos x + \sin x)\,dx$
+    \item $\displaystyle \int_{-1}^1 \frac{x^4 + 2x^2 + 1}{x^2+1}\,dx$
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solutions:}
+
+\textbf{(a)} $f(x) = x^5 - 3x^3 + 2x$.
+$f(-x) = (-x)^5 - 3(-x)^3 + 2(-x) = -x^5 + 3x^3 - 2x = -(x^5 - 3x^3 + 2x) = -f(x)$.
+$f$ is \textbf{odd}. Limits $[-2, 2]$ are symmetric.
+\[
+\boxed{\int_{-2}^2 (x^5 - 3x^3 + 2x)\,dx = 0}
+\]
+
+\textbf{(b)} $f(x) = x^2 \cos x + \sin x$.
+Check parity:
+$x^2\cos x$: $(-x)^2\cos(-x) = x^2\cos x$ (Even $\times$ Even = Even).
+$\sin x$: $\sin(-x) = -\sin x$ (Odd).
+Sum = Even + Odd.
+Integral over $[-\pi/2, \pi/2]$:
+\[
+\int_{-\pi/2}^{\pi/2} x^2\cos x\,dx + \int_{-\pi/2}^{\pi/2} \sin x\,dx = 2\int_0^{\pi/2} x^2\cos x\,dx + 0
+\]
+Evaluate $I = \int_0^{\pi/2} x^2\cos x\,dx$ by Parts (twice).
+Let $u=x^2, dv=\cos x\,dx \Rightarrow du=2x\,dx, v=\sin x$.
+$I = \Big[x^2\sin x\Big]_0^{\pi/2} - \int_0^{\pi/2} 2x\sin x\,dx = \frac{\pi^2}{4} - 2\int_0^{\pi/2} x\sin x\,dx$.
+For $J = \int x\sin x\,dx$: $u=x, dv=\sin x\,dx \Rightarrow du=dx, v=-\cos x$.
+$J = \Big[-x\cos x\Big]_0^{\pi/2} + \int_0^{\pi/2} \cos x\,dx = 0 + \Big[\sin x\Big]_0^{\pi/2} = 1$.
+$I = \frac{\pi^2}{4} - 2(1) = \frac{\pi^2}{4} - 2$.
+Total Integral $= 2I = \boxed{\frac{\pi^2}{2} - 4}$.
+
+\textbf{(c)} $f(x) = \frac{x^4 + 2x^2 + 1}{x^2+1}$.
+Simplify first: Numerator $= (x^2+1)^2$.
+$f(x) = \frac{(x^2+1)^2}{x^2+1} = x^2+1$ (for all real $x$).
+$f(-x) = (-x)^2+1 = x^2+1 = f(x)$ \textbf{(Even)}.
+\[
+\int_{-1}^1 (x^2+1)\,dx = 2\int_0^1 (x^2+1)\,dx = 2\Big[ \frac{x^3}{3} + x \Big]_0^1 = 2\left(\frac{1}{3}+1\right) = \boxed{\frac{8}{3}}
+\]
+\end{exoresolu}
+
+\begin{savaistu}[King's Property]
+A powerful symmetry trick for integrals on $[0,a]$: $\int_0^a f(x)\,dx = \int_0^a f(a-x)\,dx$. This is a substitution $u=a-x$. Combined with the original integral, it often simplifies integrals involving $x$ and trigonometric functions, as seen in the synthesis example $\int_0^\pi \frac{x\sin x}{1+\cos^2 x}\,dx$.
+\end{savaistu}
+
+\coursec{Reduction Formulae and Synthesis}
+
+\begin{definition}[Reduction Formula]
+A \cle{reduction formula} expresses an integral $I_n$ depending on an integer parameter $n$ in terms of a similar integral with a lower index ($I_{n-1}$ or $I_{n-2}$). It allows recursive evaluation of integrals with high powers.
+\end{definition}
+
+\begin{methode}[Deriving and Using Reduction Formulae]
+\textbf{Goal:} Express $I_n = \int f_n(x)\,dx$ in terms of $I_{n-1}$ or $I_{n-2}$ to reduce the power/index $n$ recursively.
+\par\noindent\textbf{Steps (Derivation - Examinable):}
+\begin{enumerate}
+    \item \textbf{Define $I_n$ clearly:} e.g. $I_n = \int_0^{\pi/2} \sin^n x\,dx$ or $I_n = \int x^n e^x\,dx$.
+    \item \textbf{Set up Integration by Parts:} Choose $u$ and $dv$ to lower the power $n$.
+        \begin{itemize}
+            \item For $\int \sin^n x\,dx$: Write $\sin^n x = \sin^{n-1}x \cdot \sin x$. Let $u=\sin^{n-1}x$, $dv=\sin x\,dx$.
+            \item For $\int x^n e^x\,dx$: Let $u=x^n$, $dv=e^x\,dx$.
+            \item For $\int \ln^n x\,dx$: Let $u=\ln^n x$, $dv=dx$.
+        \end{itemize}
+    \item \textbf{Apply $\int u\,dv = uv - \int v\,du$:} Obtain an expression involving $I_n$ and $I_{n-2}$ (or $I_{n-1}$).
+    \item \textbf{Use Trig Identity (if needed):} Replace $\cos^2 x = 1-\sin^2 x$ or $\sec^2 x = 1+\tan^2 x$ to get $I_n$ on RHS.
+    \item \textbf{Solve for $I_n$:} Rearrange to get $I_n = \text{expression} + k I_{n-2}$.
+    \item \textbf{State Base Cases:} Compute $I_0$ and $I_1$ (or $I_0, I_1$ for definite) explicitly.
+\end{enumerate}
+\textbf{Steps (Application):}
+\begin{enumerate}
+    \item Write down the reduction formula.
+    \item Apply it repeatedly until reaching a base case ($I_0$ or $I_1$).
+    \item Substitute base values back up the chain.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Reduction Formula: $\int \sin^n x\,dx$ and Application]
+\begin{enumerate}
+    \item Derive the reduction formula for $I_n = \int \sin^n x\,dx$ ($n \ge 2$).
+    \item Hence evaluate $\displaystyle \int_0^{\pi/2} \sin^6 x\,dx$.
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solution:}
+
+\textbf{(a) Derivation of Reduction Formula (Indefinite).}
+Let $I_n = \int \sin^n x\,dx = \int \sin^{n-1}x \cdot \sin x\,dx$.
+Integration by Parts:
+$u = \sin^{n-1}x \Rightarrow du = (n-1)\sin^{n-2}x \cos x\,dx$
+$dv = \sin x\,dx \Rightarrow v = -\cos x$
+\[
+I_n = -\sin^{n-1}x \cos x - \int (-\cos x)(n-1)\sin^{n-2}x \cos x\,dx
+\]
+\[
+I_n = -\sin^{n-1}x \cos x + (n-1)\int \sin^{n-2}x \cos^2 x\,dx
+\]
+Use $\cos^2 x = 1 - \sin^2 x$:
+\[
+I_n = -\sin^{n-1}x \cos x + (n-1)\int \sin^{n-2}x (1-\sin^2 x)\,dx
+\]
+\[
+I_n = -\sin^{n-1}x \cos x + (n-1)\int \sin^{n-2}x\,dx - (n-1)\int \sin^n x\,dx
+\]
+\[
+I_n = -\sin^{n-1}x \cos x + (n-1)I_{n-2} - (n-1)I_n
+\]
+Bring $(n-1)I_n$ to LHS: $I_n + (n-1)I_n = n I_n$.
+\[
+n I_n = -\sin^{n-1}x \cos x + (n-1)I_{n-2}
+\]
+\[
+\boxed{I_n = -\frac{1}{n}\sin^{n-1}x \cos x + \frac{n-1}{n}I_{n-2}}
+\]
+
+\textbf{(b) Evaluate Definite Integral $J_n = \int_0^{\pi/2} \sin^n x\,dx$.}
+For definite limits $[0, \pi/2]$, the boundary term vanishes:
+$\Big[-\frac{1}{n}\sin^{n-1}x \cos x\Big]_0^{\pi/2} = 0$.
+Reduction Formula: $\boxed{J_n = \frac{n-1}{n} J_{n-2}}$ for $n \ge 2$.
+
+\textbf{Base Cases:}
+$J_0 = \int_0^{\pi/2} 1\,dx = \frac{\pi}{2}$.
+$J_1 = \int_0^{\pi/2} \sin x\,dx = \Big[-\cos x\Big]_0^{\pi/2} = 1$.
+
+\textbf{Compute $J_6$ (Even $n$, reduces to $J_0$):}
+\[
+J_6 = \frac{5}{6} J_4
+\]
+\[
+J_4 = \frac{3}{4} J_2
+\]
+\[
+J_2 = \frac{1}{2} J_0 = \frac{1}{2}\cdot\frac{\pi}{2} = \frac{\pi}{4}
+\]
+Back-substitute:
+$J_4 = \frac{3}{4} \cdot \frac{\pi}{4} = \frac{3\pi}{16}$.
+$J_6 = \frac{5}{6} \cdot \frac{3\pi}{16} = \frac{15\pi}{96} = \boxed{\frac{5\pi}{32}}$.
+\end{exoresolu}
+
+\begin{aretenir}[Wallis's Formulae (Important for GCE)]
+For $J_n = \int_0^{\pi/2} \sin^n x\,dx = \int_0^{\pi/2} \cos^n x\,dx$:
+\[
+J_n = \begin{cases}
+\frac{(n-1)!!}{n!!}\cdot\frac{\pi}{2} & n \text{ even} \\[6pt]
+\frac{(n-1)!!}{n!!} & n \text{ odd}
+\end{cases}
+\]
+where $n!! = n(n-2)(n-4)\cdots$ (down to $2$ or $1$). These are derived directly from the reduction formula.
+\end{aretenir}
+
+\begin{methode}[Synthesis: Choosing the Right Technique]
+\textbf{Goal:} Tackle integrals requiring a combination of methods (Substitution $\to$ Partial Fractions, Parts $\to$ Reduction, Symmetry $\to$ Substitution).
+\par\noindent\textbf{Decision Flowchart (Mental Checklist):}
+\begin{enumerate}
+    \item \textbf{Simplify First:} Long division? Trig identities ($\sin^2,\cos^2,\tan^2$)? Factorise?
+    \item \textbf{Spot Standard Derivative:} Is it $\int f'(x)/f(x)$, $\int f'(x)f(x)^n$, $\int f'(x)e^{f(x)}$?
+    \item \textbf{Substitution ($u=g(x)$):} Composite function? Radicand? Denominator?
+    \item \textbf{Integration by Parts:} Product of distinct types (Polynomial $\times$ Exp/Trig/Log)? $\int \ln x$, $\int \arcsin x$?
+    \item \textbf{Partial Fractions:} Proper rational function?
+    \item \textbf{Trig Substitution:} $\sqrt{a^2\pm x^2}$ or $\sqrt{x^2-a^2}$?
+    \item \textbf{Symmetry:} Limits $[-a,a]$ or $[0,a]$ with King's property?
+    \item \textbf{Reduction:} High power of trig/log/exp?
+\end{enumerate}
+\textbf{Verification:} Always differentiate your answer mentally (or explicitly) to check.
+\end{methode}
+
+\begin{exoresolu}[Synthesis Problem: GCE Style Mixed Integration]
+Evaluate:
+\begin{enumerate}
+    \item $\displaystyle \int_0^1 \frac{x^3}{\sqrt{1-x^2}}\,dx$
+    \item $\displaystyle \int \frac{x^2}{(x-1)^2(x+2)}\,dx$
+    \item $\displaystyle \int_0^{\pi} \frac{x \sin x}{1+\cos^2 x}\,dx$ \emph{(Hint: Use substitution $x \to \pi - x$)}
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solutions:}
+
+\textbf{(a) $\int_0^1 \frac{x^3}{\sqrt{1-x^2}}\,dx$}
+\emph{Observation:} Radicand $1-x^2$ suggests substitution $u=1-x^2$ or trig sub $x=\sin\theta$.
+\emph{Method: Algebraic Substitution $u = 1-x^2$.}
+$du = -2x\,dx \Rightarrow x\,dx = -\frac{1}{2}du$.
+$x^2 = 1-u$. Limits: $x=0 \Rightarrow u=1$; $x=1 \Rightarrow u=0$.
+\[
+\int_0^1 \frac{x^3}{\sqrt{1-x^2}}\,dx = \int_0^1 \frac{x^2 \cdot x\,dx}{\sqrt{1-x^2}} = \int_1^0 \frac{(1-u)}{\sqrt{u}} \left(-\frac{1}{2}du\right)
+\]
+\[
+= \frac{1}{2}\int_0^1 (1-u)u^{-1/2}\,du = \frac{1}{2}\int_0^1 (u^{-1/2} - u^{1/2})\,du
+\]
+\[
+= \frac{1}{2}\Big[ 2u^{1/2} - \frac{2}{3}u^{3/2} \Big]_0^1 = \frac{1}{2}\left( 2 - \frac{2}{3} \right) = \frac{1}{2}\cdot\frac{4}{3} = \boxed{\frac{2}{3}}
+\]
+
+\textbf{(b) $\int \frac{x^2}{(x-1)^2(x+2)}\,dx$}
+\emph{Observation:} Proper rational function. Denominator factorised. Repeated linear factor.
+\emph{Partial Fractions:}
+\[
+\frac{x^2}{(x-1)^2(x+2)} = \frac{A}{x-1} + \frac{B}{(x-1)^2} + \frac{C}{x+2}
+\]
+$x^2 = A(x-1)(x+2) + B(x+2) + C(x-1)^2$.
+$x=1$: $1 = B(3) \Rightarrow B = 1/3$.
+$x=-2$: $4 = C(9) \Rightarrow C = 4/9$.
+Compare $x^2$ coeff: $1 = A + C \Rightarrow A = 1 - 4/9 = 5/9$.
+Integrate:
+\[
+\int \left( \frac{5/9}{x-1} + \frac{1/3}{(x-1)^2} + \frac{4/9}{x+2} \right) dx
+\]
+\[
+= \frac{5}{9}\ln|x-1| + \frac{1}{3}\frac{(x-1)^{-1}}{-1} + \frac{4}{9}\ln|x+2| + C
+\]
+\[
+= \boxed{\frac{5}{9}\ln|x-1| - \frac{1}{3(x-1)} + \frac{4}{9}\ln|x+2| + C}
+\]
+
+\textbf{(c) $\int_0^{\pi} \frac{x \sin x}{1+\cos^2 x}\,dx$}
+\emph{Observation:} Limits $[0, \pi]$, numerator has $x$. Use King's Property: $\int_0^a f(x)\,dx = \int_0^a f(a-x)\,dx$.
+Let $I = \int_0^{\pi} \frac{x \sin x}{1+\cos^2 x}\,dx$.
+Substitute $x \to \pi - x$:
+$I = \int_0^{\pi} \frac{(\pi - x) \sin(\pi - x)}{1+\cos^2(\pi - x)}\,dx = \int_0^{\pi} \frac{(\pi - x) \sin x}{1+(-\cos x)^2}\,dx = \int_0^{\pi} \frac{(\pi - x) \sin x}{1+\cos^2 x}\,dx$.
+Add the two expressions for $I$:
+$2I = \int_0^{\pi} \frac{x\sin x + (\pi-x)\sin x}{1+\cos^2 x}\,dx = \int_0^{\pi} \frac{\pi \sin x}{1+\cos^2 x}\,dx$.
+$I = \frac{\pi}{2} \int_0^{\pi} \frac{\sin x}{1+\cos^2 x}\,dx$.
+Now substitute $u = \cos x$, $du = -\sin x\,dx$.
+Limits: $x=0 \Rightarrow u=1$; $x=\pi \Rightarrow u=-1$.
+$I = \frac{\pi}{2} \int_1^{-1} \frac{-du}{1+u^2} = \frac{\pi}{2} \int_{-1}^{1} \frac{du}{1+u^2}$.
+Integrand $\frac{1}{1+u^2}$ is Even. Limits symmetric.
+$I = \frac{\pi}{2} \cdot 2 \int_0^1 \frac{du}{1+u^2} = \pi \Big[\arctan u\Big]_0^1 = \pi \left( \frac{\pi}{4} - 0 \right) = \boxed{\frac{\pi^2}{4}}$.
+\end{exoresolu}
+
+\begin{exercice}[Practice Exercises for Chapter FMA04]
+\begin{enumerate}
+    \item Find $\int \left( \frac{2}{x} - 3\sin 2x + 4e^{-x} \right) dx$.
+    \item Evaluate $\int_0^1 \frac{2x+1}{x^2+x+1}\,dx$.
+    \item Use partial fractions to find $\int \frac{5x-1}{(x-2)(x+3)}\,dx$.
+    \item Evaluate $\int_0^{\pi/2} \sin^2 x \cos^2 x\,dx$ using a reduction formula or trig identities.
+    \item Show that $\int_{-a}^a x^3 e^{x^2}\,dx = 0$ without integrating.
+    \item Derive the reduction formula for $I_n = \int x^n e^x\,dx$ and use it to find $\int x^3 e^x\,dx$.
+    \item Evaluate $\int_0^1 \frac{x^2}{\sqrt{1-x^2}}\,dx$ using trigonometric substitution.
+    \item Find $\int \frac{dx}{x\sqrt{x^2-9}}$.
+    \item Use the substitution $u = \sqrt{x}$ to evaluate $\int_0^4 \frac{e^{\sqrt{x}}}{\sqrt{x}}\,dx$.
+    \item Evaluate $\int_0^{\pi} \frac{x}{1+\sin x}\,dx$ using King's property.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$\int \left( \frac{2}{x} - 3\sin 2x + 4e^{-x} \right) dx = 2\ln|x| + \frac{3}{2}\cos 2x - 4e^{-x} + C$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+Numerator is derivative of denominator: $\int_0^1 \frac{2x+1}{x^2+x+1}\,dx = \Big[\ln(x^2+x+1)\Big]_0^1 = \ln 3 - \ln 1 = \ln 3$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$\frac{5x-1}{(x-2)(x+3)} = \frac{9/5}{x-2} + \frac{16/5}{x+3}$. Integral $= \frac{9}{5}\ln|x-2| + \frac{16}{5}\ln|x+3| + C$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+$\sin^2 x \cos^2 x = \frac{1}{4}\sin^2 2x = \frac{1}{8}(1-\cos 4x)$. $\int_0^{\pi/2} \frac{1}{8}(1-\cos 4x)\,dx = \frac{1}{8}\left[ x - \frac{1}{4}\sin 4x \right]_0^{\pi/2} = \frac{\pi}{16}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+$f(x)=x^3 e^{x^2}$. $f(-x) = -x^3 e^{x^2} = -f(x)$ (odd). Limits symmetric $[-a,a]$. Integral $=0$.
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+$I_n = \int x^n e^x\,dx$. Parts: $u=x^n, dv=e^x dx \Rightarrow I_n = x^n e^x - n I_{n-1}$.
+$I_0 = e^x$. $I_1 = x e^x - e^x$. $I_2 = x^2 e^x - 2(x e^x - e^x) = e^x(x^2-2x+2)$.
+$I_3 = x^3 e^x - 3 e^x(x^2-2x+2) = e^x(x^3 - 3x^2 + 6x - 6) + C$.
+\end{corrige}
+
+\begin{corrige}[Exercise 7]
+$x=\sin\theta, dx=\cos\theta d\theta$. $\int_0^{\pi/2} \frac{\sin^2\theta}{\cos\theta}\cos\theta\,d\theta = \int_0^{\pi/2} \sin^2\theta\,d\theta = \int_0^{\pi/2} \frac{1-\cos 2\theta}{2}\,d\theta = \frac{\pi}{4}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 8]
+Standard form: $\int \frac{dx}{x\sqrt{x^2-a^2}} = \frac{1}{a}\operatorname{arcsec}\frac{|x|}{a}+C$. With $a=3$: $\frac{1}{3}\operatorname{arcsec}\frac{|x|}{3}+C$.
+\end{corrige}
+
+\begin{corrige}[Exercise 9]
+$u=\sqrt{x}, du = \frac{1}{2\sqrt{x}}dx \Rightarrow \frac{dx}{\sqrt{x}} = 2du$. Limits: $0\to0, 4\to2$. $\int_0^2 2e^u\,du = 2[e^u]_0^2 = 2(e^2-1)$.
+\end{corrige}
+
+\begin{corrige}[Exercise 10]
+$I = \int_0^\pi \frac{x}{1+\sin x}\,dx$. King: $I = \int_0^\pi \frac{\pi-x}{1+\sin x}\,dx$. $2I = \pi\int_0^\pi \frac{dx}{1+\sin x}$.
+Multiply numerator/denominator by $1-\sin x$: $\int_0^\pi \frac{1-\sin x}{\cos^2 x}\,dx = \int_0^\pi (\sec^2 x - \sec x \tan x)\,dx = [\tan x - \sec x]_0^\pi$.
+At $\pi$: $\tan\pi - \sec\pi = 0 - (-1) = 1$. At $0$: $0 - 1 = -1$. Difference $= 2$.
+$2I = \pi \cdot 2 \Rightarrow I = \pi$.
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Indefinite integrals]
+Which of the following is the correct indefinite integral $\displaystyle\int \frac{1}{x^2+4}\,dx$?
+\begin{enumerate}
+\item $\displaystyle \frac{1}{2}\arctan\left(\frac{x}{2}\right)+C$
+\item $\displaystyle \frac{1}{2}\ln(x^2+4)+C$
+\item $\displaystyle \arctan(2x)+C$
+\item $\displaystyle \frac{1}{2}\arctan(2x)+C$
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False with justification]
+Determine whether each statement is true or false. Justify your answer.
+\begin{enumerate}
+\item $\displaystyle\int_{-a}^{a} f(x)\,dx = 0$ for every function $f$ and every $a>0$.
+\item If $f$ is continuous on $[a,b]$, then $\displaystyle\int_a^b f(x)\,dx = F(b)-F(a)$ where $F$ is any primitive of $f$.
+\item The substitution $u = x^2$ transforms $\displaystyle\int x\cos(x^2)\,dx$ into $\displaystyle\frac12\int \cos u\,du$.
+\item A reduction formula always expresses $I_n$ in terms of $I_{n-1}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions and direct calculations]
+\begin{enumerate}
+\item Write the definition of the definite integral $\displaystyle\int_a^b f(x)\,dx$ as a limit of Riemann sums.
+\item State the Fundamental Theorem of Calculus (Part 1 and Part 2).
+\item Evaluate directly: $\displaystyle\int_0^1 (3x^2 - 2x + 5)\,dx$.
+\item Evaluate directly: $\displaystyle\int \frac{2x}{x^2+1}\,dx$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Quick integration practice]
+Find the following indefinite integrals:
+\begin{enumerate}
+\item $\displaystyle\int \frac{dx}{x^2-9}$
+\item $\displaystyle\int \frac{x}{\sqrt{1-x^2}}\,dx$
+\item $\displaystyle\int x e^{x^2}\,dx$
+\item $\displaystyle\int \sin^2 x\,dx$ (use a trigonometric identity)
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Integration of rational functions by partial fractions]
+\begin{enumerate}
+\item Express $\displaystyle\frac{5x-4}{(x-1)(x+2)}$ in partial fractions.
+\item Hence evaluate $\displaystyle\int_2^3 \frac{5x-4}{(x-1)(x+2)}\,dx$, giving your answer in the form $\ln k$ where $k$ is a rational number.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Integration by substitution]
+\begin{enumerate}
+\item Using the substitution $u = \sin x$, evaluate $\displaystyle\int_0^{\pi/2} \sin^3 x \cos x\,dx$.
+\item Evaluate $\displaystyle\int_0^{\pi/2} \cos^3 x\,dx$ by writing $\cos^3 x = \cos x(1-\sin^2 x)$ and using an appropriate substitution.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Symmetry and definite integrals]
+Show that $\displaystyle\int_{-1}^{1} \frac{x^3+x^2}{1+x^2}\,dx$ reduces to a rational-function integral, and evaluate it using parity and the integral of $\frac{1}{1+x^2}$.
+\end{exercice}
+
+\begin{exercice}[Algebraic division and integration]
+Find $\displaystyle\int \frac{x^3+2x}{x^2+1}\,dx$ by first performing algebraic division.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[GCE-style: Logarithmic integration and area]
+\begin{enumerate}
+\item[(a)] Show that $\dfrac{d}{dx}\bigl[x\ln x - x\bigr] = \ln x$.
+\item[(b)] Hence find $\displaystyle\int_1^e \ln x\,dx$.
+\item[(c)] Deduce the area between the curve $y = \ln x$ and the $x$-axis on the interval $\left[\frac1e, e\right]$.
+\end{enumerate}
+\textit{(Total: 8 marks)}
+\end{exercice}
+
+\begin{exercice}[GCE-style: Reduction formula]
+Given $I_n = \displaystyle\int_0^1 x^n e^x\,dx$ for $n \ge 0$.
+\begin{enumerate}
+\item[(a)] Prove that $I_n = e - n I_{n-1}$ for $n \ge 1$.
+\item[(b)] Find the exact value of $I_3$.
+\end{enumerate}
+\textit{(Total: 9 marks)}
+\end{exercice}
+
+\begin{exercice}[GCE-style: Mixed problem — velocity, substitution, mean value]
+The velocity of a vehicle on the Yaoundé–Douala highway is modelled by $v(t) = t e^{-t^2}$ m/s, where $t$ is the time in seconds.
+\begin{enumerate}
+\item[(a)] Use the substitution $u = t^2$ to find the distance covered between $t=0$ and $t=2$.
+\item[(b)] Find the mean velocity of the vehicle over the interval $[0,2]$.
+\end{enumerate}
+\textit{(Total: 7 marks)}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Indefinite integrals]
+The correct answer is \textbf{(a)}: $\displaystyle\int \frac{1}{x^2+4}\,dx = \frac{1}{2}\arctan\left(\frac{x}{2}\right)+C$.
+
+\textbf{Justification.} We use the standard result $\displaystyle\int \frac{dx}{x^2+a^2} = \frac{1}{a}\arctan\left(\frac{x}{a}\right)+C$ (valid for $a > 0$). Here $a^2 = 4$, so $a = 2$, giving
+\[
+\int \frac{1}{x^2+4}\,dx = \frac{1}{2}\arctan\left(\frac{x}{2}\right)+C.
+\]
+\textbf{Check by differentiation} (chain rule, with $\frac{d}{dx}\arctan u = \frac{u'}{1+u^2}$):
+\[
+\frac{d}{dx}\left[\frac{1}{2}\arctan\left(\frac{x}{2}\right)\right] = \frac{1}{2}\cdot\frac{1}{1+\left(\frac{x}{2}\right)^2}\cdot\frac{1}{2} = \frac{1}{4}\cdot\frac{1}{1+\frac{x^2}{4}} = \frac{1}{4+x^2}. \quad \checkmark
+\]
+Option (b) would be correct for $\displaystyle\int \frac{2x}{x^2+4}\,dx = \ln(x^2+4)+C$ (logarithmic form, numerator equal to the derivative of the denominator). Options (c) and (d) use the wrong argument inside $\arctan$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True/False with justification]
+\textbf{(a) FALSE.} The result $\displaystyle\int_{-a}^{a} f(x)\,dx = 0$ holds only when $f$ is \emph{odd}. Counter-example: take $f(x) = 1$ (an even function). Then
+\[
+\int_{-a}^{a} 1\,dx = \bigl[x\bigr]_{-a}^{a} = a - (-a) = 2a \neq 0.
+\]
+
+\textbf{(b) TRUE.} This is precisely the Fundamental Theorem of Calculus (Part 2): if $f$ is continuous on $[a,b]$ and $F$ is \emph{any} primitive of $f$ on $[a,b]$, then $\displaystyle\int_a^b f(x)\,dx = F(b) - F(a)$. The choice of primitive does not matter, since two primitives differ by a constant $C$ which cancels: $(F(b)+C)-(F(a)+C) = F(b)-F(a)$.
+
+\textbf{(c) TRUE.} Let $u = x^2$. Then $du = 2x\,dx$, so $x\,dx = \frac{1}{2}\,du$. Hence
+\[
+\int x\cos(x^2)\,dx = \int \cos u \cdot \frac{1}{2}\,du = \frac{1}{2}\int \cos u\,du = \frac{1}{2}\sin u + C = \frac{1}{2}\sin(x^2)+C.
+\]
+\emph{Check:} $\dfrac{d}{dx}\left[\frac12\sin(x^2)\right] = \frac12\cos(x^2)\cdot 2x = x\cos(x^2)$. \checkmark
+
+\textbf{(d) FALSE.} A reduction formula expresses $I_n$ in terms of an integral of the same family with a \emph{lower} index, but not necessarily $I_{n-1}$. For example, for $I_n = \displaystyle\int_0^{\pi/2} \sin^n x\,dx$, integration by parts gives $I_n = \frac{n-1}{n}I_{n-2}$, which relates $I_n$ to $I_{n-2}$, not $I_{n-1}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions and direct calculations]
+\textbf{(a) Definition as a limit of Riemann sums.} Let $f$ be defined on $[a,b]$. Divide $[a,b]$ into $n$ subintervals of equal width $\Delta x = \frac{b-a}{n}$ with subdivision points $x_k = a + k\Delta x$, and choose a sample point $x_k^{*}$ in each subinterval $[x_{k-1}, x_k]$. Then
+\[
+\int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{k=1}^{n} f(x_k^{*})\,\Delta x,
+\]
+provided this limit exists and is independent of the choice of the sample points. Geometrically, each term $f(x_k^{*})\Delta x$ is the area of a thin rectangle, and the limit gives the exact area under the curve.
+
+\textbf{(b) Fundamental Theorem of Calculus.}
+\begin{itemize}
+\item \emph{Part 1:} If $f$ is continuous on $[a,b]$, then the function $G$ defined by $G(x) = \displaystyle\int_a^x f(t)\,dt$ is differentiable on $[a,b]$ and $G'(x) = f(x)$. (Integration and differentiation are inverse operations.)
+\item \emph{Part 2:} If $f$ is continuous on $[a,b]$ and $F$ is any primitive of $f$, then $\displaystyle\int_a^b f(x)\,dx = F(b) - F(a)$.
+\end{itemize}
+
+\textbf{(c)} A primitive of $3x^2 - 2x + 5$ is $x^3 - x^2 + 5x$ (integrate term by term using $\int x^n\,dx = \frac{x^{n+1}}{n+1}$). Hence
+\[
+\int_0^1 (3x^2 - 2x + 5)\,dx = \Bigl[x^3 - x^2 + 5x\Bigr]_0^1 = (1 - 1 + 5) - 0 = \boxed{5}.
+\]
+
+\textbf{(d)} The numerator $2x$ is exactly the derivative of the denominator $x^2+1$, so this is the logarithmic form $\int \frac{u'}{u}\,dx = \ln|u| + C$:
+\[
+\int \frac{2x}{x^2+1}\,dx = \ln(x^2+1) + C,
+\]
+(the absolute value is unnecessary since $x^2+1 > 0$ for all $x$).
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Quick integration practice]
+\textbf{(a)} $\displaystyle\int \frac{dx}{x^2-9}$. Using partial fractions: $\dfrac{1}{x^2-9} = \dfrac{1}{(x-3)(x+3)} = \dfrac{1/6}{x-3} - \dfrac{1/6}{x+3}$. Hence
+\[
+\int \frac{dx}{x^2-9} = \frac{1}{6}\ln|x-3| - \frac{1}{6}\ln|x+3| + C = \frac{1}{6}\ln\left|\frac{x-3}{x+3}\right| + C.
+\]
+
+\textbf{(b)} $\displaystyle\int \frac{x}{\sqrt{1-x^2}}\,dx$. Let $u = 1 - x^2$, so $du = -2x\,dx$ and $x\,dx = -\frac{1}{2}du$:
+\[
+\int \frac{x}{\sqrt{1-x^2}}\,dx = -\frac{1}{2}\int u^{-1/2}\,du = -\frac{1}{2}\cdot 2u^{1/2} + C = -\sqrt{1-x^2} + C.
+\]
+\emph{Check:} $\dfrac{d}{dx}\left[-\sqrt{1-x^2}\right] = -\dfrac{-2x}{2\sqrt{1-x^2}} = \dfrac{x}{\sqrt{1-x^2}}$. \checkmark
+
+\textbf{(c)} $\displaystyle\int x e^{x^2}\,dx$. Let $u = x^2$, so $du = 2x\,dx$:
+\[
+\int x e^{x^2}\,dx = \frac{1}{2}\int e^{u}\,du = \frac{1}{2}e^{u} + C = \frac{1}{2}e^{x^2} + C.
+\]
+
+\textbf{(d)} $\displaystyle\int \sin^2 x\,dx$. Using the identity $\sin^2 x = \frac{1 - \cos 2x}{2}$:
+\[
+\int \sin^2 x\,dx = \int \frac{1 - \cos 2x}{2}\,dx = \frac{x}{2} - \frac{\sin 2x}{4} + C = \frac{1}{2}\left(x - \sin x\cos x\right) + C,
+\]
+since $\sin 2x = 2\sin x\cos x$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Integration of rational functions by partial fractions]
+\textbf{(a)} We seek constants $A$ and $B$ such that
+\[
+\frac{5x-4}{(x-1)(x+2)} = \frac{A}{x-1} + \frac{B}{x+2}.
+\]
+Multiplying through by $(x-1)(x+2)$: $5x - 4 = A(x+2) + B(x-1)$.
+\begin{itemize}
+\item Setting $x = 1$: $5 - 4 = 3A$, so $A = \frac{1}{3}$.
+\item Setting $x = -2$: $-10 - 4 = -3B$, so $B = \frac{14}{3}$.
+\end{itemize}
+Therefore
+\[
+\frac{5x-4}{(x-1)(x+2)} = \frac{1}{3(x-1)} + \frac{14}{3(x+2)}.
+\]
+\emph{Check:} $\frac{1}{3}(x+2) + \frac{14}{3}(x-1) = \frac{x + 2 + 14x - 14}{3} = \frac{15x - 12}{3} = 5x - 4$. \checkmark
+
+\textbf{(b)} Using the decomposition:
+\begin{align*}
+\int_2^3 \frac{5x-4}{(x-1)(x+2)}\,dx &= \frac{1}{3}\Bigl[\ln|x-1|\Bigr]_2^3 + \frac{14}{3}\Bigl[\ln|x+2|\Bigr]_2^3 \\
+&= \frac{1}{3}\bigl(\ln 2 - \ln 1\bigr) + \frac{14}{3}\bigl(\ln 5 - \ln 4\bigr) \\
+&= \frac{1}{3}\ln 2 + \frac{14}{3}\ln\frac{5}{4}.
+\end{align*}
+To write this as $\ln k$, combine the logarithms using $a\ln b = \ln(b^a)$ and $\ln p + \ln q = \ln(pq)$:
+\[
+\frac{1}{3}\ln 2 + \frac{14}{3}\ln\frac{5}{4} = \frac{1}{3}\ln\left(2\cdot\left(\frac{5}{4}\right)^{14}\right) = \ln\left[2^{1/3}\left(\frac{5}{4}\right)^{14/3}\right].
+\]
+Hence
+\[
+k = 2^{1/3}\left(\frac{5}{4}\right)^{14/3} = \left(\frac{2 \cdot 5^{14}}{4^{14}}\right)^{1/3} = \left(\frac{5^{14}}{2^{27}}\right)^{1/3} = \frac{5^{14/3}}{2^{9}} = \frac{5^4 \cdot 5^{2/3}}{512}.
+\]
+\emph{Numerical check:} $\frac13\ln 2 \approx 0.231$ and $\frac{14}{3}\ln\frac54 \approx 4.667 \times 0.2231 \approx 1.041$, so the integral is approximately $1.272$, and indeed $k \approx \frac{625 \times 2.924}{512} \approx 3.57$ with $\ln 3.57 \approx 1.272$. \checkmark
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Integration by substitution]
+\textbf{(a)} Let $u = \sin x$, so $du = \cos x\,dx$. Change the limits: when $x = 0$, $u = 0$; when $x = \frac{\pi}{2}$, $u = 1$. Then
+\[
+\int_0^{\pi/2} \sin^3 x \cos x\,dx = \int_0^{1} u^3\,du = \left[\frac{u^4}{4}\right]_0^1 = \frac{1}{4}.
+\]
+
+\textbf{(b)} Write $\cos^3 x = \cos x\,(1 - \sin^2 x)$. Let $u = \sin x$, so $du = \cos x\,dx$, with the same change of limits as above:
+\[
+\int_0^{\pi/2} \cos^3 x\,dx = \int_0^{\pi/2} (1-\sin^2 x)\cos x\,dx = \int_0^{1} (1 - u^2)\,du = \left[u - \frac{u^3}{3}\right]_0^1 = 1 - \frac{1}{3} = \frac{2}{3}.
+\]
+\emph{Remark:} this agrees with the reduction formula $I_3 = \frac{2}{3}I_1 = \frac{2}{3}\times 1$ for $I_n = \displaystyle\int_0^{\pi/2}\cos^n x\,dx$, since $I_1 = \displaystyle\int_0^{\pi/2}\cos x\,dx = 1$.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Symmetry and definite integrals]
+Split the integrand:
+\[
+\frac{x^3 + x^2}{1+x^2} = \underbrace{\frac{x^3}{1+x^2}}_{\text{odd}} + \underbrace{\frac{x^2}{1+x^2}}_{\text{even}}.
+\]
+Indeed, if $g(x) = \frac{x^3}{1+x^2}$, then $g(-x) = \frac{-x^3}{1+x^2} = -g(x)$ (odd), and if $h(x) = \frac{x^2}{1+x^2}$, then $h(-x) = h(x)$ (even).
+
+Since the interval $[-1,1]$ is symmetric about $0$:
+\[
+\int_{-1}^{1} \frac{x^3}{1+x^2}\,dx = 0 \qquad \text{(odd function)}, \qquad
+\int_{-1}^{1} \frac{x^2}{1+x^2}\,dx = 2\int_0^{1} \frac{x^2}{1+x^2}\,dx \quad \text{(even function)}.
+\]
+For the remaining rational-function integral, write $\dfrac{x^2}{1+x^2} = \dfrac{(1+x^2)-1}{1+x^2} = 1 - \dfrac{1}{1+x^2}$:
+\[
+2\int_0^{1}\left(1 - \frac{1}{1+x^2}\right)dx = 2\Bigl[x - \arctan x\Bigr]_0^1 = 2\left(1 - \frac{\pi}{4}\right) = 2 - \frac{\pi}{2}.
+\]
+Therefore
+\[
+\int_{-1}^{1} \frac{x^3+x^2}{1+x^2}\,dx = 2 - \frac{\pi}{2}.
+\]
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Algebraic division and integration]
+Since the degree of the numerator (3) exceeds that of the denominator (2), perform algebraic division:
+\[
+x^3 + 2x = x(x^2+1) + x,
+\]
+so
+\[
+\frac{x^3+2x}{x^2+1} = x + \frac{x}{x^2+1}.
+\]
+Now integrate term by term. The first term gives $\frac{x^2}{2}$. For the second, the numerator is (half) the derivative of the denominator:
+\[
+\int \frac{x}{x^2+1}\,dx = \frac{1}{2}\int\frac{2x}{x^2+1}\,dx = \frac{1}{2}\ln(x^2+1) + C.
+\]
+Therefore
+\[
+\int \frac{x^3+2x}{x^2+1}\,dx = \frac{x^2}{2} + \frac{1}{2}\ln(x^2+1) + C.
+\]
+\emph{Check by differentiation:} $\dfrac{d}{dx}\left[\frac{x^2}{2} + \frac{1}{2}\ln(x^2+1)\right] = x + \frac{x}{x^2+1} = \frac{x(x^2+1) + x}{x^2+1} = \frac{x^3 + 2x}{x^2+1}$. \checkmark
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — GCE-style: Logarithmic integration and area]
+\textbf{(a) (2 marks)} Differentiate using the product rule on $x\ln x$:
+\[
+\frac{d}{dx}\bigl[x\ln x - x\bigr] = \left(1\cdot\ln x + x\cdot\frac{1}{x}\right) - 1 = \ln x + 1 - 1 = \ln x. \qquad \blacksquare
+\]
+
+\textbf{(b) (2 marks)} Part (a) shows that $x\ln x - x$ is a primitive of $\ln x$. Hence
+\[
+\int_1^e \ln x\,dx = \Bigl[x\ln x - x\Bigr]_1^e = (e\ln e - e) - (1\cdot\ln 1 - 1) = (e - e) - (0 - 1) = 1.
+\]
+
+\textbf{(c) (4 marks)} On $\left[\frac1e, 1\right]$, $\ln x \le 0$, so the curve lies \emph{below} the $x$-axis; on $[1, e]$, $\ln x \ge 0$, so the curve lies above. The \emph{area} requires the integral of $|\ln x|$, so we split at $x = 1$:
+\[
+A = -\int_{1/e}^{1} \ln x\,dx + \int_{1}^{e} \ln x\,dx.
+\]
+Compute the first integral:
+\[
+\int_{1/e}^{1} \ln x\,dx = \Bigl[x\ln x - x\Bigr]_{1/e}^{1} = (0 - 1) - \left(\frac{1}{e}\ln\frac{1}{e} - \frac{1}{e}\right) = -1 - \left(-\frac{1}{e} - \frac{1}{e}\right) = -1 + \frac{2}{e}.
+\]
+From (b), $\displaystyle\int_1^e \ln x\,dx = 1$. Therefore
+\[
+A = -\left(-1 + \frac{2}{e}\right) + 1 = 2 - \frac{2}{e} = 2\left(1 - \frac{1}{e}\right) \text{ square units}.
+\]
+
+\textbf{Examiner's expectations:} In (a), correct use of the product rule (1 mark) and clean simplification (1 mark). In (b), correct evaluation at both bounds with $\ln e = 1$ and $\ln 1 = 0$. In (c), the key marking point is recognising the \emph{change of sign} of $\ln x$ at $x = 1$ and splitting the integral (2 marks); a candidate who integrates straight from $\frac1e$ to $e$ obtains $\frac{2}{e}$ instead of the area and loses these marks.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — GCE-style: Reduction formula]
+\textbf{(a) (4 marks)} $I_n = \displaystyle\int_0^1 x^n e^x\,dx$. Integrate by parts with
+\[
+u = x^n \quad \Rightarrow \quad du = n x^{n-1}\,dx; \qquad dv = e^x\,dx \quad \Rightarrow \quad v = e^x.
+\]
+Then
+\begin{align*}
+I_n &= \Bigl[x^n e^x\Bigr]_0^1 - \int_0^1 n x^{n-1} e^x\,dx \\
+&= \bigl(1^n \cdot e - 0^n \cdot e^0\bigr) - n\int_0^1 x^{n-1} e^x\,dx \\
+&= e - n I_{n-1}, \qquad n \ge 1. \qquad \blacksquare
+\end{align*}
+(Note: $0^n = 0$ since $n \ge 1$; this is why the condition $n \ge 1$ is needed.)
+
+\textbf{(b) (5 marks)} First compute $I_0$ directly:
+\[
+I_0 = \int_0^1 e^x\,dx = \Bigl[e^x\Bigr]_0^1 = e - 1.
+\]
+Now apply the reduction formula repeatedly:
+\begin{align*}
+I_1 &= e - 1\cdot I_0 = e - (e-1) = 1, \\
+I_2 &= e - 2 I_1 = e - 2, \\
+I_3 &= e - 3 I_2 = e - 3(e - 2) = e - 3e + 6 = 6 - 2e.
+\end{align*}
+Therefore $\boxed{I_3 = 6 - 2e}$.
+
+\emph{Sanity check:} $6 - 2e \approx 6 - 5.437 = 0.563 > 0$, consistent with the integral of a positive function; also $I_3 < I_0 \approx 1.718$, as expected since $x^3 \le 1$ on $[0,1]$.
+
+\textbf{Examiner's expectations:} In (a), correct choice of $u$ and $dv$ (1 mark), correct by-parts formula (1 mark), correct evaluation of the boundary term including $0^n = 0$ (1 mark), and recognising the remaining integral as $I_{n-1}$ (1 mark). In (b), computing $I_0$ (1 mark) and three correct applications of the recurrence (3 marks), with the exact simplified answer (1 mark).
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE-style: Mixed problem — velocity, substitution, mean value]
+\textbf{(a) (4 marks)} The distance covered between $t = 0$ and $t = 2$ is
+\[
+s = \int_0^2 v(t)\,dt = \int_0^2 t e^{-t^2}\,dt.
+\]
+Let $u = t^2$, so $du = 2t\,dt$, i.e. $t\,dt = \frac{1}{2}du$. Change the limits: when $t = 0$, $u = 0$; when $t = 2$, $u = 4$. Then
+\[
+s = \frac{1}{2}\int_0^{4} e^{-u}\,du = \frac{1}{2}\Bigl[-e^{-u}\Bigr]_0^4 = \frac{1}{2}\left(-e^{-4} + 1\right) = \frac{1 - e^{-4}}{2}.
+\]
+So the distance covered is $\displaystyle s = \frac{1 - e^{-4}}{2} \approx 0.491$ m.
+
+\textbf{(b) (3 marks)} The mean velocity over $[0,2]$ is
+\[
+\bar{v} = \frac{1}{2-0}\int_0^2 v(t)\,dt = \frac{1}{2}\cdot\frac{1-e^{-4}}{2} = \frac{1-e^{-4}}{4} \approx 0.245\ \mathrm{m\,s^{-1}}.
+\]
+
+\textbf{Examiner's expectations:} In (a), knowing that distance is the integral of velocity (1 mark), a correct substitution with $du = 2t\,dt$ (1 mark), correct change of limits (1 mark), and the exact final answer (1 mark). In (b), correct statement of the mean-value formula $\bar{v} = \frac{1}{b-a}\displaystyle\int_a^b v\,dt$ (1 mark) and correct use of the result of (a) (2 marks). A common error is forgetting to change the limits and mixing variables — penalised in the GCE.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={text width=2.5cm, align=center, font=\small}]
+\node[draw, circle, fill=popblue, text=white, minimum size=2.5cm] (center) {Further Integration};
+\node[draw, rounded corners, fill=poporange!20, text=popdark] (n1) at (0:4) {Primitives \& Indefinite Integrals};
+\node[draw, rounded corners, fill=popgreen!20, text=popdark] (n2) at (60:4) {Definite Integrals \& FTC};
+\node[draw, rounded corners, fill=poppurple!20, text=popdark] (n3) at (120:4) {Rational Functions};
+\node[draw, rounded corners, fill=poppink!20, text=popdark] (n4) at (180:4) {Substitution \& Symmetry};
+\node[draw, rounded corners, fill=popgold!20, text=popdark] (n5) at (240:4) {Reduction Formulae};
+\node[draw, rounded corners, fill=popblueL!20, text=popdark] (n6) at (300:4) {Applications \& Techniques};
+\foreach \n in {n1,n2,n3,n4,n5,n6} \draw[popline, thick] (center) -- (\n);
+\end{tikzpicture}
+\legende{Mind map of the Further Integration chapter (FMA04)}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key Definitions}
+\begin{itemize}
+\item \cle{Primitive}: A function $F$ such that $F'(x)=f(x)$ on an interval. Denoted $\int f(x)\,dx = F(x)+C$.
+\item \cle{Indefinite Integral}: The family of all primitives of $f$, written $\int f(x)\,dx$.
+\item \cle{Definite Integral}: $\int_a^b f(x)\,dx = \lim_{n\to\infty}\sum_{i=1}^n f(x_i^*)\Delta x$, represents signed area.
+\item \cle{Fundamental Theorem of Calculus}: If $F$ is a primitive of $f$ on $[a,b]$, then $\int_a^b f(x)\,dx = F(b)-F(a)$.
+\item \cle{Rational Function}: $R(x)=\frac{P(x)}{Q(x)}$ with $P,Q$ polynomials, $\deg P < \deg Q$ (proper) or use long division.
+\item \cle{Reduction Formula}: A recurrence $I_n = \text{expression involving } I_{n-1}$ or $I_{n-2}$.
+\end{itemize}
+
+\textbf{Laws, Formulas, Theorems to Know}
+\begin{itemize}
+\item Linearity: $\int (af+bg)=a\int f+b\int g$.
+\item Power rule: $\int x^n\,dx = \frac{x^{n+1}}{n+1}+C$ ($n\neq -1$); $\int \frac{dx}{x}=\ln|x|+C$.
+\item Exponential/Log: $\int e^{ax}\,dx=\frac{1}{a}e^{ax}+C$; $\int a^x\,dx=\frac{a^x}{\ln a}+C$.
+\item Trigonometric: $\int \sin ax\,dx=-\frac{1}{a}\cos ax+C$, $\int \cos ax\,dx=\frac{1}{a}\sin ax+C$, $\int \sec^2 ax\,dx=\frac{1}{a}\tan ax+C$, etc.
+\item Hyperbolic: $\int \sinh ax\,dx=\frac{1}{a}\cosh ax+C$, $\int \cosh ax\,dx=\frac{1}{a}\sinh ax+C$.
+\item Inverse trigonometric: $\int \frac{dx}{\sqrt{a^2-x^2}}=\arcsin\frac{x}{a}+C$, $\int \frac{dx}{a^2+x^2}=\frac{1}{a}\arctan\frac{x}{a}+C$.
+\item Partial fractions: Decompose proper rational function into sum of simpler fractions (linear/quadratic factors).
+\item Substitution: $\int f(g(x))g'(x)\,dx = \int f(u)\,du$ with $u=g(x)$.
+\item Symmetry: If $f$ even, $\int_{-a}^a f(x)\,dx = 2\int_0^a f(x)\,dx$; if $f$ odd, $\int_{-a}^a f(x)\,dx = 0$.
+\item Reduction formulae (examples): 
+$I_n=\int \sin^n x\,dx = -\frac{1}{n}\sin^{n-1}x\cos x + \frac{n-1}{n}I_{n-2}$,
+$J_n=\int \cos^n x\,dx = \frac{1}{n}\cos^{n-1}x\sin x + \frac{n-1}{n}J_{n-2}$,
+$K_n=\int x^n e^x\,dx = x^n e^x - n K_{n-1}$.
+\end{itemize}
+
+\textbf{Methods (Step-by-Step)}
+\begin{enumerate}
+\item \textbf{Identify the type}: polynomial, rational, trigonometric, exponential, composite.
+\item \textbf{Simplify}: long division for improper rational functions; use trigonometric identities.
+\item \textbf{Choose technique}: 
+\begin{itemize}
+\item Direct integration (standard forms).
+\item Substitution $u=g(x)$ when $g'(x)$ appears.
+\item Partial fractions for rational functions.
+\item Integration by parts (if product of functions).
+\item Reduction formulae for powers of trig/exponential.
+\item Symmetry for definite integrals over symmetric intervals.
+\end{itemize}
+\item \textbf{Execute}: perform algebraic manipulation, integrate term by term.
+\item \textbf{Back-substitute}: return to original variable.
+\item \textbf{Check}: differentiate result; for definite integrals, apply limits.
+\end{enumerate}
+
+\textbf{Common Mistakes (Traps)}
+\begin{itemize}
+\item Forgetting the constant $C$ in indefinite integrals.
+\item Incorrect partial fraction decomposition (missing terms for repeated/quadratic factors).
+\item Misapplying substitution: not changing limits for definite integrals or forgetting $du = g'(x)dx$.
+\item Sign errors in reduction formulae (especially with $\sin^n$ and $\cos^n$).
+\item Assuming $\int f(x)g(x)\,dx = \int f(x)\,dx \int g(x)\,dx$ (false).
+\item Ignoring absolute value in $\ln|x|$ when integrating $1/x$.
+\item Misusing symmetry: function must be even/odd on the whole interval $[-a,a]$.
+\end{itemize}
+
+\textbf{GCE Examination Tips}
+\begin{itemize}
+\item Always show the substitution step clearly: state $u$, $du$, change limits if definite.
+\item For partial fractions, write the form before solving for constants.
+\item When using reduction formulae, state the formula and the base cases ($I_0$, $I_1$).
+\item For definite integrals, write $F(b)-F(a)$ explicitly.
+\item Simplify final answers: combine logarithms, rationalize denominators.
+\item Check if the integral is improper (infinite limits or discontinuities) – mention convergence.
+\item Practice standard integrals: $\int \frac{dx}{x^2+a^2}$, $\int \frac{dx}{\sqrt{a^2-x^2}}$, $\int \frac{dx}{x^2-a^2}$.
+\item Time management: do straightforward integrals first; leave reduction formulae for later if time permits.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

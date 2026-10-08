@@ -1,0 +1,2945 @@
+% Modelling With Differential Equations — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA08-modelling-with-differential-equations.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{8}
+\newcommand{\DOCTITRE}{Modelling With Differential Equations}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Modelling With Differential Equations}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{8}{3 periods}{This chapter shows how physical laws — cooling, motion under resistance, growth and decay — are translated into differential equations, solved using the techniques of earlier chapters, and interpreted in context. It is the chapter where Further Mathematics meets the real world, and a guaranteed source of GCE Paper 2 modelling questions.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can translate a worded physical situation into a differential equation with its initial conditions.
+\item By the end of this chapter I can form a differential equation from a given family of curves by eliminating arbitrary constants.
+\item By the end of this chapter I can state Newton's law of cooling and set up the equation dQ/dt = k(Q − Q₀).
+\item By the end of this chapter I can solve cooling problems by separating variables and determine the constants from given data.
+\item By the end of this chapter I can interpret the sign of k and the long-term behaviour of solutions in a cooling model.
+\item By the end of this chapter I can apply Newton's second law to a particle moving in a straight line with resistance depending on speed.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Section 1: Forming Differential Equations from Situations and Families of Curves
+\item Section 2: Newton's Law of Cooling — Setting Up and Solving
+\item Section 3: Resisted Motion I — Velocity as a Function of Time
+\item Section 4: Resisted Motion II — Velocity as a Function of Displacement and Mixed Exam Problems
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can translate a worded physical situation into a differential equation with its initial conditions.
+\item By the end of this chapter I can form a differential equation from a given family of curves by eliminating arbitrary constants.
+\item By the end of this chapter I can state Newton's law of cooling and set up the equation dQ/dt = k(Q − Q₀).
+\item By the end of this chapter I can solve cooling problems by separating variables and determine the constants from given data.
+\item By the end of this chapter I can interpret the sign of k and the long-term behaviour of solutions in a cooling model.
+\item By the end of this chapter I can apply Newton's second law to a particle moving in a straight line with resistance depending on speed.
+\item By the end of this chapter I can use dv/dt or v dv/dx appropriately to obtain velocity-time or velocity-displacement relations.
+\item By the end of this chapter I can find terminal (limiting) velocity and interpret it physically.
+\item By the end of this chapter I can criticise a model, state its assumptions, and extract exam-ready conclusions from a solution.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Solving first-order differential equations by separation of variables (Lower Sixth / FMA earlier chapter).
+\item Solving linear first-order equations with an integrating factor.
+\item Exponential and logarithm laws, especially ln and e in solving equations.
+\item Kinematics: acceleration as dv/dt and as v dv/dx; Newton's second law F = ma (Mechanics, Lower Sixth).
+\item Sketching and interpreting exponential growth and decay curves.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Section 1: Forming Differential Equations from Situations and Families of Curves}
+
+In Douala, a pot of \emph{ndol\'e} taken off the fire at $95\,^{\circ}\mathrm{C}$ is left in a kitchen at $30\,^{\circ}\mathrm{C}$: after $10$ minutes it is at $60\,^{\circ}\mathrm{C}$ --- can we predict when it will be safe to serve at $40\,^{\circ}\mathrm{C}$? Meanwhile, a \emph{benskin} rider in Bamenda who cuts his engine feels the bike slow down faster when it is fast than when it is slow, because air resistance grows with speed. Both situations share a common mathematical engine: a quantity whose \cle{rate of change} depends on the quantity itself. In this chapter we learn to translate such real situations into differential equations, solve them, and use them to make predictions --- exactly the skill the GCE Advanced Level examiner rewards.
+
+The central problem of this section is therefore: \textbf{given a worded law or a family of curves, how do we write down the differential equation that governs it?} Once the equation is written, the techniques of previous chapters (separation of variables, integrating factor) take over.
+
+\courssub{What is a Differential Equation? Quick Recap}
+
+\begin{definition}[Differential equation, order and degree]
+A \cle{differential equation} (DE) is an equation involving an unknown function and one or more of its derivatives. If the unknown function depends on a single variable, it is an \emph{ordinary} differential equation.
+
+The \cle{order} of a DE is the order of the highest derivative present. The \cle{degree} is the power to which that highest derivative is raised, after the equation has been freed of fractions and radicals in the derivatives.
+\end{definition}
+
+\begin{exemplebox}[Identifying order and degree]
+\begin{itemize}
+\item $\dfrac{dy}{dx}=2y$: order $1$, degree $1$.
+\item $\dfrac{d^{2}y}{dx^{2}}+y=0$: order $2$, degree $1$.
+\item $\left(\dfrac{d^{2}y}{dx^{2}}\right)^{3}+\dfrac{dy}{dx}=x$: order $2$, degree $3$.
+\item $y=x\dfrac{dy}{dx}+\left(\dfrac{dy}{dx}\right)^{2}$: order $1$, degree $2$ (the highest derivative is $\frac{dy}{dx}$, raised to the power $2$).
+\end{itemize}
+\end{exemplebox}
+
+A \cle{general solution} of a DE of order $n$ contains $n$ independent arbitrary constants; a \cle{particular solution} is obtained by giving those constants definite values, usually fixed by \cle{initial conditions} (values of $y$ and its derivatives at one point) or \cle{boundary conditions} (values at two different points).
+
+\courssub{Modelling Vocabulary: From Words to Symbols}
+
+Most GCE modelling questions begin with an English sentence. The translation rules are:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{English phrase} & \textbf{Mathematical translation} \\
+\hline
+rate of change of $y$ (with respect to time) & $\dfrac{dy}{dt}$ \\
+\hline
+$y$ is proportional to $x$ & $y=kx$ for some constant $k$ \\
+\hline
+$y$ is inversely proportional to $x$ & $y=\dfrac{k}{x}$ \\
+\hline
+rate of change of $P$ is proportional to $P$ & $\dfrac{dP}{dt}=kP$ \\
+\hline
+$Q$ decreases at a rate proportional to $Q$ & $\dfrac{dQ}{dt}=-kQ$, with $k>0$ \\
+\hline
+rate of change of $y$ is proportional to $(a-y)$ & $\dfrac{dy}{dt}=k(a-y)$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Translating ``rate of change of $P$ is proportional to $P$'']
+\begin{enumerate}
+\item Name the variables: $P$ the quantity, $t$ the time; state their units.
+\item Write ``rate of change'' as $\dfrac{dP}{dt}$ and ``proportional to $P$'' as $kP$.
+\item Decide the \textbf{sign}: if $P$ is \emph{growing}, $\dfrac{dP}{dt}=kP$ with $k>0$; if $P$ is \emph{decaying}, write $\dfrac{dP}{dt}=-kP$ with $k>0$ so the negative sign is visible.
+\item State what $k$ represents and its units (here $k$ is a rate constant, in $\mathrm{time}^{-1}$).
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[The sign trap]
+``$Q$ is \emph{decreasing} at a rate proportional to $Q$'' does \textbf{not} give $\dfrac{dQ}{dt}=kQ$. Since $Q>0$ and $Q$ decreases, $\dfrac{dQ}{dt}$ must be negative: the correct equation is $\dfrac{dQ}{dt}=-kQ$ with $k>0$. Writing the wrong sign makes your model predict explosive growth instead of decay --- an error examiners penalise heavily. A useful reflex: after writing your equation, ask yourself ``does my equation make the quantity behave the way the problem describes?''
+\end{attention}
+
+\courssub{Forming a DE from a Family of Curves}
+
+A formula like $y=Ae^{2x}$ describes not one curve but a whole \cle{family of curves}, one for each value of the arbitrary constant $A$. All these curves share a common geometric property, which can be expressed \emph{without} mentioning $A$: this property is a differential equation. The principle is simple:
+
+\begin{methode}[Eliminating $n$ arbitrary constants]
+\begin{enumerate}
+\item Count the number $n$ of independent arbitrary constants.
+\item Differentiate $n$ times, obtaining $n+1$ equations (the original plus $n$ derived ones).
+\item Eliminate the constants between these equations (by substitution, subtraction, or division).
+\item The result is a DE of order $n$, free of arbitrary constants, whose general solution is the original family.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Family $y=Ae^{2x}$]
+Form the differential equation satisfied by every curve of the family $y=Ae^{2x}$, where $A$ is an arbitrary constant.
+\tcblower
+There is \textbf{one} constant, so we differentiate \textbf{once}:
+\[
+\frac{dy}{dx}=2Ae^{2x}.
+\]
+But $Ae^{2x}=y$, so substituting back:
+\[
+\boxed{\frac{dy}{dx}=2y}.
+\]
+Every member of the family satisfies this first-order DE, and conversely its general solution is $y=Ae^{2x}$.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-2.2, xmax=2.2, ymin=-6, ymax=8,
+  domain=-2:1.6,
+  samples=80,
+  legend style={at={(0.03,0.97)}, anchor=north west, font=\small},
+]
+\addplot[popblue, thick] {0.5*exp(2*x)}; \addlegendentry{$A=0.5$}
+\addplot[poporange, thick] {exp(2*x)}; \addlegendentry{$A=1$}
+\addplot[popgreen, thick] {2*exp(2*x)}; \addlegendentry{$A=2$}
+\addplot[poppurple, thick] {-exp(2*x)}; \addlegendentry{$A=-1$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Curves of the family $y=Ae^{2x}$ for several values of $A$. At every point, the gradient equals twice the ordinate: all these curves satisfy the same equation $\frac{dy}{dx}=2y$.}
+\end{popfigure}
+
+\begin{exoresolu}[Family $y=A\sin x+B\cos x$]
+Form the differential equation of the family $y=A\sin x+B\cos x$, where $A$ and $B$ are arbitrary constants.
+\tcblower
+There are \textbf{two} constants, so differentiate \textbf{twice}:
+\begin{align*}
+y &= A\sin x+B\cos x,\\
+\frac{dy}{dx} &= A\cos x-B\sin x,\\
+\frac{d^{2}y}{dx^{2}} &= -A\sin x-B\cos x = -(A\sin x+B\cos x) = -y.
+\end{align*}
+Hence the required equation is
+\[
+\boxed{\frac{d^{2}y}{dx^{2}}+y=0},
+\]
+a second-order DE --- as expected, since two constants were eliminated.
+\end{exoresolu}
+
+\begin{exoresolu}[Family $y=Ae^{x}+Be^{2x}$]
+Form the differential equation of the family $y=Ae^{x}+Be^{2x}$, where $A$ and $B$ are arbitrary constants.
+\tcblower
+Two constants, so differentiate twice:
+\begin{align*}
+y &= Ae^{x}+Be^{2x},\\
+\frac{dy}{dx} &= Ae^{x}+2Be^{2x},\\
+\frac{d^{2}y}{dx^{2}} &= Ae^{x}+4Be^{2x}.
+\end{align*}
+Neither $A$ nor $B$ disappears by simple substitution this time, so we eliminate them systematically. Subtracting the first equation from the second:
+\[
+\frac{dy}{dx}-y = Be^{2x}.
+\]
+Subtracting the second equation from the third:
+\[
+\frac{d^{2}y}{dx^{2}}-\frac{dy}{dx} = 2Be^{2x}.
+\]
+Comparing these two results, $\dfrac{d^{2}y}{dx^{2}}-\dfrac{dy}{dx}=2\left(\dfrac{dy}{dx}-y\right)$, which tidies to
+\[
+\boxed{\frac{d^{2}y}{dx^{2}}-3\frac{dy}{dx}+2y=0}.
+\]
+Check: the general solution of this equation is precisely $y=Ae^{x}+Be^{2x}$, since $1$ and $2$ are the roots of the auxiliary equation $m^{2}-3m+2=0$.
+\end{exoresolu}
+
+\begin{exoresolu}[Family $y=Cx+C^{2}$]
+Form the differential equation of the family of straight lines $y=Cx+C^{2}$.
+\tcblower
+One constant, so differentiate once:
+\[
+\frac{dy}{dx}=C.
+\]
+Substitute $C=\dfrac{dy}{dx}$ into the original relation:
+\[
+\boxed{\,y=x\frac{dy}{dx}+\left(\frac{dy}{dx}\right)^{2}}.
+\]
+This is a first-order DE of \textbf{degree 2}: the order counts the highest derivative, the degree its power. Note that the general solution of this equation is indeed the family of lines we started from.
+\end{exoresolu}
+
+\begin{attention}[Differentiate exactly $n$ times]
+A very common mistake is to differentiate fewer times than there are constants, leaving a constant in the final answer, or to differentiate too many times, producing an equation of unnecessarily high order whose general solution contains \emph{more} constants than the original family. The rule is rigid: $n$ constants $\Rightarrow$ $n$ differentiations $\Rightarrow$ DE of order $n$. Always finish by checking that \textbf{no arbitrary constant survives} in your final equation.
+\end{attention}
+
+\courssub{Forming DEs from Stated Physical Laws}
+
+The same translation skill applies to laws of nature stated in words.
+
+\textbf{Population growth.} ``A bacterial population grows at a rate proportional to its size.'' With $P(t)$ the population at time $t$:
+\[
+\frac{dP}{dt}=kP \quad (k>0), \qquad\text{giving } P=P_{0}e^{kt},
+\]
+where $P_{0}$ is the population at time $t=0$.
+
+\textbf{Radioactive decay.} ``A radioactive substance decays at a rate proportional to the mass present.'' With $m(t)$ the mass at time $t$:
+\[
+\frac{dm}{dt}=-k\,m \quad (k>0), \qquad\text{giving } m=m_{0}e^{-kt},
+\]
+where $m_{0}$ is the initial mass.
+
+\textbf{Mixture problems (brief).} A tank contains $V$ litres of brine; a solution of concentration $c_{\text{in}}$ flows in at rate $r$ and the well-stirred mixture flows out at the same rate. If $Q(t)$ is the mass of salt in the tank, then
+\[
+\frac{dQ}{dt}=\underbrace{r\,c_{\text{in}}}_{\text{salt in}}-\underbrace{\frac{rQ}{V}}_{\text{salt out}},
+\]
+a first-order linear equation. The key idea is always: \emph{rate of change = rate in $-$ rate out}.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=3.4cm, align=center, minimum height=1.1cm, font=\small},
+  arr/.style={->, thick, popdark}
+]
+\node[box, align=center] (law) at (0,0){Worded law\\ ``rate proportional to\dots''};
+\node[box, align=center] (de) at (5.2,0){Differential equation\\ $\frac{dy}{dt}=f(y,t)$};
+\node[box, align=center] (gen) at (10.4,0){General solution\\ (with arbitrary constants)};
+\node[box, fill=popgreenL, draw=popgreen, align=center] (part) at (10.4,-2.6){Particular solution\\ (initial condition applied)};
+\draw[arr] (law) -- (de);
+\draw[arr] (de) -- (gen);
+\draw[arr] (gen) -- (part);
+\node[font=\small\itshape, text=popmuted] at (7.8,-1.5) {solve by separation / integrating factor};
+\end{tikzpicture}
+\end{center}
+\legende{The modelling pipeline: from a worded law to a differential equation, then to the general solution, and finally to a particular solution using an initial condition.}
+\end{popfigure}
+
+\courssub{Initial and Boundary Conditions: Pinning Down the Answer}
+
+The general solution $P=P_{0}e^{kt}$ describes \emph{every} exponentially growing population. To answer a concrete question --- \emph{this} pot of ndol\'e, \emph{this} sample of radioactive material --- we must fix the constants. That is the role of initial conditions.
+
+\begin{exemplebox}[Why one condition per constant]
+The equation $\dfrac{dP}{dt}=kP$ has general solution $P=Ae^{kt}$, with \emph{two} unknowns: the integration constant $A$ and the rate constant $k$. We therefore need \emph{two} pieces of data, e.g.\ $P(0)=500$ and $P(2)=800$. Then $A=500$ and $e^{2k}=\tfrac{8}{5}$, so $k=\tfrac12\ln\tfrac85$, and the model is fully determined.
+\end{exemplebox}
+
+This is exactly the structure of the ndol\'e problem in the introduction: the kitchen temperature ($30\,^{\circ}\mathrm{C}$), the initial temperature ($95\,^{\circ}\mathrm{C}$) and the reading after $10$ minutes ($60\,^{\circ}\mathrm{C}$) are the data that will fix all the constants of Newton's law of cooling in Section 2 --- and then predict the serving time.
+
+\courssub{Exam Technique}
+
+\begin{aretenir}[What the examiner expects]
+\begin{enumerate}
+\item \textbf{Write the DE first}, in symbols, before any solving; define every variable ($t$ in minutes, $Q$ in $^{\circ}\mathrm{C}$, \dots).
+\item \textbf{State the meaning and units of each constant}: $k$ is a proportionality (rate) constant, in $\mathrm{min}^{-1}$; $Q_{0}$ is the ambient temperature, in $^{\circ}\mathrm{C}$.
+\item \textbf{Get the sign right}: growth $\Rightarrow +k$; decay or decrease $\Rightarrow -k$ with $k>0$.
+\item When forming a DE from a family of curves, \textbf{count the constants} and differentiate exactly that many times; check that no constant survives in your final equation.
+\item Use initial conditions to find the constants, and conclude with a sentence in the language of the problem (``the pot will reach $40\,^{\circ}\mathrm{C}$ after \dots minutes'').
+\end{enumerate}
+\end{aretenir}
+
+\begin{savaistu}[Why this skill matters beyond the exam]
+Differential equations are the native language of science and engineering: epidemiologists model the spread of diseases, engineers design cooling systems and predict the motion of vehicles on steep roads such as the Bamenda escarpment, and economists model growth --- all with equations of the form ``rate of change = function of the quantity''. Mastering the \emph{formation} of the equation is the first and most creative step; the solving is then routine.
+\end{savaistu}
+
+\begin{exercice}[Forming differential equations]
+\begin{enumerate}
+\item Form the differential equation of each family of curves:
+\begin{enumerate}
+\item $y=Ae^{-3x}$;
+\item $y=Ax^{2}+B$;
+\item $y=A\cos 2x+B\sin 2x$.
+\end{enumerate}
+\item A sum of money in a savings account grows at a rate proportional to the amount present. Write down the differential equation, stating the meaning and units of each symbol.
+\item The mass $m$ grams of a drug in a patient's bloodstream decreases at a rate proportional to the mass present. Initially $m=12$ and after $4$ hours $m=6$. Write the DE, solve it, and find the mass remaining after $12$ hours.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1(a)} Differentiate once: $\frac{dy}{dx}=-3Ae^{-3x}=-3y$, so $\frac{dy}{dx}+3y=0$.
+
+\textbf{1(b)} Two constants, differentiate twice: $\frac{dy}{dx}=2Ax$, $\frac{d^{2}y}{dx^{2}}=2A$. From the first, $A=\frac{1}{2x}\frac{dy}{dx}$; substituting into the second: $\frac{d^{2}y}{dx^{2}}=\frac{1}{x}\frac{dy}{dx}$, i.e.\ $x\frac{d^{2}y}{dx^{2}}-\frac{dy}{dx}=0$.
+
+\textbf{1(c)} Differentiate twice: $\frac{d^{2}y}{dx^{2}}=-4A\cos 2x-4B\sin 2x=-4y$, so $\frac{d^{2}y}{dx^{2}}+4y=0$.
+
+\textbf{2} Let $M$ (FCFA) be the amount at time $t$ (years). $\frac{dM}{dt}=kM$, where $k>0$ is the growth rate constant, in $\mathrm{year}^{-1}$.
+
+\textbf{3} $\frac{dm}{dt}=-km$ ($k>0$, in $\mathrm{h}^{-1}$), giving $m=Ae^{-kt}$. From $m(0)=12$: $A=12$. From $m(4)=6$: $e^{-4k}=\tfrac12$, so $k=\tfrac14\ln 2$. Then $m(12)=12e^{-12k}=12\left(\tfrac12\right)^{3}=1.5$ grams.
+\end{corrige}
+
+\coursec{Section 2: Newton's Law of Cooling — Setting Up and Solving}
+
+In Section~1 we learned how to translate a verbal description or a geometric property into a differential equation. We now apply that skill to one of the most famous and useful models in physics: \textbf{Newton's law of cooling}. This law describes how the temperature of a body changes when it is placed in an environment at a different temperature. It appears frequently in GCE Advanced Level papers, often in the context of a cooling cup of tea, a forensic estimation of time of death, or a metal bar heating in a furnace. The mathematics is exactly the separable first‑order equation we have already mastered; the challenge lies in setting up the correct sign convention and interpreting the constants in a physical context.
+
+\courssub{The Physical Law and Its Mathematical Formulation}
+
+\begin{experience}[Observing a Cooling Body]
+Imagine you have just prepared a pot of hot \emph{eru} soup at $95^\circ\mathrm{C}$ in a kitchen where the air temperature is a steady $28^\circ\mathrm{C}$. You notice that the soup cools very quickly at first, but as its temperature approaches that of the kitchen, the cooling slows down dramatically. If you measured the temperature every minute and plotted the graph, you would see a curve that starts steep and gradually flattens out, approaching the room temperature asymptotically.
+\end{experience}
+
+This observation is the heart of Newton's law: \emph{the rate of heat loss is proportional to the excess temperature over the surroundings}.
+
+\begin{definition}[Newton's Law of Cooling]
+Let $Q(t)$ (or $\theta(t)$) be the temperature of a body at time $t$, and let $Q_0$ (or $\theta_0$) be the constant temperature of the surrounding medium. Newton's law of cooling states that
+\[
+\frac{dQ}{dt} = k\,(Q - Q_0),
+\]
+where $k$ is a \textbf{negative} constant ($k<0$) that depends on the nature of the body, its surface area, and the heat transfer mechanism (conduction, convection, radiation).
+\end{definition}
+
+\begin{attention}[Sign Convention — The Number One Trap]
+Many candidates write $\frac{dQ}{dt} = k(Q-Q_0)$ and then treat $k$ as a positive number. This is \textbf{wrong} for cooling. Since $Q > Q_0$ during cooling, the excess temperature $(Q-Q_0)$ is positive. The temperature $Q$ is \emph{decreasing}, so $\frac{dQ}{dt}$ is \emph{negative}. Therefore $k$ \textbf{must be negative}. 
+
+An equivalent formulation that avoids this sign confusion is
+\[
+\frac{dQ}{dt} = -k\,(Q - Q_0) \qquad (k>0).
+\]
+Both forms are acceptable provided you state the sign of your constant clearly. In this course we will use the first form ($k<0$) because it follows directly from the proportionality statement, but we will always write $k = -\alpha$ with $\alpha>0$ when solving.
+\end{attention}
+
+\begin{aretenir}[Meaning of the Symbols]
+\begin{itemize}
+\item $Q(t)$ or $\theta(t)$: temperature of the body at time $t$ (variable).
+\item $Q_0$ or $\theta_0$: ambient (surrounding) temperature (constant).
+\item $t$: time (usually in minutes or seconds).
+\item $k$: constant of proportionality; $k<0$ for cooling.
+\item $Q - Q_0$: \emph{excess temperature} (temperature difference driving the heat flow).
+\end{itemize}
+\end{aretenir}
+
+\courssub{Solving the Differential Equation}
+
+The equation $\frac{dQ}{dt} = k(Q-Q_0)$ is separable. We solve it in three systematic steps.
+
+\begin{methode}[Three Steps to the Solution of Newton's Law]
+\textbf{Step 1 — Separate the variables.}
+\[
+\frac{dQ}{Q-Q_0} = k\,dt
+\]
+\textbf{Step 2 — Integrate both sides.}
+\[
+\int \frac{dQ}{Q-Q_0} = \int k\,dt \quad\Longrightarrow\quad \ln|Q-Q_0| = kt + C
+\]
+\textbf{Step 3 — Exponentiate and simplify.}
+\[
+|Q-Q_0| = e^{kt+C} = e^C e^{kt}
+\]
+Since $Q-Q_0$ keeps a constant sign (positive for cooling, negative for heating), we can drop the absolute value and write
+\[
+Q - Q_0 = A e^{kt},
+\]
+where $A = \pm e^C$ is a non‑zero constant determined by the initial condition. If the body starts at temperature $Q_1$ at $t=0$, then $A = Q_1 - Q_0$.
+\end{methode}
+
+\begin{propriete}[General Solution of Newton's Law of Cooling]
+\[
+\boxed{Q(t) = Q_0 + (Q_1 - Q_0)\,e^{kt} \qquad (k<0)}
+\]
+where $Q_1 = Q(0)$ is the initial temperature of the body.
+\end{propriete}
+
+\begin{exemplebox}[Finding the Constants $A$ and $k$]
+A metal sphere is heated to $200^\circ\mathrm{C}$ and placed in a room at $25^\circ\mathrm{C}$. After $10$ minutes its temperature has fallen to $120^\circ\mathrm{C}$. Find the temperature after $20$ minutes.
+
+\textbf{Solution.}
+Here $Q_0 = 25$, $Q_1 = 200$. The model is $Q = 25 + 175 e^{kt}$.
+Use the second data point: $Q(10) = 120$.
+\[
+120 = 25 + 175 e^{10k} \;\Longrightarrow\; 95 = 175 e^{10k} \;\Longrightarrow\; e^{10k} = \frac{95}{175} = \frac{19}{35}.
+\]
+Take natural logarithms (remember $k<0$):
+\[
+10k = \ln\left(\frac{19}{35}\right) \;\Longrightarrow\; k = \frac{1}{10}\ln\left(\frac{19}{35}\right) \approx -0.0611\ \mathrm{min}^{-1}.
+\]
+Now find $Q(20)$:
+\[
+Q(20) = 25 + 175 e^{20k} = 25 + 175 \left(e^{10k}\right)^2 = 25 + 175 \left(\frac{19}{35}\right)^2 = 25 + 175 \times \frac{361}{1225} = 25 + \frac{361}{7} \approx 76.6^\circ\mathrm{C}.
+\]
+\end{exemplebox}
+
+\courssub{Interpreting the Solution — The Cooling Curve}
+
+The solution $Q(t) = Q_0 + (Q_1-Q_0)e^{kt}$ (with $k<0$) is an exponential decay of the \emph{excess temperature} $Q-Q_0$ towards zero. The graph has a horizontal asymptote $Q = Q_0$.
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=8cm,
+    axis lines=middle,
+    xlabel={$t$ (min)}, ylabel={$Q$ ($^\circ\mathrm{C}$)},
+    xmin=0, xmax=35,
+    ymin=20, ymax=105,
+    xtick={0,10,20,30}, ytick={25,50,75,100},
+    tick label style={font=\small},
+    clip=false,
+    domain=0:35,
+    samples=200,
+]
+% Asymptote
+\addplot[dashed, popmuted, thick] {25} node[right, pos=0.9, font=\small, popmuted] {$Q=Q_0$};
+% Cooling curve: Q0=25, Q1=100, k=-0.1
+\addplot[popblue, very thick] {25 + 75*exp(-0.1*x)};
+% Tangent at t=0: slope = k*(Q1-Q0) = -0.1*75 = -7.5
+\addplot[poporange, dashed, thick, domain=0:10] {100 - 7.5*x} node[right, pos=0.8, font=\small, poporange] {Tangent at $t=0$};
+% Initial point
+\addplot[only marks, mark=*, popblue] coordinates {(0,100)} node[above left, font=\small] {$(0,Q_1)$};
+% Labels
+\node[popblue, font=\small] at (axis cs:15,80) {$Q(t)=Q_0+(Q_1-Q_0)e^{kt}$};
+\end{axis}
+\end{tikzpicture}
+\legende{Cooling curve $Q(t)=Q_0+(Q_1-Q_0)e^{kt}$ with asymptote $Q=Q_0$ and initial tangent. The tangent at $t=0$ would reach $Q_0$ at $t=-1/k$ (the \emph{time constant}).}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Body
+\draw[popblue, thick, fill=popblueL!30, rounded corners=3pt] (0,0) rectangle (3,2);
+\node at (1.5,1.3) {Body};
+\node at (1.5,0.7) {$Q(t)$};
+% Arrows for heat flow
+\draw[-stealth, poporange, thick] (1.5,2) -- (1.5,3) node[above] {Heat loss $\propto Q-Q_0$};
+% Surroundings
+\draw[popgreen, thick, fill=popgreenL!20] (-1,3.5) rectangle (4,4.5);
+\node at (1.5,4) {Surroundings at constant $Q_0$};
+% Thermometer
+\draw[popdark, thick] (4,0.2) -- (4.5,0.2) -- (4.5,1.8) -- (4,1.8) -- cycle;
+\draw[popred, thick] (4.1,0.4) -- (4.1,1.6);
+\node at (4.8,1) {$Q(t)$};
+% Time axis
+\draw[->] (-1,-0.5) -- (5,-0.5) node[right] {$t$};
+\node at (2.5,-0.9) {Time increases $\rightarrow$};
+% Temperature difference label
+\draw[<->, poppurple] (3.2,1) -- (3.2,4) node[midway, right, poppurple] {$Q-Q_0$};
+\end{tikzpicture}
+\legende{Newton's law: heat flows from the hotter body to the cooler surroundings at a rate proportional to the temperature difference $Q-Q_0$.}
+\end{popfigure}
+
+\begin{propriete}[Long‑Term Behaviour and Time Constant]
+\begin{itemize}
+\item As $t\to\infty$, $e^{kt}\to 0$ (since $k<0$), so $Q(t)\to Q_0$. The body eventually reaches the ambient temperature.
+\item The \emph{time constant} $\tau = -1/k$ is the time it would take for the excess temperature to fall to $1/e \approx 36.8\%$ of its initial value if the initial rate of cooling were maintained. It is the $t$-intercept of the tangent at $t=0$.
+\item The \emph{half‑life} of the excess temperature is $t_{1/2} = \frac{\ln 2}{-k} = \tau\ln 2$.
+\end{itemize}
+\end{propriete}
+
+\courssub{Worked Example: A Cameroonian Context — Cooling of a Pot of Eru Soup}
+
+\begin{exoresolu}[Cooling of a Pot of Eru Soup]
+A pot of \emph{eru} soup is removed from the fire at $98^\circ\mathrm{C}$ in a kitchen where the air temperature is a constant $28^\circ\mathrm{C}$. After $5$ minutes the soup has cooled to $70^\circ\mathrm{C}$.
+\begin{enumerate}
+\item Write down the differential equation satisfied by the temperature $Q(t)$ of the soup, defining all symbols.
+\item Solve the differential equation to show that $Q = 28 + 70e^{kt}$.
+\item Find the value of $k$ correct to three significant figures.
+\item How long, to the nearest minute, will it take for the soup to cool to $40^\circ\mathrm{C}$?
+\item Sketch the graph of $Q$ against $t$, indicating the asymptote and the initial temperature.
+\end{enumerate}
+\tcblower
+\textbf{Detailed Solution.}
+
+\textbf{(i)} Let $Q(t)$ be the temperature of the soup ($^\circ\mathrm{C}$) at time $t$ minutes. The ambient temperature is $Q_0 = 28^\circ\mathrm{C}$. By Newton's law of cooling, the rate of change of temperature is proportional to the excess temperature:
+\[
+\frac{dQ}{dt} = k(Q - 28), \qquad k<0.
+\]
+
+\textbf{(ii)} Separate variables:
+\[
+\int \frac{dQ}{Q-28} = \int k\,dt \;\Longrightarrow\; \ln|Q-28| = kt + C.
+\]
+Exponentiate: $|Q-28| = e^C e^{kt}$. Since $Q>28$ during cooling, $Q-28 = A e^{kt}$ with $A>0$.
+At $t=0$, $Q=98$, so $A = 98-28 = 70$. Hence
+\[
+Q = 28 + 70 e^{kt}.
+\]
+
+\textbf{(iii)} Use $Q(5)=70$:
+\[
+70 = 28 + 70 e^{5k} \;\Longrightarrow\; 42 = 70 e^{5k} \;\Longrightarrow\; e^{5k} = \frac{42}{70} = 0.6.
+\]
+\[
+5k = \ln 0.6 \;\Longrightarrow\; k = \frac{\ln 0.6}{5} \approx -0.102165 \approx \mathbf{-0.102}\ \mathrm{min}^{-1}\ \text{(3 s.f.)}.
+\]
+
+\textbf{(iv)} Find $t$ when $Q=40$:
+\[
+40 = 28 + 70 e^{kt} \;\Longrightarrow\; 12 = 70 e^{kt} \;\Longrightarrow\; e^{kt} = \frac{12}{70} = \frac{6}{35}.
+\]
+\[
+kt = \ln\left(\frac{6}{35}\right) \;\Longrightarrow\; t = \frac{\ln(6/35)}{k} = \frac{\ln(6/35)}{\ln(0.6)/5} = 5\,\frac{\ln(35/6)}{\ln(1/0.6)}.
+\]
+Using $k\approx -0.102165$:
+\[
+t \approx \frac{\ln(6/35)}{-0.102165} \approx \frac{-1.763}{-0.102165} \approx 17.26\ \text{minutes}.
+\]
+To the nearest minute: $\mathbf{17\ \text{minutes}}$.
+
+\textbf{(v)} Sketch:
+\begin{itemize}
+\item Axes: $t\ge 0$, $Q\ge 28$.
+\item Horizontal asymptote $Q=28$ (dashed line).
+\item Point $(0,98)$ marked.
+\item Curve decreasing, concave up, approaching $Q=28$.
+\item Tangent at $t=0$ with slope $k(98-28) = -0.102\times 70 \approx -7.14$, crossing $Q=28$ at $t\approx 9.8$ min (the time constant $\tau = -1/k \approx 9.8$ min).
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Heating Problems: The Same Law}
+
+Newton's law applies equally when a cold object is placed in a warmer environment (e.g., a bottle of \emph{Malta} taken out of a fridge into a hot Douala afternoon). The differential equation is \emph{identical}:
+\[
+\frac{dQ}{dt} = k(Q-Q_0),\quad k<0.
+\]
+Now $Q_1 < Q_0$, so $Q-Q_0$ is negative. Since $k$ is also negative, the product $k(Q-Q_0)$ is \emph{positive}, meaning $\frac{dQ}{dt}>0$: the object warms up. The solution $Q = Q_0 + (Q_1-Q_0)e^{kt}$ still holds; the excess temperature $Q-Q_0$ is negative and its magnitude decays exponentially to zero.
+
+\begin{aretenir}[Heating and Cooling Unified]
+The single formula
+\[
+Q(t) = Q_0 + (Q_1 - Q_0)e^{kt}\quad (k<0)
+\]
+covers \textbf{both} cooling ($Q_1>Q_0$) and heating ($Q_1<Q_0$). The excess temperature $Q-Q_0$ always decays exponentially towards zero.
+\end{aretenir}
+
+\begin{exemplebox}[Warming a Cold Drink]
+A can of \emph{Top} drink at $4^\circ\mathrm{C}$ is placed in a room at $30^\circ\mathrm{C}$. After $3$ minutes the drink reaches $10^\circ\mathrm{C}$. Find its temperature after $10$ minutes.
+
+\textbf{Solution.}
+$Q_0=30$, $Q_1=4$. Model: $Q = 30 + (4-30)e^{kt} = 30 - 26e^{kt}$.
+At $t=3$, $Q=10$:
+\[
+10 = 30 - 26 e^{3k} \;\Longrightarrow\; -20 = -26 e^{3k} \;\Longrightarrow\; e^{3k} = \frac{10}{13}.
+\]
+\[
+3k = \ln(10/13) \;\Longrightarrow\; k = \frac{1}{3}\ln(10/13) \approx -0.0870.
+\]
+At $t=10$:
+\[
+Q(10) = 30 - 26 e^{10k} = 30 - 26 (e^{3k})^{10/3} = 30 - 26 \left(\frac{10}{13}\right)^{10/3} \approx 30 - 26 \times 0.438 \approx \mathbf{18.6^\circ\mathrm{C}}.
+\]
+\end{exemplebox}
+
+\courssub{Examination Technique and Common Pitfalls}
+
+\begin{attention}[Common Mistakes in Newton's Law Questions]
+\begin{enumerate}
+\item \textbf{Sign of $k$:} Writing $k>0$ in $\frac{dQ}{dt}=k(Q-Q_0)$ for cooling. Always state ``$k<0$'' or use $\frac{dQ}{dt}=-k(Q-Q_0)$ with $k>0$.
+\item \textbf{Confusing $Q$ and $Q_0$:} $Q_0$ is the \emph{constant} surrounding temperature; $Q$ is the \emph{variable} body temperature. Never solve for $Q_0$ as if it were unknown unless the problem explicitly says the ambient temperature is unknown (rare).
+\item \textbf{Logarithm errors:} From $e^{kt}=c$, writing $kt = \ln c$ is correct only if $c>0$. Since $e^{kt}>0$ always, the ratio $\frac{Q-Q_0}{Q_1-Q_0}$ must be positive — which it is, because numerator and denominator have the same sign.
+\item \textbf{Units:} Time $t$ must be consistent (minutes or seconds). If $k$ is found in $\mathrm{min}^{-1}$, do not plug in $t$ in seconds.
+\item \textbf{Rounding too early:} Keep $k$ in exact form ($\frac{1}{t}\ln(\dots)$) until the final calculation to avoid rounding errors.
+\item \textbf{Interpretation:} Always add a concluding sentence: ``The soup takes approximately 17 minutes to cool to $40^\circ\mathrm{C}$.''
+\end{enumerate}
+\end{attention}
+
+\begin{aretenir}[Exam Checklist for Newton's Law Questions]
+\begin{itemize}
+\item[$\square$] State the law: $\frac{dQ}{dt}=k(Q-Q_0)$, define $Q$, $Q_0$, $t$, and state $k<0$.
+\item[$\square$] Separate variables and integrate correctly.
+\item[$\square$] Use $Q(0)=Q_1$ to find the constant $A = Q_1-Q_0$.
+\item[$\square$] Use the second data point to find $k$ (exact form preferred).
+\item[$\square$] Answer the specific question (time to reach a temperature, or temperature at a given time).
+\item[$\square$] Give final answer to required accuracy (usually 3 s.f. or nearest minute/degree).
+\item[$\square$] Interpret the result in the context of the problem.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Practice Exercise}
+
+\begin{exercice}[Cooling of a Metal Bar]
+A metal bar is heated to $350^\circ\mathrm{C}$ and then placed in a large tank of oil maintained at a constant temperature of $50^\circ\mathrm{C}$. The temperature of the bar falls to $200^\circ\mathrm{C}$ in $2$ minutes.
+\begin{enumerate}
+\item Write down the differential equation for the temperature $\theta(t)$ of the bar.
+\item Show that $\theta = 50 + 300e^{kt}$.
+\item Find the exact value of $k$ in the form $\frac{1}{a}\ln b$.
+\item Calculate the time taken for the bar to cool to $100^\circ\mathrm{C}$, giving your answer in minutes and seconds.
+\item Sketch the graph of $\theta$ against $t$, showing the asymptote and the initial temperature.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{(i)} $\frac{d\theta}{dt} = k(\theta - 50)$, $k<0$. $\theta$ is bar temperature ($^\circ\mathrm{C}$), $t$ in minutes, $50^\circ\mathrm{C}$ is oil temperature.
+
+\textbf{(ii)} Separate: $\int \frac{d\theta}{\theta-50} = \int k\,dt \Rightarrow \ln(\theta-50) = kt + C$.
+$\theta-50 = Ae^{kt}$. At $t=0$, $\theta=350 \Rightarrow A=300$. Hence $\theta = 50 + 300e^{kt}$.
+
+\textbf{(iii)} $\theta(2)=200$: $200 = 50 + 300e^{2k} \Rightarrow 150 = 300e^{2k} \Rightarrow e^{2k} = \frac{1}{2}$.
+$2k = \ln(1/2) = -\ln 2 \Rightarrow \mathbf{k = -\frac{1}{2}\ln 2}$.
+
+\textbf{(iv)} Find $t$ when $\theta=100$:
+$100 = 50 + 300e^{kt} \Rightarrow 50 = 300e^{kt} \Rightarrow e^{kt} = \frac{1}{6}$.
+$kt = \ln(1/6) = -\ln 6$.
+$t = \frac{-\ln 6}{-\frac{1}{2}\ln 2} = \frac{2\ln 6}{\ln 2} = 2\log_2 6 \approx 2 \times 2.585 = 5.17$ minutes.
+$0.17 \times 60 \approx 10$ seconds. \textbf{Answer: 5 minutes 10 seconds.}
+
+\textbf{(v)} Graph: axes $t\ge0$, $\theta\ge50$. Asymptote $\theta=50$. Point $(0,350)$. Curve decreasing, concave up. Tangent at $t=0$ has slope $k(300) = -150\ln 2 \approx -104$, crossing $\theta=50$ at $t = -1/k = 2/\ln 2 \approx 2.89$ min.
+\end{corrige}
+
+\begin{savaistu}[Forensic Application — Time of Death]
+Newton's law of cooling is the basis of the \emph{algor mortis} method used by forensic pathologists to estimate the time of death. A corpse cools approximately according to Newton's law (with modifications for clothing, body mass, air movement). By measuring the rectal temperature at two known times and knowing the ambient temperature, the pathologist can solve for $k$ and then extrapolate back to the normal body temperature ($37^\circ\mathrm{C}$) to estimate the time of death. This is a classic GCE Further Mathematics problem — often disguised as ``a body is discovered at 6\,am\dots''.
+\end{savaistu}
+
+\coursec{Section 3: Resisted Motion I — Velocity as a Function of Time}
+
+In Section 2 we modelled the cooling of a cup of \emph{ndol\'e} left on the table: the temperature difference obeys a first-order differential equation, and the solution approaches the ambient temperature exponentially. Exactly the same mathematical structure appears when a \emph{benskin} rider cuts the engine and coasts along the road from Buea to Mutengene, or when a parachutist jumps from an aircraft: a driving force pushes the body forward, air resistance pushes back, and the velocity tends exponentially towards a limiting value. In this section we build and solve the equation of motion when we want the \cle{velocity as a function of time}.
+
+\courssub{Setting Up: Newton's Second Law with Resistance}
+
+Consider a particle of mass $m$ moving in a straight line. Suppose a constant driving force $F$ acts in the direction of motion (engine thrust, or the weight for a falling body), while a resistance $R(v)$, which depends on the speed $v$, acts opposite to the motion.
+
+\begin{propriete}[Newton's Second Law with Resistance]
+For a particle of constant mass $m$ moving in a straight line with velocity $v$, subject to a driving force $F$ in the direction of motion and a resistance $R(v)$ opposing the motion, the equation of motion is
+\[
+m\frac{dv}{dt} = F - R(v).
+\]
+The resultant force equals mass times acceleration, and the resistance always enters with a \emph{negative} sign because it opposes the velocity. This is a direct application of Newton's second law, $\sum \vec{F} = m\vec{a}$, projected on the axis of motion; no separate proof is required in the examination, but the equation must be \emph{derived} from a force diagram each time.
+\end{propriete}
+
+\begin{attention}[The resistance opposes the motion]
+The resistance force always acts \emph{against} the velocity. If the particle moves in the positive direction, $R(v)$ points in the negative direction; if the particle reverses, so does the resistance. When you change the positive direction of your axis, or when the body moves upward instead of downward, the sign of the resistance term must change accordingly. Never write $R$ with a fixed sign ``because it was negative in the previous question''.
+\end{attention}
+
+\courssub{The Two Common Resistance Models}
+
+Two models dominate the GCE Advanced Level examinations:
+
+\begin{itemize}
+\item \cle{Linear resistance}: $R = kv$, where $k > 0$ is a constant. Appropriate for slow motion through a fluid (viscous drag), small particles, or as a first approximation.
+\item \cle{Quadratic resistance}: $R = kv^2$. Appropriate for fast-moving objects through air (a car, a parachutist), where drag grows rapidly with speed.
+\end{itemize}
+
+The examination question will always \emph{state} the model, for example: ``the resistance to motion is proportional to the speed'' ($R = kv$) or ``proportional to the square of the speed'' ($R = kv^2$).
+
+\begin{methode}[Exam tip: state the model first]
+Before writing any equation of motion, write one sentence stating the modelling assumption, e.g. ``Assume the resistance is $R = kv$ N, where $v$ is the speed in $\mathrm{m\,s^{-1}}$.'' Then draw a small force diagram and apply Newton's second law. Examiners award a mark for a clearly stated model and a correctly signed equation.
+\end{methode}
+
+\courssub{Choosing the Form of the Acceleration}
+
+Acceleration can be written in two useful ways:
+\[
+a = \frac{dv}{dt} \qquad \text{or} \qquad a = v\frac{dv}{dx}.
+\]
+The second form comes from the chain rule: $a = \dfrac{dv}{dt} = \dfrac{dv}{dx}\cdot\dfrac{dx}{dt} = v\dfrac{dv}{dx}$.
+
+\begin{methode}[Choosing between $dv/dt$ and $v\,dv/dx$]
+\begin{enumerate}
+\item If the question asks for \textbf{velocity at a given time}, \textbf{time to reach a given speed}, or gives information about \textbf{time}, use $a = \dfrac{dv}{dt}$: the equation separates in $v$ and $t$.
+\item If the question asks for \textbf{velocity after travelling a given distance}, or \textbf{distance covered}, use $a = v\dfrac{dv}{dx}$: the equation separates in $v$ and $x$.
+\end{enumerate}
+In this section we use only $\dfrac{dv}{dt}$; the displacement form is treated in Section 4.
+\end{methode}
+
+\courssub{Solving $m\dfrac{dv}{dt} = F - kv$}
+
+This is the linear-resistance equation with constant driving force. We solve it by \cle{separation of variables}:
+\[
+m\frac{dv}{dt} = F - kv \quad\Longrightarrow\quad \frac{dv}{F - kv} = \frac{dt}{m}.
+\]
+Integrating both sides:
+\[
+-\frac{1}{k}\ln|F - kv| = \frac{t}{m} + C.
+\]
+Suppose the particle starts with speed $u$ at $t = 0$, so $v(0) = u$. Then $C = -\dfrac{1}{k}\ln|F - ku|$, and substituting back:
+\[
+\ln\left|\frac{F - kv}{F - ku}\right| = -\frac{kt}{m}.
+\]
+Exponentiating gives $F - kv = (F - ku)e^{-kt/m}$, and solving for $v$:
+
+\begin{propriete}[Velocity under constant force and linear resistance]
+The solution of $m\dfrac{dv}{dt} = F - kv$ with $v(0) = u$ is
+\[
+v = \frac{F}{k} + \left(u - \frac{F}{k}\right)e^{-kt/m}.
+\]
+The derivation above (separation, integration, initial condition) is examinable and you must be able to reproduce it in full.
+\end{propriete}
+
+The same result can be obtained with the integrating factor method, since the equation is linear: $\dfrac{dv}{dt} + \dfrac{k}{m}v = \dfrac{F}{m}$, with integrating factor $e^{kt/m}$.
+
+\courssub{Terminal (Limiting) Velocity}
+
+\begin{definition}[Terminal velocity]
+The \cle{terminal velocity} (or limiting velocity) $v_T$ is the speed at which the driving force exactly balances the resistance, so the acceleration is zero:
+\[
+\frac{dv}{dt} = 0 \quad\Longrightarrow\quad F - kv_T = 0 \quad\Longrightarrow\quad v_T = \frac{F}{k}.
+\]
+\end{definition}
+
+Look at the solution again: as $t \to \infty$, the exponential $e^{-kt/m} \to 0$, so
+\[
+v \longrightarrow \frac{F}{k} = v_T,
+\]
+\emph{whatever} the initial speed $u$. If $u < v_T$ the particle accelerates towards $v_T$; if $u > v_T$ it decelerates towards $v_T$; if $u = v_T$ it moves uniformly. The line $v = v_T$ is a horizontal asymptote of every solution curve.
+
+\begin{attention}[Terminal velocity is approached, not reached]
+In this model the particle never \emph{attains} $v_T$ in finite time: $v = v_T$ would require $e^{-kt/m} = 0$, which is impossible for finite $t$. Examination questions exploit this by asking for the time to reach, say, $90\%$ or $99\%$ of the terminal velocity, or the speed after a given time. Never answer ``the particle reaches $v_T$ after a long time'' as if it were an exact event.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=11cm, height=7cm,
+    axis lines=left,
+    xlabel={$t$ (s)}, ylabel={$v$ ($\mathrm{m\,s^{-1}}$)},
+    xmin=0, xmax=10, ymin=0, ymax=14,
+    domain=0:10, samples=100,
+    legend style={at={(0.97,0.35)}, anchor=east, font=\small},
+    every axis plot/.append style={thick}
+]
+\addplot[popblue, dashed] coordinates {(0,10) (10,10)};
+\addplot[popink] {10*(1-exp(-0.5*x))};
+\addplot[poporange] {10 + (4-10)*exp(-0.5*x)};
+\addplot[poppurple] {10 + (13-10)*exp(-0.5*x)};
+\legend{$v_T = F/k$, $u=0$, $u=4<v_T$, $u=13>v_T$}
+\end{axis}
+\end{tikzpicture}
+\legende{Velocity curves for $m\,dv/dt = F - kv$: every solution tends to the terminal velocity $v_T = F/k$, from below if $u < v_T$ and from above if $u > v_T$.}
+\end{center}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+\shade[ball color=popblueL] (0,0) circle (0.35);
+\node at (0,0) {$m$};
+\draw[->, very thick, popink] (0,-0.4) -- (0,-2.2) node[midway, right]{$mg$ (weight)};
+\draw[->, very thick, poporange] (0,0.4) -- (0,1.8) node[midway, right]{$R = kv$ (resistance)};
+\draw[->, thick, poppurple] (1.0,0.2) -- (1.0,-1.0) node[midway, right]{$v$};
+\draw[dashed, popmuted] (-1.6,0) -- (1.6,0);
+\node[popmuted, font=\small] at (-1.6,0.25) {release level};
+\end{tikzpicture}
+\legende{Force diagram for a particle falling vertically: weight $mg$ acts downward, air resistance $kv$ acts upward, opposite to the velocity $v$.}
+\end{center}
+\end{popfigure}
+
+\courssub{Worked Examples with Linear Resistance}
+
+\begin{exoresolu}[The parachutist]
+A parachutist of mass $80$ kg jumps from rest from a helicopter and falls vertically. The air resistance is $R = 20v$ N, where $v$ is her speed in $\mathrm{m\,s^{-1}}$. Take $g = 10\ \mathrm{m\,s^{-2}}$.
+\begin{enumerate}
+\item Show that $4\dfrac{dv}{dt} = 40 - v$.
+\item Find the terminal velocity.
+\item Find $v$ in terms of $t$, and her speed after $8$ s.
+\item Find the time at which her speed is $30\ \mathrm{m\,s^{-1}}$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Taking the downward direction as positive, the forces are the weight $mg = 800$ N downward and the resistance $20v$ upward. Newton's second law gives
+\[
+80\frac{dv}{dt} = 800 - 20v \quad\Longrightarrow\quad 4\frac{dv}{dt} = 40 - v \qquad \text{(dividing by } 20\text{).}
+\]
+\item Terminal velocity: set $\dfrac{dv}{dt} = 0$, so $40 - v_T = 0$, giving $v_T = 40\ \mathrm{m\,s^{-1}}$.
+\item Separate variables:
+\[
+\frac{dv}{40 - v} = \frac{dt}{4} \quad\Longrightarrow\quad -\ln|40 - v| = \frac{t}{4} + C.
+\]
+At $t = 0$, $v = 0$: $C = -\ln 40$. Hence
+\[
+\ln\frac{40}{40 - v} = \frac{t}{4} \quad\Longrightarrow\quad 40 - v = 40e^{-t/4} \quad\Longrightarrow\quad v = 40\left(1 - e^{-t/4}\right).
+\]
+At $t = 8$: $v = 40(1 - e^{-2}) \approx 40(1 - 0.1353) \approx 34.6\ \mathrm{m\,s^{-1}}$.
+\item Set $v = 30$: $30 = 40(1 - e^{-t/4})$, so $e^{-t/4} = \tfrac{1}{4}$, giving $t = 4\ln 4 \approx 5.55$ s.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exoresolu}[The benskin rider coasting]
+A motorcyclist and machine have total mass $200$ kg. Travelling at $20\ \mathrm{m\,s^{-1}}$ on a horizontal road, the rider cuts the engine. The resistance is $R = 10v$ N.
+\begin{enumerate}
+\item Write the equation of motion after the engine is cut.
+\item Find the speed after $10$ s.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item With the engine cut there is no driving force ($F = 0$); only resistance acts. Newton's second law:
+\[
+200\frac{dv}{dt} = -10v \quad\Longrightarrow\quad \frac{dv}{dt} = -\frac{v}{20}.
+\]
+\item Separating: $\dfrac{dv}{v} = -\dfrac{dt}{20}$, so $\ln v = -\dfrac{t}{20} + C$. With $v(0) = 20$: $C = \ln 20$, hence
+\[
+v = 20e^{-t/20}.
+\]
+At $t = 10$: $v = 20e^{-0.5} \approx 20 \times 0.6065 \approx 12.1\ \mathrm{m\,s^{-1}}$.
+\end{enumerate}
+Note that here the ``terminal velocity'' is $0$: with no driving force, the rider slows down towards rest (in this idealised model, never quite stopping).
+\end{exoresolu}
+
+\courssub{A Quadratic Resistance Example}
+
+When the resistance is $kv^2$, separation of variables still works, but the integral involves $\dfrac{dv}{a^2 - v^2}$, which is handled by partial fractions (or a logarithmic standard form). The terminal velocity is now $v_T = \sqrt{F/k}$.
+
+\begin{exoresolu}[Falling with quadratic resistance]
+A body of mass $2$ kg falls from rest. The air resistance is $\dfrac{v^2}{50}$ N. Take $g = 10\ \mathrm{m\,s^{-2}}$.
+\begin{enumerate}
+\item Show that $\dfrac{dv}{dt} = \dfrac{1000 - v^2}{100}$.
+\item Find the terminal velocity.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Downward positive. Newton's second law:
+\[
+2\frac{dv}{dt} = 20 - \frac{v^2}{50} = \frac{1000 - v^2}{50}
+\quad\Longrightarrow\quad
+\frac{dv}{dt} = \frac{1000 - v^2}{100}.
+\]
+\item Setting $\dfrac{dv}{dt} = 0$: $v_T^2 = 1000$, so $v_T = \sqrt{1000} = 10\sqrt{10} \approx 31.6\ \mathrm{m\,s^{-1}}$.
+\end{enumerate}
+(Solving for $v(t)$ requires $\displaystyle\int\frac{dv}{1000 - v^2}$, treated via partial fractions; the displacement form of this problem appears in Section 4.)
+\end{exoresolu}
+
+\courssub{Vertical Motion: Sign Care with Weight}
+
+For vertical motion the weight plays the role of the driving force when the body moves \emph{downward}, but it acts \emph{against} the motion when the body moves \emph{upward}. The resistance always opposes the velocity. Take care:
+
+\begin{itemize}
+\item \textbf{Falling body} (downward positive): $m\dfrac{dv}{dt} = mg - kv$. Terminal velocity $v_T = \dfrac{mg}{k}$.
+\item \textbf{Body projected upward} (upward positive): both weight and resistance act downward, so $m\dfrac{dv}{dt} = -mg - kv$. There is no terminal velocity on the way up; the body simply decelerates until $v = 0$.
+\end{itemize}
+
+\begin{attention}[Mixing units]
+Speeds are often given in $\mathrm{km\,h^{-1}}$ while the formula needs $\mathrm{m\,s^{-1}}$. Convert \emph{before} substituting:
+\[
+v\ \mathrm{m\,s^{-1}} = \frac{v\ \mathrm{km\,h^{-1}}}{3.6}.
+\]
+For example $72\ \mathrm{km\,h^{-1}} = 20\ \mathrm{m\,s^{-1}}$. Mixing the two is one of the most common causes of lost marks.
+\end{attention}
+
+\begin{savaistu}[Why parachutes work]
+A skydiver in free fall with a closed parachute reaches a terminal velocity of about $50\ \mathrm{m\,s^{-1}}$ — fatal on landing. Opening the parachute multiplies the drag coefficient enormously (a much larger $k$), so the new terminal velocity $v_T = \sqrt{mg/k}$ drops to about $5\ \mathrm{m\,s^{-1}}$, comparable to jumping off a low wall. The mathematics of this section is literally a matter of life and death.
+\end{savaistu}
+
+\begin{exercice}[]
+A stone of mass $0.5$ kg is dropped from rest from the top of a building. The air resistance is $0.1v$ N. Take $g = 10\ \mathrm{m\,s^{-2}}$.
+\begin{enumerate}
+\item Form the differential equation of motion.
+\item Find the terminal velocity and $v$ in terms of $t$.
+\item Find the time at which the stone reaches $80\%$ of its terminal velocity.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Downward positive: $0.5\dfrac{dv}{dt} = 5 - 0.1v$, i.e. $5\dfrac{dv}{dt} = 50 - v$.
+\item Setting $\dfrac{dv}{dt} = 0$: $v_T = 50\ \mathrm{m\,s^{-1}}$. Separating with $v(0) = 0$ gives $v = 50\left(1 - e^{-t/5}\right)$.
+\item $0.8 \times 50 = 40$: $40 = 50(1 - e^{-t/5})$, so $e^{-t/5} = 0.2$, hence $t = 5\ln 5 \approx 8.05$ s.
+\end{enumerate}
+\end{corrige}
+
+\begin{exercice}[]
+A car of mass $1000$ kg has an engine producing a constant tractive force of $3000$ N. The resistance to motion is $60v$ N, where $v$ is the speed in $\mathrm{m\,s^{-1}}$. The car starts from rest.
+\begin{enumerate}
+\item Show that $50\dfrac{dv}{dt} = 150 - 3v$.
+\item Find the terminal velocity of the car.
+\item Find $v$ in terms of $t$ and the time taken to reach $40\ \mathrm{m\,s^{-1}}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+\begin{enumerate}
+\item Newton's second law: $1000\dfrac{dv}{dt} = 3000 - 60v$; dividing by $20$: $50\dfrac{dv}{dt} = 150 - 3v$.
+\item Setting $\dfrac{dv}{dt} = 0$: $v_T = \dfrac{150}{3} = 50\ \mathrm{m\,s^{-1}}$.
+\item Separating: $\dfrac{dv}{150 - 3v} = \dfrac{dt}{50}$, so $-\dfrac{1}{3}\ln|150 - 3v| = \dfrac{t}{50} + C$. With $v(0) = 0$: $150 - 3v = 150e^{-3t/50}$, hence
+\[
+v = 50\left(1 - e^{-3t/50}\right).
+\]
+Setting $v = 40$: $e^{-3t/50} = 0.2$, so $t = \dfrac{50}{3}\ln 5 \approx 26.8$ s.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 3]
+\begin{itemize}
+\item Newton's second law with resistance: $m\dfrac{dv}{dt} = F - R(v)$; resistance opposes motion.
+\item Linear model $R = kv$; quadratic model $R = kv^2$ — the question states which to use.
+\item Use $\dfrac{dv}{dt}$ when time is involved; $v\dfrac{dv}{dx}$ when displacement is involved (Section 4).
+\item Solution of $m\dot v = F - kv$: $v = \dfrac{F}{k} + \left(u - \dfrac{F}{k}\right)e^{-kt/m}$.
+\item Terminal velocity: $v_T = \dfrac{F}{k}$ (linear model) or $v_T = \sqrt{F/k}$ (quadratic model), found by setting $\dfrac{dv}{dt} = 0$; every solution tends to it but never reaches it in finite time.
+\item Convert $\mathrm{km\,h^{-1}}$ to $\mathrm{m\,s^{-1}}$ (divide by $3.6$) before substituting.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Section 4: Resisted Motion II — Velocity as a Function of Displacement and Mixed Exam Problems}
+
+In Section 3 we mastered the \emph{time-domain} approach: we wrote Newton's second law as $m\frac{dv}{dt}=F-R(v)$, separated variables, and obtained $v(t)$. Integrating once more gave $x(t)$. That route is perfect when the question asks ``How long does it take to reach...?'' or ``Find the velocity after 5 seconds.'' But many GCE questions ask instead: ``Find the distance travelled before the particle reaches speed $V$'' or ``Show that the particle comes to rest after travelling $X$ metres.'' For those, the \emph{distance-domain} approach using $a=v\frac{dv}{dx}$ is dramatically faster and avoids a double integration. This section builds that tool, shows when to use it, and finishes with a full exam-style synthesis.
+
+\courssub{From Time to Distance: The Chain Rule Trick}
+
+The key is a simple identity that gives acceleration three equivalent faces.
+
+\begin{definition}[The Three Faces of Acceleration]
+For a particle moving in a straight line with displacement $x$, velocity $v$ and time $t$,
+\[
+a = \frac{dv}{dt} = v\frac{dv}{dx} = \frac{d^2x}{dt^2}.
+\]
+The middle form follows from the chain rule:
+\[
+\frac{dv}{dt} = \frac{dv}{dx}\cdot\frac{dx}{dt} = v\frac{dv}{dx}.
+\]
+\end{definition}
+
+\begin{aretenir}[Why $v\frac{dv}{dx}$ is a Superpower]
+When the net force $F-R(v)$ depends \emph{only on velocity} (not explicitly on $t$ or $x$), writing Newton's law as
+\[
+m\,v\frac{dv}{dx} = F - R(v)
+\]
+allows immediate separation of variables:
+\[
+\frac{m\,v}{F-R(v)}\,dv = dx.
+\]
+Integrating once gives $x$ as a function of $v$ directly — no need to find $v(t)$ first.
+\end{aretenir}
+
+\courssub{Solving for $x(v)$: Separation and Integration}
+
+\begin{methode}[Distance-Domain Solution for Linear Resistance $R=kv$]
+\textbf{Step 1.} Write the equation of motion using $a=v\frac{dv}{dx}$:
+\[
+m v \frac{dv}{dx} = F - kv.
+\]
+\textbf{Step 2.} Separate variables:
+\[
+\frac{m v}{F - kv}\,dv = dx.
+\]
+\textbf{Step 3.} Integrate. The left-hand side requires a simple algebraic rewrite (see Warning below).
+\textbf{Step 4.} Apply limits carefully: when $x=0$, $v=u$ (initial speed); when $x=x$, $v=v$.
+\textbf{Step 5.} Solve for $x$ in terms of $v$ or $v$ in terms of $x$ as required.
+\end{methode}
+
+\begin{attention}[The Classic Algebraic Slip: Integrating $\frac{v}{a-bv}$]
+Never integrate $\int\frac{v}{a-bv}\,dv$ by guessing. Rewrite the integrand first using polynomial long division:
+\[
+\frac{v}{a-bv} = -\frac{1}{b} + \frac{a/b}{a-bv}.
+\]
+\textbf{Proof:} $-\frac{1}{b} + \frac{a/b}{a-bv} = \frac{-(a-bv)+a}{b(a-bv)} = \frac{bv}{b(a-bv)} = \frac{v}{a-bv}$.
+Then
+\[
+\int\frac{v}{a-bv}\,dv = -\frac{v}{b} - \frac{a}{b^2}\ln|a-bv| + C.
+\]
+Forgetting the linear term $-\frac{v}{b}$ is the \#1 source of lost marks in this topic.
+\end{attention}
+
+\begin{exemplebox}[Worked Example: Particle Projected Upwards with Resistance]
+A particle of mass $m$ is projected vertically upwards with speed $u$ in a medium where the resistance is $kv$ ($k>0$). Gravity acts downwards. Find the maximum height $H$ reached.
+\end{exemplebox}
+
+\textbf{Solution.}
+Take upward as positive. Forces: weight $-mg$, resistance $-kv$ (always opposes motion).
+\[
+m v \frac{dv}{dx} = -mg - kv = -(mg+kv).
+\]
+Separate:
+\[
+\frac{m v}{mg+kv}\,dv = -dx.
+\]
+Rewrite the integrand (with $a=mg$, $b=k$):
+\[
+\frac{v}{mg+kv} = \frac{1}{k} - \frac{mg/k}{mg+kv}.
+\]
+Integrate from $x=0, v=u$ to $x=H, v=0$:
+\[
+m\int_u^0 \left(\frac{1}{k} - \frac{mg/k}{mg+kv}\right)dv = -\int_0^H dx.
+\]
+\[
+m\left[ \frac{v}{k} - \frac{mg}{k^2}\ln(mg+kv) \right]_u^0 = -H.
+\]
+\[
+m\left( 0 - \frac{mg}{k^2}\ln(mg) - \frac{u}{k} + \frac{mg}{k^2}\ln(mg+ku) \right) = -H.
+\]
+\[
+H = \frac{mu}{k} - \frac{m^2g}{k^2}\ln\left(1+\frac{ku}{mg}\right).
+\]
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm, height=6cm,
+    axis lines=middle,
+    xlabel={$x$ (displacement)}, ylabel={$v$ (velocity)},
+    xmin=0, xmax=5, ymin=0, ymax=4,
+    xtick={0,1,2,3,4,5}, ytick={0,1,2,3,4},
+    domain=0:5, samples=100,
+    xlabel style={anchor=north}, ylabel style={anchor=east},
+    grid=major, grid style={popline!30},
+]
+\addplot[popblue, thick] {4*(1-exp(-x))};
+\addplot[poporange, dashed] coordinates {(0,4) (5,4)};
+\node[poporange, anchor=south west] at (0.2,3.8) {$v_T$};
+\node[popblue, anchor=south east] at (4.8,3.2) {$v(x)=v_T(1-e^{-kx/m})$};
+\end{axis}
+\end{tikzpicture}
+\legende{Velocity against displacement for a particle falling from rest with linear resistance. The curve approaches terminal velocity $v_T=mg/k$ asymptotically.}
+\end{popfigure}
+
+\courssub{Applications: Inclined Planes and Powered Vehicles}
+
+The same technique handles any situation where the net force is a function of $v$ only.
+
+\begin{propriete}[Inclined Plane with Resistance]
+A particle of mass $m$ slides down a plane inclined at $\alpha$ to the horizontal. Resistance $R=kv$. The component of weight down the plane is $mg\sin\alpha$. Equation of motion:
+\[
+m v \frac{dv}{dx} = mg\sin\alpha - kv.
+\]
+Terminal velocity down the plane: $v_T = \frac{mg\sin\alpha}{k}$.
+Distance to reach speed $v$ from rest ($v < v_T$):
+\[
+x = \frac{m}{k}\left[ v_T\ln\left(\frac{v_T}{v_T-v}\right) - v \right].
+\]
+\end{propriete}
+
+\begin{propriete}[Powered Vehicle with Constant Driving Force]
+A vehicle of mass $m$ experiences a constant driving force $F$ and resistance $kv$. Equation:
+\[
+m v \frac{dv}{dx} = F - kv.
+\]
+Terminal velocity: $v_T = F/k$.
+Distance to accelerate from $u$ to $v$ (with $u,v < v_T$):
+\[
+x = \frac{m}{k}\left[ (u-v) + v_T\ln\left(\frac{v_T-u}{v_T-v}\right) \right].
+\]
+\textbf{Exam flag:} This model assumes the engine can deliver constant force at all speeds — unrealistic at high speed where power $P=Fv$ would become infinite. GCE questions sometimes ask you to criticise this assumption.
+\end{propriete}
+
+\begin{exoresolu}[Inclined Plane with Resistance]
+A block of mass $\SI{2}{kg}$ slides down a rough plane inclined at $30^\circ$. The resistance to motion is $0.5v$ newtons where $v$ is the speed in $\SI{}{m.s^{-1}}$. The block starts from rest. Find the distance travelled when the speed reaches $\SI{3}{m.s^{-1}}$. Take $g=\SI{9.8}{m.s^{-2}}$.
+\tcblower
+\textbf{Setup.} Down the plane positive. Weight component: $mg\sin30^\circ = 2\times9.8\times0.5 = \SI{9.8}{N}$. Resistance: $0.5v$.
+Equation: $2v\frac{dv}{dx} = 9.8 - 0.5v$.
+Terminal velocity: $v_T = 9.8/0.5 = \SI{19.6}{m.s^{-1}}$.
+Separate: $\frac{2v}{9.8-0.5v}dv = dx$.
+Rewrite: $\frac{v}{9.8-0.5v} = -2 + \frac{19.6}{9.8-0.5v}$.
+Integrate from $v=0$ to $v=3$:
+\[
+\int_0^3 2\left(-2 + \frac{19.6}{9.8-0.5v}\right)dv = \int_0^x dx.
+\]
+\[
+2\left[ -2v - 39.2\ln(9.8-0.5v) \right]_0^3 = x.
+\]
+\[
+2\left( -6 - 39.2\ln(8.3) + 39.2\ln(9.8) \right) = x.
+\]
+\[
+x = -12 + 78.4\ln\left(\frac{9.8}{8.3}\right) \approx -12 + 78.4\times0.166 \approx \SI{1.0}{m}.
+\]
+\textbf{Answer:} Approximately $\SI{1.0}{m}$.
+\end{exoresolu}
+
+\courssub{Choosing the Right Approach: $v(t)$ vs $v(x)$}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.8cm, every node/.style={font=\small}]
+\node (start) [draw, rounded corners, fill=popblueL, text width=3.5cm, align=center] {Question asks for...};
+\node (time) [draw, rounded corners, fill=popgreenL, text width=3cm, align=center, below left=of start] {Time $t$ \\ or $v(t)$};
+\node (dist) [draw, rounded corners, fill=poporange, text width=3cm, align=center, below right=of start] {Distance $x$ \\ or $v(x)$};
+\node (method1) [draw, rectangle, fill=popblue!10, text width=4cm, align=center, below=of time] {Use $m\frac{dv}{dt}=F-R(v)$ \\ $\to$ find $v(t)$ \\ $\to$ integrate for $x(t)$ if needed};
+\node (method2) [draw, rectangle, fill=poporange!10, text width=4cm, align=center, below=of dist] {Use $mv\frac{dv}{dx}=F-R(v)$ \\ $\to$ find $x(v)$ directly};
+\node (both) [draw, rounded corners, fill=poppink, text width=4cm, align=center, below=1.5cm of method1] {Need both? \\ Start with $v(t)$ then integrate, \\ or find $v(x)$ then use $dt=dx/v$};
+\draw[->, thick, popblue] (start) -- (time);
+\draw[->, thick, poporange] (start) -- (dist);
+\draw[->, thick, popblue] (time) -- (method1);
+\draw[->, thick, poporange] (dist) -- (method2);
+\draw[->, thick, poppink] (method1) -- (both);
+\draw[->, thick, poppink] (method2) -- (both);
+\end{tikzpicture}
+\legende{Decision flowchart: choose the differential form based on what the question asks for.}
+\end{popfigure}
+
+\begin{aretenir}[Efficiency Comparison]
+\begin{itemize}
+\item \textbf{Question asks for time or $v(t)$:} Use $\frac{dv}{dt}$. You must integrate once for $v(t)$, and if $x$ is also needed, integrate $v(t)$ again.
+\item \textbf{Question asks for distance or $v(x)$:} Use $v\frac{dv}{dx}$. One integration gives $x(v)$ directly. Invert if $v(x)$ is required.
+\item \textbf{Question asks for both:} Either route works. $v(t)\to x(t)$ is often algebraically simpler if the integrals are standard; $v(x)\to t(x)$ via $dt=dx/v$ can involve nastier integrals. Choose the path with cleaner algebra.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Modelling Assumptions: A Critical Eye}
+
+GCE modelling questions almost always reserve the final 1--2 marks for ``State one modelling assumption you have made'' or ``Criticise the model''. Be ready.
+
+\begin{definition}[Standard Modelling Assumptions for Resisted Motion]
+\begin{enumerate}
+\item The particle is a \textbf{point mass} (no rotation, no size).
+\item The mass $m$ is \textbf{constant} (no fuel loss, no accretion).
+\item The resistance force depends \textbf{only on speed} $v$, usually linearly $R=kv$ or quadratically $R=kv^2$, and acts exactly opposite to velocity.
+\item The medium is \textbf{uniform and at rest} (no wind, no density variation with height).
+\item The gravitational field is \textbf{uniform} ($g$ constant).
+\item For powered vehicles: the driving force is \textbf{constant} (or constant power $P=Fv$).
+\end{enumerate}
+\end{definition}
+
+\begin{attention}[Common Critique Points — Memorise These]
+\begin{itemize}
+\item ``The resistance law $R=kv$ is only valid for low speeds (laminar flow); at high speeds $R\propto v^2$ (turbulent flow).''
+\item ``Constant driving force implies infinite power as $v\to\infty$; a constant power model $P=Fv$ is more realistic.''
+\item ``Air density decreases with height, so $k$ is not truly constant for large vertical displacements.''
+\item ``The particle is modelled as a point mass, ignoring rotational effects and buoyancy.''
+\item ``No wind or gusts are assumed; in reality the relative velocity determines resistance.''
+\end{itemize}
+Always phrase critiques in context: ``The model assumes the resistance is proportional to velocity, but for a car at motorway speeds the quadratic law $R=kv^2$ would be more accurate.''
+\end{attention}
+
+\courssub{Synthesis: A Complete GCE-Style Problem}
+
+\begin{exoresolu}[Full Exam Question — Resisted Motion on an Incline]
+A particle $P$ of mass $\SI{0.5}{kg}$ is projected up a line of greatest slope of a rough plane inclined at $\alpha$ to the horizontal, where $\sin\alpha=0.6$. The initial speed of $P$ is $\SI{10}{m.s^{-1}}$. The coefficient of friction between $P$ and the plane is $0.25$. Air resistance acts on $P$ and has magnitude $0.1v$ newtons where $v$ is the speed in $\SI{}{m.s^{-1}}$. The particle comes to instantaneous rest after travelling a distance $x$ metres up the plane. Take $g=\SI{10}{m.s^{-2}}$.
+
+\textbf{(a)} Show that, while $P$ is moving up the plane, the equation of motion can be written as
+\[
+v\frac{dv}{dx} = -8 - 0.2v.
+\]
+
+\textbf{(b)} Find the distance $x$ travelled before $P$ comes to rest.
+
+\textbf{(c)} State one modelling assumption you have made about the air resistance.
+\tcblower
+\textbf{Solution.}
+
+\textbf{(a)} Forces acting up the plane (positive direction):
+\begin{itemize}
+\item Component of weight down the plane: $-mg\sin\alpha = -0.5\times10\times0.6 = -\SI{3}{N}$.
+\item Friction (opposes motion, so down the plane): $-\mu R = -\mu mg\cos\alpha$. $\cos\alpha=\sqrt{1-0.6^2}=0.8$. Friction $= -0.25\times0.5\times10\times0.8 = -\SI{1.0}{N}$.
+\item Air resistance (opposes motion): $-0.1v$.
+\end{itemize}
+Total force: $F = -3 - 1.0 - 0.1v = -4 - 0.1v$.
+Newton's second law using $a=v\frac{dv}{dx}$:
+\[
+0.5\,v\frac{dv}{dx} = -4 - 0.1v.
+\]
+Divide by $0.5$:
+\[
+v\frac{dv}{dx} = -8 - 0.2v.
+\]
+\textbf{(Shown)}
+
+\textbf{(b)} Using the equation from (a):
+\[
+v\frac{dv}{dx} = -8 - 0.2v = -0.2(40 + v).
+\]
+Separate variables:
+\[
+\frac{v}{40+v}\,dv = -0.2\,dx.
+\]
+Rewrite integrand:
+\[
+\frac{v}{40+v} = 1 - \frac{40}{40+v}.
+\]
+Integrate from $x=0, v=10$ to $x=x, v=0$:
+\[
+\int_{10}^0 \left(1 - \frac{40}{40+v}\right)dv = -0.2\int_0^x dx.
+\]
+\[
+\Big[ v - 40\ln(40+v) \Big]_{10}^0 = -0.2x.
+\]
+\[
+(0 - 40\ln40) - (10 - 40\ln50) = -0.2x.
+\]
+\[
+-40\ln40 - 10 + 40\ln50 = -0.2x.
+\]
+\[
+40\ln\left(\frac{50}{40}\right) - 10 = -0.2x.
+\]
+\[
+40\ln(1.25) - 10 = -0.2x.
+\]
+\[
+x = \frac{10 - 40\ln(1.25)}{0.2} = 50 - 200\ln(1.25).
+\]
+Using $\ln(1.25)\approx0.22314$:
+\[
+x \approx 50 - 200\times0.22314 = 50 - 44.628 = \SI{5.37}{m}.
+\]
+
+\textbf{(c)} Modelling assumption about air resistance: \emph{The air resistance is proportional to the speed $v$ (linear law) and acts in the opposite direction to the velocity. The constant of proportionality $0.1$ remains constant throughout the motion (no change in air density or particle orientation).}
+\end{exoresolu}
+
+\courssub{Revision Grid: Decision Table for Exam Questions}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Question asks for...} & \textbf{Start with...} & \textbf{Key integration} & \textbf{Watch out for...} \\
+\hline
+Time $t$ to reach speed $v$ & $m\frac{dv}{dt}=F-kv$ & $\int\frac{dv}{F-kv}$ & Signs when $F<kv$ (deceleration) \\
+\hline
+Speed $v$ after time $t$ & $m\frac{dv}{dt}=F-kv$ & Same, then invert & Terminal velocity $v_T=F/k$ as limit \\
+\hline
+Distance $x$ to reach speed $v$ & $mv\frac{dv}{dx}=F-kv$ & $\int\frac{v\,dv}{F-kv}$ & Rewrite $\frac{v}{F-kv}=-\frac{1}{k}+\frac{F/k}{F-kv}$ \\
+\hline
+Speed $v$ after distance $x$ & $mv\frac{dv}{dx}=F-kv$ & Same, then invert & Logarithm argument must be positive \\
+\hline
+Maximum height (upward projection) & $mv\frac{dv}{dx}=-mg-kv$ & $\int\frac{v\,dv}{mg+kv}$ & $v=0$ at top; limits $u\to0$ \\
+\hline
+Distance to stop (horizontal with resistance) & $mv\frac{dv}{dx}=-kv$ & $\int\frac{v\,dv}{-kv}=-\frac{1}{k}\int v\,dv$ & Simple: $x=\frac{mu^2}{2k}$ (work-energy) \\
+\hline
+Powered vehicle: distance to accelerate $u\to v$ & $mv\frac{dv}{dx}=F-kv$ & $\int\frac{v\,dv}{F-kv}$ & Constant force $\neq$ constant power \\
+\hline
+Inclined plane (up or down) & $mv\frac{dv}{dx}=\pm mg\sin\alpha - kv \mp \mu mg\cos\alpha$ & $\int\frac{v\,dv}{a\pm bv}$ & Signs of each component; friction always opposes motion \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[The Work-Energy Connection]
+For a particle on a horizontal line with resistance $R=kv$, the distance to stop from speed $u$ can be analysed via work-energy: Work done by resistance = Loss of kinetic energy.
+\[
+\int_0^x kv\,dx = \frac{1}{2}mu^2.
+\]
+But $v$ varies with $x$, so you still need $v(x)$ to evaluate the integral... unless you use the $v\frac{dv}{dx}$ equation multiplied by $dx$: $mv\,dv = -kv\,dx \Rightarrow m\int_u^0 v\,dv = -k\int_0^x v\,dx$. This just gives $\frac{1}{2}mu^2 = k\int_0^x v\,dx$, which is the work-energy equation. The work-energy theorem is a \emph{check}, not a shortcut to $x$ when resistance depends on $v$. However, for \emph{constant} resistance $R=F$, it gives $x = \frac{mu^2}{2F}$ instantly.
+\end{savaistu}
+
+\begin{exercice}[Consolidation Exercises]
+\begin{enumerate}
+\item A particle of mass $m$ falls from rest in a medium with resistance $kv$. Use $v\frac{dv}{dx}$ to find the distance fallen when the speed reaches $\frac{1}{2}v_T$, where $v_T=mg/k$ is the terminal velocity.
+\item A car of mass $\SI{1200}{kg}$ has a constant driving force of $\SI{4000}{N}$ and experiences resistance $20v$ newtons. Starting from rest, find the distance required to reach $\SI{20}{m.s^{-1}}$.
+\item A particle is projected up a smooth plane inclined at $30^\circ$ with speed $\SI{15}{m.s^{-1}}$. Air resistance is $0.05v$ N. Mass $=\SI{0.2}{kg}$. Find the maximum height reached (vertical height, not distance along plane). $g=\SI{9.8}{m.s^{-2}}$.
+\item \textbf{Critique:} In the car problem above, the model assumes constant driving force. Explain why a constant power model might be more realistic, and write the differential equation for $v(x)$ if the engine delivers constant power $P$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$v_T = mg/k$. Equation: $mv\frac{dv}{dx} = mg - kv = k(v_T - v)$.
+$\frac{mv}{k(v_T-v)}dv = dx$. Rewrite $\frac{v}{v_T-v} = -1 + \frac{v_T}{v_T-v}$.
+Integrate $v:0\to v_T/2$, $x:0\to x$:
+$\frac{m}{k}\int_0^{v_T/2}(-1 + \frac{v_T}{v_T-v})dv = x$.
+$\frac{m}{k}\left[ -v - v_T\ln(v_T-v) \right]_0^{v_T/2} = x$.
+$\frac{m}{k}\left( -\frac{v_T}{2} - v_T\ln(v_T/2) + v_T\ln v_T \right) = x$.
+$x = \frac{mv_T}{k}\left( \ln 2 - \frac{1}{2} \right) = \frac{mg}{k^2}\left( \ln 2 - \frac{1}{2} \right)$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$m=1200$, $F=4000$, $k=20$. $v_T = 200\,\mathrm{m\,s^{-1}}$.
+$1200v\frac{dv}{dx} = 4000 - 20v = 20(200-v)$.
+$60\frac{v}{200-v}dv = dx$. $\frac{v}{200-v} = -1 + \frac{200}{200-v}$.
+$\int_0^{20} 60(-1 + \frac{200}{200-v})dv = \int_0^x dx$.
+$60\left[ -v - 200\ln(200-v) \right]_0^{20} = x$.
+$60\left( -20 - 200\ln180 + 200\ln200 \right) = x$.
+$x = 60\left( -20 + 200\ln\frac{200}{180} \right) = 60\left( -20 + 200\ln\frac{10}{9} \right)$.
+$x \approx 60(-20 + 200\times0.10536) = 60(1.072) \approx \SI{64.3}{m}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Up plane positive. $mg\sin30^\circ = 0.2\times9.8\times0.5 = \SI{0.98}{N}$ down. Resistance $0.05v$ down.
+$0.2v\frac{dv}{dx} = -0.98 - 0.05v$.
+$v\frac{dv}{dx} = -4.9 - 0.25v$.
+Separate: $\frac{v}{4.9+0.25v}dv = -dx$. $\frac{v}{4.9+0.25v} = 4 - \frac{19.6}{4.9+0.25v}$.
+Integrate $v:15\to0$, $x:0\to s$ (distance along plane).
+$\int_{15}^0 (4 - \frac{19.6}{4.9+0.25v})dv = -s$.
+$\left[ 4v - 78.4\ln(4.9+0.25v) \right]_{15}^0 = -s$.
+$(0 - 78.4\ln4.9) - (60 - 78.4\ln8.65) = -s$.
+$s = 60 + 78.4\ln(4.9/8.65) = 60 - 78.4\ln(1.765) \approx 60 - 78.4\times0.568 \approx \SI{15.5}{m}$ along plane.
+Vertical height $h = s\sin30^\circ = \SI{7.75}{m}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Constant force $F$ means power $P=Fv$ increases with $v$; real engines have maximum power. Constant power $P$: driving force $F=P/v$.
+Equation: $mv\frac{dv}{dx} = \frac{P}{v} - kv = \frac{P - kv^2}{v}$.
+Separate: $\frac{mv^2}{P-kv^2}dv = dx$. This integrates to an inverse hyperbolic tangent or logarithmic form.
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter \emph{Modelling with Differential Equations} by asking you to use, in one single session, all three lessons studied: the \cle{formation} of a differential equation from a physical situation, \cle{Newton's law of cooling}, and the \cle{resisted motion} of a particle in a straight line.
+
+By the end of the activity you should be able to:
+
+\begin{itemize}
+\item translate a concrete, real-life situation into a differential equation, stating clearly the variables, the parameters and the modelling assumptions;
+\item solve a first-order separable differential equation of the type $\dfrac{dQ}{dt}=k(Q-Q_0)$ or $m\dfrac{dv}{dt}=-kv$ and determine the unknown constants from experimental data;
+\item use both forms of the acceleration, $\dfrac{dv}{dt}$ and $v\dfrac{dv}{dx}$, choosing the appropriate one according to the question asked;
+\item interpret a solution physically: limiting behaviour, time to reach a threshold, distance travelled before slowing down;
+\item criticise a model: identify which assumptions are questionable and explain how the model could be refined.
+\end{itemize}
+
+Work in groups of three or four. Each group produces one poster containing: the differential equation, its solution, the numerical answers, and \textbf{one criticism} of the modelling assumptions.
+
+\courssub{Situation}
+
+\textbf{Part A — The cooling \emph{achu} pot.}
+
+Mama Ngum runs a small \emph{chop house} in Bamenda. At $12{:}00$ she serves a pot of \emph{achu} (yellow soup) at a temperature of $90\ ^\circ\mathrm{C}$ in a dining room whose temperature is a constant $25\ ^\circ\mathrm{C}$. She notices that after $8$ minutes the soup has cooled to $55\ ^\circ\mathrm{C}$. Experience tells her that customers complain when the soup is below $35\ ^\circ\mathrm{C}$, so she wants to know at what time the soup will reach $35\ ^\circ\mathrm{C}$.
+
+Let $Q(t)$ be the temperature of the soup, in $^\circ\mathrm{C}$, $t$ minutes after serving. It is assumed that the rate of cooling is proportional to the difference between the temperature of the soup and the temperature of the room (\cle{Newton's law of cooling}):
+\[
+\frac{dQ}{dt}=k\,(Q-Q_0),
+\]
+where $Q_0=25$ is the room temperature and $k$ is a constant.
+
+\textbf{Part B — The coasting benskin rider.}
+
+The same afternoon, a \emph{benskin} (commercial motorcycle) rider and his machine, of total mass $m=150\ \mathrm{kg}$, are travelling on a level tarred road on the outskirts of Bamenda at $20\ \mathrm{m\,s^{-1}}$ when the rider switches off the engine and lets the bike coast. The motion is opposed by a resistance (air drag and rolling friction) modelled as a force of magnitude $6v$ newtons, where $v$ is the speed in $\mathrm{m\,s^{-1}}$. The road is horizontal, so the weight is balanced by the normal reaction of the road.
+
+The rider wants to know: how does his speed decay with time, and how far does he travel before his speed drops to $5\ \mathrm{m\,s^{-1}}$?
+
+\courssub{Tasks}
+
+\textbf{Part A — The cooling pot.}
+
+\begin{enumerate}
+\item Explain, in one or two sentences, why the constant $k$ in $\dfrac{dQ}{dt}=k(Q-Q_0)$ must be \emph{negative}. What does the sign of $\dfrac{dQ}{dt}$ tell you?
+\item Show, by separating the variables, that the general solution of the differential equation is
+\[
+Q(t)=Q_0+Ae^{kt},
+\]
+where $A$ is an arbitrary constant.
+\item Use the initial condition $Q(0)=90$ to find $A$, and write down $Q(t)$ in terms of $k$.
+\item Use the observation $Q(8)=55$ to show that $k=\dfrac{1}{8}\ln\!\left(\dfrac{6}{13}\right)$, and give the value of $k$ correct to 4 significant figures.
+\item Hence find, to the nearest minute, the time at which the soup reaches $35\ ^\circ\mathrm{C}$. Advise Mama Ngum.
+\item Sketch the graph of $Q(t)$ for $0\le t\le 30$. What is the limiting value of $Q$ as $t\to\infty$? Is this physically sensible?
+\item \textbf{Criticism.} Suppose the pot is now covered with a lid. Does Newton's law of cooling still apply with the \emph{same} value of $k$? Discuss briefly, and state one other assumption of the model that could be questioned.
+\end{enumerate}
+
+\textbf{Part B — The coasting rider.}
+
+\begin{enumerate}
+\item Draw a force diagram for the rider and bike while coasting, and use Newton's second law to show that
+\[
+150\,\frac{dv}{dt}=-6v,\qquad\text{i.e.}\qquad \frac{dv}{dt}=-\frac{v}{25}.
+\]
+\item Solve this equation with $v(0)=20$ to obtain $v(t)=20e^{-t/25}$.
+\item Find the time at which the speed has fallen to $5\ \mathrm{m\,s^{-1}}$, giving your answer to 1 decimal place.
+\item Using the alternative form of the acceleration $a=v\dfrac{dv}{dx}$, show that $v$ and the displacement $x$ satisfy
+\[
+\frac{dv}{dx}=-\frac{1}{25},
+\]
+and hence find $v$ as a function of $x$.
+\item Calculate the distance travelled from the moment the engine is switched off until the speed drops to $5\ \mathrm{m\,s^{-1}}$.
+\item What is the limiting speed as $t\to\infty$? Using your answer to question 4, show that the total distance the bike would travel before stopping (in this model) is finite, and find it.
+\item \textbf{Criticism.} The resistance was modelled as $6v$. In reality, air resistance is often modelled as proportional to $v^2$. Write down the differential equation you would obtain with a resistance $kv^2$, and state (without solving) whether you expect the total stopping distance to be finite or infinite in that model.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A — The cooling pot.}
+
+\textbf{1.} Since the soup is hotter than the room, $Q-Q_0>0$, and the soup is cooling, so $\dfrac{dQ}{dt}<0$. Therefore $k$ must be negative. The negative sign of $\dfrac{dQ}{dt}$ expresses the fact that the temperature decreases with time.
+
+\textbf{2.} The equation $\dfrac{dQ}{dt}=k(Q-Q_0)$ is separable. Since $Q>Q_0$ throughout the cooling, $|Q-Q_0|=Q-Q_0$, and
+\[
+\frac{dQ}{Q-Q_0}=k\,dt
+\;\Longrightarrow\;
+\ln(Q-Q_0)=kt+C
+\;\Longrightarrow\;
+Q-Q_0=e^{C}e^{kt},
+\]
+so $Q(t)=Q_0+Ae^{kt}$, where $A=e^{C}$ is an arbitrary (positive) constant.
+
+\textbf{3.} With $Q_0=25$ and $Q(0)=90$: $90=25+A$, so $A=65$ and
+\[
+Q(t)=25+65e^{kt}.
+\]
+
+\textbf{4.} Using $Q(8)=55$:
+\[
+55=25+65e^{8k}
+\;\Longrightarrow\;
+e^{8k}=\frac{30}{65}=\frac{6}{13}
+\;\Longrightarrow\;
+k=\frac{1}{8}\ln\!\left(\frac{6}{13}\right)\approx -0.09665\ \text{min}^{-1}.
+\]
+
+\textbf{5.} Set $Q(t)=35$:
+\[
+35=25+65e^{kt}
+\;\Longrightarrow\;
+e^{kt}=\frac{10}{65}=\frac{2}{13}
+\;\Longrightarrow\;
+t=\frac{1}{k}\ln\!\left(\frac{2}{13}\right)
+=\frac{8\ln(2/13)}{\ln(6/13)}\approx 19.4\ \text{min}.
+\]
+The soup reaches $35\ ^\circ\mathrm{C}$ after about $19$ minutes. Mama Ngum should serve the soup within roughly $19$ minutes of dishing it out.
+
+\textbf{6.} As $t\to\infty$, $e^{kt}\to 0$ (since $k<0$), so $Q\to 25\ ^\circ\mathrm{C}$: the soup tends to room temperature, which is physically sensible. The graph is a decreasing exponential curve starting at $(0,90)$, passing through $(8,55)$ and $(19.4,35)$, with horizontal asymptote $Q=25$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.78\linewidth, height=5.2cm,
+xlabel={$t$ (min)}, ylabel={$Q$ ($^\circ$C)},
+xmin=0, xmax=30, ymin=20, ymax=95,
+grid=both, grid style={popline, very thin},
+axis lines=left, samples=100]
+\addplot[popblue, thick, domain=0:30] {25+65*exp(-0.09665*x)};
+\addplot[popmuted, dashed] coordinates {(0,25) (30,25)};
+\addplot[poporange, dashed] coordinates {(8,0) (8,55)};
+\addplot[poporange, dashed] coordinates {(19.4,0) (19.4,35)};
+\addplot[only marks, mark=*, popdark] coordinates {(0,90) (8,55) (19.4,35)};
+\node[popmuted, anchor=west] at (axis cs:22,28) {$Q=25$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Cooling curve of the achu soup: $Q(t)=25+65e^{kt}$, with $k\approx-0.09665\ \mathrm{min^{-1}}$.}
+\end{popfigure}
+
+\textbf{7.} With a lid, heat escapes more slowly, so Newton's law may still describe the \emph{form} of the cooling, but the constant $k$ changes (it becomes smaller in magnitude). The value of $k$ found experimentally applies only to the uncovered pot. Other questionable assumptions: the room temperature may not be exactly constant; the soup may not be at a uniform temperature (stirring matters); evaporation at the surface contributes to cooling and is not proportional to $Q-Q_0$.
+
+\textbf{Part B — The coasting rider.}
+
+\textbf{1.} The forces acting on the rider and bike are shown below: the weight $mg$ and the normal reaction $R$ balance vertically, while horizontally the only force is the resistance $6v$ opposing the motion.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, >=stealth]
+\draw[popline, thick] (-0.5,0) -- (6.5,0);
+\draw[fill=popblueL, draw=popblue, thick] (2.2,0.15) rectangle (4.0,0.85);
+\node at (3.1,0.5) {bike $+$ rider};
+\draw[->, popdark, very thick] (4.0,0.5) -- (5.6,0.5) node[right] {$v$};
+\draw[->, poporange, very thick] (2.2,0.5) -- (0.8,0.5) node[left] {$6v$};
+\draw[->, popgreen, very thick] (3.1,0.85) -- (3.1,2.0) node[above] {$R$};
+\draw[->, poppurple, very thick] (3.1,0.15) -- (3.1,-1.0) node[below] {$mg$};
+\end{tikzpicture}
+\end{center}
+\legende{Force diagram for the coasting bike: $R$ and $mg$ cancel; only the resistance $6v$ acts horizontally.}
+\end{popfigure}
+
+Taking the direction of motion as positive, Newton's second law gives
+\[
+150\,\frac{dv}{dt}=-6v
+\quad\Longrightarrow\quad
+\frac{dv}{dt}=-\frac{6}{150}v=-\frac{v}{25}.
+\]
+
+\textbf{2.} Separating variables (with $v>0$):
+\[
+\frac{dv}{v}=-\frac{dt}{25}
+\;\Longrightarrow\;
+\ln v=-\frac{t}{25}+C
+\;\Longrightarrow\;
+v=Ae^{-t/25}.
+\]
+With $v(0)=20$, $A=20$, so $\boxed{v(t)=20e^{-t/25}}$.
+
+\textbf{3.} Set $v=5$:
+\[
+5=20e^{-t/25}
+\;\Longrightarrow\;
+e^{-t/25}=\frac14
+\;\Longrightarrow\;
+t=25\ln 4\approx 34.7\ \text{s}.
+\]
+
+\textbf{4.} With $a=v\dfrac{dv}{dx}$, the equation of motion becomes
+\[
+150\,v\frac{dv}{dx}=-6v
+\;\Longrightarrow\;
+\frac{dv}{dx}=-\frac{6}{150}=-\frac{1}{25} \qquad (v\neq 0).
+\]
+Integrating with respect to $x$: $v=-\dfrac{x}{25}+C'$, and $v=20$ when $x=0$ gives $C'=20$, so
+\[
+v(x)=20-\frac{x}{25}.
+\]
+
+\textbf{5.} When $v=5$:
+\[
+5=20-\frac{x}{25}
+\;\Longrightarrow\;
+x=25(20-5)=375\ \text{m}.
+\]
+The bike travels $375\ \mathrm{m}$ while slowing from $20$ to $5\ \mathrm{m\,s^{-1}}$.
+
+\textbf{6.} As $t\to\infty$, $v=20e^{-t/25}\to 0$: the bike approaches rest but (in this model) never quite reaches it in finite time. However, from question 4, $v=0$ when $x=25\times 20=500\ \mathrm{m}$: the \emph{total} distance travelled before stopping is finite, namely $500\ \mathrm{m}$. This is a remarkable feature of linear resistance: infinite stopping time, finite stopping distance.
+
+\textbf{7.} With resistance $kv^2$, the equation of motion is $m\dfrac{dv}{dt}=-kv^2$. Using $v\dfrac{dv}{dx}=-\dfrac{k}{m}v^2$ gives $\dfrac{dv}{dx}=-\dfrac{k}{m}v$, whose solution is $v=20e^{-kx/m}$: this is positive for all finite $x$, so the model predicts an \emph{infinite} stopping distance (the speed decays exponentially with distance and never reaches exactly zero). This contrasts with the linear model and shows how the choice of resistance law affects the predictions.
+
+\begin{attention}[Frequently observed errors]
+\begin{itemize}
+\item Forgetting that $k<0$ in Newton's law of cooling, or writing $Q=Ae^{kt}$ without the constant term $Q_0$: the temperature tends to $Q_0$, not to $0$.
+\item Rounding $k$ too early: keep $k=\dfrac{1}{8}\ln\!\left(\dfrac{6}{13}\right)$ in exact form and only round at the final step (the correct 4 s.f. value is $-0.09665\ \mathrm{min^{-1}}$).
+\item In question 4 of Part B, dividing by $v$ without noting $v\neq 0$; the relation $\dfrac{dv}{dx}=-\dfrac{1}{25}$ holds only while the bike is moving.
+\item Confusing the two forms of acceleration: use $\dfrac{dv}{dt}$ when time is involved, $v\dfrac{dv}{dx}$ when displacement is involved.
+\item Concluding ``the bike never stops, so it travels infinitely far'': for linear resistance the stopping \emph{time} is infinite but the stopping \emph{distance} is finite.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Why two case studies?]
+Newton's law of cooling and linear resisted motion lead to the \emph{same} mathematical object: the exponential function as the solution of $\dfrac{dy}{dt}=k(y-y_0)$. Recognising that two apparently unrelated situations — a pot of soup in Bamenda and a coasting benskin — share one mathematical model is precisely the skill of \cle{mathematical modelling} that the GCE Advanced Level examination rewards.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Skill 1: Forming a Differential Equation from a Family of Curves}
+
+\begin{methode}[Eliminating arbitrary constants]
+To find the differential equation of a family of curves containing $n$ arbitrary constants:
+\begin{enumerate}
+\item Count the number $n$ of \cle{arbitrary constants} in the equation of the family. The differential equation will be of \cle{order} $n$.
+\item Differentiate the equation $n$ times with respect to $x$, treating each constant as fixed. Remember the chain rule: if $y$ depends on $x$, then $\dfrac{d}{dx}(y^2)=2y\dfrac{dy}{dx}$.
+\item You now have $n+1$ equations (the original plus $n$ derivatives). Use them to \cle{eliminate} the $n$ constants, usually by substitution or by subtracting pairs of equations.
+\item The result is a relation between $x$, $y$, $y'$, \dots, $y^{(n)}$ containing \emph{no} arbitrary constant: this is the required differential equation.
+\end{enumerate}
+\textbf{Reflexes:} isolate the constant \emph{before} differentiating when it appears as a factor (e.g.\ write $\dfrac{y}{x}=A$); differentiate $\ln y$, $e^{ky}$, $y^2$ with care; always check your final equation contains no constant.
+\end{methode}
+
+\begin{exoresolu}[Family of parabolas]
+Find the differential equation of the family of parabolas $y = Ax^2$, where $A$ is an arbitrary constant. Hence state the order of the equation obtained.
+\tcblower
+\textbf{Solution.}
+
+\textbf{Step 1.} The family has \textbf{one} arbitrary constant $A$, so we expect a \textbf{first order} differential equation.
+
+\textbf{Step 2.} Differentiate once with respect to $x$:
+\[ \frac{dy}{dx} = 2Ax. \]
+
+\textbf{Step 3.} We eliminate $A$ between the two equations
+\[ y = Ax^2 \qquad \text{and} \qquad \frac{dy}{dx} = 2Ax. \]
+From the first equation, $A = \dfrac{y}{x^2}$ (for $x \neq 0$). Substituting into the second:
+\[ \frac{dy}{dx} = 2\left(\frac{y}{x^2}\right)x = \frac{2y}{x}. \]
+
+\textbf{Step 4.} The differential equation of the family is
+\[ \boxed{x\,\frac{dy}{dx} = 2y} \qquad \text{(order 1).} \]
+
+\textbf{Check.} If $y = Ax^2$, then $x\dfrac{dy}{dx} = x(2Ax) = 2Ax^2 = 2y$. $\checkmark$
+\end{exoresolu}
+
+\begin{exoresolu}[Family with two constants]
+Find the differential equation of the family of curves $y = Ae^{2x} + Be^{-x}$, where $A$ and $B$ are arbitrary constants.
+\tcblower
+\textbf{Solution.}
+
+\textbf{Step 1.} Two arbitrary constants $\Rightarrow$ a \textbf{second order} differential equation.
+
+\textbf{Step 2.} Differentiate twice:
+\begin{align*}
+y &= Ae^{2x} + Be^{-x}, \\
+y' &= 2Ae^{2x} - Be^{-x}, \\
+y'' &= 4Ae^{2x} + Be^{-x}.
+\end{align*}
+
+\textbf{Step 3.} Eliminate $A$ and $B$. Adding the first two equations eliminates $B$:
+\[ y + y' = 3Ae^{2x} \quad\Longrightarrow\quad Ae^{2x} = \frac{y+y'}{3}. \]
+Subtracting the first from the third:
+\[ y'' - y = 3Ae^{2x} \quad\Longrightarrow\quad Ae^{2x} = \frac{y''-y}{3}. \]
+Equating the two expressions for $Ae^{2x}$:
+\[ \frac{y+y'}{3} = \frac{y''-y}{3} \quad\Longrightarrow\quad y + y' = y'' - y. \]
+
+\textbf{Step 4.} Hence
+\[ \boxed{\frac{d^2y}{dx^2} - \frac{dy}{dx} - 2y = 0.} \]
+
+\textbf{Check.} With $y = Ae^{2x}+Be^{-x}$: $y'' - y' - 2y = (4-2-2)Ae^{2x} + (1+1-2)Be^{-x} = 0$. $\checkmark$
+\end{exoresolu}
+
+\begin{attention}[Constants hidden inside functions]
+A constant may be \emph{disguised}: in $y = A\sin x$, the constant $A$ is a factor, but in $y = \sin(x + c)$ the constant $c$ is \emph{inside} the sine and cannot be isolated by division. Differentiate first, then eliminate. Also, never leave a constant in your final answer: an equation like $y' = 2Ax$ is \emph{not} a differential equation of the family until $A$ has been removed.
+\end{attention}
+
+\courssub{Skill 2: Forming a Differential Equation from a Practical Situation}
+
+\begin{methode}[Translating a statement into a differential equation]
+\begin{enumerate}
+\item \cle{Define variables}: choose a letter for the quantity that varies (population $P$, temperature $\theta$, volume $V$\dots) and identify the independent variable (usually time $t$). State the units.
+\item Identify the \cle{rate of change} mentioned in the statement: ``rate of increase'', ``decays'', ``cools'' $\rightarrow$ $\dfrac{dP}{dt}$, $\dfrac{d\theta}{dt}$, \dots
+\item Translate the \cle{proportionality}: ``proportional to $X$'' gives $kX$; ``inversely proportional to $X$'' gives $\dfrac{k}{X}$; ``proportional to the square of $X$'' gives $kX^2$.
+\item Fix the \cle{sign}: positive constant $k>0$ with a minus sign if the quantity \emph{decreases} ($\dfrac{dV}{dt}=-kV$), plus sign if it \emph{increases}.
+\item Add any \cle{initial condition} given (value at $t=0$): this will later fix the constant of integration.
+\end{enumerate}
+\textbf{Reflex:} if a quantity decreases \emph{towards} a fixed value $Q_0$, the driving term is the \emph{difference} $(Q-Q_0)$, not $Q$ itself.
+\end{methode}
+
+\begin{exoresolu}[Modelling a water tank and a population]
+(a) A water tank in Buea leaks so that the volume $V$ litres of water decreases at a rate proportional to the volume present. Initially the tank contains $5000$ litres. Form a differential equation with its initial condition.
+
+(b) A bacterial culture grows so that its population $P$ increases at a rate proportional to $P$, and a harvest removes bacteria at the constant rate of $h$ bacteria per hour. Form a differential equation for $P$.
+\tcblower
+\textbf{Solution.}
+
+\textbf{(a)} Variables: $V$ = volume of water (litres), $t$ = time.
+
+Rate of change: the volume \emph{decreases}, so $\dfrac{dV}{dt}<0$.
+
+Proportionality: rate proportional to the volume present $\Rightarrow$ magnitude $kV$ with $k>0$.
+
+Sign: decreasing $\Rightarrow$ minus sign. Hence
+\[ \boxed{\frac{dV}{dt} = -kV, \qquad V(0) = 5000.} \]
+
+\textbf{(b)} Two contributions act on $\dfrac{dP}{dt}$:
+\begin{itemize}
+\item natural growth: $+kP$ (proportional to $P$, increasing);
+\item harvesting: $-h$ (constant removal).
+\end{itemize}
+Combining:
+\[ \boxed{\frac{dP}{dt} = kP - h.} \]
+Note the model is only meaningful while $P > \dfrac{h}{k}$; if $P = \dfrac{h}{k}$ then $\dfrac{dP}{dt}=0$ and the population is in equilibrium.
+\end{exoresolu}
+
+\courssub{Skill 3: Newton's Law of Cooling}
+
+\begin{definition}[Newton's law of cooling]
+The rate at which a body loses heat to its surroundings is proportional to the \cle{excess temperature}, the difference between the temperature $\theta$ of the body and the constant ambient temperature $\theta_0$ of the surroundings:
+\[ \frac{d\theta}{dt} = -k(\theta - \theta_0), \qquad k > 0. \]
+The minus sign expresses that a body hotter than its surroundings \emph{cools down} ($\theta > \theta_0 \Rightarrow \dfrac{d\theta}{dt} < 0$).
+\end{definition}
+
+\begin{methode}[Solving $\dfrac{d\theta}{dt}=-k(\theta-\theta_0)$]
+\begin{enumerate}
+\item Identify the \cle{ambient temperature} $\theta_0$ (constant temperature of the surroundings) and write the law
+\[ \frac{d\theta}{dt} = -k(\theta - \theta_0), \qquad k>0, \]
+where $\theta$ is the temperature of the body at time $t$.
+\item \cle{Separate variables} using the difference $\theta - \theta_0$:
+\[ \int \frac{d\theta}{\theta - \theta_0} = \int -k\,dt \quad\Longrightarrow\quad \ln|\theta-\theta_0| = -kt + C. \]
+\item Exponentiate: $\theta - \theta_0 = Ae^{-kt}$ where $A = \pm e^{C}$.
+\item Use the \cle{initial temperature} $\theta(0)=\theta_i$ to get $A = \theta_i - \theta_0$, hence
+\[ \theta = \theta_0 + (\theta_i - \theta_0)e^{-kt}. \]
+\item Use a \emph{second} measured temperature to find $k$ (take logarithms: $kt = \ln\dfrac{\theta_i-\theta_0}{\theta-\theta_0}$), then answer the question asked.
+\end{enumerate}
+\textbf{Reflex:} the body never quite reaches $\theta_0$ in finite time; $\theta \to \theta_0$ as $t \to \infty$.
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.72\linewidth, height=5.2cm, axis lines=left, xlabel={$t$ (min)}, ylabel={$\theta$ (${}^\circ$C)}, xmin=0, xmax=42, ymin=0, ymax=110, xtick={0,10,20,30,40}, ytick={20,40,60,80,100}, tick label style={font=\small}, label style={font=\small}]
+\addplot[domain=0:42, samples=80, thick, popblue] {20 + 80*exp(-0.0693*x)};
+\addplot[domain=0:42, dashed, poporange] {20};
+\addplot[only marks, mark=*, popdark] coordinates {(0,100) (10,60) (20,40) (30,30)};
+\node[font=\small, poporange, anchor=west] at (axis cs:24,24) {$\theta_0 = 20$};
+\node[font=\small, popblue, anchor=south west] at (axis cs:14,68) {$\theta = 20 + 80e^{-kt}$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Newton's law of cooling: the excess temperature $\theta - \theta_0$ decays exponentially towards zero.}
+\end{popfigure}
+
+\begin{exoresolu}[Cooling of a pot of water]
+A pot of water is removed from the fire in a kitchen in Bamenda at a temperature of $100^\circ$C and placed in a room kept at $20^\circ$C. After $10$ minutes the water is at $60^\circ$C. Assuming Newton's law of cooling, find:
+\begin{enumerate}
+\item the temperature of the water after a further $10$ minutes;
+\item the time at which the temperature reaches $30^\circ$C, giving your answer to the nearest minute.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{Setting up.} Ambient temperature $\theta_0 = 20$. Newton's law:
+\[ \frac{d\theta}{dt} = -k(\theta - 20). \]
+Separating variables and integrating:
+\[ \ln(\theta - 20) = -kt + C \quad\Longrightarrow\quad \theta = 20 + Ae^{-kt}. \]
+Initial condition $\theta(0) = 100$: $A = 100 - 20 = 80$. Hence
+\[ \theta = 20 + 80e^{-kt}. \]
+
+\textbf{Finding $k$.} At $t = 10$, $\theta = 60$:
+\[ 60 = 20 + 80e^{-10k} \quad\Longrightarrow\quad e^{-10k} = \frac{40}{80} = \frac{1}{2}. \]
+Taking logarithms: $-10k = \ln\tfrac12 = -\ln 2$, so
+\[ k = \frac{\ln 2}{10} \approx 0.0693\ \text{min}^{-1}. \]
+
+\textbf{Part 1.} ``A further 10 minutes'' means $t = 20$:
+\[ \theta(20) = 20 + 80e^{-20k} = 20 + 80\left(e^{-10k}\right)^2 = 20 + 80\left(\tfrac12\right)^2 = 20 + 20 = \boxed{40^\circ\text{C}.} \]
+(Elegant shortcut: the \emph{excess} temperature $80 \to 40 \to 20$ is halved every 10 minutes.)
+
+\textbf{Part 2.} Solve $\theta = 30$:
+\[ 30 = 20 + 80e^{-kt} \quad\Longrightarrow\quad e^{-kt} = \frac{10}{80} = \frac18. \]
+\[ kt = \ln 8 = 3\ln 2 \quad\Longrightarrow\quad t = \frac{3\ln 2}{\ln 2 / 10} = 30\ \text{minutes}. \]
+The water reaches $30^\circ$C after exactly $\boxed{30}$ minutes (three half-lives of the excess temperature).
+\end{exoresolu}
+
+\begin{attention}[Working with the excess temperature]
+All the exponential behaviour concerns the \emph{difference} $\theta - \theta_0$, never $\theta$ alone. A frequent error is to write $\theta = 100e^{-kt}$, which wrongly sends the temperature to $0^\circ$C instead of the room temperature. Always subtract the ambient temperature first.
+\end{attention}
+
+\courssub{Skill 4: Resisted Motion — Velocity as a Function of Time}
+
+\begin{methode}[Solving $m\dfrac{dv}{dt} = F - kv$ or $F-kv^2$]
+\begin{enumerate}
+\item Draw a \cle{force diagram}: driving force $F$ (weight $mg$, engine force\dots) in the direction of motion, resistance $R(v)$ opposing motion.
+\item Apply \cle{Newton's second law}: $m\dfrac{dv}{dt} = F - R(v)$.
+\item \cle{Separate variables}:
+\begin{itemize}
+\item Linear resistance $R=kv$: $\displaystyle t = \int \frac{m\,dv}{F-kv} = -\frac{m}{k}\ln|F-kv| + C$.
+\item Quadratic resistance $R=kv^2$: use partial fractions on $\dfrac{1}{F-kv^2}$, giving a logarithm of the form $\ln\left|\dfrac{V+v}{V-v}\right|$.
+\end{itemize}
+\item Use the initial velocity to find $C$, then make $v$ the \cle{subject}.
+\item Read off the \cle{terminal velocity}: either set $\dfrac{dv}{dt}=0$ in the equation of motion ($F = R(v_T)$), or let $t\to\infty$ in $v(t)$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Vehicle with linear resistance]
+A car of mass $1000$ kg moves along a straight horizontal road. Its engine exerts a constant tractive force of $3000$ N and the resistance to motion is $50v$ N, where $v$ m\,s$^{-1}$ is the speed. The car starts from rest.
+\begin{enumerate}
+\item Show that $20\dfrac{dv}{dt} = 60 - v$.
+\item Find $v$ in terms of $t$ and state the terminal velocity.
+\item Find the time taken to reach $90\%$ of the terminal velocity, to 3 significant figures.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{Part 1.} Newton's second law along the road:
+\[ m\frac{dv}{dt} = F - R \quad\Longrightarrow\quad 1000\frac{dv}{dt} = 3000 - 50v. \]
+Dividing by $50$:
+\[ \boxed{20\frac{dv}{dt} = 60 - v.} \]
+
+\textbf{Part 2.} Separate variables:
+\[ \int \frac{20\,dv}{60 - v} = \int dt \quad\Longrightarrow\quad -20\ln|60-v| = t + C. \]
+Initial condition $v=0$ at $t=0$: $C = -20\ln 60$. Hence
+\[ -20\ln\frac{60-v}{60} = t \quad\Longrightarrow\quad \frac{60-v}{60} = e^{-t/20}. \]
+Making $v$ the subject:
+\[ \boxed{v = 60\left(1 - e^{-t/20}\right).} \]
+As $t \to \infty$, $e^{-t/20}\to 0$, so the \cle{terminal velocity} is $\boxed{v_T = 60\ \text{m\,s}^{-1}}$.
+
+\textbf{Check via equilibrium:} $dv/dt = 0 \Rightarrow 60 - v = 0 \Rightarrow v_T = 60$. $\checkmark$
+
+\textbf{Part 3.} $90\%$ of $60$ is $54$ m\,s$^{-1}$:
+\[ 54 = 60\left(1-e^{-t/20}\right) \quad\Longrightarrow\quad e^{-t/20} = 0.1 \quad\Longrightarrow\quad t = 20\ln 10 \approx \boxed{46.1\ \text{s}}. \]
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.72\linewidth, height=5.2cm, axis lines=left, xlabel={$t$ (s)}, ylabel={$v$ (m\,s$^{-1}$)}, xmin=0, xmax=100, ymin=0, ymax=70, xtick={0,20,40,60,80,100}, ytick={0,20,40,60}, tick label style={font=\small}, label style={font=\small}]
+\addplot[domain=0:100, samples=80, thick, popgreen] {60*(1 - exp(-x/20))};
+\addplot[domain=0:100, dashed, poporange] {60};
+\node[font=\small, poporange, anchor=south west] at (axis cs:55,60) {$v_T = 60$};
+\node[font=\small, popgreen!60!black, anchor=north west] at (axis cs:30,45) {$v = 60(1-e^{-t/20})$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Speed approaching the terminal velocity asymptotically under linear resistance.}
+\end{popfigure}
+
+\courssub{Skill 5: Resisted Motion — Velocity as a Function of Displacement}
+
+\begin{methode}[Using $a = v\dfrac{dv}{dx}$]
+When the question asks for \emph{velocity in terms of displacement} (or distance travelled to reach a given speed), time is not wanted, so:
+\begin{enumerate}
+\item Replace the acceleration by the \cle{chain rule form}
+\[ a = \frac{dv}{dt} = \frac{dv}{dx}\cdot\frac{dx}{dt} = v\frac{dv}{dx}. \]
+\item Write Newton's second law: $m\,v\dfrac{dv}{dx} = F - R(v)$.
+\item \cle{Separate} $v$ and $x$: put all $v$'s with $dv$ and integrate with respect to $x$.
+\item Apply the initial condition ($v = v_0$ when $x = 0$) to fix the constant.
+\item For a \emph{stopping distance}, set $v = 0$ in the integrated relation (or take the limit as $v \to 0$).
+\end{enumerate}
+\textbf{Reflex:} choose $\dfrac{dv}{dt}$ when time is involved, $v\dfrac{dv}{dx}$ when displacement is involved. This choice is the single most important decision in resisted-motion questions.
+\end{methode}
+
+\begin{exoresolu}[Stopping distance of a boat]
+A boat of mass $500$ kg is moving in a straight line at $8$ m\,s$^{-1}$ when its engine is switched off. The water resistance is $100v$ N, where $v$ m\,s$^{-1}$ is the speed.
+\begin{enumerate}
+\item Show that $v\dfrac{dv}{dx} = -\dfrac{v}{5}$, where $x$ is the distance travelled after the engine stops.
+\item Find the distance the boat travels before coming to rest.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{Part 1.} After the engine stops, the only horizontal force is the resistance $100v$ opposing motion. Newton's second law with $a = v\dfrac{dv}{dx}$:
+\[ 500\,v\frac{dv}{dx} = -100v \quad\Longrightarrow\quad \boxed{v\frac{dv}{dx} = -\frac{v}{5}.} \]
+
+\textbf{Part 2.} For $v \neq 0$ divide by $v$:
+\[ \frac{dv}{dx} = -\frac15 \quad\Longrightarrow\quad v = -\frac{x}{5} + C. \]
+Initial condition: $v = 8$ when $x = 0$, so $C = 8$ and
+\[ v = 8 - \frac{x}{5}. \]
+The boat stops when $v = 0$:
+\[ 0 = 8 - \frac{x}{5} \quad\Longrightarrow\quad \boxed{x = 40\ \text{m}.} \]
+The boat travels exactly $40$ m before stopping.
+
+\textbf{Remark.} Here the resistance is proportional to $v$, so $v$ decreases \emph{linearly} with distance and the stopping distance is finite. (With time as variable, $v = 8e^{-t/5}$ only tends to $0$: the boat ``never stops'' in finite time, yet covers a finite distance $\int_0^\infty 8e^{-t/5}dt = 40$ m — a reassuring consistency check!)
+\end{exoresolu}
+
+\courssub{Skill 6: Mixed Examination Problems}
+
+\begin{methode}[Strategy for full GCE-style questions]
+\begin{enumerate}
+\item \cle{Read the whole question first}: part (a) usually asks you to \emph{form} the equation, part (b) to \emph{solve} it, part (c) to \emph{interpret} (terminal velocity, limiting temperature, time or distance for a given value).
+\item Show the forming step clearly: state Newton's second law or the given proportionality \emph{in symbols} before substituting numbers — method marks are awarded here.
+\item Keep the constant of integration \emph{symbolic} until the initial condition is applied; apply it \emph{immediately} after integrating.
+\item When asked to ``show that'' a given solution holds, you may \emph{verify by substitution} into the differential equation instead of solving — often much faster.
+\item Finish with the \cle{interpretation} in context, with units: ``the limiting speed is $12$ m\,s$^{-1}$''.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Parachutist with quadratic resistance]
+A parachutist of mass $80$ kg falls vertically from rest. The air resistance has magnitude $2v^2$ N, where $v$ m\,s$^{-1}$ is her speed. Take $g = 10$ m\,s$^{-2}$.
+\begin{enumerate}
+\item Show that $\dfrac{dv}{dt} = \dfrac{400 - v^2}{40}$.
+\item Hence show that $t = 40\displaystyle\int_0^{v}\frac{du}{400-u^2}$, and by using partial fractions show that
+\[ t = \ln\left(\frac{20+v}{20-v}\right). \]
+\item Deduce $v$ as a function of $t$ and state the terminal velocity.
+\item Find the distance fallen while her speed increases from $0$ to $10$ m\,s$^{-1}$, giving your answer to 3 significant figures.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{Part 1.} Forces: weight $mg = 800$ N downwards, resistance $2v^2$ N upwards. Newton's second law (downwards positive):
+\[ 80\frac{dv}{dt} = 800 - 2v^2 \quad\Longrightarrow\quad \frac{dv}{dt} = \frac{800-2v^2}{80} = \boxed{\frac{400-v^2}{40}.} \]
+
+\textbf{Part 2.} Separating variables and integrating from rest ($v=0$ at $t=0$):
+\[ dt = \frac{40\,dv}{400-v^2} \quad\Longrightarrow\quad t = 40\int_0^v \frac{du}{400-u^2}. \]
+Partial fractions: $\dfrac{1}{400-u^2} = \dfrac{1}{(20-u)(20+u)} = \dfrac{1}{40}\left(\dfrac{1}{20+u}+\dfrac{1}{20-u}\right)$, since $\dfrac{1}{40}\big[(20-u)+(20+u)\big] = 1$. Therefore
+\begin{align*}
+t &= 40\cdot\frac{1}{40}\int_0^v\left(\frac{1}{20+u}+\frac{1}{20-u}\right)du \\
+&= \Big[\ln(20+u) - \ln(20-u)\Big]_0^v = \ln\frac{20+v}{20-v} - \ln 1 = \boxed{\ln\left(\frac{20+v}{20-v}\right).}
+\end{align*}
+
+\textbf{Part 3.} Exponentiate: $\dfrac{20+v}{20-v} = e^{t}$. Solving for $v$:
+\[ 20 + v = e^{t}(20 - v) \quad\Longrightarrow\quad v\left(e^{t}+1\right) = 20\left(e^{t}-1\right), \]
+\[ \boxed{v = 20\,\frac{e^{t}-1}{e^{t}+1} = 20\,\frac{1-e^{-t}}{1+e^{-t}}.} \]
+(Dividing numerator and denominator by $e^{t/2}$ gives the equivalent compact form $v = 20\tanh\dfrac{t}{2}$.) As $t\to\infty$, $e^{-t}\to 0$, so the terminal velocity is $\boxed{v_T = 20\ \text{m\,s}^{-1}}$.
+
+\textbf{Check:} equilibrium: $2v^2 = 800 \Rightarrow v = 20$. $\checkmark$
+
+\textbf{Part 4.} Displacement is involved, so use $a = v\dfrac{dv}{dx}$:
+\[ 80\,v\frac{dv}{dx} = 800 - 2v^2 \quad\Longrightarrow\quad dx = \frac{80\,v\,dv}{800-2v^2} = \frac{40\,v\,dv}{400-v^2}. \]
+Integrating from $v=0$ to $v=10$:
+\[ x = 40\int_0^{10}\frac{v\,dv}{400-v^2} = 40\left[-\frac12\ln(400-v^2)\right]_0^{10} = -20\ln\frac{300}{400} = 20\ln\frac{4}{3}. \]
+Numerically, $x = 20\ln(1.3333) \approx \boxed{5.75\ \text{m}}$ (3 s.f.). The parachutist falls about $5.75$ m while accelerating from rest to $10$ m\,s$^{-1}$.
+\end{exoresolu}
+
+\begin{exoresolu}[Cooling with a ``show that'' verification]
+The temperature $\theta^\circ$C of a corpse discovered in a mortuary satisfies Newton's law of cooling with ambient temperature $4^\circ$C, so that $\dfrac{d\theta}{dt} = -k(\theta - 4)$. At time $t = 0$ the temperature is $15^\circ$C.
+\begin{enumerate}
+\item Verify that $\theta = 4 + 11e^{-kt}$ satisfies both the differential equation and the initial condition.
+\item Given that after $2$ hours the temperature is $10^\circ$C, find $k$ to 3 significant figures, and the time at which the temperature will be $6^\circ$C.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{Part 1.} Differentiate the proposed solution:
+\[ \frac{d\theta}{dt} = -11k e^{-kt}. \]
+Now compute the right-hand side of the differential equation:
+\[ -k(\theta - 4) = -k\left(4 + 11e^{-kt} - 4\right) = -11ke^{-kt}. \]
+Both sides agree, so $\theta = 4+11e^{-kt}$ \emph{satisfies the equation}. Also $\theta(0) = 4 + 11e^{0} = 15$, so the initial condition holds. $\checkmark$
+
+\textbf{Part 2.} At $t = 2$, $\theta = 10$:
+\[ 10 = 4 + 11e^{-2k} \quad\Longrightarrow\quad e^{-2k} = \frac{6}{11} \quad\Longrightarrow\quad k = \frac12\ln\frac{11}{6} \approx \boxed{0.303\ \text{h}^{-1}}. \]
+For $\theta = 6$:
+\[ 6 = 4 + 11e^{-kt} \quad\Longrightarrow\quad e^{-kt} = \frac{2}{11} \quad\Longrightarrow\quad t = \frac{\ln(11/2)}{k} = \frac{2\ln(11/2)}{\ln(11/6)}. \]
+Numerically $t \approx \dfrac{2 \times 1.7047}{0.6061} \approx \boxed{5.63\ \text{hours}}$ (3 s.f.).
+\end{exoresolu}
+
+\begin{aretenir}[Chapter essentials]
+\begin{itemize}
+\item A family with $n$ arbitrary constants satisfies a differential equation of \cle{order $n$}: differentiate $n$ times, then eliminate the constants.
+\item Modelling: rate of change $=$ (rate in) $-$ (rate out); a quantity tending to a limit $Q_0$ is driven by the \cle{difference} $Q - Q_0$.
+\item Newton's law of cooling: $\dfrac{d\theta}{dt} = -k(\theta - \theta_0)$, with solution $\theta = \theta_0 + (\theta_i - \theta_0)e^{-kt}$.
+\item Resisted motion: $m\dfrac{dv}{dt} = F - R(v)$ for \emph{time} questions; $mv\dfrac{dv}{dx} = F - R(v)$ for \emph{displacement} questions.
+\item \cle{Terminal velocity}: set the acceleration to zero, i.e.\ solve $F = R(v_T)$.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find the differential equation of the family of curves $y = \dfrac{A}{x} + B$, where $A$ and $B$ are arbitrary constants.
+\item A radioactive substance decays so that the mass $m$ grams decreases at a rate proportional to the mass present. Initially there are $200$ g and after $5$ days $150$ g remain. Form the differential equation, solve it, and find the mass remaining after $12$ days (3 s.f.).
+\item A body falls from rest under gravity against a resistance of $\dfrac{mv}{10}$ N per unit mass, i.e.\ $\dfrac{dv}{dt} = 10 - \dfrac{v}{10}$. Find $v$ in terms of $t$, the terminal velocity, and the time to reach half the terminal velocity.
+\item A particle of mass $2$ kg moving at $6$ m\,s$^{-1}$ is slowed by a resistance $4v$ N. Using $a = v\dfrac{dv}{dx}$, find the distance travelled before the speed falls to $2$ m\,s$^{-1}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $y = \dfrac{A}{x} + B \Rightarrow y' = -\dfrac{A}{x^2}$, so $A = -x^2 y'$. Then $y'' = \dfrac{2A}{x^3} = \dfrac{2(-x^2 y')}{x^3} = -\dfrac{2y'}{x}$, giving $\boxed{xy'' + 2y' = 0}$.
+
+\textbf{2.} $\dfrac{dm}{dt} = -km$, $m(0)=200$, so $m = 200e^{-kt}$. From $150 = 200e^{-5k}$: $k = \dfrac{1}{5}\ln\dfrac{4}{3} \approx 0.0575$ day$^{-1}$. Then $m(12) = 200e^{-12k} = 200\left(\dfrac{3}{4}\right)^{12/5} \approx 100$ g (3 s.f.: $100$ g, more precisely $100.2$ g).
+
+\textbf{3.} Separating: $-10\ln|100 - v|\cdot\tfrac{1}{10}$... directly: $\displaystyle\int\frac{10\,dv}{100-v} = \int dt$ gives $v = 100\left(1 - e^{-t/10}\right)$. Terminal velocity $v_T = 100$ m\,s$^{-1}$. Half of it: $e^{-t/10} = \tfrac12 \Rightarrow t = 10\ln 2 \approx 6.93$ s.
+
+\textbf{4.} $2v\dfrac{dv}{dx} = -4v \Rightarrow \dfrac{dv}{dx} = -2 \Rightarrow v = 6 - 2x$. Setting $v = 2$: $x = 2$ m.
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice question]
+A family of curves is given by $y = A e^{2x}$, where $A$ is an arbitrary constant. Which of the following differential equations is satisfied by every member of the family?
+
+\begin{enumerate}
+\item $\dfrac{dy}{dx} = 2x$
+\item $\dfrac{dy}{dx} = 2y$
+\item $\dfrac{dy}{dx} = e^{2x}$
+\item $\dfrac{dy}{dx} = \dfrac{y}{2}$
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false, with justification]
+Answer \emph{true} or \emph{false} to each statement, justifying your answer in one or two sentences.
+
+\begin{enumerate}
+\item The equation $\dfrac{d\theta}{dt} = -k(\theta - \theta_0)$ with $k > 0$ models the temperature $\theta$ of a body cooling in surroundings at temperature $\theta_0$.
+\item In Newton's law of cooling, the constant $k$ depends on the initial temperature of the body.
+\item For a particle moving with resistance proportional to its velocity, the terminal velocity is the velocity at which the acceleration is zero.
+\item To obtain velocity as a function of displacement, one replaces $\dfrac{dv}{dt}$ by $v\dfrac{dv}{dx}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions and key results]
+\begin{enumerate}
+\item State Newton's law of cooling as a differential equation, defining every symbol used.
+\item Explain what is meant by the \cle{terminal velocity} of a particle falling through a resisting medium.
+\item Write down the two forms of acceleration used in resisted motion, and state when each is appropriate.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Form the differential equation of the family of curves $y = Ax^2$ by eliminating the constant $A$.
+\item A body cools according to $\dfrac{d\theta}{dt} = -0.1(\theta - 20)$. Find the rate of cooling at the instant when $\theta = 60^{\circ}$C.
+\item A particle of mass $4$ kg moves under a resistance of $8v$ N and no other horizontal force. Write down the equation of motion in the form $m\dfrac{dv}{dt} = \ldots$
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Forming a differential equation from a family of curves]
+A family of curves is given by $y = Ax^2 + Bx$, where $A$ and $B$ are arbitrary constants.
+
+\begin{enumerate}
+\item Write down $\dfrac{dy}{dx}$ and $\dfrac{d^2y}{dx^2}$.
+\item Hence form the differential equation satisfied by all members of the family by eliminating $A$ and $B$. Give your answer in the form $x^2 y'' - 2xy' + 2y = 0$ or show that it reduces to it.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Population growth]
+The population $P$ of a town grows at a rate proportional to its size. The population doubles in $20$ years.
+
+\begin{enumerate}
+\item Form the differential equation satisfied by $P(t)$ and solve it, expressing the constant of proportionality in terms of $\ln 2$.
+\item Find the time taken for the population to triple, giving your answer to the nearest year.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Newton's law of cooling]
+A body cools from $80^{\circ}$C to $60^{\circ}$C in $10$ minutes in a room kept at $20^{\circ}$C. The temperature $\theta$ of the body satisfies $\dfrac{d\theta}{dt} = -k(\theta - 20)$.
+
+\begin{enumerate}
+\item Solve the differential equation and show that $\theta = 20 + 60e^{-kt}$.
+\item Use the given data to find the exact value of $k$.
+\item Find the temperature of the body after a further $10$ minutes.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Resisted motion with driving force]
+A particle of mass $2$ kg moves in a straight line under a constant driving force of $20$ N and a resistance of $4v$ N, where $v$ is its speed in $\mathrm{m\,s^{-1}}$. The particle starts from rest.
+
+\begin{enumerate}
+\item Show that $\dfrac{dv}{dt} = 10 - 2v$.
+\item Find $v$ in terms of $t$.
+\item State the terminal velocity and find the time taken to reach half of it.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Cooling and sketch of the solution — 12 marks]
+A body warms from $5^{\circ}$C to $15^{\circ}$C in $5$ minutes in a room maintained at $30^{\circ}$C. The temperature $\theta$ of the body at time $t$ minutes satisfies Newton's law of cooling.
+
+\begin{enumerate}
+\item Write down the differential equation modelling this situation, explaining the sign of the constant. \hfill (2 marks)
+\item Solve the equation and use the data to determine the value of the constant, giving your answer in terms of a logarithm. \hfill (5 marks)
+\item Find the time at which the body reaches $25^{\circ}$C, giving your answer to one decimal place. \hfill (3 marks)
+\item Sketch the graph of $\theta$ against $t$ for $t \geq 0$, indicating the asymptote and the initial value. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Vertical projection with resistance — structured proof, 14 marks]
+A ball of mass $m$ is projected vertically upwards with speed $u$ in a medium whose resistance has magnitude $mkv$ per unit mass, where $v$ is the speed and $k$ is a positive constant. Take the upward direction as positive.
+
+\begin{enumerate}
+\item Explain why, while the ball is rising, the equation of motion is $\dfrac{dv}{dt} = -(g + kv)$. \hfill (3 marks)
+\item Solve this equation with the initial condition $v(0) = u$ to obtain $v = \left(u + \dfrac{g}{k}\right)e^{-kt} - \dfrac{g}{k}$. \hfill (5 marks)
+\item Hence show that the time taken to reach the greatest height is $T = \dfrac{1}{k}\ln\left(1 + \dfrac{ku}{g}\right)$. \hfill (3 marks)
+\item Using $v\dfrac{dv}{dx} = -(g + kv)$, or otherwise, find the greatest height reached. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Cyclist freewheeling downhill — synthesis, 16 marks]
+A cyclist of total mass $m$ kg freewheels down a straight slope inclined at an angle $\alpha$ to the horizontal. The resistance to motion has magnitude $kv^2$ N, where $v$ is the speed in $\mathrm{m\,s^{-1}}$ and $k$ is a positive constant. The cyclist starts from rest.
+
+\begin{enumerate}
+\item Draw a diagram showing the forces acting on the cyclist and write down the equation of motion. \hfill (3 marks)
+\item Show that the terminal speed is $v_T = \sqrt{\dfrac{mg\sin\alpha}{k}}$. \hfill (3 marks)
+\item Using $v\dfrac{dv}{dx} = g\sin\alpha - \dfrac{k}{m}v^2$, show that $v^2 = v_T^2\left(1 - e^{-2kx/m}\right)$, where $x$ is the distance travelled from rest. \hfill (6 marks)
+\item Deduce the distance travelled before the cyclist reaches half the terminal speed, expressing your answer in terms of $m$, $k$ and a logarithm. \hfill (3 marks)
+\item State one assumption of the model and comment on its realism. \hfill (1 mark)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice question]
+\textbf{Answer: (b)} $\dfrac{dy}{dx} = 2y$.
+
+\medskip
+\textbf{Justification.} Given $y = A e^{2x}$, differentiate with respect to $x$:
+\[
+\frac{dy}{dx} = 2A e^{2x}.
+\]
+But $A e^{2x} = y$, so substituting eliminates the arbitrary constant $A$:
+\[
+\frac{dy}{dx} = 2y.
+\]
+Every member of the family, whatever the value of $A$, satisfies this equation.
+
+\medskip
+\textbf{Why the other options fail.}
+\begin{itemize}
+\item (a) $\frac{dy}{dx}=2x$ would give $y = x^2 + C$, an entirely different family.
+\item (c) $\frac{dy}{dx}=e^{2x}$ still contains $x$ explicitly on the right and is not satisfied: $2Ae^{2x} \neq e^{2x}$ in general.
+\item (d) $\frac{dy}{dx}=\frac{y}{2}$ would give $y = Ce^{x/2}$, not $Ae^{2x}$.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false, with justification]
+\begin{enumerate}
+\item \textbf{True.} The rate of change of temperature is proportional to the excess $\theta - \theta_0$ of the body's temperature over the surroundings; the negative sign ensures $\theta$ decreases when $\theta > \theta_0$ (cooling). This is exactly \cle{Newton's law of cooling}.
+
+\item \textbf{False.} The constant $k$ depends on the physical properties of the body and its environment (surface area, nature of the surface, air circulation), \emph{not} on the initial temperature. The initial temperature only fixes the constant of integration when solving.
+
+\item \textbf{True.} \cle{Terminal velocity} $v_T$ is the limiting velocity reached asymptotically; at $v = v_T$ the driving force exactly balances the resistance, so the resultant force — and hence the acceleration $\frac{dv}{dt}$ — is zero.
+
+\item \textbf{True.} By the chain rule, $\dfrac{dv}{dt} = \dfrac{dv}{dx}\cdot\dfrac{dx}{dt} = v\dfrac{dv}{dx}$. This substitution removes $t$ and produces a differential equation relating $v$ and $x$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions and key results]
+\begin{enumerate}
+\item \textbf{\cle{Newton's law of cooling}.} If $\theta$ is the temperature of a body at time $t$ and $\theta_0$ is the (constant) temperature of the surrounding medium, then
+\[
+\frac{d\theta}{dt} = -k(\theta - \theta_0),
+\]
+where $\frac{d\theta}{dt}$ is the rate of change of the body's temperature and $k > 0$ is a constant depending on the body and its environment. The negative sign expresses that the temperature difference decreases with time.
+
+\item \textbf{\cle{Terminal velocity}.} The terminal velocity $v_T$ of a particle falling through a resisting medium is the limiting velocity which the speed approaches as $t \to \infty$. It is the velocity at which the resistance exactly balances the driving force (e.g.\ weight), so that the acceleration is zero: $\frac{dv}{dt} = 0$ when $v = v_T$.
+
+\item \textbf{Two forms of acceleration.}
+\begin{itemize}
+\item $a = \dfrac{dv}{dt}$: used when we want $v$ as a function of \emph{time} $t$.
+\item $a = v\dfrac{dv}{dx}$: used when we want $v$ as a function of \emph{displacement} $x$ (the time variable is eliminated via the chain rule).
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item Given $y = Ax^2$, differentiate: $\dfrac{dy}{dx} = 2Ax$. From the original equation, $A = \dfrac{y}{x^2}$. Substituting:
+\[
+\frac{dy}{dx} = 2\cdot\frac{y}{x^2}\cdot x = \frac{2y}{x},
+\qquad\text{i.e.}\qquad x\frac{dy}{dx} = 2y.
+\]
+
+\item The rate of cooling is $\dfrac{d\theta}{dt} = -0.1(\theta - 20)$. At $\theta = 60$:
+\[
+\frac{d\theta}{dt} = -0.1(60 - 20) = -0.1 \times 40 = -4\ ^{\circ}\mathrm{C\ min^{-1}}.
+\]
+The body is cooling at $4^{\circ}$C per minute at that instant (the negative sign indicates decreasing temperature).
+
+\item The only horizontal forces are the resistance $8v$ opposing the motion. Newton's second law gives
+\[
+m\frac{dv}{dt} = -8v, \qquad\text{i.e.}\qquad 4\frac{dv}{dt} = -8v
+\quad\Longleftrightarrow\quad \frac{dv}{dt} = -2v.
+\]
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Forming a differential equation from a family of curves]
+\begin{enumerate}
+\item Given $y = Ax^2 + Bx$:
+\[
+\frac{dy}{dx} = 2Ax + B, \qquad \frac{d^2y}{dx^2} = 2A.
+\]
+
+\item From the second derivative, $A = \dfrac{y''}{2}$. Substitute into the first derivative:
+\[
+B = y' - 2Ax = y' - xy''.
+\]
+Now substitute $A$ and $B$ into the original equation:
+\[
+y = \frac{y''}{2}x^2 + \left(y' - xy''\right)x = \frac{x^2 y''}{2} + xy' - x^2 y''.
+\]
+Hence
+\[
+y = xy' - \frac{x^2 y''}{2}.
+\]
+Multiplying through by $2$ and rearranging:
+\[
+2y = 2xy' - x^2 y'' \quad\Longleftrightarrow\quad \boxed{x^2 y'' - 2xy' + 2y = 0}.
+\]
+This second-order differential equation, free of arbitrary constants, is satisfied by \emph{every} member of the two-parameter family.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Population growth]
+\begin{enumerate}
+\item ``Rate proportional to size'' gives
+\[
+\frac{dP}{dt} = kP.
+\]
+Separating variables: $\displaystyle\int \frac{dP}{P} = \int k\,dt$, so $\ln P = kt + c$, i.e.
+\[
+P = P_0 e^{kt}, \quad \text{where } P_0 = P(0).
+\]
+Doubling in $20$ years: $2P_0 = P_0 e^{20k}$, so $e^{20k} = 2$ and
+\[
+k = \frac{\ln 2}{20}.
+\qquad\text{Hence } P = P_0\, e^{(\ln 2)\,t/20} = P_0 \cdot 2^{t/20}.
+\]
+
+\item Tripling: $3P_0 = P_0 e^{kt}$, so $e^{kt} = 3$ and
+\[
+t = \frac{\ln 3}{k} = \frac{20\ln 3}{\ln 2} \approx \frac{20 \times 1.0986}{0.6931} \approx 31.7.
+\]
+The population triples after approximately $\boxed{32}$ years (to the nearest year).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Newton's law of cooling]
+\begin{enumerate}
+\item The equation is $\dfrac{d\theta}{dt} = -k(\theta - 20)$. Separating variables:
+\[
+\int \frac{d\theta}{\theta - 20} = \int -k\,dt
+\quad\Longrightarrow\quad \ln|\theta - 20| = -kt + c.
+\]
+Hence $\theta - 20 = Ce^{-kt}$. At $t = 0$, $\theta = 80$, so $C = 80 - 20 = 60$. Therefore
+\[
+\boxed{\theta = 20 + 60e^{-kt}}.
+\]
+
+\item At $t = 10$, $\theta = 60$:
+\[
+60 = 20 + 60e^{-10k} \quad\Longrightarrow\quad e^{-10k} = \frac{40}{60} = \frac{2}{3}.
+\]
+Taking logarithms: $-10k = \ln\frac{2}{3} = -\ln\frac{3}{2}$, so
+\[
+\boxed{k = \frac{1}{10}\ln\frac{3}{2}}.
+\]
+
+\item After a further $10$ minutes means $t = 20$:
+\[
+\theta = 20 + 60e^{-20k} = 20 + 60\left(e^{-10k}\right)^2 = 20 + 60\left(\frac{2}{3}\right)^2 = 20 + 60\cdot\frac{4}{9} = 20 + \frac{80}{3}.
+\]
+\[
+\theta = \frac{140}{3} \approx 46.7^{\circ}\mathrm{C}.
+\]
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Resisted motion with driving force]
+\begin{enumerate}
+\item Newton's second law along the line of motion (driving force positive, resistance opposing):
+\[
+m\frac{dv}{dt} = 20 - 4v.
+\]
+With $m = 2$: $2\dfrac{dv}{dt} = 20 - 4v$, i.e.
+\[
+\boxed{\frac{dv}{dt} = 10 - 2v}.
+\]
+
+\item Separating variables:
+\[
+\int \frac{dv}{10 - 2v} = \int dt
+\quad\Longrightarrow\quad -\frac{1}{2}\ln|10 - 2v| = t + c.
+\]
+So $10 - 2v = Ae^{-2t}$. Initial condition $v(0) = 0$: $A = 10$. Hence
+\[
+10 - 2v = 10e^{-2t} \quad\Longrightarrow\quad \boxed{v = 5\left(1 - e^{-2t}\right)}.
+\]
+
+\item As $t \to \infty$, $e^{-2t} \to 0$, so the terminal velocity is $v_T = 5\ \mathrm{m\,s^{-1}}$ (equivalently, set $\frac{dv}{dt}=0$: $10 - 2v = 0$).
+
+Half the terminal velocity: $v = 2.5$:
+\[
+2.5 = 5\left(1 - e^{-2t}\right) \quad\Longrightarrow\quad e^{-2t} = \frac{1}{2}
+\quad\Longrightarrow\quad t = \frac{\ln 2}{2} \approx 0.35\ \mathrm{s}.
+\]
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Cooling and sketch of the solution (12 marks)]
+\begin{enumerate}
+\item Since the body ($5^{\circ}$C initially) is \emph{warming} towards the room temperature $30^{\circ}$C, $\theta < 30$ and $\theta$ increases. Newton's law of cooling applies with the temperature difference $\theta - 30$:
+\[
+\frac{d\theta}{dt} = -k(\theta - 30), \qquad k > 0.
+\]
+The constant is taken \textbf{positive} with a negative sign: since $\theta - 30 < 0$, the right-hand side is positive, correctly giving an increasing temperature. \hfill \textbf{[M1 A1]}
+
+\item Separating variables:
+\[
+\int \frac{d\theta}{\theta - 30} = \int -k\,dt
+\quad\Longrightarrow\quad \ln|\theta - 30| = -kt + c,
+\]
+so $\theta - 30 = Ce^{-kt}$. \hfill \textbf{[M1]}
+
+At $t = 0$, $\theta = 5$: $C = 5 - 30 = -25$, hence
+\[
+\theta = 30 - 25e^{-kt}. \quad \textbf{[A1]}
+\]
+At $t = 5$, $\theta = 15$:
+\[
+15 = 30 - 25e^{-5k} \quad\Longrightarrow\quad e^{-5k} = \frac{15}{25} = \frac{3}{5}. \quad \textbf{[M1]}
+\]
+Therefore
+\[
+-5k = \ln\frac{3}{5} \quad\Longrightarrow\quad \boxed{k = \frac{1}{5}\ln\frac{5}{3}}. \quad \textbf{[A1]}
+\]
+(With $k = \frac{1}{5}\ln\frac{5}{3} \approx 0.102$.)
+
+\item Setting $\theta = 25$:
+\[
+25 = 30 - 25e^{-kt} \quad\Longrightarrow\quad e^{-kt} = \frac{5}{25} = \frac{1}{5}. \quad \textbf{[M1]}
+\]
+Hence
+\[
+t = \frac{\ln 5}{k} = \frac{5\ln 5}{\ln(5/3)} \approx \frac{5 \times 1.6094}{0.5108} \approx 15.8. \quad \textbf{[A1]}
+\]
+The body reaches $25^{\circ}$C after approximately $\boxed{15.8}$ minutes. \textbf{[B1]}
+
+\item The graph starts at $\theta = 5$ when $t = 0$, is increasing and concave down, and approaches the horizontal asymptote $\theta = 30$ as $t \to \infty$.
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.7\linewidth, height=5.5cm,
+  axis lines=left,
+  xlabel={$t$ (min)}, ylabel={$\theta$ ($^{\circ}$C)},
+  xmin=0, xmax=40, ymin=0, ymax=35,
+  xtick={0,10,20,30,40}, ytick={5,15,25,30},
+  tick label style={font=\small},
+]
+\addplot[domain=0:40, samples=100, thick, popblue] {30 - 25*exp(-0.10208*x)};
+\addplot[domain=0:40, dashed, poporange] {30};
+\node[poporange, anchor=south west, font=\small] at (axis cs:24,30.3) {$\theta = 30$};
+\addplot[mark=*, only marks, popdark] coordinates {(0,5)};
+\node[anchor=west, font=\small] at (axis cs:1,4) {$(0,\,5)$};
+\end{axis}
+\end{tikzpicture}
+\legende{Warming curve $\theta = 30 - 25e^{-kt}$ with asymptote $\theta = 30$.}
+\end{popfigure}
+\hfill \textbf{[B1 shape through $(0,5)$, B1 asymptote $\theta=30$ labelled]}
+\end{enumerate}
+
+\medskip
+\textbf{Examiner's expectations:} correct sign discussion in (a); clean separation of variables and use of \emph{both} data points in (b); exact logarithmic forms accepted throughout; the sketch must show monotonic increase, correct curvature and the asymptote.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Vertical projection with resistance (14 marks)]
+\begin{enumerate}
+\item While the ball rises, the velocity $v$ is positive (upwards). Two forces act on the ball:
+\begin{itemize}
+\item its weight $mg$, acting \emph{downwards};
+\item the resistance $mkv$, opposing the motion, hence also acting \emph{downwards} while the ball rises. \hfill \textbf{[B1]}
+\end{itemize}
+Both forces are therefore negative relative to the upward positive direction. Newton's second law gives
+\[
+m\frac{dv}{dt} = -mg - mkv, \quad \textbf{[M1]}
+\]
+and dividing by $m$:
+\[
+\boxed{\frac{dv}{dt} = -(g + kv)}. \quad \textbf{[A1]}
+\]
+
+\item Separating variables:
+\[
+\int \frac{dv}{g + kv} = -\int dt
+\quad\Longrightarrow\quad \frac{1}{k}\ln|g + kv| = -t + c. \quad \textbf{[M1]}
+\]
+Hence $g + kv = Ae^{-kt}$. \textbf{[A1]} At $t = 0$, $v = u$: $A = g + ku$. \textbf{[M1]} Therefore
+\[
+kv = (g + ku)e^{-kt} - g,
+\]
+and dividing by $k$:
+\[
+\boxed{v = \left(u + \frac{g}{k}\right)e^{-kt} - \frac{g}{k}}. \quad \textbf{[A1]}
+\]
+(One mark for correct separation, one for integration, one for applying the initial condition, one for the manipulation to the required form.)
+
+\item At the greatest height, $v = 0$:
+\[
+\left(u + \frac{g}{k}\right)e^{-kT} = \frac{g}{k}
+\quad\Longrightarrow\quad e^{-kT} = \frac{g/k}{u + g/k} = \frac{g}{g + ku}. \quad \textbf{[M1]}
+\]
+Taking reciprocals: $e^{kT} = \dfrac{g + ku}{g} = 1 + \dfrac{ku}{g}$. \textbf{[M1]} Taking logarithms:
+\[
+\boxed{T = \frac{1}{k}\ln\left(1 + \frac{ku}{g}\right)}. \quad \textbf{[A1]}
+\]
+
+\item Using $v\dfrac{dv}{dx} = -(g + kv)$ with $x$ measured upwards from the point of projection:
+\[
+\int \frac{v\,dv}{g + kv} = -\int dx. \quad \textbf{[M1]}
+\]
+Write $\dfrac{v}{g+kv} = \dfrac{1}{k}\cdot\dfrac{kv}{g+kv} = \dfrac{1}{k}\left(1 - \dfrac{g}{g+kv}\right)$. Then
+\[
+\int \frac{v\,dv}{g+kv} = \frac{1}{k}\int\left(1 - \frac{g}{g+kv}\right)dv = \frac{v}{k} - \frac{g}{k^2}\ln|g + kv| + C.
+\]
+Applying the limits: $v = u$ at $x = 0$, and $v = 0$ at $x = H$:
+\[
+H = \int_0^u \frac{v\,dv}{g + kv} = \left[\frac{v}{k} - \frac{g}{k^2}\ln(g + kv)\right]_0^u = \frac{u}{k} - \frac{g}{k^2}\ln\!\left(\frac{g + ku}{g}\right). \quad \textbf{[M1]}
+\]
+Hence the greatest height is
+\[
+\boxed{H = \frac{u}{k} - \frac{g}{k^2}\ln\left(1 + \frac{ku}{g}\right)}. \quad \textbf{[A1]}
+\]
+\end{enumerate}
+
+\medskip
+\textbf{Examiner's expectations:} in (a) the direction of \emph{both} forces must be justified; in (d) the division $\frac{v}{g+kv} = \frac1k\left(1 - \frac{g}{g+kv}\right)$ is the key step; answers must be given exactly in the required form.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Cyclist freewheeling downhill (16 marks)]
+\begin{enumerate}
+\item The forces on the cyclist are: the weight $mg$ vertically downwards, the normal reaction $R$ perpendicular to the slope, and the resistance $kv^2$ acting \emph{up} the slope (opposing the motion).
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.1]
+\draw[thick] (0,0) -- (6,0);
+\draw[thick] (0,0) -- (5.2,2.08);
+\draw (1.2,0) arc[start angle=0, end angle=21.8, radius=1.2];
+\node[font=\small] at (1.55,0.28) {$\alpha$};
+\node[circle, fill=popblue, inner sep=2.5pt] (P) at (3.4,1.36) {};
+\draw[-latex, thick, popdark] (P) -- ++(0,-1.6) node[below, font=\small] {$mg$};
+\draw[-latex, thick, poporange] (P) -- ++(-0.96,0.62) node[above left, font=\small] {$R$};
+\draw[-latex, thick, poppink] (P) -- ++(-1.56,-0.62) node[below left, font=\small] {$kv^2$};
+\draw[-latex, thick, popgreen] (P) -- ++(1.56,0.62) node[above right, font=\small] {motion};
+\draw[dashed, gray] (P) -- ++(1.3,-1.6);
+\draw[dashed, gray] (P) ++(0.9,-1.6) arc[start angle=90, end angle=111.8, radius=0.9];
+\node[font=\small] at (3.55,-0.15) {$\alpha$};
+\node[font=\small, popdark] at (4.35,-0.55) {$mg\sin\alpha$};
+\draw[-latex, thick, popdark] (P) -- ++(1.25,-1.1);
+\end{tikzpicture}
+\legende{Forces on the cyclist; the component $mg\sin\alpha$ acts down the slope.}
+\end{popfigure}
+\textbf{[B1 diagram with three forces, B1 resistance up the slope]}
+
+Resolving along the slope (down the slope positive), Newton's second law gives
+\[
+\boxed{m\frac{dv}{dt} = mg\sin\alpha - kv^2}. \quad \textbf{[B1]}
+\]
+
+\item At terminal speed the acceleration is zero: $\dfrac{dv}{dt} = 0$. \textbf{[M1]} Hence
+\[
+mg\sin\alpha - kv_T^2 = 0 \quad\Longrightarrow\quad kv_T^2 = mg\sin\alpha, \quad \textbf{[M1]}
+\]
+so
+\[
+\boxed{v_T = \sqrt{\frac{mg\sin\alpha}{k}}}. \quad \textbf{[A1]}
+\]
+
+\item With $a = v\dfrac{dv}{dx}$, the equation of motion becomes
+\[
+v\frac{dv}{dx} = g\sin\alpha - \frac{k}{m}v^2. \quad \textbf{[B1]}
+\]
+Note that $g\sin\alpha = \dfrac{k}{m}v_T^2$ from part (b), so
+\[
+v\frac{dv}{dx} = \frac{k}{m}\left(v_T^2 - v^2\right). \quad \textbf{[M1]}
+\]
+Separating variables:
+\[
+\int \frac{v\,dv}{v_T^2 - v^2} = \frac{k}{m}\int dx
+\quad\Longrightarrow\quad -\frac{1}{2}\ln\left|v_T^2 - v^2\right| = \frac{k}{m}x + c. \quad \textbf{[M1 A1]}
+\]
+Initial condition: $v = 0$ when $x = 0$, so $c = -\frac{1}{2}\ln v_T^2$. \textbf{[M1]} Therefore
+\[
+\ln\left(\frac{v_T^2 - v^2}{v_T^2}\right) = -\frac{2kx}{m}
+\quad\Longrightarrow\quad 1 - \frac{v^2}{v_T^2} = e^{-2kx/m},
+\]
+i.e.
+\[
+\boxed{v^2 = v_T^2\left(1 - e^{-2kx/m}\right)}. \quad \textbf{[A1]}
+\]
+
+\item Half the terminal speed: $v = \dfrac{v_T}{2}$, so $v^2 = \dfrac{v_T^2}{4}$:
+\[
+\frac{1}{4} = 1 - e^{-2kx/m} \quad\Longrightarrow\quad e^{-2kx/m} = \frac{3}{4}. \quad \textbf{[M1]}
+\]
+Taking logarithms: $-\dfrac{2kx}{m} = \ln\dfrac{3}{4} = -\ln\dfrac{4}{3}$, hence
+\[
+\boxed{x = \frac{m}{2k}\ln\frac{4}{3}}. \quad \textbf{[M1 A1]}
+\]
+
+\item Possible assumptions (any one): \textbf{[B1]}
+\begin{itemize}
+\item the resistance is taken as exactly $kv^2$ — in reality air resistance is only approximately quadratic and also depends on wind and the rider's posture;
+\item the slope angle $\alpha$ is constant — real roads vary in gradient;
+\item no friction in the bearings and no pedalling — a real freewheeling cyclist still experiences rolling resistance.
+\end{itemize}
+The model is a reasonable first approximation but ignores these effects.
+\end{enumerate}
+
+\medskip
+\textbf{Examiner's expectations:} a clear force diagram with the resistance directed \emph{up} the slope; correct use of $g\sin\alpha = \frac{k}{m}v_T^2$ to simplify before separating; careful handling of the constant of integration using $v(0)=0$; exact logarithmic answers. A common error is to write the resistance as $+kv^2$ or to forget that $v < v_T$ throughout, so $v_T^2 - v^2 > 0$ and the logarithm is well defined.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.92, transform shape,
+  centrenode/.style={circle, draw=popink, fill=popblue, text=white, font=\bfseries, align=center, minimum size=2.6cm},
+  branch/.style={rectangle, rounded corners=4pt, draw=#1, fill=#1!15, font=\small, align=center, text width=3.1cm, inner sep=4pt},
+  link/.style={thick, draw=#1}]
+\node[centrenode, align=center] (C){Modelling with\\Differential\\Equations};
+\node[branch=popblue, align=center] (A) at (-5.2,2.6){\textbf{Forming DEs}\\rate $=\dfrac{d(\text{qty})}{dt}$;\\eliminate constants\\from $y=f(x,c_1,c_2)$};
+\node[branch=popgreen, align=center] (B) at (0,3.6){\textbf{Newton's cooling}\\$\dfrac{dQ}{dt}=k(Q-Q_0)$\\$Q-Q_0=Ae^{kt}$, $k<0$};
+\node[branch=poporange, align=center] (D) at (5.2,2.6){\textbf{Resisted motion I}\\$m\dfrac{dv}{dt}=F-mkv$\\terminal velocity\\$v_T=\dfrac{F}{mk}$};
+\node[branch=poppurple, align=center] (E) at (5.2,-2.6){\textbf{Resisted motion II}\\$mv\dfrac{dv}{dx}=F-mkv$\\velocity as a\\function of $x$};
+\node[branch=popgold, align=center] (F) at (0,-3.6){\textbf{Solving tools}\\separation of variables;\\$\dfrac{dv}{dt}=v\dfrac{dv}{dx}$;\\initial conditions};
+\node[branch=poppink, align=center] (G) at (-5.2,-2.6){\textbf{Exam skills}\\define variables + units;\\interpret limits $t\to\infty$;\\check signs of forces};
+\draw[link=popblue] (C) -- (A);
+\draw[link=popgreen] (C) -- (B);
+\draw[link=poporange] (C) -- (D);
+\draw[link=poppurple] (C) -- (E);
+\draw[link=popgold] (C) -- (F);
+\draw[link=poppink] (C) -- (G);
+\end{tikzpicture}
+\legende{Mind map of Chapter FMA08: Modelling With Differential Equations.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions and ideas}
+\begin{itemize}
+\item A \cle{differential equation} (DE) is an equation linking a quantity and its rate(s) of change, e.g. $\dfrac{dy}{dx}=ky$.
+\item \cle{Modelling}: translate a real situation (cooling coffee in Bamenda, a taxi braking in Douala) into a DE, solve it, then interpret the answer in context.
+\item To \cle{form a DE from a family of curves} $y=f(x,c_1,\ldots,c_n)$: differentiate $n$ times and eliminate the $n$ arbitrary constants.
+\item \cle{Newton's law of cooling}: the rate of change of temperature $Q$ of a body is proportional to the difference between $Q$ and the ambient temperature $Q_0$:
+\[ \frac{dQ}{dt}=k(Q-Q_0), \qquad k<0 \text{ for cooling.} \]
+\item \cle{Resisted motion}: a particle of mass $m$ moving in a straight line against a resistance $R(v)$ (often $R=mkv$ or $R=mkv^2$) obeys Newton's second law $m\dfrac{dv}{dt}=F-R(v)$.
+\item \cle{Terminal velocity} $v_T$: the limiting speed when acceleration vanishes, i.e. when driving force $=$ resistance.
+\end{itemize}
+
+\textbf{Laws and formulas to know}
+\begin{itemize}
+\item Newton's cooling solution: with $\theta=Q-Q_0$, $\dfrac{d\theta}{dt}=k\theta$ gives
+\[ Q-Q_0=Ae^{kt}, \qquad A=Q(0)-Q_0. \]
+\item Linear resistance, velocity vs time ($R=mkv$, constant driving force $F$):
+\[ \frac{dv}{dt}=\frac{F}{m}-kv \;\Longrightarrow\; v=\frac{F}{mk}+\left(v_0-\frac{F}{mk}\right)e^{-kt}, \qquad v_T=\frac{F}{mk}. \]
+\item Velocity vs displacement: use the chain rule
+\[ \frac{dv}{dt}=v\frac{dv}{dx} \;\Longrightarrow\; mv\frac{dv}{dx}=F-mkv, \]
+then separate: $\displaystyle \int \frac{v}{F-mkv}\,dv=\int \frac{dx}{m}$.
+\item Standard integrals used constantly: $\displaystyle\int\frac{du}{u}=\ln|u|+c$ and $\displaystyle\int\frac{du}{a+bu}=\frac{1}{b}\ln|a+bu|+c$.
+\end{itemize}
+
+\textbf{Methods (step by step)}
+\begin{enumerate}
+\item \textbf{Set up}: define the variable (with units), write the physical law in symbols, fix the sign of each term (resistance opposes motion).
+\item \textbf{Separate}: put all $v$ (or $Q$) terms on one side, all $t$ (or $x$) terms on the other.
+\item \textbf{Integrate}: usually a logarithm appears; do not forget the constant.
+\item \textbf{Apply conditions}: use $v(0)=v_0$ or $Q(0)=Q_1$ to find the constant, then a second measurement to find $k$ if needed.
+\item \textbf{Interpret}: state the limit as $t\to\infty$ (temperature tends to $Q_0$; velocity tends to $v_T$) and answer the question asked, with units.
+\end{enumerate}
+
+\textbf{Common mistakes to avoid}
+\begin{itemize}
+\item Wrong sign in Newton's law: for cooling write $k<0$ (or write $\dfrac{dQ}{dt}=-k(Q-Q_0)$ with $k>0$). A positive $k$ makes the temperature explode.
+\item Forgetting that resistance always \emph{opposes} motion: when the particle moves downwards under gravity, resistance acts \emph{upwards}.
+\item Mixing the two forms of acceleration: use $\dfrac{dv}{dt}$ when time is involved, $v\dfrac{dv}{dx}$ when displacement is involved.
+\item Dropping the modulus in $\ln|Q-Q_0|$ or forgetting the constant of integration before applying initial conditions.
+\item Solving for $v$ but never answering the actual question (time? distance? temperature at a given instant?).
+\item Eliminating constants incorrectly when forming a DE: with two constants you must differentiate \emph{twice}.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item The GCE often gives a cooling problem in two stages: first find the constant $A$, then use a second reading to find $k$; keep $k$ in exact logarithmic form as long as possible.
+\item In resisted motion, marks are awarded for a correct force diagram and a correct sign convention \emph{before} any integration.
+\item When asked to ``show that'' a DE holds, start from Newton's second law and make every step explicit.
+\item Always end with a sentence of interpretation: examiners reward physical meaning (e.g. ``the body approaches room temperature'').
+\item Check dimensions: $k$ in $\dfrac{dQ}{dt}=k(Q-Q_0)$ has unit $\mathrm{s^{-1}}$ (or $\mathrm{min^{-1}}$); a quick unit check catches many errors.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

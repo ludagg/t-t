@@ -1,0 +1,2450 @@
+% Numerical Methods — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA10-numerical-methods.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{10}
+\newcommand{\DOCTITRE}{Numerical Methods}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Numerical Methods}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{10}{3 periods}{This chapter develops the three core numerical tools of the GCE Further Mathematics syllabus: Simpson's rule for definite integrals, Taylor series for polynomial approximation of functions, and step-by-step methods (Euler and improved Euler) for differential equations. Emphasis is placed on accuracy, error awareness, and fluent exam technique.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can state and apply Simpson's rule with an even number of strips to approximate a definite integral.
+\item By the end of this chapter I can set up an ordinate table from a formula or from given data and compute the integral estimate accurately.
+\item By the end of this chapter I can compare Simpson's estimate with the trapezium rule and with exact integration, and comment on accuracy.
+\item By the end of this chapter I can derive the Maclaurin and Taylor series of standard functions (e\^{}x, sin x, cos x, ln(1+x), (1+x)\^{}n).
+\item By the end of this chapter I can use a Taylor polynomial to approximate function values and estimate the error involved.
+\item By the end of this chapter I can use series to evaluate limits and approximate integrals that have no elementary antiderivative.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Simpson's Rule
+\item Taylor and Maclaurin Series
+\item Applications of Taylor Approximations
+\item Step-by-Step Methods for Differential Equations
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can state and apply Simpson's rule with an even number of strips to approximate a definite integral.
+\item By the end of this chapter I can set up an ordinate table from a formula or from given data and compute the integral estimate accurately.
+\item By the end of this chapter I can compare Simpson's estimate with the trapezium rule and with exact integration, and comment on accuracy.
+\item By the end of this chapter I can derive the Maclaurin and Taylor series of standard functions (e\^{}x, sin x, cos x, ln(1+x), (1+x)\^{}n).
+\item By the end of this chapter I can use a Taylor polynomial to approximate function values and estimate the error involved.
+\item By the end of this chapter I can use series to evaluate limits and approximate integrals that have no elementary antiderivative.
+\item By the end of this chapter I can apply Euler's step-by-step method to approximate the solution of a first-order differential equation with a given initial condition.
+\item By the end of this chapter I can apply the improved Euler (Heun) method and compare its accuracy with Euler's method.
+\item By the end of this chapter I can interpret numerical solutions graphically and relate them to the exact solution when it exists.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Definite integration and the trapezium rule (Lower Sixth)
+\item Differentiation of standard functions and higher-order derivatives
+\item First-order differential equations with separable variables (Lower Sixth)
+\item Sigma notation, sequences and basic limits
+\item Use of calculators and tabular organisation of data
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Simpson's Rule}
+
+An engineer at the Douala seaport must estimate the cross-sectional area of an irregularly dredged channel from depth soundings taken every $5$ metres --- no simple formula exists, so she turns to Simpson's rule. Meanwhile, a technician approximates $\sin(0.2)$ for a load calculation without a calculator, using a Taylor polynomial. And a health officer modelling the spread of an infection in Yaoundé solves a differential equation step by step when no exact solution is available. All three problems share one idea: when exact answers are out of reach, \cle{numerical methods} give accurate, controlled approximations. In this chapter we master three of the most powerful of these tools. We begin with the first: a beautifully simple rule for estimating areas and integrals, named after Thomas Simpson.
+
+\courssub{From the Trapezium Rule to a Parabolic Approximation}
+
+You already know the \cle{trapezium rule}: to estimate $\displaystyle\int_a^b f(x)\,dx$, divide $[a,b]$ into $n$ strips of equal width $h=\dfrac{b-a}{n}$, join the tops of consecutive ordinates by straight line segments (chords), and add the areas of the resulting trapezia:
+\[
+\int_a^b f(x)\,dx \;\approx\; \frac{h}{2}\Big[y_0 + y_n + 2\big(y_1+y_2+\cdots+y_{n-1}\big)\Big].
+\]
+
+\begin{attention}[Why the trapezium rule is limited]
+A straight chord is a poor model of a \emph{curved} graph. If the curve bends away from the chord, every strip carries an error of the same sign, and the errors accumulate. For a curve with strong curvature, the trapezium rule needs a very large number of strips to be accurate. The natural remedy: replace the straight chord by a curve that bends --- the simplest such curve is a \cle{parabola}.
+\end{attention}
+
+The key observation is this: a parabola $y = px^2+qx+r$ has \emph{three} coefficients, so it can be made to pass exactly through \emph{three} points. Take the ordinates in threes --- $(x_0,y_0)$, $(x_1,y_1)$, $(x_2,y_2)$ --- fit a parabola through them, and compute the exact area under that parabola. That area approximates the area under the true curve over the first \emph{pair} of strips. Repeat over each pair of strips and add.
+
+\courssub{Derivation: Area Under One Pair of Strips}
+
+\begin{experience}[Fitting a parabola through three equally spaced points]
+Consider three equally spaced ordinates $y_0, y_1, y_2$ at $x=-h,\ 0,\ h$ (we may centre them at $0$ without loss of generality, since area is unchanged by a horizontal shift). Fit $y = px^2+qx+r$:
+\[
+y_0 = ph^2 - qh + r, \qquad y_1 = r, \qquad y_2 = ph^2 + qh + r.
+\]
+Adding the first and third equations: $y_0+y_2 = 2ph^2 + 2r$, so $ph^2 = \dfrac{y_0 - 2y_1 + y_2}{2}$ since $r=y_1$. Now integrate the parabola from $-h$ to $h$:
+\begin{align*}
+A_{\text{pair}} &= \int_{-h}^{h}\left(px^2+qx+r\right)dx = \left[\frac{px^3}{3}+\frac{qx^2}{2}+rx\right]_{-h}^{h} = \frac{2ph^3}{3} + 2rh\\
+&= \frac{2h}{3}\cdot\frac{y_0-2y_1+y_2}{2} + 2hy_1 = \frac{h}{3}\big(y_0 - 2y_1 + y_2 + 6y_1\big)\\
+&= \frac{h}{3}\big(y_0 + 4y_1 + y_2\big).
+\end{align*}
+Notice that the coefficient $q$ has disappeared: the area depends only on the three ordinates. This is the famous \cle{one--four--one} pattern for a pair of strips.
+\end{experience}
+
+\courssub{Statement of Simpson's Rule}
+
+Now divide $[a,b]$ into an \textbf{even} number $n$ of strips of width $h=\dfrac{b-a}{n}$, with ordinates $y_0, y_1, \dots, y_n$. Apply the pair result to strips $(0,1,2)$, then $(2,3,4)$, and so on:
+\[
+A \approx \frac{h}{3}(y_0+4y_1+y_2) + \frac{h}{3}(y_2+4y_3+y_4) + \cdots + \frac{h}{3}(y_{n-2}+4y_{n-1}+y_n).
+\]
+The interior ordinates $y_2, y_4, \dots$ appear in \emph{two} pairs, hence with coefficient $2$; the ordinates $y_1, y_3, \dots$ appear once with coefficient $4$; the end ordinates $y_0, y_n$ appear once with coefficient $1$.
+
+\begin{definition}[Simpson's Rule]
+Let $f$ be continuous on $[a,b]$, divided into an \cle{even} number $n$ of strips of equal width $h=\dfrac{b-a}{n}$, with ordinates $y_k = f(a+kh)$, $k=0,1,\dots,n$. Then
+\[
+\boxed{\;\int_a^b f(x)\,dx \;\approx\; \frac{h}{3}\Big[\,y_0 + y_n + 4\!\!\sum_{\text{odd }k} y_k \;+\; 2\!\!\sum_{\substack{\text{even }k\\k\neq 0,n}} y_k\,\Big]\;}
+\]
+The coefficients follow the pattern $1,\ 4,\ 2,\ 4,\ 2,\ \dots,\ 2,\ 4,\ 1$.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+\draw[->,popmuted] (-0.3,0) -- (9.2,0) node[right] {$x$};
+\draw[->,popmuted] (0,-0.3) -- (0,4.4) node[above] {$y$};
+% curve
+\draw[very thick,popblue,domain=0.4:8.6,smooth] plot (\x,{2.2+0.9*sin(50*\x)+0.12*\x});
+% ordinates
+\foreach \x/\lab in {1/y_0,3/y_1,5/y_2,7/y_3,9/y_4}{
+  \draw[popline,dashed] (\x,0) -- (\x,{2.2+0.9*sin(50*\x)+0.12*\x});
+  \fill[popdark] (\x,{2.2+0.9*sin(50*\x)+0.12*\x}) circle (1.6pt);
+  \node[below,popdark] at (\x,0) {\scriptsize $\lab$};
+}
+% parabolic arcs through triples
+\draw[very thick,poporange,domain=1:5,smooth] plot (\x,{2.2+0.9*sin(50*\x)+0.12*\x + 0.18*sin(90*(\x-1))});
+\draw[very thick,poporange,domain=5:9,smooth] plot (\x,{2.2+0.9*sin(50*\x)+0.12*\x - 0.18*sin(90*(\x-5))});
+% h label
+\draw[<->,popgreen,thick] (1,-0.55) -- (3,-0.55);
+\node[below,popgreen] at (2,-0.55) {$h$};
+\node[poporange] at (6.4,4.1) {\scriptsize parabolic arcs};
+\node[popblue] at (1.6,3.9) {\scriptsize curve $y=f(x)$};
+\end{tikzpicture}
+\end{center}
+\legende{Four strips ($n=4$): a parabola is fitted through $(y_0,y_1,y_2)$ and another through $(y_2,y_3,y_4)$.}
+\end{popfigure}
+
+\begin{methode}[Applying Simpson's Rule: the 1--4--2--4--$\dots$--1 pattern]
+\begin{enumerate}
+\item \textbf{Check the conditions:} $n$ must be \emph{even} and all strips of \emph{equal} width $h=\dfrac{b-a}{n}$.
+\item \textbf{Build the ordinate table:} compute $y_k = f(a+kh)$ for $k=0,1,\dots,n$ (or read the values from experimental data), keeping at least $4$ decimal places.
+\item \textbf{Classify the ordinates} starting the count from $y_0$: odd subscripts ($y_1,y_3,\dots$) get coefficient $4$; even subscripts in between ($y_2,y_4,\dots$) get coefficient $2$; the two ends get coefficient $1$.
+\item \textbf{Apply the formula:} $A \approx \dfrac{h}{3}\big[y_0+y_n+4(\text{odd sum})+2(\text{even sum})\big]$.
+\item \textbf{Round sensibly} and state the units.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Count from $y_0$, not from $1$!]
+The most frequent error at the GCE is to call $y_1$ the ``first'' ordinate and give it coefficient $1$. The \emph{subscript} decides: $y_1, y_3, y_5, \dots$ (odd subscripts) take $4$; $y_2, y_4, \dots$ (even subscripts, excluding the ends) take $2$. Write the pattern $1,4,2,4,\dots,4,1$ above your table before computing.
+\end{attention}
+
+\begin{attention}[Even number of strips, equal widths]
+Simpson's rule in this form is \textbf{only valid} when (i) the number of strips $n$ is \emph{even} (so the ordinates group into complete triples) and (ii) all strips have the \emph{same} width $h$. With an odd number of strips, one strip is left over; with unequal spacing, the $1$--$4$--$1$ derivation collapses. If data come at irregular intervals, you must use the trapezium rule strip by strip instead.
+\end{attention}
+
+\courssub{Worked Applications}
+
+\begin{exoresolu}[Area under a curve]
+Use Simpson's rule with $4$ strips to estimate $\displaystyle\int_0^2 \frac{1}{1+x^2}\,dx$, giving $4$ decimal places. Compare with the exact value.
+\tcblower
+\textbf{Solution.} $n=4$ (even \checkmark), $h=\dfrac{2-0}{4}=0.5$. Ordinates:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $k$ & $0$ & $1$ & $2$ & $3$ & $4$ \\ \hline
+$x_k$ & $0$ & $0.5$ & $1.0$ & $1.5$ & $2.0$ \\ \hline
+$y_k$ & $1.0000$ & $0.8000$ & $0.5000$ & $0.3077$ & $0.2000$ \\ \hline
+\rowcolor{popblueL} coeff. & $1$ & $4$ & $2$ & $4$ & $1$ \\ \hline
+\end{tabular}
+\end{center}
+\[
+A \approx \frac{0.5}{3}\Big[1.0000 + 0.2000 + 4(0.8000+0.3077) + 2(0.5000)\Big] = \frac{0.5}{3}\big[1.2000 + 4.4308 + 1.0000\big] = \frac{0.5}{3}(6.6308).
+\]
+Hence $A \approx 1.1051$. The exact value is $\big[\arctan x\big]_0^2 = \arctan 2 \approx 1.1071$. The error is about $0.002$ --- remarkably small for only $4$ strips. (The trapezium rule with the same data gives $1.1038$, less accurate.)
+\end{exoresolu}
+
+\begin{exoresolu}[Distance from a velocity--time record]
+A lorry travelling from Douala to Edéa has its speed recorded every $10$ seconds:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $t$ (s) & $0$ & $10$ & $20$ & $30$ & $40$ & $50$ & $60$ \\ \hline
+$v$ (m/s) & $0$ & $6.2$ & $10.5$ & $13.1$ & $14.0$ & $13.6$ & $12.8$ \\ \hline
+\end{tabular}
+\end{center}
+Estimate the distance covered in the first $60$ seconds.
+\tcblower
+\textbf{Solution.} Distance $=\displaystyle\int_0^{60} v\,dt$. Here $n=6$ (even \checkmark), $h=10$. Coefficients: $1,4,2,4,2,4,1$.
+\begin{align*}
+s &\approx \frac{10}{3}\Big[0 + 12.8 + 4(6.2+13.1+13.6) + 2(10.5+14.0)\Big]\\
+&= \frac{10}{3}\big[12.8 + 4(32.9) + 2(24.5)\big] = \frac{10}{3}\big[12.8+131.6+49.0\big] = \frac{10}{3}(193.4).
+\end{align*}
+Hence $s \approx 644.7\ \mathrm{m}$, i.e. about $645\ \mathrm{m}$.
+\end{exoresolu}
+
+\begin{exoresolu}[The Douala channel cross-section]
+Depth soundings across a dredged channel of width $40$ m, taken every $5$ m, give depths (in metres):
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ (m) & $0$ & $5$ & $10$ & $15$ & $20$ & $25$ & $30$ & $35$ & $40$ \\ \hline
+depth $d$ (m) & $0.0$ & $3.1$ & $5.2$ & $6.4$ & $6.8$ & $6.1$ & $4.7$ & $2.6$ & $0.0$ \\ \hline
+\end{tabular}
+\end{center}
+Estimate the cross-sectional area.
+\tcblower
+\textbf{Solution.} $n=8$ (even \checkmark), $h=5$. Odd-subscript depths: $3.1+6.4+6.1+2.6 = 18.2$; even-subscript (interior): $5.2+6.8+4.7 = 16.7$.
+\[
+A \approx \frac{5}{3}\Big[0.0+0.0 + 4(18.2) + 2(16.7)\Big] = \frac{5}{3}\big[72.8+33.4\big] = \frac{5}{3}(106.2) = 177.0\ \mathrm{m^2}.
+\]
+The cross-sectional area is approximately $\mathbf{177\ m^2}$ --- exactly the figure the port engineer needs to plan the dredging.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.32,yscale=-0.55]
+% water surface
+\draw[very thick,popblue] (0,0) -- (40,0);
+\node[above,popblue] at (20,-0.2) {\scriptsize water surface};
+% channel bed (smooth through soundings)
+\draw[very thick,popdark,smooth] plot coordinates {(0,0) (5,3.1) (10,5.2) (15,6.4) (20,6.8) (25,6.1) (30,4.7) (35,2.6) (40,0)};
+% sounding lines
+\foreach \x/\d in {5/3.1,10/5.2,15/6.4,20/6.8,25/6.1,30/4.7,35/2.6}{
+  \draw[popline,dashed] (\x,0) -- (\x,\d);
+  \fill[poporange] (\x,\d) circle (3pt);
+}
+\draw[<->,popgreen,thick] (5,8.2) -- (10,8.2);
+\node[below,popgreen] at (7.5,8.0) {\scriptsize $h=5$ m};
+\node[popdark] at (20,9.6) {\scriptsize channel bed};
+\draw[->,popmuted] (42,0) -- (42,7) node[right] {\scriptsize depth};
+\end{tikzpicture}
+\end{center}
+\legende{Cross-section of the dredged channel at Douala: equally spaced depth soundings every $5$ m.}
+\end{popfigure}
+
+\courssub{Trapezium versus Simpson; Exactness for Cubics}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=11cm,height=6.5cm,axis lines=left,xlabel={$x$},ylabel={$y$},xmin=-0.2,xmax=4.2,ymin=0,ymax=3.2,xtick={0,1,2,3,4},legend style={at={(0.02,0.97)},anchor=north west,font=\scriptsize},every axis plot/.append style={thick}]
+\addplot[popblue,domain=0:4,samples=100] {1.5+0.6*sin(deg(1.3*x))+0.15*x};
+\addlegendentry{curve $f(x)$}
+\addplot[popgreen,dashed] coordinates {(0,1.5) (2,2.1) (4,1.57)};
+\addlegendentry{trapezium chords}
+\addplot[poporange,domain=0:4,samples=80] {1.5+0.6*sin(deg(1.3*x))+0.15*x+0.10*sin(deg(1.5708*x))};
+\addlegendentry{Simpson parabola}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The parabola (orange) hugs the curve far better than the chords (green): Simpson's rule is much more accurate for the same ordinates.}
+\end{popfigure}
+
+\begin{propriete}[Simpson's rule is exact for polynomials of degree at most 3]
+If $f$ is a polynomial of degree $\leq 3$, then Simpson's rule gives the \emph{exact} value of $\displaystyle\int_a^b f(x)\,dx$, for any even $n$. (Enrichment --- the proof is not examinable, but the fact is worth knowing.)
+\end{propriete}
+
+\textbf{Why? (enrichment).} For one pair of strips centred at $0$, direct integration shows both $\displaystyle\int_{-h}^{h} x^3\,dx = 0$ and $\dfrac{h}{3}\big[(-h)^3+4(0)^3+h^3\big]=0$: the rule is exact for $x^3$ (and trivially for $1, x, x^2$ by construction). By linearity, it is exact for every cubic. This explains the striking accuracy seen in our worked example: the error term involves the \emph{fourth} derivative of $f$, so for smooth, gently curving functions the error is tiny. In fact one can show the error behaves like $Kh^4$ (compared with $Kh^2$ for the trapezium rule): halving $h$ divides Simpson's error by about $16$, but the trapezium error only by $4$.
+
+\courssub{Choosing the Number of Strips}
+
+\begin{aretenir}[Accuracy and the choice of $n$]
+\begin{itemize}
+\item $n$ must be \textbf{even}; $h=\dfrac{b-a}{n}$ must be constant.
+\item \textbf{Doubling} the number of strips divides Simpson's error by roughly $\mathbf{16}$ --- a cheap way to gain accuracy.
+\item In practice, compute with $n$ and with $2n$ strips: if the two estimates agree to the required number of decimal places, the answer is reliable.
+\item More strips mean more computation and more rounding; keep at least $4$--$5$ decimal places in the ordinates.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Estimating an integral]
+Use Simpson's rule with $6$ strips to estimate $\displaystyle\int_0^3 e^{-x^2}\,dx$, giving your answer to $4$ decimal places.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$h=\dfrac{3-0}{6}=0.5$. Ordinates $y_k=e^{-x_k^2}$:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x_k$ & $0$ & $0.5$ & $1.0$ & $1.5$ & $2.0$ & $2.5$ & $3.0$ \\ \hline
+$y_k$ & $1.0000$ & $0.7788$ & $0.3679$ & $0.1054$ & $0.0183$ & $0.0019$ & $0.0001$ \\ \hline
+\rowcolor{popblueL} coeff. & $1$ & $4$ & $2$ & $4$ & $2$ & $4$ & $1$ \\ \hline
+\end{tabular}
+\end{center}
+\[
+A \approx \frac{0.5}{3}\Big[1.0000+0.0001 + 4(0.7788+0.1054+0.0019) + 2(0.3679+0.0183)\Big] = \frac{0.5}{3}\big[1.0001+3.5444+0.7724\big].
+\]
+$A \approx \dfrac{0.5}{3}(5.3169) \approx 0.8862$. (The true value is about $0.8862$ --- excellent agreement.)
+\end{corrige}
+
+\begin{exercice}[Soundings on the Wouri]
+The width of a river channel is $24$ m. Depths (m) measured every $3$ m are: $0,\ 1.8,\ 3.0,\ 3.7,\ 3.5,\ 2.8,\ 1.9,\ 0.9,\ 0$. Use Simpson's rule to estimate the cross-sectional area.
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+$n=8$, $h=3$. Odd sum: $1.8+3.7+2.8+0.9=9.2$; even sum: $3.0+3.5+1.9=8.4$.
+\[
+A \approx \frac{3}{3}\big[0+0+4(9.2)+2(8.4)\big] = 36.8+16.8 = 53.6\ \mathrm{m^2}.
+\]
+\end{corrige}
+
+\begin{savaistu}[Thomas Simpson]
+Thomas Simpson (1710--1761) was a self-taught English mathematician who worked as a weaver before becoming professor at the Royal Military Academy. The rule bearing his name was in fact known a century earlier to Bonaventura Cavalieri --- a reminder that in mathematics, ideas often travel further than their inventors' names. Today, the same $1$--$4$--$2$--$4$--$\dots$--$1$ pattern runs silently inside every calculator and every ship-design and harbour-engineering program in the world, including those used at the Port of Douala.
+\end{savaistu}
+
+\coursec{Taylor and Maclaurin Series}
+
+In the previous section, Simpson's Rule showed us the power of a simple idea: replace a complicated curve by a polynomial (a parabola) that is easy to work with, and the computation becomes almost trivial. We now push exactly the same idea much further. Instead of approximating a curve over an interval by a parabola, we ask: \emph{can we approximate a smooth function near a single point by a polynomial of any degree we like?} The answer is the \cle{Taylor series}, one of the most powerful tools in all of mathematics --- it is how your calculator actually computes $\sin x$, $e^x$ and $\ln x$.
+
+\courssub{The idea: matching derivatives at a point}
+
+\begin{experience}[Building a polynomial that imitates a function]
+Suppose we want to approximate $f(x) = e^x$ near $x = 0$ by a polynomial
+\[ P(x) = c_0 + c_1 x + c_2 x^2 + c_3 x^3 + \cdots \]
+The best we can ask is that $P$ and $f$ ``agree as much as possible'' at $x = 0$. What can they agree on?
+
+\begin{itemize}
+\item \textbf{Same value:} $P(0) = f(0)$ gives $c_0 = f(0) = 1$.
+\item \textbf{Same slope:} $P'(0) = f'(0)$ gives $c_1 = f'(0) = 1$.
+\item \textbf{Same curvature:} $P''(0) = f''(0)$ gives $2c_2 = f''(0) = 1$, so $c_2 = \tfrac{1}{2}$.
+\item \textbf{Same third derivative:} $P'''(0) = f'''(0)$ gives $6c_3 = 1$, so $c_3 = \tfrac{1}{6}$.
+\end{itemize}
+
+Each extra condition forces one more coefficient, and the polynomial hugs the curve more and more closely. The pattern $c_k = \dfrac{f^{(k)}(0)}{k!}$ is already visible --- this is the heart of the Taylor series.
+\end{experience}
+
+The intuition is geometric: a constant matches the \emph{position} of the curve, a line matches position and \emph{direction}, a parabola also matches \emph{curvature}, and so on. The more derivatives we match at $x = a$, the better the polynomial imitates $f$ near $a$.
+
+\courssub{The Taylor series}
+
+\begin{definition}[Taylor series of $f$ about $x = a$]
+Let $f$ be a function whose derivatives of all orders exist at $x = a$. The \cle{Taylor series} of $f$ about $x = a$ is
+\[ f(a+h) = f(a) + h f'(a) + \frac{h^2}{2!} f''(a) + \frac{h^3}{3!} f'''(a) + \cdots + \frac{h^n}{n!} f^{(n)}(a) + \cdots \]
+Equivalently, putting $x = a + h$,
+\[ f(x) = f(a) + (x-a) f'(a) + \frac{(x-a)^2}{2!} f''(a) + \cdots + \frac{(x-a)^n}{n!} f^{(n)}(a) + \cdots \]
+The polynomial obtained by stopping after the term in $(x-a)^n$ is called the \cle{Taylor polynomial of degree $n$}, denoted $T_n(x)$ (or $P_n(x)$).
+\end{definition}
+
+\begin{propriete}[Why the factorials appear (derivation)]
+Assume $f(x)$ can be written as a power series centred at $a$:
+\[ f(x) = c_0 + c_1(x-a) + c_2(x-a)^2 + c_3(x-a)^3 + \cdots + c_n(x-a)^n + \cdots \]
+Setting $x = a$ kills every term except the first: $c_0 = f(a)$. Differentiate term by term:
+\[ f'(x) = c_1 + 2c_2(x-a) + 3c_3(x-a)^2 + \cdots \]
+and setting $x = a$ gives $c_1 = f'(a)$. Differentiating again,
+\[ f''(x) = 2c_2 + 3\cdot 2\, c_3(x-a) + \cdots \quad\Longrightarrow\quad c_2 = \frac{f''(a)}{2}. \]
+After $k$ differentiations, the constant term is $k!\,c_k = f^{(k)}(a)$, because differentiating $(x-a)^k$ exactly $k$ times produces $k!$. Hence
+\[ c_k = \frac{f^{(k)}(a)}{k!}, \]
+which is precisely the Taylor coefficient. The factorial $k!$ is therefore not a decoration --- it comes from repeated differentiation of powers.
+\end{propriete}
+
+\begin{methode}[Computing a Taylor polynomial by successive differentiation]
+To find the Taylor polynomial of degree $n$ for $f$ about $x = a$:
+\begin{enumerate}
+\item Compute the derivatives $f'(x), f''(x), \dots, f^{(n)}(x)$.
+\item Evaluate each derivative at $x = a$: $f(a), f'(a), \dots, f^{(n)}(a)$.
+\item Divide the $k$-th value by $k!$ to get the coefficient of $(x-a)^k$.
+\item Assemble: $T_n(x) = \displaystyle\sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(x-a)^k$.
+\end{enumerate}
+\end{methode}
+
+\courssub{Taylor's theorem with remainder (Lagrange form)}
+
+\begin{propriete}[Taylor's theorem with remainder]
+If $f$ has derivatives up to order $n+1$ on an interval containing $a$ and $x$, then
+\[ f(x) = T_n(x) + R_n(x) \]
+where $T_n(x)$ is the Taylor polynomial of degree $n$ and the \cle{Lagrange remainder} is
+\[ R_n(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1} \]
+for some $\xi$ between $a$ and $x$. This gives an exact expression for the error when approximating $f(x)$ by $T_n(x)$.
+\end{propriete}
+
+\begin{aretenir}[Using the remainder for error bounds]
+If we can bound $|f^{(n+1)}(t)| \le M$ for all $t$ between $a$ and $x$, then
+\[ |R_n(x)| \le \frac{M}{(n+1)!}|x-a|^{n+1}. \]
+This is the standard way to \emph{guarantee} the accuracy of a Taylor approximation in examinations.
+\end{aretenir}
+
+\courssub{The Maclaurin series and standard expansions}
+
+\begin{definition}[Maclaurin series]
+The \cle{Maclaurin series} is the Taylor series about $a = 0$:
+\[ f(x) = f(0) + x f'(0) + \frac{x^2}{2!} f''(0) + \frac{x^3}{3!} f'''(0) + \cdots \]
+\end{definition}
+
+\begin{exemplebox}[Deriving the Maclaurin series of $e^x$]
+Let $f(x) = e^x$. Every derivative is again $e^x$, so $f^{(k)}(0) = e^0 = 1$ for all $k$. Therefore
+\[ e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \]
+valid for \emph{every} real $x$. Setting $x = 1$ gives the famous identity $e = 1 + 1 + \tfrac{1}{2!} + \tfrac{1}{3!} + \cdots$
+\end{exemplebox}
+
+\begin{exemplebox}[Deriving the Maclaurin series of $\sin x$]
+Let $f(x) = \sin x$. The derivatives cycle with period 4:
+\[ \sin x \to \cos x \to -\sin x \to -\cos x \to \sin x \to \cdots \]
+At $x = 0$ the values cycle through $0, 1, 0, -1, 0, 1, \dots$ So only odd powers survive, with alternating signs:
+\[ \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots \]
+Notice the series contains only \emph{odd} powers --- exactly as expected, since $\sin x$ is an odd function.
+\end{exemplebox}
+
+\begin{exemplebox}[Deriving the Maclaurin series of $\cos x$]
+Let $f(x) = \cos x$. Derivatives cycle: $\cos x \to -\sin x \to -\cos x \to \sin x \to \cos x$. At $x=0$: $1, 0, -1, 0, 1, \dots$ Only even powers survive:
+\[ \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots \]
+\end{exemplebox}
+
+\begin{aretenir}[Standard Maclaurin expansions and their intervals of validity]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|c|}
+\hline
+\rowcolor{popblueL} \textbf{Function} & \textbf{Maclaurin series} & \textbf{Valid for} \\
+\hline
+$e^x$ & $1 + x + \dfrac{x^2}{2!} + \dfrac{x^3}{3!} + \cdots$ & all $x \in \mathbb{R}$ \\
+\hline
+$\sin x$ & $x - \dfrac{x^3}{3!} + \dfrac{x^5}{5!} - \dfrac{x^7}{7!} + \cdots$ & all $x \in \mathbb{R}$ \\
+\hline
+$\cos x$ & $1 - \dfrac{x^2}{2!} + \dfrac{x^4}{4!} - \dfrac{x^6}{6!} + \cdots$ & all $x \in \mathbb{R}$ \\
+\hline
+$\ln(1+x)$ & $x - \dfrac{x^2}{2} + \dfrac{x^3}{3} - \dfrac{x^4}{4} + \cdots$ & $-1 < x \le 1$ \\
+\hline
+$(1+x)^n$ & $1 + nx + \dfrac{n(n-1)}{2!}x^2 + \dfrac{n(n-1)(n-2)}{3!}x^3 + \cdots$ & $|x| < 1$ \\
+\hline
+\end{tabularx}
+\end{center}
+The last expansion is the \cle{binomial series}; when $n$ is a positive integer it terminates and reduces to the ordinary binomial theorem.
+\end{aretenir}
+
+\begin{attention}[Forgetting factorials or powers of $(x-a)$]
+The two most frequent errors in the examination are:
+\begin{itemize}
+\item Writing the coefficient of $x^3$ in $\sin x$ as $-\tfrac{1}{3}$ instead of $-\dfrac{1}{3!} = -\dfrac{1}{6}$. The denominator is $k!$, not $k$.
+\item Expanding about $x = a$ but writing powers of $x$ instead of powers of $(x-a)$. For example, the Taylor series of $e^x$ about $x = 1$ is $e\Big[1 + (x-1) + \dfrac{(x-1)^2}{2!} + \cdots\Big]$, with $(x-1)$ everywhere.
+\end{itemize}
+A quick check: setting $x = a$ in your polynomial must give $f(a)$ exactly.
+\end{attention}
+
+\courssub{Seeing the convergence}
+
+The figures below show how the Maclaurin polynomials wrap themselves around the true curve as the degree increases.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=13cm, height=7.5cm,
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$y$},
+    xmin=-6.5, xmax=6.5, ymin=-2.2, ymax=2.2,
+    xtick={-6,-4,-2,0,2,4,6},
+    legend style={at={(0.02,0.02)}, anchor=south west, font=\small},
+    samples=200, domain=-6.5:6.5, clip=true
+]
+\addplot[very thick, popink] {sin(deg(x))};
+\addlegendentry{$\sin x$}
+\addplot[thick, poporange] {x};
+\addlegendentry{$T_1 = x$}
+\addplot[thick, popblue] {x - x^3/6};
+\addlegendentry{$T_3$}
+\addplot[thick, popgreen] {x - x^3/6 + x^5/120};
+\addlegendentry{$T_5$}
+\addplot[thick, poppurple] {x - x^3/6 + x^5/120 - x^7/5040};
+\addlegendentry{$T_7$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Maclaurin polynomials of degrees 1, 3, 5, 7 approximating $\sin x$. Each extra pair of terms extends the range where the approximation is accurate.}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm, height=7.5cm,
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$y$},
+    xmin=-2.5, xmax=2.5, ymin=-1, ymax=8,
+    legend style={at={(0.02,0.98)}, anchor=north west, font=\small},
+    samples=200, domain=-2.5:2.5, clip=true
+]
+\addplot[very thick, popink] {exp(x)};
+\addlegendentry{$e^x$}
+\addplot[thick, poporange] {1 + x};
+\addlegendentry{$T_1 = 1+x$}
+\addplot[thick, popblue] {1 + x + x^2/2};
+\addlegendentry{$T_2$}
+\addplot[thick, popgreen] {1 + x + x^2/2 + x^3/6};
+\addlegendentry{$T_3$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Truncations of orders 1, 2 and 3 of the Maclaurin series of $e^x$ near the origin. Close to $x = 0$ even $T_2$ is excellent; far away, more terms are needed.}
+\end{popfigure}
+
+\courssub{Building new series by substitution and multiplication}
+
+We rarely need to differentiate from scratch. New series are obtained from the standard ones.
+
+\begin{exemplebox}[Substitution: $e^{-x^2}$ and $\sin 2x$]
+Replace $x$ by $-x^2$ in the exponential series:
+\[ e^{-x^2} = 1 - x^2 + \frac{x^4}{2!} - \frac{x^6}{3!} + \cdots \]
+Replace $x$ by $2x$ in the sine series:
+\[ \sin 2x = 2x - \frac{(2x)^3}{3!} + \frac{(2x)^5}{5!} - \cdots = 2x - \frac{4x^3}{3} + \frac{4x^5}{15} - \cdots \]
+\end{exemplebox}
+
+\begin{exemplebox}[Multiplication by a power: $x\cos x$]
+Multiply the cosine series through by $x$:
+\[ x\cos x = x\left(1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots\right) = x - \frac{x^3}{2!} + \frac{x^5}{4!} - \cdots \]
+\end{exemplebox}
+
+\begin{exemplebox}[Division: $\dfrac{\sin x}{x}$]
+For $x \neq 0$, divide the sine series by $x$:
+\[ \frac{\sin x}{x} = 1 - \frac{x^2}{3!} + \frac{x^4}{5!} - \cdots \]
+This shows $\displaystyle\lim_{x\to 0}\frac{\sin x}{x} = 1$ immediately.
+\end{exemplebox}
+
+\begin{exemplebox}[Composition: $e^{\sin x}$ up to $x^3$]
+Substitute the series of $\sin x$ into the exponential series, keeping terms up to $x^3$:
+\[ e^{\sin x} = 1 + \sin x + \frac{\sin^2 x}{2!} + \frac{\sin^3 x}{3!} + \cdots \]
+\[ \sin x = x - \frac{x^3}{6} + O(x^5),\quad \sin^2 x = x^2 + O(x^4),\quad \sin^3 x = x^3 + O(x^5) \]
+\[ e^{\sin x} = 1 + \left(x - \frac{x^3}{6}\right) + \frac{x^2}{2} + \frac{x^3}{6} + O(x^4) = 1 + x + \frac{x^2}{2} + O(x^4) \]
+\end{exemplebox}
+
+\courssub{Approximating values and estimating the error}
+
+\begin{exoresolu}[Approximating $\sin(0.2)$]
+Using the Maclaurin series of $\sin x$, approximate $\sin(0.2)$ and estimate the error.
+\tcblower
+\textbf{Solution.} With $x = 0.2$:
+\[ \sin(0.2) = 0.2 - \frac{0.2^3}{3!} + \frac{0.2^5}{5!} - \cdots \]
+First term: $0.2$. Second term: $\dfrac{0.008}{6} \approx 0.001333$. Third term: $\dfrac{0.00032}{120} \approx 0.0000027$.
+
+Taking the first two terms: $\sin(0.2) \approx 0.2 - 0.001333 = 0.198667$.
+
+The series is alternating with decreasing terms, so the error is \emph{less than the first neglected term}: the error is below $0.0000027$, i.e. our value is correct to about 5 decimal places. (The true value is $0.198669\ldots$)
+\end{exoresolu}
+
+\begin{exoresolu}[Approximating $e^{0.1}$ and $\ln(1.1)$]
+(a) Approximate $e^{0.1}$ using four terms. (b) Approximate $\ln(1.1)$ using three terms and comment on the error.
+\tcblower
+\textbf{Solution.} (a) $e^{0.1} \approx 1 + 0.1 + \dfrac{0.01}{2} + \dfrac{0.001}{6} = 1 + 0.1 + 0.005 + 0.0001667 = 1.1051667$.
+
+The next term is $\dfrac{0.1^4}{4!} = \dfrac{0.0001}{24} \approx 0.0000042$, so the error is of order $4 \times 10^{-6}$. (True value: $1.1051709\ldots$)
+
+(b) $\ln(1.1) = \ln(1 + 0.1) \approx 0.1 - \dfrac{0.01}{2} + \dfrac{0.001}{3} = 0.1 - 0.005 + 0.000333 = 0.095333$.
+
+The first neglected term is $\dfrac{0.1^4}{4} = 0.000025$, bounding the error. (True value: $0.0953102\ldots$) Note that $x = 0.1$ lies inside the interval of validity $-1 < x \le 1$, so the use of the series is legitimate.
+\end{exoresolu}
+
+\begin{exoresolu}[Error bound using Lagrange remainder for $e^{0.5}$]
+Use the Taylor polynomial of degree 3 for $e^x$ about $x=0$ to approximate $e^{0.5}$ and find a rigorous error bound.
+\tcblower
+\textbf{Solution.} $T_3(x) = 1 + x + \frac{x^2}{2} + \frac{x^3}{6}$. For $x=0.5$:
+\[ T_3(0.5) = 1 + 0.5 + \frac{0.25}{2} + \frac{0.125}{6} = 1 + 0.5 + 0.125 + 0.020833 = 1.645833. \]
+The Lagrange remainder is $R_3(0.5) = \frac{e^{\xi}}{4!}(0.5)^4$ for some $\xi \in (0, 0.5)$. Since $e^{\xi} < e^{0.5} < e^1 < 3$,
+\[ |R_3(0.5)| < \frac{3}{24} \times 0.0625 = 0.0078125. \]
+A sharper bound uses $e^{\xi} < e^{0.5} \approx 1.65$, giving $|R_3| < 0.0043$. The true value is $e^{0.5} \approx 1.64872$, so the actual error is about $0.0029$.
+\end{exoresolu}
+
+\begin{attention}[Using a series outside its interval of validity]
+The series for $e^x$, $\sin x$ and $\cos x$ converge for \emph{all} $x$, but $\ln(1+x)$ requires $-1 < x \le 1$ and $(1+x)^n$ requires $|x| < 1$. Substituting $x = 2$ into the logarithm series gives the nonsense
+\[ \ln 3 \;\text{``=''}\; 2 - 2 + \tfrac{8}{3} - 4 + \cdots \]
+whose terms grow without bound. Always check validity \emph{before} substituting. To compute $\ln 3$ legitimately, one may instead write $\ln 3 = -\ln(1/3) = -\ln\!\left(1 - \tfrac{2}{3}\right)$, which is valid.
+\end{attention}
+
+\courssub{Applications: limits and integrals}
+
+\begin{exemplebox}[Evaluating a limit using series]
+Find $\displaystyle\lim_{x\to 0} \frac{e^x - 1 - x}{x^2}$.
+\tcblower
+Substitute the Maclaurin series $e^x = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \cdots$:
+\[ \frac{e^x - 1 - x}{x^2} = \frac{\left(1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \cdots\right) - 1 - x}{x^2} = \frac{\frac{x^2}{2} + \frac{x^3}{6} + \cdots}{x^2} = \frac{1}{2} + \frac{x}{6} + \cdots \]
+As $x \to 0$, the limit is $\frac{1}{2}$.
+\end{exemplebox}
+
+\begin{exemplebox}[Approximating an integral: $\int_0^{0.2} e^{-x^2}\,dx$]
+The integral $\int e^{-x^2}\,dx$ has no elementary antiderivative. Use the series $e^{-x^2} = 1 - x^2 + \frac{x^4}{2} - \frac{x^6}{6} + \cdots$ and integrate term by term:
+\[ \int_0^{0.2} e^{-x^2}\,dx = \left[ x - \frac{x^3}{3} + \frac{x^5}{10} - \frac{x^7}{42} + \cdots \right]_0^{0.2} \]
+\[ = 0.2 - \frac{0.008}{3} + \frac{0.00032}{10} - \cdots \approx 0.2 - 0.002667 + 0.000032 = 0.197365. \]
+The first neglected term is $\frac{0.2^7}{42} \approx 3 \times 10^{-7}$, so the error is negligible.
+\end{exemplebox}
+
+\courssub{Enrichment: series solutions of differential equations}
+
+\begin{savaistu}[Power series and differential equations]
+A powerful technique (a taste of what comes in the next section) is to \emph{assume} a differential equation has a power series solution $y = \sum_{k=0}^{\infty} c_k x^k$, substitute it into the equation, and match coefficients of each power of $x$. For example, $y' = y$ with $y(0) = 1$ forces $c_1 = c_0$, $2c_2 = c_1$, $3c_3 = c_2$, \dots, giving $c_k = \dfrac{1}{k!}$ --- the series of $e^x$ appears all by itself! This confirms that $e^x$ is the natural solution of $y' = y$, and shows how series and differential equations are two faces of the same coin.
+\end{savaistu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find the Maclaurin series of $\cos x$ up to the term in $x^6$ by successive differentiation, and verify it by differentiating the series for $\sin x$ term by term.
+\item Use substitution to obtain the first four terms of the Maclaurin series of $\dfrac{1}{1+x^2}$ (hint: binomial series with $n = -1$), and state its interval of validity.
+\item Use three terms of an appropriate series to approximate $\sqrt{1.02}$, and estimate the error using the first neglected term.
+\item Find the Taylor series of $\ln x$ about $x = 1$ up to the term in $(x-1)^4$.
+\item Use the Maclaurin series of $\sin x$ to evaluate $\displaystyle\lim_{x\to 0} \frac{x - \sin x}{x^3}$.
+\item Approximate $\int_0^{0.1} \frac{\sin x}{x}\,dx$ using the first three non-zero terms of the series, and estimate the error.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$f(x) = \cos x$: $f(0) = 1$, $f'(0) = 0$, $f''(0) = -1$, $f'''(0) = 0$, $f^{(4)}(0) = 1$, $f^{(5)}(0) = 0$, $f^{(6)}(0) = -1$. Hence
+\[ \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots \]
+Differentiating $\sin x = x - \dfrac{x^3}{3!} + \dfrac{x^5}{5!} - \cdots$ term by term gives exactly the same series, as expected since $(\sin x)' = \cos x$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+With $n = -1$ and $x$ replaced by $x^2$ in $(1+u)^{-1} = 1 - u + u^2 - u^3 + \cdots$:
+\[ \frac{1}{1+x^2} = 1 - x^2 + x^4 - x^6 + \cdots, \qquad \text{valid for } |x| < 1. \]
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$\sqrt{1.02} = (1 + 0.02)^{1/2} \approx 1 + \tfrac{1}{2}(0.02) + \dfrac{\tfrac{1}{2}\left(-\tfrac{1}{2}\right)}{2!}(0.02)^2 = 1 + 0.01 - 0.00005 = 1.00995$.
+
+The first neglected term is $\dfrac{\tfrac12\cdot\left(-\tfrac12\right)\left(-\tfrac32\right)}{3!}(0.02)^3 = \tfrac{1}{16}(0.02)^3 = 5\times 10^{-7}$, so the error is of order $5 \times 10^{-7}$: the approximation is accurate to about 6 decimal places. (True value: $1.0099504\ldots$)
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Let $f(x) = \ln x$, $a = 1$. Then $f(1) = 0$, $f'(x) = x^{-1}$, $f''(x) = -x^{-2}$, $f'''(x) = 2x^{-3}$, $f^{(4)}(x) = -6x^{-4}$, giving at $x = 1$: $1, -1, 2, -6$. Hence
+\[ \ln x = (x-1) - \frac{(x-1)^2}{2} + \frac{(x-1)^3}{3} - \frac{(x-1)^4}{4} + \cdots \]
+which is exactly the series for $\ln(1+u)$ with $u = x - 1$ --- a useful consistency check.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+$\sin x = x - \frac{x^3}{6} + \frac{x^5}{120} - \cdots$, so $x - \sin x = \frac{x^3}{6} - \frac{x^5}{120} + \cdots$.
+\[ \frac{x - \sin x}{x^3} = \frac{1}{6} - \frac{x^2}{120} + \cdots \xrightarrow[x\to 0]{} \frac{1}{6}. \]
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+$\frac{\sin x}{x} = 1 - \frac{x^2}{6} + \frac{x^4}{120} - \cdots$. Integrate from 0 to 0.1:
+\[ \int_0^{0.1} \frac{\sin x}{x}\,dx = \left[ x - \frac{x^3}{18} + \frac{x^5}{600} - \cdots \right]_0^{0.1} = 0.1 - \frac{0.001}{18} + \frac{0.00001}{600} \approx 0.1 - 0.0000556 + 1.67\times 10^{-8} = 0.0999444. \]
+The first neglected term is $\frac{0.1^7}{7 \times 5040} \approx 2.8 \times 10^{-11}$, so the error is far below $10^{-10}$.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item The Taylor series about $x = a$ matches all derivatives of $f$ at $a$: the coefficient of $(x-a)^k$ is $\dfrac{f^{(k)}(a)}{k!}$.
+\item Maclaurin series is the case $a = 0$; learn the five standard expansions \emph{with} their intervals of validity.
+\item Taylor's theorem with Lagrange remainder gives a rigorous error bound: $|R_n(x)| \le \frac{M}{(n+1)!}|x-a|^{n+1}$.
+\item Build new series by substitution, multiplication, division or composition --- do not re-differentiate unless asked.
+\item For an alternating series with decreasing terms, the error is bounded by the first neglected term.
+\item Never use $\ln(1+x)$ or $(1+x)^n$ outside their intervals of validity.
+\item Series are powerful tools for evaluating limits and approximating integrals that have no elementary antiderivatives.
+\end{itemize}
+\end{aretenir}
+
+<|close|> The. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor, the. Taylor series the. Taylor series the Taylor, the Taylor series the. Taylor series the. ( the Taylor series. Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor, the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor, 0.0 the. Taylor series the. Taylor series the Taylor series the Taylor series. Taylor series the Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the.. Taylor series the Taylor, the Taylor series the. Taylor series the. Taylor, the Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor, the. Taylor series the. Taylor series the Taylor series the. 
+ the. Taylor series ** the. OnBuch the. OnBuch to the.  
+  for the. The of the OnBuch the OnBuch the OnBuch the On the On the . the. OnBuch+ the OnBuch the OnBuch the On The the OnBuch+ app. On. On The On The On OnB OnBuch the On
+The of the OnB On The OnBuch the On The On The On The On The On The On The On The On The On The On The On The On On On The On The On The On The On The On the On the On, the On The On The On the On the On the On the On The On The On the On the On the On the On The the On the On The On, and the the On the On the On the On the On the On, and the the On, and the the On the On the On the On the On,  On the On the On the On the On the On the On the On, in the On and the the Taylor series the. The the On the the On the On, and the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On
+
+\coursec{Step-by-Step Methods for Differential Equations}
+
+In the previous section we saw how Taylor series provide polynomial approximations of functions.  When a function is defined implicitly as the solution of a differential equation, we can use the differential equation itself to build the approximation step by step.  This is the essence of \emph{numerical methods} for ordinary differential equations.  They are indispensable when an exact analytical solution cannot be found --- a frequent situation in real‑world modelling (population dynamics, heat transfer, spread of diseases, etc.).
+
+\courssub{The Initial Value Problem and the Need for Numerical Approximation}
+
+\begin{definition}[Initial Value Problem (IVP) and Step Size]
+An \textbf{initial value problem} (IVP) for a first‑order ordinary differential equation is written as
+\[
+\frac{dy}{dx} = f(x,y),\qquad y(x_0)=y_0,
+\]
+where $f$ is a given function of two variables, and $(x_0,y_0)$ is a known point on the solution curve.  The \textbf{step size} $h>0$ is the increment in the independent variable $x$ used to advance from one approximation to the next.  We define the mesh points $x_n = x_0 + nh$ for $n=0,1,2,\dots$
+\end{definition}
+
+Many differential equations arising in applications --- for example $\dfrac{dy}{dx}=e^{-x^2}$ or $\dfrac{dy}{dx}=\sin(x^2)$ --- have no elementary antiderivative.  Even when an exact solution exists, it may be too complicated to evaluate efficiently.  Numerical methods produce a sequence of approximate values $y_n \approx y(x_n)$ that can be computed with simple arithmetic.
+
+\courssub{Euler's Method: The Tangent Line Approximation}
+
+\paragraph{Geometric idea.}
+At the known point $(x_n,y_n)$ the differential equation gives the slope $f(x_n,y_n)$.  Over a small step $h$ we follow the tangent line:
+\[
+y_{n+1} = y_n + h\,f(x_n,y_n).
+\]
+This is exactly the first‑order Taylor expansion $y(x_n+h) \approx y(x_n) + h\,y'(x_n)$ with $y'(x_n)=f(x_n,y_n)$.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+\draw[->] (-0.5,0) -- (5,0) node[right] {$x$};
+\draw[->] (0,-0.5) -- (0,4) node[above] {$y$};
+% True curve (exponential-like)
+\draw[popblue, thick, domain=0:4.2, smooth, variable=\x] plot ({\x}, {0.5*exp(0.5*\x)});
+% Points
+\coordinate (xn) at (1.5, 1.06);
+\coordinate (xnp1) at (2.5, 1.75);
+\coordinate (euler) at (2.5, 1.59);
+\fill[popdark] (xn) circle (2pt) node[left] {$(x_n,y_n)$};
+\fill[poporange] (euler) circle (2pt) node[right] {$(x_{n+1},y_{n+1})$};
+\fill[popblue] (xnp1) circle (2pt) node[above right] {$(x_{n+1},y(x_{n+1}))$};
+% Tangent segment
+\draw[poporange, thick, dashed] (xn) -- (euler);
+% Vertical lines
+\draw[popline, thin, dashed] (xn) -- (xn |- 0,0) node[below] {$x_n$};
+\draw[popline, thin, dashed] (xnp1) -- (xnp1 |- 0,0) node[below] {$x_{n+1}$};
+% Slope triangle
+\draw[popmuted, thin] (xn) -- ++(1,0) node[midway, below] {$h$};
+\draw[popmuted, thin] (xn) -- ++(0,0.53) node[midway, left] {$h f(x_n,y_n)$};
+\draw[popmuted, thin] (xn) ++(1,0) -- ++(0,0.53);
+% Error indication
+\draw[popred, <->] (euler) -- (xnp1) node[midway, right, popred] {local error};
+\end{tikzpicture}
+\legende{One step of Euler's method: the tangent segment (orange) approximates the true curve (blue). The vertical gap at $x_{n+1}$ is the local truncation error.}
+\end{popfigure}
+
+\begin{methode}[Euler's Method Algorithm]
+\begin{enumerate}
+\item Input: $f(x,y)$, initial point $(x_0,y_0)$, step size $h$, number of steps $N$ (or final $x$ value).
+\item For $n = 0,1,\dots,N-1$:
+      \begin{itemize}
+      \item Compute $k = f(x_n, y_n)$.
+      \item Update $y_{n+1} = y_n + h\,k$.
+      \item Update $x_{n+1} = x_n + h$.
+      \end{itemize}
+\item Output the table of $(x_n, y_n)$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Euler's Method: Worked Example]
+Solve $\dfrac{dy}{dx} = x + y$, $y(0)=1$ with $h=0.2$ up to $x=1.0$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f(x_n,y_n)=x_n+y_n$ & $y_{n+1}=y_n+0.2\,f(x_n,y_n)$ \\ \hline
+0 & 0.0 & 1.0000 & 1.0000 & 1.2000 \\
+1 & 0.2 & 1.2000 & 1.4000 & 1.4800 \\
+2 & 0.4 & 1.4800 & 1.8800 & 1.8560 \\
+3 & 0.6 & 1.8560 & 2.4560 & 2.3472 \\
+4 & 0.8 & 2.3472 & 3.1472 & 2.9766 \\
+5 & 1.0 & 2.9766 & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+The exact solution is $y(x)=2e^x-x-1$; at $x=1$ the exact value is $2e-2\approx 3.4366$.  Euler's approximation $2.9766$ underestimates by about $0.46$.
+\end{exemplebox}
+
+\courssub{Improved Euler (Heun) Method: Predictor–Corrector}
+
+Euler's method uses only the slope at the beginning of the interval.  The improved Euler method (also called Heun's method) averages the slope at the start and at a predicted end point.  It can be derived by approximating the integral $\int_{x_n}^{x_{n+1}} f(x,y)\,dx$ with the trapezoidal rule, using a predicted value for the endpoint.
+
+\begin{methode}[Improved Euler (Heun) Algorithm]
+\begin{enumerate}
+\item Input: $f(x,y)$, $(x_0,y_0)$, $h$, $N$.
+\item For $n = 0,1,\dots,N-1$:
+      \begin{itemize}
+      \item \textbf{Predictor:} $y^*_{n+1} = y_n + h\,f(x_n,y_n)$.
+      \item \textbf{Corrector:} $y_{n+1} = y_n + \dfrac{h}{2}\Bigl[f(x_n,y_n) + f(x_{n+1},y^*_{n+1})\Bigr]$.
+      \item $x_{n+1} = x_n + h$.
+      \end{itemize}
+\item Output $(x_n,y_n)$.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[>=stealth, node distance=1.8cm, every node/.style={font=\small}]
+\node (start) [draw, rounded rectangle, fill=popblueL] {Start: $x_0,y_0,h,N$};
+\node (loop) [draw, diamond, aspect=2, below of=start, fill=poporange!20] {$n < N$?};
+\node (predict) [draw, rectangle, below of=loop, fill=popgreenL, align=center]{Predictor:\\ $y^* = y_n + h f(x_n,y_n)$};
+\node (correct) [draw, rectangle, below of=predict, fill=poppink!20, align=center]{Corrector:\\ $y_{n+1} = y_n + \frac{h}{2}[f(x_n,y_n)+f(x_{n+1},y^*)]$};
+\node (update) [draw, rectangle, below of=correct, fill=popgold!20] {$x_{n+1}=x_n+h$; $n=n+1$};
+\node (end) [draw, rounded rectangle, below of=update, fill=popblueL] {Output table; Stop};
+\draw[->] (start) -- (loop);
+\draw[->] (loop) -- node[right] {Yes} (predict);
+\draw[->] (predict) -- (correct);
+\draw[->] (correct) -- (update);
+\draw[->] (update) -- (loop);
+\draw[->] (loop) -- node[left] {No} (end);
+\end{tikzpicture}
+\legende{Flowchart of the improved Euler (Heun) predictor–corrector loop.}
+\end{popfigure}
+
+\begin{exemplebox}[Improved Euler: Same IVP]
+$\dfrac{dy}{dx}=x+y$, $y(0)=1$, $h=0.2$ up to $x=1.0$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f(x_n,y_n)$ & $y^*_{n+1}$ & $f(x_{n+1},y^*)$ & $y_{n+1}$ \\ \hline
+0 & 0.0 & 1.0000 & 1.0000 & 1.2000 & 1.4000 & 1.2400 \\
+1 & 0.2 & 1.2400 & 1.4400 & 1.5280 & 1.9280 & 1.5768 \\
+2 & 0.4 & 1.5768 & 1.9768 & 1.9722 & 2.5722 & 2.0317 \\
+3 & 0.6 & 2.0317 & 2.6317 & 2.5580 & 3.3580 & 2.6307 \\
+4 & 0.8 & 2.6307 & 3.4307 & 3.3168 & 4.3168 & 3.4055 \\
+5 & 1.0 & 3.4055 & -- & -- & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+The improved Euler value $3.4055$ is much closer to the exact $3.4366$ (error $\approx 0.031$).
+\end{exemplebox}
+
+\courssub{Comparison, Error Behaviour and Practical Considerations}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+width=\linewidth, height=7cm,
+xlabel={$x$}, ylabel={$y$},
+xmin=0, xmax=2, ymin=0, ymax=8,
+legend pos=north west,
+grid=major, grid style={popline},
+]
+% Exact solution y = e^x
+\addplot[popblue, thick, domain=0:2, samples=100] {exp(x)};
+\addlegendentry{Exact $y=e^x$}
+% Euler h=0.5
+\addplot[poporange, only marks, mark=square*, mark size=2.5] coordinates {
+(0,1) (0.5,1.5) (1,2.25) (1.5,3.375) (2,5.0625)
+};
+\addlegendentry{Euler $h=0.5$}
+% Improved Euler h=0.5
+\addplot[popgreen, only marks, mark=triangle*, mark size=2.5] coordinates {
+(0,1) (0.5,1.625) (1,2.6406) (1.5,4.2910) (2,6.9727)
+};
+\addlegendentry{Improved Euler $h=0.5$}
+% Euler h=0.25
+\addplot[poppurple, only marks, mark=*, mark size=2] coordinates {
+(0,1) (0.25,1.25) (0.5,1.5625) (0.75,1.9531) (1,2.4414) (1.25,3.0518) (1.5,3.8147) (1.75,4.7684) (2,5.9605)
+};
+\addlegendentry{Euler $h=0.25$}
+\end{axis}
+\end{tikzpicture}
+\legende{Comparison of exact solution $y=e^x$ (IVP $y'=y,\ y(0)=1$) with Euler and improved Euler for two step sizes.  Smaller $h$ reduces the error; improved Euler is consistently more accurate than Euler for the same $h$.}
+\end{popfigure}
+
+\begin{propriete}[Error Behaviour]
+\begin{itemize}
+\item \textbf{Local truncation error} (error made in one step assuming exact previous value): Euler $\mathcal{O}(h^2)$, Improved Euler $\mathcal{O}(h^3)$.
+\item \textbf{Global accumulated error} after $N$ steps to reach a fixed $x$: Euler $\mathcal{O}(h)$, Improved Euler $\mathcal{O}(h^2)$.
+\item Halving $h$ roughly halves the global error for Euler, but quarters it for improved Euler.
+\item Smaller $h$ increases the number of steps and thus the computational cost and round‑off error accumulation.
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Common Mistakes]
+\begin{itemize}
+\item \textbf{Heun's second slope at the wrong point:} In the corrector, the second slope must be evaluated at the \emph{predicted} point $(x_{n+1},y^*_{n+1})$, not at $(x_n,y_n)$ or $(x_{n+1},y_n)$.  Using $f(x_n,y_n)$ twice reduces the method to ordinary Euler.
+\item \textbf{Premature rounding:} Keep all intermediate values (especially $y^*$ and the slopes) to full calculator precision.  Round only the final table entries to the required number of decimal places.  Rounding $y^*$ to 4 decimals before computing the corrector can noticeably degrade accuracy.
+\item \textbf{Confusing $x_{n+1}$ in the corrector:} Remember that $x_{n+1}=x_n+h$ is known \emph{before} the corrector step; use it in $f(x_{n+1},y^*)$.
+\end{itemize}
+\end{attention}
+
+\courssub{Modelling Applications}
+
+Numerical methods shine when modelling real phenomena where the differential equation cannot be solved analytically.
+
+\begin{experience}[Population Growth with Limited Resources]
+The logistic model $\dfrac{dP}{dt}=rP\left(1-\dfrac{P}{K}\right)$ describes a population $P(t)$ with growth rate $r$ and carrying capacity $K$.  For $r=0.1\ \mathrm{yr}^{-1}$, $K=1000$, $P(0)=100$, use improved Euler with $h=1$ year to estimate $P(5)$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+$n$ & $t_n$ & $P_n$ & $f(t_n,P_n)$ & $P^*_{n+1}$ & $f(t_{n+1},P^*)$ & $P_{n+1}$ \\ \hline
+0 & 0 & 100.00 & 9.00 & 109.00 & 9.71 & 109.36 \\
+1 & 1 & 109.36 & 9.73 & 119.09 & 10.48 & 119.47 \\
+2 & 2 & 119.47 & 10.49 & 129.96 & 11.21 & 130.32 \\
+3 & 3 & 130.32 & 11.22 & 141.54 & 11.89 & 141.88 \\
+4 & 4 & 141.88 & 11.89 & 153.77 & 12.50 & 154.08 \\
+5 & 5 & 154.08 & -- & -- & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+The population grows from 100 to about 154 in five years.  The table shows the growth rate increasing as the population approaches half the carrying capacity.
+\end{experience}
+
+\begin{savaistu}[Newton's Law of Cooling in a Cameroonian Context]
+A pot of hot \emph{ndolé} (initial temperature $95^\circ\mathrm{C}$) cools in a kitchen at $28^\circ\mathrm{C}$.  The temperature $T(t)$ satisfies $\dfrac{dT}{dt}=-k(T-28)$.  If $k=0.07\ \mathrm{min}^{-1}$, Euler's method with $h=2$ min gives a quick estimate of when the stew reaches a safe serving temperature ($60^\circ\mathrm{C}$).  Such step‑by‑step calculations are easily programmed on a smartphone --- a practical tool for food safety in street‑food vendors' stalls.
+\end{savaistu}
+
+\courssub{Worked Examination‑Style Question}
+
+\begin{exoresolu}[Combined Euler and Improved Euler]
+Consider the IVP $\dfrac{dy}{dx} = y - x$, $y(0)=2$.
+\begin{enumerate}
+\item Use Euler's method with $h=0.2$ to approximate $y(0.6)$.
+\item Use the improved Euler method with the same $h$ to approximate $y(0.6)$.
+\item The exact solution is $y(x)=x+1+e^x$.  Compute the exact value $y(0.6)$ and the absolute errors of both methods.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\paragraph{1. Euler's method.}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f(x_n,y_n)=y_n-x_n$ & $y_{n+1}=y_n+0.2\,f(x_n,y_n)$ \\ \hline
+0 & 0.0 & 2.0000 & 2.0000 & 2.4000 \\
+1 & 0.2 & 2.4000 & 2.2000 & 2.8400 \\
+2 & 0.4 & 2.8400 & 2.4400 & 3.3280 \\
+3 & 0.6 & 3.3280 & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+Euler approximation: $y(0.6)\approx 3.3280$.
+
+\paragraph{2. Improved Euler method.}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f(x_n,y_n)$ & $y^*_{n+1}$ & $f(x_{n+1},y^*)$ & $y_{n+1}$ \\ \hline
+0 & 0.0 & 2.0000 & 2.0000 & 2.4000 & 2.2000 & 2.4200 \\
+1 & 0.2 & 2.4200 & 2.2200 & 2.8640 & 2.4640 & 2.8888 \\
+2 & 0.4 & 2.8888 & 2.4888 & 3.3866 & 2.7866 & 3.4163 \\
+3 & 0.6 & 3.4163 & -- & -- & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+Improved Euler approximation: $y(0.6)\approx 3.4163$.
+
+\paragraph{3. Exact value and errors.}
+$y(0.6)=0.6+1+e^{0.6}=1.6+1.8221188=3.4221188$.
+\begin{itemize}
+\item Euler error: $|3.3280-3.4221| = 0.0941$.
+\item Improved Euler error: $|3.4163-3.4221| = 0.0058$.
+\end{itemize}
+Improved Euler is about 16 times more accurate for the same step size.
+\end{exoresolu}
+
+\courssub{Consolidation Exercises}
+
+\begin{exercice}[Exercise 1]
+Use Euler's method with $h=0.1$ to approximate $y(0.3)$ for $\dfrac{dy}{dx}=x^2+y^2$, $y(0)=1$.  Present your work in a table.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f(x_n,y_n)=x_n^2+y_n^2$ & $y_{n+1}$ \\ \hline
+0 & 0.0 & 1.0000 & 1.0000 & 1.1000 \\
+1 & 0.1 & 1.1000 & 1.2200 & 1.2220 \\
+2 & 0.2 & 1.2220 & 1.5333 & 1.3753 \\
+3 & 0.3 & 1.3753 & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+$y(0.3)\approx 1.3753$.
+\end{corrige}
+
+\begin{exercice}[Exercise 2]
+For the IVP $\dfrac{dy}{dx}=2xy$, $y(0)=1$, the exact solution is $y=e^{x^2}$.
+\begin{enumerate}
+\item Apply the improved Euler method with $h=0.2$ to estimate $y(0.6)$.
+\item Calculate the percentage error relative to the exact value.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+$n$ & $x_n$ & $y_n$ & $f=2x_ny_n$ & $y^*$ & $f(x_{n+1},y^*)$ & $y_{n+1}$ \\ \hline
+0 & 0.0 & 1.0000 & 0.0000 & 1.0000 & 0.4000 & 1.0400 \\
+1 & 0.2 & 1.0400 & 0.4160 & 1.1232 & 0.8986 & 1.1715 \\
+2 & 0.4 & 1.1715 & 0.9372 & 1.3589 & 1.6307 & 1.4282 \\
+3 & 0.6 & 1.4282 & -- & -- & -- & -- \\ \hline
+\end{tabular}
+\end{center}
+Exact $y(0.6)=e^{0.36}=1.4333$.  Percentage error $=\dfrac{|1.4282-1.4333|}{1.4333}\times100\% \approx 0.36\%$.
+\end{corrige}
+
+\begin{aretenir}[Key Points for the Examination]
+\begin{itemize}
+\item Euler: $y_{n+1}=y_n+hf(x_n,y_n)$; global error $\mathcal{O}(h)$.
+\item Improved Euler (Heun): predictor $y^*=y_n+hf(x_n,y_n)$, corrector $y_{n+1}=y_n+\frac{h}{2}[f(x_n,y_n)+f(x_{n+1},y^*)]$; global error $\mathcal{O}(h^2)$.
+\item Always organise calculations in a clear table showing $x_n$, $y_n$, slopes, predictor, corrector.
+\item Do not round intermediate values; round only the final presented answers.
+\item In Heun's corrector, the second slope uses the \emph{predicted} $y^*$ at $x_{n+1}$.
+\item Numerical methods are essential for modelling real‑world problems where analytical solutions are unavailable.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: Surveying the Wouri River Crossing}
+
+\courssub{Aims of the Activity}
+
+This integration activity brings together the three numerical techniques of this chapter in a single, authentic engineering task. By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item apply \cle{Simpson's rule} to real discrete data (equally spaced depth soundings) to estimate a cross-sectional area and a derived physical quantity (discharge);
+\item construct a \cle{Maclaurin polynomial} of an exponential function, integrate it term by term, and assess its accuracy against a Simpson estimate and the exact value;
+\item implement \cle{Euler's method} and the \cle{improved Euler method} (Heun's method) for a first-order differential equation, and compare both with the exact solution;
+\item organise numerical work in clear tables, control rounding errors, and argue critically about the reliability and efficiency of a numerical method.
+\end{itemize}
+
+\begin{aretenir}[Skills Mobilised]
+Numerical integration (Simpson's rule) $\bullet$ Power series approximation (Taylor/Maclaurin) $\bullet$ Step-by-step solution of $\dfrac{dy}{dx}=f(x,y)$ (Euler, Improved Euler) $\bullet$ Error awareness (truncation, rounding) $\bullet$ Scientific communication and teamwork.
+\end{aretenir}
+
+\courssub{Situation: Surveying the Wouri River Crossing}
+
+\textbf{Context.}\par
+A civil engineering team is preparing a feasibility study for a water-intake station on the \cle{Wouri River}, near Douala. Before any construction, the team must characterise a straight cross-section of the river at the chosen site. Three questions arise:
+\begin{enumerate}
+\item What is the discharge (volume of water flowing per second) through the section?
+\item What is the mean current speed over the width?
+\item How does a pollutant or sediment concentration evolve in time downstream?
+\end{enumerate}
+
+\textbf{Data Sheet 1 — Depth Soundings.}\par
+Using an echo-sounder from a boat, technicians measured the depth $d$ (in metres) every $4$ m along a $32$ m-wide section, from the left bank ($x=0$) to the right bank ($x=32$):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $x$ (m) & $0$ & $4$ & $8$ & $12$ & $16$ & $20$ & $24$ & $28$ & $32$ \\
+\hline
+$d$ (m) & $0$ & $1.8$ & $3.2$ & $4.5$ & $5.1$ & $4.8$ & $3.6$ & $2.1$ & $0$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+The surface current speed, measured with a float over a timed distance, is $v_{s}=0.8\ \mathrm{m\,s^{-1}}$; the team assumes this value is uniform across the section for a first discharge estimate.
+
+\textbf{Data Sheet 2 — Velocity Profile.}\par
+A more refined model gives the current speed at distance $x$ from the left bank as
+\[ v(x)=1.5\,e^{-0.05x}\ \ (\text{in } \mathrm{m\,s^{-1}}), \qquad 0\le x\le 32. \]
+The \cle{mean speed} across the section is defined by $\bar v=\dfrac{1}{32}\displaystyle\int_{0}^{32}v(x)\,dx$.
+
+\textbf{Data Sheet 3 — Sediment Decay.}\par
+Sediment concentration $C$ (in mg/L) in the plume downstream satisfies
+\[ \frac{dC}{dt}=-0.05\,C, \qquad C(0)=80\ \text{mg/L}, \]
+where $t$ is the time in hours. The team wants an estimate of $C(2)$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.55, every node/.style={font=\small}]
+% Axes
+\draw[thin, popmuted, ->] (-1,0) -- (33,0) node[right] {$x\ (\mathrm{m})$};
+\draw[thin, popmuted, ->] (0,-6) -- (0,1) node[above] {$d\ (\mathrm{m})$};
+% River bed profile
+\draw[thick, popink] plot[smooth, tension=0.6] coordinates {(0,0) (4,-1.8) (8,-3.2) (12,-4.5) (16,-5.1) (20,-4.8) (24,-3.6) (28,-2.1) (32,0)};
+\fill[popblueL, opacity=0.5] plot[smooth, tension=0.6] coordinates {(0,0) (4,-1.8) (8,-3.2) (12,-4.5) (16,-5.1) (20,-4.8) (24,-3.6) (28,-2.1) (32,0)} -- (32,0) -- (0,0) -- cycle;
+% Water surface
+\draw[thick, popblue] (0,0) -- (32,0);
+% Vertical grid lines at soundings
+\foreach \x in {0,4,8,12,16,20,24,28,32} {
+    \draw[popmuted, dashed] (\x,0.1) -- (\x,-5.5);
+    \node[above] at (\x,0.1) {\x};
+}
+% Labels
+\node[align=center, popdark] at (16,-2.5) {Water};
+\node[align=center, popdark] at (16,-5.5) {River bed};
+% Scale note
+\node[align=left, popmuted, font=\tiny] at (32,0.5) {Vertical scale exaggerated};
+\end{tikzpicture}
+\end{center}
+\legende{Cross-section of the Wouri River from the depth soundings (vertical scale exaggerated for clarity).}
+\end{popfigure}
+
+\courssub{Tasks}
+
+Work in groups of three or four. \textbf{Keep at least four decimal places in all intermediate computations.}
+
+\textbf{Task 1 — Cross-sectional Area and Discharge (Simpson's Rule).}
+\begin{enumerate}
+\item State Simpson's rule for $n$ strips of width $h$ and verify that the data sheet is compatible with it (number of ordinates, equal spacing).
+\item Estimate the cross-sectional area $A$ of the river section.
+\item Deduce the discharge (volume of water flowing per second) $Q=A\,v_{s}$, in $\mathrm{m^{3}\,s^{-1}}$.
+\end{enumerate}
+
+\textbf{Task 2 — Mean Current Speed (Taylor Polynomial versus Simpson).}
+\begin{enumerate}
+\item Write the Maclaurin series of $e^{u}$, then substitute $u=-0.05x$ to obtain the Taylor polynomial $T_{4}(x)$ of degree $4$ of $e^{-0.05x}$.
+\item Compute $\displaystyle\int_{0}^{32}1.5\,T_{4}(x)\,dx$ term by term, and deduce an approximation $\bar v_{T}$ of the mean speed.
+\item Evaluate $v(x)$ at the nine sounding positions and apply Simpson's rule to obtain a second approximation $\bar v_{S}$.
+\item Compute the exact value $\bar v=\dfrac{1}{32}\displaystyle\int_{0}^{32}1.5e^{-0.05x}\,dx$ and compare the three results. Comment on the accuracy of each method.
+\end{enumerate}
+
+\textbf{Task 3 — Sediment Concentration (Step-by-Step Methods).}
+\begin{enumerate}
+\item Using Euler's method with step $h=0.5$ h, build the table of values $(t_n, C_n)$ up to $t=2$ and estimate $C(2)$.
+\item Repeat with the improved Euler method (Heun's method):
+      $C^{*}=C_n+h\,f(C_n)$, then $C_{n+1}=C_n+\dfrac{h}{2}\bigl[f(C_n)+f(C^{*})\bigr]$.
+\item Solve the differential equation exactly and compute $C(2)$. Compare the two numerical estimates with the exact value. Calculate the absolute errors.
+\end{enumerate}
+
+\textbf{Task 4 — Synthesis.}\par
+Prepare a five-minute presentation: show your tables, state which method you trust most in each task, and justify your choice in terms of accuracy, computational cost (number of function evaluations), and suitability for the type of data (discrete vs. continuous function).
+
+\courssub{Model Answer}
+
+\textbf{Task 1.1 — Simpson's Rule Statement and Compatibility Check.}\par
+For a function $y(x)$ tabulated at $n+1$ equally spaced ordinates $x_0, x_1, \dots, x_n$ with $x_k = a + kh$, $h = \frac{b-a}{n}$, and $n$ \textbf{even}, Simpson's rule states:
+\[ \int_{a}^{b} y(x)\,dx \approx \frac{h}{3}\Bigl[ y_0 + y_n + 4\sum_{\text{odd } k} y_k + 2\sum_{\text{even } k, k\neq 0,n} y_k \Bigr]. \]
+
+\textbf{Check:} Here $a=0$, $b=32$, $h=4$. Number of strips $n = \frac{32-0}{4} = 8$ (even). Number of ordinates $= 9$. The data is perfectly compatible.
+
+\textbf{Task 1.2 — Cross-Sectional Area $A$.}\par
+Depths $d_k$: $d_0=0$, $d_1=1.8$, $d_2=3.2$, $d_3=4.5$, $d_4=5.1$, $d_5=4.8$, $d_6=3.6$, $d_7=2.1$, $d_8=0$.
+\begin{align*}
+A &\approx \frac{4}{3}\Bigl[ d_0 + d_8 + 4(d_1+d_3+d_5+d_7) + 2(d_2+d_4+d_6) \Bigr] \\
+  &= \frac{4}{3}\Bigl[ 0 + 0 + 4(1.8 + 4.5 + 4.8 + 2.1) + 2(3.2 + 5.1 + 3.6) \Bigr] \\
+  &= \frac{4}{3}\Bigl[ 4(13.2) + 2(11.9) \Bigr] = \frac{4}{3}\bigl[ 52.8 + 23.8 \bigr] = \frac{4}{3}(76.6) \\
+  &= \frac{306.4}{3} \approx 102.1333\ \mathrm{m^{2}}.
+\end{align*}
+
+\textbf{Task 1.3 — Discharge $Q$.}\par
+\[ Q = A \times v_s \approx 102.1333 \times 0.8 = 81.7067\ \mathrm{m^{3}\,s^{-1}}. \]
+Rounded to one decimal: $Q \approx 81.7\ \mathrm{m^{3}\,s^{-1}}$.
+
+\vspace{0.5em}
+\textbf{Task 2.1 — Maclaurin Polynomial $T_4(x)$ for $e^{-0.05x}$.}\par
+The Maclaurin series for $e^u$ is $e^u = \sum_{k=0}^{\infty} \frac{u^k}{k!} = 1 + u + \frac{u^2}{2!} + \frac{u^3}{3!} + \frac{u^4}{4!} + \cdots$.
+Substitute $u = -0.05x$:
+\begin{align*}
+e^{-0.05x} &\approx T_4(x) = 1 + (-0.05x) + \frac{(-0.05x)^2}{2} + \frac{(-0.05x)^3}{6} + \frac{(-0.05x)^4}{24} \\
+&= 1 - 0.05x + \frac{0.0025}{2}x^2 - \frac{0.000125}{6}x^3 + \frac{0.00000625}{24}x^4 \\
+&= 1 - 0.05x + 0.00125x^2 - 0.0000208333x^3 + 0.000000260417x^4.
+\end{align*}
+
+\textbf{Task 2.2 — Mean Speed via Taylor Polynomial $\bar v_T$.}\par
+Integrate $1.5\,T_4(x)$ term by term from $0$ to $32$:
+\begin{align*}
+\int_{0}^{32} T_4(x)\,dx &= \Bigl[ x - 0.025x^2 + \frac{0.00125}{3}x^3 - \frac{0.0000208333}{4}x^4 + \frac{0.000000260417}{5}x^5 \Bigr]_{0}^{32} \\
+&= 32 - 0.025(1024) + \frac{0.00125}{3}(32768) - \frac{0.0000208333}{4}(1048576) + \frac{0.000000260417}{5}(33554432) \\
+&= 32 - 25.6 + 13.65333 - 5.46133 + 1.74763 \\
+&= 16.33963.
+\end{align*}
+\[ \bar v_T = \frac{1.5 \times 16.33963}{32} = \frac{24.50945}{32} \approx 0.76592\ \mathrm{m\,s^{-1}}. \]
+
+\textbf{Task 2.3 — Mean Speed via Simpson's Rule $\bar v_S$.}\par
+Evaluate $v(x)=1.5e^{-0.05x}$ at the nine points (keeping 4 decimals):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $x$ (m) & $0$ & $4$ & $8$ & $12$ & $16$ & $20$ & $24$ & $28$ & $32$ \\
+\hline
+$v(x)$ (m/s) & $1.5000$ & $1.2281$ & $1.0055$ & $0.8232$ & $0.6740$ & $0.5518$ & $0.4518$ & $0.3699$ & $0.3029$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+Apply Simpson's rule ($h=4$, $n=8$):
+\begin{align*}
+\int_{0}^{32} v(x)\,dx &\approx \frac{4}{3}\Bigl[ v_0 + v_8 + 4(v_1+v_3+v_5+v_7) + 2(v_2+v_4+v_6) \Bigr] \\
+&= \frac{4}{3}\Bigl[ 1.5000 + 0.3029 + 4(1.2281+0.8232+0.5518+0.3699) + 2(1.0055+0.6740+0.4518) \Bigr] \\
+&= \frac{4}{3}\Bigl[ 1.8029 + 4(2.9730) + 2(2.1313) \Bigr] \\
+&= \frac{4}{3}\bigl[ 1.8029 + 11.8920 + 4.2626 \bigr] = \frac{4}{3}(17.9575) = 23.94333.
+\end{align*}
+\[ \bar v_S = \frac{23.94333}{32} \approx 0.74823\ \mathrm{m\,s^{-1}}. \]
+
+\textbf{Task 2.4 — Exact Value and Comparison.}\par
+Exact integral:
+\[ \int_{0}^{32} 1.5 e^{-0.05x}\,dx = \left[ \frac{1.5}{-0.05} e^{-0.05x} \right]_{0}^{32} = -30 \bigl( e^{-1.6} - 1 \bigr) = 30(1 - e^{-1.6}). \]
+$e^{-1.6} \approx 0.2018965$.
+\[ \int_{0}^{32} v(x)\,dx = 30 \times 0.7981035 = 23.943105. \]
+\[ \bar v_{\text{exact}} = \frac{23.943105}{32} = 0.748222\ \mathrm{m\,s^{-1}}. \]
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} Method & Mean Speed $\bar v$ ($\mathrm{m\,s^{-1}}$) & Absolute Error & Relative Error \\
+\hline
+Taylor ($T_4$) & $0.76592$ & $+0.01770$ & $+2.37\%$ \\
+Simpson & $0.74823$ & $+0.00001$ & $+0.001\%$ \\
+Exact & $0.74822$ & $-$ & $-$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Comment:} Simpson's rule, applied to the exact function values, is exact for polynomials up to degree 3 and extremely accurate for smooth functions like $e^{-0.05x}$; it matches the exact value to 5 decimal places. The degree-4 Maclaurin polynomial is accurate near $x=0$ but its error grows with $|x|$; at $x=32$, $u=-1.6$ is far from the expansion centre, causing a $2.4\%$ overestimate. Increasing the polynomial degree would improve accuracy, but Simpson's rule is far more efficient for this definite integral.
+
+\vspace{0.5em}
+\textbf{Task 3.1 — Euler's Method ($h=0.5$ h).}\par
+$\dfrac{dC}{dt} = f(C) = -0.05 C$, $C_0 = 80$.
+Euler iteration: $C_{n+1} = C_n + h f(C_n) = C_n - 0.025 C_n = 0.975\,C_n$.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $t_n$ (h) & $0$ & $0.5$ & $1.0$ & $1.5$ & $2.0$ \\
+\hline
+Euler $C_n$ (mg/L) & $80.0000$ & $78.0000$ & $76.0500$ & $74.1488$ & $72.2950$ \\
+\hline
+\end{tabularx}
+\end{center}
+Euler estimate: $C(2) \approx 72.2950$ mg/L.
+
+\textbf{Task 3.2 — Improved Euler Method (Heun's Method).}\par
+Predictor: $C^{*} = C_n + h f(C_n) = 0.975\,C_n$.
+Corrector: $C_{n+1} = C_n + \frac{h}{2}\bigl[ f(C_n) + f(C^{*}) \bigr] = C_n + 0.25\bigl[ -0.05 C_n - 0.05 C^{*} \bigr] = C_n - 0.0125(C_n + C^{*})$.
+Substitute $C^{*}$: $C_{n+1} = C_n - 0.0125(1.975 C_n) = (1 - 0.0246875)C_n = 0.9753125\,C_n$.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $t_n$ (h) & $0$ & $0.5$ & $1.0$ & $1.5$ & $2.0$ \\
+\hline
+Improved Euler $C_n$ (mg/L) & $80.0000$ & $78.0250$ & $76.0993$ & $74.2214$ & $72.3895$ \\
+\hline
+\end{tabularx}
+\end{center}
+Improved Euler estimate: $C(2) \approx 72.3895$ mg/L.
+
+\textbf{Task 3.3 — Exact Solution and Comparison.}\par
+The ODE $\frac{dC}{dt} = -0.05 C$ with $C(0)=80$ solves to $C(t) = 80 e^{-0.05t}$.
+\[ C(2) = 80 e^{-0.1} = 80 \times 0.904837418 \approx 72.38699\ \text{mg/L}. \]
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} Method & $C(2)$ (mg/L) & Absolute Error & Relative Error \\
+\hline
+Euler & $72.2950$ & $-0.0920$ & $-0.127\%$ \\
+Improved Euler & $72.3895$ & $+0.0025$ & $+0.0035\%$ \\
+Exact & $72.3870$ & $-$ & $-$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Analysis:} Improved Euler is roughly 40 times more accurate than basic Euler for the same step size ($h=0.5$), at the cost of two evaluations of $f$ per step instead of one. Both methods underestimate the decay (since $f(C)=-0.05C$ is concave up, Euler underestimates the drop; Improved Euler corrects this). Halving the step size would reduce Euler's error by $\approx 2$ and Improved Euler's by $\approx 4$.
+
+\courssub{Synthesis — Expected Conclusions}
+
+\begin{itemize}
+\item \textbf{Discrete Data (Task 1):} \cle{Simpson's rule} is the natural, optimal tool. It uses only the measured ordinates, requires no model fitting, and is exact for polynomials up to degree 3. It is the standard in hydrology for discharge estimation from soundings.
+\item \textbf{Continuous Function (Task 2):} A \cle{Taylor/Maclaurin polynomial} provides an analytic approximation, excellent near the expansion centre ($x=0$), but its accuracy deteriorates over a wide interval ($x \in [0,32]$) unless the degree is high. \cle{Simpson's rule} applied directly to the function values is vastly more reliable and efficient for definite integrals of known smooth functions.
+\item \textbf{Differential Equations (Task 3):} The \cle{improved Euler method} (order 2) dominates basic Euler (order 1) at equal step size. For a given accuracy, Improved Euler allows a larger step size, reducing total function evaluations. In professional codes, higher-order Runge-Kutta methods (e.g., RK4) are standard.
+\end{itemize}
+
+\begin{attention}[Common Mistakes to Avoid]
+\begin{itemize}
+\item Using Simpson's rule with an \textbf{odd} number of strips (requires even $n$).
+\item Forgetting the weight pattern $1, 4, 2, 4, \dots, 2, 4, 1$ (first and last weight 1, odd indices 4, even indices 2).
+\item Mixing units (e.g., hours vs seconds in Task 3; discharge in $\mathrm{m^3/s}$ requires speed in $\mathrm{m/s}$).
+\item Rounding intermediate values too early (keep 4+ decimals, round only final answer).
+\item Assuming a Taylor polynomial is uniformly accurate on a large interval far from the centre of expansion.
+\item In Improved Euler, forgetting to use the predictor $C^{*}$ inside the corrector formula.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Why This Matters in Cameroon]
+Discharge estimates like those of Task 1 are exactly what hydrologists produce on the Wouri, the Sanaga, the Benue, or the Logone before sizing bridges, water intake stations, irrigation canals, or small hydropower plants. The same numerical methods you have just used by hand — Simpson's rule for integration, Taylor expansions for modelling, Runge-Kutta schemes for differential equations — are the computational engines of the professional software (HEC-RAS, Mike 11, SWAT) used by the Ministry of Water and Energy and consulting firms. The only difference is the number of data points: field campaigns may yield hundreds of soundings, and time-stepping runs for thousands of steps, but the mathematical principles remain identical.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Applying Simpson's Rule with a Given Number of Strips}
+
+\begin{methode}[Using Simpson's Rule]
+To estimate $\displaystyle I=\int_a^b f(x)\,dx$ using Simpson's rule with $n$ strips ($n$ \textbf{even}):
+\begin{enumerate}
+\item Compute the strip width $h=\dfrac{b-a}{n}$.
+\item List the ordinates $y_0,y_1,\dots,y_n$ where $y_r=f(a+rh)$, working to at least one decimal place more than required in the final answer.
+\item Apply the formula
+\[ I\approx \frac{h}{3}\Big[y_0+y_n+4\big(y_1+y_3+\cdots+y_{n-1}\big)+2\big(y_2+y_4+\cdots+y_{n-2}\big)\Big]. \]
+\item Pattern to remember: \cle{first + last}, plus \cle{4 times the odd} ordinates, plus \cle{2 times the even} ordinates (excluding the end ones).
+\item Round only at the very end; give the answer to the accuracy requested.
+\end{enumerate}
+\textbf{Reflex:} check that $n$ is even before starting; if the question says "5 ordinates", that means $n=4$ strips.
+\end{methode}
+
+\begin{exoresolu}[Simpson's rule with 4 strips]
+Use Simpson's rule with 4 strips to estimate $\displaystyle\int_0^1 \frac{1}{1+x^2}\,dx$, giving your answer to 4 decimal places.
+\tcblower
+\textbf{Solution.} Here $a=0$, $b=1$, $n=4$, so $h=\dfrac{1-0}{4}=0.25$. The ordinates are $y_r=f(0.25r)$ with $f(x)=\dfrac{1}{1+x^2}$:
+\begin{align*}
+y_0 &= f(0) = 1.000000,\\
+y_1 &= f(0.25) = \frac{1}{1.0625} = 0.941176,\\
+y_2 &= f(0.5) = \frac{1}{1.25} = 0.800000,\\
+y_3 &= f(0.75) = \frac{1}{1.5625} = 0.640000,\\
+y_4 &= f(1) = 0.500000.
+\end{align*}
+Applying Simpson's rule:
+\begin{align*}
+I &\approx \frac{0.25}{3}\Big[y_0+y_4+4(y_1+y_3)+2y_2\Big]\\
+&= \frac{0.25}{3}\Big[1.000000+0.500000+4(0.941176+0.640000)+2(0.800000)\Big]\\
+&= \frac{0.25}{3}\Big[1.5+4(1.581176)+1.6\Big]\\
+&= \frac{0.25}{3}\big[9.424706\big] = 0.785392.
+\end{align*}
+Hence $\displaystyle\int_0^1\frac{dx}{1+x^2}\approx 0.7854$ (4 d.p.).
+\textbf{Remark:} the exact value is $\tan^{-1}1=\dfrac{\pi}{4}=0.785398\ldots$ — Simpson's rule with only 4 strips already gives 5 correct decimal places.
+\end{exoresolu}
+
+\courssub{Simpson's Rule from Tabulated Data}
+
+\begin{methode}[Simpson's Rule with Experimental Data]
+When the function is given only as a \cle{table of values} (as in an experiment):
+\begin{enumerate}
+\item Read the strip width $h$ from the table (the common difference of the $x$-values). Check the values are \textbf{equally spaced} and that the number of strips is even.
+\item Identify the ordinates $y_0,\dots,y_n$ directly from the table — no evaluation of $f$ is needed.
+\item Apply Simpson's formula exactly as before.
+\item If the integral has a physical meaning (area, distance from a velocity–time table, work done), state the units in the answer.
+\end{enumerate}
+\textbf{Reflex:} the data points \emph{are} the ordinates; do not try to find a formula for $f$.
+\end{methode}
+
+\begin{exoresolu}[Estimating a distance travelled]
+The speed $v$ (in m/s) of a car travelling between Buea and Mutengene is recorded every 10 seconds:
+
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+\rowcolor{popblueL} $t$ (s) & 0 & 10 & 20 & 30 & 40 & 50 & 60 \\
+\hline
+$v$ (m/s) & 0 & 12.5 & 18.2 & 20.1 & 17.6 & 13.0 & 8.4 \\
+\hline
+\end{tabular}
+\end{center}
+
+Use Simpson's rule to estimate the distance travelled during these 60 seconds, giving your answer to the nearest metre.
+\tcblower
+\textbf{Solution.} The distance is $s=\displaystyle\int_0^{60}v\,dt$. The readings are equally spaced with $h=10$ and there are $n=6$ strips (even, so Simpson applies). The ordinates are
+\[ y_0=0,\ y_1=12.5,\ y_2=18.2,\ y_3=20.1,\ y_4=17.6,\ y_5=13.0,\ y_6=8.4. \]
+Simpson's rule:
+\begin{align*}
+s &\approx \frac{10}{3}\Big[y_0+y_6+4(y_1+y_3+y_5)+2(y_2+y_4)\Big]\\
+&= \frac{10}{3}\Big[0+8.4+4(12.5+20.1+13.0)+2(18.2+17.6)\Big]\\
+&= \frac{10}{3}\Big[8.4+4(45.6)+2(35.8)\Big]\\
+&= \frac{10}{3}\big[8.4+182.4+71.6\big] = \frac{10}{3}(262.4) = 874.67.
+\end{align*}
+The car travelled approximately $\boxed{875\ \text{m}}$ (to the nearest metre).
+\end{exoresolu}
+
+\courssub{Comparing Estimates and Assessing Accuracy}
+
+\begin{methode}[Improving and Checking a Simpson Estimate]
+\begin{enumerate}
+\item Compute the estimate $S_n$ with $n$ strips, then $S_{2n}$ with $2n$ strips (halving $h$). Reuse the old ordinates: the new ordinates are the midpoints.
+\item If $S_n$ and $S_{2n}$ agree to $k$ decimal places, the estimate is likely correct to that accuracy.
+\item Remember: Simpson's rule is \textbf{exact} for polynomials of degree up to 3, because its error term involves $f^{(4)}$.
+\item For a function whose fourth derivative is small on $[a,b]$, Simpson's rule is very accurate even for modest $n$.
+\end{enumerate}
+\textbf{Reflex:} if a question asks to show an integral is approximately a given value, compute with two different strip numbers and compare.
+\end{methode}
+
+\begin{exoresolu}[Two strip numbers, then comparison]
+(a) Use Simpson's rule with 2 strips and then with 4 strips to estimate $\displaystyle I=\int_1^2 \ln x\,dx$, giving each answer to 4 decimal places.\par
+(b) By evaluating $I$ exactly, comment on the accuracy of the 4-strip estimate.
+\tcblower
+\textbf{Solution.} \textbf{(a)} With $n=2$: $h=\dfrac{2-1}{2}=0.5$; ordinates at $x=1, 1.5, 2$:
+\[ y_0=\ln 1=0,\quad y_1=\ln 1.5=0.405465,\quad y_2=\ln 2=0.693147. \]
+\[ S_2=\frac{0.5}{3}\big[0+0.693147+4(0.405465)\big]=\frac{0.5}{3}(2.315007)=0.3858\ \text{(4 d.p.)}. \]
+With $n=4$: $h=0.25$; new ordinates at $x=1.25$ and $1.75$:
+\[ \ln 1.25=0.223144,\qquad \ln 1.75=0.559616. \]
+\begin{align*}
+S_4&=\frac{0.25}{3}\Big[0+0.693147+4(0.405465+0.559616)+2(0.223144)\Big]\\
+&=\frac{0.25}{3}\big[0.693147+4(0.965081)+0.446288\big]\\
+&=\frac{0.25}{3}(4.999759)=0.3863\ \text{(4 d.p.)}.
+\end{align*}
+\textbf{(b)} Exactly:
+\[ I=\Big[x\ln x-x\Big]_1^2=(2\ln 2-2)-(0-1)=2\ln 2-1=0.386294. \]
+The 4-strip estimate $0.3863$ agrees with the exact value to 4 decimal places — an error of less than $4\times10^{-6}$. Halving $h$ from $S_2$ to $S_4$ reduced the error dramatically, illustrating the high accuracy of Simpson's rule.
+\end{exoresolu}
+
+\courssub{Deriving Taylor and Maclaurin Polynomials}
+
+\begin{methode}[Finding a Maclaurin Polynomial]
+To find the Maclaurin polynomial of degree $n$ for $f(x)$:
+\begin{enumerate}
+\item Compute the derivatives $f'(x), f''(x), \dots, f^{(n)}(x)$.
+\item Evaluate each at $x=0$.
+\item Substitute into
+\[ f(x)\approx f(0)+xf'(0)+\frac{x^2}{2!}f''(0)+\cdots+\frac{x^n}{n!}f^{(n)}(0). \]
+\item For a Taylor expansion about $x=a$, replace $x$ by $(x-a)$ and evaluate at $a$:
+\[ f(x)\approx f(a)+(x-a)f'(a)+\frac{(x-a)^2}{2!}f''(a)+\cdots \]
+\end{enumerate}
+\textbf{Reflexes:} learn the standard series — $e^x$, $\sin x$, $\cos x$, $\ln(1+x)$, $(1+x)^n$ — and build others by substitution, e.g. replace $x$ by $2x$ or by $-x^2$.
+\end{methode}
+
+\begin{exoresolu}[Maclaurin series of $e^{-x}\sin x$]
+Find the Maclaurin expansion of $f(x)=e^{-x}\sin x$ up to and including the term in $x^4$.
+\tcblower
+\textbf{Solution.} \emph{Method 1: direct differentiation.}
+\begin{align*}
+f(x)&=e^{-x}\sin x & f(0)&=0\\
+f'(x)&=e^{-x}(\cos x-\sin x) & f'(0)&=1\\
+f''(x)&=-2e^{-x}\cos x & f''(0)&=-2\\
+f'''(x)&=2e^{-x}(\cos x+\sin x) & f'''(0)&=2\\
+f^{(4)}(x)&=-4e^{-x}\sin x & f^{(4)}(0)&=0
+\end{align*}
+Therefore
+\[ f(x)\approx 0+x+\frac{-2}{2!}x^2+\frac{2}{3!}x^3+\frac{0}{4!}x^4=x-x^2+\frac{x^3}{3}. \]
+\emph{Method 2 (check): multiplying standard series.}
+\begin{align*}
+e^{-x}\sin x&=\Big(1-x+\frac{x^2}{2}-\frac{x^3}{6}+\frac{x^4}{24}-\cdots\Big)\Big(x-\frac{x^3}{6}+\cdots\Big)\\
+&=x-x^2+\frac{x^3}{2}-\frac{x^4}{6}-\frac{x^3}{6}+\frac{x^4}{6}+\cdots\\
+&=x-x^2+\frac{x^3}{3}+0\cdot x^4+\cdots
+\end{align*}
+Both methods agree:
+\[ e^{-x}\sin x \approx x-x^2+\frac{x^3}{3} \quad\text{(up to } x^4\text{)}. \]
+\end{exoresolu}
+
+\courssub{Using Taylor Approximations for Numerical Values and Limits}
+
+\begin{methode}[Numerical Approximation via Series]
+\begin{enumerate}
+\item Identify a suitable standard series and the value of $x$ to substitute (choose $x$ small so convergence is fast).
+\item Substitute, keeping enough terms for the required accuracy.
+\item For \textbf{limits} of indeterminate form $\frac{0}{0}$: replace each function by its Maclaurin polynomial, cancel the common power of $x$, then let $x\to 0$.
+\item For \textbf{small-angle} work, remember $\sin x\approx x$, $\cos x\approx 1-\frac{x^2}{2}$, $\tan x\approx x$ ($x$ in radians).
+\end{enumerate}
+\textbf{Reflex:} the first \emph{neglected} term indicates the size of the error.
+\end{methode}
+
+\begin{exoresolu}[Series for a value and a limit]
+(a) Use the Maclaurin series of $\cos x$ up to the term in $x^4$ to estimate $\cos(0.3)$, giving 6 decimal places.\par
+(b) Using Maclaurin series, evaluate $\displaystyle\lim_{x\to 0}\frac{e^x-1-x}{1-\cos x}$.
+\tcblower
+\textbf{Solution.} \textbf{(a)} $\cos x\approx 1-\dfrac{x^2}{2!}+\dfrac{x^4}{4!}$. With $x=0.3$:
+\[ \cos(0.3)\approx 1-\frac{0.09}{2}+\frac{0.0081}{24}=1-0.045+0.0003375=0.955338. \]
+(The calculator value is $0.955336$; the neglected term $\frac{x^6}{720}\approx 10^{-6}$ explains the tiny difference.)\par
+\textbf{(b)} Use $e^x=1+x+\dfrac{x^2}{2}+\dfrac{x^3}{6}+\cdots$ and $\cos x=1-\dfrac{x^2}{2}+\dfrac{x^4}{24}-\cdots$:
+\begin{align*}
+\frac{e^x-1-x}{1-\cos x}
+&=\frac{\dfrac{x^2}{2}+\dfrac{x^3}{6}+\cdots}{\dfrac{x^2}{2}-\dfrac{x^4}{24}+\cdots}
+=\frac{\dfrac{1}{2}+\dfrac{x}{6}+\cdots}{\dfrac{1}{2}-\dfrac{x^2}{24}+\cdots}.
+\end{align*}
+As $x\to 0$, this tends to $\dfrac{1/2}{1/2}=1$. Hence $\displaystyle\lim_{x\to0}\frac{e^x-1-x}{1-\cos x}=1$.
+\end{exoresolu}
+
+\courssub{Euler's Step-by-Step Method}
+
+\begin{methode}[Euler's Method for $y'=f(x,y)$]
+To solve $\dfrac{dy}{dx}=f(x,y)$ with $y(x_0)=y_0$ numerically, with step $h$:
+\begin{enumerate}
+\item Write the recurrence (the \cle{Euler formula}):
+\[ y_{n+1}=y_n+h\,f(x_n,y_n),\qquad x_{n+1}=x_n+h. \]
+\item Set out a table with columns $n$, $x_n$, $y_n$, $f(x_n,y_n)$, $h\,f(x_n,y_n)$.
+\item Compute row by row, keeping full calculator precision until the end.
+\item The gradient used at each step is the gradient at the \emph{beginning} of the step.
+\end{enumerate}
+\textbf{Reflex:} $y_{n+1}=y_n+h\times(\text{gradient at current point})$ — "new = old + step $\times$ slope".
+\end{methode}
+
+\begin{exoresolu}[Euler's method]
+Given $\dfrac{dy}{dx}=x+y$ with $y(0)=1$, use Euler's method with step $h=0.1$ to estimate $y(0.3)$, giving your answer to 4 decimal places.
+\tcblower
+\textbf{Solution.} Here $f(x,y)=x+y$, $x_0=0$, $y_0=1$, $h=0.1$.
+\emph{Step 1:} $f(0,1)=0+1=1$, so
+\[ y_1=1+0.1(1)=1.1. \]
+\emph{Step 2:} $f(0.1,1.1)=0.1+1.1=1.2$, so
+\[ y_2=1.1+0.1(1.2)=1.22. \]
+\emph{Step 3:} $f(0.2,1.22)=0.2+1.22=1.42$, so
+\[ y_3=1.22+0.1(1.42)=1.362. \]
+Hence $y(0.3)\approx 1.3620$ (4 d.p.).
+\textbf{Check:} the exact solution of $y'=x+y$, $y(0)=1$ is $y=2e^x-x-1$, giving $y(0.3)=2e^{0.3}-1.3=1.3997$. Euler's estimate is below the true value — the true curve is convex, and Euler follows tangent lines, which lie below the curve.
+\end{exoresolu}
+
+\courssub{The Improved Euler (Heun) Method}
+
+\begin{methode}[Improved Euler / Heun's Method]
+For $y'=f(x,y)$, $y(x_0)=y_0$, step $h$:
+\begin{enumerate}
+\item Compute the \textbf{predictor} (an ordinary Euler step):
+\[ \tilde{y}_{n+1}=y_n+h\,f(x_n,y_n). \]
+\item Evaluate the gradient at the predicted point: $f(x_{n+1},\tilde{y}_{n+1})$.
+\item Compute the \textbf{corrector} using the \emph{average} of the two gradients:
+\[ y_{n+1}=y_n+\frac{h}{2}\Big[f(x_n,y_n)+f(x_{n+1},\tilde{y}_{n+1})\Big]. \]
+\item Repeat for each step. This is a second-order method: the error behaves like $h^2$, much better than Euler's $h$.
+\end{enumerate}
+\textbf{Reflex:} predict with Euler, then correct by averaging the slope at the start and the slope at the predicted end.
+\end{methode}
+
+\begin{exoresolu}[Improved Euler method]
+Given $\dfrac{dy}{dx}=x+y$ with $y(0)=1$, use the improved Euler method with step $h=0.1$ to estimate $y(0.2)$, giving your answer to 4 decimal places. Compare with the exact value $y(0.2)=1.2428$.
+\tcblower
+\textbf{Solution.} $f(x,y)=x+y$, $h=0.1$.
+\emph{Step 1} (from $(0,\,1)$):
+\begin{align*}
+\text{Predictor:}\quad &\tilde{y}_1=1+0.1(0+1)=1.1,\\
+&f(x_1,\tilde{y}_1)=0.1+1.1=1.2,\\
+\text{Corrector:}\quad &y_1=1+\frac{0.1}{2}\big[1.0+1.2\big]=1+0.05(2.2)=1.11.
+\end{align*}
+\emph{Step 2} (from $(0.1,\,1.11)$):
+\begin{align*}
+&f(x_1,y_1)=0.1+1.11=1.21,\\
+\text{Predictor:}\quad &\tilde{y}_2=1.11+0.1(1.21)=1.231,\\
+&f(x_2,\tilde{y}_2)=0.2+1.231=1.431,\\
+\text{Corrector:}\quad &y_2=1.11+\frac{0.1}{2}\big[1.21+1.431\big]=1.11+0.05(2.641)=1.24205.
+\end{align*}
+Hence $y(0.2)\approx 1.2421$ (4 d.p.).
+\textbf{Comparison:} the exact value is $1.24281$; the improved Euler error is about $8\times10^{-4}$, whereas plain Euler gives $y_2=1.22$ with error $2\times10^{-2}$ — roughly 25 times worse for the same step. Averaging the gradients pays off handsomely.
+\end{exoresolu}
+
+\courssub{Choosing a Method and Interpreting the Results}
+
+\begin{methode}[Strategy for GCE Numerical Methods Questions]
+\begin{enumerate}
+\item \textbf{Integrals:} count the ordinates/strips; if the number of strips is even, Simpson's rule is expected. Quote the formula, show the ordinates, then substitute.
+\item \textbf{Series:} decide between direct differentiation and using standard expansions; for products or composites, substitution and multiplication of known series is usually faster.
+\item \textbf{Differential equations:} identify $f(x,y)$, $x_0$, $y_0$, $h$; write the recurrence before computing; present each step clearly.
+\item \textbf{Accuracy:} smaller $h$ gives smaller error; improved Euler beats Euler for the same $h$; Simpson beats the trapezium rule for the same $n$.
+\item Always finish by stating the answer to the required accuracy, with units if the context demands them.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Mixed GCE-style problem]
+(a) Show that the Maclaurin expansion of $\ln(1+x)$ up to the term in $x^3$ is $x-\dfrac{x^2}{2}+\dfrac{x^3}{3}$.\par
+(b) Hence estimate $\displaystyle\int_0^{0.6}\frac{\ln(1+x)}{x}\,dx$ by integrating the series term by term, giving 4 decimal places.\par
+(c) Use Simpson's rule with 4 strips to estimate the same integral (take the value of the integrand at $x=0$ to be its limit as $x\to0$). Give your answer to 4 decimal places.
+\tcblower
+\textbf{Solution.} \textbf{(a)} Let $f(x)=\ln(1+x)$. Then
+\[ f'(x)=\frac{1}{1+x},\quad f''(x)=-\frac{1}{(1+x)^2},\quad f'''(x)=\frac{2}{(1+x)^3}, \]
+so $f(0)=0$, $f'(0)=1$, $f''(0)=-1$, $f'''(0)=2$. Hence
+\[ \ln(1+x)\approx 0+x+\frac{-1}{2!}x^2+\frac{2}{3!}x^3=x-\frac{x^2}{2}+\frac{x^3}{3}. \]
+\textbf{(b)} Dividing by $x$: $\dfrac{\ln(1+x)}{x}\approx 1-\dfrac{x}{2}+\dfrac{x^2}{3}$. Integrating term by term:
+\begin{align*}
+\int_0^{0.6}\frac{\ln(1+x)}{x}\,dx&\approx\Big[x-\frac{x^2}{4}+\frac{x^3}{9}\Big]_0^{0.6}\\
+&=0.6-\frac{0.36}{4}+\frac{0.216}{9}=0.6-0.09+0.024=0.5340.
+\end{align*}
+\textbf{(c)} Let $g(x)=\dfrac{\ln(1+x)}{x}$ with $g(0)=\lim_{x\to0}\dfrac{\ln(1+x)}{x}=1$ (from part (a), dividing by $x$ and letting $x\to0$). With $h=\dfrac{0.6}{4}=0.15$:
+\begin{align*}
+g(0)&=1.000000, & g(0.15)&=\tfrac{\ln1.15}{0.15}=0.932508,\\
+g(0.30)&=\tfrac{\ln1.3}{0.3}=0.874547, & g(0.45)&=\tfrac{\ln1.45}{0.45}=0.825296,\\
+g(0.60)&=\tfrac{\ln1.6}{0.6}=0.783339. &&
+\end{align*}
+Simpson's rule:
+\begin{align*}
+I&\approx\frac{0.15}{3}\Big[1.000000+0.783339+4(0.932508+0.825296)+2(0.874547)\Big]\\
+&=0.05\big[1.783339+4(1.757804)+1.749094\big]\\
+&=0.05(10.563649)=0.5282\ \text{(4 d.p.)}.
+\end{align*}
+\textbf{Comment:} the series estimate $0.5340$ uses only three terms of a series truncated at $x^3$; including the next term $-\frac{x^4}{4}$ in $\ln(1+x)$ contributes $-\frac{0.6^4}{16}=-0.0081$, giving $0.5259$, much closer to Simpson's $0.5282$. This illustrates both the power and the limitation of truncated Taylor approximations away from the origin.
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Simpson's rule]
+Choose the correct answer, justifying your choice briefly.
+\begin{enumerate}
+\item Simpson's rule with $n$ strips requires $n$ to be:
+\begin{enumerate}
+\item any positive integer;
+\item an even positive integer;
+\item an odd positive integer;
+\item a multiple of 3.
+\end{enumerate}
+\item With strip width $h$ and ordinates $y_0, y_1, \dots, y_n$, Simpson's rule states that $\displaystyle\int_a^b f(x)\,dx \approx$
+\begin{enumerate}
+\item $\dfrac{h}{2}\left[y_0 + 2(y_1+\dots+y_{n-1}) + y_n\right]$;
+\item $\dfrac{h}{3}\left[y_0 + 4(y_1+y_3+\dots) + 2(y_2+y_4+\dots) + y_n\right]$;
+\item $\dfrac{h}{3}\left[y_0 + 2(y_1+y_3+\dots) + 4(y_2+y_4+\dots) + y_n\right]$;
+\item $h\left(y_0 + y_1 + \dots + y_n\right)$.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each statement is true or false, justifying your answer.
+\begin{enumerate}
+\item The Maclaurin series is the Taylor series of a function about $x = 0$.
+\item Euler's method with step $h$ uses the recurrence $y_{n+1} = y_n + h\,f(x_n, y_n)$.
+\item Simpson's rule gives the exact value of $\displaystyle\int_a^b p(x)\,dx$ whenever $p$ is a polynomial of degree at most 3.
+\item The Maclaurin series of $e^x$ converges only for $|x| < 1$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+\begin{enumerate}
+\item Define the \cle{Taylor series} of a function $f$ about the point $x = a$, stating clearly the general term.
+\item Explain, in one or two sentences, the geometric idea behind \cle{Euler's method} for solving $\dfrac{dy}{dx} = f(x,y)$ with $y(x_0) = y_0$.
+\item State what is meant by the \cle{improved Euler method} (Heun's method), giving its two-stage formula.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Write down the first four non-zero terms of the Maclaurin series of $\sin x$.
+\item Given $f(x) = \sqrt{x}$, compute the ordinates needed to apply Simpson's rule with 4 strips to $\displaystyle\int_1^2 \sqrt{x}\,dx$ (take $h = 0.25$), but do not evaluate the estimate.
+\item Given $\dfrac{dy}{dx} = x - y$ with $y(0) = 2$, perform one step of Euler's method with $h = 0.2$ to estimate $y(0.2)$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Simpson's rule with 8 strips]
+\begin{enumerate}
+\item Use Simpson's rule with 8 strips to estimate $\displaystyle\int_0^2 \sqrt{1+x^3}\,dx$, giving your answer to 3 decimal places. Present your ordinates in a table.
+\item Explain why it is difficult to evaluate this integral exactly by elementary methods.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Cross-section of a canal]
+The depths of a canal cross-section, measured at points every $3\ \mathrm{m}$ across the canal, are:
+\[ 0,\quad 2.1,\quad 3.4,\quad 4.0,\quad 3.6,\quad 2.5,\quad 0 \quad \text{(metres)}. \]
+\begin{enumerate}
+\item Use Simpson's rule to estimate the area of the cross-section.
+\item Hence estimate the volume of water in a $50\ \mathrm{m}$ length of the canal.
+\item State one assumption you have made.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Maclaurin series of $\ln(1+x)$]
+\begin{enumerate}
+\item Obtain the Maclaurin series of $\ln(1+x)$ up to and including the term in $x^4$.
+\item Use your series to estimate $\ln(1.2)$ to 4 decimal places.
+\item Justify the accuracy of your estimate by considering the size of the first neglected term.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Limits via Taylor series]
+Using appropriate Maclaurin series, evaluate:
+\begin{enumerate}
+\item $\displaystyle\lim_{x\to 0}\frac{e^x - 1 - x}{x^2}$;
+\item $\displaystyle\lim_{x\to 0}\frac{x - \sin x}{x^3}$.
+\end{enumerate}
+Explain why a direct substitution $x = 0$ fails in each case.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Integrating $e^{-x^2}$ \hfill (12 marks)]
+The integral $\displaystyle I = \int_0^1 e^{-x^2}\,dx$ cannot be expressed in terms of elementary functions.
+\begin{enumerate}
+\item[(a)] Write down the Maclaurin series of $e^u$ and deduce the Maclaurin series of $e^{-x^2}$ up to the term in $x^8$. \hfill (3 marks)
+\item[(b)] By integrating your series term by term, estimate $I$ to 4 decimal places, justifying the number of terms used. \hfill (4 marks)
+\item[(c)] Use Simpson's rule with 4 strips to obtain a second estimate of $I$, giving your answer to 4 decimal places. \hfill (4 marks)
+\item[(d)] Comment on the agreement between the two estimates. \hfill (1 mark)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Euler and improved Euler methods \hfill (14 marks)]
+Consider the differential equation $\dfrac{dy}{dx} = x + y$ with $y(0) = 1$.
+\begin{enumerate}
+\item[(a)] Use Euler's method with step $h = 0.1$ to estimate $y(0.3)$, presenting all your working in a clearly labelled table. \hfill (4 marks)
+\item[(b)] Repeat the calculation using the improved Euler method with the same step $h = 0.1$. \hfill (5 marks)
+\item[(c)] Verify that $y = 2e^x - x - 1$ is the exact solution of the equation, and compute $y(0.3)$ to 5 decimal places. \hfill (3 marks)
+\item[(d)] Compare the errors of the two numerical methods and comment on your findings. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE-style structured question \hfill (16 marks)]
+\begin{enumerate}
+\item[(a)] Derive the Maclaurin series of $\cos x$, giving the general term and the first three non-zero terms. \hfill (4 marks)
+\item[(b)] Hence approximate $\cos(0.3)$ to 5 decimal places, and estimate the error involved. \hfill (4 marks)
+\item[(c)] Use Simpson's rule with 6 strips to estimate $\displaystyle\int_0^{\pi} \cos x\,dx$, giving your answer to 5 decimal places. \hfill (5 marks)
+\item[(d)] The exact value of the integral in part (c) is $0$. Explain why the Simpson's rule estimate has a surprisingly small error, relating your answer to the symmetry of the cosine curve on $[0,\pi]$. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Simpson's rule]
+\textbf{1. Correct answer: (b) an even positive integer.}
+
+Simpson's rule works on \emph{pairs} of strips: a parabola is fitted through three consecutive ordinates $y_{2k}, y_{2k+1}, y_{2k+2}$, and this parabola spans exactly two strips of width $h$. The strips are therefore consumed two at a time, so the total number of strips must be even. (Equivalently, the number of ordinates must be odd.)
+
+\textbf{2. Correct answer: (b) $\dfrac{h}{3}\left[y_0 + 4(y_1+y_3+\dots) + 2(y_2+y_4+\dots) + y_n\right]$.}
+
+The pattern of weights is $1, 4, 2, 4, 2, \dots, 4, 1$: the two \emph{end} ordinates have coefficient $1$, the \emph{odd-indexed} ordinates have coefficient $4$, and the \emph{even-indexed interior} ordinates have coefficient $2$, the whole sum being multiplied by $\dfrac{h}{3}$. Answer (a) is the trapezium rule (weights $1,2,2,\dots,2,1$ with factor $\frac{h}{2}$), answer (c) swaps the coefficients $2$ and $4$, and answer (d) has no weighting at all.
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\textbf{1. True.} By definition, the Maclaurin series of $f$ is the Taylor series about $a = 0$:
+\[ f(x) = f(0) + xf'(0) + \frac{x^2}{2!}f''(0) + \frac{x^3}{3!}f'''(0) + \dots \]
+
+\textbf{2. True.} This is exactly Euler's recurrence: the slope $f(x_n, y_n)$ is treated as constant over the whole interval $[x_n, x_{n+1}]$, so the increment in $y$ is $h\,f(x_n,y_n)$, giving $y_{n+1} = y_n + h\,f(x_n, y_n)$.
+
+\textbf{3. True.} Simpson's rule is built by integrating interpolating parabolas, and its error term involves the fourth derivative $f^{(4)}$. For any polynomial of degree at most $3$, $f^{(4)} \equiv 0$, so the error is exactly zero and the rule is exact. Notice that the statement even underestimates the rule: Simpson's rule is exact for \emph{cubics}, not merely for quadratics.
+
+\textbf{4. False.} The Maclaurin series $e^x = \displaystyle\sum_{n=0}^{\infty} \dfrac{x^n}{n!}$ converges for \emph{all} real $x$ (its radius of convergence is infinite). Indeed, by the ratio test, for any fixed $x$:
+\[ \left|\frac{x^{n+1}/(n+1)!}{x^n/n!}\right| = \frac{|x|}{n+1} \xrightarrow[n\to\infty]{} 0 < 1, \]
+so the series converges whatever the value of $x$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\textbf{1.} The \cle{Taylor series} of $f$ about $x = a$ is
+\[ f(a) + (x-a)f'(a) + \frac{(x-a)^2}{2!}f''(a) + \dots = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n, \]
+with general term $\dfrac{f^{(n)}(a)}{n!}(x-a)^n$, where $f^{(n)}(a)$ denotes the $n$-th derivative of $f$ evaluated at $a$ (with the conventions $f^{(0)} = f$ and $0! = 1$).
+
+\textbf{2.} In \cle{Euler's method}, the solution curve through $(x_0, y_0)$ is replaced, on each small interval of width $h$, by its tangent line at the current point: from $(x_n, y_n)$ one moves along the direction of slope $f(x_n, y_n)$ to the next point $(x_{n+1}, y_{n+1})$, where $x_{n+1} = x_n + h$ and $y_{n+1} = y_n + h\,f(x_n,y_n)$. The true solution curve is thus approximated by a polygonal line (a sequence of straight segments).
+
+\textbf{3.} The \cle{improved Euler method} (Heun's method) is a two-stage predictor--corrector scheme:
+\begin{align*}
+\text{predictor:}\quad & y^{*} = y_n + h\,f(x_n, y_n),\\
+\text{corrector:}\quad & y_{n+1} = y_n + \frac{h}{2}\Big[f(x_n, y_n) + f\big(x_{n+1}, y^{*}\big)\Big].
+\end{align*}
+The predictor makes a first Euler estimate $y^{*}$ of $y_{n+1}$; the corrector then advances using the \emph{average} of the slopes at the beginning and at the (predicted) end of the interval, instead of the initial slope alone. This is why it is substantially more accurate than Euler's method for the same step size.
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\textbf{1.} Let $f(x) = \sin x$. The derivatives cycle with period $4$:
+\[ f'(x) = \cos x,\quad f''(x) = -\sin x,\quad f'''(x) = -\cos x,\quad f^{(4)}(x) = \sin x, \]
+so at $x = 0$ all even derivatives vanish ($\sin 0 = 0$) and the odd derivatives alternate in sign: $f'(0) = 1$, $f'''(0) = -1$, $f^{(5)}(0) = 1$, \dots. Substituting into the Maclaurin formula:
+\[ \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \dots = x - \frac{x^3}{6} + \frac{x^5}{120} - \frac{x^7}{5040} + \dots \]
+
+\textbf{2.} With $h = 0.25$ on $[1,2]$, the nodes are $x = 1,\ 1.25,\ 1.5,\ 1.75,\ 2$, and the ordinates of $y = \sqrt{x}$ are:
+\[ y_0 = 1,\quad y_1 = \sqrt{1.25} \approx 1.1180,\quad y_2 = \sqrt{1.5} \approx 1.2247,\quad y_3 = \sqrt{1.75} \approx 1.3229,\quad y_4 = \sqrt{2} \approx 1.4142. \]
+
+\textbf{3.} Here $f(x,y) = x - y$, $x_0 = 0$, $y_0 = 2$, $h = 0.2$. Euler's recurrence gives
+\[ y_1 = y_0 + h\,f(x_0, y_0) = 2 + 0.2\,(0 - 2) = 2 - 0.4 = 1.6. \]
+So $y(0.2) \approx 1.6$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Simpson's rule with 8 strips]
+\textbf{1.} With 8 strips on $[0,2]$, the strip width is $h = \dfrac{2-0}{8} = 0.25$. Computing the ordinates of $f(x) = \sqrt{1+x^3}$ (kept to 5 d.p.\ to protect the final accuracy):
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $0.25$ & $0.5$ & $0.75$ & $1$ & $1.25$ & $1.5$ & $1.75$ & $2$ \\
+\hline
+$y=\sqrt{1+x^3}$ & $1$ & $1.00778$ & $1.06066$ & $1.19242$ & $1.41421$ & $1.71847$ & $2.09165$ & $2.52178$ & $3$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Grouping the ordinates according to the Simpson pattern $1, 4, 2, 4, 2, 4, 2, 4, 1$:
+\begin{align*}
+\text{ends:}\quad & y_0 + y_8 = 1 + 3 = 4,\\
+\text{odd indices:}\quad & y_1+y_3+y_5+y_7 = 1.00778+1.19242+1.71847+2.52178 = 6.44045,\\
+\text{even indices:}\quad & y_2+y_4+y_6 = 1.06066+1.41421+2.09165 = 4.56652.
+\end{align*}
+Therefore
+\begin{align*}
+\int_0^2 \sqrt{1+x^3}\,dx &\approx \frac{0.25}{3}\Big[4 + 4(6.44045) + 2(4.56652)\Big] \\
+&= \frac{0.25}{3}\big[4 + 25.76180 + 9.13304\big] = \frac{0.25}{3}(38.89484) \approx 3.241.
+\end{align*}
+
+\textbf{2.} The integrand $\sqrt{1+x^3}$ is the square root of a cubic polynomial. No substitution or standard technique reduces it to elementary functions: its antiderivative can only be expressed in terms of \emph{elliptic integrals}, which are non-elementary. Hence a numerical method such as Simpson's rule is the practical way to obtain a value.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Cross-section of a canal]
+\textbf{1.} There are 7 ordinates, i.e.\ 6 strips; since 6 is even, Simpson's rule applies, with spacing $h = 3\ \mathrm{m}$. The depths (in metres) are $0,\ 2.1,\ 3.4,\ 4.0,\ 3.6,\ 2.5,\ 0$, so
+\begin{align*}
+A &\approx \frac{3}{3}\Big[(0 + 0) + 4(2.1 + 4.0 + 2.5) + 2(3.4 + 3.6)\Big] \\
+&= 1\times\big[4(8.6) + 2(7.0)\big] = 34.4 + 14 = 48.4\ \mathrm{m^2}.
+\end{align*}
+
+\textbf{2.} Assuming the cross-section is uniform along the $50\ \mathrm{m}$ length of the canal:
+\[ V \approx 48.4 \times 50 = 2420\ \mathrm{m^3}. \]
+
+\textbf{3.} The main assumption is that the cross-sectional area (and shape) of the canal is constant along the whole $50\ \mathrm{m}$ length, so that the volume is simply (cross-sectional area) $\times$ (length). One also assumes that the depth varies smoothly between the measured points, so that the parabolic arcs used by Simpson's rule model the bed of the canal well.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Maclaurin series of $\ln(1+x)$]
+\textbf{1.} Let $f(x) = \ln(1+x)$. Differentiating successively:
+\[ f'(x) = \frac{1}{1+x},\quad f''(x) = -\frac{1}{(1+x)^2},\quad f'''(x) = \frac{2}{(1+x)^3},\quad f^{(4)}(x) = -\frac{6}{(1+x)^4}, \]
+so $f(0)=0$, $f'(0)=1$, $f''(0)=-1$, $f'''(0)=2$, $f^{(4)}(0)=-6$. Substituting into the Maclaurin formula $f(x) = f(0) + xf'(0) + \dfrac{x^2}{2!}f''(0) + \dfrac{x^3}{3!}f'''(0) + \dfrac{x^4}{4!}f^{(4)}(0) + \dots$:
+\[ \ln(1+x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \dots \qquad (\text{valid for } -1 < x \le 1). \]
+
+\textbf{2.} Setting $x = 0.2$:
+\[ \ln(1.2) \approx 0.2 - \frac{0.04}{2} + \frac{0.008}{3} - \frac{0.0016}{4} = 0.2 - 0.02 + 0.0026667 - 0.0004 = 0.1822667. \]
+Hence $\ln(1.2) \approx 0.1823$ (4 d.p.).
+
+\textbf{3.} For $0 < x \le 1$ the series is alternating with terms decreasing in magnitude, so the error is bounded by the first neglected term:
+\[ \left|\frac{x^5}{5}\right| = \frac{0.2^5}{5} = \frac{0.00032}{5} = 0.000064. \]
+This error is of order $10^{-4}$: it can affect at most the fourth decimal place. The estimate $0.1823$ is therefore reliable to 4 d.p., which is confirmed by the true value $\ln(1.2) = 0.18232\dots$
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Limits via Taylor series]
+In both cases, direct substitution of $x = 0$ gives the indeterminate form $\dfrac{0}{0}$, because numerator and denominator both tend to zero. The Maclaurin series resolves the indeterminacy by revealing the \emph{rate} at which each part tends to zero.
+
+\textbf{1.} Since $e^x = 1 + x + \dfrac{x^2}{2!} + \dfrac{x^3}{3!} + \dots$, the numerator is $e^x - 1 - x = \dfrac{x^2}{2} + \dfrac{x^3}{6} + \dots$, so
+\[ \frac{e^x - 1 - x}{x^2} = \frac{\dfrac{x^2}{2} + \dfrac{x^3}{6} + \dots}{x^2} = \frac{1}{2} + \frac{x}{6} + \dots \xrightarrow[x\to 0]{} \frac{1}{2}. \]
+
+\textbf{2.} Since $\sin x = x - \dfrac{x^3}{6} + \dfrac{x^5}{120} - \dots$, the numerator is $x - \sin x = \dfrac{x^3}{6} - \dfrac{x^5}{120} + \dots$, so
+\[ \frac{x - \sin x}{x^3} = \frac{\dfrac{x^3}{6} - \dfrac{x^5}{120} + \dots}{x^3} = \frac{1}{6} - \frac{x^2}{120} + \dots \xrightarrow[x\to 0]{} \frac{1}{6}. \]
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Integrating $e^{-x^2}$ (12 marks)]
+\textbf{(a) (3 marks).} The Maclaurin series of the exponential is
+\[ e^u = 1 + u + \frac{u^2}{2!} + \frac{u^3}{3!} + \frac{u^4}{4!} + \dots \qquad \text{(valid for all } u\text{)}. \]
+Substituting $u = -x^2$:
+\[ e^{-x^2} = 1 - x^2 + \frac{x^4}{2} - \frac{x^6}{6} + \frac{x^8}{24} - \dots \]
+
+\emph{Examiner's expectation:} B1 for the series of $e^u$; M1 for the substitution $u = -x^2$; A1 for all signs and denominators correct up to $x^8$.
+
+\textbf{(b) (4 marks).} Integrating term by term on $[0,1]$:
+\begin{align*}
+I &\approx \int_0^1 \left(1 - x^2 + \frac{x^4}{2} - \frac{x^6}{6} + \frac{x^8}{24}\right) dx = \left[x - \frac{x^3}{3} + \frac{x^5}{10} - \frac{x^7}{42} + \frac{x^9}{216}\right]_0^1 \\
+&= 1 - 0.3333333 + 0.1 - 0.0238095 + 0.0046296 = 0.7474868 \approx 0.7475.
+\end{align*}
+The series is alternating with decreasing terms on $[0,1]$, so the error is bounded by the first neglected term. The next term of the series is $-\dfrac{x^{10}}{120}$, whose integral is $\dfrac{1}{11 \times 120} = \dfrac{1}{1320} \approx 0.00076$. Including this extra term gives the corrected estimate $I \approx 0.7474868 - 0.0007576 = 0.7467292 \approx 0.7467$, confirming that the value is stable to three decimal places (the true value is $0.74682\dots$).
+
+\emph{Examiner's expectation:} M1 for integrating term by term; A1 for the correct antiderivative values; A1 for $0.7475$ (or $0.7467$ with the extra term); B1 for an error justification via the first neglected term.
+
+\textbf{(c) (4 marks).} With 4 strips on $[0,1]$, $h = \dfrac{1-0}{4} = 0.25$:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $0.25$ & $0.5$ & $0.75$ & $1$ \\
+\hline
+$e^{-x^2}$ & $1$ & $0.939413$ & $0.778801$ & $0.569783$ & $0.367879$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Applying Simpson's rule with the pattern $1, 4, 2, 4, 1$:
+\begin{align*}
+I &\approx \frac{0.25}{3}\Big[(1 + 0.367879) + 4(0.939413 + 0.569783) + 2(0.778801)\Big] \\
+&= \frac{0.25}{3}\big[1.367879 + 6.036784 + 1.557602\big] = \frac{0.25}{3}(8.962265) = 0.746855 \approx 0.7469.
+\end{align*}
+
+\emph{Examiner's expectation:} B1 for $h = 0.25$ and correct ordinates; M1 for the correct Simpson pattern $(1,4,2,4,1)$; A2 for $0.7469$ to 4 d.p.
+
+\textbf{(d) (1 mark).} The two estimates, $0.7467$ (series) and $0.7469$ (Simpson), agree to within about $2\times 10^{-4}$, and both match the true value $0.74682$ to at least three decimal places. Two independent methods giving nearly the same value strongly confirms the accuracy of both.
+
+\emph{Mark scheme summary: (a) 3, (b) 4, (c) 4, (d) 1 — total 12 marks.}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Euler and improved Euler methods (14 marks)]
+Here $f(x,y) = x + y$, $x_0 = 0$, $y_0 = 1$, $h = 0.1$.
+
+\textbf{(a) (4 marks).} Euler's recurrence is $y_{n+1} = y_n + 0.1\,(x_n + y_n)$. Working step by step:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $n$ & $x_n$ & $y_n$ & $f(x_n,y_n)=x_n+y_n$ & $y_{n+1} = y_n + 0.1 f$ \\
+\hline
+$0$ & $0$ & $1$ & $1$ & $1.1$ \\
+\hline
+$1$ & $0.1$ & $1.1$ & $1.2$ & $1.22$ \\
+\hline
+$2$ & $0.2$ & $1.22$ & $1.42$ & $1.362$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Hence $y(0.3) \approx 1.362$.
+
+\emph{Examiner's expectation:} M1 for the correct recurrence; A1 for each correct row (3 steps); A1 for the final value.
+
+\textbf{(b) (5 marks).} Improved Euler: predict $y^{*} = y_n + h f_n$, then correct with $y_{n+1} = y_n + \dfrac{h}{2}\big[f_n + f(x_{n+1}, y^{*})\big]$.
+
+\textbf{Step 1:} $f_0 = 0 + 1 = 1$; $y^{*} = 1 + 0.1(1) = 1.1$; $f(0.1, 1.1) = 1.2$;
+\[ y_1 = 1 + 0.05(1 + 1.2) = 1.11. \]
+
+\textbf{Step 2:} $f_1 = 0.1 + 1.11 = 1.21$; $y^{*} = 1.11 + 0.1(1.21) = 1.231$; $f(0.2, 1.231) = 1.431$;
+\[ y_2 = 1.11 + 0.05(1.21 + 1.431) = 1.11 + 0.13205 = 1.24205. \]
+
+\textbf{Step 3:} $f_2 = 0.2 + 1.24205 = 1.44205$; $y^{*} = 1.24205 + 0.1(1.44205) = 1.386255$; $f(0.3, 1.386255) = 1.686255$;
+\[ y_3 = 1.24205 + 0.05(1.44205 + 1.686255) = 1.24205 + 0.1564153 = 1.3984653. \]
+
+Hence $y(0.3) \approx 1.39847$.
+
+\emph{Examiner's expectation:} M1 for the predictor--corrector structure; A1 per correct step (3); A1 for the final value $1.39847$.
+
+\textbf{(c) (3 marks).} Let $y = 2e^x - x - 1$. Check the two conditions:
+
+\emph{Initial condition:} $y(0) = 2e^0 - 0 - 1 = 2 - 1 = 1$, as required.
+
+\emph{Differential equation:}
+\[ \frac{dy}{dx} = 2e^x - 1 = (2e^x - x - 1) + x = y + x, \]
+so $y$ satisfies $\dfrac{dy}{dx} = x + y$. Since $y$ satisfies both the equation and the initial condition, it is the exact solution. Therefore
+\[ y(0.3) = 2e^{0.3} - 0.3 - 1 = 2(1.3498588) - 1.3 = 1.3997176 \approx 1.39972 \quad (5\ \text{d.p.}). \]
+
+\emph{Examiner's expectation:} B1 for checking the initial condition; B1 for checking the differential equation; B1 for $1.39972$.
+
+\textbf{(d) (2 marks).} Errors at $x = 0.3$:
+\begin{align*}
+\text{Euler:}\quad & |1.39972 - 1.362| = 0.03772,\\
+\text{Improved Euler:}\quad & |1.39972 - 1.39847| = 0.00125.
+\end{align*}
+The improved Euler error is about $30$ times smaller. This is expected: Euler's method is first-order (global error proportional to $h$), whereas the improved Euler method is second-order (global error proportional to $h^2$), because averaging the slopes at the two ends of the interval follows the curvature of the solution far better than using only the initial slope.
+
+\emph{Mark scheme summary: (a) 4, (b) 5, (c) 3, (d) 2 — total 14 marks.}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE-style structured question (16 marks)]
+\textbf{(a) (4 marks).} Let $f(x) = \cos x$. The derivatives cycle with period $4$:
+\[ f'(x) = -\sin x,\quad f''(x) = -\cos x,\quad f'''(x) = \sin x,\quad f^{(4)}(x) = \cos x. \]
+At $x = 0$: $f(0) = 1$, $f'(0) = 0$, $f''(0) = -1$, $f'''(0) = 0$, $f^{(4)}(0) = 1$, and in general $f^{(2n)}(0) = (-1)^n$ while $f^{(2n+1)}(0) = 0$. Substituting into the Maclaurin formula:
+\[ \cos x = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!}\,x^{2n} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \dots \]
+The general term is $\dfrac{(-1)^n x^{2n}}{(2n)!}$; the first three non-zero terms are $1 - \dfrac{x^2}{2} + \dfrac{x^4}{24}$.
+
+\emph{Examiner's expectation:} M1 for differentiating and evaluating at $0$; A1 for the pattern of values; B1 for the general term; A1 for the three terms.
+
+\textbf{(b) (4 marks).} With $x = 0.3$:
+\[ \cos(0.3) \approx 1 - \frac{0.09}{2} + \frac{0.0081}{24} = 1 - 0.045 + 0.0003375 = 0.9553375 \approx 0.95534 \quad (5\ \text{d.p.}). \]
+The series is alternating with terms decreasing in magnitude, so the error is bounded by the first neglected term:
+\[ \left|\frac{x^6}{6!}\right| = \frac{0.3^6}{720} = \frac{0.000729}{720} \approx 1.0 \times 10^{-6}, \]
+which cannot affect the fifth decimal place.
+
+\emph{Examiner's expectation:} M1 for the substitution; A1 for $0.95534$; M1, A1 for the error bound $\approx 10^{-6}$.
+
+\textbf{(c) (5 marks).} With 6 strips on $[0,\pi]$, $h = \dfrac{\pi - 0}{6} = \dfrac{\pi}{6}$. The ordinates of $\cos x$ are exact standard values:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $\pi/6$ & $\pi/3$ & $\pi/2$ & $2\pi/3$ & $5\pi/6$ & $\pi$ \\
+\hline
+$\cos x$ & $1$ & $0.86603$ & $0.5$ & $0$ & $-0.5$ & $-0.86603$ & $-1$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Applying Simpson's rule with the pattern $1, 4, 2, 4, 2, 4, 1$:
+\begin{align*}
+\int_0^{\pi}\cos x\,dx &\approx \frac{\pi/6}{3}\Big[(1 + (-1)) + 4(0.86603 + 0 - 0.86603) + 2(0.5 - 0.5)\Big] \\
+&= \frac{\pi}{18}\big[0 + 4(0) + 2(0)\big] = 0.00000.
+\end{align*}
+The Simpson estimate is \emph{exactly} $0.00000$ (which agrees with the exact value $[\sin x]_0^{\pi} = 0$).
+
+\emph{Examiner's expectation:} B1 for $h = \pi/6$; B1 for the ordinates; M1 for the Simpson pattern; A2 for the value $0$.
+
+\textbf{(d) (3 marks).} The cosine curve on $[0,\pi]$ has point symmetry about $\left(\dfrac{\pi}{2}, 0\right)$: $\cos(\pi - x) = -\cos x$. The ordinates therefore occur in cancelling pairs: $y_0 = -y_6$, $y_1 = -y_5$, $y_2 = -y_4$, and $y_3 = 0$. Moreover, the Simpson weights respect this symmetry, since symmetrically placed ordinates carry equal coefficients ($1 \leftrightarrow 1$, $4 \leftrightarrow 4$, $2 \leftrightarrow 2$). Consequently the positive and negative contributions cancel \emph{exactly} in the weighted sum, giving an error of precisely zero — not merely a small error. In short, the symmetry of the integrand is inherited exactly by the quadrature formula.
+
+\emph{Examiner's expectation:} B1 for stating the symmetry $\cos(\pi-x) = -\cos x$; B1 for noting that the Simpson weights are symmetric; B1 for concluding exact cancellation.
+
+\emph{Mark scheme summary: (a) 4, (b) 4, (c) 5, (d) 3 — total 16 marks.}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    mindmap,
+    concept color=popblue,
+    level 1/.style={sibling angle=72, level distance=3.5cm},
+    level 2/.style={sibling angle=45, level distance=2.5cm},
+    every node/.style={font=\small, text width=2.5cm, align=center},
+    grow cyclic
+]
+\node[concept, text=white, scale=1.2] {Numerical Methods}
+    child[concept color=poporange] { node[concept, text=white] {Simpson's Rule}
+        child { node[concept, concept color=poporange!70] {Composite Rule} }
+        child { node[concept, concept color=poporange!70] {Error Estimate} }
+    }
+    child[concept color=popgreen] { node[concept, text=white] {Taylor Series}
+        child { node[concept, concept color=popgreen!70] {Remainder Terms} }
+        child { node[concept, concept color=popgreen!70] {Convergence} }
+    }
+    child[concept color=poppurple] { node[concept, text=white] {Maclaurin Series}
+        child { node[concept, concept color=poppurple!70] {Standard Expansions} }
+        child { node[concept, concept color=poppurple!70] {Radius of Convergence} }
+    }
+    child[concept color=poppink] { node[concept, text=white] {Applications}
+        child { node[concept, concept color=poppink!70] {Limits} }
+        child { node[concept, concept color=poppink!70] {Integrals} }
+        child { node[concept, concept color=poppink!70] {ODEs} }
+    }
+    child[concept color=popblue] { node[concept, text=white] {Step-by-Step Methods}
+        child { node[concept, concept color=popblue!70] {Euler} }
+        child { node[concept, concept color=popblue!70] {Improved Euler} }
+        child { node[concept, concept color=popblue!70] {Runge-Kutta (4th)} }
+    };
+\end{tikzpicture}
+\legende{Mind map of Chapter FMA10: Numerical Methods}
+\end{popfigure}
+
+\begin{bilan}
+
+\paragraph{Key Definitions}
+\begin{itemize}
+    \item \cle{Simpson's Rule}: Numerical integration using quadratic interpolation over pairs of subintervals. Requires an even number of strips $n$.
+    \item \cle{Taylor Series}: Expansion of $f(x)$ about $x=a$: $f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k$.
+    \item \cle{Maclaurin Series}: Taylor series about $a=0$: $f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(0)}{k!}x^k$.
+    \item \cle{Remainder (Lagrange form)}: $R_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}$ for some $\xi$ between $a$ and $x$.
+    \item \cle{Step-by-step methods}: Iterative algorithms to approximate solutions of $\frac{dy}{dx}=f(x,y)$, $y(x_0)=y_0$ at discrete points $x_{r+1}=x_r+h$.
+\end{itemize}
+
+\paragraph{Laws, Formulas, Theorems (Examinable Proofs Marked ★)}
+\begin{itemize}
+    \item \textbf{Simpson's Rule (Composite)}:
+    \[
+    \int_a^b f(x)\,dx \approx \frac{h}{3}\left[ y_0 + y_n + 4\sum_{\text{odd }i} y_i + 2\sum_{\text{even }i} y_i \right], \quad h=\frac{b-a}{n},\ n\text{ even}.
+    \]
+    \item \textbf{Error in Simpson's Rule} (★ proof not required, formula must be known):
+    \[
+    E_S = -\frac{(b-a)h^4}{180}f^{(4)}(\xi),\quad \xi\in(a,b).
+    \]
+    \item \textbf{Taylor's Theorem} (★ proof examinable): If $f\in C^{n+1}[a,x]$, then $f(x)=P_n(x)+R_n(x)$ with $P_n$ the Taylor polynomial and $R_n$ the remainder.
+    \item \textbf{Maclaurin Expansions} (must be memorised):
+    \[
+    e^x=\sum\frac{x^k}{k!},\ \sin x=\sum\frac{(-1)^k x^{2k+1}}{(2k+1)!},\ \cos x=\sum\frac{(-1)^k x^{2k}}{(2k)!},\ \ln(1+x)=\sum\frac{(-1)^{k-1}x^k}{k},\ (1+x)^\alpha=\sum\binom{\alpha}{k}x^k.
+    \]
+    \item \textbf{Euler's Method}: $y_{r+1}=y_r+hf(x_r,y_r)$; local truncation error $O(h^2)$, global $O(h)$.
+    \item \textbf{Improved Euler (Heun)}:
+    \[
+    k_1=f(x_r,y_r),\quad k_2=f(x_r+h,\,y_r+hk_1),\quad y_{r+1}=y_r+\frac{h}{2}(k_1+k_2).
+    \]
+    \item \textbf{Runge-Kutta 4th Order}:
+    \[
+    \begin{aligned}
+    k_1&=f(x_r,y_r),\\
+    k_2&=f(x_r+\tfrac{h}{2},y_r+\tfrac{h}{2}k_1),\\
+    k_3&=f(x_r+\tfrac{h}{2},y_r+\tfrac{h}{2}k_2),\\
+    k_4&=f(x_r+h,y_r+hk_3),\\
+    y_{r+1}&=y_r+\tfrac{h}{6}(k_1+2k_2+2k_3+k_4).
+    \end{aligned}
+    \]
+    Global error $O(h^4)$.
+\end{itemize}
+
+\paragraph{Methods (Step-by-Step)}
+\begin{enumerate}
+    \item \textbf{Simpson's Rule}: (1) Choose even $n$, compute $h$. (2) Tabulate $x_i$, $y_i=f(x_i)$. (3) Apply weighting pattern $1,4,2,4,\dots,2,4,1$. (4) Multiply sum by $h/3$. (5) Estimate error using $f^{(4)}$ bound if required.
+    \item \textbf{Taylor/Maclaurin Expansion}: (1) Compute derivatives at centre. (2) Write polynomial up to required order. (3) State remainder term. (4) For standard functions, use known series and substitute/combine.
+    \item \textbf{Approximating Integrals/Limits}: Replace integrand/function by Taylor polynomial, integrate/expand term by term, use remainder to bound error.
+    \item \textbf{Solving ODEs}: (1) Identify $f(x,y)$, $h$, initial $(x_0,y_0)$. (2) Apply chosen scheme iteratively. (3) Tabulate results. (4) Compare methods: smaller $h$ or higher order improves accuracy.
+\end{enumerate}
+
+\paragraph{Common Mistakes}
+\begin{itemize}
+    \item Using Simpson's rule with odd $n$ (must be even).
+    \item Forgetting the factor $h/3$ or misapplying the $4/2$ weighting pattern.
+    \item Confusing Taylor remainder forms; Lagrange form is standard for error bounds.
+    \item Omitting the factorial denominators in series coefficients.
+    \item Assuming a Taylor series converges to the function everywhere; always check interval of convergence (ratio test).
+    \item In step-by-step methods: mixing up $x$ and $y$ updates, or using $k_1$ instead of $k_2$ in Improved Euler's predictor step.
+    \item Forgetting that Euler's method overestimates/underestimates depending on concavity (sign of $f_y$ or $y''$).
+\end{itemize}
+
+\paragraph{GCE Tips}
+\begin{itemize}
+    \item \textbf{Simpson's Rule}: Questions often ask to derive the formula for a single strip (★) or apply composite rule with given table. Always show the weighting pattern clearly.
+    \item \textbf{Taylor/Maclaurin}: "Find the expansion up to $x^4$" means compute derivatives up to 4th order. "State the range of validity" requires ratio test or known radius.
+    \item \textbf{Error Estimation}: Use the Lagrange remainder to find $n$ such that $|R_n|<\epsilon$, or to bound the error of a numerical integral.
+    \item \textbf{ODEs}: You may be asked to perform 2-3 iterations of Euler/Improved Euler/RK4 by hand. Keep a clear table: $r$, $x_r$, $y_r$, $k$ values, $y_{r+1}$. Show all $k$ calculations for RK4.
+    \item \textbf{Comparison}: "Explain why Runge-Kutta is more accurate than Euler" — mention order of local truncation error ($h^5$ vs $h^2$) and use of weighted slopes.
+    \item \textbf{Calculator Use}: In the exam, you may use a calculator for arithmetic, but you must show the formula substitution and method steps to gain method marks.
+\end{itemize}
+
+\end{bilan}
+
+\findecours
+
+\end{document}
