@@ -284,7 +284,106 @@ HEADER = r"""\newcommand{\DOCMATIERE}{Test}\newcommand{\DOCNIVEAU}{Upper Sixth}\
 """
 
 
+_BR = r"(?:\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})"
+_PROT = re.compile("|".join([
+    r"\\begin\{(tikzpicture|axis|align\*?|equation\*?|gather\*?|multline\*?|pmatrix|bmatrix|cases|eqnarray\*?|displaymath|math)\}.*?\\end\{\1\}",
+    r"\$\$.*?\$\$", r"\$[^$]*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
+    r"\\ce" + _BR,
+    r"\\(?:SI|si|num|qty|ang)" + _BR + "(?:" + _BR + ")?",
+    r"\\(?:ensuremath|mathrm|mathbf|mathit|label|ref|legende|tikzmarknode)" + _BR,
+    r"\\[_^%&#$]", r"%[^\n]*",
+]), re.S)
+_SUP = re.compile(r"\^(\{[^{}]*\}|[0-9]+[+\-]?|[+\-]|[A-Za-z](?![A-Za-z]))")
+_GREEK = re.compile(r"\\(Delta|Lambda|Omega|Sigma|Pi|Phi|Psi|Gamma|Theta|alpha|beta|gamma|delta|epsilon|theta|lambda|mu|nu|pi|rho|sigma|tau|phi|omega|rightarrow|leftarrow|rightleftharpoons|approx|times|pm|leq|geq|neq|infty)(?![A-Za-z])((?:_\{[^{}]*\}|_[A-Za-z0-9]|\^\{[^{}]*\}|\^[A-Za-z0-9])?)")
+_SUB = re.compile(r"(?<=[A-Za-z0-9)\]])_(\{[^{}]*\}|[0-9]+)")
+
+
+def _text_scripts(seg):
+    seg = _GREEK.sub(lambda m: "$\\" + m.group(1) + m.group(2) + "$", seg)
+    seg = _SUP.sub(lambda m: "$^{" + m.group(1).strip("{}") + "}$", seg)
+    return _SUB.sub(lambda m: "$_{" + m.group(1).strip("{}") + "}$", seg)
+
+
+def text_scripts_fix(body):
+    """^ et _ hors mode math (texte courant, cellules de tableau) -> exposants/indices en math."""
+    out, pos = [], 0
+    for m in _PROT.finditer(body):
+        out.append(_text_scripts(body[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(_text_scripts(body[pos:]))
+    return "".join(out)
+
+
+def _ce_math(inner):
+    """Version « math romain » d'une formule chimique que mhchem refuse."""
+    s = inner.replace("$", "")
+    s = s.replace("<=>", r"\rightleftharpoons ").replace("->", r"\rightarrow ").replace("<-", r"\leftarrow ")
+    s = re.sub(r"\^(\d*[+\-])", r"^{\1}", s)
+    s = re.sub(r"(?<=[A-Za-z\)\]])(\d+)(?![^{]*\})", r"_{\1}", s)
+    s = re.sub(r"(?<=[A-Za-z\)\]])([+\-])(?=[\s\)\]}(]|$)", r"^{\1}", s)
+    s = s.replace("&", "}}&\\ensuremath{\\mathrm{")
+    return "\\ensuremath{\\mathrm{" + s + "}}"
+
+
+def ce_fix(body):
+    """mhchem : caractères/constructions que \\ce{} refuse."""
+    def one(m):
+        s = m.group(0)
+        for x, y in (("·", "."), ("→", "->"), ("⇌", "<=>"), ("⇄", "<=>"), ("−", "-"), ("–", "-"), ("’", "'"), ("°", "^\\circ ")):
+            s = s.replace(x, y)
+        s = re.sub(r"\s<\s", " $<$ ", s)
+        inner = s[4:-1]
+        if re.search(r"\\|\$|<-|\bF\d?B", inner):
+            return _ce_math(inner)
+        arrow = "->" in inner or "<=>" in inner or "<-" in inner
+        if arrow:
+            return re.sub(r"(?<=[A-Za-z\)])'", lambda _k: "$^\\prime$", s)
+        if ("_{" in inner or "'" in inner) and "\\" not in inner and "$" not in inner:
+            return "\\ensuremath{\\mathrm{" + inner.replace("'", "^{\\prime}") + "}}"
+        return s
+    return re.sub(r"\\ce" + _BR, one, body)
+
+
+def repair_damage(body):
+    """Répare les dégâts d'anciennes règles : $^{..}$ à l'intérieur d'un contexte déjà math."""
+    def strip(m):
+        return re.sub(r"\$([\^_]\{[^{}]*\})\$", r"\1", m.group(0))
+    return re.sub(r"\\(?:ensuremath|mathrm|SI|si)" + _BR + "(?:" + _BR + ")?", strip, body)
+
+
+def us_fix(body):
+    """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
+    body = repair_damage(body)
+    body = ce_fix(body)
+    body = text_scripts_fix(body)
+    body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
+    body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
+    body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info)\}",
+                  lambda m: "\\" + m.group(1) + ("{aretenir}" if m.group(2) in ("examtip", "examtips", "tip", "keypoint", "keypoints", "summary") else "{exemplebox}" if m.group(2) in ("example", "worked") else "{attention}"), body)
+    body = re.sub(r"\\\]\^(\{[^{}]*\}|\d+[+\-]?)", lambda m: "]$^{" + m.group(1).strip("{}") + "}$", body)
+    body = re.sub(r"^[ \t]*\\courssubtitle\{[^\n]*\}[ \t]*\n", "", body, flags=re.M)
+    body = body.replace("\\courssubtitle", "\\courssub")
+    body = re.sub(r"(Stealth|Latex|To|Triangle)\[([^\]\}\n]*)\}\]", r"\1[\2]}", body)
+    body = re.sub(r"(pop[A-Za-z]+)\s+/", r"\1/", body)
+    body = re.sub(r"/\s+(pop[A-Za-z]+)", r"/\1", body)
+    body = re.sub(r"\{(pop[A-Za-z]+)\s+\}", r"{\1}", body)
+
+    def _wrap(m):
+        env, head, inner = m.group(1), m.group(2) or "", m.group(3)
+        lst = "enumerate" if env == "methode" else "itemize"
+        return f"\\begin{{{env}}}{head}\n\\begin{{{lst}}}\n{inner.rstrip()}\n\\end{{{lst}}}\n\\end{{{env}}}"
+    body = re.sub(r"\\begin\{(methode|aretenir|attention|propriete|definition|exemplebox|experience|savaistu)\}(\[[^\n]*\])?[ \t]*\n(\s*\\item\b.*?)\\end\{\1\}",
+                  _wrap, body, flags=re.S)
+    return body
+
+
 def autofix(body):
+    body = us_fix(body)
+    return _autofix(body)
+
+
+def _autofix(body):
     """Corrections mécaniques sûres, appliquées avant compilation (sans modèle).
     - virgule décimale dans une dimension TikZ : 0,55cm -> 0.55cm, aspect=2,6 -> 2.6
     - coordonnée calculée non protégée dans un \\foreach : (\\x,\\y) déjà sûr, rien à faire
@@ -820,6 +919,22 @@ def plan_summary(plan):
     return "\n".join(f"{i+1}. {s['titre']}" for i, s in enumerate(plan["sections"]))
 
 
+def degenerate(t):
+    """Détecte une sortie de modèle dégénérée (charabia, boucle de répétition, autre alphabet)."""
+    if len(t.strip()) < 500:
+        return "trop court"
+    if re.search(r"[\u0400-\u04FF\u0590-\u06FF\u3000-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]", t):
+        return "caractères d'un autre alphabet"
+    if re.search(r"(?:\.[a-z]){6}", t):
+        return "charabia"
+    lines = [l.strip() for l in t.splitlines() if len(l.strip()) > 3]
+    if len(lines) > 30 and len(set(lines)) < 0.6 * len(lines):
+        return "répétitions"
+    if t.count("\\begin{") + 5 < t.count("\\end{") or t.count("\\end{") + 5 < t.count("\\begin{"):
+        return "environnements déséquilibrés"
+    return None
+
+
 def write_block(L, plan, d, name, instruction, what):
     """Rédige → relit → compile un bloc. Cache : name.tex (brut), name.rev.tex, name.ok.tex."""
     ok_f = d / f"{name}.ok.tex"
@@ -829,8 +944,18 @@ def write_block(L, plan, d, name, instruction, what):
     ctx = lesson_brief(L) + "\n\nGENERAL PLAN OF THE CHAPTER:\n" + plan_summary(plan)
     if not raw_f.exists():
         log(f"[{L['id']}] rédaction {what}")
-        raw = sanitize(llm([{"role": "system", "content": SYSTEM},
-                            {"role": "user", "content": ctx + "\n\n" + instruction}], WRITER_MODELS, max_tokens=20000))
+        for attempt in range(4):
+            raw = sanitize(llm([{"role": "system", "content": SYSTEM},
+                                {"role": "user", "content": ctx + "\n\n" + instruction}],
+                               WRITER_MODELS[attempt % 2:] + WRITER_MODELS[:attempt % 2], max_tokens=20000,
+                               temperature=0.6 if attempt == 0 else 0.4))
+            why = degenerate(raw)
+            if not why:
+                break
+            log(f"[{L['id']}] rédaction {what} dégénérée ({why}), nouvel essai {attempt+1}/4")
+        else:
+            (d / f"{name}.err").write_text(f"ligne None\nRédaction dégénérée ({why})")
+            return None
         raw_f.write_text(raw)
     raw = raw_f.read_text()
     if not rev_f.exists():
@@ -845,7 +970,10 @@ You are now an EXPERT REVIEWER. Review this block with maximum rigour and return
 4. Strict conformity with the LaTeX CONTRACT (allowed environments, standard maths syntax, no nested boxes, % escaped, tables with consistent cell counts, TikZ decimals with a point).
 Do not shorten the content: the final version must be at least as rich. Reply only with the final LaTeX."""}],
                            REVIEW_MODELS, max_tokens=22000, temperature=0.3))
-        if len(rev) < 0.7 * len(raw):
+        if degenerate(rev):
+            log(f"[{L['id']}] relecture {what} dégénérée ({degenerate(rev)}), version initiale conservée")
+            rev = raw
+        elif len(rev) < 0.7 * len(raw):
             log(f"[{L['id']}] relecture {what} trop courte ({len(rev)} < {len(raw)}), version initiale conservée")
             rev = raw
         elif len(rev) > 2.5 * len(raw) or ((name in ("bilan", "corriges") or name.startswith("extra_")) and len(rev) > 1.6 * len(raw)):
@@ -854,6 +982,14 @@ Do not shorten the content: the final version must be at least as rich. Reply on
         rev_f.write_text(rev)
     body = autofix(rev_f.read_text())
     ok, err, line = compile_check(body)
+    if not ok and os.environ.get("LLM_FIX", "1") == "1":
+        log(f"  ↻ réparation par le modèle {L['id']}/{name}")
+        body2, ok2 = compile_fix(body, f"{L['id']}/{name}", tries=4)
+        if ok2 and not degenerate(body2):
+            body = autofix(body2)
+            ok, err, line = compile_check(body)
+            if ok:
+                rev_f.write_text(body)
     if not ok:
         (d / f"{name}.err").write_text(f"ligne {line}\n{err}")
         log(f"  ✗ À CORRIGER {L['id']}/{name} (ligne {line}) : {err.strip().splitlines()[0] if err.strip() else '?'}")
