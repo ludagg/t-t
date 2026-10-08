@@ -1,0 +1,2622 @@
+% Hypothesis Testing — Pure Mathematics with Statistics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PMS16-hypothesis-testing.tex
+\newcommand{\DOCMATIERE}{Pure Mathematics with Statistics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Pure mathematics with statistics}
+\newcommand{\DOCLECON}{16}
+\newcommand{\DOCTITRE}{Hypothesis Testing}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Hypothesis Testing}{Pure Mathematics with Statistics}{Upper Sixth}{Upper Sixth — Pure mathematics with statistics}{16}{10 periods}{This chapter introduces the logic of statistical hypothesis testing: formulating null and alternative hypotheses, choosing a significance level, and using critical regions to make decisions about population parameters. Students learn to carry out tests for a population mean and for the difference between two means, and to interpret Type I and Type II errors in real Cameroonian contexts.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can state a null hypothesis H0 and an alternative hypothesis H1 appropriate to a given problem.
+\item By the end of this chapter I can distinguish between one-tailed and two-tailed tests and justify the choice.
+\item By the end of this chapter I can explain the level of significance and compute the appropriate test statistic.
+\item By the end of this chapter I can determine critical values and the critical region for a given test.
+\item By the end of this chapter I can describe Type I and Type II errors and their probabilities.
+\item By the end of this chapter I can apply the full five-step hypothesis testing procedure.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Statistical Hypotheses and Types of Tests
+\item Significance Level, Test Statistics and Critical Regions
+\item Errors in Hypothesis Testing and the Testing Procedure
+\item Hypothesis Test for a Population Mean
+\item Test for the Difference Between Two Means (Large Samples)
+\item Applications, Consolidation and Exam Practice
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can state a null hypothesis H0 and an alternative hypothesis H1 appropriate to a given problem.
+\item By the end of this chapter I can distinguish between one-tailed and two-tailed tests and justify the choice.
+\item By the end of this chapter I can explain the level of significance and compute the appropriate test statistic.
+\item By the end of this chapter I can determine critical values and the critical region for a given test.
+\item By the end of this chapter I can describe Type I and Type II errors and their probabilities.
+\item By the end of this chapter I can apply the full five-step hypothesis testing procedure.
+\item By the end of this chapter I can test a hypothesis about a population mean using a sample (normal distribution, known or estimated variance).
+\item By the end of this chapter I can test for a difference between two population means using large samples.
+\item By the end of this chapter I can interpret the conclusion of a test in everyday language and apply testing to real-life situations.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item The normal distribution and use of standard normal tables (Lower Sixth).
+\item Sampling distributions: the sample mean X̄ \~{} N(μ, σ²/n) and the Central Limit Theorem.
+\item Confidence intervals for a population mean.
+\item Basic probability: complementary events and conditional reasoning.
+\item Estimators: unbiased estimates of μ and σ² from a sample.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Statistical Hypotheses and Types of Tests}
+
+A bottling company in Douala claims its \emph{Top Ananas} juice bottles contain exactly \SI{50}{cl} on average, but a consumer association suspects the machines are under-filling them. Similarly, a Yaoundé hospital wants to know whether a new malaria treatment really lowers fever faster than the standard one, and the GCE Board wonders whether this year's candidates performed better than last year's. In each case, we cannot check every bottle, every patient or every script — we can only take a sample. How do we then decide, with a controlled risk of being wrong, whether the claim should be rejected? This is exactly the science of \textbf{hypothesis testing}.
+
+\courssub{What is a Statistical Hypothesis?}
+
+\begin{definition}[Statistical Hypothesis]
+A \textbf{statistical hypothesis} is a claim or statement about one or more parameters of a population distribution (e.g. the mean $\mu$, the proportion $p$, the variance $\sigma^2$). It is an assumption we make about the population that we wish to test using sample data.
+\end{definition}
+
+In the \emph{Top Ananas} example, the parameter of interest is the population mean volume $\mu$ (in cl). The company's claim is the hypothesis $\mu = 50$. The consumer association's suspicion is $\mu < 50$. Both are statistical hypotheses because they make a statement about the population mean.
+
+\begin{propriete}[Simple vs. Composite Hypotheses]
+\begin{itemize}
+  \item A \textbf{simple hypothesis} completely specifies the population distribution (e.g. $H_0: \mu = 50$ when $\sigma^2$ is known).
+  \item A \textbf{composite hypothesis} does not completely specify the distribution; it contains a range of values (e.g. $H_1: \mu < 50$ or $H_1: \mu \neq 50$).
+\end{itemize}
+In practice, the null hypothesis is often simple (a single value) while the alternative is composite.
+\end{propriete}
+
+\courssub{Null and Alternative Hypotheses}
+
+Every hypothesis test pits two competing hypotheses against each other.
+
+\begin{definition}[Null Hypothesis $H_0$]
+The \textbf{null hypothesis}, denoted $H_0$, is the hypothesis that is initially assumed to be true. It represents the \emph{status quo}, the established fact, or the claim to be challenged. It \textbf{always contains an equality sign} ($=$, $\le$, or $\ge$).
+\end{definition}
+
+\begin{definition}[Alternative Hypothesis $H_1$]
+The \textbf{alternative hypothesis}, denoted $H_1$ (or $H_a$), is the hypothesis that we suspect might be true instead of $H_0$. It represents the research claim, the change, or the effect we are looking for. It \textbf{never contains an equality sign}; it uses $\neq$, $<$, or $>$.
+\end{definition}
+
+\begin{attention}[The Equality Rule — Examinable]
+\textbf{$H_0$ must always contain the equality sign.} Write $H_0: \mu = \mu_0$ (or $\mu \le \mu_0$, $\mu \ge \mu_0$). Never write $H_0: \mu < \mu_0$ or $H_0: \mu > \mu_0$. The test statistic's distribution is derived assuming the boundary value (usually equality) is true.
+\end{attention}
+
+\begin{attention}[We Never ``Prove'' $H_0$]
+A hypothesis test can only provide evidence \emph{against} $H_0$. If the sample data are inconsistent with $H_0$, we \textbf{reject $H_0$} in favour of $H_1$. If the data are not sufficiently inconsistent, we \textbf{fail to reject $H_0$}. We never say ``accept $H_0$'' or ``$H_0$ is true''. Absence of evidence against $H_0$ is not evidence for $H_0$.
+\end{attention}
+
+\courssub{One-Tailed and Two-Tailed Tests}
+
+The form of $H_1$ determines the \textbf{type of test} and the location of the \textbf{critical region} (rejection region) under the sampling distribution of the test statistic.
+
+\begin{propriete}[Forms of $H_1$ and Corresponding Tests]
+Let the parameter be $\theta$ (e.g. $\mu$, $p$) and the hypothesised value be $\theta_0$.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\textbf{Alternative $H_1$} & \textbf{Name of Test} & \textbf{Critical Region Location} & \textbf{Typical Wording} \\
+\hline
+$H_1: \theta < \theta_0$ & Left-tailed (lower-tailed) & Left tail only & ``less than'', ``decreased'', ``lower than'', ``under-filling'' \\
+\hline
+$H_1: \theta > \theta_0$ & Right-tailed (upper-tailed) & Right tail only & ``greater than'', ``increased'', ``higher than'', ``better than'', ``faster than'' \\
+\hline
+$H_1: \theta \neq \theta_0$ & Two-tailed & Both tails (split equally) & ``different from'', ``changed'', ``not equal to'', ``whether ... differs'' \\
+\hline
+\end{tabularx}
+\end{center}
+\end{propriete}
+
+\begin{methode}[Choosing the Test from the Problem Statement]
+\begin{enumerate}
+  \item Identify the parameter ($\mu$, $p$, $\mu_1-\mu_2$, etc.) and define it clearly in a sentence.
+  \item Locate the \textbf{claim} or \textbf{research question}. That claim usually becomes $H_1$.
+  \item Look for keywords:
+    \begin{itemize}
+      \item ``different from'', ``changed'', ``not equal'' $\rightarrow$ Two-tailed ($H_1: \theta \neq \theta_0$).
+      \item ``greater than'', ``more than'', ``increased'', ``better'', ``faster'' $\rightarrow$ Right-tailed ($H_1: \theta > \theta_0$).
+      \item ``less than'', ``fewer than'', ``decreased'', ``lower'', ``under'' $\rightarrow$ Left-tailed ($H_1: \theta < \theta_0$).
+    \end{itemize}
+  \item Write $H_0$ as the complementary statement \textbf{including the equality} at the boundary.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.2cm and 2.5cm, >=Stealth,
+  start/.style={rectangle, rounded corners, draw=popblue, thick, fill=popblueL, text width=3.5cm, align=center, minimum height=1cm},
+  decision/.style={diamond, draw=poporange, thick, fill=poporange!20, text width=3.5cm, align=center, minimum height=1cm, aspect=2},
+  end/.style={rectangle, rounded corners, draw=popgreen, thick, fill=popgreenL, text width=4cm, align=center, minimum height=1cm}]
+\node[start] (start) {Read the problem: identify the claim / research question};
+\node[decision, below of=start] (q1) {Does the claim use ``different'', ``changed'', ``not equal''?};
+\node[end, left of=q1, xshift=-3cm, align=center] (two){Two-tailed test\\ $H_1: \theta \neq \theta_0$};
+\node[decision, below of=q1] (q2) {Does the claim use ``greater'', ``more'', ``increased'', ``better'', ``faster''?};
+\node[end, right of=q2, xshift=3cm, align=center] (right){Right-tailed test\\ $H_1: \theta > \theta_0$};
+\node[end, left of=q2, xshift=-3cm, align=center] (left){Left-tailed test\\ $H_1: \theta < \theta_0$};
+\draw[->, thick] (start) -- (q1);
+\draw[->, thick] (q1) -- node[above, sloped, font=\small] {Yes} (two);
+\draw[->, thick] (q1) -- node[right, font=\small] {No} (q2);
+\draw[->, thick] (q2) -- node[above, sloped, font=\small] {Yes} (right);
+\draw[->, thick] (q2) -- node[above, sloped, font=\small] {No} (left);
+\end{tikzpicture}
+\legende{Flowchart: from the wording of the problem to the form of $H_1$.}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.1, domain=-3.5:3.5]
+% Common styles
+\tikzset{
+  axis/.style={->, thick},
+  curve/.style={thick, draw=popink},
+  shade/.style={fill=popred!30, draw=popred, opacity=0.6},
+  critline/.style={dashed, thick, draw=popred},
+  label/.style={font=\small, text=popdark}
+}
+% Left-tailed
+\begin{scope}[xshift=-8cm]
+  \draw[axis] (-3.5,0) -- (3.5,0) node[right, label] {$z$};
+  \draw[curve] plot[smooth, samples=100] (\x, {exp(-\x*\x/2)/2.5});
+  \draw[shade] (-3.5,0) -- plot[smooth, samples=50, domain=-3.5:-1.645] (\x, {exp(-\x*\x/2)/2.5}) -- (-1.645,0) -- cycle;
+  \draw[critline] (-1.645,0) -- (-1.645,0.15);
+  \node[below] at (-1.645,0) {$-z_\alpha$};
+  \node[above] at (0,0.45) {$\alpha$};
+  \node[above] at (0,0.55) {Left-tailed};
+\end{scope}
+% Right-tailed
+\begin{scope}
+  \draw[axis] (-3.5,0) -- (3.5,0) node[right, label] {$z$};
+  \draw[curve] plot[smooth, samples=100] (\x, {exp(-\x*\x/2)/2.5});
+  \draw[shade] (1.645,0) -- plot[smooth, samples=50, domain=1.645:3.5] (\x, {exp(-\x*\x/2)/2.5}) -- (3.5,0) -- cycle;
+  \draw[critline] (1.645,0) -- (1.645,0.15);
+  \node[below] at (1.645,0) {$z_\alpha$};
+  \node[above] at (0,0.45) {$\alpha$};
+  \node[above] at (0,0.55) {Right-tailed};
+\end{scope}
+% Two-tailed
+\begin{scope}[xshift=8cm]
+  \draw[axis] (-3.5,0) -- (3.5,0) node[right, label] {$z$};
+  \draw[curve] plot[smooth, samples=100] (\x, {exp(-\x*\x/2)/2.5});
+  \draw[shade] (-3.5,0) -- plot[smooth, samples=50, domain=-3.5:-1.96] (\x, {exp(-\x*\x/2)/2.5}) -- (-1.96,0) -- cycle;
+  \draw[shade] (1.96,0) -- plot[smooth, samples=50, domain=1.96:3.5] (\x, {exp(-\x*\x/2)/2.5}) -- (3.5,0) -- cycle;
+  \draw[critline] (-1.96,0) -- (-1.96,0.15);
+  \draw[critline] (1.96,0) -- (1.96,0.15);
+  \node[below] at (-1.96,0) {$-z_{\alpha/2}$};
+  \node[below] at (1.96,0) {$z_{\alpha/2}$};
+  \node[above] at (-2.5,0.25) {$\alpha/2$};
+  \node[above] at (2.5,0.25) {$\alpha/2$};
+  \node[above] at (0,0.55) {Two-tailed};
+\end{scope}
+\end{tikzpicture}
+\legende{Rejection regions (shaded) for the three types of tests at significance level $\alpha$ (standard normal distribution shown).}
+\end{popfigure}
+
+\courssub{Significance Level, Test Statistic and Critical Region}
+
+\begin{definition}[Level of Significance $\alpha$]
+The \textbf{level of significance}, denoted $\alpha$, is the maximum probability of rejecting the null hypothesis $H_0$ when it is actually true. It is the size of the critical region. Common values are $0.05$ ($5\%$), $0.01$ ($1\%$) and $0.10$ ($10\%$).
+\end{definition}
+
+\begin{definition}[Test Statistic]
+A \textbf{test statistic} is a quantity calculated from the sample data (e.g. the sample mean $\bar{x}$, sample proportion $\hat{p}$) whose sampling distribution is completely known when $H_0$ is true. It is used to decide whether to reject $H_0$. For large samples testing a mean with known variance, the test statistic is $Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$ under $H_0$.
+\end{definition}
+
+\begin{definition}[Critical Region and Critical Values]
+The \textbf{critical region} (or rejection region) is the set of values of the test statistic for which we reject $H_0$. The \textbf{critical value(s)} are the boundary value(s) that separate the critical region from the acceptance region. They are denoted $z_\alpha$, $z_{\alpha/2}$, $t_\alpha$, etc., depending on the distribution and $\alpha$.
+\end{definition}
+
+\begin{aretenir}[Summary of Critical Values for Standard Normal $Z$]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Test Type} & \textbf{Critical Region} & \textbf{Critical Value(s)} & \textbf{Common $\alpha$ Values} \\
+\hline
+Left-tailed ($H_1: \theta < \theta_0$) & $Z < -z_\alpha$ & $-z_\alpha$ & $\alpha=0.05 \Rightarrow -1.645$ \\
+\hline
+Right-tailed ($H_1: \theta > \theta_0$) & $Z > z_\alpha$ & $z_\alpha$ & $\alpha=0.05 \Rightarrow 1.645$ \\
+\hline
+Two-tailed ($H_1: \theta \neq \theta_0$) & $|Z| > z_{\alpha/2}$ & $\pm z_{\alpha/2}$ & $\alpha=0.05 \Rightarrow \pm 1.96$ \\
+\hline
+\end{tabular}
+\end{center}
+\end{aretenir}
+
+\courssub{Worked Examples}
+
+\begin{exoresolu}[Formulating Hypotheses]
+For each situation, define the parameter, state $H_0$ and $H_1$, and identify the type of test.
+\begin{enumerate}
+  \item A manufacturer claims the mean lifetime of his light bulbs is \SI{1000}{hours}. A consumer group believes the mean lifetime is actually less.
+  \item The pass rate in Mathematics at GCE A-Level has been $65\%$ for years. The Ministry of Education introduces a new syllabus and wants to know if the pass rate has changed.
+  \item A new fertilizer is claimed to increase the mean yield of maize above the current mean of \SI{2.5}{tonnes/hectare}.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+  \item \textbf{Parameter:} $\mu$ = population mean lifetime (hours).\\
+        Claim: ``less than 1000'' $\rightarrow$ $H_1: \mu < 1000$.\\
+        $H_0: \mu = 1000$ (equality at boundary).\\
+        \textbf{Left-tailed test.}
+  \item \textbf{Parameter:} $p$ = population proportion of candidates who pass.\\
+        Claim: ``has changed'' $\rightarrow$ $H_1: p \neq 0.65$.\\
+        $H_0: p = 0.65$.\\
+        \textbf{Two-tailed test.}
+  \item \textbf{Parameter:} $\mu$ = population mean yield (tonnes/hectare).\\
+        Claim: ``increase ... above 2.5'' $\rightarrow$ $H_1: \mu > 2.5$.\\
+        $H_0: \mu = 2.5$.\\
+        \textbf{Right-tailed test.}
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exoresolu}[Top Ananas Bottling]
+The \emph{Top Ananas} company states that the mean volume of juice in its \SI{50}{cl} bottles is \SI{50}{cl}. A consumer association takes a random sample of 36 bottles and finds a sample mean of \SI{49.7}{cl} with a known population standard deviation of \SI{0.5}{cl}. They want to test, at the $5\%$ significance level, whether the bottles are under-filled.
+\begin{enumerate}
+  \item State the hypotheses and the type of test.
+  \item Explain why $H_0$ is $\mu = 50$ and not $\mu \ge 50$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+  \item \textbf{Parameter:} $\mu$ = true mean volume of all \emph{Top Ananas} \SI{50}{cl} bottles (in cl).\\
+        The association \emph{suspects under-filling} $\rightarrow$ claim is $\mu < 50$.\\
+        $H_1: \mu < 50$ \quad (Left-tailed test).\\
+        $H_0: \mu = 50$ \quad (boundary value).
+  \item Both $H_0: \mu = 50$ and $H_0: \mu \ge 50$ are technically correct null hypotheses for a left-tailed test because the test statistic's distribution is derived using the \emph{boundary value} $\mu = 50$. However, the convention (and GCE requirement) is to write the simple form $H_0: \mu = 50$. Writing $H_0: \mu \ge 50$ is a composite null and is not standard practice at this level; it can lead to confusion about which value to use for the test statistic calculation. \textbf{Always write $H_0$ with $=$.}
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{GCE Examination Tips}
+
+\begin{aretenir}[Key Points for Section 1]
+\begin{itemize}
+  \item \textbf{Define the parameter} in words before writing symbols (e.g. ``Let $\mu$ be the mean volume in cl of all bottles produced by the machine'').
+  \item $H_0$ \textbf{always} contains $=$ (or $\le$, $\ge$). $H_1$ \textbf{never} contains $=$.
+  \item The claim you are \emph{trying to prove} goes into $H_1$.
+  \item Keywords $\rightarrow$ Test type:
+    \begin{itemize}
+      \item ``different / changed / not equal'' $\rightarrow$ Two-tailed.
+      \item ``greater / more / increased / better / faster'' $\rightarrow$ Right-tailed.
+      \item ``less / fewer / decreased / lower / under'' $\rightarrow$ Left-tailed.
+    \end{itemize}
+  \item Conclusion language: ``Reject $H_0$'' or ``Fail to reject $H_0$''. Never ``Accept $H_0$''.
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Common Mistakes in GCE Papers]
+\begin{itemize}
+  \item Writing $H_0: \mu < 50$ and $H_1: \mu = 50$ (swapped).
+  \item Writing $H_0: \mu \neq 50$ (equality missing).
+  \item Not defining the parameter $\mu$ or $p$ clearly.
+  \item Saying ``Accept $H_0$'' or ``$H_0$ is true''.
+  \item Choosing a two-tailed test when the problem says ``greater than'' (or vice versa).
+  \item Confusing the critical value ($z_\alpha$) with the calculated test statistic ($z_{\text{calc}}$).
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Historical Note]
+The formal framework of hypothesis testing was developed in the 1920s–1930s by \textbf{Jerzy Neyman} and \textbf{Egon Pearson} (building on earlier work by R.A. Fisher). They introduced the concepts of the null hypothesis, alternative hypothesis, Type I/II errors, and the critical region. Their work was motivated by industrial quality control — exactly the kind of problem faced by the \emph{Top Ananas} bottling plant!
+\end{savaistu}
+
+\begin{exercice}[Practice: Formulating Hypotheses]
+For each scenario, define the parameter, write $H_0$ and $H_1$, and state the type of test.
+\begin{enumerate}
+  \item A pharmaceutical company claims its new painkiller relieves pain in less than 20 minutes on average. The current drug takes 20 minutes.
+  \item The mean weight of \SI{1}{kg} bags of rice from a factory is supposed to be \SI{1}{kg}. Quality control wants to check if the packing machine needs recalibration (i.e. if the mean differs from \SI{1}{kg}).
+  \item A politician claims that more than $60\%$ of voters in his region support him. An opponent suspects the true support is lower.
+  \item A school principal believes the mean score of her students in the GCE Mathematics paper this year is higher than last year's mean of $11.5/20$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+  \item $\mu$ = mean relief time (min). $H_0: \mu = 20$, $H_1: \mu < 20$. Left-tailed.
+  \item $\mu$ = mean weight (kg). $H_0: \mu = 1$, $H_1: \mu \neq 1$. Two-tailed.
+  \item $p$ = proportion of voters supporting the politician. The claim to be tested (the challenger's suspicion) is that support is lower than claimed. $H_0: p = 0.60$, $H_1: p < 0.60$. Left-tailed. (Note: If we were testing the politician's claim directly, $H_1$ would be $p > 0.60$; context determines which claim is the ``research hypothesis'' $H_1$.)
+  \item $\mu$ = mean score this year. $H_0: \mu = 11.5$, $H_1: \mu > 11.5$. Right-tailed.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Significance Level, Test Statistics and Critical Regions}
+
+In the previous section we learnt how to state the \cle{null hypothesis} $H_0$ and the \cle{alternative hypothesis} $H_1$, and how to classify a test as \cle{one-tailed} or \cle{two-tailed}. But stating hypotheses is not enough: we must now answer the practical question \emph{``how do we actually decide?''}. A sample mean $\bar{x}$ will almost never equal $\mu_0$ exactly, even when $H_0$ is true, because of sampling variability. So we need a precise rule that tells us when the observed sample is \emph{too far} from what $H_0$ predicts to be explained by chance alone. That rule is built on three pillars: the \cle{level of significance} $\alpha$, the \cle{test statistic}, and the \cle{critical region}.
+
+\courssub{The Level of Significance \texorpdfstring{$\alpha$}{alpha}}
+
+\textbf{Intuition.}\par
+Suppose a miller in Bamenda claims that his bags of flour have mean mass $\mu_0 = 50$ kg. You weigh 36 bags and find $\bar{x} = 49.4$ kg. Is the difference of $0.6$ kg just bad luck, or evidence that the bags are underfilled? There is always \emph{some} chance that a genuine $50$ kg process produces $\bar{x} = 49.4$ kg. Before collecting data, we must decide how small that chance must be before we stop believing $H_0$. That threshold probability is the level of significance.
+
+\begin{definition}[Level of significance]
+The \cle{level of significance} of a test, denoted $\alpha$, is the probability, fixed \emph{in advance}, of \textbf{rejecting $H_0$ when $H_0$ is actually true}:
+\[ \alpha = P(\text{reject } H_0 \mid H_0 \text{ true}). \]
+The most commonly used levels are $\alpha = 0.10$ ($10\%$), $\alpha = 0.05$ ($5\%$) and $\alpha = 0.01$ ($1\%$). The test is then called a ``test at the $5\%$ level'', etc.
+\end{definition}
+
+Choosing $\alpha = 0.05$ means: ``if $H_0$ is true, I accept a $5\%$ risk of wrongly condemning it.'' A smaller $\alpha$ (say $1\%$) makes the test more cautious — we demand stronger evidence before rejecting $H_0$ — but makes it harder to detect a real difference. In the GCE examination the level is always given in the question; you never have to choose it yourself.
+
+\begin{aretenir}[Key point]
+$\alpha$ is a probability fixed \textbf{before} looking at the data. It measures the risk of a wrong rejection of $H_0$, never the probability that $H_0$ is true.
+\end{aretenir}
+
+\courssub{The Test Statistic and its Distribution under \texorpdfstring{$H_0$}{H0}}
+
+\textbf{Intuition.}\par
+To compare the sample with $H_0$ we cannot use $\bar{x}$ directly, because ``far from $\mu_0$'' depends on the units and on the spread of the data. A difference of $0.6$ kg is enormous if bags vary by grams, negligible if they vary by kilograms. The remedy is to \emph{standardise}: measure the gap $\bar{x} - \mu_0$ in units of the standard error $\sigma/\sqrt{n}$.
+
+\begin{definition}[Test statistic]
+A \cle{test statistic} is a quantity computed from the sample whose probability distribution is \textbf{completely known when $H_0$ is true}. For tests on a population mean with known variance $\sigma^2$ (or with large sample size $n \ge 30$ where the sample standard deviation $s$ is used as an estimate of $\sigma$), the test statistic is the standardised sample mean:
+\[ Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \quad \text{or} \quad Z = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} \ (n \text{ large}). \]
+\end{definition}
+
+\begin{propriete}[Distribution of the test statistic under $H_0$]
+If $H_0 : \mu = \mu_0$ is true, and either the population is $N(\mu_0, \sigma^2)$ or the sample size $n$ is large (Central Limit Theorem), then
+\[ Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1). \]
+This result is examinable: it follows from $\bar{X} \sim N\!\left(\mu_0, \dfrac{\sigma^2}{n}\right)$ and the standardisation formula $Z = \dfrac{\bar{X} - E(\bar{X})}{\sqrt{\operatorname{Var}(\bar{X})}}$.
+\end{propriete}
+
+Because the distribution of $Z$ under $H_0$ is the standard normal, we can compute exactly how surprising any observed value $z$ is, using the normal tables provided in the examination.
+
+\begin{exemplebox}[Computing a test statistic]
+A machine fills packets of sugar with $\sigma = 8$ g known from long experience. We test $H_0 : \mu = 500$ g. A sample of $n = 64$ packets gives $\bar{x} = 497$ g. Then
+\[ z = \frac{497 - 500}{8/\sqrt{64}} = \frac{-3}{1} = -3. \]
+The observed sample mean lies $3$ standard errors below $\mu_0$ — a rare event under $H_0$.
+\end{exemplebox}
+
+\courssub{Critical Values from the Standard Normal Table}
+
+The \cle{critical value} is the boundary on the $Z$-scale beyond which we decide the result is too extreme for $H_0$. It is read from the standard normal tables so that the tail area equals $\alpha$ (one-tailed) or $\alpha/2$ in each tail (two-tailed).
+
+\begin{propriete}[Critical values of $N(0,1)$ at the usual levels]
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{popblueL} Level $\alpha$ & $10\%$ & $5\%$ & $1\%$ \\
+\hline
+One-tailed test & $1.282$ & $1.645$ & $2.326$ \\
+\hline
+Two-tailed test & $1.645$ & $1.960$ & $2.576$ \\
+\hline
+\end{tabular}
+\end{center}
+More precisely: one-tailed critical values are $z_{0.10} = 1.282$, $z_{0.05} = 1.645$, $z_{0.01} = 2.326$; two-tailed critical values are $z_{0.05} = 1.645$, $z_{0.025} = 1.960$, $z_{0.005} = 2.576$, where $z_p$ denotes the value with $P(Z > z_p) = p$.
+\end{propriete}
+
+\textbf{Where do these numbers come from?}\par
+For a two-tailed test at $5\%$, we need $z$ with $P(Z > z) = 0.025$, i.e.\ $\Phi(z) = 0.975$. Reading the normal table in reverse gives $z = 1.96$. For a one-tailed test at $5\%$ we need $\Phi(z) = 0.95$, giving $z = 1.645$. The value $2.576$ comes from $\Phi(z) = 0.995$, and $2.326$ from $\Phi(z) = 0.99$.
+
+\begin{attention}[The most frequent GCE mistake]
+For a \textbf{two-tailed} test at the $5\%$ level, the total tail probability $5\%$ is \textbf{shared equally between the two tails}: each tail carries $2.5\%$. The critical values are therefore $\pm 1.96$, \textbf{not} $\pm 1.645$. The value $1.645$ belongs to the \emph{one-tailed} $5\%$ test. Always ask yourself first: ``one tail or two tails?''
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=6.5cm,
+  domain=-4:4, samples=200,
+  axis lines=middle,
+  xlabel={$z$}, ylabel={},
+  xtick={-1.96,0,1.96},
+  xticklabels={$-1.96$,$0$,$1.96$},
+  ytick=\empty,
+  enlargelimits=0.05,
+  clip=false
+]
+\addplot[fill=poporange, draw=none, domain=-4:-1.96] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[fill=poporange, draw=none, domain=1.96:4] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[fill=popblueL, draw=none, domain=-1.96:1.96] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[very thick, popblue] {exp(-x^2/2)/sqrt(max(0,2*pi))};
+\node[popdark, align=center, font=\small] at (axis cs:0,0.2) {Acceptance\\ region $95\%$};
+\node[popdark, font=\small] at (axis cs:-2.9,0.06) {$2.5\%$};
+\node[popdark, font=\small] at (axis cs:2.9,0.06) {$2.5\%$};
+\node[popdark, font=\small] at (axis cs:-2.9,0.14) {reject $H_0$};
+\node[popdark, font=\small] at (axis cs:2.9,0.14) {reject $H_0$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Two-tailed test at the $5\%$ level: critical region $|z| > 1.96$ (shaded tails, $2.5\%$ each) and acceptance region $-1.96 \le z \le 1.96$.}
+\end{popfigure}
+
+\courssub{Critical Region, Acceptance Region and Boundary Values of \texorpdfstring{$\bar{X}$}{X-bar}}
+
+\begin{definition}[Critical and acceptance regions]
+The \cle{critical region} (or \emph{rejection region}) $C$ is the set of values of the test statistic for which $H_0$ is rejected; it satisfies $P(Z \in C \mid H_0 \text{ true}) = \alpha$. Its complement is the \cle{acceptance region}. The boundary points of $C$ are the \cle{critical values}.
+\end{definition}
+
+The shape of $C$ depends on $H_1$:
+\begin{itemize}
+\item $H_1 : \mu > \mu_0$ (right tail): $C = \{z > z_\alpha\}$;
+\item $H_1 : \mu < \mu_0$ (left tail): $C = \{z < -z_\alpha\}$;
+\item $H_1 : \mu \ne \mu_0$ (two tails): $C = \{|z| > z_{\alpha/2}\}$.
+\end{itemize}
+
+Sometimes the examiner asks for the critical region \emph{in terms of $\bar{X}$ itself}. Since $Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}$, the inequality $Z > z_\alpha$ is equivalent to
+\[ \bar{X} > \mu_0 + z_\alpha \frac{\sigma}{\sqrt{n}}. \]
+The number $\mu_0 + z_\alpha \dfrac{\sigma}{\sqrt{n}}$ is the \textbf{boundary value of $\bar{X}$}.
+
+\begin{attention}[Critical value versus boundary value]
+Do not confuse the \textbf{critical value} (a number on the standardised $Z$-scale, e.g.\ $1.645$) with the \textbf{boundary value of $\bar{X}$} (a number in the original units, e.g.\ $50.82$ kg). Both describe the same borderline, but on different scales. Read the question carefully: ``find the critical region for the sample mean'' requires the $\bar{X}$ scale.
+\end{attention}
+
+\begin{methode}[Finding the critical region for a given $\alpha$ and type of test]
+\begin{enumerate}
+\item Identify the type of test from $H_1$: right-tailed ($>$), left-tailed ($<$) or two-tailed ($\ne$).
+\item Choose the tail probability: $\alpha$ in one tail, or $\alpha/2$ in each tail for a two-tailed test.
+\item Read the critical value(s) from the normal table: $\Phi(z) = 1 - \alpha$ (one tail) or $\Phi(z) = 1 - \alpha/2$ (two tails).
+\item Write the critical region on the $Z$-scale, with the correct sign(s).
+\item If required, convert to the $\bar{X}$-scale using $\bar{X} = \mu_0 + z\,\dfrac{\sigma}{\sqrt{n}}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Critical region on both scales]
+The lifetime of bulbs produced at a factory in Douala is known to have standard deviation $\sigma = 120$ hours. We test $H_0 : \mu = 1500$ hours against $H_1 : \mu < 1500$ hours at the $5\%$ level, using a sample of $n = 36$ bulbs. Find the critical region (a) for $Z$; (b) for $\bar{X}$.
+\tcblower
+\textbf{Solution.} The test is \emph{left-tailed} at $\alpha = 0.05$.
+
+(a) We need $z$ with $\Phi(z) = 0.95$, i.e.\ $z = 1.645$. The critical region is
+\[ C = \{z < -1.645\}. \]
+
+(b) The standard error is $\dfrac{\sigma}{\sqrt{n}} = \dfrac{120}{\sqrt{36}} = \dfrac{120}{6} = 20$ hours. The boundary value of $\bar{X}$ is
+\[ \mu_0 - z_\alpha\frac{\sigma}{\sqrt{n}} = 1500 - 1.645 \times 20 = 1500 - 32.9 = 1467.1 \text{ hours}. \]
+Hence the critical region is $\bar{x} < 1467.1$ hours: if the sample mean lifetime falls below $1467.1$ hours, we reject $H_0$ at the $5\%$ level.
+\end{exoresolu}
+
+\courssub{The Decision Rule and the p-value}
+
+\begin{definition}[Decision rule]
+Compute the observed value $z$ of the test statistic from the sample. \textbf{Reject $H_0$} at the level $\alpha$ if $z$ falls in the critical region; otherwise \textbf{do not reject $H_0$}.
+\end{definition}
+
+A useful extra, increasingly appreciated by GCE examiners, is the \cle{p-value}.
+
+\begin{definition}[p-value]
+The \cle{p-value} is the probability, computed \emph{assuming $H_0$ true}, of obtaining a result \textbf{at least as extreme} as the one observed. If the p-value is less than $\alpha$, we reject $H_0$.
+\end{definition}
+
+For a two-tailed test, ``at least as extreme'' means in either tail, so the p-value is twice the one-tail probability. For a one-tailed test, it is the probability in the direction specified by $H_1$.
+
+\begin{exemplebox}[Calculating p-values]
+Suppose the observed test statistic is $z = -2.1$.
+\begin{itemize}
+\item For a \textbf{two-tailed} test: p-value $= 2 \times P(Z < -2.1) = 2 \times 0.0179 = 0.0358$.
+\item For a \textbf{left-tailed} test ($H_1: \mu < \mu_0$): p-value $= P(Z < -2.1) = 0.0179$.
+\item For a \textbf{right-tailed} test ($H_1: \mu > \mu_0$): p-value $= P(Z > -2.1) = 1 - 0.0179 = 0.9821$.
+\end{itemize}
+\end{exemplebox}
+
+\begin{exoresolu}[A complete decision using critical region and p-value]
+Using the sugar-packet data above: $H_0 : \mu = 500$ g, $H_1 : \mu \ne 500$ g, $\sigma = 8$ g, $n = 64$, $\bar{x} = 497$ g. Test at the $5\%$ level.
+\tcblower
+\textbf{Solution.} Two-tailed test at $5\%$: critical values $\pm 1.96$, so $C = \{|z| > 1.96\}$.
+
+Test statistic: $z = \dfrac{497 - 500}{8/8} = -3$.
+
+Since $-3 < -1.96$, $z$ lies in the critical region: we \textbf{reject $H_0$} at the $5\%$ level. There is significant evidence that the mean mass differs from $500$ g.
+
+\textbf{p-value approach:} p-value $= 2 \times P(Z < -3) = 2 \times 0.00135 = 0.0027$. Since $0.0027 < 0.05$, we reject $H_0$. The small p-value confirms strong evidence against $H_0$.
+\end{exoresolu}
+
+\begin{exercice}[Critical regions and decisions]
+A machine produces rods with $\sigma = 0.9$ cm. Test $H_0 : \mu = 25$ cm using $n = 81$ rods.
+\begin{enumerate}
+\item Find the critical region for $\bar{X}$ for a two-tailed test at the $1\%$ level.
+\item Find the critical region for $\bar{X}$ for a right-tailed test ($H_1 : \mu > 25$) at the $5\%$ level.
+\item The sample gives $\bar{x} = 25.21$ cm. State your conclusion in each case.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+The standard error is $\dfrac{0.9}{\sqrt{81}} = 0.1$ cm.
+
+1. Two-tailed at $1\%$: $z_{0.005} = 2.576$. Boundaries: $25 \pm 2.576 \times 0.1 = 25 \pm 0.2576$. Critical region: $\bar{x} < 24.7424$ or $\bar{x} > 25.2576$.
+
+2. Right-tailed at $5\%$: $z_{0.05} = 1.645$. Boundary: $25 + 1.645 \times 0.1 = 25.1645$. Critical region: $\bar{x} > 25.1645$.
+
+3. $\bar{x} = 25.21$: in case 1, $25.21 < 25.2576$, so we do \textbf{not} reject $H_0$ at $1\%$; in case 2, $25.21 > 25.1645$, so we \textbf{reject} $H_0$ at $5\%$. Note how the conclusion depends on both the level and the type of test.
+\end{corrige}
+
+\begin{savaistu}[Why 5\%?]
+The $5\%$ convention was popularised by the statistician Ronald Fisher in the 1920s as a convenient, not sacred, threshold. In medicine, where a wrong conclusion can cost lives, $1\%$ or even $0.1\%$ levels are common; in preliminary agricultural field trials — for instance testing a new maize variety in the West Region — a $10\%$ level may be tolerated so as not to miss a promising result.
+\end{savaistu}
+
+\begin{aretenir}[Summary]
+\begin{itemize}
+\item $\alpha = P(\text{reject } H_0 \mid H_0 \text{ true})$, fixed in advance: $10\%$, $5\%$ or $1\%$.
+\item Test statistic $Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$ under $H_0$ (use $s$ instead of $\sigma$ if $n \ge 30$ and $\sigma$ unknown).
+\item Critical values: one tail $1.282 / 1.645 / 2.326$; two tails $1.645 / 1.960 / 2.576$.
+\item Two-tailed at $5\%$ $\Rightarrow$ $2.5\%$ per tail, critical values $\pm 1.96$.
+\item Distinguish the critical value ($Z$-scale) from the boundary value of $\bar{X}$.
+\item Reject $H_0$ if $z$ lies in the critical region, equivalently if the p-value $< \alpha$.
+\item p-value: two-tailed $= 2 \times$ tail probability; one-tailed $=$ tail probability in direction of $H_1$.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Errors in Hypothesis Testing and the Testing Procedure}
+
+In the previous section we learned how to choose a \cle{significance level} $\alpha$, compute a \cle{test statistic} and compare it with a \cle{critical region}. But a hard question remains: since our decision is based on a \emph{sample}, and samples vary by chance, can we ever be \emph{sure} our decision is correct? The honest answer is \textbf{no}. Whatever we decide, there is a risk of being wrong. The whole art of hypothesis testing is to \emph{understand}, \emph{measure} and \emph{control} these risks. That is the purpose of this section, which closes with the complete five-step procedure you will use in every GCE question.
+
+\courssub{The Two Possible Errors}
+
+\textbf{An observation to start with.} Suppose a magistrate in Bamenda must judge a defendant. The presumption of innocence plays the role of $H_0$: ``the accused is innocent''. The court examines the evidence (the \emph{sample}) and decides. Whatever the verdict, two miscarriages of justice are possible: an \emph{innocent} person may be convicted, or a \emph{guilty} person may be acquitted. These two mistakes are not the same, and society considers convicting an innocent person the more serious one. Hypothesis testing works exactly the same way: rejecting a true $H_0$ is the ``false alarm'' we most want to control.
+
+When we carry out a test, reality (which we cannot see) is in one of two states, and our decision is one of two actions. This gives four situations, summarised in the \cle{truth table} below.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, every node/.style={font=\small}]
+% Headers
+\node[fill=popblue, text=white, minimum width=3.6cm, minimum height=0.8cm] at (2.1,2.6) {\textbf{$H_0$ is true}};
+\node[fill=popblue, text=white, minimum width=3.6cm, minimum height=0.8cm] at (6.3,2.6) {\textbf{$H_0$ is false}};
+\node[fill=popdark, text=white, minimum width=3.4cm, minimum height=0.9cm, align=center] at (-1.9,1.5) {\textbf{Reject $H_0$}};
+\node[fill=popdark, text=white, minimum width=3.4cm, minimum height=0.9cm, align=center] at (-1.9,0.1) {\textbf{Do not reject $H_0$}};
+% Cells
+\node[draw=popline, fill=poppink!25, minimum width=3.6cm, minimum height=1.2cm, align=center] at (2.1,1.5) {\textbf{Type I error}\\ probability $\alpha$};
+\node[draw=popline, fill=popgreenL, minimum width=3.6cm, minimum height=1.2cm, align=center] at (6.3,1.5) {\textbf{Correct decision}\\ probability $1-\beta$ (power)};
+\node[draw=popline, fill=popgreenL, minimum width=3.6cm, minimum height=1.2cm, align=center] at (2.1,0.1) {\textbf{Correct decision}\\ probability $1-\alpha$};
+\node[draw=popline, fill=poporange!25, minimum width=3.6cm, minimum height=1.2cm, align=center] at (6.3,0.1) {\textbf{Type II error}\\ probability $\beta$};
+\end{tikzpicture}
+\end{center}
+\legende{The four possible outcomes of a hypothesis test: decision (rows) against unknown reality (columns).}
+\end{popfigure}
+
+\begin{definition}[Type I error]
+A \cle{Type I error} is committed when we \textbf{reject $H_0$ although $H_0$ is actually true}. By construction of the test, its probability is exactly the significance level:
+\[ P(\text{Type I error}) = P(\text{reject } H_0 \mid H_0 \text{ true}) = \alpha. \]
+\end{definition}
+
+This is why $\alpha$ is chosen \emph{before} looking at the data: the experimenter fixes in advance the greatest risk of a ``false alarm'' that he or she is willing to accept. At the $5\%$ level, if $H_0$ is true, the sample will fall in the critical region purely by chance in about $5$ cases out of $100$.
+
+\begin{definition}[Type II error and power]
+A \cle{Type II error} is committed when we \textbf{fail to reject $H_0$ although $H_0$ is actually false}. Its probability is denoted $\beta$:
+\[ \beta = P(\text{do not reject } H_0 \mid H_0 \text{ false}). \]
+The quantity $1-\beta$ is called the \cle{power} of the test: it is the probability of \emph{correctly detecting} that $H_0$ is false.
+\end{definition}
+
+\begin{attention}[Why $\beta$ has no single value]
+Unlike $\alpha$, the value of $\beta$ is \textbf{not fixed by the experimenter} and is usually not a single number. ``$H_0$ false'' covers many possibilities (e.g.\ $\mu = 49$, $\mu = 45$, $\mu = 30$\ldots), and $\beta$ is different for each true value of the parameter. Computing $\beta$ requires assuming a \emph{specific} alternative value of the parameter.
+\end{attention}
+
+\courssub{Seeing $\alpha$ and $\beta$ on the Same Picture}
+
+The best way to understand the two errors is to draw \emph{two} sampling distributions on the same axes: the distribution of the sample mean $\bar{X}$ if $H_0$ is true (centred at $\mu_0$), and its distribution if the true mean is some $\mu_1 < \mu_0$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12.5cm, height=6.5cm,
+  axis lines=middle,
+  xlabel={$\bar{x}$}, ylabel={density},
+  xtick={44,48}, xticklabels={$\mu_1$,$\mu_0$},
+  ytick=\empty,
+  xmin=38, xmax=56, ymin=0, ymax=0.55,
+  domain=38:56, samples=120, clip=false]
+% alpha area (left of c, under H0 curve)
+\addplot[fill=poppink, opacity=0.45, draw=none, domain=38:45.3] {0.45*exp(-((x-48)^2)/8)} \closedcycle;
+% beta area (right of c, under H1 curve)
+\addplot[fill=popgreen, opacity=0.35, draw=none, domain=45.3:56] {0.45*exp(-((x-44)^2)/8)} \closedcycle;
+% H0 curve centred 48
+\addplot[popblue, very thick] {0.45*exp(-((x-48)^2)/8)};
+% H1 curve centred 44
+\addplot[poporange, very thick] {0.45*exp(-((x-44)^2)/8)};
+% critical value line
+\addplot[popdark, dashed, thick] coordinates {(45.3,0) (45.3,0.5)};
+\node[popdark, anchor=south] at (axis cs:45.3,0.5) {critical value $c$};
+\node[popdark] at (axis cs:42.9,0.05) {$\alpha$};
+\node[popgreen!50!black] at (axis cs:47.4,0.10) {$\beta$};
+\node[popblue] at (axis cs:51.5,0.42) {under $H_0:\ \mu=\mu_0$};
+\node[poporange] at (axis cs:40.6,0.42) {under $\mu=\mu_1$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Left-tailed test. The pink area $\alpha$ is $P(\bar{X}<c\mid H_0 \text{ true})$; the green area $\beta$ is $P(\bar{X}\ge c\mid \mu=\mu_1)$.}
+\end{popfigure}
+
+Read the figure carefully. The test rejects $H_0$ when $\bar{X} < c$. The pink area $\alpha$ is the chance of this happening \emph{when $H_0$ is true} (false alarm). The green area $\beta$ is the chance of $\bar{X}$ falling \emph{above} $c$ when the true mean is really $\mu_1$ (missed detection). Everything about errors can be read from this picture.
+
+\begin{propriete}[What $\beta$ depends on]
+For a left-tailed test as above (the same ideas hold for all tests):
+\begin{enumerate}
+\item \textbf{Distance from $\mu_0$.} The further the true value $\mu_1$ is from $\mu_0$, the more the two curves separate, so the \emph{smaller} $\beta$ becomes (and the greater the power). It is easy to detect a big lie, hard to detect a small one.
+\item \textbf{The level $\alpha$.} If $\alpha$ is reduced (with $n$ fixed), the critical value $c$ moves towards $\mu_0$, so the green area \emph{increases}: $\beta$ goes up and power goes down.
+\item \textbf{The sample size $n$.} Since $\operatorname{Var}(\bar{X})=\sigma^2/n$, increasing $n$ makes \emph{both} curves narrower, so \emph{both} $\alpha$ and $\beta$ can be made small simultaneously.
+\end{enumerate}
+\end{propriete}
+
+\begin{attention}[The $\alpha$--$\beta$ trade-off]
+A very common GCE trap: ``reducing $\alpha$ from $5\%$ to $1\%$ makes the test better in every way.'' \textbf{False.} With $n$ fixed, decreasing $\alpha$ \emph{increases} $\beta$: you make fewer false alarms but miss more real effects. The only way to reduce \emph{both} errors at once is to \textbf{increase the sample size}.
+\end{attention}
+
+\begin{exemplebox}[Computing $\beta$ for a specific alternative]
+In the figure above, suppose $\mu_0=48$, $\sigma/\sqrt{n}=2$ and the left-tailed test at $\alpha=0.05$ gives the critical value $c=48-1.645\times 2=44.71$. If the true mean is in fact $\mu_1=44$, then
+\[ \beta = P(\bar{X}\ge 44.71 \mid \mu=44) = P\!\left(Z\ge \frac{44.71-44}{2}\right) = P(Z\ge 0.355) \approx 0.36. \]
+So the power is $1-\beta\approx 0.64$: this test detects a true mean of $44$ only about $64$ times out of $100$. If instead the true mean were $\mu_1=42$, the same calculation gives $\beta = P(Z\ge 1.355)\approx 0.09$: a bigger deviation is much easier to detect.
+\end{exemplebox}
+
+\begin{savaistu}[The power of a test]
+The power $1-\beta$ is not examinable in detail at the GCE, but understanding it earns you marks in discussion questions. Medical researchers planning a drug trial routinely demand a power of at least $80\%$: they want at least an $80\%$ chance of detecting the effect if it truly exists. This requirement is what tells them how many patients ($n$) to recruit.
+\end{savaistu}
+
+\courssub{The Five-Step Testing Procedure}
+
+We now assemble everything from the previous lessons into one standard procedure. Learn it as a checklist: GCE examiners award marks for each visible step.
+
+\begin{methode}[The five steps of a hypothesis test]
+\begin{enumerate}
+\item \textbf{State the hypotheses.} Write $H_0$ and $H_1$ clearly, with the parameter named (e.g.\ $H_0:\mu=50$ against $H_1:\mu<50$). The form of $H_1$ fixes whether the test is one-tailed or two-tailed.
+\item \textbf{Choose the significance level $\alpha$} and write down the corresponding \textbf{critical region} (using the sampling distribution under $H_0$ and the standard normal or $t$ tables).
+\item \textbf{Compute the test statistic} from the sample data, e.g.\ $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$.
+\item \textbf{Decide:} if the test statistic falls in the critical region, reject $H_0$; otherwise do not reject $H_0$.
+\item \textbf{Conclude in context:} translate the statistical decision into a sentence about the original problem, mentioning the level $\alpha$.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[``Accept $H_0$'' is misleading language]
+When the test statistic is not in the critical region, we have \emph{not proved} that $H_0$ is true --- we have merely failed to find enough evidence against it (remember the court: ``not guilty'' does not mean ``proved innocent''). Therefore always write ``\textbf{there is insufficient evidence, at the $\alpha$ level, to reject $H_0$}'' rather than ``$H_0$ is true'' or a bare ``accept $H_0$''.
+\end{attention}
+
+\begin{methode}[Writing a good conclusion sentence]
+A full-mark conclusion has three ingredients:
+\begin{enumerate}
+\item the \textbf{level}: ``at the $5\%$ level of significance'';
+\item the \textbf{decision}: ``there is (sufficient / insufficient) evidence to reject $H_0$'';
+\item the \textbf{context}: restate the claim in the words of the problem (the supplier, the bags, the mean mass\ldots), \emph{never} just symbols.
+\end{enumerate}
+Model: ``At the $5\%$ level, there is sufficient evidence to conclude that the mean mass of the supplier's bags is less than $50$ kg.''
+\end{methode}
+
+\courssub{A Complete Worked Example: the Rice Bags of Ndop}
+
+\begin{exoresolu}[Testing the mean mass of bags of rice]
+A supplier in Ndop claims that his bags of rice have a mean mass of $50$ kg. Long experience shows the masses are normally distributed with standard deviation $\sigma = 2.4$ kg. A buyers' cooperative, suspecting the bags are underweight, weighs a random sample of $36$ bags and obtains a mean mass of $49.1$ kg. Test, at the $5\%$ level of significance, whether the supplier's claim should be rejected. State the probability of a Type I error, and describe in words what a Type II error would mean here.
+\tcblower
+\textbf{Step 1 --- Hypotheses.} The cooperative suspects \emph{underweight} bags, so this is a left-tailed test:
+\[ H_0:\ \mu = 50 \qquad\text{against}\qquad H_1:\ \mu < 50, \]
+where $\mu$ is the true mean mass (in kg) of the supplier's bags.
+
+\textbf{Step 2 --- Level and critical region.} $\alpha = 0.05$, one-tailed. Under $H_0$,
+\[ \bar{X}\sim N\!\left(50,\ \tfrac{2.4^2}{36}\right), \qquad\text{so}\qquad Z=\frac{\bar{X}-50}{2.4/\sqrt{36}}\sim N(0,1). \]
+The critical value is $-z_{0.05}=-1.645$; the critical region is $z<-1.645$.
+
+\textbf{Step 3 --- Test statistic.}
+\[ z=\frac{49.1-50}{2.4/\sqrt{36}}=\frac{-0.9}{0.4}=-2.25. \]
+
+\textbf{Step 4 --- Decision.} Since $-2.25<-1.645$, the test statistic lies in the critical region: we \textbf{reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion in context.} At the $5\%$ level of significance, there is sufficient evidence to conclude that the mean mass of the supplier's bags is less than $50$ kg; the cooperative's suspicion is supported by the data.
+
+\textbf{Type I error.} $P(\text{Type I error})=\alpha=0.05$: there is a $5\%$ risk of accusing the supplier of under-filling when his bags actually average $50$ kg.
+
+\textbf{Type II error (in words).} A Type II error would occur if the bags really were underweight on average, but the sample happened to look acceptable, so we failed to reject the claim --- the cooperative would keep buying short-weight bags. Its probability $\beta$ would depend on the true mean: it is small if the true mean is far below $50$ kg, and large if the true mean is only slightly below $50$ kg.
+\end{exoresolu}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item \textbf{Type I error}: reject a true $H_0$; its probability is $\alpha$, chosen by the experimenter.
+\item \textbf{Type II error}: fail to reject a false $H_0$; its probability $\beta$ depends on the true parameter value, on $\alpha$ and on $n$.
+\item \textbf{Power} $=1-\beta$: the probability of detecting a real effect.
+\item With $n$ fixed, decreasing $\alpha$ increases $\beta$; only a larger sample reduces both.
+\item The five steps: hypotheses $\to$ level and critical region $\to$ test statistic $\to$ decision $\to$ \textbf{conclusion in context}.
+\item Never claim to have ``proved'' $H_0$: say ``insufficient evidence to reject $H_0$ at the $\alpha$ level''.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Errors and procedure]
+A factory in Douala fills bottles supposed to contain $\mu_0=33$ cL of a soft drink, with known $\sigma=1.5$ cL. An inspector tests $H_0:\mu=33$ against $H_1:\mu\ne 33$ at the $5\%$ level using a sample of $n=25$ bottles.
+\begin{enumerate}
+\item Write down the critical region for the standardised statistic $z$.
+\item The sample mean is $\bar{x}=32.3$ cL. Carry out the five-step test and conclude in context.
+\item State $P(\text{Type I error})$ and explain, in one sentence, what a Type II error would mean for the consumers.
+\item Without calculation, explain what happens to $\beta$ if the inspector switches to the $1\%$ level with the same sample size.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Two-tailed test at $5\%$: critical values $\pm 1.96$; critical region $z<-1.96$ or $z>1.96$.
+
+\textbf{2.} Step 1: $H_0:\mu=33$, $H_1:\mu\ne 33$. Step 2: $\alpha=0.05$, critical region $|z|>1.96$. Step 3: $z=\dfrac{32.3-33}{1.5/\sqrt{25}}=\dfrac{-0.7}{0.3}\approx -2.33$. Step 4: $-2.33<-1.96$, so reject $H_0$. Step 5: at the $5\%$ level, there is sufficient evidence that the mean content differs from $33$ cL (in fact it appears to be lower).
+
+\textbf{3.} $P(\text{Type I error})=\alpha=0.05$. A Type II error would mean the bottles really are under- (or over-) filled on average, yet the sample fails to reveal it, so consumers keep receiving incorrectly filled bottles.
+
+\textbf{4.} Reducing $\alpha$ to $1\%$ widens the acceptance region (critical values $\pm 2.576$), so with $n$ unchanged the probability $\beta$ of a Type II error \emph{increases}: the test becomes less able to detect a real deviation.
+\end{corrige}
+
+\coursec{Hypothesis Test for a Population Mean}
+
+In the previous section we built the complete machinery of hypothesis testing: the null and alternative hypotheses $H_0$ and $H_1$, the significance level $\alpha$, the test statistic, the critical region, and the two types of error. We now put this machinery to work on the most common problem of all: \emph{is the mean of a population equal to some claimed value $\mu_0$?} A bottling company claims its bottles contain $500\ \mathrm{ml}$ of juice; a school claims its candidates average $12$ out of $20$ in Mathematics. A sample is taken, the sample mean $\bar{x}$ is computed, and we must decide whether the gap between $\bar{x}$ and $\mu_0$ is due to mere sampling fluctuation or to a real difference. This section answers that question rigorously.
+
+\courssub{Distribution of the Sample Mean}
+
+The whole test rests on one fundamental result, which you met in the chapter on sampling distributions.
+
+\begin{propriete}[Distribution of the sample mean]
+Let $X \sim N(\mu, \sigma^2)$ and let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from this population. Then the sample mean satisfies
+\[ \bar{X} \sim N\!\left(\mu,\ \frac{\sigma^2}{n}\right), \qquad\text{so that}\qquad Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}} \sim N(0,1). \]
+Moreover, by the \cle{Central Limit Theorem}, if the population is \emph{not} normal but $n$ is large (in practice $n \geq 30$), then $\bar{X}$ is \emph{approximately} $N(\mu, \sigma^2/n)$. The quantity $\sigma/\sqrt{n}$ is called the \cle{standard error} of the mean. (The proof for the normal case follows from the fact that a linear combination of independent normal variables is normal, with $E(\bar X)=\mu$ and $\mathrm{Var}(\bar X)=\sigma^2/n$; it is examinable.)
+\end{propriete}
+
+The intuition is simple: individual values are scattered with spread $\sigma$, but \emph{averages} are much more stable --- the spread of $\bar{X}$ is $\sigma/\sqrt{n}$, which shrinks as $n$ grows. So if $H_0 : \mu = \mu_0$ is true, we know exactly how $\bar{X}$ should behave, and we can measure how ``surprising'' an observed $\bar{x}$ is by standardising it.
+
+\courssub{The Three Cases: Choosing the Right Standard Error}
+
+In practice three situations arise, and the GCE examiners expect you to recognise each one.
+
+\textbf{Case 1: normal population, $\sigma^2$ known.} This is the ideal case. If $X \sim N(\mu, \sigma^2)$ with $\sigma^2$ known, then under $H_0$ the statistic
+\[ Z = \frac{\bar{X}-\mu_0}{\sigma/\sqrt{n}} \sim N(0,1) \quad\text{exactly.} \]
+
+\textbf{Case 2: $\sigma^2$ unknown, large sample ($n \geq 30$).} We do not know $\sigma^2$, so we estimate it from the sample by the \emph{unbiased} estimator $s^2 = \dfrac{\sum (x_i-\bar{x})^2}{n-1}$ and use
+\[ Z = \frac{\bar{X}-\mu_0}{s/\sqrt{n}} \approx N(0,1). \]
+The approximation is excellent for large $n$ because $s$ is then a very stable estimate of $\sigma$.
+
+\textbf{Case 3: non-normal population, large sample.} Even if the population distribution is skewed or unknown, the Central Limit Theorem guarantees that $\bar{X}$ is approximately normal for $n \geq 30$, so the same $Z$-statistic (with $\sigma$ or $s$) remains valid.
+
+\begin{attention}[Use the unbiased estimate $s^2$]
+When $\sigma^2$ is unknown, you must use the \emph{unbiased} estimate
+\[ s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1} = \frac{1}{n-1}\left(\sum x_i^2 - \frac{(\sum x_i)^2}{n}\right), \]
+with divisor $n-1$, \textbf{not} the population formula with divisor $n$. Using $n$ underestimates the variance and makes the test too ready to reject $H_0$. Many marks are lost here.
+\end{attention}
+
+\begin{attention}[Divide by $\sqrt{n}$, not by $n$]
+The standard error is $\dfrac{\sigma}{\sqrt{n}}$ (or $\dfrac{s}{\sqrt{n}}$). A very common error is to compute $Z = \dfrac{\bar{x}-\mu_0}{\sigma/n}$. Remember: $\mathrm{Var}(\bar{X}) = \dfrac{\sigma^2}{n}$, so its \emph{square root} is $\dfrac{\sigma}{\sqrt{n}}$. Dividing by $n$ instead of $\sqrt{n}$ inflates $Z$ and leads to wrong conclusions.
+\end{attention}
+
+\courssub{The Complete Z-Test Procedure}
+
+\begin{methode}[Z-test for a population mean]
+\begin{enumerate}
+\item \textbf{State the hypotheses.} $H_0 : \mu = \mu_0$ against $H_1 : \mu \neq \mu_0$ (two-tailed), or $H_1 : \mu > \mu_0$ or $H_1 : \mu < \mu_0$ (one-tailed), choosing $H_1$ from the wording of the problem.
+\item \textbf{Choose the significance level} $\alpha$ (usually $5\%$ or $1\%$) and read the critical value(s): $1.645$ (one-tailed, $5\%$), $1.96$ (two-tailed, $5\%$), $2.326$ (one-tailed, $1\%$), $2.576$ (two-tailed, $1\%$).
+\item \textbf{Compute the test statistic.}
+\[ z = \frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}} \quad (\sigma \text{ known}) \qquad\text{or}\qquad z = \frac{\bar{x}-\mu_0}{s/\sqrt{n}} \quad (\sigma \text{ unknown},\ n \geq 30). \]
+\item \textbf{Decide.} Reject $H_0$ if $z$ falls in the critical region: $|z| > 1.96$ (two-tailed, $5\%$), $z > 1.645$ or $z < -1.645$ (one-tailed, $5\%$).
+\item \textbf{Conclude in context}, in plain language, stating whether the evidence against $H_0$ is significant at the level $\alpha$.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, font=\small]
+\node[draw=popblue, thick, rounded corners, fill=popblueL, text width=3.4cm, align=center] (start) at (0,0) {Test on a mean $\mu$};
+\node[draw=popdark, thick, rounded corners, text width=3.2cm, align=center] (q1) at (0,-2) {Is $\sigma^2$ known?};
+\node[draw=popgreen, thick, rounded corners, fill=popgreenL, text width=3.6cm, align=center] (yes) at (-4,-4.2) {$Z=\dfrac{\bar X-\mu_0}{\sigma/\sqrt n}$ exact if $X$ normal};
+\node[draw=popdark, thick, rounded corners, text width=3.2cm, align=center] (q2) at (4,-4.2) {Is $n \geq 30$?};
+\node[draw=popgreen, thick, rounded corners, fill=popgreenL, text width=3.6cm, align=center] (big) at (4,-6.6) {$Z=\dfrac{\bar X-\mu_0}{s/\sqrt n}$ valid by CLT};
+\node[draw=poporange, thick, rounded corners, text width=3.4cm, align=center] (small) at (8.2,-4.2) {Small $n$: outside this course};
+\draw[-latex, thick, popink] (start) -- (q1);
+\draw[-latex, thick, popink] (q1) -- node[above left]{yes} (yes);
+\draw[-latex, thick, popink] (q1) -- node[above right]{no} (q2);
+\draw[-latex, thick, popink] (q2) -- node[right]{yes} (big);
+\draw[-latex, thick, popink] (q2) -- node[above]{no} (small);
+\end{tikzpicture}
+\legende{Flowchart for choosing the correct test statistic for a population mean.}
+\end{popfigure}
+
+\courssub{Worked Example 1: Two-Tailed Test, $\sigma$ Known}
+
+\begin{exoresolu}[The juice bottling machine]
+A machine in a Douala factory fills bottles so that the volume dispensed is $X \sim N(\mu, \sigma^2)$ with $\sigma = 4\ \mathrm{ml}$ known from long experience. The machine is supposed to deliver $\mu = 500\ \mathrm{ml}$. After maintenance, a random sample of $25$ bottles gives a mean volume of $\bar{x} = 498.2\ \mathrm{ml}$. Test at the $5\%$ level whether the mean volume has changed.
+\tcblower
+\textbf{Solution.}
+\textbf{Step 1.} $H_0 : \mu = 500$; $H_1 : \mu \neq 500$ (``changed'' means two-tailed).
+
+\textbf{Step 2.} Two-tailed test at $\alpha = 5\%$: critical values $\pm 1.96$. Reject $H_0$ if $|z| > 1.96$.
+
+\textbf{Step 3.} $\sigma$ is known, $X$ normal, so
+\[ z = \frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}} = \frac{498.2 - 500}{4/\sqrt{25}} = \frac{-1.8}{0.8} = -2.25. \]
+
+\textbf{Step 4.} $|z| = 2.25 > 1.96$: the observed value lies in the critical region. We \textbf{reject} $H_0$.
+
+\textbf{Step 5.} \emph{Conclusion:} at the $5\%$ level of significance there is sufficient evidence that the mean volume is no longer $500\ \mathrm{ml}$; the sample suggests the machine is under-filling, so it should be readjusted.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=6.2cm,
+  domain=-4:4, samples=120,
+  axis lines=middle,
+  xlabel={$z$}, ylabel={},
+  xtick={-2.25,-1.96,0,1.96,2.25},
+  xticklabels={$-2.25$,$-1.96$,$0$,$1.96$,$2.25$},
+  ytick=\empty,
+  enlargelimits=false,
+  clip=false,
+  every axis x label/.style={at={(ticklabel* cs:1)}, anchor=west},
+]
+\addplot[popblue, very thick] {exp(-x^2/2)/sqrt(max(0,2*pi))};
+\addplot[fill=poporange, opacity=0.45, draw=none] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[fill=poporange, opacity=0.45, draw=none, domain=-4:-1.96] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[fill=poporange, opacity=0.45, draw=none, domain=1.96:4] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\draw[popdark, very thick, dashed] (axis cs:-2.25,0) -- (axis cs:-2.25,0.13) node[above, popdark]{observed $z=-2.25$};
+\node[popdark] at (axis cs:2.9,0.12) {critical region};
+\node[popdark] at (axis cs:-3.1,0.05) {$2.5\%$};
+\node[popdark] at (axis cs:3.1,0.05) {$2.5\%$};
+\end{axis}
+\end{tikzpicture}
+\legende{Two-tailed test at $5\%$: the observed value $z=-2.25$ falls inside the left critical region, so $H_0$ is rejected.}
+\end{popfigure}
+
+\courssub{Worked Example 2: One-Tailed Test, $\sigma$ Unknown, Large Sample}
+
+\begin{exoresolu}[Average score in a school]
+The principal of a large college in Yaound\'e claims that the mean score of his Upper Sixth students in a national mock examination is \emph{more than} $12$ out of $20$. A random sample of $64$ scripts gives $\bar{x} = 12.5$ and $\sum (x_i - \bar{x})^2 = 567$. Test the principal's claim at the $5\%$ level of significance.
+\tcblower
+\textbf{Solution.}
+\textbf{Step 1.} The claim is ``more than $12$'', so it goes into $H_1$:
+\[ H_0 : \mu = 12 \qquad H_1 : \mu > 12 \quad\text{(one-tailed, right).} \]
+
+\textbf{Step 2.} One-tailed test at $\alpha = 5\%$: reject $H_0$ if $z > 1.645$.
+
+\textbf{Step 3.} $\sigma^2$ is unknown but $n = 64 \geq 30$, so we use the unbiased estimate:
+\[ s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1} = \frac{567}{63} = 9, \qquad s = 3. \]
+By the Central Limit Theorem,
+\[ z = \frac{\bar{x}-\mu_0}{s/\sqrt{n}} = \frac{12.5 - 12}{3/\sqrt{64}} = \frac{0.5}{0.375} = 1.333. \]
+
+\textbf{Step 4.} $z = 1.333 < 1.645$: not in the critical region. We \textbf{do not reject} $H_0$.
+
+\textbf{Step 5.} \emph{Conclusion:} at the $5\%$ level there is \emph{insufficient} evidence to support the principal's claim that the mean score exceeds $12$. Note carefully: we have not proved that $\mu = 12$; we have simply found that the data do not provide strong enough evidence against it.
+\end{exoresolu}
+
+\courssub{Link with Confidence Intervals (GCE Extra)}
+
+There is a beautiful and examinable connection between a two-tailed test and a confidence interval. The $95\%$ confidence interval for $\mu$ is
+\[ \bar{x} - 1.96\,\frac{\sigma}{\sqrt{n}} \leq \mu \leq \bar{x} + 1.96\,\frac{\sigma}{\sqrt{n}}. \]
+Now the two-tailed test at $5\%$ \emph{accepts} $H_0 : \mu = \mu_0$ exactly when
+\[ \left|\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}\right| \leq 1.96 \iff \bar{x} - 1.96\frac{\sigma}{\sqrt{n}} \leq \mu_0 \leq \bar{x} + 1.96\frac{\sigma}{\sqrt{n}}, \]
+that is, exactly when $\mu_0$ lies \emph{inside} the $95\%$ confidence interval.
+
+\begin{propriete}[Duality between tests and confidence intervals]
+A two-tailed test of $H_0 : \mu = \mu_0$ at level $\alpha$ rejects $H_0$ if and only if $\mu_0$ lies \textbf{outside} the $(1-\alpha)$ confidence interval for $\mu$. (Not required to be proved at GCE, but frequently examined as a checking technique.)
+\end{propriete}
+
+\begin{methode}[Checking a conclusion with a confidence interval]
+\begin{enumerate}
+\item Compute the $95\%$ confidence interval $\left[\bar{x} - 1.96\,\dfrac{s}{\sqrt{n}},\ \bar{x} + 1.96\,\dfrac{s}{\sqrt{n}}\right]$.
+\item If $\mu_0$ lies \emph{outside} the interval, the two-tailed test at $5\%$ rejects $H_0$; if $\mu_0$ lies \emph{inside}, $H_0$ is not rejected.
+\item Use this as a quick cross-check of your $z$-calculation.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Checking the bottling example]
+For the juice machine, the $95\%$ confidence interval is
+\[ 498.2 \pm 1.96\times\frac{4}{\sqrt{25}} = 498.2 \pm 1.568 = [496.63\,;\ 499.77]\ \mathrm{ml}. \]
+Since $\mu_0 = 500$ lies \emph{outside} this interval, the two-tailed test at $5\%$ rejects $H_0$ --- exactly as we found with $z = -2.25$.
+\end{exemplebox}
+
+\courssub{Interpreting the Conclusion for a Non-Specialist}
+
+A statistical conclusion must be communicated honestly. ``Reject $H_0$ at the $5\%$ level'' means: \emph{if the claimed mean were true, a sample mean as extreme as the one observed would occur in fewer than $5\%$ of samples} --- so the claim is not credible. It does \textbf{not} mean the claim is certainly false: there is still a probability $\alpha$ (a Type I error) of rejecting a true $H_0$. Conversely, ``do not reject $H_0$'' does \textbf{not} prove $H_0$ true; it means the evidence is insufficient. Always finish with one clear sentence in the language of the problem, mentioning the significance level, as we did in both worked examples.
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Under $H_0 : \mu=\mu_0$: $\bar{X} \sim N(\mu_0, \sigma^2/n)$; the test statistic is $z = \dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$.
+\item $\sigma^2$ unknown and $n \geq 30$: replace $\sigma$ by $s = \sqrt{\dfrac{\sum(x_i-\bar{x})^2}{n-1}}$; the CLT validates the $Z$-test even for non-normal populations.
+\item Standard error $= \sigma/\sqrt{n}$, never $\sigma/n$.
+\item Two-tailed $5\%$: reject if $|z|>1.96$; one-tailed $5\%$: reject if $z>1.645$ (right) or $z<-1.645$ (left).
+\item Two-tailed test at $5\%$ $\iff$ check whether $\mu_0$ is outside the $95\%$ confidence interval.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+A factory in Bafoussam produces sugar packets with masses normally distributed and $\sigma = 5\ \mathrm{g}$. The nominal mean mass is $1000\ \mathrm{g}$. A random sample of $36$ packets has mean $997.5\ \mathrm{g}$.
+\begin{enumerate}
+\item Test at the $5\%$ level whether the mean mass differs from $1000\ \mathrm{g}$.
+\item Test at the $1\%$ level whether the mean mass is \emph{less than} $1000\ \mathrm{g}$.
+\item Compute the $95\%$ confidence interval for $\mu$ and confirm your answer to part 1.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+1. $H_0:\mu=1000$, $H_1:\mu\neq1000$. $z = \dfrac{997.5-1000}{5/\sqrt{36}} = \dfrac{-2.5}{0.8333} = -3.0$. Since $|{-3}|>1.96$, reject $H_0$: the mean mass has changed.
+
+2. $H_1:\mu<1000$, one-tailed at $1\%$: critical value $-2.326$. Since $z=-3.0<-2.326$, reject $H_0$: significant evidence at the $1\%$ level that the packets are underweight.
+
+3. $997.5 \pm 1.96\times\dfrac{5}{6} = 997.5 \pm 1.633$, giving $[995.87\,;\ 999.13]\ \mathrm{g}$. Since $1000 \notin [995.87; 999.13]$, the two-tailed test at $5\%$ rejects $H_0$, confirming part 1.
+\end{corrige}
+
+\coursec{Test for the Difference Between Two Means (Large Samples)}
+
+In the previous section we learnt how to test a claim about \emph{one} population mean: is the mean mass of bags of cement really \SI{50}{kg}? In real life, however, the most interesting questions are \emph{comparative}. Is a new maize variety more productive than the traditional one? Do students of School A perform better at the GCE than students of School B? Does a new drug reduce blood pressure more than the old one? In all these questions we have \cle{two populations}, and we want to compare their means $\mu_1$ and $\mu_2$. This section extends the machinery of hypothesis testing to exactly that situation, in the case where both samples are \emph{large}.
+
+\courssub{From One Mean to the Difference of Two Means}
+
+\textbf{The comparative question.}\par
+Suppose an agronomist in the West Region wants to know whether variety 1 of maize yields more per hectare than variety 2. She cannot measure the whole populations, so she takes a sample of $n_1$ fields planted with variety 1 and an \emph{independent} sample of $n_2$ fields planted with variety 2, obtaining sample means $\bar{x}_1$ and $\bar{x}_2$. Suppose she finds $\bar{x}_1 = 3.2$ tonnes and $\bar{x}_2 = 2.9$ tonnes. Does this prove that $\mu_1 > \mu_2$? Not necessarily: even if the two varieties were equally productive, sampling fluctuation alone could produce $\bar{x}_1 > \bar{x}_2$. The question is whether the observed difference $\bar{x}_1 - \bar{x}_2$ is \emph{too large} to be explained by chance. This is exactly the spirit of hypothesis testing, applied to the parameter $\mu_1 - \mu_2$.
+
+\begin{definition}[Hypotheses for the comparison of two means]
+Let $\mu_1$ and $\mu_2$ be the means of two populations. A test comparing them uses a null hypothesis of the form
+\[ H_0 : \mu_1 - \mu_2 = d \qquad (\text{most often } d = 0, \text{ i.e. } H_0 : \mu_1 = \mu_2), \]
+against one of the alternatives:
+\begin{itemize}
+\item $H_1 : \mu_1 - \mu_2 \neq d$ \quad (two-tailed test);
+\item $H_1 : \mu_1 - \mu_2 > d$ \quad (one-tailed, right tail);
+\item $H_1 : \mu_1 - \mu_2 < d$ \quad (one-tailed, left tail).
+\end{itemize}
+\end{definition}
+
+\begin{methode}[Stating $H_0$ with $d \neq 0$]
+When the claim is not ``the means are equal'' but ``mean 1 exceeds mean 2 by \emph{at least} $d$'', proceed as follows:
+\begin{enumerate}
+\item Write the boundary of the claim as the null hypothesis: $H_0 : \mu_1 - \mu_2 = d$.
+\item Write the alternative according to what must be \emph{demonstrated}: to prove ``exceeds by more than $d$'', use $H_1 : \mu_1 - \mu_2 > d$ (right-tailed).
+\item Use the same test statistic as for $d = 0$, subtracting $d$ in the numerator:
+\[ Z = \frac{\bar{x}_1 - \bar{x}_2 - d}{\sqrt{\dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}}}. \]
+\end{enumerate}
+For example, ``the new variety yields at least $0.5$ tonne per hectare more'' gives $H_0 : \mu_1 - \mu_2 = 0.5$ against $H_1 : \mu_1 - \mu_2 > 0.5$.
+\end{methode}
+
+\courssub{Distribution of the Difference of Two Sample Means}
+
+To build a test we need the sampling distribution of the statistic $\bar{X}_1 - \bar{X}_2$ under $H_0$. Recall two facts from earlier chapters: a linear combination of independent normal variables is normal; means add, and \emph{variances of independent variables add}.
+
+\begin{propriete}[Distribution of the difference of two independent sample means]
+Let $X_1$ and $X_2$ be two \textbf{independent} random variables with
+\[ \bar{X}_1 \sim N\!\left(\mu_1, \tfrac{\sigma_1^2}{n_1}\right), \qquad \bar{X}_2 \sim N\!\left(\mu_2, \tfrac{\sigma_2^2}{n_2}\right), \]
+where $\bar{X}_1$ and $\bar{X}_2$ are the means of independent samples of sizes $n_1$ and $n_2$. Then
+\[ \bar{X}_1 - \bar{X}_2 \sim N\!\left(\mu_1 - \mu_2,\; \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}\right). \]
+\emph{Justification (instructive, not required at the GCE).} The mean of a difference is the difference of the means: $E(\bar{X}_1 - \bar{X}_2) = \mu_1 - \mu_2$. For \emph{independent} variables, $\operatorname{Var}(\bar{X}_1 - \bar{X}_2) = \operatorname{Var}(\bar{X}_1) + \operatorname{Var}(\bar{X}_2) = \dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}$, because $\operatorname{Var}(-\bar{X}_2) = (-1)^2\operatorname{Var}(\bar{X}_2)$. A sum of independent normals is normal, which completes the result. When the populations are not normal but $n_1, n_2$ are large, the Central Limit Theorem makes the result approximately true.
+\end{propriete}
+
+\begin{attention}[Variances add — even for a difference!]
+The most frequent error at the GCE is to \emph{subtract} the variances. Even though we study a \textbf{difference} of means, the variance of the difference is the \textbf{sum}
+\[ \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}. \]
+Reason: $\operatorname{Var}(-\bar{X}_2) = (-1)^2 \operatorname{Var}(\bar{X}_2) = +\operatorname{Var}(\bar{X}_2)$. Subtracting the variances would give a standard error that is too small and could even be negative. Never write $\dfrac{\sigma_1^2}{n_1} - \dfrac{\sigma_2^2}{n_2}$.
+\end{attention}
+
+\begin{attention}[The two samples must be independent]
+This test is valid only if the two samples are drawn \cle{independently}: the choice of individuals in sample 1 must not influence sample 2. It does \textbf{not} apply to \emph{paired} data — for example the same patients measured before and after a treatment, or the same students tested in June and in September. Paired data are analysed by reducing the pairs to a single sample of differences, which is a one-sample problem.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Top: two sampling distributions
+\begin{scope}
+\draw[->] (-0.5,0) -- (8.5,0) node[below left, text=popmuted, font=\small] {};
+\draw[popblue, thick, domain=0.3:4.2, samples=80] plot (\x, {1.5*exp(-((\x-2.2)^2)/0.72)});
+\draw[poporange, thick, domain=3.0:7.6, samples=80] plot (\x, {1.5*exp(-((\x-5.3)^2)/0.98)});
+\node[popblue, font=\small] at (1.2,1.7) {$\bar{X}_1$};
+\node[poporange, font=\small] at (6.6,1.7) {$\bar{X}_2$};
+\node[font=\small, text=popmuted] at (2.2,-0.35) {$\mu_1$};
+\node[font=\small, text=popmuted] at (5.3,-0.35) {$\mu_2$};
+\draw[popmuted, dashed] (2.2,0) -- (2.2,1.5);
+\draw[popmuted, dashed] (5.3,0) -- (5.3,1.5);
+\node[font=\small, align=center, text=popink] at (4,2.6) {Sampling distributions of $\bar{X}_1$ and $\bar{X}_2$};
+\end{scope}
+% Bottom: distribution of the difference
+\begin{scope}[yshift=-4.2cm]
+\draw[->] (-0.5,0) -- (8.5,0);
+\draw[popgreen, thick, domain=1.0:7.0, samples=80] plot (\x, {1.3*exp(-((\x-4)^2)/1.8)});
+\draw[popmuted, dashed] (4,0) -- (4,1.3);
+\node[font=\small, text=popmuted] at (4,-0.35) {$\mu_1 - \mu_2$};
+\node[popgreen, font=\small] at (6.3,1.5) {$\bar{X}_1 - \bar{X}_2$};
+\node[font=\small, align=center, text=popink] at (4,2.3) {Distribution of the difference: mean $\mu_1-\mu_2$, variance $\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}$};
+\end{scope}
+% Arrow between
+\draw[->, popdark, thick] (4,-1.1) -- (4,-1.9) node[midway, right, font=\small, text=popdark] {subtract};
+\end{tikzpicture}
+\end{center}
+\legende{Two independent sampling distributions (top) combine into the distribution of $\bar{X}_1 - \bar{X}_2$ (bottom): the means subtract, the variances add.}
+\end{popfigure}
+
+\courssub{The Test Statistic and Conditions of Validity}
+
+Standardising the difference under $H_0 : \mu_1 - \mu_2 = d$ gives the test statistic.
+
+\begin{aretenir}[Test statistic for two means, large samples]
+Under $H_0 : \mu_1 - \mu_2 = d$,
+\[ Z = \frac{\bar{X}_1 - \bar{X}_2 - d}{\sqrt{\dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}}} \sim N(0,1). \]
+When $\sigma_1^2$ and $\sigma_2^2$ are unknown (the usual case), they are replaced by the sample estimates $s_1^2$ and $s_2^2$; this is legitimate because $n_1$ and $n_2$ are large.
+\end{aretenir}
+
+\textbf{Conditions of validity.}
+\begin{itemize}
+\item The two samples are \cle{independent} random samples.
+\item Both samples are \cle{large} (in practice $n_1 \geq 30$ and $n_2 \geq 30$), so that the Central Limit Theorem applies and $s_1^2, s_2^2$ are reliable estimates of $\sigma_1^2, \sigma_2^2$.
+\end{itemize}
+
+\begin{methode}[Z-test for the difference between two means (large samples)]
+\begin{enumerate}
+\item \textbf{State the hypotheses}: $H_0 : \mu_1 - \mu_2 = d$ against the appropriate $H_1$ (one- or two-tailed), and choose the significance level $\alpha$.
+\item \textbf{Compute the test statistic}
+\[ z = \frac{\bar{x}_1 - \bar{x}_2 - d}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}}. \]
+\item \textbf{Determine the critical value(s)} from the standard normal table: e.g. $1.645$ (one tail, $5\%$), $1.96$ (two tails, $5\%$), $2.576$ (two tails, $1\%$).
+\item \textbf{Compare}: reject $H_0$ if $z$ falls in the critical region ($z > z_\alpha$, $z < -z_\alpha$, or $|z| > z_{\alpha/2}$).
+\item \textbf{Conclude in context}: state clearly what the decision means for the original problem.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+% Five-step flow layout
+\node[draw=popblue, fill=popblueL, rounded corners, text width=10.5cm, align=left, font=\small] (s1) at (0,0) {\textbf{Step 1 — Hypotheses:}\ $H_0 : \mu_1 - \mu_2 = d$;\ choose $H_1$ (one/two-tailed) and $\alpha$.};
+\node[draw=popblue, fill=popblueL, rounded corners, text width=10.5cm, align=left, font=\small] (s2) at (0,-1.35) {\textbf{Step 2 — Statistic:}\ $z = \dfrac{\bar{x}_1 - \bar{x}_2 - d}{\sqrt{s_1^2/n_1 + s_2^2/n_2}}$ (variances \emph{add}).};
+\node[draw=popblue, fill=popblueL, rounded corners, text width=10.5cm, align=left, font=\small] (s3) at (0,-2.7) {\textbf{Step 3 — Critical value:}\ read $z_{\alpha}$ or $z_{\alpha/2}$ from the $N(0,1)$ table.};
+\node[draw=popblue, fill=popblueL, rounded corners, text width=10.5cm, align=left, font=\small] (s4) at (0,-4.05) {\textbf{Step 4 — Decision:}\ reject $H_0$ if $z$ lies in the critical region.};
+\node[draw=popgreen, fill=popgreenL, rounded corners, text width=10.5cm, align=left, font=\small] (s5) at (0,-5.4) {\textbf{Step 5 — Conclusion:}\ interpret in the context of the problem (yields, scores, \dots).};
+\foreach \a/\b in {s1/s2, s2/s3, s3/s4, s4/s5} {\draw[->, popdark, thick] (\a.south) -- (\b.north);}
+\end{tikzpicture}
+\end{center}
+\legende{The five steps of a two-sample Z-test, to be reproduced in every worked solution.}
+\end{popfigure}
+
+\courssub{Worked Examples}
+
+\begin{exoresolu}[Comparing two maize varieties in the West Region]
+An agricultural station near Bafoussam compares two maize varieties. Variety 1 is grown on $n_1 = 60$ independent plots, giving a mean yield of $\bar{x}_1 = 3.2$ tonnes per hectare with variance $s_1^2 = 0.64$. Variety 2 is grown on $n_2 = 50$ plots, giving $\bar{x}_2 = 2.9$ tonnes per hectare with variance $s_2^2 = 0.50$. Test, at the $5\%$ level, whether variety 1 gives a higher mean yield than variety 2.
+\tcblower
+\textbf{Step 1 — Hypotheses.} Let $\mu_1, \mu_2$ be the true mean yields.
+\[ H_0 : \mu_1 - \mu_2 = 0 \quad \text{against} \quad H_1 : \mu_1 - \mu_2 > 0 \quad \text{(right-tailed)}, \qquad \alpha = 0.05. \]
+\textbf{Step 2 — Test statistic.} The samples are independent and large, so
+\[ z = \frac{\bar{x}_1 - \bar{x}_2 - 0}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}} = \frac{3.2 - 2.9}{\sqrt{\dfrac{0.64}{60} + \dfrac{0.50}{50}}} = \frac{0.3}{\sqrt{0.010667 + 0.010}} = \frac{0.3}{\sqrt{0.020667}} = \frac{0.3}{0.14376} \approx 2.09. \]
+\textbf{Step 3 — Critical value.} One-tailed at $5\%$: $z_{0.05} = 1.645$. Critical region: $z > 1.645$.
+\textbf{Step 4 — Decision.} Since $2.09 > 1.645$, we reject $H_0$.
+\textbf{Step 5 — Conclusion.} At the $5\%$ level there is significant evidence that variety 1 has a higher mean yield than variety 2. The station can recommend variety 1 to farmers of the West Region, while noting that the observed advantage is about $0.3$ tonne per hectare.
+\end{exoresolu}
+
+\begin{exoresolu}[Comparing mean GCE scores of two schools]
+A random sample of $n_1 = 80$ candidates from School A has a mean score of $\bar{x}_1 = 12.4$ with variance $s_1^2 = 16.0$; an independent random sample of $n_2 = 100$ candidates from School B has mean $\bar{x}_2 = 11.9$ with variance $s_2^2 = 20.0$. Test at the $1\%$ level whether there is any difference between the mean scores of the two schools.
+\tcblower
+\textbf{Step 1 — Hypotheses.} ``Any difference'' means a two-tailed test:
+\[ H_0 : \mu_1 - \mu_2 = 0 \quad \text{against} \quad H_1 : \mu_1 - \mu_2 \neq 0, \qquad \alpha = 0.01. \]
+\textbf{Step 2 — Test statistic.}
+\[ z = \frac{12.4 - 11.9}{\sqrt{\dfrac{16.0}{80} + \dfrac{20.0}{100}}} = \frac{0.5}{\sqrt{0.20 + 0.20}} = \frac{0.5}{\sqrt{0.40}} = \frac{0.5}{0.63246} \approx 0.79. \]
+\textbf{Step 3 — Critical values.} Two-tailed at $1\%$: $z_{0.005} = 2.576$. Critical region: $|z| > 2.576$.
+\textbf{Step 4 — Decision.} Since $|0.79| < 2.576$, we do \emph{not} reject $H_0$.
+\textbf{Step 5 — Conclusion.} At the $1\%$ level there is no significant evidence of a difference between the mean scores of the two schools.
+\end{exoresolu}
+
+\courssub{Interpreting a Non-Significant Difference}
+
+The last example illustrates a subtle but essential point. We did \emph{not} prove that $\mu_1 = \mu_2$; we only failed to find evidence against that claim. The observed difference $0.5$ might reflect a real but small gap that our samples were not large enough to detect.
+
+\begin{attention}[``Not significant'' does not mean ``equal'']
+When $H_0$ is not rejected, the correct conclusion is: ``the data do not provide sufficient evidence, at the $\alpha$ level, of a difference between the means.'' It is a mistake to write ``the two means are equal.'' A non-significant result may arise because the true difference is small, because the samples are too small, or because the variability is large. This is why we say we \emph{fail to reject} $H_0$ rather than we \emph{accept} it.
+\end{attention}
+
+\begin{savaistu}[Why this test matters in Cameroon]
+Comparative tests of two means are the everyday tool of agricultural research stations (comparing crop varieties), of the Ministry of Public Health (comparing average recovery times under two treatments) and of education analysts (comparing performance between schools or between years). Whenever you read ``on average, group A does better than group B'', ask yourself: was the difference tested, or could it be due to sampling fluctuation alone?
+\end{savaistu}
+
+\begin{exercice}[Filling stations]
+Two filling stations in Douala are suspected of delivering different average volumes of fuel per ``litre'' sold. Independent measurements on $n_1 = 40$ pumps of station 1 give $\bar{x}_1 = 0.98$ L with $s_1^2 = 0.0064$; on $n_2 = 36$ pumps of station 2, $\bar{x}_2 = 1.01$ L with $s_2^2 = 0.0081$. Test at the $5\%$ level whether there is a difference between the two stations.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$H_0 : \mu_1 - \mu_2 = 0$ against $H_1 : \mu_1 - \mu_2 \neq 0$ (two-tailed), $\alpha = 0.05$.
+\[ z = \frac{0.98 - 1.01}{\sqrt{\dfrac{0.0064}{40} + \dfrac{0.0081}{36}}} = \frac{-0.03}{\sqrt{0.00016 + 0.000225}} = \frac{-0.03}{\sqrt{0.000385}} = \frac{-0.03}{0.019621} \approx -1.53. \]
+Critical values: $\pm 1.96$. Since $|-1.53| < 1.96$, we do not reject $H_0$: at the $5\%$ level the data do not show a significant difference between the mean volumes delivered by the two stations. Note carefully: we have not proved the stations deliver equal volumes; the evidence is simply insufficient to conclude that they differ.
+\end{corrige}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item To compare two means, test $H_0 : \mu_1 - \mu_2 = d$ (usually $d = 0$) against a one- or two-tailed alternative.
+\item For independent samples: $\bar{X}_1 - \bar{X}_2 \sim N\!\left(\mu_1 - \mu_2,\ \dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}\right)$ — means subtract, \textbf{variances add}.
+\item Test statistic: $z = \dfrac{\bar{x}_1 - \bar{x}_2 - d}{\sqrt{s_1^2/n_1 + s_2^2/n_2}}$, valid for large independent samples.
+\item Follow the five steps: hypotheses, statistic, critical value, decision, conclusion in context.
+\item Failing to reject $H_0$ never proves that the two means are equal.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Applications, Consolidation and Exam Practice}
+
+In the previous section you learnt how to compare two population means using large independent samples. You now possess the complete toolkit of hypothesis testing: hypotheses, significance levels, critical regions, errors, the five-step procedure, and tests on one mean or on the difference of two means. This final section shows you where these tools are actually used in Cameroon and beyond, how to choose the right test from an exam question, and how to present your work so that you collect every method mark on the GCE paper.
+
+\courssub{Applications in Quality Control}
+
+Manufacturers must guarantee that the mean content of a package matches what is printed on the label. A company in Douala filling $50\ \mathrm{kg}$ bags of cement, or a factory bottling $50\ \mathrm{cl}$ of fruit juice, cannot weigh every single item; instead, a random sample is taken and a hypothesis test decides whether the machine needs adjustment.
+
+\begin{exemplebox}[Checking the mean content of sugar packets]
+A machine fills packets labelled $1\ \mathrm{kg}$ of sugar. Past experience gives $\sigma = 15\ \mathrm{g}$. A sample of $60$ packets has mean mass $\bar{x} = 995\ \mathrm{g}$. Has the machine drifted? Here the natural test is \cle{two-tailed} ($H_0:\mu = 1000$, $H_1:\mu \neq 1000$) because both under-filling (cheating customers) and over-filling (losing money) matter. The test statistic is
+\[ z = \frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}} = \frac{995-1000}{15/\sqrt{60}} = \frac{-5}{1.9365} \approx -2.58. \]
+At the $5\%$ level the critical values are $\pm 1.96$; since $-2.58 < -1.96$, we reject $H_0$: there is evidence, at the $5\%$ level, that the mean content differs from $1\ \mathrm{kg}$.
+\end{exemplebox}
+
+Notice how the \emph{context} dictates the type of test: if a consumer association only suspects \emph{under}-filling, a one-tailed test ($H_1:\mu < 1000$) is appropriate.
+
+\courssub{Applications in Health}
+
+Doctors compare treatments by testing the difference of two means: mean recovery time under a new drug versus the standard one, or mean systolic blood pressure in two groups of patients.
+
+\begin{exoresolu}[Comparing two treatments for malaria]
+A hospital in Yaoundé compares recovery times (in days). Treatment A (standard): $n_1 = 80$, $\bar{x}_1 = 5.2$, $s_1 = 1.4$. Treatment B (new): $n_2 = 100$, $\bar{x}_2 = 4.7$, $s_2 = 1.6$. Test at the $1\%$ level whether the new treatment reduces the mean recovery time.
+\tcblower
+\textbf{Step 1 — Hypotheses.} $H_0:\mu_1 = \mu_2$ (no difference); $H_1:\mu_1 > \mu_2$ (the standard treatment is slower, i.e. the new treatment is faster). One-tailed test.
+
+\textbf{Step 2 — Level.} $\alpha = 1\%$; critical value $z = 2.326$ (right tail).
+
+\textbf{Step 3 — Statistic.} Large samples, so we use the sample variances in place of the population variances:
+\[ z = \frac{\bar{x}_1-\bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}}} = \frac{5.2-4.7}{\sqrt{\dfrac{1.4^2}{80}+\dfrac{1.6^2}{100}}} = \frac{0.5}{\sqrt{0.0245+0.0256}} = \frac{0.5}{0.2238} \approx 2.23. \]
+
+\textbf{Step 4 — Decision.} $2.23 < 2.326$: the statistic is \emph{not} in the critical region, so we do not reject $H_0$.
+
+\textbf{Step 5 — Conclusion in context.} At the $1\%$ level there is insufficient evidence that treatment B reduces the mean recovery time. (Note: at the $5\%$ level the conclusion would change, since $2.23 > 1.645$ — the choice of $\alpha$ matters!)
+\end{exoresolu}
+
+\courssub{Applications in Education and Agriculture}
+
+The same machinery answers questions such as: ``Do students taught with the new method score higher on average?'' or ``Does the improved maize variety give a higher mean yield per hectare than the local variety?'' In each case, two large independent samples (two schools, two groups of farms in the West Region) are compared with the two-sample $z$-statistic, and the mean incomes of two groups of traders can be compared in exactly the same way.
+
+\begin{exemplebox}[Mean marks of two schools]
+School X: $n_1 = 50$, $\bar{x}_1 = 12.4$, $s_1 = 3.1$. School Y: $n_2 = 60$, $\bar{x}_2 = 11.6$, $s_2 = 3.4$. Test at the $5\%$ level whether the mean marks differ (two-tailed):
+\[ z = \frac{12.4-11.6}{\sqrt{\dfrac{3.1^2}{50}+\dfrac{3.4^2}{60}}} = \frac{0.8}{\sqrt{0.1922+0.1927}} = \frac{0.8}{0.6204} \approx 1.29. \]
+Since $|1.29| < 1.96$, we do not reject $H_0$: the observed difference in mean marks is not significant at the $5\%$ level.
+\end{exemplebox}
+
+\courssub{Choosing the Significance Level Sensibly}
+
+The level $\alpha$ is the probability of a Type I error (rejecting a true $H_0$). Its choice should reflect the \emph{cost} of each error in context.
+
+\begin{itemize}
+\item If a Type I error is \textbf{very costly} — e.g. declaring an effective drug ineffective, or stopping a whole production line unnecessarily — choose a \cle{small} $\alpha$ such as $1\%$.
+\item If a Type II error (accepting a false $H_0$) is \textbf{more dangerous} — e.g. failing to detect under-filled medicine bottles, or missing a real improvement in patient survival — a larger $\alpha$ such as $5\%$ or $10\%$ makes rejection easier and so reduces $\beta$.
+\end{itemize}
+
+\begin{attention}[Sample size and the two errors]
+For a \emph{fixed} sample size, decreasing $\alpha$ increases $\beta$ and vice versa — you cannot shrink both at once. But \cle{increasing the sample size} reduces the standard error, which makes the test sharper: a redesigned test with a larger $n$ can achieve a smaller $\alpha$ \emph{and} a smaller $\beta$ simultaneously. Always mention this when a question asks you to ``comment'' or ``suggest an improvement''.
+\end{attention}
+
+\courssub{Choosing the Correct Test: A Decision Tree}
+
+Exam questions rarely say ``use a two-sample test''. You must read the wording and decide. The figure below summarises the reasoning.
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  font=\small,
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=3.6cm, align=center, inner sep=4pt},
+  dec/.style={draw=poporange, thick, rounded corners, fill=white, text width=3.4cm, align=center, inner sep=4pt},
+  lab/.style={font=\footnotesize\itshape, text=popdark},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark}]
+\node[dec] (q1) at (0,0) {How many samples / means are mentioned?};
+\node[dec] (q2a) at (-4.6,-2.2) {One mean $\mu$: is $\sigma$ known or $n$ large?};
+\node[dec] (q2b) at (4.6,-2.2) {Two means: are samples large and independent?};
+\node[box, align=center] (a1) at (-6.6,-4.6){One-sample test\\ $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$};
+\node[box, align=center] (a2) at (-2.4,-4.6){Use $s$ for $\sigma$\\ ($n\ge 30$), same formula};
+\node[box, align=center] (a3) at (4.6,-4.6){Two-sample test\\ $z=\dfrac{\bar{x}_1-\bar{x}_2}{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}$};
+\node[dec] (q3) at (0,-7.0) {Does $H_1$ say ``different'' or ``greater/less''?};
+\node[box, align=center] (b1) at (-3.6,-9.2){Two-tailed:\\ both tails, $\pm z_{\alpha/2}$};
+\node[box, align=center] (b2) at (3.6,-9.2){One-tailed:\\ one tail, $z_{\alpha}$};
+\draw[arr] (q1) -- node[lab, above left]{one} (q2a);
+\draw[arr] (q1) -- node[lab, above right]{two} (q2b);
+\draw[arr] (q2a) -- node[lab, left]{$\sigma$ known} (a1);
+\draw[arr] (q2a) -- node[lab, right]{$\sigma$ unknown} (a2);
+\draw[arr] (q2b) -- node[lab, right]{yes} (a3);
+\draw[arr] (a1.south) |- (q3.west);
+\draw[arr] (a2.south) -- (q3.north west);
+\draw[arr] (a3.south) |- (q3.east);
+\draw[arr] (q3) -- node[lab, above left]{``differs from''} (b1);
+\draw[arr] (q3) -- node[lab, above right]{``greater/less than''} (b2);
+\end{tikzpicture}
+\legende{Decision tree for selecting the correct test from a problem statement.}
+\end{popfigure}
+
+\begin{methode}[Justifying one-tailed versus two-tailed in one sentence]
+Look at the \emph{claim} in the question, then write one sentence, for example:
+\begin{itemize}
+\item ``The test is two-tailed because the question asks whether the mean \emph{differs from} $50\ \mathrm{cl}$, with no direction specified.''
+\item ``The test is one-tailed (left tail) because the consumer association claims the mean content is \emph{less than} $50\ \mathrm{cl}$.''
+\end{itemize}
+The key words are: \emph{different / changed / not equal} $\Rightarrow$ two-tailed; \emph{greater / increased / more} or \emph{less / reduced / lower} $\Rightarrow$ one-tailed.
+\end{methode}
+
+\courssub{Summary of All Test Statistics}
+
+\begin{propriete}[Summary table of tests in this chapter]
+Not examinable as a proof, but every formula must be known by heart.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Situation} & \textbf{Hypotheses} & \textbf{Test statistic} \\
+\hline
+One mean, $\sigma$ known & $H_0:\mu=\mu_0$ & $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$ \\
+\hline
+One mean, $\sigma$ unknown, $n$ large & $H_0:\mu=\mu_0$ & $z=\dfrac{\bar{x}-\mu_0}{s/\sqrt{n}}$ \\
+\hline
+Difference of two means, large independent samples & $H_0:\mu_1=\mu_2$ & $z=\dfrac{\bar{x}_1-\bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}}}$ \\
+\hline
+\end{tabularx}
+\end{center}
+Critical values: two-tailed $5\%$: $\pm1.96$; $1\%$: $\pm2.576$. One-tailed $5\%$: $1.645$; $1\%$: $2.326$.
+\end{propriete}
+
+\courssub{GCE Exam Technique: Earning Every Method Mark}
+
+GCE mark schemes award marks \emph{step by step}. Even if your final arithmetic is wrong, correctly stated hypotheses, a correct standard error and a correct critical region each carry marks.
+
+\begin{methode}[Checklist for a complete exam answer]
+\begin{enumerate}
+\item \textbf{State hypotheses} using symbols \emph{and} define them: $H_0:\mu = 50$, $H_1:\mu < 50$, where $\mu$ is the mean content in cl.
+\item \textbf{State $\alpha$ and the critical region}: e.g. ``$5\%$ one-tailed, reject $H_0$ if $z < -1.645$''.
+\item \textbf{Compute the test statistic}, showing the standard error explicitly: $\sigma/\sqrt{n}$ or $\sqrt{s_1^2/n_1+s_2^2/n_2}$.
+\item \textbf{Compare and decide}: ``$z = -2.10 < -1.645$, so $z$ lies in the critical region; reject $H_0$.''
+\item \textbf{Conclude in context}: ``There is evidence, at the $5\%$ level, that the mean content is less than $50\ \mathrm{cl}$.''
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[The conclusion must mention the context]
+Writing only ``reject $H_0$'' or ``$\mu < 50$'' loses the final mark. The examiner wants a sentence about the \emph{real situation}: the sugar packets, the recovery times, the maize yields. Symbols alone are never a conclusion.
+\end{attention}
+
+The figure below shows a model answer presented as the examiner expects it, with the mark allocation indicated.
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small]
+\node[draw=popdark, thick, fill=white, text width=11.6cm, align=left, inner sep=6pt] (ans) at (0,0)
+{\textbf{Question.} A bottling machine should deliver a mean of $50$ cl. A sample of $64$ bottles gives $\bar{x}=49.6$ cl, $s=1.2$ cl. Test at $5\%$ whether the mean content is less than $50$ cl.\\[3pt]
+$H_0:\mu=50$;\quad $H_1:\mu<50$ \hfill \textcolor{poporange}{\textbf{M1}}\\
+One-tailed, $\alpha=5\%$: reject $H_0$ if $z<-1.645$ \hfill \textcolor{poporange}{\textbf{B1}}\\
+$z=\dfrac{49.6-50}{1.2/\sqrt{64}}=\dfrac{-0.4}{0.15}=-2.67$ \hfill \textcolor{poporange}{\textbf{M1 A1}}\\
+$-2.67<-1.645\Rightarrow$ reject $H_0$ \hfill \textcolor{poporange}{\textbf{M1}}\\
+At the $5\%$ level, the mean content is less than $50$ cl. \hfill \textcolor{poporange}{\textbf{A1}}};
+\node[draw=poporange, thick, rounded corners, fill=popblueL, text width=3.4cm, align=center, inner sep=4pt, anchor=west] (note) at (7.2,-1.2) {6 marks: hypotheses, region, method, value, decision, context};
+\draw[-{Stealth[length=2.5mm]}, thick, poporange] (note.west) -- (ans.east);
+\end{tikzpicture}
+\legende{Model answer of a full GCE question with mark allocation (M = method, B = independent accuracy, A = accuracy).}
+\end{popfigure}
+
+\courssub{Remediation Checkpoints: Common Errors}
+
+\begin{attention}[Frequent mistakes to eliminate]
+\begin{itemize}
+\item \textbf{Wrong critical value}: using $1.96$ for a one-tailed $5\%$ test (correct: $1.645$) or $1.645$ for a two-tailed test (correct: $\pm1.96$). Always match the value to the \emph{type} of test.
+\item \textbf{Wrong standard error}: forgetting $\sqrt{n}$, writing $\sigma/n$, or for two samples adding the variances without dividing by the sample sizes. Write the denominator out in full before substituting.
+\item \textbf{Sign confusion}: a negative $z$ in a right-tailed test is automatically non-significant — check the direction of $H_1$ before concluding.
+\item \textbf{Conclusion without context}, or claiming $H_0$ is ``proved''. We only ever say the evidence is \emph{sufficient} or \emph{insufficient} at the stated level.
+\item \textbf{Mixing samples}: in two-sample problems, keep $\bar{x}_1, s_1, n_1$ and $\bar{x}_2, s_2, n_2$ clearly labelled.
+\end{itemize}
+\end{attention}
+
+\begin{exoresolu}[Mixed revision: identify and carry out the test]
+A farmers' cooperative claims that a new fertiliser \emph{increases} the mean yield of cassava, previously $12$ tonnes per hectare. A sample of $49$ farms using the fertiliser gives $\bar{x}=12.7$ tonnes and $s=2.1$ tonnes. Test the claim at the $1\%$ level.
+\tcblower
+Wording ``increases'' $\Rightarrow$ one mean, one-tailed (right tail).
+$H_0:\mu=12$; $H_1:\mu>12$. Critical value at $1\%$: $z=2.326$.
+\[ z=\frac{12.7-12}{2.1/\sqrt{49}}=\frac{0.7}{0.3}\approx 2.33. \]
+Since $2.33 > 2.326$, $z$ lies (just!) in the critical region: reject $H_0$. At the $1\%$ level there is evidence that the fertiliser increases the mean cassava yield. Because the value is borderline, a larger sample would be advisable to confirm the result — and a larger $n$ would reduce both $\alpha$ and $\beta$.
+\end{exoresolu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item A machine fills bags of cement labelled $50\ \mathrm{kg}$; $\sigma = 0.8\ \mathrm{kg}$. A sample of $100$ bags gives $\bar{x}=49.85\ \mathrm{kg}$. Test at the $5\%$ level whether the mean differs from $50\ \mathrm{kg}$.
+\item Two groups of students sat the same test. Group 1: $n_1=45$, $\bar{x}_1=13.2$, $s_1=2.8$; Group 2: $n_2=55$, $\bar{x}_2=12.3$, $s_2=3.0$. Test at the $5\%$ level whether Group 1 performed better.
+\item For question 1, state the Type I and Type II errors in context and explain which is more serious for the factory.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Two-tailed: $H_0:\mu=50$, $H_1:\mu\neq 50$; critical values $\pm1.96$. $z=\dfrac{49.85-50}{0.8/10}=-1.875$. Since $|-1.875|<1.96$, do not reject $H_0$: no significant evidence that the mean differs from $50\ \mathrm{kg}$.
+\item One-tailed: $H_0:\mu_1=\mu_2$, $H_1:\mu_1>\mu_2$; critical value $1.645$. $z=\dfrac{0.9}{\sqrt{2.8^2/45+3.0^2/55}}=\dfrac{0.9}{\sqrt{0.1742+0.1636}}=\dfrac{0.9}{0.5812}\approx1.55<1.645$: do not reject $H_0$; insufficient evidence that Group 1 performed better.
+\item Type I: concluding the machine is faulty when it is not (needless, costly adjustment). Type II: missing a real fault (customers receive under- or over-filled bags). For the factory's reputation, the Type II error is arguably more serious, so a moderate $\alpha$ (e.g. $5\%$) and a reasonably large sample are sensible.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item Context dictates the test: ``differs'' $\Rightarrow$ two-tailed; ``greater/less'' $\Rightarrow$ one-tailed; one sample $\Rightarrow$ one-mean test; two independent large samples $\Rightarrow$ two-mean test.
+\item Choose $\alpha$ according to the cost of each error; a larger sample reduces both $\alpha$ and $\beta$.
+\item Follow the five steps in order — hypotheses, level and region, statistic, decision, conclusion in context — each one earns marks.
+\item Never conclude with symbols alone; always return to the real-world situation.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+By the end of this activity, you should be able to:
+
+\begin{itemize}
+\item translate a real quality-control complaint into a pair of statistical hypotheses $H_0$ and $H_1$, choosing correctly between a one-tailed and a two-tailed test;
+\item compute a standardised test statistic from sample data and compare it with critical values read from the standard normal table;
+\item carry out the complete five-step testing procedure at the $5\%$ and $1\%$ levels of significance and explain why the two conclusions may differ;
+\item interpret Type~I and Type~II errors in context and discuss which error is more costly for the producer and for the consumer;
+\item perform a two-sample $z$-test for the difference between two means using large independent samples;
+\item present and defend a statistical argument in front of the class, using precise GCE Advanced Level vocabulary.
+\end{itemize}
+
+This activity mobilises the whole chapter: types of hypotheses, significance levels, test statistics, critical regions, errors and the testing procedure, applied to both one-sample and two-sample situations.
+
+\begin{aretenir}[The five-step testing procedure — reminder]
+\begin{enumerate}
+\item \textbf{State} the hypotheses $H_0$ and $H_1$ and decide whether the test is one-tailed or two-tailed.
+\item \textbf{Choose} the significance level $\alpha$ (before looking at the data) and identify the appropriate test statistic and its distribution under $H_0$.
+\item \textbf{Determine} the critical value(s) and the critical region.
+\item \textbf{Compute} the value of the test statistic from the sample.
+\item \textbf{Decide and conclude}: reject $H_0$ if the statistic falls in the critical region; otherwise do not reject $H_0$. State the conclusion in the language of the original problem.
+\end{enumerate}
+\end{aretenir}
+
+\courssub{Situation}
+
+The \textbf{Top Ananas Juice Company}, based in Nkongsamba (Littoral Region), bottles pineapple juice in bottles labelled ``$50\ \mathrm{cl}$''. The filling machine is set to deliver a mean of $\mu_0 = 50\ \mathrm{cl}$ per bottle. From long experience, the filling process is known to produce contents that are approximately normally distributed.
+
+Recently, several shopkeepers in Douala have complained that the bottles seem ``lighter than before''. The company's quality-control officer, Mrs~Etame, therefore selects a random sample of $n = 40$ bottles from one day's production and measures the content of each bottle. The raw measurements (in $\mathrm{cl}$) are displayed on the flipchart:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} 49.8 & 50.2 & 49.1 & 49.6 & 50.4 & 49.3 & 49.7 & 50.1 \\
+\hline
+48.9 & 49.5 & 50.0 & 49.4 & 49.9 & 48.7 & 49.6 & 50.3 \\
+\hline
+49.2 & 49.8 & 50.1 & 49.0 & 49.7 & 49.5 & 50.5 & 49.3 \\
+\hline
+50.0 & 49.4 & 49.9 & 48.8 & 49.6 & 50.2 & 49.1 & 49.8 \\
+\hline
+49.5 & 50.3 & 49.2 & 49.7 & 48.6 & 49.9 & 50.1 & 49.4 \\
+\hline
+\end{tabularx}
+\end{center}
+
+A calculator check gives the summary statistics:
+\[
+n = 40, \qquad \bar{x} = 49.6\ \mathrm{cl}, \qquad s = 1.2\ \mathrm{cl}.
+\]
+
+The management must decide whether the complaints are justified. If the machine is genuinely under-filling, the company risks sanctions from the consumer-protection authorities and loss of customers. If the machine is stopped and recalibrated unnecessarily, the company loses a full day of production, worth several hundred thousand francs CFA.
+
+Three months later, a \textbf{new filling machine} is installed. A random sample of $n_2 = 50$ bottles from the new machine gives:
+\[
+\bar{x}_2 = 50.1\ \mathrm{cl}, \qquad s_2 = 1.4\ \mathrm{cl}.
+\]
+For the old machine we keep the original sample: $n_1 = 40$, $\bar{x}_1 = 49.6\ \mathrm{cl}$, $s_1 = 1.2\ \mathrm{cl}$. The company wants to know whether the two machines differ significantly in their mean fill.
+
+Work in groups of four. Each group writes its full solution on a flipchart and presents it; the class then debates the choice of the significance level $\alpha$.
+
+\courssub{Tasks}
+
+\textbf{Part A — Is the old machine under-filling?}
+
+\begin{enumerate}
+\item State, with a justification, the null hypothesis $H_0$ and the alternative hypothesis $H_1$ for Mrs~Etame's investigation. Is this test one-tailed or two-tailed? Explain your choice in the context of the shopkeepers' complaints.
+\item Explain why a $z$-test (standard normal) is appropriate here, even though the population standard deviation is unknown.
+\item Choose the significance level $\alpha = 5\%$. Write down the critical value(s) and the critical region.
+\item Compute the test statistic $z = \dfrac{\bar{x}-\mu_0}{s/\sqrt{n}}$ and state your statistical decision.
+\item Write a conclusion in plain language that the managing director (who is not a statistician) can understand.
+\item Repeat steps 3 to 5 at the significance level $\alpha = 1\%$. Compare the two conclusions and explain \emph{why} they differ.
+\item Define Type~I and Type~II errors in the context of this problem. For the company, what is the cost of each error? For the consumers, which error is more harmful? Discuss whether a small or a large $\alpha$ protects consumers better.
+\end{enumerate}
+
+\textbf{Part B — Do the two machines differ?}
+
+\begin{enumerate}
+\setcounter{enumi}{7}
+\item Formulate $H_0$ and $H_1$ to test whether the mean fills of the two machines differ. Is this test one-tailed or two-tailed?
+\item Compute the two-sample test statistic
+\[
+z = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}}}
+\]
+and carry out the test at the $5\%$ level.
+\item State your conclusion in context and suggest one practical recommendation to the management.
+\end{enumerate}
+
+\textbf{Part C — Presentation and debate}
+
+\begin{enumerate}
+\setcounter{enumi}{10}
+\item Present your five-step solutions on the flipchart. Be ready to defend: the direction of the test in Part~A, the choice of $\alpha$, and the interpretation of the errors.
+\item Class debate: ``For a juice company, is it better to use $\alpha = 1\%$ or $\alpha = 5\%$?'' Each group must argue from the point of view assigned by the teacher: the company, the consumers, or the quality-control officer.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A.}
+
+\textbf{1. Hypotheses.} The complaints concern \emph{under}-filling, so we test
+\[
+H_0 : \mu = 50\ \mathrm{cl} \qquad \text{against} \qquad H_1 : \mu < 50\ \mathrm{cl}.
+\]
+This is a \cle{one-tailed} (left-tailed) test, because only values of $\bar{x}$ \emph{below} $50$ provide evidence against $H_0$. A sample mean above $50\ \mathrm{cl}$ would certainly not support the shopkeepers' complaint, so it must not count as evidence against $H_0$.
+
+\textbf{2. Choice of test.} The sample size $n = 40$ is large ($n \geq 30$), so by the Central Limit Theorem $\bar{X}$ is approximately normal and $s$ is a reliable estimate of $\sigma$. Hence, under $H_0$,
+\[
+Z = \frac{\bar{X}-\mu_0}{S/\sqrt{n}} \approx N(0,1).
+\]
+
+\textbf{3. Critical region at $\alpha = 5\%$.} For a left-tailed test at the $5\%$ level, the whole $5\%$ is placed in the left tail, so the critical value is $-1.645$ (read from the standard normal table: $\Phi(1.645) = 0.95$). The critical region is $z < -1.645$.
+
+\textbf{4. Test statistic.}
+\[
+z = \frac{\bar{x}-\mu_0}{s/\sqrt{n}} = \frac{49.6 - 50}{1.2/\sqrt{40}} = \frac{-0.4}{0.1897} \approx -2.11.
+\]
+
+\textbf{5. Decision and conclusion at $5\%$.} Since $-2.11 < -1.645$, the test statistic lies in the critical region: we \textbf{reject $H_0$} at the $5\%$ level. In plain language: ``There is significant evidence, at the $5\%$ level, that the machine is filling less than $50\ \mathrm{cl}$ on average. The complaints appear justified.''
+
+\textbf{6. Test at $\alpha = 1\%$.} The critical value is now $-2.326$ (since $\Phi(2.326) = 0.99$). Since $-2.11 > -2.326$, the statistic is \emph{not} in the critical region: we \textbf{do not reject $H_0$} at the $1\%$ level. The conclusions differ because lowering $\alpha$ shrinks the critical region: we demand stronger evidence before rejecting $H_0$. The same data can be ``significant at $5\%$'' but ``not significant at $1\%$''.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+width=13cm, height=6cm,
+axis lines=middle,
+xlabel={$z$}, ylabel={},
+xmin=-4, xmax=4, ymin=0, ymax=0.45,
+xtick={-2.326,-1.645,0,1.645,2.326},
+xticklabels={$-2.326$,$-1.645$,$0$,$1.645$,$2.326$},
+ytick=\empty,
+samples=100, domain=-4:4,
+every axis x label/.style={at={(ticklabel* cs:1.02)}, anchor=west},
+]
+\addplot[popblue, thick] {exp(-x^2/2)/2.5066};
+\addplot[fill=poporange, opacity=0.55, domain=-4:-1.645] {exp(-x^2/2)/2.5066} \closedcycle;
+\addplot[fill=popdark, opacity=0.75, domain=-4:-2.326] {exp(-x^2/2)/2.5066} \closedcycle;
+\draw[popdark, dashed] (axis cs:-2.326,0) -- (axis cs:-2.326,0.15);
+\draw[poporange, dashed] (axis cs:-1.645,0) -- (axis cs:-1.645,0.10);
+\draw[popgreen, very thick] (axis cs:-2.11,0) -- (axis cs:-2.11,0.13);
+\node[popgreen, anchor=south] at (axis cs:-2.11,0.13) {$z=-2.11$};
+\node[poporange, anchor=west, align=left] at (axis cs:0.6,0.30) {critical region at $5\%$:\\ $z<-1.645$};
+\node[popdark, anchor=west, align=left] at (axis cs:0.6,0.20) {critical region at $1\%$:\\ $z<-2.326$ (darker tail)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Left-tailed test for the juice machine: the observed statistic $z=-2.11$ falls inside the $5\%$ critical region but outside the $1\%$ critical region.}
+\end{popfigure}
+
+\textbf{7. Errors in context.}
+\begin{itemize}
+\item \textbf{Type~I error} (reject $H_0$ when it is true): the machine is actually filling correctly, but we conclude it under-fills. Cost to the company: an unnecessary stop and recalibration, losing a day's production. Its probability is at most $\alpha$.
+\item \textbf{Type~II error} (fail to reject $H_0$ when it is false): the machine really under-fills, but we do nothing. Cost: consumers are systematically short-changed, and the company risks sanctions and loss of reputation.
+\end{itemize}
+For consumers, the Type~II error is more harmful. A \emph{larger} $\alpha$ makes it easier to reject $H_0$, so it reduces the risk of a Type~II error: consumers are better protected by $\alpha = 5\%$ than by $\alpha = 1\%$, at the price of more false alarms for the company. Note that for a fixed sample size, decreasing $\alpha$ increases the probability of a Type~II error; the only way to reduce both risks simultaneously is to increase the sample size.
+
+\textbf{Part B.}
+
+\textbf{8. Hypotheses.} We ask whether the machines \emph{differ}, with no direction specified in advance:
+\[
+H_0 : \mu_1 = \mu_2 \qquad \text{against} \qquad H_1 : \mu_1 \neq \mu_2,
+\]
+a \cle{two-tailed} test.
+
+\textbf{9. Test statistic.} Both samples are large ($n_1 = 40 \geq 30$, $n_2 = 50 \geq 30$) and independent, so the two-sample $z$-statistic is appropriate:
+\[
+z = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}}}
+= \frac{49.6 - 50.1}{\sqrt{\dfrac{1.2^2}{40}+\dfrac{1.4^2}{50}}}
+= \frac{-0.5}{\sqrt{0.036 + 0.0392}}
+= \frac{-0.5}{0.2742} \approx -1.82.
+\]
+At $\alpha = 5\%$ two-tailed, the $5\%$ is split equally between the two tails ($2.5\%$ each), so the critical values are $\pm 1.96$. Since $-1.96 < -1.82 < 1.96$, the statistic is not in the critical region.
+
+\textbf{10. Conclusion.} We \textbf{do not reject $H_0$} at the $5\%$ level: there is no significant evidence that the two machines differ in mean fill. Recommendation: the apparent improvement of the new machine is not statistically established; management should keep monitoring both machines with regular samples rather than concluding that the problem is solved.
+
+\textbf{Part C.} The debate should bring out that the choice of $\alpha$ is a \emph{social} decision, not a purely mathematical one: it balances the producer's losses against consumer protection, and it must be fixed \emph{before} looking at the data.
+
+\begin{attention}[Common mistakes to avoid during the activity]
+\begin{itemize}
+\item Do not use a two-tailed test in Part~A: the complaint specifies the direction (under-filling).
+\item Never write ``we accept $H_0$''; write ``we do not reject $H_0$ at the $\alpha\%$ level''. Failing to reject $H_0$ does not prove that $H_0$ is true.
+\item The significance level must be chosen \emph{before} computing the statistic, not adjusted afterwards to obtain the desired conclusion.
+\item Do not confuse the sample standard deviation $s$ with the standard error $s/\sqrt{n}$ in the denominator.
+\item In a two-tailed test, remember to split $\alpha$ between the two tails: at $\alpha = 5\%$ the critical values are $\pm 1.96$, not $\pm 1.645$.
+\item In the two-sample statistic, the denominator contains $\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}$ (variances divided by sample sizes), not $\dfrac{s_1}{\sqrt{n_1}}+\dfrac{s_2}{\sqrt{n_2}}$.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Why ``do not reject'' rather than ``accept''?]
+A hypothesis test is like a trial: $H_0$ is ``innocent until proven guilty''. A verdict of ``not guilty'' does not mean the court has proved innocence — only that the evidence was insufficient to convict. In the same way, failing to reject $H_0$ at the $1\%$ level in Part~A does not prove the machine fills correctly; it only means the evidence was not strong enough \emph{at that level}. This is why the same sample can acquit at $1\%$ and convict at $5\%$.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1: Setting Up Hypotheses and Choosing the Type of Test}
+
+A \cle{statistical hypothesis} is a claim about a population parameter (for example the mean $\mu$). Because we can only observe a \emph{sample}, we can never prove such a claim directly; instead, we weigh the sample evidence \emph{against} a default position. This is the logic of every \cle{hypothesis test} (also called a \cle{significance test}).
+
+\begin{definition}[Null and alternative hypotheses]
+The \cle{null hypothesis} $H_0$ is the statement assumed to be true unless the data provide strong evidence against it; it always contains an \textbf{equality}. The \cle{alternative hypothesis} $H_1$ is the statement accepted when $H_0$ is rejected.
+\end{definition}
+
+\begin{methode}[Formulating $H_0$ and $H_1$]
+To translate a practical question into a statistical test:
+\begin{enumerate}
+\item Identify the \cle{parameter} involved (mean $\mu$, proportion $p$, difference of means $\mu_1-\mu_2$).
+\item Write the \cle{null hypothesis} $H_0$: it always contains an \textbf{equality} (e.g. $\mu=\mu_0$). It represents the status quo, the claim assumed true until the data prove otherwise.
+\item Write the \cle{alternative hypothesis} $H_1$ from the wording of the question:
+\begin{itemize}
+\item ``different from'', ``changed'', ``not equal to'' $\Rightarrow$ $H_1:\mu\neq\mu_0$ (\cle{two-tailed} test);
+\item ``greater than'', ``increased'', ``more than'' $\Rightarrow$ $H_1:\mu>\mu_0$ (\cle{one-tailed, right});
+\item ``less than'', ``decreased'', ``fewer than'' $\Rightarrow$ $H_1:\mu<\mu_0$ (\cle{one-tailed, left}).
+\end{itemize}
+\item State the \cle{level of significance} $\alpha$ (given in the question, often $5\%$ or $1\%$).
+\end{enumerate}
+\textbf{Reflex:} the claim the investigator \emph{wants to establish} usually goes into $H_1$, because a test can only give strong evidence \emph{against} $H_0$.
+\end{methode}
+
+\begin{exoresolu}[Choosing hypotheses for a maize yield study]
+An agricultural station near Bafoussam has grown a variety of maize whose mean yield is known to be $2.4$ tonnes per hectare. A new fertiliser is tried on $50$ plots. The agronomist wishes to test whether the fertiliser \emph{increases} the mean yield. Write down suitable null and alternative hypotheses, state the type of test, and explain what a test at the $5\%$ level of significance means.
+\tcblower
+\textbf{Solution.} The parameter is the population mean yield $\mu$ (tonnes per hectare) with the new fertiliser.
+
+The status quo is ``the fertiliser makes no difference'', so
+\[ H_0:\ \mu = 2.4. \]
+The agronomist wants to establish an \emph{increase}, so
+\[ H_1:\ \mu > 2.4. \]
+This is a \textbf{one-tailed (right-tailed) test} at level $\alpha = 0.05$.
+
+\emph{Interpretation of the $5\%$ level:} if $H_0$ is true, the probability of obtaining a sample result extreme enough to reject $H_0$ is at most $0.05$. In other words, we accept a $5\%$ risk of wrongly concluding that the fertiliser works when in fact it does not (a Type I error).
+\end{exoresolu}
+
+\courssub{Method 2: Finding Critical Values and the Critical Region}
+
+The \cle{test statistic} measures how far the sample result lies from the value claimed by $H_0$, in units of the standard error. For tests on means with $\sigma$ known or $n$ large, the test statistic follows the standard normal distribution $N(0,1)$ under $H_0$ (by the Central Limit Theorem). The \cle{critical value}(s) delimit the \cle{critical region}: the set of values of the test statistic so extreme that, if $H_0$ were true, they would occur with probability at most $\alpha$.
+
+\begin{methode}[Critical values for a $z$-test]
+For a test based on the standard normal distribution $Z\sim N(0,1)$:
+\begin{enumerate}
+\item Read the significance level $\alpha$ and the type of test.
+\item Determine the \cle{critical value}(s):
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{popblueL} Type of test & Rejection condition & Critical value(s) \\
+\hline
+Two-tailed ($H_1:\mu\neq\mu_0$) & $|z|>z_{\alpha/2}$ & $\pm 1.960$ at $5\%$; $\pm 2.576$ at $1\%$ \\
+\hline
+Right-tailed ($H_1:\mu>\mu_0$) & $z>z_{\alpha}$ & $1.645$ at $5\%$; $2.326$ at $1\%$ \\
+\hline
+Left-tailed ($H_1:\mu<\mu_0$) & $z<-z_{\alpha}$ & $-1.645$ at $5\%$; $-2.326$ at $1\%$ \\
+\hline
+\end{tabular}
+\end{center}
+\item The \cle{critical region} (rejection region) is the set of values of the test statistic beyond the critical value(s); the \cle{acceptance region} is its complement.
+\item \textbf{Reflex:} for a two-tailed test, split $\alpha$ equally between the two tails ($\alpha/2$ each).
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=5.2cm,
+  axis lines=middle,
+  xlabel={$z$}, ylabel={},
+  xmin=-4, xmax=4, ymin=0, ymax=0.45,
+  xtick={-1.96,0,1.96},
+  xticklabels={$-1.96$,$0$,$1.96$},
+  ytick=\empty,
+  enlargelimits=false,
+  clip=false
+]
+\addplot[domain=-4:4, samples=100, thick, popblue] {exp(-x^2/2)/sqrt(max(0,2*pi))};
+\addplot[domain=-4:-1.96, samples=40, fill=poporange, opacity=0.5, draw=none] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[domain=1.96:4, samples=40, fill=poporange, opacity=0.5, draw=none] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\node[popdark, align=center, font=\small] at (axis cs:-2.9,0.10) {reject $H_0$\\ $2.5\%$};
+\node[popdark, align=center, font=\small] at (axis cs:2.9,0.10) {reject $H_0$\\ $2.5\%$};
+\node[popdark, align=center, font=\small] at (axis cs:0,0.16) {acceptance region\\ $95\%$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Two-tailed test at the $5\%$ level: the critical region consists of the two tails beyond $\pm1.96$.}
+\end{popfigure}
+
+\begin{exoresolu}[Critical region in terms of the sample mean]
+A machine fills sugar packets with nominal mass $\mu_0 = 500$ g. The mass is known to be normally distributed with standard deviation $\sigma = 8$ g. A sample of $n = 64$ packets is taken. A two-tailed test of $H_0:\mu=500$ against $H_1:\mu\neq 500$ is carried out at the $5\%$ level. Find the critical region \emph{in terms of the sample mean} $\bar{X}$.
+\tcblower
+\textbf{Solution.} Under $H_0$, $\bar{X}\sim N\!\left(500,\ \dfrac{8^2}{64}\right)$, i.e. standard error
+\[ \sigma_{\bar X}=\frac{\sigma}{\sqrt{n}}=\frac{8}{\sqrt{64}}=\frac{8}{8}=1\ \text{g}. \]
+Two-tailed test at $5\%$: critical values $\pm 1.960$. We reject $H_0$ when
+\[ \left|\frac{\bar{X}-500}{1}\right|>1.960 \quad\Longleftrightarrow\quad \bar{X}<500-1.96 \ \text{or}\ \bar{X}>500+1.96. \]
+Hence the critical region is
+\[ \bar{X}<498.04\ \text{g} \quad\text{or}\quad \bar{X}>501.96\ \text{g}, \]
+and the acceptance region is $498.04\leq\bar{X}\leq 501.96$ g.
+
+\emph{Check:} converting a sample mean to a decision is often easier in ``original units''; always convert the $z$-critical values back using $\bar{x}=\mu_0\pm z_{\alpha/2}\,\sigma/\sqrt{n}$.
+\end{exoresolu}
+
+\courssub{Method 3: One-Sample $z$-Test for a Population Mean ($\sigma$ Known or $n$ Large)}
+
+\begin{methode}[The five-step testing procedure]
+\begin{enumerate}
+\item \textbf{State} $H_0$ and $H_1$ and the level $\alpha$.
+\item \textbf{Compute} the test statistic
+\[ z=\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}} \qquad\text{(use $s$ for $\sigma$ if $\sigma$ unknown and $n$ large).} \]
+\item \textbf{Determine} the critical value(s) from $N(0,1)$ tables.
+\item \textbf{Decide:} reject $H_0$ if $z$ falls in the critical region; otherwise do not reject $H_0$.
+\item \textbf{Conclude} in the language of the problem, mentioning the level of significance.
+\end{enumerate}
+\textbf{Reflex:} ``do not reject $H_0$'' does \emph{not} prove $H_0$ true; it means the evidence is insufficient against it.
+\end{methode}
+
+\begin{exoresolu}[Testing the mean lifetime of bulbs]
+A manufacturer in Douala claims that the mean lifetime of its electric bulbs is $1200$ hours. Past experience gives a standard deviation of $\sigma = 120$ hours. A random sample of $36$ bulbs has a mean lifetime of $1160$ hours. Test, at the $5\%$ level of significance, whether the mean lifetime is \emph{less than} $1200$ hours.
+\tcblower
+\textbf{Solution.}
+
+\textbf{Step 1 — Hypotheses.} Left-tailed test:
+\[ H_0:\mu=1200 \qquad H_1:\mu<1200,\qquad \alpha=0.05. \]
+
+\textbf{Step 2 — Test statistic.}
+\[ z=\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}=\frac{1160-1200}{120/\sqrt{36}}=\frac{-40}{20}=-2.00. \]
+
+\textbf{Step 3 — Critical value.} Left-tailed at $5\%$: critical value $-1.645$; critical region $z<-1.645$.
+
+\textbf{Step 4 — Decision.} Since $-2.00<-1.645$, the test statistic lies in the critical region: we \textbf{reject $H_0$}.
+
+\textbf{Step 5 — Conclusion.} At the $5\%$ level of significance, there is sufficient evidence that the mean lifetime of the bulbs is less than $1200$ hours; the manufacturer's claim is not supported by the data.
+
+\emph{Remark (p-value):} $P(Z<-2.00)=0.0228<0.05$, confirming the rejection. The \cle{p-value} is the probability, under $H_0$, of a result at least as extreme as the one observed; we reject $H_0$ exactly when the p-value is less than $\alpha$.
+\end{exoresolu}
+
+\courssub{Method 4: Two-Tailed Test with Unknown Variance (Large Sample)}
+
+\begin{methode}[Using the sample standard deviation]
+When $\sigma$ is unknown but $n\geq 30$:
+\begin{enumerate}
+\item Estimate $\sigma$ by the sample standard deviation $s$ (use the unbiased estimate $\hat\sigma^2=\dfrac{n}{n-1}s_n^2$ if only the biased variance is given).
+\item Compute $z=\dfrac{\bar{x}-\mu_0}{s/\sqrt{n}}$ and compare with the two-tailed critical values $\pm z_{\alpha/2}$.
+\item Conclude in context.
+\end{enumerate}
+\textbf{Trap to avoid:} do not confuse the \emph{sample} standard deviation with the \emph{standard error} $s/\sqrt{n}$ — forgetting $\sqrt{n}$ is the most common error in the GCE.
+\end{methode}
+
+\begin{exoresolu}[Mean score in a mock examination]
+The national mean mark in a mathematics mock examination has been $52$ over the years. A sample of $100$ candidates from the Centre Region gives a mean of $54.2$ with standard deviation $12.5$. Test at the $1\%$ level whether the mean mark of candidates from this region \emph{differs from} the national mean.
+\tcblower
+\textbf{Solution.}
+
+\textbf{Step 1.} Two-tailed test:
+\[ H_0:\mu=52,\qquad H_1:\mu\neq 52,\qquad \alpha=0.01. \]
+
+\textbf{Step 2.} $\sigma$ unknown, $n=100$ large, so use $s=12.5$:
+\[ z=\frac{\bar{x}-\mu_0}{s/\sqrt{n}}=\frac{54.2-52}{12.5/\sqrt{100}}=\frac{2.2}{1.25}=1.76. \]
+
+\textbf{Step 3.} Critical values at $1\%$ (two-tailed): $\pm 2.576$.
+
+\textbf{Step 4.} Since $|1.76|=1.76<2.576$, we \textbf{do not reject $H_0$}.
+
+\textbf{Step 5.} At the $1\%$ level, there is insufficient evidence that the mean mark in the Centre Region differs from the national mean of $52$.
+
+\emph{Remark:} at the $5\%$ level (critical values $\pm1.96$) we would still not reject, since $1.76<1.96$. The conclusion is robust to the choice between these two levels.
+\end{exoresolu}
+
+\courssub{Method 5: Type I and Type II Errors}
+
+Whatever decision we take, it may be wrong, because it is based on a sample. There are exactly two ways of being wrong, and it is essential to distinguish them.
+
+\begin{definition}[The two types of error]
+A \cle{Type I error} consists in rejecting $H_0$ when $H_0$ is in fact true. A \cle{Type II error} consists in not rejecting $H_0$ when $H_0$ is in fact false.
+\end{definition}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{popblueL} & $H_0$ true & $H_0$ false \\
+\hline
+Reject $H_0$ & Type I error (probability $\alpha$) & correct decision \\
+\hline
+Do not reject $H_0$ & correct decision & Type II error (probability $\beta$) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{methode}[Computing error probabilities]
+\begin{enumerate}
+\item \cle{Type I error}: rejecting $H_0$ when it is true. Its probability is
+\[ P(\text{Type I})=\alpha=P(\bar{X}\in\text{critical region}\mid H_0\text{ true}). \]
+\item \cle{Type II error}: not rejecting $H_0$ when a specific alternative $\mu=\mu_1$ is true. Compute
+\[ \beta=P(\bar{X}\in\text{acceptance region}\mid \mu=\mu_1) \]
+using the normal distribution centred at $\mu_1$ with the same standard error.
+\item The \cle{power} of the test against $\mu_1$ is $1-\beta$.
+\end{enumerate}
+\textbf{Reflex:} first write the critical region in terms of $\bar{X}$; then restandardise with the \emph{alternative} mean for $\beta$.
+\end{methode}
+
+\begin{exoresolu}[Type I and Type II errors for the sugar packets]
+Recall the sugar-packet test: $H_0:\mu=500$ against $H_1:\mu\neq500$, $\sigma=8$, $n=64$, critical region $\bar{X}<498.04$ or $\bar{X}>501.96$.
+\begin{enumerate}
+\item[(a)] State the probability of a Type I error.
+\item[(b)] If the true mean is in fact $\mu=503$ g, calculate the probability of a Type II error and the power of the test.
+\end{enumerate}
+\tcblower
+\textbf{Solution.} The standard error is $\sigma/\sqrt{n}=1$ g.
+
+\textbf{(a)} By construction, $P(\text{Type I})=\alpha=0.05$.
+
+\textbf{(b)} Under $\mu=503$, $\bar{X}\sim N(503,1)$. A Type II error occurs when $\bar X$ falls in the acceptance region $[498.04,\,501.96]$:
+\begin{align*}
+\beta &= P(498.04<\bar{X}<501.96\mid \mu=503)\\
+&= P\!\left(\frac{498.04-503}{1}<Z<\frac{501.96-503}{1}\right)\\
+&= P(-4.96<Z<-1.04)\\
+&= \Phi(-1.04)-\Phi(-4.96)\approx 0.1492-0 = 0.1492.
+\end{align*}
+So the probability of a Type II error is about $0.149$, and the \textbf{power} of the test against $\mu=503$ is
+\[ 1-\beta \approx 0.851. \]
+
+\emph{Interpretation:} if the machine really overfills by $3$ g on average, this test detects it about $85\%$ of the time. Increasing $n$ or $\alpha$ would increase the power.
+\end{exoresolu}
+
+\begin{attention}[The trade-off between $\alpha$ and $\beta$]
+For a fixed sample size, making $\alpha$ smaller (a stricter test) enlarges the acceptance region and therefore \emph{increases} $\beta$: one cannot reduce both errors simultaneously. The only way to reduce both is to \textbf{increase the sample size} $n$, which shrinks the standard error $\sigma/\sqrt{n}$.
+\end{attention}
+
+\courssub{Method 6: Test for the Difference Between Two Means (Large Independent Samples)}
+
+To compare two populations we take a large sample from each. If the samples are independent, the difference of sample means satisfies, approximately,
+\[ \bar{X}_1-\bar{X}_2 \sim N\!\left(\mu_1-\mu_2,\ \frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}\right), \]
+because the variance of a difference of \emph{independent} variables is the \emph{sum} of the variances.
+
+\begin{methode}[Two-sample $z$-test]
+For two large independent samples ($n_1,n_2\geq 30$):
+\begin{enumerate}
+\item Hypotheses: $H_0:\mu_1-\mu_2=0$ (i.e. $\mu_1=\mu_2$) against the appropriate $H_1$.
+\item Test statistic:
+\[ z=\frac{\bar{x}_1-\bar{x}_2}{\sqrt{\dfrac{s_1^{2}}{n_1}+\dfrac{s_2^{2}}{n_2}}}. \]
+\item Compare $|z|$ (or $z$) with the critical value at level $\alpha$; decide and conclude in context.
+\end{enumerate}
+\textbf{Reflexes:} the standard error of a \emph{difference} combines \emph{both} variances; variances add, never standard deviations. Check that the samples are independent.
+\end{methode}
+
+\begin{exoresolu}[Comparing two brands of cement]
+A building contractor in Yaoundé compares the crushing strengths (in $\mathrm{N\,mm^{-2}}$) of two brands of cement. Random samples give:
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{popblueL} Brand & $n$ & Mean & Standard deviation \\
+\hline
+A & 60 & $32.5$ & $3.2$ \\
+\hline
+B & 50 & $31.4$ & $2.8$ \\
+\hline
+\end{tabular}
+\end{center}
+Test at the $5\%$ level whether brand A has a \emph{greater} mean crushing strength than brand B.
+\tcblower
+\textbf{Solution.}
+
+\textbf{Step 1.} Right-tailed test:
+\[ H_0:\mu_A-\mu_B=0,\qquad H_1:\mu_A-\mu_B>0,\qquad \alpha=0.05. \]
+
+\textbf{Step 2.} Standard error of the difference:
+\[ \mathrm{SE}=\sqrt{\frac{3.2^2}{60}+\frac{2.8^2}{50}}=\sqrt{\frac{10.24}{60}+\frac{7.84}{50}}=\sqrt{0.1707+0.1568}=\sqrt{0.3275}\approx 0.5723. \]
+Test statistic:
+\[ z=\frac{32.5-31.4}{0.5723}=\frac{1.1}{0.5723}\approx 1.92. \]
+
+\textbf{Step 3.} Critical value (right-tailed, $5\%$): $1.645$.
+
+\textbf{Step 4.} Since $1.92>1.645$, we \textbf{reject $H_0$}.
+
+\textbf{Step 5.} At the $5\%$ level of significance, the samples provide sufficient evidence that the mean crushing strength of brand A is greater than that of brand B.
+
+\emph{Remark (p-value):} $P(Z>1.92)\approx 0.027<0.05$, consistent with rejection; note that at the $1\%$ level we would \emph{not} reject, since $1.92<2.326$.
+\end{exoresolu}
+
+\courssub{Method 7: Two-Tailed Test for a Difference and Confidence-Interval Link}
+
+\begin{methode}[Full two-sample procedure with interpretation]
+\begin{enumerate}
+\item State $H_0:\mu_1=\mu_2$ against $H_1:\mu_1\neq\mu_2$; choose $\alpha$.
+\item Compute the standard error $\sqrt{s_1^2/n_1+s_2^2/n_2}$ and $z$.
+\item Decide using $\pm z_{\alpha/2}$.
+\item \textbf{Link:} a two-tailed test at level $\alpha$ rejects $H_0:\mu_1=\mu_2$ exactly when the $(1-\alpha)$ confidence interval for $\mu_1-\mu_2$,
+\[ (\bar{x}_1-\bar{x}_2)\pm z_{\alpha/2}\,\mathrm{SE}, \]
+does \emph{not} contain $0$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Heights of seedlings from two nurseries]
+An agroforestry project measures the heights (cm) of 6-month-old seedlings from two nurseries:
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{popblueL} Nursery & $n$ & Mean height & Standard deviation \\
+\hline
+1 & 80 & $45.6$ & $6.4$ \\
+\hline
+2 & 100 & $44.1$ & $7.0$ \\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item[(a)] Test at the $5\%$ level whether the two nurseries differ in mean seedling height.
+\item[(b)] Construct a $95\%$ confidence interval for $\mu_1-\mu_2$ and verify the link with part (a).
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+
+\textbf{(a)} $H_0:\mu_1-\mu_2=0$; $H_1:\mu_1-\mu_2\neq0$; $\alpha=0.05$ (two-tailed).
+\[ \mathrm{SE}=\sqrt{\frac{6.4^2}{80}+\frac{7.0^2}{100}}=\sqrt{\frac{40.96}{80}+\frac{49}{100}}=\sqrt{0.512+0.490}=\sqrt{1.002}\approx 1.001. \]
+\[ z=\frac{45.6-44.1}{1.001}=\frac{1.5}{1.001}\approx 1.50. \]
+Critical values: $\pm1.960$. Since $|1.50|<1.960$, we \textbf{do not reject $H_0$}: at the $5\%$ level there is insufficient evidence of a difference in mean height between the two nurseries.
+
+\textbf{(b)} The $95\%$ confidence interval is
+\[ 1.5\pm 1.96\times 1.001 = 1.5\pm 1.96 = (-0.46,\ 3.46)\ \text{cm}. \]
+Since this interval \textbf{contains $0$}, the value $\mu_1-\mu_2=0$ is plausible — exactly the conclusion of the test in (a). The two approaches agree, as they always must for a two-tailed $z$-test at the matching level.
+\end{exoresolu}
+
+\begin{aretenir}[Key points of the chapter]
+\begin{itemize}
+\item $H_0$ always contains an equality; the claim to be established goes into $H_1$.
+\item Two-tailed: split $\alpha$ into $\alpha/2$ in each tail (critical values $\pm1.960$ at $5\%$, $\pm2.576$ at $1\%$). One-tailed: $\pm1.645$ at $5\%$, $\pm2.326$ at $1\%$.
+\item Test statistic for one mean: $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$; for a difference of two means (large independent samples): $z=\dfrac{\bar{x}_1-\bar{x}_2}{\sqrt{s_1^2/n_1+s_2^2/n_2}}$.
+\item $P(\text{Type I error})=\alpha$; $\beta$ is computed with the distribution under a specified alternative; power $=1-\beta$.
+\item Always finish with a conclusion \emph{in context}, quoting the level of significance.
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Frequent errors in the GCE examination]
+\begin{itemize}
+\item Writing $H_1$ with an equality sign, or putting the claim to be proved in $H_0$.
+\item Using $\alpha$ instead of $\alpha/2$ for a two-tailed test (critical value $1.645$ instead of $1.960$).
+\item Forgetting $\sqrt{n}$ in the standard error, or adding standard deviations instead of variances in two-sample tests.
+\item Concluding ``$H_0$ is true'' instead of ``there is insufficient evidence to reject $H_0$''.
+\item Giving a decision without a conclusion in the context of the problem (units and situation must appear).
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: vocabulary of testing]
+For each question, choose the single correct answer, justifying briefly.
+\begin{enumerate}
+\item In a test of $H_0:\mu=50$ against $H_1:\mu\neq 50$ at the $5\%$ level (normal model, $\sigma$ known), the critical values of the standardised statistic are:
+\begin{enumerate}
+\item $\pm 1.645$ \quad (b) $\pm 1.960$ \quad (c) $\pm 2.576$ \quad (d) $\pm 2.326$
+\end{enumerate}
+\item The significance level $\alpha$ of a test is:
+\begin{enumerate}
+\item the probability of accepting $H_0$ when $H_0$ is true;
+\item the probability of rejecting $H_0$ when $H_0$ is true;
+\item the probability of accepting $H_0$ when $H_0$ is false;
+\item the probability of rejecting $H_0$ when $H_0$ is false.
+\end{enumerate}
+\item For a one-tailed test of $H_0:\mu=\mu_0$ against $H_1:\mu>\mu_0$ at the $1\%$ level, the critical value of $z$ is:
+\begin{enumerate}
+\item $1.645$ \quad (b) $1.960$ \quad (c) $2.326$ \quad (d) $2.576$
+\end{enumerate}
+\item If the computed value of the test statistic falls in the critical region, we:
+\begin{enumerate}
+\item accept $H_0$; (b) reject $H_0$ in favour of $H_1$; (c) increase $\alpha$; (d) take a larger sample.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false?]
+Say whether each statement is true or false, justifying your answer carefully.
+\begin{enumerate}
+\item Decreasing the significance level $\alpha$ makes the critical region larger.
+\item A Type I error consists in rejecting $H_0$ when $H_0$ is actually true.
+\item The probability of a Type I error is always equal to the significance level $\alpha$.
+\item In a two-tailed test at the $5\%$ level, each tail of the critical region carries probability $0.05$.
+\item For a large sample, the sample standard deviation $s$ may be used in place of an unknown population standard deviation $\sigma$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms precisely, in your own words, and illustrate each with a short example:
+\begin{enumerate}
+\item null hypothesis and alternative hypothesis;
+\item one-tailed test and two-tailed test;
+\item test statistic;
+\item critical region and critical value;
+\item Type I error and Type II error.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item A sample of $n=36$ observations from a population with known standard deviation $\sigma=12$ gives $\bar{x}=104$. Compute the value of the standardised test statistic $z$ for testing $H_0:\mu=100$.
+\item For a two-tailed test of $H_0:\mu=100$ at the $5\%$ level with $n=36$ and $\sigma=12$, find the critical values of $\bar{X}$ and state the acceptance region.
+\item State the critical values of $z$ for: (i) a one-tailed test at $5\%$; (ii) a two-tailed test at $1\%$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[The miller's flour bags]
+A miller in Bamenda claims that his bags of flour weigh $25\ \mathrm{kg}$ on average. A random sample of $50$ bags gives a mean weight $\bar{x}=24.8\ \mathrm{kg}$ with standard deviation $s=1.5\ \mathrm{kg}$. Test, at the $5\%$ level of significance, whether the mean weight is less than $25\ \mathrm{kg}$. State your hypotheses, the test statistic, the critical value, and your conclusion in context.
+\end{exercice}
+
+\begin{exercice}[GCE performance]
+The mean score of a school in last year's GCE was $11.2$. This year, a random sample of $60$ candidates has mean score $11.9$ with standard deviation $3.1$. Test, at the $1\%$ level, whether the performance of the school has improved. Explain why a one-tailed test is appropriate here.
+\end{exercice}
+
+\begin{exercice}[Two varieties of cassava]
+Two varieties of cassava are compared at an experimental farm near Ebolowa. A sample of $40$ cuttings of variety A gives a mean yield of $18.2\ \mathrm{t/ha}$ with standard deviation $2.4\ \mathrm{t/ha}$, while $45$ cuttings of variety B give a mean yield of $17.1\ \mathrm{t/ha}$ with standard deviation $2.8\ \mathrm{t/ha}$. Test, at the $5\%$ level, whether the mean yields of the two varieties differ.
+\end{exercice}
+
+\begin{exercice}[A new drug]
+A hospital finds that a sample of $35$ patients treated with a new drug recover in a mean time of $6.2$ days (standard deviation $1.8$ days), compared with a known mean recovery time of $7.0$ days for the standard drug.
+\begin{enumerate}
+\item Test, at the $1\%$ level, whether the new drug leads to a faster recovery.
+\item Comment on the choice of a one-tailed rather than a two-tailed test in this situation.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Errors and confidence intervals]
+\begin{enumerate}
+\item Explain, with the help of a concrete example, the difference between a Type I error and a Type II error in hypothesis testing, and state the probability of a Type I error when the significance level is $\alpha=0.05$. \hfill (6 marks)
+\item A $95\%$ confidence interval for the mean content of bottles filled by a machine is $(48.9,\ 50.3)\ \mathrm{cl}$. Without further calculation, decide the outcome of the two-tailed test of $H_0:\mu=50$ against $H_1:\mu\neq 50$ at the $5\%$ level, justifying your answer. \hfill (4 marks)
+\item Would the same conclusion hold for the test of $H_0:\mu=50.5$? Justify. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Comparing two schools]
+Two independent random samples of GCE candidates from schools X and Y give the following results: school X: $n_1=50$, $\bar{x}_1=12.4$, $s_1=3.0$; school Y: $n_2=55$, $\bar{x}_2=11.5$, $s_2=3.4$.
+\begin{enumerate}
+\item Test, at the $5\%$ level, the hypothesis that the two schools have the same mean score against the hypothesis that the means differ. \hfill (7 marks)
+\item Test, at the $5\%$ level, the claim that school X's mean exceeds school Y's mean by more than $0.5$. State clearly the null and alternative hypotheses. \hfill (6 marks)
+\item State one assumption you have made about the samples, and explain why the use of the normal distribution is justified here. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Essay: designing and reporting a test]
+A cocoa cooperative in the Centre Region suspects that a new fermentation method changes the mean weight of dried cocoa beans per pod, previously known to be $\mu_0=38.0\ \mathrm{g}$. A random sample of $64$ pods processed by the new method gives $\bar{x}=39.1\ \mathrm{g}$ and $s=4.8\ \mathrm{g}$.
+\begin{enumerate}
+\item Write a short essay describing the complete procedure of a hypothesis test: choice of hypotheses, choice between a one-tailed and a two-tailed test (justify your choice), significance level, test statistic, critical region, decision rule, and conclusion. \hfill (8 marks)
+\item Carry out the test you have described at the $5\%$ level and state your conclusion in the context of the cooperative. \hfill (6 marks)
+\item Explain what a Type II error would mean for the cooperative in this context, and state one way of reducing its probability. \hfill (4 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 --- MCQ: vocabulary of testing]
+\begin{enumerate}
+\item \textbf{Answer: (b) $\pm 1.960$.} The test is two-tailed ($H_1:\mu\neq 50$) at the $5\%$ level, so each tail carries probability $\alpha/2=0.025$. We need $z$ with $P(Z>z)=0.025$, i.e. $\Phi(z)=0.975$, giving $z=1.960$. The critical values are $\pm 1.960$.
+\item \textbf{Answer: (b).} By definition, the significance level is the probability of rejecting $H_0$ when $H_0$ is true, i.e. $\alpha=P(\text{reject }H_0\mid H_0\text{ true})=P(\text{Type I error})$.
+\item \textbf{Answer: (c) $2.326$.} For a one-tailed (right-tailed) test at the $1\%$ level, the whole probability $0.01$ lies in the right tail: $\Phi(z)=0.99$ gives $z=2.326$.
+\item \textbf{Answer: (b).} The critical (rejection) region is precisely the set of values of the test statistic that lead to the rejection of $H_0$ in favour of $H_1$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True or false?]
+\begin{enumerate}
+\item \textbf{False.} Decreasing $\alpha$ (e.g. from $5\%$ to $1\%$) pushes the critical values further into the tails ($1.960\to 2.576$ two-tailed), so the critical region becomes \emph{smaller}: we demand stronger evidence before rejecting $H_0$.
+\item \textbf{True.} This is the definition: a Type I error is rejecting $H_0$ when $H_0$ is actually true (a ``false alarm'').
+\item \textbf{True.} By construction of the test, $P(\text{Type I error})=P(\text{reject }H_0\mid H_0\text{ true})=\alpha$. (More precisely, for composite $H_0$ it is the supremum over $H_0$, which equals $\alpha$ at the boundary.)
+\item \textbf{False.} In a two-tailed test the total probability $\alpha=0.05$ is shared equally between the two tails, so each tail carries probability $0.025$, not $0.05$.
+\item \textbf{True.} For large $n$ (in practice $n\geq 30$), $s$ is a reliable estimate of $\sigma$, and by the Central Limit Theorem $Z=\dfrac{\bar{X}-\mu_0}{s/\sqrt{n}}$ is approximately $N(0,1)$ under $H_0$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Definitions]
+\begin{enumerate}
+\item \textbf{Null hypothesis $H_0$}: the statement about a population parameter that is assumed true and is placed on trial; it always contains an equality. \textbf{Alternative hypothesis $H_1$}: the statement accepted if $H_0$ is rejected. \emph{Example:} $H_0:\mu=25\ \mathrm{kg}$ against $H_1:\mu<25\ \mathrm{kg}$ for the miller's bags.
+\item \textbf{One-tailed test}: $H_1$ specifies a direction ($\mu>\mu_0$ or $\mu<\mu_0$); the critical region lies in a single tail. \textbf{Two-tailed test}: $H_1$ states only a difference ($\mu\neq\mu_0$); the critical region is split between both tails. \emph{Example:} testing whether a mean ``has changed'' is two-tailed; testing whether it ``has increased'' is one-tailed.
+\item \textbf{Test statistic}: a function of the sample data, with known distribution under $H_0$, used to decide. \emph{Example:} $Z=\dfrac{\bar{X}-\mu_0}{\sigma/\sqrt{n}}\sim N(0,1)$ under $H_0$.
+\item \textbf{Critical region}: the set of values of the test statistic leading to rejection of $H_0$; \textbf{critical value(s)}: the boundary value(s) of that region. \emph{Example:} critical region $|z|>1.960$ at the $5\%$ two-tailed level; critical values $\pm 1.960$.
+\item \textbf{Type I error}: rejecting $H_0$ when it is true; its probability is $\alpha$. \textbf{Type II error}: accepting $H_0$ when it is false; its probability is denoted $\beta$. \emph{Example:} convicting an innocent person (Type I) versus acquitting a guilty one (Type II).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Direct calculations]
+\begin{enumerate}
+\item Under $H_0:\mu=100$, with $\sigma=12$ and $n=36$:
+\[ z=\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}=\frac{104-100}{12/\sqrt{36}}=\frac{4}{2}=2.0. \]
+\item The critical values of $z$ at the $5\%$ two-tailed level are $\pm 1.960$. Converting to $\bar{X}$:
+\[ \bar{x}=100\pm 1.960\times\frac{12}{\sqrt{36}}=100\pm 3.92, \]
+so the critical values of $\bar{X}$ are $96.08$ and $103.92$. The \textbf{acceptance region} (non-rejection region) is $96.08<\bar{x}<103.92$; the critical region is $\bar{x}<96.08$ or $\bar{x}>103.92$.
+\item (i) One-tailed at $5\%$: $z=1.645$ (or $-1.645$ for a left tail). (ii) Two-tailed at $1\%$: each tail carries $0.005$, $\Phi(z)=0.995$, so $z=\pm 2.576$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 --- The miller's flour bags]
+\textbf{Hypotheses.} We suspect under-filling, so a left-tailed test:
+\[ H_0:\mu=25\ \mathrm{kg}\qquad\text{against}\qquad H_1:\mu<25\ \mathrm{kg}. \]
+\textbf{Test statistic.} Since $n=50$ is large, $s$ estimates $\sigma$ and under $H_0$:
+\[ Z=\frac{\bar{X}-25}{s/\sqrt{n}}\approx N(0,1),\qquad z=\frac{24.8-25}{1.5/\sqrt{50}}=\frac{-0.2}{0.2121}\approx -0.94. \]
+\textbf{Critical value.} One-tailed at $5\%$: $z_{\text{crit}}=-1.645$; critical region $z<-1.645$.
+\textbf{Decision.} Since $-0.94>-1.645$, the statistic does not fall in the critical region: we \textbf{do not reject $H_0$}.
+\textbf{Conclusion.} At the $5\%$ level, the sample does not provide sufficient evidence that the mean weight of the miller's bags is less than $25\ \mathrm{kg}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- GCE performance]
+\textbf{Why one-tailed?} The question asks whether performance has \emph{improved}, i.e. only an increase is of interest; a decrease would not support the claim. Hence a right-tailed test:
+\[ H_0:\mu=11.2\qquad\text{against}\qquad H_1:\mu>11.2. \]
+\textbf{Test statistic.} With $n=60$ (large), $s=3.1$ estimates $\sigma$:
+\[ z=\frac{11.9-11.2}{3.1/\sqrt{60}}=\frac{0.7}{0.4002}\approx 1.75. \]
+\textbf{Critical value.} One-tailed at $1\%$: $z_{\text{crit}}=2.326$.
+\textbf{Decision.} Since $1.75<2.326$, we \textbf{do not reject $H_0$}.
+\textbf{Conclusion.} At the $1\%$ level there is insufficient evidence that the school's mean GCE score has improved. (Note: the improvement would have been declared significant at the $5\%$ level, since $1.75>1.645$ --- the $1\%$ level demands stronger evidence.)
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Two varieties of cassava]
+\textbf{Hypotheses.} We test for any difference (two-tailed):
+\[ H_0:\mu_A=\mu_B\qquad\text{against}\qquad H_1:\mu_A\neq\mu_B. \]
+\textbf{Test statistic.} Both samples are large, so under $H_0$:
+\[ Z=\frac{\bar{X}_A-\bar{X}_B}{\sqrt{\dfrac{s_A^2}{n_A}+\dfrac{s_B^2}{n_B}}}\approx N(0,1). \]
+Compute the standard error:
+\[ \sqrt{\frac{2.4^2}{40}+\frac{2.8^2}{45}}=\sqrt{\frac{5.76}{40}+\frac{7.84}{45}}=\sqrt{0.144+0.1742}=\sqrt{0.3182}\approx 0.564. \]
+Hence
+\[ z=\frac{18.2-17.1}{0.564}=\frac{1.1}{0.564}\approx 1.95. \]
+\textbf{Critical values.} Two-tailed at $5\%$: $\pm 1.960$.
+\textbf{Decision.} Since $1.95<1.960$ (just barely), the statistic does not fall in the critical region: we \textbf{do not reject $H_0$}.
+\textbf{Conclusion.} At the $5\%$ level, the samples do not provide sufficient evidence of a difference between the mean yields of the two cassava varieties. The result is borderline: a slightly larger sample could change the conclusion.
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- A new drug]
+\begin{enumerate}
+\item \textbf{Hypotheses.} ``Faster recovery'' means a smaller mean time, so a left-tailed test:
+\[ H_0:\mu=7.0\qquad\text{against}\qquad H_1:\mu<7.0. \]
+\textbf{Test statistic.} With $n=35$ (large), $s=1.8$ estimates $\sigma$:
+\[ z=\frac{6.2-7.0}{1.8/\sqrt{35}}=\frac{-0.8}{0.3043}\approx -2.63. \]
+\textbf{Critical value.} One-tailed at $1\%$: $z_{\text{crit}}=-2.326$; critical region $z<-2.326$.
+\textbf{Decision.} Since $-2.63<-2.326$, we \textbf{reject $H_0$}.
+\textbf{Conclusion.} At the $1\%$ level there is significant evidence that the new drug reduces the mean recovery time.
+\item A one-tailed test is appropriate because the research question is directional: the hospital wants to know whether the new drug is \emph{better} (faster). A two-tailed test would also count evidence that the drug is \emph{slower}, diluting the rejection probability across two tails and making it harder to detect the improvement of interest. The one-tailed test concentrates all of $\alpha$ in the relevant tail, giving more power to detect a genuine improvement --- but it must be chosen \emph{before} seeing the data.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 --- Errors and confidence intervals]
+\begin{enumerate}
+\item \textbf{(6 marks)} A Type I error is rejecting $H_0$ when it is true; a Type II error is accepting $H_0$ when it is false. \emph{Example:} a machine fills bottles with a claimed mean of $50\ \mathrm{cl}$. A Type I error occurs if a test concludes the machine is faulty when it is actually correctly set (needless, costly adjustment); a Type II error occurs if the test fails to detect a real fault (under-filled bottles reach customers). The probability of a Type I error equals the significance level: $P(\text{Type I})=\alpha=0.05$. \emph{Mark scheme:} definition of Type I (1), definition of Type II (1), coherent example (2), statement $P(\text{Type I})=\alpha$ (1), value $0.05$ (1).
+\item \textbf{(4 marks)} The $95\%$ confidence interval $(48.9,\,50.3)$ contains the value $\mu_0=50$. A $95\%$ confidence interval consists exactly of the values of $\mu_0$ that would \emph{not} be rejected by a two-tailed test at the $5\%$ level. Therefore we \textbf{do not reject $H_0:\mu=50$} at the $5\%$ level. \emph{Mark scheme:} observation $50\in(48.9,50.3)$ (1), link between CI and two-tailed test (2), correct decision (1).
+\item \textbf{(3 marks)} No. The value $50.5$ lies \emph{outside} the interval $(48.9,\,50.3)$, so the two-tailed test of $H_0:\mu=50.5$ at the $5\%$ level would \textbf{reject $H_0$}. \emph{Mark scheme:} observation $50.5\notin$ CI (1), correct decision (1), justification via CI--test duality (1).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- Comparing two schools]
+\begin{enumerate}
+\item \textbf{(7 marks)} Hypotheses (two-tailed):
+\[ H_0:\mu_1=\mu_2\qquad\text{against}\qquad H_1:\mu_1\neq\mu_2. \]
+Standard error:
+\[ \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}=\sqrt{\frac{9}{50}+\frac{11.56}{55}}=\sqrt{0.18+0.2102}=\sqrt{0.3902}\approx 0.625. \]
+Test statistic:
+\[ z=\frac{12.4-11.5}{0.625}=\frac{0.9}{0.625}=1.44. \]
+Critical values at $5\%$ (two-tailed): $\pm 1.960$. Since $1.44<1.960$, we \textbf{do not reject $H_0$}: at the $5\%$ level there is no significant evidence that the two schools' mean scores differ. \emph{Mark scheme:} hypotheses (1), formula for SE (1), SE value (1), $z$ value (1), critical values (1), comparison and decision (1), conclusion in context (1).
+\item \textbf{(6 marks)} Let $\delta=0.5$. The claim is $\mu_1-\mu_2>0.5$, so:
+\[ H_0:\mu_1-\mu_2=0.5\qquad\text{against}\qquad H_1:\mu_1-\mu_2>0.5\quad(\text{one-tailed}). \]
+Under $H_0$:
+\[ z=\frac{(\bar{x}_1-\bar{x}_2)-0.5}{0.625}=\frac{0.9-0.5}{0.625}=0.64. \]
+Critical value at $5\%$ (one-tailed): $1.645$. Since $0.64<1.645$, we \textbf{do not reject $H_0$}: the data do not support the claim that school X's mean exceeds school Y's by more than $0.5$. \emph{Mark scheme:} correct $H_0$ with equality at $0.5$ (2), one-tailed $H_1$ (1), $z$ calculation (1), critical value (1), decision and conclusion (1).
+\item \textbf{(3 marks)} Assumption: the two samples are \textbf{independent} and randomly drawn. Use of the normal distribution is justified because both samples are large ($n_1=50$, $n_2=55\geq 30$): by the Central Limit Theorem $\bar{X}_1-\bar{X}_2$ is approximately normal, and $s_1,s_2$ are reliable estimates of $\sigma_1,\sigma_2$. \emph{Mark scheme:} independence (1), CLT for large samples (1), $s\approx\sigma$ (1).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Essay: designing and reporting a test]
+\begin{enumerate}
+\item \textbf{(8 marks) Procedure.} \textbf{Step 1 --- Hypotheses:} state $H_0:\mu=\mu_0$ (the status quo, with equality) and $H_1$. \textbf{Step 2 --- Choice of test:} the cooperative suspects the method \emph{changes} the mean weight, without specifying a direction; a \textbf{two-tailed} test ($H_1:\mu\neq 38.0$) is therefore appropriate, since an increase or a decrease would both be of interest. \textbf{Step 3 --- Significance level:} fix $\alpha$ in advance, conventionally $\alpha=0.05$; it is the accepted probability of wrongly rejecting $H_0$. \textbf{Step 4 --- Test statistic:} for a large sample, $Z=\dfrac{\bar{X}-\mu_0}{s/\sqrt{n}}\approx N(0,1)$ under $H_0$. \textbf{Step 5 --- Critical region:} $|z|>1.960$ at the $5\%$ two-tailed level. \textbf{Step 6 --- Decision rule:} reject $H_0$ if the computed $z$ falls in the critical region, otherwise do not reject. \textbf{Step 7 --- Conclusion:} interpret the decision in the context of the problem, in plain language. \emph{Mark scheme:} hypotheses (1), justified two-tailed choice (2), role of $\alpha$ (1), statistic (1), critical region (1), decision rule (1), contextual conclusion requirement (1).
+\item \textbf{(6 marks)} Compute:
+\[ z=\frac{39.1-38.0}{4.8/\sqrt{64}}=\frac{1.1}{0.6}\approx 1.83. \]
+Since $|1.83|<1.960$, we \textbf{do not reject $H_0$}. At the $5\%$ level, the sample does not provide sufficient evidence that the new fermentation method changes the mean weight of dried beans per pod; the cooperative cannot yet claim any effect of the new method. \emph{Mark scheme:} standard error $0.6$ (1), $z=1.83$ (2), comparison with $1.960$ (1), decision (1), conclusion in context (1).
+\item \textbf{(4 marks)} A Type II error here means concluding that the new method has \emph{no} effect when in reality it \emph{does} change the mean weight: the cooperative would miss a genuine improvement (or a genuine deterioration). Its probability $\beta$ can be reduced by \textbf{increasing the sample size} (equivalently, reducing variability or accepting a larger $\alpha$). \emph{Mark scheme:} correct contextual meaning (2), valid method of reducing $\beta$ (2).
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.92, transform shape,
+  every node/.style={align=center, text width=2.6cm, font=\small},
+  central/.style={circle, draw=popdark, fill=popblueL, text width=2.4cm, font=\small\bfseries},
+  branch/.style={rounded corners, draw, thick, fill=white, inner sep=3pt}]
+\node[central, align=center] (C){Hypothesis\\Testing};
+\node[branch, draw=popblue, fill=popblueL, align=center] (A) at (-5.2,2.6){\textbf{Hypotheses}\\ $H_0$ vs $H_1$\\ null / alternative};
+\node[branch, draw=poporange, fill=white, align=center] (B) at (0,3.6){\textbf{Types of test}\\ one-tailed\\ two-tailed};
+\node[branch, draw=popgreen, fill=popgreenL, align=center] (D) at (5.2,2.6){\textbf{Level $\alpha$}\\ test statistic\\ critical region};
+\node[branch, draw=poppurple, fill=white, align=center] (E) at (5.2,-2.6){\textbf{Errors}\\ Type I: $\alpha$\\ Type II: $\beta$};
+\node[branch, draw=popgold, fill=white, align=center] (F) at (0,-3.6){\textbf{Mean tests}\\ $z=\dfrac{\bar{x}-\mu}{\sigma/\sqrt{n}}$\\ difference of means};
+\node[branch, draw=popdark, fill=white, align=center] (G) at (-5.2,-2.6){\textbf{Procedure}\\ 5 steps\\ decision rule};
+\draw[thick, popline] (C) -- (A) (C) -- (B) (C) -- (D) (C) -- (E) (C) -- (F) (C) -- (G);
+\end{tikzpicture}
+\end{center}
+\legende{Mind map of the chapter Hypothesis Testing.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item A \cle{statistical hypothesis} is a claim about a population parameter (mean $\mu$, proportion, variance).
+\item The \cle{null hypothesis} $H_0$ is the statement of ``no change / no difference''; it always contains an equality (e.g.\ $H_0:\mu=\mu_0$).
+\item The \cle{alternative hypothesis} $H_1$ is what we suspect instead: $\mu\neq\mu_0$ (two-tailed), $\mu>\mu_0$ or $\mu<\mu_0$ (one-tailed).
+\item The \cle{significance level} $\alpha$ (often $5\%$, $1\%$, $10\%$) is the probability of rejecting $H_0$ when it is true.
+\item The \cle{critical (rejection) region} is the set of values of the test statistic for which $H_0$ is rejected; its boundary values are the \cle{critical values}.
+\item \cle{Type I error}: reject $H_0$ when true; $P(\text{Type I})=\alpha$. \cle{Type II error}: accept $H_0$ when false; $P(\text{Type II})=\beta$.
+\end{itemize}
+
+\textbf{Formulas to know}
+\begin{itemize}
+\item Test for a mean ($\sigma$ known, or $n$ large with $s\approx\sigma$):
+\[ z=\frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}},\qquad \text{compare with } N(0,1). \]
+\item Difference of two means (large independent samples):
+\[ z=\frac{\bar{x}_1-\bar{x}_2}{\sqrt{\dfrac{\sigma_1^{2}}{n_1}+\dfrac{\sigma_2^{2}}{n_2}}}\quad\text{under }H_0:\mu_1=\mu_2. \]
+\item Critical values: two-tailed $5\%$: $\pm1.96$; one-tailed $5\%$: $1.645$; two-tailed $1\%$: $\pm2.576$; one-tailed $1\%$: $2.326$.
+\item Confidence interval link: $\bar{x}\pm z_{\alpha/2}\dfrac{\sigma}{\sqrt{n}}$; $H_0$ rejected iff $\mu_0$ lies outside it.
+\end{itemize}
+
+\textbf{The 5-step procedure}
+\begin{enumerate}
+\item State $H_0$ and $H_1$ and the type of tail.
+\item Choose the significance level $\alpha$ and find the critical value(s).
+\item Compute the test statistic $z$ from the sample.
+\item Decide: reject $H_0$ if $z$ falls in the critical region (or $p$-value $<\alpha$).
+\item Conclude in the context of the problem, in plain language.
+\end{enumerate}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Writing $H_1$ with an equality sign, or using a two-tailed test when the question says ``increase'' or ``decrease'' (one-tailed).
+\item Forgetting to divide by $\sqrt{n}$: the standard error is $\sigma/\sqrt{n}$, not $\sigma$.
+\item Confusing $\alpha$ (Type I) with $\beta$ (Type II); only $\alpha$ is fixed by the examiner.
+\item Saying ``$H_0$ is proved'' — we only \emph{fail to reject} or \emph{reject}; never prove.
+\item Wrong critical value: $1.96$ is \textbf{two}-tailed $5\%$; for one-tailed $5\%$ use $1.645$.
+\item Not stating the conclusion in context (``the mean mass has changed'' rather than just ``reject $H_0$'').
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Quote the formula, substitute values, then compute — method marks are given for correct substitution.
+\item Always draw a quick sketch of $N(0,1)$ with the critical region shaded.
+\item Keep 4 decimal places in $z$; compare carefully with the critical value.
+\item For ``difference of means'' questions, check samples are large ($n\ge 30$) so the normal approximation and $s\approx\sigma$ are valid.
+\item End every test with a sentence linking the decision to the real situation (e.g.\ a factory's bags of cement in Douala).
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
