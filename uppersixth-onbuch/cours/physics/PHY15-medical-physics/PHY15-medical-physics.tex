@@ -1,0 +1,2791 @@
+% Medical Physics — Physics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PHY15-medical-physics.tex
+\newcommand{\DOCMATIERE}{Physics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Physics}
+\newcommand{\DOCLECON}{15}
+\newcommand{\DOCTITRE}{Medical Physics}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+\begin{document}
+
+\pagegarde{Medical Physics}{Physics}{Upper Sixth}{Upper Sixth — Physics}{15}{3 periods}{This chapter applies the physics of waves, optics, electricity and radioactivity to the human body and to medical diagnosis. From the optics of the eye and the acoustics of the ear to ECGs, ultrasound, X-rays, CT scans and endoscopy with optical fibres, students discover how physics saves lives every day.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can describe the eye as an optical system and calculate its accommodation range and resolving power
+\item By the end of this chapter I can explain myopia, hypermetropia, presbyopia and astigmatism and determine the correcting lens needed
+\item By the end of this chapter I can describe the mechanism of hearing, interpret an audiogram and explain hearing defects and their correction
+\item By the end of this chapter I can explain the physical principles of blood pressure measurement (sphygmomanometer) and of the electrocardiogram (ECG)
+\item By the end of this chapter I can describe the production, propagation and detection of ultrasound and interpret A-scan and B-scan images
+\item By the end of this chapter I can explain the principle of endoscopy and other non-ionising imaging techniques and state their advantages
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Section 1: The Physics of Vision and Eye Defects (Lesson 51a)
+\item Section 2: Hearing and Its Defects (Lesson 51b)
+\item Section 3: Biological Measurements for the Heart and Non-Ionising Imaging (Lesson 53a)
+\item Section 4: Ionising Imaging Techniques and Optical Fibres in Medicine (Lesson 54)
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can describe the eye as an optical system and calculate its accommodation range and resolving power
+\item By the end of this chapter I can explain myopia, hypermetropia, presbyopia and astigmatism and determine the correcting lens needed
+\item By the end of this chapter I can describe the mechanism of hearing, interpret an audiogram and explain hearing defects and their correction
+\item By the end of this chapter I can explain the physical principles of blood pressure measurement (sphygmomanometer) and of the electrocardiogram (ECG)
+\item By the end of this chapter I can describe the production, propagation and detection of ultrasound and interpret A-scan and B-scan images
+\item By the end of this chapter I can explain the principle of endoscopy and other non-ionising imaging techniques and state their advantages
+\item By the end of this chapter I can describe the production of X-rays and their interaction with matter (attenuation law)
+\item By the end of this chapter I can explain radiography, fluoroscopy and computed tomography (CT scan) and discuss radiation protection
+\item By the end of this chapter I can explain total internal reflection in optical fibres and their use in medical procedures
+\item By the end of this chapter I can compare imaging techniques and justify the choice of a technique for a given medical situation (GCE skill)
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Thin lenses: conjugation formula, vergence and image formation (Lower Sixth optics)
+\item Progressive waves: wavelength, frequency, speed, reflection and refraction of waves
+\item Sound waves: intensity, decibel scale, echoes (Lower Sixth)
+\item X-rays and radioactivity: nature of ionising radiation, half-life (PHY radioactivity chapter)
+\item Refraction, refractive index and total internal reflection (Snell's laws)
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Section 1: The Physics of Vision and Eye Defects (Lesson 51a)}
+
+At the Mbingo Baptist Hospital in the North-West Region, a patient complaining of blurred vision is given a simple lens test, while in the next building an ultrasound probe lets a mother see her unborn baby for the first time, and an X-ray image reveals a fractured bone after an okada accident in Bamenda. None of these life-saving procedures uses magic: each one is a direct application of physics --- optics of the eye, acoustics of the ear, pressure and electrical measurements of the heart, ultrasound echoes, X-ray attenuation and light guided through optical fibres. In a country where medical imaging centres are growing fast in Yaound\'e, Douala and Bamenda, the physicist who understands these instruments becomes an indispensable partner of the doctor. How can light, sound and radiation be made to \emph{see} inside the human body without opening it? This chapter answers that question, and we begin with the most familiar optical instrument of all: the human eye.
+
+\courssub{The Eye as an Optical System}
+
+\courssub{From anatomy to a camera}
+
+Hold your finger in front of you and look at it, then look at a distant building: in both cases the image on your retina is sharp. A camera achieves this by moving its lens; the eye achieves it by \emph{changing the shape} of its lens. To understand this, we reduce the anatomy of the eye to the few elements that matter optically.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Part of the eye} & \textbf{Optical role} \\
+\hline
+Cornea & Transparent front window; provides most of the refraction (about $+43\ \mathrm{D}$) because the air--cornea interface has the largest index change. \\
+\hline
+Aqueous humour & Watery liquid ($n \approx 1.34$) between cornea and lens; keeps the cornea curved. \\
+\hline
+Iris and pupil & Coloured diaphragm; the pupil is the adjustable aperture controlling the light flux entering the eye. \\
+\hline
+Crystalline lens & Converging lens of \cle{variable focal length}; its shape is changed by the ciliary muscles. \\
+\hline
+Vitreous humour & Gel filling the eyeball; keeps the retina pressed in place. \\
+\hline
+Retina & Light-sensitive screen on which the real, inverted image forms; contains cones (colour, detail) and rods (dim light). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{definition}[The reduced eye]
+The \cle{reduced eye} is a model in which the whole eye is replaced by a \textbf{single converging lens} of total power about $+60\ \mathrm{D}$ at rest, placed about $17\ \mathrm{mm}$ in front of a fixed screen (the retina). The image distance is therefore fixed; only the vergence of the lens can change.
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0,>=stealth]
+% eyeball
+\draw[thick,popblue] (0,0) circle (2.2);
+% cornea bulge
+\draw[thick,popblue] (2.05,-0.85) .. controls (2.9,-0.5) and (2.9,0.5) .. (2.05,0.85);
+% lens
+\draw[thick,poporange,fill=poporange!15] (1.15,0) ellipse (0.18 and 0.95);
+\node[poporange,align=center,text width=2cm] at (1.6,1.6) {crystalline lens};
+% retina
+\draw[very thick,popgreen] (-2.13,-0.7) arc (198:162:2.2);
+\node[popgreen!60!black] at (-1.5,-1.5) {retina};
+% axis
+\draw[dashed,gray] (-2.6,0) -- (3.6,0);
+\node[gray] at (3.4,0.25) {axis};
+% labels
+\node[popblue] at (2.9,-1.1) {cornea};
+\node[align=center,text width=2.4cm] at (0,-2.7) {vitreous humour};
+\draw[->,gray] (0,-2.5) -- (0,-1.2);
+% image distance
+\draw[<->,popdark] (1.15,-1.25) -- (-2.05,-1.25);
+\node[popdark] at (-0.45,-1.05) {$\approx 17\ \mathrm{mm}$};
+\end{tikzpicture}
+\legende{The reduced eye: one converging lens projects a real inverted image on the retina, at a fixed distance of about $17\ \mathrm{mm}$.}
+\end{popfigure}
+
+\begin{attention}[The image is inverted --- and that is fine]
+The image on the retina is real and \textbf{inverted}, exactly as in a camera. The brain re-inverts the information, so we perceive the world upright. Never draw an upright image on the retina in an examination.
+\end{attention}
+
+\courssub{Accommodation: PP and PR}
+
+\begin{definition}[Accommodation]
+\cle{Accommodation} is the ability of the eye to change the vergence of its crystalline lens, by the action of the ciliary muscles, so that objects at different distances form sharp images on the retina. At rest (no accommodation) the lens is flattest and least convergent; fully accommodated, it is most curved and most convergent.
+\end{definition}
+
+\begin{definition}[Punctum proximum and punctum remotum]
+The \cle{punctum remotum} (PR) is the \textbf{farthest} point seen clearly with the eye at rest. The \cle{punctum proximum} (PP) is the \textbf{nearest} point seen clearly with maximum accommodation, without strain.
+\end{definition}
+
+\begin{propriete}[The normal (emmetropic) eye]
+For a normal eye: the PR is at \textbf{infinity} and the PP is at about $25\ \mathrm{cm}$ for a young adult. The \cle{amplitude of accommodation} is the increase in vergence between rest and full accommodation:
+\[
+A = \frac{1}{\mathrm{PP}} - \frac{1}{\mathrm{PR}} \quad \text{(PP and PR in metres, } A \text{ in dioptres),}
+\]
+where PP and PR are taken as positive distances from the eye. For the young normal eye, $A = \dfrac{1}{0.25} - 0 = 4\ \mathrm{D}$.
+\end{propriete}
+
+\begin{exemplebox}[Vergence needed for near vision]
+Using the reduced eye ($v = 17\ \mathrm{mm} = 0.017\ \mathrm{m}$ fixed), the vergence needed to see an object at the PP ($u = -0.25\ \mathrm{m}$) is
+\[
+V = \frac{1}{v} - \frac{1}{u} = \frac{1}{0.017} - \frac{1}{-0.25} \approx 58.8 + 4.0 = 62.8\ \mathrm{D},
+\]
+about $4\ \mathrm{D}$ more than when viewing a distant object ($V \approx 58.8\ \mathrm{D}$). The ciliary muscles supply exactly this extra convergence by making the lens more curved.
+\end{exemplebox}
+
+\courssub{Resolving Power and Persistence of Vision}
+
+Two stars very close together may appear as one: the eye has a limited \cle{resolving power}.
+
+\begin{propriete}[Minimum angular separation]
+The normal eye can distinguish two points only if their angular separation is at least about $\varepsilon \approx 1$ arcminute ($\approx 3 \times 10^{-4}\ \mathrm{rad}$). This limit is set by the spacing of the \textbf{cones} in the fovea (and by diffraction at the pupil). Two objects are resolved only if their images fall on two cones separated by at least one unstimulated cone.
+\end{propriete}
+
+\begin{exemplebox}[Reading a number plate]
+At what distance can the eye separate two points $d = 2\ \mathrm{cm}$ apart (the strokes of a letter)? For small angles, $\varepsilon \approx d/L$, so
+\[
+L = \frac{d}{\varepsilon} = \frac{0.02}{3\times 10^{-4}} \approx 67\ \mathrm{m}.
+\]
+Beyond about $70\ \mathrm{m}$, the two strokes merge and the letter becomes unreadable.
+\end{exemplebox}
+
+\begin{savaistu}[Persistence of vision and the cinema]
+The retina keeps an impression of an image for about $\frac{1}{16}\ \mathrm{s}$ after the stimulus disappears: this is the \cle{persistence of vision}. Cinema and television exploit it: $24$ (or $25$) still images per second are projected, and the eye fuses them into continuous motion. The same effect makes the blades of a spinning fan in Douala look like a blurred disc.
+\end{savaistu}
+
+\courssub{Defects of Vision and Their Correction}
+
+\courssub{Myopia (short-sightedness)}
+
+\begin{definition}[Myopia]
+A \cle{myopic} eye is too convergent (or too long): the image of a distant object forms \textbf{in front of the retina}. The PR is no longer at infinity but at a finite distance (e.g.\ $2\ \mathrm{m}$); the PP is also closer than normal.
+\end{definition}
+
+\begin{methode}[Correcting myopia]
+\begin{enumerate}
+\item The eye at rest focuses parallel rays at its far point PR, in front of the retina.
+\item Place a \textbf{diverging} lens in front of the eye so that an object at infinity gives a \emph{virtual} image exactly at the patient's PR.
+\item The eye then sees this virtual image sharply without accommodating.
+\item Hence the correcting lens has focal length $f' = -\mathrm{PR}$ (metres), i.e.\ vergence $V = -\dfrac{1}{\mathrm{PR}}$.
+\end{enumerate}
+\end{methode}
+
+\courssub{Hypermetropia (long-sightedness)}
+
+\begin{definition}[Hypermetropia]
+A \cle{hypermetropic} eye is not convergent enough (or too short): with the eye at rest, the image of a near object would form \textbf{behind the retina}. The PP is farther than $25\ \mathrm{cm}$; distant objects are seen only by tiring accommodation.
+\end{definition}
+
+Correction uses a \textbf{converging} lens: it takes an object placed at the normal near point ($25\ \mathrm{cm}$) and forms a virtual image at the patient's actual PP, which the eye can then focus comfortably.
+
+\courssub{Presbyopia and astigmatism}
+
+With age the crystalline lens hardens and the ciliary muscles weaken: the amplitude of accommodation $A$ falls and the PP recedes. This is \cle{presbyopia} --- the reason most people over 45 hold a newspaper at arm's length. It is corrected with \textbf{converging lenses for near vision} (reading glasses), often combined with distance correction in bifocal lenses.
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm, height=6cm,
+    xlabel={Age (years)}, ylabel={Amplitude of accommodation $A$ (D)},
+    xmin=0, xmax=75, ymin=0, ymax=15,
+    xtick={10,20,30,40,50,60,70},
+    ytick={0,2,4,6,8,10,12,14},
+    grid=both, grid style={popline!40},
+    axis line style={popdark},
+    legend style={at={(0.97,0.97)},anchor=north east,draw=popline}
+]
+\addplot[very thick,popblue,smooth] coordinates {
+    (10,13.5) (20,10.5) (30,8.0) (40,5.0) (45,3.2) (50,2.0) (55,1.3) (60,0.9) (70,0.6)
+};
+\addlegendentry{mean amplitude $A$}
+\addplot[dashed,poporange] coordinates {(45,0) (45,3.2)};
+\addplot[dashed,poporange] coordinates {(0,3.2) (45,3.2)};
+\node[poporange,anchor=west,align=center,text width=2.6cm] at (axis cs:47,3.7) {reading glasses often needed};
+\end{axis}
+\end{tikzpicture}
+\legende{Amplitude of accommodation versus age. Below about $3\ \mathrm{D}$ (around age 45), the PP recedes beyond comfortable reading distance: presbyopia.}
+\end{popfigure}
+
+\cle{Astigmatism} arises when the cornea is not spherical but slightly toric (like a spoon): its curvature differs in different planes, so horizontal and vertical lines cannot be focused simultaneously. It is corrected with \textbf{cylindrical lenses} (or toric lenses) that add power only in the defective plane. At GCE level the treatment is qualitative only.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85,>=stealth]
+% ---- normal eye ----
+\begin{scope}
+\draw[thick,popblue] (0,0) ellipse (1.5 and 1.1);
+\draw[thick,poporange] (0.55,0) ellipse (0.12 and 0.6);
+\draw[very thick,popgreen] (-1.42,-0.45) arc (200:160:1.5);
+\draw[popdark] (2.8,0.55) -- (-1.35,0.12);
+\draw[popdark] (2.8,-0.55) -- (-1.35,-0.12);
+\fill[popdark] (-1.35,0) circle (0.05);
+\node at (0,-1.7) {\textbf{Normal eye}};
+\node[align=center,text width=2.6cm] at (0,-2.3) {image on retina};
+\end{scope}
+% ---- myopic eye ----
+\begin{scope}[xshift=5.6cm]
+\draw[thick,popblue] (0,0) ellipse (1.5 and 1.1);
+\draw[thick,poporange] (0.55,0) ellipse (0.12 and 0.6);
+\draw[very thick,popgreen] (-1.42,-0.45) arc (200:160:1.5);
+% diverging lens
+\draw[thick,poppurple] (2.2,-0.7) -- (2.2,0.7);
+\draw[thick,poppurple] (2.2,0.7) -- (2.05,0.55);
+\draw[thick,poppurple] (2.2,-0.7) -- (2.05,-0.55);
+\draw[popdark] (3.4,0.55) -- (2.2,0.42) -- (-0.55,0.05) -- (-1.35,0.12);
+\draw[popdark] (3.4,-0.55) -- (2.2,-0.42) -- (-0.55,-0.05) -- (-1.35,-0.12);
+\draw[dashed,popmuted] (2.2,0.42) -- (3.4,0.9);
+\draw[dashed,popmuted] (2.2,-0.42) -- (3.4,-0.9);
+\node at (0.6,-1.7) {\textbf{Myopia corrected}};
+\node[align=center,text width=3.2cm] at (0.6,-2.3) {diverging lens, image back on retina};
+\end{scope}
+% ---- hypermetropic eye ----
+\begin{scope}[xshift=11.4cm]
+\draw[thick,popblue] (0,0) ellipse (1.5 and 1.1);
+\draw[thick,poporange] (0.55,0) ellipse (0.12 and 0.6);
+\draw[very thick,popgreen] (-1.42,-0.45) arc (200:160:1.5);
+% converging lens
+\draw[thick,poppurple] (2.2,-0.7) -- (2.2,0.7);
+\draw[thick,poppurple] (2.2,0.7) -- (2.35,0.55);
+\draw[thick,poppurple] (2.2,-0.7) -- (2.35,-0.55);
+\draw[popdark] (3.4,0.9) -- (2.2,0.5) -- (-1.35,0.12);
+\draw[popdark] (3.4,-0.9) -- (2.2,-0.5) -- (-1.35,-0.12);
+\draw[dashed,popmuted] (0.55,0.12) -- (-2.2,0.5);
+\draw[dashed,popmuted] (0.55,-0.12) -- (-2.2,-0.5);
+\node at (0.6,-1.7) {\textbf{Hypermetropia corrected}};
+\node[align=center,text width=3.4cm] at (0.6,-2.3) {converging lens; dashed: uncorrected rays meeting behind retina};
+\end{scope}
+\end{tikzpicture}
+\legende{Left: normal eye. Centre: myopic eye corrected by a diverging lens. Right: hypermetropic eye corrected by a converging lens (dashed lines show where rays would meet without correction).}
+\end{popfigure}
+
+\courssub{Worked Examples and GCE Technique}
+
+\begin{attention}[Sign conventions --- the classic Paper 2 trap]
+In the lens formula $\dfrac{1}{f} = \dfrac{1}{v} - \dfrac{1}{u}$ (Cartesian convention, light travelling left to right):
+\begin{itemize}
+\item distances measured \textbf{in the direction of light} are positive, against it negative;
+\item the retina is a \textbf{real} screen: the image distance $v = +17\ \mathrm{mm}$ is always positive;
+\item a virtual image (e.g.\ the image given by a correcting lens) has $v < 0$;
+\item vergence in dioptres requires distances in \textbf{metres}: $V\ (\mathrm{D}) = 1/f\ (\mathrm{m})$. Mixing centimetres and dioptres is the most common source of wrong answers.
+\end{itemize}
+\end{attention}
+
+\begin{exoresolu}[Correcting a myopic patient (GCE type)]
+A short-sighted patient has a far point (PR) at $2.0\ \mathrm{m}$ and a near point (PP) at $12\ \mathrm{cm}$. (a) State the nature and power of the spectacle lens that allows him to see distant objects clearly. (b) With these spectacles on, where is his new near point?
+\tcblower
+\textbf{(a)} The correcting lens must take an object at infinity and form a \emph{virtual} image at the PR, i.e.\ at $v = -2.0\ \mathrm{m}$:
+\[
+V = \frac{1}{v} - \frac{1}{u} = \frac{1}{-2.0} - 0 = -0.50\ \mathrm{D}.
+\]
+A \textbf{diverging} lens of power $-0.50\ \mathrm{D}$ (focal length $f = -2.0\ \mathrm{m}$). Note the rule: for myopia, $f' = -\mathrm{PR}$.
+
+\textbf{(b)} With the lens on, an object at the new near point (distance $d$) must give a virtual image at the old PP, $v = -0.12\ \mathrm{m}$:
+\[
+\frac{1}{f} = \frac{1}{v} - \frac{1}{u}
+\;\Rightarrow\;
+\frac{1}{u} = \frac{1}{v} - \frac{1}{f} = \frac{1}{-0.12} - \frac{1}{-2.0} = -8.33 + 0.50 = -7.83\ \mathrm{m^{-1}}.
+\]
+Hence $u = -0.128\ \mathrm{m}$: the new near point is at about $\boxed{12.8\ \mathrm{cm}}$, slightly farther than before --- a small price for clear distance vision.
+\end{exoresolu}
+
+\begin{exoresolu}[Correcting hypermetropia]
+A long-sighted woman has a near point at $1.0\ \mathrm{m}$. Find the power of the lens that lets her read at the normal distance of $25\ \mathrm{cm}$.
+\tcblower
+The lens must form, from an object at $u = -0.25\ \mathrm{m}$, a virtual image at her PP: $v = -1.0\ \mathrm{m}$.
+\[
+V = \frac{1}{v} - \frac{1}{u} = \frac{1}{-1.0} - \frac{1}{-0.25} = -1.0 + 4.0 = +3.0\ \mathrm{D}.
+\]
+A \textbf{converging} lens of power $\boxed{+3.0\ \mathrm{D}}$ ($f = +0.33\ \mathrm{m}$). The positive sign confirms the converging nature --- always check that the sign matches the physics.
+\end{exoresolu}
+
+\begin{methode}[Solving any eye-correction problem]
+\begin{enumerate}
+\item Write down the patient's PP and PR and what the correction must achieve (PR to infinity for myopia; PP to $25\ \mathrm{cm}$ for hypermetropia/presbyopia).
+\item Identify object and image for the \emph{correcting lens}: the image is always \textbf{virtual} and located at the patient's defective point.
+\item Convert all distances to metres and apply $\dfrac{1}{f} = \dfrac{1}{v} - \dfrac{1}{u}$ with signs.
+\item Check: myopia $\Rightarrow$ negative (diverging); hypermetropia/presbyopia $\Rightarrow$ positive (converging).
+\end{enumerate}
+\end{methode}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item A myopic student cannot see clearly beyond $50\ \mathrm{cm}$. Determine the power of the spectacles he needs for distant vision, and his new near point if his uncorrected PP is $10\ \mathrm{cm}$.
+\item An elderly patient has a PP at $2.0\ \mathrm{m}$. What reading-glass power restores a near point of $25\ \mathrm{cm}$?
+\item Using the reduced eye ($v = 17\ \mathrm{mm}$), calculate the vergence of the eye when viewing (a) a star, (b) a book at $25\ \mathrm{cm}$. Deduce the amplitude of accommodation.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $V = -\dfrac{1}{\mathrm{PR}} = -\dfrac{1}{0.50} = -2.0\ \mathrm{D}$ (diverging). New near point: $\dfrac{1}{u} = \dfrac{1}{-0.10} - \dfrac{1}{-0.50} = -10 + 2 = -8\ \mathrm{m^{-1}}$, so $u = -0.125\ \mathrm{m}$: PP at $12.5\ \mathrm{cm}$.
+
+\textbf{2.} $V = \dfrac{1}{-2.0} - \dfrac{1}{-0.25} = -0.5 + 4.0 = +3.5\ \mathrm{D}$ (converging).
+
+\textbf{3.} (a) Star: $V = \dfrac{1}{0.017} - 0 \approx 58.8\ \mathrm{D}$. (b) Book: $V = 58.8 + 4.0 = 62.8\ \mathrm{D}$. Amplitude $A = 4.0\ \mathrm{D}$, the normal value for a young adult.
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 1]
+\begin{itemize}
+\item The eye is a converging system ($\approx +60\ \mathrm{D}$ at rest) projecting a real inverted image on the retina, $17\ \mathrm{mm}$ away; only the lens vergence can vary.
+\item Normal eye: PR at infinity, PP $\approx 25\ \mathrm{cm}$; amplitude $A = \dfrac{1}{\mathrm{PP}} - \dfrac{1}{\mathrm{PR}} \approx 4\ \mathrm{D}$.
+\item Resolving power $\approx 1$ arcminute (set by the cones); persistence of vision $\approx \frac{1}{16}\ \mathrm{s}$ explains cinema.
+\item Myopia: image in front of retina $\Rightarrow$ diverging lens with $f' = -\mathrm{PR}$.
+\item Hypermetropia and presbyopia: image behind retina or receding PP $\Rightarrow$ converging lens bringing the PP back to $25\ \mathrm{cm}$.
+\item Astigmatism: non-spherical cornea, corrected by cylindrical lenses (qualitative).
+\item Always work in metres, respect signs, and check that the sign of $V$ matches the type of lens.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Section 2: Hearing and Its Defects (Lesson 51b)}
+
+In Section 1 we studied the eye, the organ that converts light into nerve signals. But a doctor who examines a patient relies just as much on \emph{sound}: the crackle of lungs through a stethoscope, the beating of the heart, the patient's own voice describing the symptoms. The ear is our second great sensor, and like the eye it is a remarkable piece of physics: a pressure detector able to respond to vibrations of the eardrum smaller than the diameter of an atom, and to analyse frequencies over about ten octaves. In this section we study the ear as an \cle{acoustic receiver}, we quantify hearing with the \cle{decibel} scale and the \cle{audiogram}, and we finish with the main hearing defects, their correction and their prevention --- a real public health issue for young people in Cameroon today.
+
+\courssub{The Ear as an Acoustic Receiver}
+
+\begin{definition}[Sound, a reminder]
+A \cle{sound} is a mechanical longitudinal wave: a succession of compressions and rarefactions of air (or of another material medium), characterised by its \cle{frequency} $f$ (in hertz, Hz), which we perceive as the pitch, and by its \cle{intensity} $I$ (in $\mathrm{W\,m^{-2}}$), which we perceive as loudness. Sound cannot propagate in a vacuum: it always needs a material medium.
+\end{definition}
+
+The ear is traditionally divided into three regions, each with a precise physical role.
+
+\textbf{1. The outer ear: collecting and channelling sound.}\par
+The \cle{pinna} (the visible part of the ear) acts as a funnel that collects sound waves and directs them into the \cle{auditory canal}, a tube about \SI{2.5}{cm} long, closed at one end by the eardrum. Like an organ pipe closed at one end, this canal resonates for wavelengths close to four times its length, $\lambda \approx 4\ell = \SI{10}{cm}$, i.e.\ for frequencies near $f = v/\lambda \approx 340/0.10 \approx \SI{3.4}{kHz}$: this is one reason why the ear is most sensitive around \SI{3}{kHz}. At the end of the canal lies the \cle{eardrum} (tympanic membrane).
+
+\textbf{2. The middle ear: converting and amplifying pressure.}\par
+The eardrum is a thin membrane that converts the pressure variations of the sound wave into a \cle{mechanical vibration}. Behind it, in an air-filled cavity, a chain of three tiny bones --- the \cle{ossicles}: the \emph{hammer} (malleus), the \emph{anvil} (incus) and the \emph{stirrup} (stapes) --- transmits this vibration to the inner ear. The ossicles play the role of a \cle{pressure amplifier}, for two reasons:
+\begin{itemize}
+\item they form a system of \emph{levers} which multiplies the force by a factor of about $1.3$;
+\item the stirrup pushes on the \emph{oval window} of the cochlea, whose area $S_2$ is about $17$ times smaller than the area $S_1$ of the eardrum. Since pressure is $p = F/S$, concentrating the force on a smaller area multiplies the pressure.
+\end{itemize}
+
+\begin{propriete}[Pressure amplification by the middle ear]
+The total pressure gain of the middle ear is approximately
+\[
+\frac{p_2}{p_1} = \underbrace{\frac{F_2}{F_1}}_{\text{lever } \approx\, 1.3} \times \underbrace{\frac{S_1}{S_2}}_{\text{areas } \approx\, 17} \approx 22 .
+\]
+This amplification is essential: the cochlea is filled with liquid, and without this \emph{impedance matching} most of the sound energy would be reflected at the air--liquid boundary, so we would hear almost nothing.
+\end{propriete}
+
+\textbf{3. The inner ear: frequency analysis and transduction.}\par
+The \cle{cochlea} is a spiral, liquid-filled tube, divided along its length by the \emph{basilar membrane} on which sit thousands of sensory hair cells. The basilar membrane is stiff and narrow near the base, wide and flexible near the apex. A vibration entering through the oval window therefore sets the membrane into motion \emph{at a place that depends on the frequency}: high frequencies vibrate the base, low frequencies the apex. The cochlea thus performs a true \cle{frequency analysis} (a biological Fourier analyser). The hair cells then convert the local mechanical vibration into electrical impulses carried by the \cle{auditory nerve} to the brain: this conversion of a mechanical signal into an electrical nerve signal is called \cle{transduction}.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, font=\small]
+% Outer ear
+\fill[popblueL] (0,1.6) -- (0,-1.6) .. controls (-1.6,-1.2) and (-1.9,0.6) .. (-1.2,1.4) .. controls (-0.7,1.9) and (-0.2,1.9) .. (0,1.6) -- cycle;
+\draw[popink, thick] (0,1.6) -- (0,-1.6) .. controls (-1.6,-1.2) and (-1.9,0.6) .. (-1.2,1.4) .. controls (-0.7,1.9) and (-0.2,1.9) .. (0,1.6);
+% Auditory canal
+\draw[popink, thick] (0,0.55) -- (2.6,0.55);
+\draw[popink, thick] (0,-0.55) -- (2.6,-0.55);
+% Eardrum
+\draw[poporange, very thick] (2.6,0.55) .. controls (2.9,0) .. (2.6,-0.55);
+\node[poporange, align=center] at (3.6,-1.5) {eardrum};
+\draw[poporange, ->] (3.4,-1.3) -- (2.75,-0.35);
+% Ossicles
+\draw[popdark, very thick] (2.9,0.35) -- (3.6,0.75);
+\draw[popdark, very thick] (3.6,0.75) -- (4.2,0.35);
+\draw[popdark, very thick] (4.2,0.35) -- (4.55,0.1);
+\node[popdark, align=center] at (3.7,1.35) {ossicles};
+\draw[popdark, ->] (3.7,1.15) -- (3.6,0.8);
+% Cochlea (spiral)
+\draw[popgreen, very thick] (5.6,0) circle (0.85);
+\draw[popgreen, thick] (5.6,0) circle (0.45);
+\fill[popgreen] (5.6,0) circle (0.08);
+\node[popgreen!60!black, align=center] at (5.6,-1.5) {cochlea};
+% Auditory nerve
+\draw[poppurple, very thick, ->] (6.45,0) -- (7.9,0);
+\node[poppurple, align=center] at (7.2,0.4) {auditory nerve};
+% Sound arrows
+\draw[popblue, very thick, ->] (-2.9,0) -- (-0.5,0);
+\draw[popblue, very thick, ->] (-0.4,0) -- (2.3,0);
+\node[popblue, align=center] at (-1.6,0.45) {sound};
+% Region labels
+\node[align=center, text=popink] at (-0.9,2.3) {\textbf{outer ear}};
+\node[align=center, text=popink] at (3.6,2.3) {\textbf{middle ear}};
+\node[align=center, text=popink] at (5.9,2.3) {\textbf{inner ear}};
+\draw[popmuted, dashed] (2.2,-2.1) -- (2.2,2.1);
+\draw[popmuted, dashed] (4.7,-2.1) -- (4.7,2.1);
+\end{tikzpicture}
+\end{center}
+\legende{Schematic cross-section of the human ear. Sound is collected by the pinna, channelled by the auditory canal, converted into vibration by the eardrum, amplified in pressure by the ossicles, and analysed in frequency by the cochlea, which sends nerve impulses along the auditory nerve.}
+\end{popfigure}
+
+\begin{aretenir}[Physical role of each part]
+\begin{itemize}
+\item \textbf{Outer ear}: collects and channels sound; resonance of the canal near \SI{3}{kHz}.
+\item \textbf{Middle ear}: the eardrum converts sound pressure into vibration; the ossicles amplify the pressure by a factor of about $\times 22$ (lever effect $\times$ area ratio).
+\item \textbf{Inner ear}: the cochlea performs the frequency analysis and the transduction into nerve impulses.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Audibility Range, Intensity and the Decibel Scale}
+
+\begin{propriete}[Audible range]
+A healthy young ear perceives sounds of frequency between about \SI{20}{Hz} (deep bass) and \SI{20}{kHz} (high treble). Its sensitivity is maximal around \SI{3}{kHz}, precisely the resonance region of the auditory canal and the region of speech consonants. Below \SI{20}{Hz} we speak of \emph{infrasound}, above \SI{20}{kHz} of \emph{ultrasound} (used in medical imaging, Section 3).
+\end{propriete}
+
+The ear answers an enormous range of intensities: the faintest audible sound at \SI{1}{kHz} has an intensity $I_0 = \SI{e-12}{W.m^{-2}}$ (the \cle{threshold of hearing}), while the \cle{threshold of pain} is around $I \approx \SI{1}{W.m^{-2}}$ --- a factor of $10^{12}$ between them! A linear scale is hopeless for such a range, so we use a logarithmic scale, which also matches the fact that our \emph{sensation} of loudness grows roughly with the logarithm of the intensity.
+
+\begin{definition}[Sound intensity level]
+The \cle{sound intensity level} $L$ of a sound of intensity $I$ is
+\[
+L = 10 \log\!\left(\frac{I}{I_0}\right) \quad \text{in decibels (dB)},
+\]
+where $I_0 = \SI{e-12}{W.m^{-2}}$ is the threshold of hearing at \SI{1}{kHz} and $\log$ is the base-10 logarithm. Inverting the formula: $I = I_0 \times 10^{L/10}$.
+\end{definition}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|l|c|}
+\hline
+\rowcolor{popblueL} \textbf{Sound} & \textbf{Intensity} & \textbf{Level} \\
+\hline
+Threshold of hearing & $I_0 = \SI{e-12}{W.m^{-2}}$ & \SI{0}{dB} \\
+\hline
+Whisper at \SI{1}{m} & $10^3\,I_0$ & \SI{30}{dB} \\
+\hline
+Normal conversation & $10^6\,I_0$ & \SI{60}{dB} \\
+\hline
+Busy street, market & $10^8\,I_0$ & \SI{80}{dB} \\
+\hline
+Nightclub, motorcycle close by & $10^{10}\,I_0$ & \SI{100}{dB} \\
+\hline
+Threshold of pain & $10^{12}\,I_0 \approx \SI{1}{W.m^{-2}}$ & \SI{120}{dB} \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[The decibel scale is logarithmic!]
+A very common mistake: adding \SI{10}{dB} does \emph{not} mean adding a little intensity. Since $L$ is logarithmic,
+\[
+L_2 - L_1 = 10\ \mathrm{dB} \iff \frac{I_2}{I_1} = 10 .
+\]
+So $+10$ dB multiplies the intensity by $10$, $+20$ dB by $100$, $+30$ dB by $1000$. Two identical loudspeakers do not give $60 + 60 = 120$ dB, but $60 + 10\log 2 \approx 63$ dB, because the \emph{intensities} (not the levels) add.
+\end{attention}
+
+\begin{exoresolu}[From the market to the pain threshold]
+At a busy junction in Douala, the sound intensity level is measured at $L_1 = \SI{80}{dB}$. (a) Calculate the corresponding intensity $I_1$. (b) How many identical sources of \SI{80}{dB} would be needed to reach the threshold of pain, \SI{120}{dB}?
+\tcblower
+(a) From the inverted definition, $I_1 = I_0 \times 10^{L_1/10} = 10^{-12} \times 10^{8} = \SI{e-4}{W.m^{-2}}$.\par
+(b) The pain threshold corresponds to $I_2 = 10^{-12} \times 10^{12} = \SI{1}{W.m^{-2}}$. The ratio is $I_2/I_1 = 10^{4}$: it would take \textbf{ten thousand} such sources sounding together. This shows dramatically how compressed the decibel scale is.
+\end{exoresolu}
+
+\courssub{The Audiogram}
+
+To measure a patient's hearing, the audiologist presents pure tones of different frequencies (typically $125$, $250$, $500$ Hz, $1$, $2$, $4$ and $8$ kHz) through headphones, and finds for each frequency the weakest level the patient can detect. The result is plotted on an \cle{audiogram}: frequency on a logarithmic horizontal axis, \cle{hearing threshold} in dB HL (hearing level) on the vertical axis, with \emph{increasing loss downwards}. The $0$ dB HL line represents the average threshold of healthy young adults.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{semilogxaxis}[
+  width=0.86\linewidth, height=7.2cm,
+  xlabel={frequency $f$ (Hz)}, ylabel={hearing threshold (dB HL)},
+  xmin=100, xmax=10000, ymin=90, ymax=-10,
+  y dir=reverse,
+  xtick={125,250,500,1000,2000,4000,8000},
+  xticklabels={125,250,500,1k,2k,4k,8k},
+  ytick={0,20,40,60,80},
+  grid=both, grid style={popline, very thin},
+  legend style={at={(0.03,0.03)}, anchor=south west, font=\small},
+]
+% 0 dB reference
+\addplot[popmuted, dashed, thick] coordinates {(125,0) (8000,0)};
+% Normal ear
+\addplot[popblue, very thick, mark=*, mark size=1.5pt] coordinates
+ {(125,10) (250,10) (500,5) (1000,5) (2000,0) (4000,5) (8000,10)};
+% Sensorineural loss (presbycusis / noise)
+\addplot[poporange, very thick, mark=square*, mark size=1.5pt] coordinates
+ {(125,15) (250,20) (500,25) (1000,35) (2000,55) (4000,70) (8000,80)};
+\legend{$0$ dB reference, normal ear, sensorineural loss}
+\end{semilogxaxis}
+\end{tikzpicture}
+\end{center}
+\legende{Audiograms. The blue curve (normal ear) stays near the $0$ dB reference line. The orange curve (sensorineural loss, e.g.\ ageing or noise damage) shows thresholds rising steeply at high frequencies: the patient no longer hears treble sounds.}
+\end{popfigure}
+
+\begin{methode}[Reading an audiogram]
+\begin{enumerate}
+\item Identify the axes: frequency (log scale, increasing to the right), threshold in dB HL (loss increasing \emph{downwards}).
+\item Compare the patient's curve with the $0$ dB HL reference line at each frequency.
+\item A threshold above \SI{25}{dB} HL at any frequency indicates a \cle{hearing loss} at that frequency (mild: 25--40 dB; moderate: 40--70 dB; severe: 70--90 dB; profound: above 90 dB).
+\item Note the \emph{shape} of the curve: a loss concentrated at high frequencies suggests sensorineural damage (ageing, noise); a roughly flat loss suggests a conductive problem.
+\end{enumerate}
+\end{methode}
+
+\courssub{Hearing Defects and Their Correction}
+
+\begin{definition}[Conductive and sensorineural deafness]
+A \cle{conductive deafness} results from a defect of \emph{sound transmission} through the outer or middle ear: the sound never reaches the cochlea properly. Causes include earwax plugs, a perforated eardrum, \emph{otitis} (middle-ear infection, very common in Cameroonian children) or fixation of the ossicles.\par
+A \cle{sensorineural deafness} results from a defect of \emph{transduction}: the cochlea (hair cells) or the auditory nerve is damaged. Causes include ageing (\emph{presbycusis}), prolonged exposure to loud noise, certain drugs and some infections.
+\end{definition}
+
+The distinction matters physically and medically. In conductive loss, the cochlea is intact: it is enough to deliver a stronger signal, so a \cle{hearing aid} (a miniature microphone--amplifier--earphone system worn behind or in the ear) works very well, and surgery can often repair the eardrum or replace a damaged ossicle with a prosthesis. In sensorineural loss, simple amplification may be insufficient because the hair cells themselves are dead. When the auditory nerve is still functional, a \cle{cochlear implant} can be used: an external microphone and processor convert sound into coded electrical signals, transmitted to an electrode array inserted into the cochlea, which \emph{stimulates the auditory nerve directly}, bypassing the defective hair cells.
+
+\begin{savaistu}[Noise: a public health issue]
+Hearing damage from noise is \emph{irreversible}, because destroyed hair cells never regrow. Risk depends on both level and duration: exposure to levels above about \SI{85}{dB} for many hours a day, or to the $100$--$110$ dB typical of nightclubs and of personal music players at full volume, progressively destroys the hair cells of the cochlea base --- the first sign is exactly the high-frequency dip seen on the audiogram above. Simple prevention rules: keep headphone volume moderate, limit listening time, move away from loudspeakers in bars and \emph{maquis}, and use ear protection in noisy work. Protecting your ears today is protecting your hearing for life.
+\end{savaistu}
+
+\begin{exercice}[Audiogram interpretation and decibels]
+\begin{enumerate}
+\item A patient's audiogram gives thresholds of $20$ dB HL at \SI{500}{Hz}, $35$ dB HL at \SI{2}{kHz} and $75$ dB HL at \SI{4}{kHz}. For each frequency, state whether the hearing is normal or impaired, and classify the loss.
+\item Is this profile more likely conductive or sensorineural? Justify.
+\item At \SI{4}{kHz}, the patient needs a sound of level \SI{75}{dB} where a normal ear needs \SI{0}{dB}. By what factor is the required \emph{intensity} greater?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item \SI{500}{Hz}: $20$ dB HL $< 25$ dB HL, hearing is normal. \SI{2}{kHz}: $35$ dB HL, mild loss. \SI{4}{kHz}: $75$ dB HL, severe loss.
+\item The loss grows strongly with frequency, which is the signature of a \textbf{sensorineural} loss (ageing or noise damage affecting the base of the cochlea, which codes high frequencies). A conductive loss would be flatter.
+\item $\Delta L = 75$ dB, so $\dfrac{I}{I_0} = 10^{75/10} = 10^{7.5} \approx 3.2 \times 10^{7}$: the required intensity is about \textbf{thirty million times} greater than for a normal ear.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 2]
+\begin{itemize}
+\item The ear converts sound pressure into nerve signals: eardrum (pressure $\to$ vibration), ossicles (pressure amplification $\times 22$), cochlea (frequency analysis and transduction).
+\item Audible range: \SI{20}{Hz} to \SI{20}{kHz}, maximal sensitivity near \SI{3}{kHz}.
+\item Sound level: $L = 10\log(I/I_0)$ with $I_0 = \SI{e-12}{W.m^{-2}}$; the scale is logarithmic: $+10$ dB $\Leftrightarrow$ intensity $\times 10$.
+\item The audiogram plots hearing threshold versus frequency; a threshold above \SI{25}{dB} HL indicates hearing loss.
+\item Conductive deafness (transmission defect) is treated with hearing aids or surgery; sensorineural deafness (transduction defect) may require a cochlear implant. Noise-induced loss is irreversible: prevention is essential.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Section 3: Biological Measurements for the Heart and Non-Ionising Imaging (Lesson 53a)}
+
+In Section~2 we studied the ear, a biological sensor that converts pressure waves into nerve signals. The same physics --- pressure, waves, potential differences --- also allows us to \emph{measure} what happens inside the body without opening it. In this section we apply the physics of fluids, electricity and waves to the \cle{heart}, the hardest-working pump in the human body, and then to \cle{ultrasound imaging}, the non-ionising diagnostic technique most widely available in Cameroonian hospitals, from the Yaound\'e Central Hospital to the smallest district hospital.
+
+\courssub{The Heart as a Pump}
+
+\textbf{Observation.} Place two fingers on your wrist: you feel a regular pulse, about 70 beats per minute at rest. Each beat is one contraction of the heart pushing blood through the arteries. The heart is a \emph{double pump}: the right side sends blood to the lungs (pulmonary circulation), the left side sends oxygenated blood to the rest of the body (systemic circulation). The left ventricle has the thicker muscular wall because it must pump against a much higher pressure.
+
+\textbf{The cardiac cycle.} One \cle{cardiac cycle} is the sequence of events of one heartbeat:
+\begin{itemize}
+\item \textbf{Diastole}: the heart muscle relaxes and the chambers fill with blood.
+\item \textbf{Atrial systole}: the atria contract, topping up the ventricles.
+\item \textbf{Ventricular systole}: the ventricles contract powerfully, ejecting blood into the arteries.
+\end{itemize}
+The \cle{heart rate} $f$ is the number of cycles per minute, typically $60$--$100$ beats per minute at rest. In SI units, $f \approx \SI{1.2}{Hz}$.
+
+\begin{definition}[Stroke volume and cardiac output]
+The \cle{stroke volume} $V_s$ is the volume of blood ejected by one ventricle in one beat (about \SI{70}{cm^3} at rest). The \cle{cardiac output} is the volume flow rate delivered by the heart:
+\[ Q = f\, V_s . \]
+At rest, $Q \approx 1.2 \times 70\times 10^{-6} \approx \SI{8.4e-5}{m^3.s^{-1}}$, i.e.\ about $5$ litres per minute.
+\end{definition}
+
+\begin{definition}[Blood pressure]
+\cle{Blood pressure} is the pressure exerted by the blood on the walls of the arteries. It varies during the cardiac cycle:
+\begin{itemize}
+\item the \cle{systolic pressure} is the \textbf{maximum} pressure, reached during ventricular contraction;
+\item the \cle{diastolic pressure} is the \textbf{minimum} pressure, during ventricular relaxation.
+\end{itemize}
+It is traditionally expressed in millimetres of mercury (mmHg). A healthy young adult has about $120/80\ \mathrm{mmHg}$ (systolic/diastolic).
+\end{definition}
+
+\textbf{Conversion to pascals.} The pressure at the base of a column of mercury is $p = \rho_{\mathrm{Hg}}\, g\, h$. With $\rho_{\mathrm{Hg}} = \SI{13600}{kg.m^{-3}}$, $g = \SI{9.81}{m.s^{-2}}$ and $h = \SI{1}{mm} = \SI{1e-3}{m}$:
+\[ 1\ \mathrm{mmHg} = 13600 \times 9.81 \times 10^{-3} \approx \SI{133}{Pa}. \]
+Hence a systolic pressure of $120\ \mathrm{mmHg} \approx \SI{1.6e4}{Pa}$ above atmospheric pressure. Blood pressure is a \emph{gauge} pressure: it is measured relative to atmospheric pressure.
+
+\begin{exemplebox}[Power of the heart]
+The left ventricle does work $W \approx p\,\Delta V$ on the blood at each beat. With $p \approx \SI{1.6e4}{Pa}$ and $\Delta V = \SI{70}{cm^3} = \SI{7.0e-5}{m^3}$:
+\[ W \approx 1.6\times 10^{4} \times 7.0\times 10^{-5} \approx \SI{1.1}{J} \quad\text{per beat}. \]
+At $75$ beats per minute ($f = \SI{1.25}{Hz}$), the useful mechanical power is
+\[ P = fW \approx 1.25 \times 1.1 \approx \SI{1.4}{W}. \]
+The heart beats about $10^{5}$ times a day, every day of your life --- a remarkable machine.
+\end{exemplebox}
+
+\courssub{Measuring Blood Pressure: the Sphygmomanometer}
+
+\begin{experience}[The sphygmomanometer]
+A \cle{sphygmomanometer} consists of an inflatable \textbf{cuff} wrapped around the upper arm, connected to a \textbf{manometer} (mercury column or dial) and a rubber pump bulb. A \textbf{stethoscope} is placed over the brachial artery at the elbow.
+\begin{enumerate}
+\item The cuff is inflated above the systolic pressure: the artery is completely flattened, blood flow stops, and no sound is heard.
+\item The cuff is deflated slowly. When the cuff pressure falls just below the systolic pressure, blood spurts through at each heartbeat, producing turbulent flow and tapping sounds --- the \cle{Korotkoff sounds}. The manometer reading at the \emph{first} sound gives the \textbf{systolic} pressure.
+\item Deflation continues; the sounds become quieter and \emph{disappear} when the cuff pressure equals the diastolic pressure (flow is smooth and laminar again). This reading gives the \textbf{diastolic} pressure.
+\end{enumerate}
+\end{experience}
+
+The physics is a simple balance of pressures: the cuff applies a known external pressure to the tissue; the artery opens only when the internal blood pressure exceeds it. The sounds arise because flow through a partially squeezed artery is \emph{turbulent}, and turbulence is noisy; smooth laminar flow is silent.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, font=\small]
+% arm
+\draw[fill=popblueL, draw=popblue, thick, rounded corners=6pt] (0,0.6) rectangle (6,2.4);
+\node[popdark] at (5.3,2.0) {arm};
+% artery
+\draw[very thick, poppink] (0,1.5) -- (6,1.5);
+\node[poppink, below] at (5.2,1.35) {artery};
+% cuff
+\draw[fill=popgreenL, draw=popgreen, thick] (1.6,0.3) rectangle (3.4,2.7);
+\node[popdark, align=center] at (2.5,3.0) {inflatable cuff};
+% tube to manometer
+\draw[thick, popmuted] (3.4,2.2) -- (4.6,3.4) -- (5.6,3.4);
+% manometer dial
+\draw[fill=white, draw=popink, thick] (6.4,3.4) circle (0.8);
+\foreach \a/\l in {210/0, 150/100, 90/200, 30/300}
+  \node[font=\scriptsize] at ($(6.4,3.4)+(\a:0.55)$) {\l};
+\draw[thick, poporange] (6.4,3.4) -- ($(6.4,3.4)+(120:0.65)$);
+\node[below, font=\scriptsize] at (6.4,2.5) {mmHg};
+% stethoscope
+\draw[thick, poppurple] (2.5,0.3) -- (2.5,-0.5) arc (360:180:0.9);
+\draw[fill=poppurple, draw=poppurple] (2.5,-0.45) circle (0.12);
+\node[poppurple, align=center] at (0.7,-0.9) {stethoscope\\ (Korotkoff sounds)};
+\end{tikzpicture}
+\end{center}
+\legende{Sphygmomanometer measurement: the cuff pressure is compared with the arterial pressure while Korotkoff sounds are monitored.}
+\end{popfigure}
+
+\courssub{The Electrocardiogram (ECG)}
+
+\textbf{Observation.} The heartbeat is triggered electrically: a natural pacemaker (the sinoatrial node) generates a pulse that spreads through the cardiac muscle, causing \cle{depolarisation} (contraction) followed by \cle{repolarisation} (recovery). These moving charges create small potential differences, of order \SI{1}{mV}, detectable on the skin.
+
+\begin{definition}[Electrocardiogram]
+An \cle{electrocardiogram} (ECG) is the record, versus time, of the potential difference between electrodes placed on the skin (wrists, ankles, chest). It displays the electrical activity of the heart during each cardiac cycle.
+\end{definition}
+
+\textbf{Reading a normal trace.}
+\begin{itemize}
+\item \textbf{P wave}: depolarisation of the \emph{atria} (they contract).
+\item \textbf{QRS complex}: depolarisation of the \emph{ventricles} (the large spike); atrial repolarisation is hidden inside it.
+\item \textbf{T wave}: repolarisation of the \emph{ventricles}.
+\end{itemize}
+An irregular spacing of the QRS complexes, missing P waves, or an abnormally shaped QRS are signs of cardiac disorders --- the ECG is therefore a front-line diagnostic tool.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=5.5cm,
+  xlabel={$t$ (s)}, ylabel={$V$ (mV)},
+  xmin=0, xmax=1.8, ymin=-0.35, ymax=1.3,
+  grid=both, grid style={popline, very thin},
+  xtick={0,0.4,0.8,1.2,1.6}, ytick={0,0.5,1.0},
+  axis lines=left, samples=200]
+\addplot[very thick, popblue] coordinates {
+(0,0) (0.06,0.02) (0.10,0.14) (0.14,0.02) (0.20,0)
+(0.34,0) (0.38,-0.08) (0.42,1.05) (0.46,-0.22) (0.50,0)
+(0.60,0.02) (0.68,0.22) (0.76,0.02) (0.84,0)
+(0.90,0) (0.96,0.02) (1.00,0.14) (1.04,0.02) (1.10,0)
+(1.24,0) (1.28,-0.08) (1.32,1.05) (1.36,-0.22) (1.40,0)
+(1.50,0.02) (1.58,0.22) (1.66,0.02) (1.74,0) (1.80,0)};
+\node[popdark, font=\small] at (axis cs:0.10,0.30) {P};
+\node[popdark, font=\small] at (axis cs:0.42,1.20) {QRS};
+\node[popdark, font=\small] at (axis cs:0.68,0.38) {T};
+\draw[<->, very thick, poporange] (axis cs:0.42,-0.30) -- (axis cs:1.32,-0.30);
+\node[poporange, font=\small, below] at (axis cs:0.87,-0.31) {R--R interval $T$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{A normal ECG trace: P wave, QRS complex and T wave. The R--R interval gives the period of one heartbeat.}
+\end{popfigure}
+
+\begin{methode}[Measuring heart rate from an ECG]
+\begin{enumerate}
+\item Identify two successive \textbf{R peaks} (the tall spikes).
+\item Read the time interval $T$ between them on the time axis (standard paper speed: \SI{25}{mm.s^{-1}}, so $1$ large square of $5\ \mathrm{mm} = \SI{0.20}{s}$).
+\item Compute the frequency $f = \dfrac{1}{T}$ in hertz.
+\item Convert to beats per minute: $f_{\mathrm{bpm}} = \dfrac{60}{T}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Heart rate from an ECG]
+On an ECG recorded at standard speed, the distance between two R peaks is $4.0$ large squares. Calculate the heart rate in beats per minute.
+\tcblower
+Each large square lasts $\SI{0.20}{s}$, so
+\[ T = 4.0 \times 0.20 = \SI{0.80}{s}. \]
+Then
+\[ f_{\mathrm{bpm}} = \frac{60}{T} = \frac{60}{0.80} = 75\ \text{beats per minute}. \]
+This is a normal resting heart rate.
+\end{exoresolu}
+
+\courssub{Ultrasound Imaging (Echography)}
+
+\textbf{Observation.} A bat locates obstacles by emitting sound pulses and timing the echoes. Echography applies exactly the same principle to the inside of the human body --- but with sound of frequency far above audibility.
+
+\begin{definition}[Ultrasound]
+\cle{Ultrasound} consists of mechanical (pressure) waves of frequency above $\SI{20}{kHz}$, beyond human hearing. Medical scanners use frequencies of $1$ to $\SI{15}{MHz}$: high frequency gives short wavelength and therefore fine resolution. For example, at $f = \SI{3.0}{MHz}$ in soft tissue ($c = \SI{1540}{m.s^{-1}}$), $\lambda = c/f \approx \SI{0.51}{mm}$, so structures of millimetre size can be resolved.
+\end{definition}
+
+\begin{propriete}[The piezoelectric effect]
+A \cle{piezoelectric} crystal (e.g.\ quartz) has a reversible electromechanical behaviour:
+\begin{itemize}
+\item \textbf{Emitter}: when an alternating voltage is applied across it, the crystal vibrates at the same frequency and emits ultrasound.
+\item \textbf{Receiver}: when a returning echo deforms the crystal, it produces a proportional voltage.
+\end{itemize}
+A single \cle{transducer} in the probe acts alternately as emitter and receiver. (Statement examinable; no derivation required.)
+\end{propriete}
+
+\textbf{Reflection at interfaces.} When the pulse crosses the boundary between two tissues, part of it is reflected. The quantity controlling this is the \cle{acoustic impedance}
+\[ Z = \rho\, c, \]
+where $\rho$ is the density of the medium and $c$ the speed of sound in it. For normal incidence, the fraction of intensity reflected is
+\[ R = \left(\frac{Z_2 - Z_1}{Z_2 + Z_1}\right)^{2}. \]
+If $Z_1 \approx Z_2$ (two soft tissues), $R$ is small and most energy continues deeper --- good for imaging. If the mismatch is large (tissue/air or tissue/bone), almost everything is reflected.
+
+\begin{attention}[Why coupling gel is essential]
+Between the probe and the skin there would otherwise be a thin layer of \textbf{air}. Since $Z_{\mathrm{air}} \ll Z_{\mathrm{skin}}$, nearly $100\%$ of the ultrasound would be reflected at the skin surface and nothing would enter the body. The \cle{coupling gel} expels the air and matches the impedances. Likewise, ultrasound cannot image through \textbf{bone} or \textbf{gas} (lungs, bowel) --- this is a fundamental limit of echography.
+\end{attention}
+
+\begin{propriete}[Echo time-of-flight: depth of an interface]
+The pulse travels to the reflecting interface \emph{and back}. If $t$ is the measured round-trip time and $c$ the speed of ultrasound in soft tissue ($c \approx \SI{1540}{m.s^{-1}}$), the depth is
+\[ d = \frac{c\,t}{2}. \]
+\end{propriete}
+
+\begin{attention}[The factor 2 trap]
+The most common mistake at the GCE is to write $d = ct$. The time $t$ measured by the machine is a \textbf{round trip} (go \emph{and} return), so the one-way distance is only half of $ct$. Forgetting the factor $2$ doubles the depth --- a serious diagnostic error!
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, font=\small]
+% probe
+\draw[fill=popink, draw=popink] (-0.6,3.0) rectangle (0.6,3.6);
+\node[white] at (0,3.3) {probe};
+% tissue layers
+\draw[fill=popblueL, draw=popblue] (-3,0) rectangle (3,3.0);
+\draw[fill=popgreenL, draw=popgreen] (-3,0) rectangle (3,1.2);
+\node[popdark] at (-2.4,2.7) {tissue 1 ($Z_1$)};
+\node[popdark] at (-2.4,0.6) {tissue 2 ($Z_2$)};
+\draw[very thick, poporange] (-3,1.2) -- (3,1.2);
+\node[poporange, right] at (1.6,1.35) {interface};
+% emitted pulse
+\draw[->, very thick, popblue] (0,3.0) -- (0,1.5);
+\node[popblue, right] at (0.05,2.3) {pulse};
+% reflected echo
+\draw[->, very thick, poppink, dashed] (0.35,1.2) -- (0.35,2.9);
+\node[poppink, right] at (0.4,2.0) {echo};
+% transmitted
+\draw[->, very thick, popblue] (0,1.2) -- (0,0.3);
+% depth arrow
+\draw[<->, thick, popdark] (-1.4,3.0) -- (-1.4,1.2);
+\node[popdark, left] at (-1.45,2.1) {$d = \dfrac{ct}{2}$};
+\end{tikzpicture}
+\end{center}
+\legende{An ultrasound pulse is partially reflected at each tissue interface; the echo return time gives the depth.}
+\end{popfigure}
+
+\textbf{A-scan and B-scan.}
+\begin{itemize}
+\item In \cle{A-scan} (amplitude mode), the echo amplitude is plotted against time: each spike marks an interface, and the time axis converts directly into depth.
+\item In \cle{B-scan} (brightness mode), the probe is swept (mechanically or electronically) across the body; each echo is displayed as a dot whose \emph{brightness} encodes the amplitude, building a 2D cross-sectional image in real time.
+\end{itemize}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=5cm,
+  xlabel={echo time $t$ ($\mu$s)}, ylabel={amplitude},
+  xmin=0, xmax=100, ymin=0, ymax=1.3,
+  grid=both, grid style={popline, very thin},
+  axis lines=left]
+\addplot[very thick, poppurple] coordinates {
+(0,1.0) (3,1.0) (5,0) (24,0) (26,0.7) (30,0.7) (32,0)
+(58,0) (60,0.45) (64,0.45) (66,0) (100,0)};
+\node[popdark, font=\small] at (axis cs:3,1.12) {surface};
+\node[popdark, font=\small] at (axis cs:28,0.85) {echo 1};
+\node[popdark, font=\small] at (axis cs:62,0.60) {echo 2};
+\draw[<->, thick, poporange] (axis cs:28,0.15) -- (axis cs:62,0.15);
+\node[poporange, font=\scriptsize] at (axis cs:45,0.05) {$\Delta t = 34\ \mu$s};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{A-scan: two echoes at $t_1 = 26\ \mu$s and $t_2 = 60\ \mu$s correspond to interfaces at depths $d_1 = ct_1/2 \approx \SI{2.0}{cm}$ and $d_2 \approx \SI{4.6}{cm}$.}
+\end{popfigure}
+
+\begin{exoresolu}[Depth of an organ boundary]
+An ultrasound pulse sent into the abdomen returns an echo from the far wall of the liver after $t = \SI{1.30e-4}{s}$. Taking $c = \SI{1540}{m.s^{-1}}$ in soft tissue, calculate the depth of this boundary.
+\tcblower
+The time is a round trip, so
+\[ d = \frac{c\,t}{2} = \frac{1540 \times 1.30\times 10^{-4}}{2} = \SI{0.100}{m} = \SI{10.0}{cm}. \]
+The reflecting boundary lies $10.0\ \mathrm{cm}$ below the probe.
+\end{exoresolu}
+
+\textbf{Applications.} Echography is used daily for \emph{obstetrics} (monitoring pregnancy: growth, position and heartbeat of the foetus), for examining the \emph{liver}, kidneys and gall bladder, and for \emph{echocardiography} (imaging the beating heart and its valves in real time).
+
+\courssub{Other Non-Ionising Methods (Overview)}
+
+\begin{itemize}
+\item \cle{Doppler ultrasound}: the echo from moving blood is shifted in frequency (Doppler effect); measuring the shift gives the \textbf{blood flow speed}, used to detect narrowed arteries and to monitor the foetal heartbeat.
+\item \cle{MRI} (magnetic resonance imaging): the patient is placed in a very strong magnetic field; the nuclei of hydrogen atoms (abundant in water) absorb and re-emit radio waves, and the signals are reconstructed into extremely detailed images of soft tissue. Principle only is required.
+\item \cle{Thermography}: a camera sensitive to infrared radiation maps the skin temperature, revealing inflammation or abnormal blood supply.
+\end{itemize}
+
+\begin{aretenir}[Why non-ionising imaging comes first]
+\begin{itemize}
+\item \textbf{No radiation risk}: ultrasound and MRI use no ionising radiation, so they are safe even for a foetus and for repeated examinations.
+\item \textbf{Real-time imaging}: the beating heart or a moving foetus can be watched live.
+\item \textbf{Low cost and portability}: an ultrasound machine is far cheaper than a CT scanner, needs little infrastructure and can run on a small generator --- which is why echography is the first-choice imaging technique in Cameroonian district hospitals.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Blood pressure and echography]
+\begin{enumerate}
+\item Convert a blood pressure of $130/85\ \mathrm{mmHg}$ into pascals.
+\item An echo returns after $\SI{52}{\mu s}$. Calculate the depth of the reflector ($c = \SI{1540}{m.s^{-1}}$).
+\item Explain why echography cannot be used to image the brain of an adult through the skull.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Systolic: $130 \times 133 = \SI{1.73e4}{Pa}$; diastolic: $85 \times 133 = \SI{1.13e4}{Pa}$.
+\item $d = \dfrac{ct}{2} = \dfrac{1540 \times 52\times 10^{-6}}{2} = \SI{4.0e-2}{m} = \SI{4.0}{cm}$.
+\item Bone has an acoustic impedance very different from soft tissue, so nearly all the ultrasound is reflected or absorbed at the skull; almost no energy reaches the brain, so no usable image can be formed.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Section 4: Ionising Imaging Techniques and Optical Fibres in Medicine (Lesson 54)}
+
+In the previous section we explored how non-ionising methods — ultrasound and MRI — allow us to visualise soft tissues and blood flow without the risks associated with ionising radiation. We now turn to techniques that \emph{do} use ionising radiation: X-ray radiography, fluoroscopy, and computed tomography (CT). These remain the workhorses of diagnostic imaging, especially for bone, chest, and acute trauma. We will also study how optical fibres, guiding light by total internal reflection, have revolutionised internal examination and minimally invasive surgery. Understanding the physics behind these tools is essential not only for the GCE examination but also for appreciating the balance between diagnostic benefit and radiation risk — a balance that guides every medical decision in our hospitals from Yaoundé to Bamenda.
+
+\courssub{Production and Properties of X-rays}
+
+X-rays were discovered by Wilhelm Röntgen in 1895. They are produced when fast-moving electrons are suddenly decelerated upon striking a metal target. The modern production device is the \cle{Coolidge tube} (hot cathode tube).
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, >=Stealth]
+% Envelope
+\draw[thick, popdark] (0,0) ellipse (3.5 and 2.5);
+% Cathode assembly
+\draw[thick, popblue] (-3,0) -- (-2.5,0);
+\draw[fill=poporange!80!popdark] (-2.5,-0.3) rectangle (-2.0,0.3);
+\node[popblue, left] at (-3,0) {Filament (Cathode)};
+\draw[popblue, ->] (-2.2,0.3) -- (-2.2,0.8) node[above, font=\tiny] {Heat current $I_h$};
+% Electron beam
+\draw[poporange, ->, thick] (-2.25,0) -- (1.5,0);
+\node[poporange, above] at (-0.5,0.3) {Electron beam};
+% Anode (Target)
+\draw[fill=popgray!50!white] (1.5,-0.8) -- (2.5,-0.8) -- (2.5,0.8) -- (1.5,0.8) -- cycle;
+\draw[pattern=north east lines, pattern color=popdark] (1.5,-0.8) -- (2.5,-0.8) -- (2.5,0.8) -- (1.5,0.8) -- cycle;
+\node[popdark, right] at (2.8,0) {Tungsten Anode (Target)};
+% Cooling
+\draw[popblue, ->] (2.5,-1.0) -- (3.0,-1.0) node[right, font=\tiny] {Cooling (oil/water)};
+\draw[popblue, ->] (2.5,1.0) -- (3.0,1.0);
+% High Voltage
+\draw[poppurple] (-3,-1.5) node[left] {H.V. Supply} -- (-2.5,-1.5) -- (-2.5,-0.5) -- (-2.5,0.5) -- (-2.5,1.5) -- (-3,1.5);
+\node[poppurple, left] at (-3,-1.5) {$V_{acc}$ (30--150 kV)};
+% X-ray beam
+\draw[poppink, thick, ->] (2.0,0) -- (4.5,0);
+\node[poppink, right] at (4.5,0) {X-ray beam};
+% Lead shielding
+\draw[fill=popmuted!50!white] (0,-2.5) rectangle (3.5,-2.0);
+\node[font=\tiny, popdark] at (1.75,-2.25) {Lead shielding};
+\end{tikzpicture}
+\legende{The Coolidge X-ray tube: thermionic emission from a heated filament, acceleration by high voltage, and sudden deceleration at the tungsten anode producing X-rays.}
+\end{popfigure}
+
+When the filament (cathode) is heated by a low-voltage current $I_h$, electrons are emitted by \cle{thermionic emission}. A high voltage $V_{acc}$ (typically \SIrange{30}{150}{kV}) accelerates these electrons towards the anode. The anode is made of \cle{tungsten} (high melting point \SI{3422}{\ensuremath{{}^{\circ}\mathrm{C}}}, high atomic number $Z=74$) and rotates to spread the heat load. Upon impact, the electrons lose their kinetic energy in two ways:
+
+\begin{enumerate}
+    \item \textbf{Bremsstrahlung (braking radiation):} Electrons are deflected by the Coulomb field of tungsten nuclei. The sudden deceleration produces a continuous spectrum of X-ray photons with energies up to the maximum kinetic energy of the electrons: $E_{\max} = e V_{acc}$. The minimum wavelength is $\lambda_{\min} = \dfrac{hc}{e V_{acc}}$ (Duane-Hunt law).
+    \item \textbf{Characteristic radiation:} If an incident electron has enough energy to eject an inner-shell electron (e.g., K-shell) from a tungsten atom, an outer-shell electron drops down to fill the vacancy, emitting a photon with energy equal to the difference in binding energies. This produces sharp peaks in the spectrum at wavelengths specific to the target material.
+\end{enumerate}
+
+\begin{definition}[X-rays]
+X-rays are electromagnetic radiation produced by the sudden deceleration of fast electrons striking a metal target. They have wavelengths in the range \SIrange{e-12}{e-10}{m} (energies \SIrange{10}{100}{keV}), travel at speed $c$, and are electrically neutral.
+\end{definition}
+
+\begin{propriete}[Properties of X-rays]
+\begin{itemize}
+    \item Electromagnetic waves (transverse), speed $c = \SI{3.00e8}{m.s^{-1}}$.
+    \item Very short wavelength ($\sim \SI{e-10}{m}$), hence high frequency and high photon energy.
+    \item \cle{Ionising radiation}: photons have enough energy to eject electrons from atoms.
+    \item Highly penetrating; attenuation depends on atomic number $Z$ and density $\rho$ of the material ($\mu \propto Z^3 \rho$ approximately for photoelectric effect).
+    \item \textbf{Not deflected by electric or magnetic fields} (no charge).
+    \item Travel in straight lines; can be diffracted by crystals (Laue pattern).
+    \item Affect photographic film and cause fluorescence.
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Common Mistake: X-rays vs Cathode Rays]
+\emph{Do not confuse X-rays with the electron beam (cathode rays) inside the tube.} Cathode rays are streams of electrons: they \textbf{are} deflected by electric and magnetic fields. X-rays are the neutral photons produced \emph{when} the cathode rays hit the anode. In the GCE, a classic trap is to state that X-rays are deflected by a magnetic field — they are \textbf{not}.
+\end{attention}
+
+\courssub{Interaction of X-rays with Matter and Attenuation}
+
+When an X-ray beam passes through matter, its intensity decreases due to three main interaction mechanisms (in the diagnostic energy range \SIrange{30}{150}{keV}):
+
+\begin{enumerate}
+    \item \textbf{Photoelectric Effect (dominant at low energies, high $Z$):} Photon transfers all its energy to a bound electron, ejecting it. The atom is ionised. Probability $\propto Z^3 / E^3$. This is why bone ($Z_{\text{eff}} \approx 13.8$, high density) absorbs much more than soft tissue ($Z_{\text{eff}} \approx 7.4$).
+    \item \textbf{Compton Scattering (dominant at medium energies, low $Z$):} Photon collides with a loosely bound (almost free) electron. Photon loses part of its energy (scattered at angle $\theta$) and the electron is ejected. Probability $\propto Z / E$. This produces scattered radiation that degrades image contrast and irradiates staff.
+    \item \textbf{Pair Production (threshold \SI{1.022}{MeV}):} Not relevant for standard diagnostic X-rays (max \SI{150}{keV}).
+\end{enumerate}
+
+The combined effect is an exponential attenuation of the beam intensity $I$ with thickness $x$ of the absorber.
+
+\begin{propriete}[Exponential Attenuation Law]
+For a narrow beam of monoenergetic X-rays passing through a homogeneous absorber of thickness $x$ and linear attenuation coefficient $\mu$ (\SI{}{m^{-1}}):
+\[
+I = I_0 e^{-\mu x}
+\]
+where $I_0$ is the incident intensity. The \cle{linear attenuation coefficient} $\mu$ depends on the photon energy and the material ($Z$, $\rho$). The \cle{mass attenuation coefficient} $\mu/\rho$ (\SI{}{m^2.kg^{-1}}) is often tabulated as it is independent of density.
+\end{propriete}
+
+The \cle{half-value layer (HVL)}, denoted $x_{1/2}$, is the thickness of a material that reduces the beam intensity to half its initial value.
+\[
+\frac{I_0}{2} = I_0 e^{-\mu x_{1/2}} \quad \Rightarrow \quad x_{1/2} = \frac{\ln 2}{\mu}
+\]
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{semilogyaxis}[
+    width=0.9\linewidth, height=7cm,
+    xlabel={Absorber thickness $x$ (mm)},
+    ylabel={Transmitted intensity $I / I_0$},
+    grid=major, grid style={popline},
+    xmin=0, xmax=10,
+    ymin=0.01, ymax=1.1,
+    tick label style={font=\small},
+    label style={font=\small},
+    legend style={at={(0.98,0.98)}, anchor=north east, font=\small, fill=white, draw=popdark},
+]
+\addplot[popblue, thick, domain=0:10, samples=100] {exp(-0.693*x/2.5)};
+\addlegendentry{$I = I_0 e^{-\mu x}$ ($\mu = 0.693/2.5$ mm$^{-1}$)}
+% Half-value layer markers
+\draw[poporange, dashed, thick] (axis cs:2.5,1) -- (axis cs:2.5,0.5) -- (axis cs:0,0.5);
+\node[poporange, anchor=south west, font=\small] at (axis cs:2.5,0.5) {$x_{1/2} = \ln 2 / \mu$};
+\draw[poporange, dashed, thick] (axis cs:5,0.5) -- (axis cs:5,0.25) -- (axis cs:0,0.25);
+\node[poporange, anchor=south west, font=\small] at (axis cs:5,0.25) {$2 x_{1/2}$};
+\draw[poporange, dashed, thick] (axis cs:7.5,0.25) -- (axis cs:7.5,0.125) -- (axis cs:0,0.125);
+\node[poporange, anchor=south west, font=\small] at (axis cs:7.5,0.125) {$3 x_{1/2}$};
+\end{semilogyaxis}
+\end{tikzpicture}
+\legende{Semi-log plot of X-ray attenuation. On a logarithmic scale, the exponential decay becomes a straight line. The half-value layer $x_{1/2}$ is the thickness reducing intensity by 50\%. After $n$ HVLs, intensity is $I_0/2^n$.}
+\end{popfigure}
+
+\begin{exoresolu}[Attenuation and Half-Value Layer]
+A beam of X-rays of intensity $I_0$ passes through an aluminium absorber of thickness \SI{4.0}{mm}. The linear attenuation coefficient of aluminium for this beam energy is $\mu = \SI{0.80}{mm^{-1}}$.
+\begin{enumerate}
+    \item Calculate the transmitted intensity $I$ as a fraction of $I_0$.
+    \item Determine the half-value layer (HVL) of aluminium for this beam.
+    \item What thickness of aluminium is needed to reduce the intensity to $1\%$ of $I_0$?
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item Using $I = I_0 e^{-\mu x}$:
+    \[
+    \frac{I}{I_0} = e^{-0.80 \times 4.0} = e^{-3.2} \approx 0.0408 \quad \text{(i.e., } 4.08\% \text{ transmitted)}.
+    \]
+    \item HVL $x_{1/2} = \dfrac{\ln 2}{\mu} = \dfrac{0.693}{0.80} = \SI{0.866}{mm}$.
+    \item We need $I/I_0 = 0.01$.
+    \[
+    0.01 = e^{-0.80 x} \quad \Rightarrow \quad \ln(0.01) = -0.80 x \quad \Rightarrow \quad x = \frac{-\ln(0.01)}{0.80} = \frac{4.605}{0.80} = \SI{5.76}{mm}.
+    \]
+    (Check: $5.76 / 0.866 \approx 6.65$ HVLs; $1/2^{6.65} \approx 0.01$).
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Radiography, Fluoroscopy and Contrast Media}
+
+In \cle{radiography}, a static image is recorded on a digital detector (or photographic film). The image contrast arises from differential attenuation:
+\begin{itemize}
+    \item \textbf{Bones:} High $Z$ (calcium, phosphorus), high density $\rightarrow$ large $\mu$ $\rightarrow$ strongly absorb X-rays $\rightarrow$ appear \textbf{white} (radiopaque) on the negative image (or dark on positive digital display).
+    \item \textbf{Soft tissues (muscle, fat, organs):} Low $Z$, low density $\rightarrow$ small $\mu$ $\rightarrow$ transmit most X-rays $\rightarrow$ appear \textbf{grey/black} (radiolucent).
+    \item \textbf{Air (lungs):} Very low density $\rightarrow$ almost no attenuation $\rightarrow$ appear \textbf{black}.
+\end{itemize}
+
+To visualise hollow or soft-tissue structures (digestive tract, blood vessels, urinary system), \cle{contrast media} are introduced. These are substances with high atomic number ($Z$) that absorb X-rays strongly.
+\begin{itemize}
+    \item \textbf{Barium sulphate ($\ce{BaSO4}$, $Z_{\text{Ba}}=56$):} Insoluble, opaque white liquid. Swallowed (\emph{barium meal}) or given as enema (\emph{barium enema}) to outline the gastrointestinal tract.
+    \item \textbf{Iodinated compounds ($Z_{\text{I}}=53$):} Water-soluble, injected intravenously for angiography (vessels), urography (kidneys/ureters), or CT contrast.
+\end{itemize}
+
+\cle{Fluoroscopy} uses a continuous low-dose X-ray beam and an image intensifier (or flat-panel detector) to produce \emph{real-time} moving images on a monitor. It is used for:
+\begin{itemize}
+    \item Guiding contrast studies (barium swallow, cardiac catheterisation).
+    \item Orthopaedic procedures (fracture reduction, pin placement).
+    \item Interventional radiology (stent placement, embolisation).
+\end{itemize}
+
+\begin{savaistu}[Chest X-ray and Tuberculosis in Cameroon]
+Chest radiography is the primary screening tool for \cle{pulmonary tuberculosis (TB)}, a major public health challenge in Cameroon. The National Tuberculosis Control Programme relies on X-ray units in district hospitals (e.g., Biyem-Assi, Mbalmayo, Bamenda) to detect characteristic opacities (infiltrates, cavities) in the upper lobes. While GeneXpert MTB/RIF is the confirmatory test, the chest X-ray remains indispensable for screening contacts, diagnosing smear-negative TB, and monitoring treatment response. Mobile X-ray units are increasingly deployed in outreach campaigns in the Far North and East regions.
+\end{savaistu}
+
+\courssub{Computed Tomography (CT Scan)}
+
+Conventional radiography superimposes all structures along the beam path, causing overlap. The \cle{CT scanner} (Computed Tomography) solves this by acquiring attenuation data from many angles and reconstructing cross-sectional slices.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85, >=Stealth]
+% Gantry ring
+\draw[thick, popdark] (0,0) circle (3.5);
+\draw[thick, popdark] (0,0) circle (2.5);
+% Patient
+\draw[fill=poppink!20!white, thick, poppink] (0,0) ellipse (1.8 and 1.2);
+\node[popdark, font=\small] at (0,0) {Patient};
+% X-ray tube
+\draw[fill=popblue!80!popdark] (3.5,0) rectangle (4.5,0.6);
+\node[popblue, font=\small, rotate=90, anchor=south] at (4.0,0.3) {X-ray Tube};
+% Detector array
+\draw[fill=poporange!80!popdark] (-4.5,-0.3) rectangle (-3.5,0.3);
+\node[poporange, font=\small, rotate=90, anchor=north] at (-4.0,0) {Detectors};
+% Rotation arrows
+\draw[popblue, thick, ->] (3.5,1.0) arc (0:180:1.0);
+\draw[poporange, thick, ->] (-3.5,-1.0) arc (180:360:1.0);
+% Beam
+\draw[poppink, thick, ->] (4.0,0.3) -- (1.8,0);
+\draw[poppink, thick, ->] (-1.8,0) -- (-4.0,0);
+% Computer
+\node[draw, thick, poppurple, fill=poppurple!10, rounded corners, minimum width=3cm, minimum height=1.5cm] (comp) at (6, -3) {Reconstruction Computer};
+\draw[poppurple, ->, thick] (4.5,0) |- (comp.north east);
+\node[poppurple, font=\small] at (6, -1.5) {Attenuation data $\to$ Slice image};
+% Slice representation
+\begin{scope}[shift={(0,-5.5)}, scale=0.5]
+\draw[thick, popdark] (0,0) circle (2);
+\draw[fill=popgray!30] (0,0) circle (1.8); % Soft tissue
+\draw[fill=white] (-0.5,0.8) ellipse (0.3 and 0.2); % Lung
+\draw[fill=white] (0.5,0.8) ellipse (0.3 and 0.2);
+\draw[fill=popblue!50] (-0.3,-0.5) rectangle (0.3,-0.9); % Spine
+\node[font=\tiny, popdark] at (0,-2.5) {Reconstructed Cross-Sectional Slice};
+\end{scope}
+\end{tikzpicture}
+\legende{Principle of a CT scanner: the X-ray tube and detector array rotate around the patient. Attenuation profiles at many angles are sent to a computer which reconstructs a cross-sectional image (slice) using algorithms (filtered back-projection or iterative reconstruction).}
+\end{popfigure}
+
+\begin{aretenir}[CT Scan vs Conventional Radiography]
+\begin{itemize}
+    \item \textbf{No superimposition:} Each slice shows a thin section (1--10 mm) without overlapping organs.
+    \item \textbf{Superior contrast resolution:} Can distinguish soft tissues with similar densities (e.g., grey vs white matter in brain, liver vs spleen) because scatter is reduced (collimated beam) and digital processing enhances small $\Delta \mu$.
+    \item \textbf{Quantitative:} Hounsfield Units (HU) give absolute attenuation values: Air = -1000 HU, Water = 0 HU, Bone = +1000 HU.
+    \item \textbf{3D Reconstruction:} Stack of slices $\to$ 3D volume rendering (bone surfaces, vascular trees).
+    \item \textbf{Disadvantages:} Higher radiation dose (multiple projections), higher cost, longer scan time, metal artefacts.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Radiation Protection: Dose, Limits and ALARA}
+
+X-rays are ionising; they can damage DNA and increase long-term cancer risk. Radiation protection rests on three pillars: \textbf{Justification}, \textbf{Optimisation (ALARA)}, and \textbf{Dose Limitation}.
+
+\begin{definition}[Absorbed Dose and Equivalent Dose]
+\begin{itemize}
+    \item \textbf{Absorbed Dose ($D$):} Energy deposited per unit mass. Unit: \cle{Gray (Gy)} = \SI{1}{J.kg^{-1}}.
+    \item \textbf{Equivalent Dose ($H$):} Accounts for biological effectiveness of radiation type. $H = D \times w_R$ (radiation weighting factor). For X-rays, $w_R = 1$. Unit: \cle{Sievert (Sv)}.
+    \item \textbf{Effective Dose ($E$):} Sum of equivalent doses to organs weighted by tissue sensitivity $w_T$. Unit: \cle{Sievert (Sv)}. Allows comparison of partial-body exposures.
+\end{itemize}
+\end{definition}
+
+Typical effective doses:
+\begin{itemize}
+    \item Chest X-ray (PA): $\sim \SI{0.02}{mSv}$ (equivalent to \SI{3}{days} natural background).
+    \item Abdominal X-ray: $\sim \SI{0.7}{mSv}$.
+    \item CT Head: $\sim \SI{2}{mSv}$.
+    \item CT Abdomen/Pelvis: $\sim \SI{10}{mSv}$ (equivalent to \SI{3}{years} background).
+\end{itemize}
+
+\begin{propriete}[The ALARA Principle]
+\cle{ALARA} = \textbf{As Low As Reasonably Achievable}. Every exposure must be kept as low as possible, taking into account economic and social factors. It applies to both patients and staff.
+\end{propriete}
+
+\begin{methode}[Radiation Protection Measures]
+\textbf{For Staff (Occupational Exposure):}
+\begin{enumerate}
+    \item \textbf{Time:} Minimise time near the source (e.g., step out during fluoroscopy).
+    \item \textbf{Distance:} Intensity follows inverse square law ($I \propto 1/d^2$). Double distance $\to$ quarter dose. Stand behind the lead screen/glass during exposure.
+    \item \textbf{Shielding:} Lead aprons (\SI{0.25}{--}\SI{0.5}{mm} Pb eq), thyroid shields, lead glasses, ceiling-suspended screens.
+    \item \textbf{Monitoring:} Personal dosimeters (thermoluminescent TLD or optically stimulated OSL) worn at collar level (outside apron) to record monthly/quarterly dose. Annual limit: \SI{20}{mSv} (effective dose).
+\end{enumerate}
+\textbf{For Patients (Medical Exposure):}
+\begin{enumerate}
+    \item \textbf{Justification:} No examination unless net benefit > risk. Use non-ionising alternatives (US, MRI) when appropriate.
+    \item \textbf{Optimisation:} Use lowest $kVp$/mAs consistent with diagnostic quality; collimate beam to area of interest; use grids/filters; paediatric protocols.
+    \item \textbf{No dose limits for patients} (benefit justifies dose), but diagnostic reference levels (DRLs) exist to flag unusually high doses.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Cumulative Risk]
+Ionising radiation damage is \textbf{cumulative} and \textbf{stochastic} (probability of cancer increases with dose, no threshold). A single CT scan delivers a dose equivalent to hundreds of chest X-rays. Always ask: \emph{Is this scan necessary? Can ultrasound or MRI answer the question?} This is a frequent GCE essay point.
+\end{attention}
+
+\courssub{Optical Fibres in Medicine: Principles}
+
+Optical fibres guide light by \cle{total internal reflection (TIR)}. They consist of a high-index \cle{core} surrounded by a lower-index \cle{cladding}.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=Stealth]
+% Fibre structure
+\draw[fill=popblue!20!white] (-3, -0.6) rectangle (3, 0.6); % Cladding
+\draw[fill=popblue!60!white] (-3, -0.3) rectangle (3, 0.3); % Core
+% Labels
+\node[popdark, left] at (-3.5, 0) {Core ($n_1$)};
+\node[popdark, left] at (-3.5, -0.5) {Cladding ($n_2$)};
+\node[popdark, font=\small] at (-3.5, 0.5) {$n_1 > n_2$};
+% Ray paths
+\draw[poporange, thick, ->] (-3, 0.1) -- (-1, 0.3) -- (1, -0.1) -- (3, 0.1);
+\draw[poporange, thick, ->] (-3, -0.1) -- (-1, -0.3) -- (1, 0.1) -- (3, -0.1);
+% Critical angle annotation at first bounce
+\draw[popdark, dashed] (-1, 0.3) -- (-1, 0.6);
+\draw[popdark, <->] (-1.2, 0.45) arc (90:130:0.2);
+\node[popdark, font=\small] at (-1.5, 0.5) {$\theta_i > \theta_c$};
+% Acceptance cone at entrance
+\draw[popgreen, thick, ->] (-3.5, 0) -- (-3, 0);
+\draw[popgreen, thick, ->] (-3.5, 0) -- (-3, 0.25);
+\draw[popgreen, thick, ->] (-3.5, 0) -- (-3, -0.25);
+\draw[popgreen, dashed] (-3, 0.25) -- (-3, -0.25);
+\node[popgreen, font=\small, right] at (-2.8, 0.3) {Acceptance cone};
+\node[popgreen, font=\small, left] at (-3.6, 0) {$\theta_a$};
+\end{tikzpicture}
+\legende{Light propagation in a step-index optical fibre. Rays entering the core within the acceptance angle $\theta_a$ undergo total internal reflection at the core-cladding boundary because $n_1 > n_2$ and the angle of incidence $\theta_i$ exceeds the critical angle $\theta_c = \sin^{-1}(n_2/n_1)$.}
+\end{popfigure}
+
+\begin{propriete}[Condition for Light Guidance]
+For total internal reflection at the core-cladding interface:
+\[
+n_{\text{core}} > n_{\text{cladding}} \quad \text{and} \quad \theta_i \ge \theta_c = \sin^{-1}\left(\frac{n_{\text{cladding}}}{n_{\text{core}}}\right)
+\]
+where $\theta_i$ is the angle of incidence inside the core measured from the normal. The maximum acceptance angle $\theta_a$ in air ($n_0=1$) is given by the \cle{Numerical Aperture (NA)}:
+\[
+\text{NA} = \sin \theta_a = \sqrt{n_{\text{core}}^2 - n_{\text{cladding}}^2}
+\]
+Only rays entering the fibre within a cone of half-angle $\theta_a$ will be guided.
+\end{propriete}
+
+Medical fibres are usually \cle{multimode step-index} (large core \SI{50}{--}\SI{600}{\micro\metre}) for high light throughput, or \cle{coherent bundles} (see below) for imaging.
+
+\courssub{The Endoscope and Minimally Invasive Surgery}
+
+An \cle{endoscope} is a flexible (or rigid) tube containing optical fibres that allows visualisation of internal organs.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, >=Stealth]
+% Stomach outline
+\draw[thick, poppink!80!popdark] (0,0) .. controls (1,1) and (3,1) .. (4,0) .. controls (3,-1) and (1,-1) .. (0,0);
+\node[poppink!80!popdark, font=\small] at (2,1.3) {Stomach};
+% Endoscope insertion tube
+\draw[thick, popblue] (-4,0) -- (1.5,0.2);
+% Distal tip
+\draw[fill=popgray!50] (1.5,0.2) rectangle (2.2, -0.2);
+% Light guide (illumination fibres)
+\draw[poporange, thick] (-4,0.4) -- (2.0,0.4);
+\draw[poporange, ->, thick] (2.0,0.4) -- (2.5,0.8);
+\node[poporange, font=\small, anchor=west] at (2.5,0.8) {Illumination fibres};
+% Image guide (coherent bundle)
+\draw[popgreen, thick] (-4,-0.4) -- (2.0,-0.4);
+\draw[popgreen, ->, thick] (2.0,-0.4) -- (2.5,-0.8);
+\node[popgreen, font=\small, anchor=west] at (2.5,-0.8) {Coherent image bundle};
+% Working channel
+\draw[poppurple, thick] (-4,0) -- (1.8,0);
+\draw[poppurple, ->, thick] (1.8,0) -- (2.5,0);
+\node[poppurple, font=\small, anchor=west] at (2.5,0) {Working channel (forceps, snare)};
+% Eyepiece / Camera
+\node[draw, thick, popdark, fill=popblue!10, minimum width=2cm, minimum height=1cm] (cam) at (-5,0) {Camera / Eyepiece};
+\draw[popblue] (-4,0.4) -- (cam.south east);
+\draw[popblue] (-4,-0.4) -- (cam.north east);
+\draw[popblue] (-4,0) -- (cam.east);
+% Light source
+\node[draw, thick, poporange, fill=poporange!10, minimum width=1.5cm, minimum height=1cm] (light) at (-5,2) {Light Source};
+\draw[poporange] (light.south) -- (-4,0.4);
+\end{tikzpicture}
+\legende{Schematic of a flexible gastroscope examining the stomach. Illumination fibres (non-coherent) carry light from an external source. A coherent fibre bundle (each fibre aligned at both ends) transmits the image to the eyepiece or camera. The working channel allows passage of instruments for biopsy or therapy.}
+\end{popfigure}
+
+Key components:
+\begin{enumerate}
+    \item \textbf{Illumination fibres:} Non-coherent bundle (random fibre arrangement) carrying intense light from a xenon/LED source to the tip.
+    \item \textbf{Image guide (Coherent bundle):} \SI{10000}{--}\num{50000} individual fibres, each \SI{5}{--}\SI{10}{\micro\metre} diameter, precisely aligned at both ends. Each fibre carries one pixel of the image. Resolution $\approx$ number of fibres.
+    \item \textbf{Working channel:} Allows passage of biopsy forceps, snares (polypectomy), injection needles, laser fibres, stents.
+    \item \textbf{Control handle:} Angulation knobs (up/down, left/right) steer the flexible tip via pull-wires.
+\end{enumerate}
+
+\begin{aretenir}[Applications of Endoscopy]
+\begin{itemize}
+    \item \textbf{Gastroscopy (OGD):} Oesophagus, stomach, duodenum. Diagnose ulcers, \emph{H. pylori}, tumours; treat bleeding varices, remove polyps.
+    \item \textbf{Colonoscopy:} Large bowel. Gold standard for colorectal cancer screening; polypectomy prevents cancer.
+    \item \textbf{Bronchoscopy:} Airways. Biopsy lung tumours, remove foreign bodies.
+    \item \textbf{Arthroscopy:} Joints (knee, shoulder). Keyhole surgery: repair meniscus, ligaments (ACL).
+    \item \textbf{Laparoscopy:} Abdominal cavity (gallbladder cholecystectomy, appendicectomy, hernia repair). \textbf{Minimally invasive surgery} $\to$ less pain, shorter hospital stay, faster recovery, smaller scars.
+    \item \textbf{ERCP:} Endoscopic Retrograde Cholangio-Pancreatography (bile/pancreatic ducts).
+\end{itemize}
+\end{aretenir}
+
+\courssub{Comparison of Medical Imaging Techniques}
+
+This synthesis table is a \textbf{favourite GCE question}. Memorise the physical agent, whether it is ionising, the best clinical use, and relative cost/availability in the Cameroonian context.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Technique} & \textbf{Physical Agent} & \textbf{Ionising?} & \textbf{Best Use / Strength} & \textbf{Weakness / Limitation} & \textbf{Cost / Availability (Cameroon)} \\
+\hline
+\textbf{Ultrasound} & Sound waves (\SI{2}{--}\SI{18}{MHz}) & No & Real-time soft tissue, obstetrics, heart (echo), guided biopsy. Portable, cheap. & Bone/air block beam; operator-dependent; poor resolution deep. & Low / Widely available (district hospitals). \\
+\hline
+\textbf{X-ray Radiography} & X-rays (Bremsstrahlung) & Yes & Bones, chest (TB, pneumonia), foreign bodies. Fast, cheap. & Superimposition; poor soft tissue contrast; radiation dose. & Low / Very widely available (health centres). \\
+\hline
+\textbf{CT Scan} & X-rays (rotating fan beam) & Yes (\textbf{High dose}) & Cross-sectional anatomy; trauma (head, abdomen); lung nodules; 3D recon. & High dose; metal artefacts; expensive; contrast allergy risk. & High / Regional hospitals (Yaoundé, Douala, Garoua, Bafoussam). \\
+\hline
+\textbf{Endoscopy} & Visible light (fibre optics) & No & Direct mucosal view (GI, airways); biopsy; therapy (polypectomy, stenting). & Invasive (sedation); limited to hollow organs; perforation risk. & Medium / Regional hospitals (gastroenterology units). \\
+\hline
+\textbf{MRI} & Radio waves + Strong B-field & No & Best soft tissue contrast (brain, spine, joints, liver, heart). No radiation. & Expensive; slow; contraindicated with pacemakers/metal; claustrophobia. & Very High / Few centres (Yaoundé, Douala). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Choosing an Imaging Technique (GCE Method)]
+When asked to \emph{``justify the choice of imaging technique for a given clinical scenario''}, follow these steps:
+\begin{enumerate}
+    \item \textbf{Identify the target organ/tissue:} Bone $\to$ X-ray/CT. Soft tissue (brain, spinal cord, ligaments) $\to$ MRI/US. Hollow viscus (stomach, colon) $\to$ Endoscopy. Heart motion $\to$ Echo (US). Lungs $\to$ X-ray/CT.
+    \item \textbf{Assess the radiation risk:} Pregnant women, children, repeated exams $\to$ prefer US or MRI (non-ionising). If ionising is only option, justify with ALARA.
+    \item \textbf{Consider urgency and availability:} Trauma $\to$ X-ray/CT (fast). Elective soft tissue $\to$ MRI (if available). In Cameroon, US and X-ray are first-line due to availability.
+    \item \textbf{State 2--3 clear arguments:} e.g., ``For a suspected fractured femur: X-ray is chosen because (1) bone has high attenuation giving excellent contrast, (2) it is fast and available in district hospitals, (3) the dose is low compared to CT.''
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Synthesis: Choosing the Modality]
+A 45-year-old farmer presents at a district hospital in the Northwest Region with acute right lower quadrant abdominal pain, fever, and guarding. Suspected acute appendicitis. The hospital has an X-ray machine and an ultrasound scanner. No CT or MRI on site. The surgeon requests an imaging study.
+\begin{enumerate}
+    \item Which imaging modality should be performed first? Justify with three physics/clinical arguments.
+    \item If the ultrasound is inconclusive, what is the next step in the context of this hospital?
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item \textbf{Ultrasound (US)} should be performed first.
+    \begin{itemize}
+        \item \textbf{Soft tissue contrast:} US differentiates the appendix (fluid-filled, non-compressible, target sign) from surrounding fat and bowel, whereas plain X-ray has very poor soft tissue contrast (appendix not visible unless calcified faecolith).
+        \item \textbf{Non-ionising:} Patient is relatively young; avoiding radiation (ALARA) is prudent, especially as CT is unavailable.
+        \item \textbf{Real-time \& Dynamic:} US allows assessment of compressibility, peristalsis, and blood flow (Doppler) — key diagnostic criteria for appendicitis. It can also detect alternative pathology (ovarian cyst, ectopic pregnancy).
+        \item \textbf{Availability \& Cost:} US is available at the district hospital; no transfer needed.
+    \end{itemize}
+    \item If US is inconclusive (e.g., obese patient, excessive bowel gas), the clinical diagnosis (history, exam, blood count) guides management. In a district hospital without CT, the standard of care is often \textbf{diagnostic laparoscopy} (if surgical capacity exists) or \textbf{open appendicectomy} based on clinical probability. Transfer to a regional hospital (Bamenda) for CT is an option if the patient is stable and diagnosis uncertain, but delay increases perforation risk.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Worked Examples and Examination Practice}
+
+\begin{exoresolu}[CT Dose and HVL Calculation]
+A CT scanner uses a \SI{120}{kV} beam. The half-value layer (HVL) of the patient's soft tissue for this beam quality is \SI{3.5}{cm}. The beam passes through \SI{20}{cm} of soft tissue (approximate abdominal diameter).
+\begin{enumerate}
+    \item Calculate the linear attenuation coefficient $\mu$ of soft tissue for this beam.
+    \item What fraction of the incident beam intensity reaches the detectors on the opposite side?
+    \item If the detector requires a minimum of $10^4$ photons per pixel for acceptable noise, and the tube output is $10^7$ photons per pixel at the skin entrance, is the signal sufficient?
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item $\mu = \dfrac{\ln 2}{x_{1/2}} = \dfrac{0.693}{\SI{3.5}{cm}} = \SI{0.198}{cm^{-1}}$.
+    \item Transmitted fraction $I/I_0 = e^{-\mu x} = e^{-0.198 \times 20} = e^{-3.96} = \SI{1.91e-2}{}$ (approx \SI{1.9}{\%}).
+    \item Detector signal $= 10^7 \times 1.91 \times 10^{-2} = \SI{1.91e5}{photons/pixel}$.
+    Since $\SI{1.91e5}{} > \SI{1e4}{}$, the signal is \textbf{sufficient} (about 19 times the minimum). This illustrates why CT tubes need high output (high mAs) to penetrate the body.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exoresolu}[Optical Fibre Numerical Aperture]
+A medical optical fibre has a core refractive index $n_1 = 1.48$ and cladding index $n_2 = 1.46$.
+\begin{enumerate}
+    \item Calculate the critical angle $\theta_c$ at the core-cladding interface.
+    \item Calculate the Numerical Aperture (NA) and the maximum acceptance angle $\theta_a$ in air.
+    \item If the fibre is immersed in water ($n=1.33$), what is the new acceptance angle?
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item $\theta_c = \sin^{-1}(n_2/n_1) = \sin^{-1}(1.46/1.48) = \sin^{-1}(0.9865) = \mathbf{80.6^\circ}$.
+    \item $\text{NA} = \sqrt{n_1^2 - n_2^2} = \sqrt{1.48^2 - 1.46^2} = \sqrt{2.1904 - 2.1316} = \sqrt{0.0588} = \mathbf{0.242}$.
+    $\theta_a = \sin^{-1}(\text{NA}) = \sin^{-1}(0.242) = \mathbf{14.0^\circ}$.
+    \item In water ($n_0=1.33$): $\text{NA} = n_0 \sin \theta_a' \Rightarrow \sin \theta_a' = \text{NA}/n_0 = 0.242/1.33 = 0.182$.
+    $\theta_a' = \sin^{-1}(0.182) = \mathbf{10.5^\circ}$. The acceptance cone narrows in a higher-index medium.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exercice}[Practice Questions]
+\begin{enumerate}
+    \item \textbf{Production:} An X-ray tube operates at \SI{80}{kV}. Calculate the minimum wavelength of the bremsstrahlung spectrum. If the tungsten K-shell binding energy is \SI{69.5}{keV}, will characteristic K-lines be produced? Explain.
+    \item \textbf{Attenuation:} The mass attenuation coefficient of lead for \SI{100}{keV} X-rays is \SI{5.0}{cm^2.g^{-1}}. Density of lead is \SI{11.3}{g.cm^{-3}}. Calculate the HVL in mm.
+    \item \textbf{Contrast:} Explain why iodine-based contrast medium ($Z=53$) is preferred over barium ($Z=56$) for intravenous urography, but barium is used for GI studies.
+    \item \textbf{CT Physics:} Describe how a modern multi-detector CT (MDCT) scanner acquires a volume dataset in a single rotation. What is \emph{pitch}?
+    \item \textbf{Radiation Protection:} A radiographer receives a dose of \SI{0.5}{mSv} during a fluoroscopy procedure standing \SI{1}{m} from the patient (scatter source). What would be the dose at \SI{2}{m} and \SI{3}{m} assuming inverse square law holds? If the annual limit is \SI{20}{mSv}, how many such procedures can they do per year at \SI{1}{m} without other protection?
+    \item \textbf{Optical Fibres:} A coherent fibre bundle has 30,000 fibres, each \SI{8}{\micro\metre} diameter. Estimate the resolution (line pairs/mm) at the image plane. Why is a coherent bundle essential for imaging but not for illumination?
+    \item \textbf{Synthesis:} A 60-year-old patient presents with sudden severe headache and left-sided weakness (suspected stroke). The hospital has CT and MRI. Which should be done first and why? Discuss the role of each in the first 24 hours.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$\lambda_{\min} = hc/eV = (1240\ \mathrm{eV\,nm}) / (80\,000\ \mathrm{eV}) = \SI{0.0155}{nm} = \SI{1.55e-11}{m}$. Yes, $eV = \SI{80}{keV} > \SI{69.5}{keV}$, so K-shell ionisation occurs, producing K$_\alpha$, K$_\beta$ characteristic lines.
+\end{corrige}
+\begin{corrige}[Exercise 2]
+$\mu = (\mu/\rho) \times \rho = 5.0 \times 11.3 = \SI{56.5}{cm^{-1}}$. $x_{1/2} = \ln 2 / \mu = 0.693 / 56.5 = \SI{0.0123}{cm} = \mathbf{0.123\ mm}$.
+\end{corrige}
+\begin{corrige}[Exercise 3]
+Iodinated agents are water-soluble, safe for IV injection, rapidly excreted by kidneys (opacifying urinary tract). Barium is insoluble; if it leaks from GI tract (perforation), it causes severe peritonitis. Barium gives better mucosal coating for GI lumen.
+\end{corrige}
+\begin{corrige}[Exercise 4]
+MDCT: Multiple detector rows (e.g., 64, 128, 256) along z-axis. Helical/spiral scan: continuous table motion + continuous rotation. Pitch = Table feed per rotation / Total collimation width. Pitch $\approx 1$ for standard; $<1$ for high resolution/overlap; $>1$ for speed/dose reduction.
+\end{corrige}
+\begin{corrige}[Exercise 5]
+$d=2\ \mathrm{m}$: $0.5 \times (1/2)^2 = \SI{0.125}{mSv}$. $d=3\ \mathrm{m}$: $0.5 \times (1/3)^2 = \SI{0.056}{mSv}$. At 1 m: $20 / 0.5 = 40$ procedures/year. (In practice, shielding and distance reduce this further).
+\end{corrige}
+\begin{corrige}[Exercise 6]
+Fibre pitch $\approx \SI{8}{\micro\metre}$. Nyquist limit: 1 line pair per 2 fibres $\to$ 1 lp per \SI{16}{\micro\metre} $\to$ \SI{62.5}{lp/mm}. Coherent bundle preserves spatial mapping (pixel-to-pixel). Illumination only needs total flux, not spatial information.
+\end{corrige}
+\begin{corrige}[Exercise 7]
+\textbf{CT first (Non-contrast Head CT).} Reason: Speed (\SI{<5}{min}), available 24/7, exquisitely sensitive for acute haemorrhage (blood appears hyperdense immediately). MRI is superior for early ischaemia (DWI sequence positive within minutes-hours) and posterior fossa, but takes longer (\SI{20}{--}\SI{30}{min}), may not be available emergently, contraindicated if unknown metal implants. Protocol: CT now $\to$ if negative and clinical suspicion high, MRI DWI. Thrombolysis window (\SI{4.5}{h}) demands speed.
+\end{corrige}
+
+\begin{savaistu}[The Future: Photon-Counting CT and AI]
+Photon-counting CT detectors (replacing energy-integrating detectors) count individual photons and measure their energy. This enables: (1) Spectral imaging (material decomposition: iodine, calcium, fat, water), (2) Higher spatial resolution (no electronic noise floor), (3) Lower dose. Combined with AI-based reconstruction (deep learning denoising), this promises sub-millisievert CT scans with diagnostic confidence — a revolution coming to major Cameroonian centres within the next decade.
+\end{savaistu}
+
+\begin{aretenir}[Key Points for Revision — Section 4]
+\begin{itemize}
+    \item \textbf{X-ray production:} Coolidge tube, thermionic emission, acceleration ($eV$), bremsstrahlung (continuous) + characteristic (line spectrum). $\lambda_{\min} = hc/eV$.
+    \item \textbf{Properties:} EM waves, ionising, penetrating, straight lines, \textbf{no deflection by E/B fields}.
+    \item \textbf{Interactions:} Photoelectric ($\propto Z^3/E^3$, bone contrast), Compton (scatter, dose to staff), Pair production ($>1.022$ MeV).
+    \item \textbf{Attenuation:} $I=I_0 e^{-\mu x}$, HVL $= \ln 2/\mu$. Contrast media (Ba, I) increase effective $Z$.
+    \item \textbf{Imaging:} Radiography (static, superimposition), Fluoroscopy (real-time), CT (cross-sectional, no overlap, high dose, Hounsfield units).
+    \item \textbf{Protection:} Justification, ALARA (Time, Distance, Shielding), Dose limits (Staff \SI{20}{mSv/yr}), DRLs for patients.
+    \item \textbf{Optical Fibres:} TIR, $n_1 > n_2$, $\theta_c = \sin^{-1}(n_2/n_1)$, NA $= \sqrt{n_1^2-n_2^2} = \sin\theta_a$.
+    \item \textbf{Endoscope:} Illumination fibres (non-coherent) + Image bundle (coherent) + Working channel. Minimally invasive surgery.
+    \item \textbf{Comparison Table:} US, X-ray, CT, Endoscopy, MRI — Agent, Ionising?, Best use, Cost/Availability.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+At the end of this integration activity, you should be able to:
+\begin{itemize}
+\item identify, for a given clinical situation, the physical principle on which each diagnostic technique rests (reflection of ultrasound, absorption of X-rays, total internal reflection of light in optical fibres, detection of bioelectric potentials, measurement of sound intensity);
+\item choose the most appropriate technique for a patient, justifying the choice by the physics involved and by the safety of the patient (ionising versus non-ionising methods);
+\item carry out a simple quantitative calculation associated with each technique: echo depth $d = c\Delta t/2$, attenuation and half-value layer of an X-ray beam, critical angle and transit time in an optical fibre, heart rate from an ECG trace, sound intensity level in decibels;
+\item compare several medical needs, rank them using explicit criteria, and defend a decision orally, like a medical physicist advising a hospital board.
+\end{itemize}
+
+\courssub{Situation}
+
+The \textbf{Bafoussam Regional Hospital} (West Region of Cameroon) has just received funding to purchase \textbf{one single new diagnostic device}. The management board has called on a team of medical physicists --- \emph{your group} --- to advise them. Four departments have each presented an urgent patient case, and each department claims that \emph{its} device should be bought first.
+
+\textbf{Case 1 --- Obstetrics.} Mrs N., 26 years old, is pregnant. The midwife wishes to follow the growth of the baby and locate the placenta. The hospital's ultrasound scanner measures the time between the emission of an ultrasonic pulse and the return of the echo reflected at the interface between the uterine wall and the amniotic fluid. For one measurement, the round-trip time of the echo is $\Delta t = 8.0\times 10^{-5}\ \mathrm{s}$. The speed of ultrasound in soft tissue is $c = 1540\ \mathrm{m\,s^{-1}}$.
+
+\textbf{Case 2 --- Emergencies.} A commercial motorbike (\emph{bendskin}) rider, victim of a road accident on the Bafoussam--Mbouda road, is brought in with a suspected fracture of the femur. The radiology technician proposes an X-ray examination. The X-ray beam used has a half-value layer (HVL) of $x_{1/2} = 2.0\ \mathrm{mm}$ in the material traversed. The beam passes through a thickness $x = 6.0\ \mathrm{mm}$ of this material before reaching the detector.
+
+\textbf{Case 3 --- Internal medicine.} A patient complains of chronic stomach pain; the doctor suspects a gastric ulcer and wishes to examine the inside of the stomach directly. The endoscope available uses an optical fibre bundle of total length $L = 1.5\ \mathrm{m}$, made of glass of refractive index $n = 1.50$. The doctor also asks the physicist to check that light is indeed trapped inside the fibre: the cladding surrounding the core has index $n_2 = 1.45$.
+
+\textbf{Case 4 --- Paediatrics / ENT.} A 7-year-old child suffers from chronic ear infections and suspected hearing loss. The ENT department performs an audiometry test. At $1000\ \mathrm{Hz}$, the faintest sound the child can hear in the right ear has intensity $I = 1.0\times 10^{-9}\ \mathrm{W\,m^{-2}}$, whereas a normal ear detects $I_0 = 1.0\times 10^{-12}\ \mathrm{W\,m^{-2}}$ at this frequency. The doctor also records the child's ECG during the consultation: the trace shows $5$ complete cardiac cycles spread over a time interval of $4.0\ \mathrm{s}$.
+
+The four candidate devices are: an \textbf{ultrasound scanner} (Case 1), an \textbf{X-ray radiography unit} (Case 2), a \textbf{fibre-optic endoscope} (Case 3), and an \textbf{audiometer} (Case 4). The hospital can only afford \textbf{one} this year.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item For each of the four cases, state the physical principle on which the proposed diagnostic technique is based, and classify it as \emph{ionising} or \emph{non-ionising}. Explain briefly why this classification matters for the patient.
+\item \textbf{Case 1:} Calculate the depth $d$ at which the reflecting interface is situated, using $d = c\Delta t/2$. Explain the origin of the factor $2$ in the formula. Why is ultrasound preferred to X-rays for monitoring a pregnancy?
+\item \textbf{Case 2:} Using the law of attenuation $I = I_0\left(\tfrac{1}{2}\right)^{x/x_{1/2}}$, calculate the fraction $I/I_0$ of the X-ray beam transmitted through the $6.0\ \mathrm{mm}$ of material. Explain why bones appear white on a radiograph.
+\item \textbf{Case 3:} Calculate the critical angle $i_c$ at the core--cladding interface of the optical fibre, and state the condition for total internal reflection. Calculate the time taken by light to travel along the $1.5\ \mathrm{m}$ fibre. Why does endoscopy avoid any ionising radiation?
+\item \textbf{Case 4:} (a) Calculate the child's hearing threshold level in decibels, $L = 10\log_{10}(I/I_0)$, and deduce the hearing loss relative to a normal ear. (b) From the ECG trace, calculate the period $T$ of one cardiac cycle and the heart rate in beats per minute.
+\item \textbf{Synthesis and decision:} As a group, agree on at least three explicit criteria (for example: frequency of the medical need in the region, urgency and risk to life, cost and maintenance, availability of trained staff, danger of the technique itself). Rank the four needs and recommend which single device the hospital should buy first.
+\item Prepare a \textbf{5-minute oral defence} of your recommendation before the board (the class), in which each member of the group presents one case with its physics and its calculation.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{1. Physical principles and classification.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Case} & \textbf{Physical principle} & \textbf{Type} \\
+\hline
+1. Ultrasound & Reflection (echo) of mechanical ultrasonic waves at interfaces between media of different acoustic impedance; depth deduced from the echo time. & Non-ionising \\
+\hline
+2. Radiography & Differential absorption of X-rays: dense bone absorbs much more than soft tissue; shadow image on a detector. & Ionising \\
+\hline
+3. Endoscopy & Total internal reflection of light in optical fibres; direct optical image of the stomach wall. & Non-ionising \\
+\hline
+4. Audiometry & Detection of sound intensity; comparison of the hearing threshold with the reference $I_0$; logarithmic decibel scale. & Non-ionising \\
+\hline
+\end{tabularx}
+\end{center}
+
+The classification matters because ionising radiation (X-rays) carries enough energy per photon to remove electrons from atoms in living tissue; the resulting ions can damage cells and DNA. The absorbed dose must therefore be minimised, especially for pregnant women and children. Ultrasound, visible light and sound at diagnostic levels do not ionise matter and carry no such risk.
+
+\textbf{2. Case 1 --- echo depth.}
+
+The pulse travels from the probe to the interface (distance $d$) and the echo travels the same distance back, so the measured time corresponds to the round trip $2d$:
+\[ \Delta t = \frac{2d}{c} \quad\Rightarrow\quad d = \frac{c\,\Delta t}{2} = \frac{1540 \times 8.0\times 10^{-5}}{2} = 6.16\times 10^{-2}\ \mathrm{m} \approx 6.2\ \mathrm{cm}. \]
+The factor $2$ therefore comes from the \emph{go-and-return} path of the pulse. Ultrasound is preferred for pregnancy follow-up because it is non-ionising and therefore safe for the foetus, whereas X-rays could harm the developing baby.
+
+\textbf{3. Case 2 --- X-ray attenuation.}
+
+Each half-value layer divides the intensity by two. Here the thickness contains $x/x_{1/2} = 6.0/2.0 = 3$ half-value layers, so
+\[ \frac{I}{I_0} = \left(\tfrac{1}{2}\right)^{x/x_{1/2}} = \left(\tfrac{1}{2}\right)^{3} = 0.125. \]
+Only $12.5\ \%$ of the incident beam is transmitted. Bone, rich in calcium, absorbs X-rays far more strongly than soft tissue, so far fewer photons reach the detector behind the bone: the corresponding region of the film remains unexposed and appears white, revealing the shape of the femur and any fracture line.
+
+\textbf{4. Case 3 --- optical fibre.}
+
+The critical angle at the core--cladding interface satisfies
+\[ \sin i_c = \frac{n_2}{n} = \frac{1.45}{1.50} = 0.967 \quad\Rightarrow\quad i_c \approx 75.2^{\circ}. \]
+Total internal reflection occurs whenever the angle of incidence inside the core exceeds $i_c \approx 75^{\circ}$: the light is then trapped and guided along the fibre, even around gentle bends. The speed of light in the core is
+\[ v = \frac{c}{n} = \frac{3.00\times10^{8}}{1.50} = 2.00\times10^{8}\ \mathrm{m\,s^{-1}}, \]
+so the transit time along the fibre is
+\[ t = \frac{L}{v} = \frac{1.5}{2.00\times10^{8}} = 7.5\times10^{-9}\ \mathrm{s}, \]
+essentially instantaneous: the doctor sees the stomach wall in real time. Endoscopy uses only visible light, whose photons are far too weak to ionise matter, so the examination involves no ionising radiation at all.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0]
+\fill[popblueL] (0,-0.5) rectangle (8,0.5);
+\draw[thick] (0,-0.5) -- (8,-0.5);
+\draw[thick] (0,0.5) -- (8,0.5);
+\draw[very thick,poporange] (0.2,0) -- (2.0,0.5) -- (3.8,-0.5) -- (5.6,0.5) -- (7.8,0.1);
+\node[popdark] at (4,0.85) {\small core $n = 1.50$};
+\node[popdark] at (4,-0.85) {\small cladding $n_2 = 1.45$};
+\node[popmuted,align=center,text width=3.2cm] at (6.9,1.5) {\small total internal reflection, $i > i_c \approx 75^{\circ}$};
+\end{tikzpicture}
+\legende{Light guided along an optical fibre by successive total internal reflections at the core--cladding interface.}
+\end{popfigure}
+
+\textbf{5. Case 4 --- audiometry and ECG.}
+
+(a) Hearing threshold level:
+\[ L = 10\log_{10}\!\left(\frac{I}{I_0}\right) = 10\log_{10}\!\left(\frac{1.0\times10^{-9}}{1.0\times10^{-12}}\right) = 10\log_{10}(10^{3}) = 30\ \mathrm{dB}. \]
+The child's faintest audible sound is $30\ \mathrm{dB}$ above the normal threshold: this is a hearing loss of $30\ \mathrm{dB}$ at $1000\ \mathrm{Hz}$ (mild-to-moderate), consistent with chronic middle-ear infection reducing the transmission of sound to the inner ear.
+
+(b) Five complete cycles occupy $4.0\ \mathrm{s}$, so the period of one cardiac cycle is
+\[ T = \frac{4.0\ \mathrm{s}}{5} = 0.80\ \mathrm{s}, \qquad f = \frac{1}{T} = 1.25\ \mathrm{Hz}. \]
+Expressed in beats per minute: $1.25 \times 60 = 75$ beats per minute, a normal resting value for a child of this age.
+
+\textbf{6. Synthesis and decision (example of a defended ranking).}
+
+Criteria adopted: (i) frequency of the need in the West Region; (ii) urgency and risk to life if undiagnosed; (iii) running cost and maintenance; (iv) existence of trained staff.
+
+A defensible ranking: \textbf{(1) X-ray unit} --- road accidents are extremely frequent, a missed femoral fracture can be life-threatening or disabling, and radiography also serves chest, dental and trauma imaging for the whole hospital; \textbf{(2) ultrasound scanner} --- antenatal follow-up is a daily need and completely safe, but a basic service can meanwhile be shared with a neighbouring health district; \textbf{(3) endoscope} --- important but concerns fewer patients and requires a specialist; \textbf{(4) audiometer} --- the cheapest device, which the hospital could acquire from its own budget next quarter.
+
+\textbf{7. Oral defence.} Each group member presents one case: the physics principle, the calculation with its units, the safety argument; then the group justifies its ranking against the stated criteria and answers questions from the board.
+
+\begin{attention}[Marking points for the defence]
+Do not forget: every numerical result with its SI unit; the factor $2$ in $d = c\Delta t/2$ explicitly justified by the round trip of the pulse; the decibel defined relative to $I_0 = 10^{-12}\ \mathrm{W\,m^{-2}}$; the critical angle calculated from $\sin i_c = n_2/n$ with the light travelling from the \emph{more} refractive core towards the \emph{less} refractive cladding; and a ranking supported by \emph{stated criteria}, not by personal preference. A different ranking from the model is acceptable \emph{if and only if} it is coherently argued.
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1: Analysing the Eye as an Optical System}
+
+The eye is a remarkable optical instrument: light enters through the \cle{cornea}, passes through the \cle{crystalline lens}, and must form a \emph{real} image exactly on the \cle{retina}. Because the lens--retina distance is fixed, the eye adjusts its \emph{focal length} (accommodation) instead of moving the screen. All GCE problems on vision reduce to this single idea.
+
+\begin{methode}[Reducing the eye to a converging lens]
+To solve any problem on vision, model the eye as a single converging lens (the \cle{crystalline lens} plus cornea) of variable focal length, with the retina as a fixed screen.
+\begin{enumerate}
+\item Draw a quick diagram: object, lens, retina. The \cle{image distance} $v$ is fixed (lens--retina distance, about $\SI{17}{mm}$ to $\SI{25}{mm}$).
+\item Write the thin-lens equation $\dfrac{1}{f}=\dfrac{1}{u}+\dfrac{1}{v}$ (real-is-positive convention) or the power form $P=\dfrac{1}{f}$ in dioptres ($\mathrm{D}$, with $f$ in metres).
+\item For a \cle{normal (emmetropic) eye}: a distant object ($u\to\infty$) is focused with minimum power $P_{\min}=1/v$; the near point (punctum proximum, $d\approx\SI{25}{cm}$) is focused with maximum power $P_{\max}=1/d+1/v$.
+\item The \cle{accommodation amplitude} is $\Delta P=P_{\max}-P_{\min}$.
+\item Always convert distances to metres before computing powers in dioptres.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0,>=stealth]
+\draw[thick] (0,-1.6) -- (0,1.6);
+\draw[thick] (-0.18,1.6) -- (0.18,1.6);
+\draw[thick] (-0.18,-1.6) -- (0.18,-1.6);
+\node[above] at (0,1.7) {\small eye lens};
+\draw[thick,popblue] (4.5,-1.4) arc (95:265:1.42);
+\node[below,popblue] at (4.5,-1.5) {\small retina};
+\draw[->,thick,popdark] (-4,0.9) -- (-4,0) -- (-3.85,0.15);
+\node[above] at (-4,0.95) {\small object};
+\draw[poporange,thick] (-4,0.9) -- (0,0.55) -- (4.35,0.12);
+\draw[poporange,thick] (-4,0.9) -- (0,-0.35) -- (4.35,0.12);
+\draw[popgreen,thick,dashed] (-4,0.9) -- (4.35,0.12);
+\fill[popink] (4.35,0.12) circle (0.06);
+\draw[<->,popmuted] (0,-1.15) -- (4.35,-1.15) node[midway,below]{\small $v$ fixed};
+\draw[<->,popmuted] (-4,-1.15) -- (0,-1.15) node[midway,below]{\small $u$};
+\end{tikzpicture}
+\end{center}
+\legende{Reduced eye: a converging lens of variable focal length forms a real image on the fixed retina.}
+\end{popfigure}
+
+\begin{exoresolu}[Power range of a normal eye]
+A normal eye has a lens--retina distance of $\SI{20.0}{mm}$. Its near point is at $\SI{25}{cm}$.
+\begin{enumerate}
+\item Calculate the minimum and maximum power of the eye's optical system.
+\item Deduce the amplitude of accommodation.
+\end{enumerate}
+\tcblower
+\textbf{1.} The image always forms on the retina, so $v=\SI{0.0200}{m}$ in all cases.
+
+\emph{Minimum power} (object at infinity, eye at rest):
+\[
+P_{\min}=\frac{1}{f_{\max}}=\frac{1}{\infty}+\frac{1}{v}=\frac{1}{0.0200}=50.0\ \mathrm{D}.
+\]
+
+\emph{Maximum power} (object at the near point, $u=\SI{0.25}{m}$):
+\[
+P_{\max}=\frac{1}{u}+\frac{1}{v}=\frac{1}{0.25}+\frac{1}{0.0200}=4.0+50.0=54.0\ \mathrm{D}.
+\]
+
+\textbf{2.} Amplitude of accommodation:
+\[
+\Delta P=P_{\max}-P_{\min}=54.0-50.0=4.0\ \mathrm{D}.
+\]
+This is the extra converging power the ciliary muscles provide by making the crystalline lens more curved. It decreases with age (presbyopia).
+\end{exoresolu}
+
+\courssub{Method 2: Correcting Myopia and Hyperopia}
+
+A \cle{myopic} eye is too powerful (or too long): distant objects focus \emph{in front of} the retina, and the far point is abnormally close. A \cle{hyperopic} eye is not powerful enough: near objects would focus \emph{behind} the retina, and the near point recedes. Spectacle lenses shift the apparent position of objects so that the defective eye can cope.
+
+\begin{methode}[Choosing the correcting lens]
+\begin{enumerate}
+\item Identify the defect: \cle{myopia} (far point too close, eye too powerful) is corrected with a \textbf{diverging} lens; \cle{hyperopia} (near point too far, eye not powerful enough) is corrected with a \textbf{converging} lens.
+\item \textbf{Myopia:} the correcting lens must take an object at infinity and form a \emph{virtual} image at the eye's far point $d_{\mathrm{FR}}$. Hence $f'=-d_{\mathrm{FR}}$ and $P=-1/d_{\mathrm{FR}}$.
+\item \textbf{Hyperopia:} the lens must take an object at the normal near point ($\SI{25}{cm}$) and form a virtual image at the eye's actual near point $d_{\mathrm{NR}}$: $\dfrac{1}{f'}=\dfrac{1}{0.25}-\dfrac{1}{d_{\mathrm{NR}}}$.
+\item Check the sign: myopia $\Rightarrow$ negative power; hyperopia $\Rightarrow$ positive power.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Correcting a myopic student]
+A student at GBHS Bamenda cannot see clearly beyond $\SI{50}{cm}$. Her lens--retina distance is $\SI{20}{mm}$.
+\begin{enumerate}
+\item State the defect and the type of lens needed.
+\item Calculate the power of the correcting lens (worn close to the eye).
+\item With the correction, what is her new near point if her amplitude of accommodation is $4.0\ \mathrm{D}$?
+\end{enumerate}
+\tcblower
+\textbf{1.} The far point is abnormally close ($\SI{50}{cm}$): the eye is \cle{myopic}. A \textbf{diverging} (concave) lens is required.
+
+\textbf{2.} The lens must form, from an object at infinity, a virtual image at the far point:
+\[
+f'=-d_{\mathrm{FR}}=-\SI{0.50}{m}\quad\Longrightarrow\quad P=\frac{1}{f'}=-\frac{1}{0.50}=\boxed{-2.0\ \mathrm{D}}.
+\]
+
+\textbf{3.} The uncorrected eye, fully accommodating, has maximum power
+\[
+P_{\max}=\frac{1}{d_{\mathrm{FR}}}+\frac{1}{v}+\Delta P=\frac{1}{0.50}+\frac{1}{0.020}+4.0=2+50+4=56\ \mathrm{D}.
+\]
+(The eye at rest focuses at its far point $\SI{50}{cm}$, hence the term $1/0.50$; accommodation adds $4.0\ \mathrm{D}$.)
+
+With the correcting lens of power $-2.0\ \mathrm{D}$, the powers add:
+\[
+P_{\text{total,max}}=56-2=54\ \mathrm{D}=\frac{1}{u_{\text{near}}}+\frac{1}{0.020}
+\;\Longrightarrow\;
+\frac{1}{u_{\text{near}}}=4.0\;\Longrightarrow\;u_{\text{near}}=\SI{0.25}{m}.
+\]
+The correction restores a normal near point of $\SI{25}{cm}$: the myope can now read comfortably and see distant objects.
+\end{exoresolu}
+
+\courssub{Method 3: Sound Intensity and the Decibel Scale}
+
+The ear responds to sound over an enormous range of intensities (about $10^{12}$ between threshold and pain), so a logarithmic scale --- the \cle{decibel} --- is used. Mastering the conversion $I\leftrightarrow L$ is essential for GCE questions on hearing and its defects.
+
+\begin{methode}[Working with intensity level]
+\begin{enumerate}
+\item Recall the definitions: intensity $I=\dfrac{P}{A}$ (power per unit area, $\si{W.m^{-2}}$) and intensity level
+\[
+L=10\log_{10}\!\left(\frac{I}{I_0}\right)\ \text{dB},\qquad I_0=\SI{1.0e-12}{W.m^{-2}}.
+\]
+\item To get $I$ from $L$, invert: $I=I_0\,10^{L/10}$.
+\item \textbf{Reflex:} $+10\ \mathrm{dB}$ means intensity $\times 10$; $+3\ \mathrm{dB}$ means roughly $\times 2$. For $n$ identical sources: add $10\log_{10}n$ dB.
+\item For a point source radiating uniformly, $I=P/(4\pi r^2)$: doubling the distance divides $I$ by 4, i.e. $-6\ \mathrm{dB}$.
+\item Hearing damage risk: prolonged exposure above about $\SI{85}{dB}$; pain threshold near $\SI{120}{dB}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Noise from a generator in Yaoundé]
+A small petrol generator radiates sound uniformly in all directions with acoustic power $P=\SI{0.10}{W}$.
+\begin{enumerate}
+\item Calculate the intensity and the intensity level at $r=\SI{5.0}{m}$.
+\item At what distance does the level fall to $\SI{60}{dB}$ (normal conversation)?
+\item A second identical generator is switched on at the same spot. What is the new level at $\SI{5.0}{m}$?
+\end{enumerate}
+\tcblower
+\textbf{1.} Uniform radiation over a sphere of area $4\pi r^2$:
+\[
+I=\frac{P}{4\pi r^2}=\frac{0.10}{4\pi(5.0)^2}=\frac{0.10}{314.2}=\SI{3.18e-4}{W.m^{-2}}.
+\]
+\[
+L=10\log_{10}\!\left(\frac{3.18\times10^{-4}}{1.0\times10^{-12}}\right)=10\log_{10}(3.18\times10^{8})=10(8.50)=\SI{85}{dB}.
+\]
+This is exactly the level at which prolonged exposure becomes dangerous for the ear.
+
+\textbf{2.} $L=\SI{60}{dB}\Rightarrow I=I_0\,10^{6}=\SI{1.0e-6}{W.m^{-2}}$. Then
+\[
+r=\sqrt{\frac{P}{4\pi I}}=\sqrt{\frac{0.10}{4\pi\times10^{-6}}}=\sqrt{7958}\approx\SI{89}{m}.
+\]
+
+\textbf{3.} Two identical sources double the intensity:
+\[
+L'=10\log_{10}(2I/I_0)=L+10\log_{10}2=85+3.0=\SI{88}{dB}.
+\]
+\end{exoresolu}
+
+\begin{attention}[Decibels are not additive]
+Two sources of $\SI{85}{dB}$ each do \emph{not} give $\SI{170}{dB}$! Always add \emph{intensities}, never decibels.
+\end{attention}
+
+\courssub{Method 4: Interpreting an ECG and Measuring Heart Rate}
+
+The heart's electrical activity can be picked up by electrodes on the skin and displayed as an \cle{electrocardiogram} (ECG). The GCE expects you to identify the main waves and to extract the heart rate from the trace using the paper speed.
+
+\begin{methode}[Reading an electrocardiogram]
+\begin{enumerate}
+\item Identify the waves: \textbf{P} (atrial depolarisation), \textbf{QRS complex} (ventricular depolarisation), \textbf{T} (ventricular repolarisation).
+\item Measure the \cle{R--R interval} $\Delta t$ between two successive R peaks, using the paper speed (standard: $\SI{25}{mm.s^{-1}}$, so $1$ large $\SI{5}{mm}$ square $=\SI{0.20}{s}$).
+\item Heart rate: $f=\dfrac{1}{\Delta t}$ in hertz, then beats per minute: $N=\dfrac{60}{\Delta t}$.
+\item Quick GCE reflex: $N=\dfrac{300}{\text{number of large squares between R peaks}}$.
+\item Compare with normal values ($60$--$100$ bpm at rest): bradycardia $<60$, tachycardia $>100$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Heart rate from an ECG trace]
+An ECG is recorded at the standard paper speed of $\SI{25}{mm.s^{-1}}$. The distance between two successive R peaks is measured as $\SI{20}{mm}$. The QRS complex lasts $\SI{0.08}{s}$.
+\begin{enumerate}
+\item Calculate the R--R interval and the heart rate in beats per minute.
+\item Is this patient bradycardic, normal, or tachycardic?
+\item How many cardiac cycles occur during a $\SI{10}{s}$ recording?
+\end{enumerate}
+\tcblower
+\textbf{1.} Time corresponding to $\SI{20}{mm}$ at $\SI{25}{mm.s^{-1}}$:
+\[
+\Delta t=\frac{20}{25}=\SI{0.80}{s}.
+\]
+Heart rate:
+\[
+N=\frac{60}{\Delta t}=\frac{60}{0.80}=\boxed{75\ \text{beats per minute}}.
+\]
+(Quick check: $\SI{20}{mm}=4$ large squares, $300/4=75$ bpm. \checkmark)
+
+\textbf{2.} $75$ bpm lies within the normal resting range $60$--$100$ bpm: the rhythm is \textbf{normal} (normal sinus rhythm).
+
+\textbf{3.} Number of cycles in $\SI{10}{s}$:
+\[
+n=\frac{10}{0.80}=12.5\approx 12\text{--}13\ \text{complete cycles}.
+\]
+The QRS duration of $\SI{0.08}{s}$ is below the upper normal limit ($\approx\SI{0.12}{s}$), indicating normal ventricular conduction.
+\end{exoresolu}
+
+\courssub{Method 5: Ultrasound Imaging (Pulse--Echo Technique)}
+
+Ultrasound imaging is the workhorse of \emph{non-ionising} diagnosis: a short pulse is sent into the body and the echoes returning from internal interfaces are timed. Because the pulse makes a \textbf{round trip}, a factor 2 appears in every depth calculation.
+
+\begin{methode}[Solving echo-ranging problems]
+\begin{enumerate}
+\item The ultrasound pulse travels to the reflector \textbf{and back}: the depth is
+\[
+d=\frac{v\,\Delta t}{2},
+\]
+where $v$ is the speed of sound in the tissue ($\approx\SI{1540}{m.s^{-1}}$ in soft tissue) and $\Delta t$ the measured echo delay.
+\item \textbf{Trap:} never forget the factor 2 (round trip).
+\item Reflections occur at interfaces between media of different \cle{acoustic impedance} $Z=\rho v$; the intensity reflection coefficient is
+\[
+R=\left(\frac{Z_2-Z_1}{Z_2+Z_1}\right)^2.
+\]
+\item Resolution improves with shorter wavelength $\lambda=v/f$: hence high frequencies ($2$--$\SI{15}{MHz}$) are used, at the cost of greater absorption.
+\item Ultrasound is \textbf{non-ionising}: safe for monitoring pregnancy.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Locating an organ boundary by ultrasound]
+An ultrasound probe emits pulses of frequency $\SI{3.5}{MHz}$ into soft tissue where $v=\SI{1540}{m.s^{-1}}$. An echo returns after $\SI{130}{\micro\second}$.
+\begin{enumerate}
+\item Calculate the depth of the reflecting interface.
+\item Calculate the wavelength in tissue and comment on the resolution.
+\item Given $Z_1=\SI{1.63e6}{kg.m^{-2}.s^{-1}}$ (soft tissue) and $Z_2=\SI{7.80e6}{kg.m^{-2}.s^{-1}}$ (bone), find the fraction of intensity reflected at a tissue--bone interface.
+\end{enumerate}
+\tcblower
+\textbf{1.} Round trip:
+\[
+d=\frac{v\,\Delta t}{2}=\frac{1540\times130\times10^{-6}}{2}=\frac{0.2002}{2}=\boxed{\SI{0.100}{m}=\SI{10.0}{cm}}.
+\]
+
+\textbf{2.} Wavelength:
+\[
+\lambda=\frac{v}{f}=\frac{1540}{3.5\times10^{6}}=\SI{4.4e-4}{m}=\SI{0.44}{mm}.
+\]
+Details smaller than about a wavelength cannot be resolved; here the axial resolution is of order a millimetre, adequate for organ imaging.
+
+\textbf{3.} Reflection coefficient:
+\[
+R=\left(\frac{Z_2-Z_1}{Z_2+Z_1}\right)^2=\left(\frac{7.80-1.63}{7.80+1.63}\right)^2=\left(\frac{6.17}{9.43}\right)^2=(0.654)^2\approx 0.43.
+\]
+About $43\ \%$ of the intensity is reflected: tissue--bone boundaries give strong echoes, which is why ultrasound cannot image \emph{behind} bones (or air-filled lungs).
+\end{exoresolu}
+
+\courssub{Method 6: X-ray Attenuation and Radiographic Contrast}
+
+X-rays are \cle{ionising} radiation: they remove electrons from atoms and can damage living tissue, so their use must be justified and minimised. Their medical value comes from the fact that different tissues attenuate them differently.
+
+\begin{methode}[Using the exponential attenuation law]
+\begin{enumerate}
+\item Write the law: $I=I_0\,e^{-\mu x}$, with $\mu$ the linear attenuation coefficient ($\si{m^{-1}}$ or $\si{cm^{-1}}$) and $x$ the thickness.
+\item Half-value layer: $x_{1/2}=\dfrac{\ln 2}{\mu}=\dfrac{0.693}{\mu}$.
+\item To find the transmitted fraction, compute $e^{-\mu x}$; the \emph{absorbed} fraction is $1-e^{-\mu x}$.
+\item Contrast between two tissues comes from the \emph{difference} of their attenuations: bone ($\mu$ large, high $Z$) appears white, soft tissue grey, air black.
+\item Dose reduction: minimise exposure time, use shielding (lead), because X-rays are \cle{ionising}.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Attenuation of an X-ray beam]
+A narrow X-ray beam passes through $\SI{12}{cm}$ of soft tissue with $\mu=\SI{20}{m^{-1}}$, then a bone of thickness $\SI{3.0}{cm}$ with $\mu_{\mathrm{b}}=\SI{480}{m^{-1}}$.
+\begin{enumerate}
+\item Calculate the half-value layer of the bone for this beam.
+\item Calculate the fraction of the initial intensity transmitted through the whole path.
+\item Compare with the fraction transmitted through $\SI{15}{cm}$ of soft tissue only, and explain the origin of radiographic contrast.
+\end{enumerate}
+\tcblower
+\textbf{1.} Half-value layer of bone:
+\[
+x_{1/2}=\frac{0.693}{\mu_{\mathrm{b}}}=\frac{0.693}{480}=\SI{1.44e-3}{m}\approx\SI{1.4}{mm}.
+\]
+
+\textbf{2.} Successive attenuations multiply (the exponents add):
+\[
+\frac{I}{I_0}=e^{-\mu x}\,e^{-\mu_{\mathrm{b}}x_{\mathrm{b}}}=e^{-(20\times0.12)}\,e^{-(480\times0.030)}=e^{-2.4}\,e^{-14.4}=e^{-16.8}.
+\]
+\[
+\frac{I}{I_0}\approx 5.1\times10^{-8}.
+\]
+Only about $5$ parts in $10^{8}$ emerge: the beam is essentially stopped.
+
+\textbf{3.} Through $\SI{15}{cm}$ of soft tissue alone:
+\[
+\frac{I'}{I_0}=e^{-20\times0.15}=e^{-3.0}\approx 0.050,
+\]
+i.e. about $5.0\ \%$ transmitted. The ratio
+\[
+\frac{I'}{I}=\frac{0.050}{5.1\times10^{-8}}\approx 10^{6}
+\]
+shows that the detector (or film) receives about a million times more intensity behind soft tissue than behind bone: this enormous difference of transmitted intensity is what produces the light/dark \cle{contrast} of a radiograph. In CT scanning, the same attenuation coefficients are measured from many angles and a computer reconstructs a cross-sectional image.
+\end{exoresolu}
+
+\courssub{Method 7: Optical Fibres and Endoscopy}
+
+An optical fibre guides light by \cle{total internal reflection} at the boundary between a high-index core and a lower-index cladding. Bundles of such fibres form the \cle{endoscope}, which lets the physician see inside the body without open surgery.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0,>=stealth]
+\fill[popblueL] (0,-0.55) rectangle (7,0.55);
+\fill[white] (0,-0.30) rectangle (7,0.30);
+\draw[thick,popblue] (0,0.30) -- (7,0.30);
+\draw[thick,popblue] (0,-0.30) -- (7,-0.30);
+\draw[thick,popblue] (0,0.55) -- (7,0.55);
+\draw[thick,popblue] (0,-0.55) -- (7,-0.55);
+\node[popblue] at (6.4,0.43) {\scriptsize cladding};
+\node at (6.55,0) {\scriptsize core};
+\draw[poporange,thick] (-1.3,0.9) -- (0,0.1) -- (1.6,0.30) -- (3.2,-0.30) -- (4.8,0.30) -- (6.4,-0.30) -- (7.3,0.05);
+\draw[popmuted,dashed] (1.6,0.30) -- (1.6,0.85);
+\draw[popmuted] (1.6,0.62) arc (90:63:0.32);
+\node[popmuted] at (2.05,0.72) {\scriptsize $\theta>\theta_c$};
+\draw[popmuted,dashed] (0,0.1) -- (0,0.9);
+\draw[popmuted] (0,0.62) arc (90:56:0.32);
+\node[popmuted] at (-0.15,1.15) {\scriptsize $\theta_{\max}$};
+\end{tikzpicture}
+\end{center}
+\legende{Guiding of light in a step-index fibre by total internal reflection ($n_{\text{core}}>n_{\text{cladding}}$).}
+\end{popfigure}
+
+\begin{methode}[Total internal reflection in a fibre]
+\begin{enumerate}
+\item Condition for guiding: light strikes the core--cladding boundary above the critical angle, with $n_{\text{core}}>n_{\text{cladding}}$:
+\[
+\sin\theta_c=\frac{n_{\text{cladding}}}{n_{\text{core}}}.
+\]
+\item Maximum acceptance angle (in air, $n_0=1$) and \cle{numerical aperture}:
+\[
+\sin\theta_{\max}=\mathrm{NA}=\sqrt{n_{\text{core}}^{2}-n_{\text{cladding}}^{2}}.
+\]
+\item Attenuation along a fibre of length $L$ follows the decibel rule: loss $=\alpha L$ (dB), with $\alpha$ in $\si{dB.km^{-1}}$ (or $\si{dB.m^{-1}}$); transmitted power $P=P_0\,10^{-\alpha L/10}$.
+\item In an \cle{endoscope}, one bundle of fibres carries illumination light down, a coherent bundle carries the image back; a working channel allows instruments (biopsy, laser surgery).
+\item Key advantages: minimally invasive, flexible, no ionising radiation.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Acceptance cone and losses of a medical fibre]
+An endoscope fibre has core index $n_1=1.62$ and cladding index $n_2=1.52$. Its attenuation is $\alpha=\SI{0.50}{dB.m^{-1}}$ at the wavelength used.
+\begin{enumerate}
+\item Calculate the critical angle at the core--cladding interface.
+\item Calculate the numerical aperture and the maximum acceptance angle in air.
+\item The fibre is $\SI{1.8}{m}$ long. What percentage of the input light power reaches the far end?
+\end{enumerate}
+\tcblower
+\textbf{1.} Critical angle:
+\[
+\sin\theta_c=\frac{n_2}{n_1}=\frac{1.52}{1.62}=0.9383\quad\Longrightarrow\quad \theta_c=\arcsin(0.9383)\approx\boxed{69.8\degree}.
+\]
+Rays hitting the interface at more than $69.8\degree$ (measured from the normal) are totally internally reflected and guided.
+
+\textbf{2.} Numerical aperture:
+\[
+\mathrm{NA}=\sqrt{n_1^2-n_2^2}=\sqrt{1.62^2-1.52^2}=\sqrt{2.6244-2.3104}=\sqrt{0.3140}=0.560.
+\]
+\[
+\sin\theta_{\max}=0.560\quad\Longrightarrow\quad \theta_{\max}\approx\boxed{34.1\degree}.
+\]
+Any ray entering the fibre face within a cone of half-angle $34.1\degree$ is trapped and guided.
+
+\textbf{3.} Total loss:
+\[
+\alpha L=0.50\times1.8=\SI{0.90}{dB}.
+\]
+\[
+\frac{P}{P_0}=10^{-0.90/10}=10^{-0.090}=0.813.
+\]
+About $\boxed{81\ \%}$ of the light power is transmitted. In an endoscope this high transmission, combined with the flexibility of the fibre bundle, allows the physician to illuminate and observe, for example, the stomach lining of a patient without open surgery.
+\end{exoresolu}
+
+\begin{attention}[Chapter traps to avoid at the GCE]
+\begin{itemize}
+\item Forgetting the factor 2 in echo problems ($d=v\Delta t/2$).
+\item Adding decibels instead of intensities.
+\item Mixing centimetres and metres when computing powers in dioptres.
+\item Wrong sign for the correcting lens: myopia $\to$ negative, hyperopia $\to$ positive.
+\item Using $\sin\theta_c=n_1/n_2$ instead of $n_2/n_1$ (the ratio must be $<1$).
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer and justify your choice briefly.
+\begin{enumerate}
+\item A myopic eye corrected for distant vision requires:
+\begin{enumerate}
+\item a converging lens;
+\item a diverging lens;
+\item a cylindrical lens;
+\item a plane glass plate.
+\end{enumerate}
+\item The half-value layer (HVL) of a material for X-rays is the thickness that:
+\begin{enumerate}
+\item absorbs all the radiation;
+\item reduces the intensity to one half of its initial value;
+\item reduces the intensity to one tenth of its initial value;
+\item doubles the intensity.
+\end{enumerate}
+\item In an ECG trace, the QRS complex corresponds to:
+\begin{enumerate}
+\item depolarisation of the atria;
+\item repolarisation of the ventricles;
+\item depolarisation of the ventricles;
+\item the pause between two heartbeats.
+\end{enumerate}
+\item Total internal reflection in an optical fibre occurs because:
+\begin{enumerate}
+\item the core has a lower refractive index than the cladding;
+\item the core has a higher refractive index than the cladding;
+\item the fibre is perfectly straight;
+\item light is absorbed by the cladding.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each statement is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item The amplitude of accommodation of a normal eye decreases with age.
+\item Ultrasound imaging uses ionising radiation and is therefore dangerous for the foetus.
+\item A hearing threshold of $40\ \mathrm{dB\ HL}$ means the patient needs an intensity $40$ times greater than the normal threshold.
+\item The gel used in an ultrasound scan improves the transmission of ultrasound from the probe into the body.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms precisely, giving the SI unit where applicable:
+\begin{enumerate}
+\item the \cle{punctum remotum} (PR) and the \cle{punctum proximum} (PP) of an eye;
+\item the \cle{amplitude of accommodation};
+\item the \cle{linear attenuation coefficient} $\mu$ of a material for X-rays;
+\item the \cle{critical angle} at the core--cladding interface of an optical fibre.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item An X-ray beam passes through $3.0\ \mathrm{cm}$ of tissue of linear attenuation coefficient $\mu = 0.46\ \mathrm{cm^{-1}}$. Calculate the fraction $I/I_0$ transmitted.
+\item An ECG trace shows an R--R interval of $0.80\ \mathrm{s}$. Calculate the heart rate in beats per minute.
+\item An audiogram shows a hearing threshold of $50\ \mathrm{dB\ HL}$ at $4\ \mathrm{kHz}$. Calculate the ratio $I/I_0$ between the minimum audible intensity for this patient and the normal threshold $I_0$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Correcting myopia]
+A myopic patient has his punctum remotum at $2.0\ \mathrm{m}$.
+\begin{enumerate}
+\item Explain, with the aid of a ray diagram, why this patient cannot see distant objects clearly.
+\item Calculate the vergence and the focal length of the spectacle lenses needed for him to see distant objects clearly (lenses assumed in contact with the eye).
+\item State the type of lens used and justify your answer.
+\end{enumerate}
+\end{exercice}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, >=stealth]
+% Uncorrected myopic eye
+\draw[thick] (-3,0) -- (0,0) node[midway, above] {Parallel rays from infinity};
+\draw[thick, fill=popblueL!30] (0,0) arc (180:0:1.5 and 0.5) -- (1.5, -2) arc (0:-180:1.5 and 0.5) -- cycle;
+\draw[thick] (0,0) -- (0,-2);
+\draw[thick] (1.5,0) -- (1.5,-2);
+\draw[thick, fill=white] (0.75,-1.8) ellipse (0.3 and 0.15);
+\node at (0.75,-1.8) {Retina};
+\draw[->, thick, popred] (-1,0.5) -- (0.75,0.5) -- (0.75,-1.2);
+\draw[->, thick, popred] (1,0.5) -- (0.75,0.5) -- (0.75,-1.2);
+\draw[->, thick, popred] (0.5,0.5) -- (0.75,0.5) -- (0.75,-1.2);
+\node at (0.75,1) {Uncorrected: focus in front of retina};
+
+% Corrected myopic eye
+\begin{scope}[xshift=8cm]
+\draw[thick] (-3,0) -- (0,0) node[midway, above] {Parallel rays from infinity};
+\draw[thick, fill=popgreenL!30] (-1.5,0.5) -- (-1.5,-0.5) -- (-1,0) -- cycle;
+\node at (-1.3,0) {Lens};
+\draw[thick, fill=popblueL!30] (0,0) arc (180:0:1.5 and 0.5) -- (1.5, -2) arc (0:-180:1.5 and 0.5) -- cycle;
+\draw[thick] (0,0) -- (0,-2);
+\draw[thick] (1.5,0) -- (1.5,-2);
+\draw[thick, fill=white] (0.75,-1.8) ellipse (0.3 and 0.15);
+\node at (0.75,-1.8) {Retina};
+\draw[->, thick, popgreen] (-2,0.5) -- (-1.5,0.5) -- (-1,0) -- (0.75,-0.2) -- (0.75,-1.8);
+\draw[->, thick, popgreen] (-2,0) -- (-1.5,0) -- (-1,0) -- (0.75,-0.2) -- (0.75,-1.8);
+\draw[->, thick, popgreen] (-2,-0.5) -- (-1.5,-0.5) -- (-1,0) -- (0.75,-0.2) -- (0.75,-1.8);
+\draw[dashed, thin] (-2,0.5) -- (-1.5,0.5) -- (-1,0) -- (-3, -1);
+\draw[dashed, thin] (-2,-0.5) -- (-1.5,-0.5) -- (-1,0) -- (-3, 1);
+\node at (-3.5,0) {Virtual image at PR = 2.0 m};
+\node at (0.75,1) {Corrected: focus on retina};
+\end{scope}
+\end{tikzpicture}
+\legende{Ray diagrams for uncorrected and corrected myopia. The diverging spectacle lens creates a virtual image at the patient's far point (punctum remotum).}
+\end{popfigure}
+
+\begin{exercice}[Presbyopia and reading glasses]
+An eye has its punctum proximum at $50\ \mathrm{cm}$ and its punctum remotum at infinity.
+\begin{enumerate}
+\item Calculate the amplitude of accommodation of this eye.
+\item Determine the vergence of the lens needed for this patient to read comfortably at $25\ \mathrm{cm}$.
+\item Name the defect of vision from which this patient suffers and give its usual cause.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Ultrasound echo-ranging]
+An ultrasound pulse sent into the abdomen returns as an echo after $1.3 \times 10^{-4}\ \mathrm{s}$. Take the speed of ultrasound in soft tissue as $c = 1540\ \mathrm{m\,s^{-1}}$.
+\begin{enumerate}
+\item Calculate the depth of the reflecting organ below the skin, explaining why a factor of $2$ appears in the calculation.
+\item Explain why a coupling gel is applied between the probe and the skin.
+\item Give one reason why ultrasound of frequency several $\mathrm{MHz}$ is preferred to audible sound for this examination.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Guiding light in an optical fibre]
+An endoscope uses an optical fibre of core refractive index $n_1 = 1.62$ and cladding refractive index $n_2 = 1.48$.
+\begin{enumerate}
+\item Draw a labelled ray diagram showing how light is guided along the fibre by total internal reflection.
+\item State the two conditions necessary for total internal reflection to occur at the core--cladding interface.
+\item Calculate the critical angle at the core--cladding interface.
+\item State one medical advantage of endoscopy over open surgery.
+\end{enumerate}
+\end{exercice}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+% Optical fibre cross-section
+\draw[thick, fill=popblueL!20] (-3,-1) rectangle (3,1);
+\draw[thick, fill=popblue!30] (-3,-0.5) rectangle (3,0.5);
+\node at (0,0) {Core ($n_1=1.62$)};
+\node at (0,-0.75) {Cladding ($n_2=1.48$)};
+\node at (0,0.75) {Cladding ($n_2=1.48$)};
+
+% Ray entering
+\draw[->, thick, popred] (-4,0.2) -- (-3,0.1);
+\draw[thick, popred] (-3,0.1) -- (-1,0.1);
+\draw[thick, popred] (-1,0.1) -- (-0.5,0.5);
+\draw[thick, popred] (-0.5,0.5) -- (0.5,-0.5);
+\draw[thick, popred] (0.5,-0.5) -- (1.5,0.5);
+\draw[thick, popred] (1.5,0.5) -- (2.5,-0.5);
+\draw[->, thick, popred] (2.5,-0.5) -- (4,-0.6);
+
+% Critical angle annotation
+\draw[dashed, thin] (-1,0.5) -- (-1,-0.5);
+\draw[<->, thin] (-1,0.1) arc (0:45:0.4);
+\node at (-0.7,0.35) {$\theta_i > \theta_c$};
+\draw[<->, thin] (0.5,0.5) arc (180:135:0.4);
+\node at (0.7,0.35) {$\theta_c$};
+\end{tikzpicture}
+\legende{Light propagation in a step-index optical fibre by total internal reflection at the core-cladding interface.}
+\end{popfigure}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[The eye and its correction (GCE style)]
+\begin{enumerate}
+\item Describe, with the aid of a labelled diagram, the essential optical components of the human eye and state the function of each. \textbf{(4 marks)}
+\item A patient has a punctum remotum of $1.0\ \mathrm{m}$ and a punctum proximum of $20\ \mathrm{cm}$.
+\begin{enumerate}
+\item Name the defect of vision and calculate the amplitude of accommodation of this eye. \textbf{(3 marks)}
+\item Calculate the vergence of the contact lens required to correct the eye for distant vision, and state the type of lens. \textbf{(3 marks)}
+\item With the correcting lens worn, determine the new near point of the patient. \textbf{(3 marks)}
+\end{enumerate}
+\item Explain why many people over the age of about 45 years require different lenses for reading and for distant vision. \textbf{(2 marks)}
+\end{enumerate}
+\textbf{(Total: 15 marks)}
+\end{exercice}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.1, >=stealth]
+% Human eye cross-section
+\draw[thick, fill=popblueL!10] (0,0) ellipse (2 and 1.5);
+\draw[thick, fill=popblueL!30] (-2,0) arc (180:0:0.5 and 1.5) -- (-1.5,0) arc (0:180:0.5 and 1.5);
+\node at (-1.75,0) {Cornea};
+\draw[thick, fill=popgreenL!30] (-0.5,-0.4) ellipse (0.6 and 0.4);
+\node at (-0.5,-0.4) {Lens};
+\draw[thick, fill=poppurple!20] (0.5,-0.8) -- (1.5,-0.5) -- (1.5,0.5) -- (0.5,0.8) -- cycle;
+\node at (1.2,0) {Retina};
+\draw[thick] (0,0) -- (2,0);
+\node at (2.2,0) {Optic nerve};
+\draw[thick, fill=poporange!30] (-1.5,0.2) -- (-1.2,0.5) -- (-0.9,0.2) -- cycle;
+\node at (-1.2,0.7) {Iris};
+\draw[thick, fill=poppink!30] (-1.5,-0.2) -- (-1.2,-0.5) -- (-0.9,-0.2) -- cycle;
+\node at (-1.2,-0.7) {Ciliary body};
+\draw[<->, thin] (-2,0) -- (-1.5,0);
+\node at (-1.75,-0.3) {Aqueous humour};
+\draw[<->, thin] (0.5,0) -- (1.5,0);
+\node at (1,-0.3) {Vitreous humour};
+\end{tikzpicture}
+\legende{Schematic cross-section of the human eye showing the main optical components.}
+\end{popfigure}
+
+\begin{exercice}[X-rays in medical diagnosis (GCE style)]
+\begin{enumerate}
+\item State the nature of X-rays and give two properties that make them useful in medical imaging. \textbf{(3 marks)}
+\item The intensity of a narrow X-ray beam passing through a homogeneous material obeys the law $I = I_0 e^{-\mu x}$, where the symbols have their usual meanings. Define the half-value layer $x_{1/2}$ and show that $x_{1/2} = \dfrac{\ln 2}{\mu}$. \textbf{(4 marks)}
+\item A beam passes through tissue of linear attenuation coefficient $\mu = 0.46\ \mathrm{cm^{-1}}$.
+\begin{enumerate}
+\item Calculate the half-value layer of this tissue. \textbf{(2 marks)}
+\item Calculate the thickness of tissue required to reduce the beam intensity to $10\ \%$ of its initial value. \textbf{(3 marks)}
+\end{enumerate}
+\item Explain why a lead apron is used to protect parts of the patient's body that are not being examined, and why the radiographer stands behind a screen during the exposure. \textbf{(3 marks)}
+\end{enumerate}
+\textbf{(Total: 15 marks)}
+\end{exercice}
+
+\begin{exercice}[Synthesis essay: ultrasound versus X-ray imaging (GCE style)]
+Write a structured essay comparing \cle{ultrasound imaging} and \cle{X-ray radiography} as techniques of medical diagnosis. Your essay should address the following points:
+\begin{enumerate}
+\item the physical principle of each technique (nature of the radiation or wave, production, detection); \textbf{(6 marks)}
+\item the way each interacts with the body (reflection at interfaces, attenuation and absorption) and the kind of image obtained; \textbf{(5 marks)}
+\item the risks associated with each technique for the patient; \textbf{(4 marks)}
+\item typical medical uses of each technique, with at least two examples; \textbf{(3 marks)}
+\item a justified conclusion explaining why ultrasound is preferred for monitoring pregnancy. \textbf{(2 marks)}
+\end{enumerate}
+\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: (b) a diverging lens.} A myopic eye is too convergent (or its eyeball too long), so parallel rays from a distant object focus \emph{in front of} the retina. A diverging lens placed in front of the eye forms a virtual image of the distant object at the patient's punctum remotum, which the eye can then focus on the retina.
+\item \textbf{Answer: (b) reduces the intensity to one half of its initial value.} By definition, the half-value layer $x_{1/2}$ satisfies $I = I_0/2$, i.e. $e^{-\mu x_{1/2}} = 1/2$, giving $x_{1/2} = \ln 2/\mu$.
+\item \textbf{Answer: (c) depolarisation of the ventricles.} The P wave corresponds to atrial depolarisation, the QRS complex to ventricular depolarisation (which triggers ventricular contraction), and the T wave to ventricular repolarisation.
+\item \textbf{Answer: (b) the core has a higher refractive index than the cladding.} Total internal reflection requires light to travel from a more refractive medium to a less refractive one ($n_1 > n_2$) with an angle of incidence greater than the critical angle. The straightness of the fibre is irrelevant; TIR works around bends. Absorption by the cladding would weaken the signal.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{True.} With age the crystalline lens hardens and the ciliary muscles weaken, so the lens can no longer increase its vergence as much: the punctum proximum recedes and the amplitude of accommodation falls (presbyopia).
+\item \textbf{False.} Ultrasound imaging uses high-frequency \emph{mechanical} sound waves, not ionising radiation. At diagnostic intensities it carries no known risk, which is precisely why it is used to monitor the foetus.
+\item \textbf{False.} The decibel scale is logarithmic: $L = 10\log(I/I_0)$. A threshold of $40\ \mathrm{dB\ HL}$ means $I/I_0 = 10^{40/10} = 10^4$, i.e. an intensity $10\,000$ times greater, not $40$ times.
+\item \textbf{True.} The gel eliminates the thin air layer between probe and skin. Because air and tissue have very different acoustic impedances, an air gap would reflect almost all the ultrasound; the gel provides impedance matching and ensures good transmission into the body.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item The \cle{punctum remotum} (PR) is the most distant point that the eye can see clearly \emph{without} accommodation; for a normal eye it is at infinity. The \cle{punctum proximum} (PP) is the nearest point seen clearly with \emph{maximum} accommodation; for a normal young adult it lies at about $25\ \mathrm{cm}$ (the least distance of distinct vision). Both are distances, measured in metres (SI).
+\item The \cle{amplitude of accommodation} $A$ is the maximum variation of vergence the eye can produce between relaxed vision and full accommodation:
+\[ A = \frac{1}{d_{PP}} - \frac{1}{d_{PR}} \]
+with distances in metres (using magnitudes; in the Cartesian sign convention this is often written $A = \left|\dfrac{1}{PP} - \dfrac{1}{PR}\right|$). It is expressed in \emph{dioptres} ($\delta$, i.e. $\mathrm{m^{-1}}$). For a normal young eye, $A \approx 4\ \delta$.
+\item The \cle{linear attenuation coefficient} $\mu$ is the constant appearing in the absorption law $I = I_0 e^{-\mu x}$; it represents the probability of attenuation per unit thickness of material. Its SI unit is $\mathrm{m^{-1}}$ (often quoted in $\mathrm{cm^{-1}}$).
+\item The \cle{critical angle} $\theta_c$ is the angle of incidence at the core--cladding interface for which the refracted ray would travel along the interface (angle of refraction $90\degree$). From Snell's law, $\sin\theta_c = n_2/n_1$ (with $n_1 > n_2$). For $\theta_i > \theta_c$, total internal reflection occurs. It is an angle, measured in degrees or radians.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item The attenuation law gives
+\[ \frac{I}{I_0} = e^{-\mu x} = e^{-0.46 \times 3.0} = e^{-1.38} \approx 0.25. \]
+Only about $25\ \%$ of the incident intensity is transmitted through $3.0\ \mathrm{cm}$ of this tissue.
+\item The R--R interval is the period of one heartbeat: $T = 0.80\ \mathrm{s}$. The heart rate is
+\[ f = \frac{60}{T} = \frac{60}{0.80} = 75\ \text{beats per minute}. \]
+\item By definition of the hearing level, $L = 10\log(I/I_0)$, so
+\[ \frac{I}{I_0} = 10^{L/10} = 10^{50/10} = 10^5 = 100\,000. \]
+This patient needs a sound intensity $100\,000$ times the normal threshold at $4\ \mathrm{kHz}$: a severe hearing loss at that frequency.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Correcting myopia]
+\begin{enumerate}
+\item In a myopic eye the optical system (cornea + lens) is too powerful relative to the length of the eyeball. Parallel rays from a distant object are therefore brought to a focus \emph{in front of} the retina, and the image on the retina is blurred (see the ray diagram: uncorrected eye, rays converging before the retina). The eye can only focus objects lying at or nearer than its punctum remotum, here $2.0\ \mathrm{m}$.
+\item The correcting lens must form, from an object at infinity, a \emph{virtual} image at the PR, i.e. at $2.0\ \mathrm{m}$ in front of the lens. With the Cartesian convention, image distance $s' = -2.0\ \mathrm{m}$ for an object at infinity, so the focal length is
+\[ f' = -2.0\ \mathrm{m}, \qquad V = \frac{1}{f'} = \frac{1}{-2.0} = -0.50\ \delta. \]
+\item The lens is a \cle{diverging} (concave, negative meniscus) lens, since its vergence is negative. It spreads the incoming parallel rays slightly so that they appear to come from the patient's far point ($2.0\ \mathrm{m}$), which the unaided eye can focus comfortably on the retina.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Presbyopia and reading glasses]
+\begin{enumerate}
+\item The amplitude of accommodation is
+\[ A = \frac{1}{d_{PP}} - \frac{1}{d_{PR}} = \frac{1}{0.50} - \frac{1}{\infty} = 2.0\ \delta. \]
+(A normal young eye has about $4\ \delta$; the loss confirms presbyopia.)
+\item To read at $25\ \mathrm{cm}$, the correcting lens must form a virtual image of the page at the patient's actual near point, $50\ \mathrm{cm}$. Object distance $s = -0.25\ \mathrm{m}$, image distance $s' = -0.50\ \mathrm{m}$ (virtual image on the same side as the object). The lens formula gives
+\[ V = \frac{1}{s'} - \frac{1}{s} = \frac{1}{-0.50} - \frac{1}{-0.25} = -2.0 + 4.0 = +2.0\ \delta. \]
+A converging lens of vergence $+2.0\ \delta$ (focal length $f' = +0.50\ \mathrm{m}$) is required.
+\item The patient suffers from \cle{presbyopia}: the punctum proximum has receded from the normal $25\ \mathrm{cm}$ to $50\ \mathrm{cm}$ while distant vision remains normal (PR at infinity). Its usual cause is the age-related hardening (loss of elasticity) of the crystalline lens and weakening of the ciliary muscles, which reduces the amplitude of accommodation.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Ultrasound echo-ranging]
+\begin{enumerate}
+\item The measured time $t = 1.3\times 10^{-4}\ \mathrm{s}$ is the \emph{round-trip} time: the pulse travels down to the organ and the echo travels back. The total path length is $2d$, hence the factor of 2:
+\[ d = \frac{c\,t}{2} = \frac{1540 \times 1.3\times 10^{-4}}{2} = \frac{0.2002}{2} \approx 0.10\ \mathrm{m} = 10\ \mathrm{cm}. \]
+The reflecting organ lies about $10\ \mathrm{cm}$ below the skin.
+\item Without gel, a thin film of air would remain between the probe and the skin. Air and soft tissue have very different acoustic impedances, so almost all the ultrasound energy would be reflected at the skin surface and none would enter the body. The gel displaces the air and matches the impedances, allowing efficient transmission of the pulse into the patient and of the echo back to the probe.
+\item Audible sound has wavelengths of centimetres to metres and would diffract around small structures, giving no useful resolution. Ultrasound of several $\mathrm{MHz}$ has a wavelength below a millimetre in tissue ($\lambda = c/f \approx 1540/3\times10^6 \approx 0.5\ \mathrm{mm}$), so it can be directed in a narrow beam and can resolve small organs; it is also inaudible and, at diagnostic levels, harmless.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Guiding light in an optical fibre]
+\begin{enumerate}
+\item See the ray diagram: light enters the core and strikes the core--cladding interface at an angle of incidence greater than the critical angle; it is totally internally reflected and zigzags along the core, remaining trapped inside the fibre until it emerges at the far end.
+\item The two conditions for total internal reflection are:
+\begin{itemize}
+\item light must travel from a medium of \textbf{higher} refractive index to one of \textbf{lower} refractive index: $n_1 > n_2$ (here $1.62 > 1.48$);
+\item the angle of incidence at the interface must exceed the critical angle: $\theta_i > \theta_c$.
+\end{itemize}
+\item At the critical angle the refracted ray grazes the interface ($\theta_r = 90\degree$). Snell's law gives
+\[ n_1 \sin\theta_c = n_2 \sin 90\degree \quad\Longrightarrow\quad \sin\theta_c = \frac{n_2}{n_1} = \frac{1.48}{1.62} = 0.914, \]
+\[ \theta_c = \arcsin(0.914) \approx 66\degree. \]
+\item Endoscopy is minimally invasive: only a small natural opening or a tiny incision is needed, so there is less pain, lower risk of infection and a much shorter recovery time than with open surgery.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — The eye and its correction (GCE style)]
+\begin{enumerate}
+\item \textbf{Description of the eye (4 marks).} Labelled diagram (see figure) with the functions:
+\begin{itemize}
+\item \textbf{Cornea}: transparent front surface; provides most of the eye's refractive power (fixed converging element).
+\item \textbf{Iris and pupil}: coloured diaphragm whose aperture (the pupil) adjusts the amount of light entering.
+\item \textbf{Crystalline lens}: flexible converging lens whose vergence is varied by the ciliary muscles (accommodation) to focus objects at different distances.
+\item \textbf{Aqueous and vitreous humours}: transparent media that maintain the shape of the eyeball and transmit light.
+\item \textbf{Retina}: light-sensitive screen containing rods and cones, on which a real, inverted, diminished image is formed.
+\item \textbf{Optic nerve}: carries the nerve impulses to the brain.
+\end{itemize}
+\emph{Mark scheme: 1 mark for a clear labelled diagram; 1 mark each for cornea, lens/accommodation, retina; functions required, not just names.}
+\item \textbf{Defect and correction.}
+\begin{enumerate}
+\item The PR is finite ($1.0\ \mathrm{m}$): the eye is \cle{myopic}. Amplitude of accommodation:
+\[ A = \frac{1}{0.20} - \frac{1}{1.0} = 5.0 - 1.0 = 4.0\ \delta. \]
+\emph{(1 mark for naming myopia, 2 marks for the calculation with unit.)}
+\item The lens must image an object at infinity at the PR ($1.0\ \mathrm{m}$ in front of the eye, virtual image): $f' = -1.0\ \mathrm{m}$, so
+\[ V = \frac{1}{f'} = -1.0\ \delta. \]
+A \textbf{diverging} lens (negative vergence). \emph{(1 mark method, 1 mark value with sign, 1 mark type of lens.)}
+\item With the lens worn, the eye can accommodate down to its true PP of $20\ \mathrm{cm}$. The lens must form a virtual image at $s' = -0.20\ \mathrm{m}$ of an object placed at the new near point $s$:
+\[ \frac{1}{s} = \frac{1}{s'} - V = \frac{1}{-0.20} - (-1.0) = -5.0 + 1.0 = -4.0\ \mathrm{m^{-1}}, \]
+\[ s = -0.25\ \mathrm{m}. \]
+The new near point is at $25\ \mathrm{cm}$ — the normal reading distance. \emph{(1 mark method, 1 mark correct sign convention, 1 mark result.)}
+\end{enumerate}
+\item Beyond about 45 years the crystalline lens loses elasticity and the amplitude of accommodation falls (presbyopia): the eye can no longer increase its vergence enough for near vision, although its distance correction may still be correct. A single lens cannot then satisfy both needs, so different lenses (or bifocals) are used for reading and for distant vision. \emph{(1 mark cause, 1 mark consequence.)}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — X-rays in medical diagnosis (GCE style)]
+\begin{enumerate}
+\item X-rays are \textbf{electromagnetic waves} of very short wavelength (high frequency, high photon energy). Useful properties: they \textbf{penetrate} soft tissue but are absorbed differently by different materials (bone absorbs much more than flesh), and they \textbf{blacken a photographic film / trigger a detector}, allowing a shadow image to be recorded. (They also ionise matter — the basis of both their usefulness and their danger.) \emph{(1 mark nature, 1 mark each property.)}
+\item The half-value layer $x_{1/2}$ is the thickness of material that reduces the beam intensity to half its initial value: $I = I_0/2$ when $x = x_{1/2}$. Substituting in the absorption law:
+\[ \frac{I_0}{2} = I_0 e^{-\mu x_{1/2}} \;\Longrightarrow\; e^{-\mu x_{1/2}} = \frac{1}{2} \;\Longrightarrow\; -\mu x_{1/2} = \ln\frac{1}{2} = -\ln 2, \]
+\[ \boxed{x_{1/2} = \frac{\ln 2}{\mu}}. \]
+\emph{(1 mark definition, 3 marks for the derivation; this proof is examinable.)}
+\item \begin{enumerate}
+\item $x_{1/2} = \dfrac{\ln 2}{\mu} = \dfrac{0.693}{0.46} \approx 1.5\ \mathrm{cm}$. \emph{(1 mark method, 1 mark value with unit.)}
+\item We require $I/I_0 = 0.10$:
+\[ 0.10 = e^{-\mu x} \;\Longrightarrow\; x = \frac{-\ln 0.10}{\mu} = \frac{\ln 10}{0.46} = \frac{2.303}{0.46} \approx 5.0\ \mathrm{cm}. \]
+\emph{(1 mark setting up the equation, 1 mark use of logarithms, 1 mark result with unit.)}
+\end{enumerate}
+\item Lead has a very high linear attenuation coefficient for X-rays (high atomic number and density), so a thin lead apron absorbs almost all the scattered radiation and shields healthy organs from unnecessary dose. The radiographer receives exposures repeatedly, day after day; standing behind a lead-glass screen (or outside the room) keeps their cumulative dose negligible, since the effects of ionising radiation accumulate over a career. \emph{(1 mark lead as absorber, 1 mark protection of healthy tissue, 1 mark cumulative dose argument.)}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Synthesis essay: ultrasound versus X-ray imaging (GCE style)]
+\textbf{Indicative content and mark scheme.}
+
+\textbf{Introduction.} Medical diagnosis requires images of the inside of the body without surgery. Two complementary techniques are ultrasound scanning and X-ray radiography, based on entirely different physics.
+
+\textbf{1. Physical principles (6 marks).}
+\begin{itemize}
+\item \emph{Ultrasound} (3 marks): mechanical longitudinal pressure waves of frequency above $20\ \mathrm{kHz}$ (typically $2$--$15\ \mathrm{MHz}$). Produced by a \cle{piezoelectric} transducer which vibrates when an alternating voltage is applied; the same crystal detects the returning echoes by converting the pressure variations back into an electrical signal (pulse--echo technique).
+\item \emph{X-rays} (3 marks): electromagnetic radiation of very short wavelength, produced when fast electrons from a heated filament strike a metal target (X-ray tube). They are detected by photographic film, an intensifying screen or a digital detector placed behind the patient.
+\end{itemize}
+
+\textbf{2. Interaction with the body and images (5 marks).}
+\begin{itemize}
+\item Ultrasound is \emph{partially reflected} at each interface between media of different acoustic impedance; the time delay of each echo gives the depth of the interface ($d = ct/2$) and the echo strength its nature. The image is built up line by line as a real-time cross-section (2-D scan).
+\item X-rays are \emph{attenuated} through the body according to $I = I_0 e^{-\mu x}$; bone (high $\mu$) casts a strong shadow, soft tissue a weak one. The image is a single shadow projection of the absorption pattern.
+\end{itemize}
+
+\textbf{3. Risks (4 marks).}
+\begin{itemize}
+\item X-rays are \emph{ionising}: they can damage DNA, induce mutations and cancers; the dose is cumulative, so exposures must be justified and minimised (lead shielding, staff protection).
+\item Ultrasound at diagnostic intensities is \emph{non-ionising} and has no demonstrated harmful effect; only at much higher intensities could heating or cavitation occur.
+\end{itemize}
+
+\textbf{4. Typical uses (3 marks).}
+\begin{itemize}
+\item Ultrasound: monitoring pregnancy (foetal growth, heartbeat), imaging soft organs (liver, heart — echocardiography), guiding needles.
+\item X-rays: detecting fractures, chest radiography (pneumonia, tuberculosis), dental imaging, mammography.
+\end{itemize}
+
+\textbf{5. Conclusion (2 marks).} Ultrasound is preferred for monitoring pregnancy because it involves no ionising radiation and therefore presents no known risk to the developing foetus, whose rapidly dividing cells are particularly radiosensitive; moreover it gives real-time moving images of the foetus, which X-rays cannot.
+
+\emph{Examiner expectations: a structured essay with an introduction and conclusion; correct physical vocabulary (piezoelectric, acoustic impedance, attenuation, ionising); quantitative details (frequencies, $d = ct/2$, $I = I_0 e^{-\mu x}$) rewarded; balanced comparison rather than a one-sided description.}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept}, concept color=popblue, text=white,
+  level 1/.append style={level distance=4.6cm, sibling angle=60},
+  level 2/.append style={level distance=2.6cm, sibling angle=45},
+  every node/.append style={scale=0.8}]
+\node[concept color=popdark, font=\bfseries] {Medical Physics}
+  child[concept color=popblue] { node {Vision \& eye defects}
+    child { node[concept color=popblueL, text=popink] {accommodation, $P=1/f$} }
+    child { node[concept color=popblueL, text=popink] {myopia, hypermetropia} }
+  }
+  child[concept color=popgreen] { node {Hearing \& defects}
+    child { node[concept color=popgreenL, text=popink] {decibel, $L=10\log(I/I_0)$} }
+    child { node[concept color=popgreenL, text=popink] {audiogram, presbycusis} }
+  }
+  child[concept color=poporange] { node {Heart measurements}
+    child { node[concept color=popgold, text=popink] {ECG signals} }
+    child { node[concept color=popgold, text=popink] {blood pressure} }
+  }
+  child[concept color=poppurple] { node {Non-ionising imaging}
+    child { node[concept color=poppink, text=popink] {ultrasound, $d=ct/2$} }
+    child { node[concept color=poppink, text=popink] {MRI (NMR)} }
+  }
+  child[concept color=popink] { node {Ionising imaging}
+    child { node[concept color=popmuted, text=popink] {X-rays, radiography} }
+    child { node[concept color=popmuted, text=popink] {CT scan, protection} }
+  }
+  child[concept color=popgreen!70!black] { node {Optical fibres}
+    child { node[concept color=popgreenL, text=popink] {total internal reflection} }
+    child { node[concept color=popgreenL, text=popink] {endoscopy} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter \emph{Medical Physics}: the eye and ear as physical sensors, cardiac measurements, and the imaging techniques used in medical diagnosis.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item \cle{Accommodation}: adjustment of the eye lens focal length by the ciliary muscles so that the image forms on the retina.
+\item \cle{Near point} (punctum proximum, $\approx \SI{25}{cm}$ for a normal eye) and \cle{far point} (punctum remotum, at infinity for a normal eye).
+\item \cle{Myopia} (short-sightedness): image of a distant object forms in front of the retina; corrected by a \emph{diverging} lens. \cle{Hypermetropia}: image forms behind the retina; corrected by a \emph{converging} lens. \cle{Presbyopia}: loss of accommodation with age. \cle{Astigmatism}: non-spherical cornea, corrected by cylindrical lenses.
+\item \cle{Sound intensity level}: $L = 10\log_{10}(I/I_0)$ in decibels (dB), with $I_0 = \SI{1.0e-12}{W.m^{-2}}$ (threshold of hearing). Audible range: about $\SI{20}{Hz}$ to $\SI{20}{kHz}$.
+\item \cle{Presbycusis}: age-related hearing loss (high frequencies first); \cle{conductive} deafness (outer/middle ear) vs \cle{sensorineural} deafness (cochlea/nerve).
+\item \cle{ECG} (electrocardiogram): recording of the heart's electrical activity (P, QRS, T waves). \cle{Blood pressure}: systolic/diastolic, measured in mmHg with a sphygmomanometer.
+\item \cle{Ultrasound imaging}: echoes of high-frequency sound ($>\SI{20}{kHz}$, typically $\SI{2}{MHz}$--$\SI{15}{MHz}$) reflected at tissue interfaces. \cle{MRI}: nuclear magnetic resonance of hydrogen nuclei in a strong magnetic field.
+\item \cle{Endoscopy}: illumination and image transport through optical fibres by \cle{total internal reflection}.
+\end{itemize}
+
+\textbf{Laws and formulas to know}
+\begin{itemize}
+\item Thin-lens relation applied to the eye and corrective lenses: $\dfrac{1}{f} = \dfrac{1}{v} - \dfrac{1}{u}$ (real-is-positive convention) or $\dfrac{1}{f}=\dfrac{1}{v}+\dfrac{1}{u}$ with the Cartesian convention; power $P = 1/f$ in dioptres ($f$ in metres).
+\item Vergence correction: for a myope, the corrective lens forms at the far point a virtual image of an object at infinity, so $f = -d_{\text{far point}}$ (diverging lens).
+\item Intensity level: $L = 10\log_{10}(I/I_0)$; doubling the intensity adds $\approx \SI{3}{dB}$; $I \propto 1/r^2$ for a point source.
+\item Echo ranging (ultrasound, sonar principle): $d = \dfrac{c\,t}{2}$ where $t$ is the echo round-trip time and $c \approx \SI{1540}{m.s^{-1}}$ in soft tissue.
+\item Acoustic impedance $Z = \rho c$; reflection coefficient at an interface: $R = \left(\dfrac{Z_2 - Z_1}{Z_2 + Z_1}\right)^2$.
+\item X-ray attenuation: $I = I_0 e^{-\mu x}$ ($\mu$ = linear attenuation coefficient); half-value thickness $x_{1/2} = \ln 2 / \mu$.
+\item Total internal reflection in a fibre: $\sin\theta_c = n_2/n_1$ with $n_1 > n_2$ (core more refractive than cladding).
+\end{itemize}
+
+\textbf{Methods}
+\begin{itemize}
+\item \cle{Correcting an eye defect}: locate the defective far/near point, choose the lens that places the image of the desired object at that point, then compute $f$ and $P$.
+\item \cle{Ultrasound depth}: measure the time delay between emitted pulse and echo, halve the path, use $d = ct/2$.
+\item \cle{Radiation safety}: reduce dose by limiting exposure time, increasing distance, and shielding (lead aprons).
+\end{itemize}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Confusing myopia (diverging correction) with hypermetropia (converging correction).
+\item Forgetting the factor $1/2$ in $d = ct/2$ for echo measurements.
+\item Using $f$ in centimetres when computing power in dioptres --- convert to metres first.
+\item Believing ultrasound or MRI use ionising radiation --- they do \emph{not}; only X-rays, CT and nuclear medicine do.
+\item Adding decibels as ordinary numbers: two sources of $\SI{60}{dB}$ each give $\SI{63}{dB}$, not $\SI{120}{dB}$.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Always state the sign convention used in lens calculations and justify the sign of $f$.
+\item Quote units with every result: dioptres (m$^{-1}$), dB (dimensionless), mmHg for pressure.
+\item For imaging questions, compare techniques by: physical principle, type of radiation, risks, typical use (e.g.\ ultrasound for pregnancy monitoring, X-rays for bones).
+\item Draw a quick ray diagram for eye defects: it earns method marks even if the calculation slips.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
