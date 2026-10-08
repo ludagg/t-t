@@ -1,0 +1,2234 @@
+% Classification of computer network — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT03-classification-of-computer-network.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{3}
+\newcommand{\DOCTITRE}{Classification of computer network}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Classification of computer network}{ICT}{Upper Sixth}{Upper Sixth — ICT}{3}{3 periods}{This chapter explores the classification of computer networks by geographic coverage, the criteria for selecting an appropriate network architecture for an organization, and culminates in an integration activity where learners design a network solution for a realistic Cameroonian scenario.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item Identify and describe the main types of networks (PAN, LAN, CAN, MAN, WAN, VPN) according to their coverage area.
+\item Compare the characteristics, typical technologies, and use‑cases of each network type.
+\item Explain the role of the Internet as a global WAN and its relationship with private networks.
+\item Analyse organisational requirements (size, budget, security, scalability, mobility) to choose the most suitable network type.
+\item Apply a structured decision‑making method to recommend a network architecture for a given case study.
+\item Design a simple network diagram that integrates multiple network types (e.g., LANs linked by a MAN/WAN).
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Personal, Local and Campus Area Networks
+\item Metropolitan, Wide Area Networks and the Internet
+\item Choosing the Right Network for an Organisation
+\item Integration Activity – Network Design Project
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item Identify and describe the main types of networks (PAN, LAN, CAN, MAN, WAN, VPN) according to their coverage area.
+\item Compare the characteristics, typical technologies, and use‑cases of each network type.
+\item Explain the role of the Internet as a global WAN and its relationship with private networks.
+\item Analyse organisational requirements (size, budget, security, scalability, mobility) to choose the most suitable network type.
+\item Apply a structured decision‑making method to recommend a network architecture for a given case study.
+\item Design a simple network diagram that integrates multiple network types (e.g., LANs linked by a MAN/WAN).
+\item Evaluate the advantages and limitations of virtual private networks for remote access.
+\item Communicate network design choices clearly using appropriate terminology and diagrams.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Basic understanding of data communication concepts (sender, receiver, medium, protocol) from Lower Sixth ICT.
+\item Familiarity with common network devices (switch, router, access point) and their functions.
+\item Knowledge of IP addressing fundamentals (IPv4/IPv6, subnet mask, private vs public addresses).
+\item Awareness of common transmission media (copper, fiber, wireless) and their bandwidth characteristics.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Personal, Local and Campus Area Networks}
+
+In Yaoundé, a small startup shares files between two laptops using a USB stick, while a multinational bank in Douala connects its branches across the country through a dedicated fibre link. Meanwhile, a university student in Buea accesses the campus library database from a café via Wi‑Fi, and a government agency monitors traffic cameras nationwide over a secure VPN. These everyday scenes illustrate how networks of vastly different sizes and purposes coexist in Cameroon. In this section we classify networks by their geographic coverage, focusing on the three smallest categories: Personal Area Networks (PAN), Local Area Networks (LAN) and Campus Area Networks (CAN). We will see how each type is built, which technologies dominate, and how to choose the right one for a given situation.
+
+\courssub{Personal Area Network (PAN)}
+
+A \cle{Personal Area Network (PAN)} is the smallest network you will encounter. It centres on a single person and typically spans less than ten metres. Think of the Bluetooth headset paired with your smartphone, the smartwatch that receives notifications, or the NFC tag you tap to pay for a bus ticket in Douala. All these devices communicate directly with each other or through a master device (usually the phone) without any fixed infrastructure.
+
+\begin{definition}[Personal Area Network (PAN)]
+A PAN is a network organised around an individual user, covering a radius of roughly \SI{10}{m} or less. It uses short‑range wireless technologies such as Bluetooth (IEEE 802.15.1), Zigbee (IEEE 802.15.4) or Near Field Communication (NFC). Wired variants (USB, FireWire) exist but are less common in modern mobile contexts. No dedicated cabling or central switch is required.
+\end{definition}
+
+\begin{propriete}[Typical PAN Technologies]
+\begin{itemize}
+\item \textbf{Bluetooth} – up to \SI{100}{m} (Class 1), commonly \SI{10}{m} (Class 2); supports audio streaming, file transfer, IoT sensors.
+\item \textbf{Zigbee} – low‑power, mesh‑capable, range \SI{10}{\m}--\SI{100}{\m}; used in home automation (smart bulbs, sensors).
+\item \textbf{NFC} – extremely short range (\SI{<}{4}{cm}); contactless payments, pairing, access control.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Everyday PAN in Cameroon]
+A student in Yaoundé uses a smartphone (master) connected via Bluetooth to a wireless headset for online lectures, while a smartwatch receives calendar alerts. When she buys a snack at the campus canteen, she taps her phone on an NFC terminal. All three links form a single PAN centred on her phone.
+\end{exemplebox}
+
+\courssub{Local Area Network (LAN)}
+
+When several computers in a single building need to share resources — printers, files, an Internet connection — a \cle{Local Area Network (LAN)} is the natural choice. A LAN covers a limited geographic area: one room, one floor, or a group of adjacent buildings owned by the same organisation. Unlike a PAN, a LAN relies on a fixed infrastructure: structured cabling (twisted‑pair copper or fibre) and/or wireless access points, all converging on switches and a router.
+
+\begin{definition}[Local Area Network (LAN)]
+A LAN is a high‑speed data network that interconnects devices within a single building or a cluster of nearby buildings, typically owned and managed by a single organisation. It provides full‑time connectivity with low latency and high bandwidth (commonly \SI{100}{Mb/s} to \SI{10}{Gb/s} on wired links, up to \SI{9.6}{Gb/s} on Wi‑Fi 6/6E).
+\end{definition}
+
+\begin{propriete}[LAN Technologies and Access Methods]
+\begin{itemize}
+\item \textbf{Ethernet (IEEE 802.3)} – wired LAN standard. In half‑duplex mode it uses CSMA/CD (Carrier Sense Multiple Access with Collision Detection); modern full‑duplex switched Ethernet eliminates collisions entirely.
+\item \textbf{Wi‑Fi (IEEE 802.11)} – wireless LAN family (802.11a/b/g/n/ac/ax/be). Uses CSMA/CA (Collision Avoidance) because the medium is shared and collisions cannot be detected reliably. A WLAN is a LAN that uses wireless links for the last hop.
+\item \textbf{Topology} – virtually all modern LANs use a \emph{star} topology physically (each device to a switch) while the logical topology is a broadcast domain (single subnet unless VLANs are used).
+\end{itemize}
+\end{propriete}
+
+\begin{aretenir}[Key LAN Characteristics]
+\begin{itemize}
+\item Ownership: private (school, company, home).
+\item Geographic scope: ≤ \SI{1}{km} (usually a few hundred metres).
+\item Speed: \SI{100}{Mb/s} – \SI{10}{Gb/s} (wired); \SI{54}{Mb/s} – \SI{9.6}{Gb/s} (Wi‑Fi).
+\item Management: centralised via switches, VLANs, DHCP, DNS.
+\end{itemize}
+\end{aretenir}
+
+\begin{exemplebox}[School Computer Lab LAN]
+A secondary school in Bafoussam equips its computer lab with 30 PCs. Each PC has a NIC (Network Interface Card) connected by Cat 6 cable to a 48‑port Gigabit switch. The switch uplinks to a router that provides Internet access and runs a DHCP server. All PCs are in the same VLAN (192.168.10.0/24). Students can print to a network printer and access a local Moodle server.
+\end{exemplebox}
+
+\courssub{Campus Area Network (CAN)}
+
+A university, a large hospital, or a corporate headquarters often occupies several buildings spread over a few kilometres. Connecting each building’s LAN with a high‑speed backbone creates a \cle{Campus Area Network (CAN)}. A CAN is essentially an interconnection of multiple LANs within a limited geographic area, usually owned by a single entity.
+
+\begin{definition}[Campus Area Network (CAN)]
+A CAN links two or more LANs located in different buildings of a campus (university, hospital, industrial park, government complex) using a high‑capacity backbone (often fibre optic). The total span is typically a few kilometres (up to \SI{5}{km}). The organisation owns and manages the entire infrastructure.
+\end{definition}
+
+\begin{attention}[CAN vs. MAN – Do Not Confuse!]
+A \cle{Metropolitan Area Network (MAN)} covers a whole city (tens of kilometres) and often relies on telecom operator infrastructure (leased lines, MPLS, metro‑Ethernet). A CAN is privately owned, shorter, and uses the organisation’s own fibre or wireless bridges. In exams, remember: \textbf{CAN = private campus; MAN = city‑wide, often carrier‑provided}.
+\end{attention}
+
+\begin{exemplebox}[University of Buea CAN]
+The University of Buea runs a CAN linking the Faculty of Engineering, the Library, the Administration block and the Student Centre. Each building has its own LAN (switches, Wi‑Fi APs). A 10 Gb/s fibre ring connects the building‑level core switches to a central core router. Students authenticate once (eduroam) and roam seamlessly across the campus.
+\end{exemplebox}
+
+\courssub{Comparison of Network Types by Coverage}
+
+To consolidate the classification required by the syllabus, the table below summarises the five main categories. MAN and WAN are introduced here for completeness; they are studied in detail in the next section.
+
+\begin{propriete}[Network Classification by Geographic Scope]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Type} & \textbf{Typical Scope} & \textbf{Ownership} & \textbf{Typical Technologies} \\ \hline
+PAN & < \SI{10}{m} (personal) & Individual & Bluetooth, Zigbee, NFC, USB \\ \hline
+LAN & ≤ \SI{1}{km} (building) & Organisation & Ethernet, Wi‑Fi (802.11) \\ \hline
+CAN & ≤ \SI{5}{km} (campus) & Organisation & Fibre backbone, wireless bridges \\ \hline
+MAN & \SI{5}{km}–\SI{50}{km} (city) & Telecom carrier / consortium & Metro‑Ethernet, MPLS, leased lines \\ \hline
+WAN & > \SI{50}{km} (national/global) & Multiple carriers / Internet & IP/MPLS, submarine cables, satellite \\ \hline
+\end{tabularx}
+\end{center}
+\end{propriete}
+
+\courssub{Common Network Devices}
+
+Regardless of the network size, a few devices appear repeatedly:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL}
+\textbf{Device} & \textbf{Role in PAN / LAN / CAN} \\ \hline
+NIC (Network Interface Card) & Provides the physical interface (RJ‑45, Wi‑Fi radio, Bluetooth radio) on each end device. \\ \hline
+Switch (Layer 2) & Forwards frames based on MAC addresses; creates collision‑free domains in LAN/CAN. \\ \hline
+Wireless Access Point (AP) & Bridges wireless clients to the wired LAN; implements IEEE 802.11. \\ \hline
+Router (Layer 3) & Interconnects different IP subnets (e.g., building LANs in a CAN) and provides gateway to WAN/Internet. \\ \hline
+Bluetooth / Zigbee Adapter & USB or built‑in radio for PAN peripherals. \\ \hline
+\end{tabularx}
+\end{center}
+
+\courssub{Typical Applications in Cameroon}
+
+\begin{itemize}
+\item \textbf{Home office PAN} – freelancer in Douala pairs laptop, mouse, keyboard and phone via Bluetooth; uses NFC for mobile money (MTN MoMo, Orange Money) top‑up.
+\item \textbf{School computer lab LAN} – public and private secondary schools (e.g., Lycée Bilingue de Yaoundé) deploy wired LANs for ICT practicals, e‑learning platforms, and administrative management.
+\item \textbf{University campus CAN} – University of Yaoundé I, University of Buea, Catholic University of Central Africa interconnect faculty LANs for shared library resources, student information systems, and campus‑wide Wi‑Fi (eduroam).
+\item \textbf{Health‑center CAN} – regional hospitals link laboratory, pharmacy, wards and administration LANs over fibre to enable real‑time patient records (e‑Health Cameroon pilot projects).
+\end{itemize}
+
+\courssub{Method: Setting Up a Simple Wired LAN}
+
+The following step‑by‑step procedure is examinable in practical papers (GCE ICT Paper 2/3). It assumes a small office with 10 PCs, one printer and an Internet router.
+
+\begin{methode}[Deploy a Basic Wired LAN]
+\begin{enumerate}
+\item \textbf{Plan the IP addressing scheme.} Choose a private IPv4 network, e.g., \texttt{192.168.20.0/24}. Reserve \texttt{.1} for the router (gateway), \texttt{.2} for the printer, \texttt{.10–.20} for DHCP pool, \texttt{.200–.210} for static servers.
+\item \textbf{Run structured cabling.} Use Cat 6 UTP, terminate with T568B on both ends. Keep cable runs ≤ \SI{90}{m} (horizontal) + \SI{10}{m} (patch cords). Label each outlet (A‑01, A‑02 …).
+\item \textbf{Install a managed switch.} Mount a 24‑port Gigabit switch in a locked cabinet. Connect all wall outlets to switch ports. Configure ports as \emph{access} ports in VLAN 10 (data) or VLAN 20 (voice) if IP phones are used.
+\item \textbf{Configure the router.} Assign the LAN interface \texttt{192.168.20.1/24}. Enable DHCP server with the pool defined in step 1. Set DNS to \texttt{8.8.8.8} and \texttt{1.1.1.1} (or internal DNS).
+\item \textbf{Connect the printer.} Give it a static IP \texttt{192.168.20.2}. Create a DNS entry \texttt{printer.lan}.
+\item \textbf{Test connectivity.} From each PC: \texttt{ping 192.168.20.1}, \texttt{ping 192.168.20.2}, browse \texttt{http://www.camtelecom.cm}. Verify DHCP lease with \texttt{ipconfig /all} (Windows) or \texttt{ip a} (Linux).
+\item \textbf{Document.} Produce a network diagram (Visio/draw.io), IP allocation table, VLAN map, and switch port‑to‑outlet mapping. Hand over to IT support.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Worked Exercise: Choosing the Right Network Type]
+\textbf{Statement:} A small NGO in Bamenda has three offices in the same building (ground floor, 1st floor, 2nd floor). Each office has 5 laptops. They need to share a printer and a local database server. The NGO also wants the director’s smartphone to sync contacts with his laptop via Bluetooth. Classify each required network (PAN, LAN, CAN, MAN, WAN) and justify.
+
+\textbf{Solution:}
+\begin{itemize}
+\item \textbf{PAN} – Director’s smartphone ↔ laptop (Bluetooth, < \SI{10}{m}). No infrastructure needed.
+\item \textbf{LAN} – The three offices are in a single building owned by the NGO. A single LAN (star topology, one switch per floor uplinked to a core switch) covers all laptops, printer and server. Geographic scope < \SI{100}{m}, private ownership → LAN.
+\item \textbf{CAN, MAN, WAN} – Not required because there is only one building and no inter‑city links.
+\end{itemize}
+\textbf{Answer:} PAN for the director’s personal devices; LAN for the office network. No CAN, MAN or WAN needed.
+\end{exoresolu}
+
+\courssub{Illustration: PAN, LAN and CAN Overview}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  node distance=1.8cm,
+  device/.style={draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm, align=center, font=\small},
+  link/.style={-latex, thick, popdark},
+  backbone/.style={-latex, very thick, poporange},
+]
+% PAN cluster
+\node[device] (phone) at (0,0) {Smartphone};
+\node[device] (headset) at (-2.5,-1.5) {Headset};
+\node[device] (watch) at (2.5,-1.5) {Smartwatch};
+\node[device] (nfc) at (0,-2.5) {NFC Terminal};
+\draw[link] (phone) -- (headset) node[midway, left, font=\tiny] {Bluetooth};
+\draw[link] (phone) -- (watch) node[midway, right, font=\tiny] {Bluetooth};
+\draw[link] (phone) -- (nfc) node[midway, left, font=\tiny] {NFC};
+
+% LAN cluster
+\node[device] (pc1) at (7,1.5) {PC 1};
+\node[device] (pc2) at (7,0) {PC 2};
+\node[device] (pc3) at (7,-1.5) {PC 3};
+\node[device] (switch) at (9.5,0) {Switch};
+\node[device] (router) at (12,0) {Router};
+\foreach \n in {pc1,pc2,pc3} \draw[link] (\n) -- (switch);
+\draw[link] (switch) -- (router) node[midway, above, font=\tiny] {Uplink};
+
+% CAN cluster
+\node[device] (core) at (16,2) {Core Router};
+\node[device] (lanA) at (14,-1) {Building A LAN};
+\node[device] (lanB) at (16,-1) {Building B LAN};
+\node[device] (lanC) at (18,-1) {Building C LAN};
+\draw[backbone] (core) -- (lanA);
+\draw[backbone] (core) -- (lanB);
+\draw[backbone] (core) -- (lanC);
+
+% Labels
+\node[font=\bfseries\large, popdark] at (0,-4) {PAN (<10 m)};
+\node[font=\bfseries\large, popdark] at (9.5,-4) {LAN (≤1 km)};
+\node[font=\bfseries\large, popdark] at (16,-4) {CAN (few km)};
+\end{tikzpicture}
+\legende{Typical scope and devices of a PAN (Bluetooth/NFC), a LAN (PCs–Switch–Router) and a CAN (multiple LANs on a fibre backbone).}
+\end{popfigure}
+
+\courssub{Summary of Key Points}
+
+\begin{aretenir}[What You Must Remember for the Exam]
+\begin{itemize}
+\item \textbf{PAN}: personal, < \SI{10}{m}, Bluetooth/Zigbee/NFC, no fixed infrastructure.
+\item \textbf{LAN}: single building or adjacent buildings, private ownership, Ethernet (CSMA/CD or full‑duplex) and Wi‑Fi (CSMA/CA), star topology, speeds ≥ \SI{100}{Mb/s}.
+\item \textbf{CAN}: interconnection of several LANs on a campus (≤ \SI{5}{km}), private fibre backbone, same owner.
+\item \textbf{MAN/WAN}: city‑wide and beyond, usually carrier‑operated (see next section).
+\item \textbf{Devices}: NIC, switch, wireless AP, router, Bluetooth/Zigbee adapter.
+\item \textbf{Typical Cameroonian contexts}: home‑office PAN, school lab LAN, university CAN.
+\item \textbf{Method}: plan IP, cable to Cat 6 standard, configure switch VLANs, router DHCP/gateway, test, document.
+\item \textbf{Trap}: never label a city‑wide network as a CAN; that is a MAN (often carrier‑operated).
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Did You Know?]
+Cameroon's \emph{Agence Nationale des Technologies de l'Information et de la Communication (ANTIC)} promotes the deployment of campus networks in public universities under the \emph{Projet d'Appui à la Gouvernance Numerique}. Many campuses now run 10 Gb/s fibre rings, enabling services like \emph{e-Learning} platforms, \emph{eduroam} roaming and centralised \emph{Library Management Systems} — all built on the CAN principles you have just studied.
+\end{savaistu}
+
+\coursec{Metropolitan, Wide Area Networks and the Internet}
+
+In the previous section we studied networks that live \emph{inside} a limited space: a PAN around one person, a LAN inside one building, a CAN across a campus. But what happens when the Ministry of Secondary Education in Yaoundé must exchange files with its regional delegation in Douala, or when a bank with branches in ten cities must keep all its account databases synchronised? No single LAN can stretch that far. We must climb to the next levels of the classification: the \cle{MAN}, the \cle{WAN}, and ultimately the \cle{Internet}. This section studies these large-scale networks and the technologies — including VPNs — that make them safe to use.
+
+\courssub{Metropolitan Area Networks (MAN)}
+
+\textbf{Intuition.} Imagine a water distribution network: inside your house you have your own pipes (the LAN), but to bring water from the treatment plant to every house in the city, the city needs a much bigger network of mains. A MAN plays exactly this role for data at the scale of a town or city.
+
+\begin{definition}[Metropolitan Area Network (MAN)]
+A \cle{Metropolitan Area Network} is a network that spans a city or a metropolitan area, typically from about $5$ to $50\ \mathrm{km}$, interconnecting several LANs and CANs located in different sites of the same town. A MAN is usually owned and operated by a \textbf{telecommunications provider} (or a consortium), which sells connectivity to organisations rather than each organisation laying its own cables across public roads.
+\end{definition}
+
+\textbf{Typical technologies.}
+\begin{itemize}
+\item \cle{Metro Ethernet}: the provider extends Ethernet services across the city over its own fibre infrastructure, so that two distant sites appear to be plugged into the same switch.
+\item \cle{Fibre optic ring}: fibre cables are laid in a ring around the city (SDH/SONET or modern DWDM). If the ring is cut at one point, traffic simply travels the other way round — this gives \textbf{resilience}.
+\item \cle{WiMAX} (IEEE 802.16): a wireless metropolitan technology able to cover a whole city from a few base stations; historically used where digging trenches for fibre was too expensive.
+\end{itemize}
+
+\textbf{Ownership models.} Unlike a LAN (owned by the organisation itself), a MAN is usually:
+\begin{itemize}
+\item owned by a \textbf{single telecom operator} (e.g.\ CAMTEL's fibre backbone in Yaoundé and Douala);
+\item owned by a \textbf{municipality or public authority} and rented to operators;
+\item owned by a \textbf{consortium} of large users (universities, banks) sharing the cost.
+\end{itemize}
+
+\begin{savaistu}[Cameroon: CAMTEL's fibre backbone]
+CAMTEL, the historical operator of Cameroon, runs a national fibre-optic backbone linking Yaoundé, Douala, Bafoussam, Bamenda, Garoua and other cities, and operates the landing points of submarine cables (such as SAIL, linking Cameroon to Brazil) at the coast. Within each city, this infrastructure functions as a MAN over which internet service providers, banks and ministries interconnect their sites. The landing of submarine cables at Kribi and Douala is what physically connects Cameroon to the rest of the world.
+\end{savaistu}
+
+\courssub{Wide Area Networks (WAN)}
+
+\textbf{Intuition.} A MAN covers one city. To connect the Yaoundé MAN to the Douala MAN — or a company's head office in Cameroon to a partner in Paris — we need links that cross regions, countries and oceans. That is the job of a WAN.
+
+\begin{definition}[Wide Area Network (WAN)]
+A \cle{Wide Area Network} is a network that covers large geographic distances — regions, countries or continents — and interconnects multiple LANs, CANs and MANs. Because no single organisation can lay cables across a whole country, a WAN is built from \textbf{transmission services leased from telecom operators} (leased lines, MPLS, satellite, mobile backhaul), and it relies on \textbf{routers} and \textbf{routing protocols} to move data between distant sites.
+\end{definition}
+
+\textbf{Typical WAN technologies.}
+\begin{itemize}
+\item \cle{Leased line}: a dedicated point-to-point circuit rented from an operator (e.g.\ an E1 or a fibre link). Guaranteed bandwidth, but expensive — the price grows with distance.
+\item \cle{MPLS} (Multi-Protocol Label Switching): the operator's backbone forwards packets using short labels instead of full routing lookups, allowing guaranteed quality of service and private ``virtual circuits'' between a company's sites.
+\item \cle{Satellite} (VSAT): covers rural areas with no terrestrial infrastructure (useful in the Far North or East regions), but with high latency because the signal travels to a geostationary satellite about $35\,786\ \mathrm{km}$ above the Earth and back.
+\item \cle{4G/5G backhaul}: mobile operators such as MTN and Orange carry data from their base stations to their core network; organisations increasingly use 4G/5G routers as WAN access links, especially as backup.
+\end{itemize}
+
+\begin{propriete}[Characteristics of WAN links]
+Compared with LAN links, WAN links typically have:
+\begin{enumerate}
+\item \textbf{higher latency} (a few ms inside a LAN; tens of ms across a country; $500$--$700\ \mathrm{ms}$ round trip via geostationary satellite);
+\item \textbf{lower bandwidth per unit cost} (a gigabit LAN port is cheap; a gigabit inter-city circuit is very expensive);
+\item the need for \textbf{routing protocols} (OSPF inside an organisation, BGP between operators) because data must cross many intermediate networks.
+\end{enumerate}
+These properties are consequences of distance and shared infrastructure; no formal proof is examinable, but you must be able to \emph{justify} them.
+\end{propriete}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{LAN} & \textbf{MAN} & \textbf{WAN} \\
+\hline
+Coverage & One building ($\leq 1\ \mathrm{km}$) & One city ($5$--$50\ \mathrm{km}$) & Country / continent \\
+\hline
+Typical owner & The organisation itself & Telecom operator & Operators (leased) \\
+\hline
+Latency & $< 1\ \mathrm{ms}$ & $1$--$10\ \mathrm{ms}$ & $10$--$700\ \mathrm{ms}$ \\
+\hline
+Cost per Mbit/s & Very low & Medium & High \\
+\hline
+Key equipment & Switches & Metro switches, fibre rings & Routers \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{The Internet: a Global Public WAN}
+
+The largest WAN of all is the \cle{Internet}: a \emph{network of networks} interconnecting millions of LANs, MANs and WANs worldwide using the common TCP/IP protocol suite.
+
+\textbf{ISP hierarchy.} The Internet is organised in tiers:
+\begin{itemize}
+\item \textbf{Tier 1} operators own global backbones and exchange traffic freely between themselves (\emph{peering}).
+\item \textbf{Tier 2} operators (national or regional, e.g.\ CAMTEL, MTN Cameroon, Orange Cameroon) buy transit from Tier 1 and sell access to customers.
+\item \textbf{Tier 3} / access ISPs connect end users (homes, cybercafés, schools).
+\end{itemize}
+Two ISPs that exchange traffic without paying each other are said to \emph{peer}; an ISP that pays a larger one to reach the whole Internet buys \emph{transit}.
+
+\textbf{Routing with BGP.} Each ISP is an \cle{Autonomous System} (AS) identified by a number. The protocol \cle{BGP} (Border Gateway Protocol) lets autonomous systems announce to each other which blocks of \textbf{public IP addresses} they can reach. When you load a website hosted abroad, BGP has already computed a path for your packets across several autonomous systems. Public IP addresses are allocated globally by IANA and regional registries (AFRINIC for Africa) so that every public address is unique worldwide.
+
+\begin{propriete}[Metcalfe's Law]
+The value of a telecommunications network is proportional to the \emph{square} of the number $n$ of its connected users:
+\[ V \propto n^2 \]
+\textbf{Justification (instructive, not examinable as a proof):} with $n$ users, the number of possible one-to-one connections is the number of pairs $\binom{n}{2} = \dfrac{n(n-1)}{2} \approx \dfrac{n^2}{2}$, which grows like $n^2$. This explains why the Internet — and services like WhatsApp or mobile money — become dramatically more useful as more people join, and why connecting even a small Cameroonian school to the Internet plugs it into a network of billions of users.
+\end{propriete}
+
+\begin{attention}[The Internet is a PUBLIC network]
+A frequent exam mistake is to treat the Internet as a private WAN. It is \textbf{public}: packets cross routers owned by many different organisations, and anyone able to intercept them can read unencrypted data. Sensitive traffic (banking, ministry files, exam results) must therefore be protected with \textbf{encryption}: TLS for web applications (the padlock, HTTPS) and \textbf{VPNs} for site-to-site or remote communication.
+\end{attention}
+
+\courssub{Virtual Private Networks (VPN)}
+
+\textbf{Intuition.} A company in Yaoundé wants to use the cheap public Internet to reach its Douala branch, but without exposing its data. The solution is to build a \emph{private tunnel through the public network}: packets are encrypted at one end and decrypted at the other, so interceptors see only unreadable ciphertext.
+
+\begin{definition}[Virtual Private Network]
+A \cle{VPN} is a technology that creates a secure, encrypted \emph{tunnel} between two points over a public network (usually the Internet), giving the same confidentiality as a private leased line at a fraction of the cost. Two main types exist:
+\begin{itemize}
+\item \textbf{Site-to-site VPN}: two routers (or firewalls) encrypt all traffic between two whole networks, e.g.\ a head office and a branch. Users do nothing — the tunnel is permanent.
+\item \textbf{Remote-access VPN}: an individual user (a civil servant on mission, a teacher working from home) runs VPN software on a laptop or phone to connect securely to the organisation's network.
+\end{itemize}
+\end{definition}
+
+\textbf{Tunnelling protocols.}
+\begin{itemize}
+\item \cle{IPsec}: the classic standard for site-to-site VPNs; works in two phases — \emph{Phase 1} (IKE) authenticates the two gateways and agrees on keys, \emph{Phase 2} negotiates the encryption parameters (e.g.\ AES) that protect the data itself.
+\item \cle{SSL/TLS}: used by many remote-access VPNs; the same protocol that secures HTTPS, easy to deploy through firewalls.
+\item \cle{WireGuard}: a modern, lightweight protocol with state-of-the-art cryptography and very fast performance.
+\end{itemize}
+
+\begin{methode}[Configuring a site-to-site IPsec VPN between two routers]
+\begin{enumerate}
+\item \textbf{Plan}: note the public IP address of each router (e.g.\ Yaoundé: $196.200.10.1$, Douala: $196.200.20.1$) and the private LAN behind each (e.g.\ $192.168.1.0/24$ and $192.168.2.0/24$).
+\item \textbf{Phase 1 (IKE)}: on both routers, define the peer's public IP, the \textbf{same pre-shared key}, and matching parameters (authentication method, encryption such as AES-256, hash such as SHA-256, Diffie--Hellman group). The two gateways authenticate each other and build a secure control channel.
+\item \textbf{Phase 2 (IPsec)}: define the \emph{traffic selectors} (which subnets may use the tunnel: $192.168.1.0/24 \leftrightarrow 192.168.2.0/24$) and the encryption/integrity algorithms for the data channel.
+\item \textbf{Activate and test}: bring the tunnel up, then ping a machine in the remote LAN and check with the router's status command that Phase 1 and Phase 2 security associations are established.
+\item \textbf{Verify security}: confirm that traffic between the sites is encrypted (a packet capture on the WAN interface must show only ESP ciphertext, never readable data).
+\end{enumerate}
+\end{methode}
+
+\begin{savaistu}[Cameroon: government and enterprise VPNs]
+In Cameroon, ministries and public enterprises interconnect their services through secure links over CAMTEL's infrastructure, and many banks and companies (including MTN and Orange for their internal systems) use site-to-site IPsec VPNs between their Yaoundé headquarters and Douala branches. ANTIC, the National Agency for Information and Communication Technologies, promotes exactly these good practices — encryption of sensitive exchanges — in its national cybersecurity mission.
+\end{savaistu}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.92, font=\small]
+% Internet cloud
+\draw[fill=popblueL, draw=popblue, thick] (11.2,5.6) ellipse (2.1 and 1.0);
+\node[popdark] at (11.2,5.6) {\textbf{Internet cloud}};
+\node[popmuted] at (11.2,5.05) {\footnotesize global public WAN};
+% MAN fiber ring (ellipse through cities)
+\draw[poporange, very thick] (5.4,3.4) ellipse (3.5 and 2.5);
+\node[poporange, align=center] at (5.4,6.35) {\footnotesize CAMTEL fibre backbone (MAN ring)};
+% Cities
+\foreach \x/\y/\name in {5.4/5.9/Bafoussam, 2.2/4.2/Bamenda, 2.0/2.4/Douala, 5.4/0.9/Yaound\'e, 8.6/2.6/B\'ertoua, 8.4/4.6/Garoua}{
+  \fill[popgreen] (\x,\y) circle (0.12);
+  \node[popdark] at (\x,\y) [below=1pt] {\footnotesize \name};
+}
+% WAN link to Internet
+\draw[popblue, very thick, dashed] (8.9,3.9) -- (10.0,5.0);
+\node[popblue, align=center] at (9.9,4.15) {\footnotesize WAN link};
+% VPN tunnel Yaounde-Douala
+\draw[poppurple, very thick, densely dotted] (2.0,2.4) to[bend right=25] (5.4,0.9);
+\node[poppurple, align=center] at (3.2,1.0) {\footnotesize IPsec VPN tunnel};
+\node[poppurple, align=center] at (3.2,0.55) {\footnotesize Yaound\'e $\leftrightarrow$ Douala};
+% Submarine cable hint
+\draw[popgold, thick] (2.0,2.4) -- (0.4,1.4);
+\node[popgold, align=center] at (0.9,1.9) {\footnotesize submarine};
+\node[popgold, align=center] at (0.9,1.45) {\footnotesize cable};
+\end{tikzpicture}
+\legende{Simplified map of Cameroon: a metropolitan fibre ring interconnects the major cities (MAN), a WAN link joins the Internet cloud, and an encrypted IPsec VPN tunnel protects traffic between the Yaoundé and Douala offices.}
+\end{popfigure}
+
+\begin{exoresolu}[Choosing between a leased line and a VPN]
+\textbf{Statement.} A microfinance institution has its head office in Yaoundé (LAN $192.168.10.0/24$) and a branch in Douala (LAN $192.168.20.0/24$). Option A: lease a dedicated $10\ \mathrm{Mbit/s}$ line between the two cities. Option B: buy ordinary Internet access at both sites and build a site-to-site IPsec VPN. Compare the two options and recommend one.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{Option A (leased line):} guaranteed bandwidth and low, stable latency; traffic never crosses the public Internet, so it is naturally private. However, a dedicated inter-city circuit is \emph{very expensive}, and the cost grows with distance.
+\item \textbf{Option B (VPN over Internet):} uses cheap Internet subscriptions; IPsec Phase 1 authenticates the two routers with a pre-shared key and Phase 2 encrypts all traffic between $192.168.10.0/24$ and $192.168.20.0/24$ with AES, so confidentiality is preserved even though packets cross the public network. Latency and bandwidth depend on the Internet and are less predictable.
+\end{itemize}
+\textbf{Recommendation:} for a small institution with a limited budget, Option B offers the best cost/security compromise, provided a strong pre-shared key and AES encryption are used. A bank's core transaction system, which needs guaranteed quality, might justify Option A or an MPLS service.
+\end{exoresolu}
+
+\begin{exercice}[Latency and Metcalfe's Law]
+\begin{enumerate}
+\item A geostationary satellite is about $35\,786\ \mathrm{km}$ above the Earth. A signal travels at about $3\times 10^{8}\ \mathrm{m/s}$. Estimate the minimum round-trip time (Earth $\to$ satellite $\to$ Earth, twice for a request and its reply) and explain why VSAT feels ``slow'' for web browsing.
+\item A messaging service has $n = 1000$ users in a town. Using Metcalfe's Law, by what factor does the value of the network increase if the number of users doubles? Comment for a mobile-money operator in Cameroon.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item One-way path Earth $\to$ satellite: $35\,786\ \mathrm{km} \approx 3.58\times 10^{7}\ \mathrm{m}$, taking $\dfrac{3.58\times 10^{7}}{3\times 10^{8}} \approx 0.12\ \mathrm{s}$. A full request-and-reply cycle crosses this path four times: $4 \times 0.12 \approx 0.48\ \mathrm{s}$, i.e.\ about $500\ \mathrm{ms}$ before any processing delay. Every click therefore waits at least half a second, which is why satellite links feel slow despite decent bandwidth.
+\item By Metcalfe's Law $V \propto n^2$, so doubling $n$ multiplies $V$ by $2^2 = 4$: the network's value quadruples while the user base only doubles. This is why mobile-money operators fight to grow their subscriber base: each new customer makes the service more useful for \emph{all} existing customers.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A \cle{MAN} covers a city ($5$--$50\ \mathrm{km}$) and is usually run by a telecom operator (Metro Ethernet, fibre ring, WiMAX).
+\item A \cle{WAN} covers countries and continents by leasing operator services (leased lines, MPLS, satellite, 4G/5G backhaul); it has higher latency and higher cost per bandwidth than a LAN and requires routing protocols.
+\item The \cle{Internet} is a global \textbf{public} WAN: ISPs organised in tiers, interconnected by peering and transit, routed by BGP, using unique public IP addresses.
+\item Because the Internet is public, sensitive traffic must be encrypted: \cle{VPN} tunnels (site-to-site or remote-access) using IPsec, SSL/TLS or WireGuard.
+\item Metcalfe's Law: network value grows like $n^2$ — the reason large networks such as the Internet and mobile money become indispensable.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Choosing the Right Network for an Organisation}
+
+Having examined Metropolitan, Wide Area Networks and the Internet, we now turn to the practical task of selecting the most appropriate network architecture for a given organisation. The choice is never arbitrary; it follows from a systematic analysis of requirements, constraints and future growth.
+
+\courssub{Key Decision Criteria}
+
+Before comparing network types, the decision‑maker must quantify the following parameters for the organisation:
+
+\begin{itemize}
+\item \cle{Geographic spread}: distance between sites (same building, same city, different regions, different countries).
+\item \cle{Number of users}: total concurrent devices (workstations, printers, IoT sensors, mobile phones).
+\item \cle{Bandwidth needs}: peak and average data rates per user and per application (VoIP, video conferencing, cloud backup, ERP).
+\item \cle{Security requirements}: regulatory compliance (e.g. Cameroon’s data protection legislation and ANTIC guidelines), sensitivity of data, need for encryption and intrusion detection.
+\item \cle{Budget}: capital expenditure (CAPEX) for cabling, switches, routers, firewalls; operational expenditure (OPEX) for leased lines, ISP subscriptions, maintenance contracts.
+\item \cle{Scalability}: ease of adding sites, users or bandwidth without a complete redesign.
+\item \cle{Mobility}: proportion of remote or roaming users requiring secure access from home, client sites or public hotspots.
+\end{itemize}
+
+Each criterion can be weighted according to organisational priority. A weighted decision matrix (see the Method box below) turns these qualitative factors into a quantitative score for each candidate network type.
+
+\courssub{Mapping Criteria to Network Types}
+
+The table below summarises the typical fit between organisational profiles and network categories. It is a guideline, not a rigid rule; hybrid solutions are common.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Organisational Profile} & \textbf{Recommended Network Type} & \textbf{Typical Technologies} & \textbf{Key Advantage} \\
+\hline
+Single office, \textless 50 users, high local traffic & \cle{LAN} & Twisted‑pair (Cat6/6a), Gigabit/10GbE switches, Wi‑Fi 6 & Low latency, full control, inexpensive per port \\
+\hline
+Multiple buildings on a campus (university, hospital) & \cle{CAN} & Fibre backbone (single‑mode), distribution switches, VLAN segmentation & High bandwidth between buildings, centralised management \\
+\hline
+Several sites within a metropolitan area (e.g. Yaoundé branches) & \cle{MAN} & Metro‑Ethernet, dark fibre lease, MPLS from CAMTEL/MTN & Guaranteed SLAs, symmetric bandwidth, carrier‑grade reliability \\
+\hline
+National or international sites, need for secure inter‑site traffic & \cle{WAN / Site‑to‑Site VPN} & IPsec over broadband/4G/5G, MPLS, SD‑WAN overlay & Cost‑effective, encryption, flexible transport \\
+\hline
+Remote / mobile workers, occasional access to internal resources & \cle{Remote‑Access VPN} & SSL/TLS VPN, IKEv2, Zero‑Trust Network Access (ZTNA) & Strong authentication, granular access control \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Cost Analysis: CAPEX vs OPEX}
+
+A realistic budget compares one‑time capital outlay with recurring operational costs. The following simplified model illustrates the trade‑off for a three‑site organisation (Yaoundé, Douala, Bafoussam) choosing between a dedicated MAN (leased fibre) and a VPN over commercial broadband with 4G backup. Figures are indicative estimates for the Cameroonian market.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Cost Element} & \textbf{Dedicated MAN (Leased Fibre)} & \textbf{VPN over Broadband + 4G Backup} \\
+\hline
+CAPEX (Year 0) & Fibre termination equipment, routers, managed switch stack (\textasciitilde FCFA 12\,000\,000) & VPN concentrators, firewalls, 4G routers (\textasciitilde FCFA 4\,500\,000) \\
+\hline
+OPEX (Annual) & Leased line fees (3 sites $\times$ FCFA 3\,500\,000) + maintenance (FCFA 1\,200\,000) = FCFA 11\,700\,000 & ISP broadband (3 $\times$ FCFA 1\,200\,000) + 4G backup (3 $\times$ FCFA 600\,000) + VPN licence (FCFA 800\,000) = FCFA 5\,600\,000 \\
+\hline
+5‑Year Total & FCFA 12\,000\,000 + 5 $\times$ 11\,700\,000 = FCFA 70\,500\,000 & FCFA 4\,500\,000 + 5 $\times$ 5\,600\,000 = FCFA 32\,500\,000 \\
+\hline
+\end{tabularx}
+\end{center}
+
+The VPN option is roughly half the 5‑year cost, but the MAN offers deterministic latency and a contractual SLA. The final decision hinges on how critical guaranteed performance is for the organisation’s core applications.
+
+\begin{propriete}[Leased Lines vs Broadband]
+A \cle{leased line} (dedicated fibre, Metro‑Ethernet, MPLS) provides \textbf{guaranteed bandwidth}, symmetric upload/download, and a Service Level Agreement (SLA) with penalties for downtime. \cle{Broadband} (ADSL, VDSL, 4G/5G, cable) is a \textbf{best‑effort} service: bandwidth is shared, asymmetric, and no formal SLA is usually offered. For mission‑critical real‑time applications (voice, video, SCADA), leased lines are preferred; for general office traffic, broadband with a VPN overlay is often sufficient.
+\end{propriete}
+
+\courssub{Redundancy and Reliability}
+
+A single link or device constitutes a \cle{single point of failure (SPOF)}. Reliability engineering introduces redundancy at multiple layers:
+
+\begin{itemize}
+\item \textbf{Link redundancy}: two independent ISP connections (e.g. fibre + 4G) per site, terminated on separate routers.
+\item \textbf{Device redundancy}: dual firewalls / routers in active‑standby (VRRP/HSRP) or active‑active (load‑sharing) mode.
+\item \textbf{Path redundancy}: dynamic routing protocols (OSPF, BGP) or SD‑WAN policies that detect link degradation and failover within seconds.
+\item \textbf{Power redundancy}: UPS and generator for network cabinets.
+\end{itemize}
+
+A well‑designed failover test plan (periodic simulated link failure) validates that the recovery time objective (RTO) meets business requirements.
+
+\courssub{Future‑Proofing: IPv6, Cloud Integration, SD‑WAN}
+
+Modern networks must accommodate:
+
+\begin{itemize}
+\item \cle{IPv6 readiness}: dual‑stack deployment on all edge devices; ISP support for IPv6 prefix delegation.
+\item \cle{Cloud integration}: direct peering (e.g. AWS Direct Connect, Azure ExpressRoute) or secure Internet breakout at each branch (local Internet breakout) to avoid hair‑pinning traffic through headquarters.
+\item \cle{SD‑WAN}: a software‑defined overlay that abstracts underlying transports (MPLS, broadband, 4G/5G) and applies application‑aware policies for dynamic path selection, QoS, and zero‑touch provisioning.
+\end{itemize}
+
+\begin{definition}[SD‑WAN]
+\cle{SD‑WAN (Software‑Defined Wide Area Network)} is an architecture that separates the control plane from the data plane, allowing a centralised orchestrator to manage multiple transport links (MPLS, broadband, LTE) as a single logical WAN. It provides application‑aware routing, automatic failover, encryption, and zero‑touch provisioning of branch appliances.
+\end{definition}
+
+\begin{savaistu}[ANTIC and Network Security in Cameroon]
+The \cle{Agence Nationale des Technologies de l'Information et de la Communication (ANTIC)} is the regulatory body overseeing cybersecurity and electronic certification in Cameroon. Organisations designing networks must comply with ANTIC guidelines on data protection, encryption standards, and incident reporting. The Law No. 2010/012 on cybersecurity and cybercrime, along with the recent personal data protection law, impose obligations for securing network infrastructure, especially when handling citizens' personal data. Financial institutions and telecom operators face additional sector‑specific regulations from COBAC and ART respectively.
+\end{savaistu}
+
+\begin{attention}[Over‑Provisioning a MAN]
+A common mistake is to lease a Metro‑Ethernet MAN for an organisation with only two sites in the same city. The monthly recurring cost is often 3–5$\times$ higher than a site‑to‑site IPsec VPN over business‑grade broadband with a 4G backup. Unless the SLA, symmetric bandwidth, or regulatory mandate strictly requires a MAN, the VPN solution is far more cost‑effective.
+\end{attention}
+
+\begin{exemplebox}[Cameroonian NGO Network Design]
+\textbf{Scenario:} \emph{GreenFuture} operates offices in Yaoundé (HQ, 80 users), Douala (45 users) and Bafoussam (20 users). They run a cloud‑based ERP, VoIP, and need secure access for 15 field agents.
+
+\textbf{Recommended solution:}
+\begin{enumerate}
+\item \textbf{LAN} at each site: Cat6a cabling, PoE+ switches, Wi‑Fi 6 APs, VLANs for voice, data, guest.
+\item \textbf{Site‑to‑site IPsec VPN} over business broadband (CAMTEL/MTN) with \textbf{4G LTE backup} at each site. VPN concentrators at HQ and each branch.
+\item \textbf{Remote‑access SSL VPN} with MFA for field agents.
+\item \textbf{SD‑WAN overlay} (e.g. FortiGate SD‑WAN or Cisco Meraki) to steer ERP traffic over the best path, enforce QoS for VoIP, and provide zero‑touch deployment for future sites.
+\item \textbf{IPv6 dual‑stack} on all edge routers; cloud breakout at each branch for Microsoft 365 / Google Workspace.
+\end{enumerate}
+\textbf{Estimated 3‑year TCO:} FCFA 28\,000\,000 (vs. FCFA 62\,000\,000 for a full MAN).
+\end{exemplebox}
+
+\begin{methode}[Decision Matrix Template]
+\textbf{Step 1:} List criteria (geographic spread, users, bandwidth, security, budget, scalability, mobility). Assign a weight (sum = 100).\par
+\textbf{Step 2:} For each candidate network type (LAN, CAN, MAN, WAN/VPN, Remote‑Access VPN), score 1–5 on each criterion.\par
+\textbf{Step 3:} Multiply score $\times$ weight, sum across criteria to obtain a weighted total.\par
+\textbf{Step 4:} Select the network type with the highest total. If two are close, analyse qualitative factors (vendor lock‑in, staff expertise, regulatory).\par
+\textbf{Step 5:} Document the rationale; revisit annually or when major changes occur.
+\end{methode}
+
+\begin{exoresolu}[Worked Example: Selecting a Network for a Growing Startup]
+\textbf{Statement:} \emph{TechHub} is a Cameroonian fintech startup. Currently 30 developers work in a single open‑space office in Douala. They plan to open a second office in Yaoundé (15 developers) within 6 months, and hire 10 remote contractors across the country. Their application requires low‑latency access to a PostgreSQL database hosted on a cloud VM (Azure West Europe). Budget is tight (FCFA 8\,000\,000 CAPEX, FCFA 3\,000\,000/year OPEX). Choose the most suitable network architecture and justify.
+
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+\item \textbf{Identify criteria and weights:} Geographic spread (25), Users (10), Bandwidth (20), Security (20), Budget (15), Scalability (5), Mobility (5). Sum = 100.
+\item \textbf{Candidate types:} (A) Single LAN + remote‑access VPN; (B) Two LANs + site‑to‑site IPsec VPN over broadband; (C) MAN (Metro‑Ethernet) between Douala and Yaoundé.
+\item \textbf{Score each (1–5):}
+\begin{center}
+\begin{tabular}{|l|ccc|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{A} & \textbf{B} & \textbf{C} \\
+\hline
+Geographic spread & 2 & 5 & 4 \\
+Users & 4 & 5 & 5 \\
+Bandwidth & 3 & 4 & 5 \\
+Security & 3 & 5 & 5 \\
+Budget & 5 & 4 & 1 \\
+Scalability & 3 & 5 & 3 \\
+Mobility & 4 & 4 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+\item \textbf{Weighted totals:}
+\begin{align*}
+\text{A} &= 2\!\times\!25 + 4\!\times\!10 + 3\!\times\!20 + 3\!\times\!20 + 5\!\times\!15 + 3\!\times\!5 + 4\!\times\!5 = 50+40+60+60+75+15+20 = 320\\
+\text{B} &= 5\!\times\!25 + 5\!\times\!10 + 4\!\times\!20 + 5\!\times\!20 + 4\!\times\!15 + 5\!\times\!5 + 4\!\times\!5 = 125+50+80+100+60+25+20 = 460\\
+\text{C} &= 4\!\times\!25 + 5\!\times\!10 + 5\!\times\!20 + 5\!\times\!20 + 1\!\times\!15 + 3\!\times\!5 + 2\!\times\!5 = 100+50+100+100+15+15+10 = 390
+\end{align*}
+\item \textbf{Decision:} Option B (two LANs + site‑to‑site IPsec VPN) scores highest (460). It fits the budget, provides encryption for financial data, scales to future sites, and supports remote contractors via the same VPN concentrators.
+\item \textbf{Implementation sketch:} Deploy Cat6a LANs at both offices, FortiGate 60F at each site for IPsec VPN (AES‑256, SHA‑256), 4G failover, Azure VPN Gateway for cloud connectivity, SSL VPN with MFA for contractors. Estimated CAPEX: FCFA 6\,500\,000; OPEX: FCFA 2\,800\,000/year.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Decision‑Tree Flowchart for Network Selection}
+
+The following flowchart guides the network architect from the simplest to the most complex choice based on the key organisational parameters discussed above.
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  node distance=1.8cm and 2.2cm,
+  decision/.style={diamond, draw=popblue, thick, fill=popblueL, text width=3.2cm, align=center, inner sep=4pt},
+  process/.style={rectangle, draw=popdark, thick, fill=popgreenL, text width=3.0cm, align=center, inner sep=4pt, rounded corners=4pt},
+  startend/.style={ellipse, draw=poporange, thick, fill=poporange!20, text width=2.8cm, align=center, inner sep=4pt},
+  arrow/.style={->, thick, draw=popdark},
+  yes/.style={arrow},
+  no/.style={arrow}
+]
+\node[startend] (start) {Start: Define Requirements};
+\node[decision, below of=start] (geo) {Geographic spread?};
+\node[decision, below left=1.5cm and 2.5cm of geo] (users) {Users \textless 50 at one site?};
+\node[decision, below right=1.5cm and 2.5cm of geo] (multi) {Multiple sites in same city?};
+\node[decision, below=1.5cm of multi] (national) {Sites across regions / countries?};
+\node[decision, below=1.5cm of national] (remote) {Remote / mobile workers?};
+\node[process, left=2.5cm of users] (pan) {PAN / Single LAN};
+\node[process, right=2.5cm of users] (lan) {LAN (Cat6a, Wi‑Fi 6)};
+\node[process, below left=1.5cm and 2.5cm of multi] (can) {CAN (Campus Fibre Backbone)};
+\node[process, below right=1.5cm and 2.5cm of multi] (man) {MAN (Metro‑Ethernet / MPLS)};
+\node[process, below left=1.5cm and 2.5cm of national] (wanvpn) {WAN / Site‑to‑Site VPN (IPsec / SD‑WAN)};
+\node[process, below right=1.5cm and 2.5cm of national] (cloud) {Cloud Direct Connect (Optional)};
+\node[process, below=1.5cm of remote] (ravpn) {Remote‑Access VPN (SSL / ZTNA)};
+\node[startend, below=1.5cm of ravpn] (end) {End: Document \& Review Annually};
+
+\draw[arrow] (start) -- (geo);
+\draw[yes] (geo) -- node[left,font=\small] {Single building} (users);
+\draw[no] (geo) -- node[right,font=\small] {Multiple buildings} (multi);
+\draw[yes] (users) -- node[left,font=\small] {Yes} (pan);
+\draw[no] (users) -- node[right,font=\small] {No} (lan);
+\draw[yes] (multi) -- node[left,font=\small] {Campus} (can);
+\draw[no] (multi) -- node[right,font=\small] {City‑wide} (man);
+\draw[yes] (national) -- node[left,font=\small] {Yes} (wanvpn);
+\draw[no] (national) -- node[right,font=\small] {No} (cloud);
+\draw[yes] (remote) -- node[left,font=\small] {Yes} (ravpn);
+\draw[no] (remote) -- node[right,font=\small] {No} (end);
+\draw[arrow] (pan) |- (end);
+\draw[arrow] (lan) |- (end);
+\draw[arrow] (can) |- (end);
+\draw[arrow] (man) |- (end);
+\draw[arrow] (wanvpn) |- (end);
+\draw[arrow] (cloud) |- (end);
+\draw[arrow] (ravpn) -- (end);
+\end{tikzpicture}
+\legende{Decision‑tree flowchart for selecting the appropriate network type based on organisational parameters.}
+\end{popfigure}
+
+\courssub{Summary of Key Points}
+
+\begin{aretenir}[Choosing the Right Network]
+\begin{itemize}
+\item Map every requirement (geography, users, bandwidth, security, budget, scalability, mobility) to a weighted decision matrix.
+\item Small, single‑site organisations $\rightarrow$ LAN (or PAN for personal devices).
+\item Campus‑style multi‑building $\rightarrow$ CAN with fibre backbone.
+\item City‑wide multi‑site with SLA needs $\rightarrow$ MAN (leased fibre / Metro‑Ethernet).
+\item National / international sites $\rightarrow$ WAN built from site‑to‑site VPN over broadband/4G/5G, optionally orchestrated by SD‑WAN.
+\item Remote workers $\rightarrow$ Remote‑access VPN (SSL/TLS, IKEv2, ZTNA) with MFA.
+\item Always compare CAPEX vs OPEX over a 3–5 year horizon; include redundancy (dual ISP, 4G backup, VRRP).
+\item Future‑proof with IPv6 dual‑stack, cloud direct connect / local Internet breakout, and SD‑WAN for dynamic path selection.
+\item Avoid over‑provisioning: a two‑site city deployment rarely justifies a full MAN; a VPN overlay is usually cheaper and sufficiently reliable.
+\end{itemize}
+\end{aretenir}
+
+The next section (Integration Activity – Network Design Project) will give you the opportunity to apply these principles in a complete, graded case study.
+
+\coursec{Integration Activity – Network Design Project}
+
+\courssub{From Theory to Practice: A Real-World Design Challenge}
+
+In the previous sections, we learned how to classify networks by coverage area (Lesson 10) and how to select the appropriate network type for an organisation by analysing coverage, budget, performance, and security requirements (Lesson 11). Now, we put that knowledge into action. This integration activity (Lesson 12) simulates a professional ICT consultancy task: designing a network infrastructure for a regional healthcare system in the Northwest Region of Cameroon. You will work in teams to produce a complete design dossier, defend your choices, and evaluate peers' work using a structured rubric. This mirrors the kind of project you may face in higher education or as a junior network engineer at organisations like CAMTEL, MTN, Orange, or the Ministry of Public Health.
+
+\courssub{Case Study: Northwest Regional Hospital Network (NRHN)}
+
+\begin{experience}[Case Study Brief]
+The Ministry of Public Health wishes to modernise the information system of the Northwest Regional Health Delegation. The network must connect five sites:
+\begin{itemize}
+    \item \textbf{Site A:} Regional Hospital Bamenda (administrative headquarters, 300+ staff, high-density Wi‑Fi, server room).
+    \item \textbf{Site B:} District Hospital Kumbo (150 staff, radiology department, needs DICOM image transfer).
+    \item \textbf{Site C:} District Hospital Ndop (120 staff, tele‑medicine pilot with specialists in Bamenda).
+    \item \textbf{Site D:} District Hospital Wum (80 staff, remote, limited fibre availability).
+    \item \textbf{Site E:} Batibo Integrated Health Centre (30 staff, basic admin and patient records).
+\end{itemize}
+\textbf{Functional requirements:}
+\begin{enumerate}
+    \item Centralised Electronic Medical Record (EMR) database hosted at Site A, accessed in real time from all sites.
+    \item Tele‑medicine video conferencing between Site A (specialists) and Sites B, C, D (consultation rooms).
+    \item Administrative voice over IP (VoIP) and file sharing across all sites.
+    \item Internet access for all sites (e‑mail, research, cloud backup).
+    \item Segregation of traffic: medical devices (IoT), clinical workstations, administrative PCs, guest Wi‑Fi.
+\end{enumerate}
+\textbf{Constraints:}
+\begin{itemize}
+    \item Budget: 25 million FCFA capital expenditure (CAPEX), 3 million FCFA/year operational expenditure (OPEX).
+    \item Sites B–E are 40–80 km from Bamenda; terrain is hilly, some areas lack reliable fibre.
+    \item Power supply is unstable; Sites D and E experience daily outages of 4–6 hours.
+    \item Compliance with Cameroon's Law No. 2010/012 on cybersecurity and cybercrime and ANTIC guidelines.
+\end{itemize}
+\end{experience}
+
+\courssub{Organising the Team: Roles and Responsibilities}
+
+\begin{methode}[Structured Group Work Roles]
+\textbf{Team size:} 4 students. Each member takes a primary role but contributes to all deliverables.
+\begin{enumerate}
+    \item \textbf{Requirements Analyst:} Interviews stakeholders (teacher acts as client), writes the Requirements Specification Document (RSD), lists functional/non‑functional requirements, prioritises them (MoSCoW method).
+    \item \textbf{Network Designer:} Selects network type per site (LAN, CAN) and inter‑site links (MAN, WAN, VPN), draws the logical diagram, justifies each choice with syllabus criteria (coverage, bandwidth, latency, cost).
+    \item \textbf{Cost Estimator:} Researches current Cameroonian market prices (CAMTEL, MTN Business, Orange Business, local vendors) for cabling, switches, routers, wireless APs, fibre/microwave links, VPN appliances, UPS/generators. Produces a cost estimate table (CAPEX/OPEX) within budget.
+    \item \textbf{Security \& Presentation Lead:} Defines security measures (firewall rules, VPN tunnels, VLAN segmentation, access control), prepares the final slide deck (10 minutes), coordinates peer review responses.
+\end{enumerate}
+\textbf{Deliverables (due in 3 weeks):}
+\begin{itemize}
+    \item RSD (2–3 pages).
+    \item Logical network diagram (A3, digital).
+    \item Cost estimate spreadsheet (printed + digital).
+    \item Security policy summary (1 page).
+    \item Presentation slides (PDF).
+\end{itemize}
+\end{methode}
+
+\courssub{Deliverable 1: Requirements Specification}
+
+The analyst leads this, but the whole team validates. Use the template below. A good RSD distinguishes \cle{Must have}, \cle{Should have}, \cle{Could have}, \cle{Won't have} (MoSCoW).
+
+\begin{exemplebox}[Excerpt from a Requirements Specification]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\textbf{ID} & \textbf{Requirement} & \textbf{Priority} \\ \hline
+FR-01 & Real-time access to central EMR database from all clinical workstations & Must \\ \hline
+FR-02 & Video conferencing (1080p, 30 fps) for tele‑medicine between Site A and Sites B, C, D & Must \\ \hline
+FR-03 & VoIP for administrative calls across all sites & Should \\ \hline
+NFR-01 & End‑to‑end latency < 100 ms for EMR transactions & Must \\ \hline
+NFR-02 & Bandwidth $\ge$ 50 Mbps per site for clinical traffic & Must \\ \hline
+NFR-03 & Network availability $\ge$ 99.5\% (excluding power outages) & Should \\ \hline
+NFR-04 & Compliance with ANTIC cybersecurity framework & Must \\ \hline
+\end{tabularx}
+\end{center}
+\end{exemplebox}
+
+\courssub{Deliverable 2: Network Type Selection and Logical Diagram}
+
+The designer maps each site to a network class and chooses inter‑site technology. Justification must reference coverage area definitions (Lesson 10) and selection criteria (Lesson 11): bandwidth, latency, reliability, cost, scalability, security.
+
+\begin{propriete}[Network Classification for NRHN Sites]
+\begin{itemize}
+    \item \textbf{Site A (Bamenda):} \cle{Campus Area Network (CAN)} – multiple buildings (wards, admin, server room) within 1 km, high-speed fibre backbone, managed switches, wireless controllers.
+    \item \textbf{Sites B, C, D, E:} \cle{Local Area Network (LAN)} each – single building or small compound, structured cabling (Cat6a), PoE switches for APs and VoIP phones.
+    \item \textbf{Inter‑site links (A$\leftrightarrow$B, A$\leftrightarrow$C, A$\leftrightarrow$D, A$\leftrightarrow$E):} \cle{Metropolitan Area Network (MAN)} where fibre exists (Bamenda–Kumbo, Bamenda–Ndop) – leased dark fibre or CAMTEL Metro Ethernet. For Wum and Batibo (no fibre): \cle{Wide Area Network (WAN)} via microwave radio links or 4G/5G LTE backup with \cle{Site-to-Site VPN} over public Internet for encryption.
+    \item \textbf{Internet access:} Each site has a local ISP link (fibre or LTE) with a \cle{VPN concentrator} at Site A for centralised security inspection.
+\end{itemize}
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    site/.style={ellipse, draw=popblue, thick, fill=popblueL, minimum width=2.5cm, minimum height=1.5cm, align=center, inner sep=0.3cm},
+    internet/.style={ellipse, draw=poporange, thick, fill=poporange!10, minimum width=2cm, minimum height=1.2cm, align=center},
+    link/.style={draw=popdark, thick, -{Stealth[length=3mm]}},
+    vpn/.style={draw=poppurple, thick, densely dashed, -{Stealth[length=3mm]}},
+    linklabel/.style={font=\small, text width=2.5cm, align=center}
+]
+% Sites
+\node[site, align=center] (A) at (0,0){Site A\\Bamenda\\CAN};
+\node[site, align=center] (B) at (-4,3){Site B\\Kumbo\\LAN};
+\node[site, align=center] (C) at (4,3){Site C\\Ndop\\LAN};
+\node[site, align=center] (D) at (-5,-2.5){Site D\\Wum\\LAN};
+\node[site, align=center] (E) at (5,-2.5){Site E\\Batibo\\LAN};
+
+% MAN links (fibre)
+\draw[link, popgreen] (A) -- node[linklabel, midway, sloped, above, align=center]{MAN\\Fibre 1 Gbps} (B);
+\draw[link, popgreen] (A) -- node[linklabel, midway, sloped, above, align=center]{MAN\\Fibre 1 Gbps} (C);
+
+% WAN links (microwave / LTE + VPN)
+\draw[vpn] (A) -- node[linklabel, midway, sloped, below, align=center]{WAN\\Microwave 100 Mbps\\+ VPN} (D);
+\draw[vpn] (A) -- node[linklabel, midway, sloped, below, align=center]{WAN\\LTE 50 Mbps\\+ VPN} (E);
+
+% Internet cloud
+\node[internet] (Internet) at (0,-5) {Internet};
+\draw[link, poporange] (A) -- node[linklabel, midway, right] {VPN Concentrator} (Internet);
+\draw[link, poporange, dashed] (B) -- (Internet);
+\draw[link, poporange, dashed] (C) -- (Internet);
+\draw[link, poporange, dashed] (D) -- (Internet);
+\draw[link, poporange, dashed] (E) -- (Internet);
+
+% Legend
+\begin{scope}[shift={(8,3)}]
+\draw[popgreen, thick] (0,0) -- (1,0) node[right, linklabel] {MAN (Fibre)};
+\draw[poppurple, thick, densely dashed] (0,-0.7) -- (1,-0.7) node[right, linklabel] {WAN + VPN};
+\draw[poporange, thick] (0,-1.4) -- (1,-1.4) node[right, linklabel] {Internet/VPN};
+\end{scope}
+\end{tikzpicture}
+\legende{Logical Network Diagram Template for NRHN. Sites are LAN/CAN clouds; inter-site links labelled with technology and VPN where public infrastructure is used.}
+\end{popfigure}
+
+\courssub{Deliverable 3: Cost Estimate Table}
+
+The cost estimator researches real prices (2024–2025) from Cameroonian vendors. Prices are indicative; students must cite sources (vendor quotes, websites).
+
+\begin{exoresolu}[Worked Example: Cost Estimate for Inter-Site Links (CAPEX)]
+\textbf{Statement:} Estimate the capital cost for the inter-site connectivity of NRHN, assuming:
+\begin{itemize}
+    \item Bamenda–Kumbo (45 km): CAMTEL dark fibre lease, 1 Gbps, 2 km trenching at Site B.
+    \item Bamenda–Ndop (40 km): CAMTEL Metro Ethernet, 1 Gbps, no trenching.
+    \item Bamenda–Wum (75 km): Microwave link (licensed band), 100 Mbps, towers at both ends.
+    \item Bamenda–Batibo (60 km): LTE router + outdoor antenna, 50 Mbps, VPN appliance at Site A.
+\end{itemize}
+\textbf{Solution:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|c|c|c|}\hline
+\textbf{Link} & \textbf{Components} & \textbf{Qty} & \textbf{Unit Cost (FCFA)} & \textbf{Total (FCFA)} \\ \hline
+Bamenda–Kumbo & Dark fibre lease (5 yr IRU), 1 Gbps & 1 & 4,500,000 & 4,500,000 \\
+& Trenching \& ducting (2 km) & 1 & 1,200,000 & 1,200,000 \\
+& Fibre patch panels, SFP+ modules & 2 & 85,000 & 170,000 \\ \hline
+Bamenda–Ndop & Metro Ethernet 1 Gbps (5 yr) & 1 & 3,800,000 & 3,800,000 \\
+& SFP+ modules & 2 & 85,000 & 170,000 \\ \hline
+Bamenda–Wum & Microwave radios (licensed, 100 Mbps) & 2 & 1,500,000 & 3,000,000 \\
+& Towers (15 m) \& installation & 2 & 600,000 & 1,200,000 \\
+& Antennas, cables, surge protectors & 2 & 150,000 & 300,000 \\ \hline
+Bamenda–Batibo & Industrial LTE router + MIMO antenna & 1 & 350,000 & 350,000 \\
+& VPN appliance (Site A, 5 tunnels) & 1 & 1,200,000 & 1,200,000 \\
+& Configuration \& commissioning & 1 & 200,000 & 200,000 \\ \hline
+\textbf{Subtotal Inter-Site CAPEX} & & & & \textbf{14,890,000} \\ \hline
+\end{tabularx}
+\end{center}
+\textbf{Comment:} This leaves ~10 million FCFA for LAN/CAN equipment, servers, UPS, licensing, and contingency. OPEX includes annual fibre lease renewals, microwave licence fees (ART), LTE data plans (~150,000 FCFA/month/site), and maintenance contracts.
+\tcblower
+\textbf{Detailed Solution Steps:}
+\begin{enumerate}
+    \item Identify each link's technology based on coverage and availability (Lesson 10, 11).
+    \item Obtain at least two quotes per major item; use the average.
+    \item Include ancillary costs: installation, configuration, licensing, surge protection (critical in Cameroon).
+    \item Sum and verify against budget; if over, iterate (e.g., reduce Wum link to 50 Mbps LTE only, save 2M FCFA).
+    \item Document assumptions: exchange rate, warranty period, vendor support SLA.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Deliverable 4: Security Measures – Firewall, VPN, VLAN}
+
+\begin{definition}[VLAN (Virtual Local Area Network)]
+A VLAN is a logical segmentation of a physical switch into multiple broadcast domains. Devices in different VLANs cannot communicate directly at Layer 2; they require a router or Layer 3 switch. In NRHN, we define at least four VLANs per site:
+\begin{itemize}
+    \item \textbf{VLAN 10 – Medical Devices:} Patient monitors, imaging modalities (DICOM), infusion pumps. No Internet access, strict ACLs.
+    \item \textbf{VLAN 20 – Clinical Workstations:} Doctors/nurses PCs accessing EMR. Access to VLAN 10 (read-only for some), Internet via proxy.
+    \item \textbf{VLAN 30 – Administration:} HR, finance, VoIP phones. Access to file servers, Internet, no access to VLAN 10.
+    \item \textbf{VLAN 40 – Guest Wi‑Fi:} Patients/visitors. Internet only, rate-limited, isolated via captive portal.
+\end{itemize}
+Inter-site VPN tunnels terminate on a central firewall at Site A, which enforces inter-VLAN routing policies.
+\end{definition}
+
+\begin{aretenir}[Security Checklist for NRHN]
+\begin{itemize}
+    \item \textbf{Perimeter:} Next-generation firewall at Site A (IPS, anti-malware, SSL inspection). Branch firewalls at Sites B–E (managed centrally).
+    \item \textbf{VPN:} IPsec site-to-site tunnels (AES-256, SHA-256, DH Group 14) for all inter-site traffic. Remote access VPN (MFA) for doctors working from home.
+    \item \textbf{Segmentation:} VLANs as above; trunk links between switches carry tagged VLANs (802.1Q). Access ports assigned via 802.1X or MAC authentication bypass.
+    \item \textbf{Monitoring:} Syslog/SIEM (e.g., Wazuh) collecting logs from all firewalls, switches, servers. Alert on failed logins, port scans, unusual traffic.
+    \item \textbf{Backup:} Encrypted off-site backup of EMR database (daily incremental, weekly full) to a cloud provider in Douala or Yaoundé.
+    \item \textbf{Compliance:} Data residency (patient data stays in Cameroon), ANTIC incident reporting procedures, annual penetration test.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Peer Review and Rubric}
+
+Each team evaluates another team's dossier using the rubric below. Scores are discussed in a plenary session moderated by the teacher.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|c|}\hline
+\textbf{Criterion} & \textbf{Description} & \textbf{Weight} \\ \hline
+Coverage Justification & Each site and link correctly classified (LAN, CAN, MAN, WAN, VPN) with syllabus-based reasoning (distance, bandwidth, ownership, geography). & 30\% \\ \hline
+Diagram Clarity & Logical diagram uses standard symbols, shows all sites, links, VLANs, VPN tunnels, Internet edge. Labels are readable; legend included. & 25\% \\ \hline
+Cost Realism & Prices sourced from Cameroonian vendors (quotes/websites cited). CAPEX $\le$ 25M FCFA, OPEX $\le$ 3M FCFA/yr. Contingency (10\%) shown. & 20\% \\ \hline
+Security Completeness & Firewall, VPN, VLAN segmentation, access control, monitoring, backup, compliance addressed. No major gap (e.g., missing guest isolation). & 15\% \\ \hline
+Presentation & Clear structure, confident delivery, answers questions well, all members participate. Slides professional (consistent theme, readable fonts). & 10\% \\ \hline
+\end{tabularx}
+\end{center}
+
+\courssub{Teacher Debrief: Linking Design Choices to Syllabus Concepts}
+
+After presentations, the teacher highlights how each decision maps to the chapter's lessons:
+
+\begin{itemize}
+    \item \textbf{Lesson 10 (Types by Coverage Area):} The classification of Site A as CAN (multiple buildings, same organisation, < 5 km) vs Sites B–E as LAN (single building). The inter-site links as MAN (fibre within city/metro area) and WAN (microwave/LTE over longer distances, public infrastructure).
+    \item \textbf{Lesson 11 (Choosing the Right Network):} The selection criteria table (bandwidth, latency, cost, reliability, security, scalability) was applied to each link. Example: Fibre chosen for Kumbo/Ndop because latency < 5 ms required for DICOM; microwave for Wum because fibre not available, but licensed band ensures reliability; LTE+VPN for Batibo as cost-effective fallback.
+    \item \textbf{VPN as a WAN extension:} VPN tunnels over public Internet (LTE) effectively create a virtual MAN/WAN, encrypting traffic – a key concept for modern hybrid networks.
+    \item \textbf{Lesson 12 (Integration Activities):} This project synthesises classification, selection, costing, security, and presentation skills into a single coherent deliverable.
+    \item \textbf{Integration of security:} VLANs (Layer 2 segmentation) and firewalls (Layer 3/4/7) illustrate defence in depth, linking to the OSI model (see Property box).
+\end{itemize}
+
+\courssub{Critical Practical Considerations}
+
+\begin{attention}[Power Backup – The Silent Network Killer]
+In Cameroon, especially in remote areas like Wum and Batibo, \textbf{network availability is meaningless without electricity}. A common student mistake is to design a perfect network but forget:
+\begin{itemize}
+    \item \textbf{UPS (Uninterruptible Power Supply):} At least 2 hours autonomy for core switches, routers, firewall, server rack at each site. Online double-conversion UPS for Site A server room.
+    \item \textbf{Generator:} For Sites D and E, a 10–15 kVA diesel/solar hybrid generator with automatic transfer switch (ATS) to cover 4–6 hour daily outages.
+    \item \textbf{PoE Budget:} Ensure switches have enough PoE+ budget for APs, VoIP phones, IP cameras \emph{on UPS-backed ports}.
+    \item \textbf{Monitoring:} SNMP traps for UPS battery low, generator start/stop, mains failure.
+\end{itemize}
+\textbf{Exam tip:} If a question asks "What factors affect network availability in a rural Cameroonian context?", power backup is a top answer.
+\end{attention}
+
+\begin{propriete}[OSI Model Layers in Network Design Decisions]
+Every design choice operates at one or more OSI layers. Examiners may ask you to identify the layer.
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|X|}\hline
+\textbf{Layer} & \textbf{NRHN Design Decision} & \textbf{Key Protocols / Technologies} \\ \hline
+1 Physical & Fibre type (OS2), microwave radio frequency, LTE bands, UPS/generator & Ethernet (1000BASE-LX), RF, 4G/5G NR \\ \hline
+2 Data Link & VLAN tagging (802.1Q), trunk/access ports, MACsec for link encryption & Switching, STP/RSTP, LLDP \\ \hline
+3 Network & IP addressing plan (VLSM), routing (OSPF/BGP), VPN tunneling (IPsec) & IPv4/IPv6, OSPF, BGP, IPsec ESP \\ \hline
+4 Transport & TCP for EMR/VoIP signalling, UDP for video streaming (RTP), QoS marking (DSCP) & TCP, UDP, SCTP, DSCP EF/AF41 \\ \hline
+5 Session & SIP for VoIP call control, TLS session resumption for VPN & SIP, TLS 1.3 \\ \hline
+6 Presentation & DICOM encoding, HL7/FHIR for EMR, video codecs (H.264/H.265) & DICOM, HL7, FHIR, H.265 \\ \hline
+7 Application & EMR web interface, tele-medicine app, VoIP softphone, backup agent & HTTPS, proprietary apps \\ \hline
+\end{tabularx}
+\end{center}
+\textbf{Examinable:} You must be able to map a requirement (e.g., "segment medical devices from admin traffic") to the correct layer (Layer 2 – VLAN) and technology (802.1Q).
+\end{propriete}
+
+\courssub{Final Reflection}
+
+This integration activity is not just an exam exercise; it is a portfolio piece. Keep your dossier (RSD, diagram, cost sheet, security policy, presentation) – it demonstrates to universities and employers that you can:
+\begin{itemize}
+    \item Translate vague organisational needs into technical specifications.
+    \item Apply the network classification framework (LAN, CAN, MAN, WAN, VPN) to a real Cameroonian geography.
+    \item Balance performance, cost, and security within a constrained budget.
+    \item Communicate technical decisions clearly to non-technical stakeholders.
+\end{itemize}
+The skills you practised here – requirements analysis, logical design, costing, security hardening, peer review – are the foundation of the \cle{Network Administrator} and \cle{Systems Engineer} roles in Cameroon's growing digital economy (Silicon Mountain, e-government projects, fintech). Approach the GCE Advanced Level practical paper with the same structured mindset, and you will excel.
+
+\begin{savaistu}[Did You Know?]
+The \textbf{National Agency for Information and Communication Technologies (ANTIC)} in Cameroon runs the \textit{Cybersecurity Awareness Campaign} and operates the \textit{CERT-CM} (Computer Emergency Response Team). Any health information system like NRHN must register with ANTIC and follow the \textit{National Cybersecurity Strategy}. In 2023, ANTIC reported a rise in ransomware targeting healthcare facilities – hence the emphasis on offline backups and network segmentation in this project.
+\end{savaistu}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: Network Design Project}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter on the \cle{classification of computer networks}. It places you in the role of an ICT consultant and asks you to \emph{mobilise} — not simply recall — everything studied in the chapter:
+
+\begin{itemize}
+\item classify networks by \cle{coverage area} (PAN, LAN, CAN, MAN, WAN) and justify each classification;
+\item apply the \cle{selection criteria} studied in Lesson 11 (size and distance, number of users, required services and bandwidth, budget, reliability, security, scalability);
+\item choose appropriate \cle{transmission media} and \cle{interconnection technologies} (fibre optic, leased line, VPN over the public Internet or 4G);
+\item design and draw a \cle{logical network diagram} for a multi-site organisation;
+\item estimate a realistic \cle{budget} and propose \cle{security controls} adapted to sensitive data (here, medical records);
+\item defend technical choices in writing and orally, and evaluate the work of peers.
+\end{itemize}
+
+\begin{aretenir}[Competence targeted]
+By the end of this activity you should be able to take any real organisation (school, bank, hospital, ministry), analyse its needs, and produce a \emph{justified} network design in which every choice — network type, medium, topology, security — is argued from the constraints of the situation. This is exactly the kind of reasoning expected in the GCE Advanced Level paper.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Read the following brief carefully. All the data you need is contained in it.}
+
+\begin{experience}[Client brief — Northwest Regional Health Network (NWRHN)]
+The Regional Delegation of Public Health for the Northwest Region wishes to interconnect five health facilities so that they can share an \cle{Electronic Health Record} (EHR) system, hold \cle{video consultations} (telemedicine) with specialists, and use \cle{VoIP} telephony between sites to reduce telephone bills. You are the ICT consultant engaged to propose the network design.
+
+\textbf{The five sites}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Site} & \textbf{Description} & \textbf{Staff / PCs} & \textbf{Distance from Bamenda} \\
+\hline
+A — Regional Hospital (Bamenda) & Main referral hospital; hosts the EHR server and the future data room; two buildings 300 m apart on one campus & 180 users, 120 PCs & 0 km \\
+\hline
+B — District Hospital (Ndop) & District hospital, one building & 45 users, 25 PCs & 40 km \\
+\hline
+C — District Hospital (Kumbo) & District hospital, one building & 50 users, 30 PCs & 110 km \\
+\hline
+D — District Hospital (Wum) & District hospital, one building & 30 users, 15 PCs & 80 km \\
+\hline
+E — Health Centre (Nkambe) & Rural health centre, one small building & 8 users, 4 PCs & 130 km \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Available connectivity options (as offered locally)}
+
+\begin{itemize}
+\item \textbf{CAMTEL fibre} is available in Bamenda and along the Bamenda–Kumbo road (sites A, B, C): metropolitan fibre or leased lines, 10 to 100 Mbit/s, monthly subscription, high cost.
+\item \textbf{MTN / Orange 4G} covers all five towns, with business data bundles; quality is good in Bamenda and Kumbo, average in Ndop and Wum, weak but usable in Nkambe.
+\item \textbf{VSAT satellite} is possible anywhere but expensive and has high latency.
+\end{itemize}
+
+\textbf{Required services and constraints}
+
+\begin{itemize}
+\item The EHR database (hosted at site A) must be reachable from all sites \emph{at any time}; medical records are \textbf{confidential} by nature.
+\item Video consultation between any district hospital and Bamenda requires about 2 Mbit/s per session with low delay.
+\item VoIP between sites requires little bandwidth but is sensitive to delay and packet loss.
+\item The Delegation's budget is limited: the solution must be \textbf{proportionate} — the best technical solution is not acceptable if it is unaffordable.
+\item The network must be able to \textbf{grow} (two more health centres may join within five years).
+\end{itemize}
+\end{experience}
+
+The activity runs over \textbf{two sessions of 90 minutes}. Session 1: analysis and design in groups of three or four. Session 2: peer review — each group presents its diagram and budget in 5 minutes; the other groups challenge the choices using the selection criteria of Lesson 11; each group then amends its design.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Classify.} For each site, state the type of network needed \emph{inside} the site (PAN, LAN or CAN), justifying with the size of the site and the number of users. Pay special attention to site A, which has two buildings.
+\item \textbf{Interconnect.} The five sites together form which class of network? Justify your answer using the notion of coverage area.
+\item \textbf{Choose media and technologies.} For each link between a site and the rest of the network, choose a technology among: CAMTEL fibre/leased line, VPN over 4G, VSAT. Justify each choice with at least two criteria (bandwidth, reliability, cost, availability at that location).
+\item \textbf{Explain the VPN.} For the sites connected through the public 4G network, explain in four or five lines what a VPN is, why it is indispensable here, and what it protects (think of the confidentiality of medical records).
+\item \textbf{Draw.} Produce a logical diagram of the whole network showing: the five sites, the internal network of site A (two buildings, server room, switches), the interconnection links with their technologies, and the security devices (firewalls). Use standard symbols.
+\item \textbf{Budget.} Complete a cost table with realistic estimated figures (in FCFA): equipment per site (router, switch, firewall), cabling at site A, and monthly subscriptions. Distinguish \emph{investment} (once) from \emph{recurrent} costs (monthly).
+\item \textbf{Secure.} Propose three security controls adapted to this hospital network and say which threat each one addresses.
+\item \textbf{Plan for growth.} Explain how your design accommodates two future health centres without being rebuilt.
+\item \textbf{Peer review.} During session 2, note two strengths and one weakness of another group's design, using the vocabulary of the chapter (coverage area, bandwidth, reliability, scalability, security).
+\end{enumerate}
+
+\begin{attention}[Common traps]
+\begin{itemize}
+\item Do not call the inter-site network a ``LAN'': sites 40 to 130 km apart can never form a LAN.
+\item Do not propose fibre everywhere ``because it is the best'': a design that ignores the budget and the actual availability of fibre at Wum or Nkambe is not a valid engineering answer.
+\item A VPN is not a network type by coverage area; it is a \emph{security technique} that creates a private tunnel over a public network.
+\item Distinguish clearly the \emph{physical} level (cables, 4G, fibre) from the \emph{logical} level (who talks to whom, through which tunnel).
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+\textbf{1. Classification inside each site.}
+
+Sites B, C, D and E each occupy a single building: each needs a \cle{LAN} (Local Area Network), built with Ethernet switches and Wi-Fi access points. Site A has two buildings 300 m apart on one campus: this is a \cle{CAN} (Campus Area Network) — in practice two building LANs joined by a fibre optic backbone, since 300 m exceeds the 100 m limit of copper Ethernet. Inside each consultation room, a doctor's Bluetooth headset or a connected medical sensor would form a \cle{PAN}, but this is optional here.
+
+\textbf{2. Classification of the whole.}
+
+The five sites spread over distances up to 130 km across the Region: together they form a \cle{WAN} (Wide Area Network). More precisely, if CAMTEL fibre links the Bamenda–Ndop–Kumbo corridor, that portion behaves as a \cle{MAN} (Metropolitan/regional Area Network); the whole interconnection, relying on operators' infrastructure (CAMTEL, MTN, Orange), is a WAN.
+
+\textbf{3. Choice of technologies per link.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Link} & \textbf{Technology} & \textbf{Justification} \\
+\hline
+A $\leftrightarrow$ B (40 km) & CAMTEL fibre / leased line & Fibre available on the corridor; EHR + video need bandwidth and reliability; cost acceptable for two hospitals \\
+\hline
+A $\leftrightarrow$ C (110 km) & CAMTEL fibre / leased line & Same corridor; Kumbo has good coverage and 50 users \\
+\hline
+A $\leftrightarrow$ D (80 km) & VPN over 4G & No fibre at Wum; 4G average but usable; VPN guarantees confidentiality; much cheaper than a leased line \\
+\hline
+A $\leftrightarrow$ E (130 km) & VPN over 4G (VSAT as backup) & Only 8 users; 4G weak but sufficient for EHR access; VSAT too costly as main link, kept as backup option \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{4. The role of the VPN.}
+
+A \cle{VPN} (Virtual Private Network) creates an encrypted \emph{tunnel} between two sites across a public network such as the Internet or a 4G network. Data leaving site D is encrypted by the VPN gateway and only decrypted at site A; anyone intercepting the traffic on the operator's network reads only unintelligible ciphertext. It is indispensable here because medical records are confidential and the 4G network is a shared public infrastructure. The VPN protects the \emph{confidentiality} and \emph{integrity} of patient data in transit.
+
+\textbf{5. Logical diagram.}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+% Site A campus
+\draw[rounded corners, thick, popblue, fill=popblueL] (-1.6,-1.6) rectangle (3.6,1.6);
+\node[popdark, font=\small\bfseries] at (1,1.9) {Site A — Bamenda (CAN)};
+\node[draw, rounded corners, fill=white, minimum width=1.9cm, minimum height=0.8cm, align=center] (b1) at (-0.3,0.6) {Building 1\\ LAN};
+\node[draw, rounded corners, fill=white, minimum width=1.9cm, minimum height=0.8cm, align=center] (b2) at (2.3,0.6) {Building 2\\ LAN};
+\node[draw, rounded corners, fill=white, minimum width=2.2cm, minimum height=0.8cm, align=center] (srv) at (1,-0.8) {Server room\\ EHR + firewall};
+\draw[very thick, poporange] (b1) -- (srv);
+\draw[very thick, poporange] (b2) -- (srv);
+\node[popmuted, font=\scriptsize] at (2.6,-0.2) {fibre 300 m};
+% Core router
+\node[draw, circle, fill=poppurple!25, minimum size=0.9cm] (core) at (5.6,0) {R};
+\draw[thick] (srv.east) -- (core);
+% Remote sites
+\node[draw, rounded corners, fill=popgreenL, minimum width=2.2cm, minimum height=0.8cm, align=center] (sb) at (8.6,2.6) {Site B — Ndop\\ LAN};
+\node[draw, rounded corners, fill=popgreenL, minimum width=2.2cm, minimum height=0.8cm, align=center] (sc) at (8.6,0.9) {Site C — Kumbo\\ LAN};
+\node[draw, rounded corners, fill=popgreenL, minimum width=2.2cm, minimum height=0.8cm, align=center] (sd) at (8.6,-0.9) {Site D — Wum\\ LAN};
+\node[draw, rounded corners, fill=popgreenL, minimum width=2.2cm, minimum height=0.8cm, align=center] (se) at (8.6,-2.6) {Site E — Nkambe\\ LAN};
+\draw[very thick, popblue] (core) -- (sb) node[midway, above, font=\scriptsize, text=popmuted]{fibre};
+\draw[very thick, popblue] (core) -- (sc) node[midway, above, font=\scriptsize, text=popmuted]{fibre};
+\draw[very thick, poppink, dashed] (core) -- (sd) node[midway, above, font=\scriptsize, text=popmuted]{VPN/4G};
+\draw[very thick, poppink, dashed] (core) -- (se) node[midway, above, font=\scriptsize, text=popmuted]{VPN/4G};
+% Internet representation
+\node[draw, dashed, ellipse, popmuted, minimum width=2cm, minimum height=1cm, font=\scriptsize, align=center] (net) at (5.6,-2.6) {Internet\\ 4G};
+\draw[thick, popmuted] (core) -- (net);
+\end{tikzpicture}
+\end{center}
+\legende{Logical design of the NWRHN: a CAN at Bamenda, LANs at each district site, fibre links (solid) on the CAMTEL corridor and encrypted VPN tunnels (dashed) over 4G for Wum and Nkambe.}
+\end{popfigure}
+
+\textbf{6. Estimated budget} (figures are indicative estimates in FCFA).
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Item} & \textbf{Investment} & \textbf{Monthly} \\
+\hline
+Site A: switches, cabling, fibre between buildings, server room firewall & 6 000 000 & --- \\
+\hline
+Sites B, C: router + switch + firewall each & 2 $\times$ 1 200 000 & --- \\
+\hline
+Sites D, E: 4G router with VPN + small switch each & 2 $\times$ 600 000 & --- \\
+\hline
+CAMTEL leased lines (A, B, C) & --- & 3 $\times$ 150 000 \\
+\hline
+4G business bundles (D, E) & --- & 2 $\times$ 40 000 \\
+\hline
+\textbf{Totals} & \textbf{9 600 000} & \textbf{530 000} \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{7. Security controls.} (a) \emph{Firewalls} at every site filtering incoming traffic — against intrusions from the public network. (b) \emph{VPN encryption} on 4G links — against interception of medical records. (c) \emph{User authentication with individual accounts and access rights} on the EHR server — against unauthorised internal access; completed by regular backups of the EHR database against data loss.
+
+\textbf{8. Scalability.} A future health centre only needs a 4G router and a VPN tunnel to site A: no new physical link is required, and the firewalls at site A just receive one more authorised tunnel. The design therefore grows at very low marginal cost.
+
+\begin{exercice}[Self-evaluation checklist]
+Check your own design: (1) every site classified with a justification; (2) no fibre proposed where the brief says none exists; (3) VPN explained as encryption over a public network; (4) budget separates investment from recurrent costs; (5) at least three security controls, each matched to a threat; (6) one sentence on future growth.
+\end{exercice}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1 --- Identifying the Type of Network from its Coverage Area}
+
+\begin{methode}[Classifying a network from a description]
+To classify a network described in an examination question:
+\begin{enumerate}
+\item \textbf{Read the geographical clues}: underline words such as \emph{a room}, \emph{a building}, \emph{a campus}, \emph{a town}, \emph{a country}, \emph{the world}.
+\item \textbf{Identify the owner}: a single person (Bluetooth devices), one school, one company, a city council, a telecom operator (CAMTEL, MTN, Orange).
+\item \textbf{Match the scale to the class}:
+\begin{itemize}
+\item A few metres around one person $\rightarrow$ \cle{PAN} (Personal Area Network), e.g.\ Bluetooth.
+\item One room, building or small site (up to about 1--2 km) $\rightarrow$ \cle{LAN} (Local Area Network), e.g.\ Ethernet/Wi-Fi in a school.
+\item Several buildings of one institution within a few km $\rightarrow$ \cle{CAN} (Campus Area Network).
+\item A town or city (5--50 km) $\rightarrow$ \cle{MAN} (Metropolitan Area Network), e.g.\ a city fibre ring.
+\item A country, continent or the whole world $\rightarrow$ \cle{WAN} (Wide Area Network), e.g.\ the Internet, a bank's national network.
+\end{itemize}
+\item \textbf{Check the technology} to confirm: PAN $\approx$ Bluetooth; LAN $\approx$ Ethernet, Wi-Fi; MAN $\approx$ fibre metro rings, WiMAX; WAN $\approx$ leased lines, fibre backbone, satellite, MPLS.
+\item \textbf{Write the answer with a justification}: always name the class \emph{and} quote the clue that proves it.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Classifying four Cameroonian networks]
+Classify each of the following networks as PAN, LAN, CAN, MAN or WAN, justifying your answer: (a) a student connects his Bluetooth earpiece to his smartphone; (b) the computer laboratory of GBHS Bamenda links 40 computers to one switch; (c) a university connects its faculties spread over three sites within Buea using its own fibre; (d) a bank connects its branches in Douala, Yaound\'e and Garoua through leased lines from a telecom operator.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) PAN.} The coverage is a few metres around one person and the technology is Bluetooth: this is the signature of a \cle{Personal Area Network}.
+\item \textbf{(b) LAN.} One room, one switch, 40 stations, Ethernet cabling: coverage limited to a single building $\Rightarrow$ \cle{Local Area Network}.
+\item \textbf{(c) CAN.} Several buildings of the \emph{same institution} (the university) interconnected over a few kilometres with its own fibre: larger than a LAN but still one organisation's campus $\Rightarrow$ \cle{Campus Area Network}.
+\item \textbf{(d) WAN.} Branches in different towns, hundreds of kilometres apart, linked by \emph{leased lines rented from an operator}: the organisation does not own the long-distance infrastructure $\Rightarrow$ \cle{Wide Area Network}.
+\end{enumerate}
+\textbf{Examiner's remark.} In (c) the decisive clue is ``three sites of the same institution within one town''; in (d) it is ``different towns + operator's lines''. Always quote the clue.
+\end{exoresolu}
+
+\courssub{Method 2 --- Distinguishing LAN, MAN and WAN in a Comparison Table}
+
+\begin{methode}[Building a comparison table]
+When asked to compare network classes:
+\begin{enumerate}
+\item Choose the comparison criteria: \textbf{coverage}, \textbf{ownership}, \textbf{typical technology}, \textbf{speed}, \textbf{cost}, \textbf{example}.
+\item Fill one column per class (LAN, MAN, WAN), keeping each cell short and factual.
+\item Remember the key contrasts: a LAN is \emph{owned} by the organisation and is fast and cheap per user; a WAN \emph{rents} transmission facilities from operators and is slower and more expensive per kilometre; a MAN sits in between (city scale, often run by a council or operator).
+\item Conclude with one sentence stating which class suits which situation.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Comparing LAN, MAN and WAN]
+Draw a table comparing LAN, MAN and WAN according to: coverage area, ownership, typical technology, and one example each. Then state which type is appropriate for connecting the ministries located in the Yaound\'e administrative quarter.
+\tcblower
+\textbf{Solution.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{LAN} & \textbf{MAN} & \textbf{WAN} \\
+\hline
+Coverage & One building or small site ($\leq$ 1--2 km) & A town or city (5--50 km) & Country, continent, world \\
+\hline
+Ownership & Single organisation & Council, operator or consortium & Operators; users lease lines \\
+\hline
+Technology & Ethernet, Wi-Fi & Metro fibre ring, WiMAX & Leased lines, fibre backbone, satellite, MPLS \\
+\hline
+Example & School computer lab & City fibre network of Douala & Internet; bank's national network \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Choice for the ministries:} the ministries of the Yaound\'e administrative quarter are spread over a few kilometres within one city, so a \cle{MAN} (a metropolitan fibre network) is appropriate: a single LAN cannot cover several separate buildings, while a WAN would be unnecessarily expensive since no inter-city links are needed.
+\end{exoresolu}
+
+\courssub{Method 3 --- Explaining Why the Internet is a WAN (Network of Networks)}
+
+\begin{methode}[Justifying the status of the Internet]
+To explain that the Internet is the largest WAN:
+\begin{enumerate}
+\item Recall the definition: a WAN interconnects LANs and MANs over long distances using infrastructure owned by \textbf{telecommunication operators}.
+\item Show the chain: home/school LAN $\to$ Internet Service Provider (ISP) $\to$ national backbone $\to$ international links (submarine fibre cables, satellite).
+\item Conclude: the Internet is a \emph{network of networks}, worldwide in coverage, hence the largest possible WAN.
+\item Mention the role of ISPs in Cameroon (CAMTEL, MTN, Orange) as the organisations whose WANs carry our traffic to the global Internet.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[From a school LAN to a website hosted abroad]
+A student in a cybercaf\'e in Bafoussam opens the website of a university hosted in Europe. Describe the path followed by the data across the different classes of networks, and deduce why the Internet is called ``a network of networks''.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item The student's computer belongs to the cybercaf\'e's \textbf{LAN} (Ethernet/Wi-Fi to the caf\'e's router).
+\item The router forwards the request to the ISP's access network, then to the ISP's metropolitan and national infrastructure (\textbf{MAN/WAN}): e.g.\ the fibre backbone linking Bafoussam to Douala or Yaound\'e.
+\item The traffic reaches an international gateway and crosses a \textbf{submarine fibre-optic cable} (landing on the Cameroonian coast) and then European backbone networks (\textbf{WAN}).
+\item Finally it enters the \textbf{LAN} of the data centre hosting the university's web server. The reply follows the reverse path.
+\end{enumerate}
+\textbf{Conclusion.} The data crossed at least two LANs and several operators' WANs that are \emph{interconnected}. The Internet is precisely this worldwide interconnection of millions of LANs, MANs and WANs that agree on common protocols (TCP/IP): it is therefore a \cle{network of networks} and the largest WAN in existence.
+\end{exoresolu}
+
+\courssub{Method 4 --- Choosing the Right Network Type for an Organisation}
+
+\begin{methode}[Selecting a network class for a given organisation]
+To recommend a network type in a case study:
+\begin{enumerate}
+\item \textbf{List the sites}: how many buildings, in how many towns? Measure or estimate the distances between them.
+\item \textbf{Apply the scale rule}: one site $\to$ LAN; several nearby sites of the same institution $\to$ CAN; several sites within one city $\to$ MAN; sites in different towns/countries $\to$ WAN (with a LAN in each site, interconnected by the WAN).
+\item \textbf{Consider ownership and budget}: can the organisation lay its own cable (possible on a campus, impossible across a city without authorisation)? If not, lease capacity from an operator.
+\item \textbf{Consider needs}: bandwidth (video, exams data, mobile money transactions), security (a bank encrypts its WAN links, e.g.\ with a VPN), reliability.
+\item \textbf{Write a justified recommendation}: ``I recommend a \dots\ because \dots''.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Recommending networks for three organisations]
+For each organisation, recommend a network type (LAN, CAN, MAN or WAN) with two justifications: (a) a printing press occupying one building in Limbe; (b) a hospital complex with five pavilions on one fenced site; (c) a microfinance institution with a head office in Douala and eight branches in other towns of the Littoral and Centre regions.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) LAN.} Justification 1: all users and machines are in a single building, within Ethernet/Wi-Fi range. Justification 2: a LAN is cheap, fast and fully owned and managed by the press; no operator link is needed.
+\item \textbf{(b) CAN.} Justification 1: five separate buildings must be interconnected, which exceeds the reach of a single LAN. Justification 2: the pavilions stand on one fenced site, so the hospital can lay its own fibre between buildings (a campus network) without renting operator lines.
+\item \textbf{(c) WAN (with a LAN at each site).} Justification 1: the branches are in different towns, tens to hundreds of kilometres apart, far beyond LAN/CAN/MAN range. Justification 2: the institution cannot own inter-city cables, so it must lease links (e.g.\ MPLS or VPN over the Internet) from an operator such as CAMTEL or MTN; because financial data are sensitive, the WAN traffic must be encrypted.
+\end{enumerate}
+\textbf{Key idea.} In case (c) the complete solution is \emph{several LANs joined by a WAN}: network classes combine; they do not exclude one another.
+\end{exoresolu}
+
+\courssub{Method 5 --- Estimating whether a Technology Can Cover a Given Distance}
+
+\begin{methode}[Matching technology to distance and bandwidth]
+\begin{enumerate}
+\item Memorise the typical ranges: Bluetooth ($\approx 10$ m); Wi-Fi ($\approx 30$--100 m indoors); Ethernet on copper ($\approx 100$ m per segment); fibre on a campus ($\approx$ a few km); metro fibre ($\approx$ tens of km); operator backbone/satellite ($\approx$ unlimited).
+\item Compare the required distance with the range of each candidate technology.
+\item Eliminate technologies that cannot reach, then among the survivors choose the cheapest that offers the required bandwidth.
+\item If the distance exceeds what the organisation may cable itself (public roads, other towns), conclude that an operator's service is required $\Rightarrow$ WAN logic.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Choosing cabling technologies for a school]
+A school has three blocks: the administration (A), the classrooms (B) 80 m from A, and the library (C) 600 m from A across the school yard. The school wants 1 Gbit/s between blocks. Propose a technology for each link, and state the resulting network class.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Link A--B (80 m):} this is within the 100 m limit of copper Ethernet (twisted pair, Cat 5e/6), which carries 1 Gbit/s. A simple copper link or a Wi-Fi bridge is acceptable; copper is more reliable.
+\item \textbf{Link A--C (600 m):} copper Ethernet cannot reach 600 m (limit 100 m) and Wi-Fi is unreliable at this distance outdoors. \textbf{Optical fibre} is required: it covers several kilometres at 1 Gbit/s and is immune to electromagnetic interference and lightning-induced surges.
+\item \textbf{Resulting class:} three buildings of the \emph{same school} on one site interconnected by its own cabling $\Rightarrow$ a \cle{CAN} (campus area network), itself made of three building LANs.
+\end{enumerate}
+\textbf{Examiner's remark.} The trap is to answer ``LAN'' because it is one school: the multi-building structure with inter-building fibre makes it a campus network.
+\end{exoresolu}
+
+\courssub{Method 6 --- Drawing a Hierarchical Diagram of an Organisation's Network}
+
+\begin{methode}[Representing LANs interconnected by a WAN]
+\begin{enumerate}
+\item Draw one cloud or box per site, labelled ``LAN of \dots''.
+\item Draw a large cloud labelled with the WAN technology (e.g.\ ``Operator MPLS / Internet + VPN'').
+\item Connect each site's router to the WAN cloud.
+\item Annotate each link with its technology (fibre, 4G, leased line) and each site with its equipment (switch, router, firewall).
+\item Keep the diagram readable: few words, clear labels.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Diagram for a company with three branches]
+A company has its head office in Douala and branches in Yaound\'e and Bafoussam. Each site has a LAN with a switch and a router. Sketch the complete network and classify each part.
+\tcblower
+\textbf{Solution.}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.9cm, minimum height=1.1cm, align=center] (dla) at (0,2.6) {LAN Douala\\(head office)};
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.9cm, minimum height=1.1cm, align=center] (yde) at (-3.6,-0.4) {LAN Yaound\'e\\(branch)};
+\node[draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.9cm, minimum height=1.1cm, align=center] (baf) at (3.6,-0.4) {LAN Bafoussam\\(branch)};
+\node[draw=poporange, very thick, rounded corners, fill=popgold!25, minimum width=4.6cm, minimum height=1.8cm, align=center] (wan) at (0,1.1) {WAN: operator\\MPLS / VPN};
+\draw[thick, popdark] (dla) -- (wan);
+\draw[thick, popdark] (yde) -- (wan);
+\draw[thick, popdark] (baf) -- (wan);
+\end{tikzpicture}
+\legende{Three site LANs interconnected by an operator's WAN.}
+\end{popfigure}
+
+\textbf{Classification.} Each site network (computers $\to$ switch $\to$ router) is a \cle{LAN}. The cloud interconnecting the three routers across different towns is a \cle{WAN}, implemented by leasing a service (MPLS or encrypted VPN tunnels over the Internet) from a telecom operator. The company's complete network is therefore ``three LANs joined by a WAN''.
+\end{exoresolu}
+
+\courssub{Method 7 --- Integration: Designing the Complete Network of an Organisation (GCE-style)}
+
+\begin{methode}[Solving a full network-design case study]
+\begin{enumerate}
+\item \textbf{Analyse the situation}: number of sites, distances, number of users, services needed (file sharing, Internet, video-surveillance, mobile money, e-mail).
+\item \textbf{Structure the solution in layers}: a LAN per site; a CAN if several buildings of one site; a WAN to join distant sites; Internet access via an ISP.
+\item \textbf{Choose equipment}: switches (LAN), routers (interconnection, WAN access), firewall (security), servers, Wi-Fi access points.
+\item \textbf{Choose WAN service}: leased line/MPLS for guaranteed quality, or VPN over Internet for lower cost; justify with budget and security.
+\item \textbf{Justify every choice} in one sentence; a justified choice earns marks, a bare list does not.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Integration activity --- the ``Savannah College'' project]
+Savannah College has two campuses in Ngaound\'er\'e (main campus: 3 buildings; annex campus: 1 building, 4 km away) and a small liaison office in Yaound\'e. The college needs: internal file and printer sharing, a common student database hosted at the main campus, Internet access for all sites, and secure access for the accountant who travels. Design the network: classify each part, choose the interconnection technologies, and justify your choices.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{LANs.} Each of the 4 buildings (3 on the main campus, 1 annex) gets its own \cle{LAN}: computers and printers connected to Ethernet switches, plus Wi-Fi access points for students. Justification: a building is within LAN range; Ethernet gives high speed at low cost.
+\item \textbf{CAN on the main campus.} The 3 buildings of the main campus are interconnected by the college's own \textbf{optical fibre} $\Rightarrow$ \cle{CAN}. Justification: the college owns the site, so it can lay fibre; fibre carries the traffic of the student database server placed in the main building.
+\item \textbf{MAN between the two campuses.} The annex is 4 km away, inside the same town. The college rents a \textbf{metro fibre link} from an operator (or uses a licensed radio bridge) $\Rightarrow$ \cle{MAN}. Justification: 4 km exceeds campus cabling rights (public roads), so an operator's metropolitan infrastructure is needed.
+\item \textbf{WAN to Yaound\'e.} The liaison office is in another city: the college leases a \textbf{VPN over the Internet} (cheaper) or an MPLS link (better guaranteed quality) $\Rightarrow$ \cle{WAN}. Justification: inter-city distance; only operators own such infrastructure.
+\item \textbf{Internet access and security.} One router with a firewall at the main campus provides shared Internet access via an ISP (e.g.\ CAMTEL fibre); the travelling accountant connects through an encrypted \textbf{VPN tunnel} so that accounting data cannot be read on public networks.
+\end{enumerate}
+\textbf{Summary table.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Part} & \textbf{Class} & \textbf{Technology} \\
+\hline
+Each building & LAN & Ethernet + Wi-Fi \\
+\hline
+Main campus (3 buildings) & CAN & College-owned fibre \\
+\hline
+Main campus $\leftrightarrow$ annex & MAN & Operator metro fibre \\
+\hline
+Ngaound\'er\'e $\leftrightarrow$ Yaound\'e & WAN & VPN/MPLS via operator \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Conclusion.} A real organisation's network is a \emph{combination} of all four classes; the designer's skill is to choose, for each link, the cheapest technology that covers the distance with the required speed and security.
+\end{exoresolu}
+
+\begin{attention}[Frequent mistakes at the GCE]
+\begin{itemize}
+\item Confusing \textbf{Internet} and \textbf{WWW}: the Internet is the physical WAN infrastructure; the Web is only one service running on it.
+\item Writing ``WAN'' for a large school: size in \emph{users} does not matter, only \emph{geographical coverage} and ownership of the links.
+\item Forgetting that a WAN solution always contains LANs at each site.
+\item Giving a network class without quoting the clue from the text that justifies it.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple-choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item A wireless link between a student's smartphone and her Bluetooth earpiece is an example of:
+\begin{enumerate}
+\item a PAN \item a LAN \item a MAN \item a WAN
+\end{enumerate}
+\item The computer network of Lycée de Nkol-Eton, covering all the buildings of the school campus, is best classified as:
+\begin{enumerate}
+\item a PAN \item a LAN/CAN \item a MAN \item the Internet
+\end{enumerate}
+\item A city-wide CCTV surveillance system interconnecting several police stations in Douala typically uses:
+\begin{enumerate}
+\item a PAN \item a LAN \item a MAN \item a SAN
+\end{enumerate}
+\item The national network interconnecting the branches of a bank in Yaoundé, Bafoussam, Garoua and Bamenda is:
+\begin{enumerate}
+\item a LAN \item a CAN \item a MAN \item a WAN
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+State whether each statement is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item A WAN is always owned by a single organisation.
+\item The Internet is the largest example of a WAN.
+\item A VPN allows a private network to be extended securely over a public network such as the Internet.
+\item A MAN generally covers a smaller geographical area than a LAN.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in at most three lines, giving one concrete example for each:
+\begin{enumerate}
+\item Personal Area Network (PAN);
+\item Local Area Network (LAN);
+\item Metropolitan Area Network (MAN);
+\item Wide Area Network (WAN);
+\item Virtual Private Network (VPN).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculation — link cost]
+An Internet Service Provider charges CFA $150\,000$ per kilometre per month for a dedicated fibre link.
+\begin{enumerate}
+\item Calculate the monthly cost of a $12\ \mathrm{km}$ link between two campuses of a university in Yaoundé.
+\item Calculate the annual cost of this link.
+\item The provider offers a $10\ \%$ discount for a 3-year commitment. Calculate the total amount paid over 3 years with the discount.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Matching scenarios to network types]
+Match each scenario below to the most appropriate network type (PAN, LAN, CAN, MAN, WAN), justifying each choice in one sentence:
+\begin{enumerate}
+\item a home Bluetooth connection between a laptop and a printer;
+\item the computer laboratory of Government High School Bafoussam;
+\item a city-wide traffic-monitoring camera system in Yaoundé;
+\item the interconnection of the regional offices of a microfinance institution across the ten regions of Cameroon;
+\item a wireless sensor network on a $5\ \mathrm{km}^2$ university campus in Dschang.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Advantages and disadvantages of a VPN]
+A company with headquarters in Douala and a branch in Bafoussam hesitates between a leased line and a site-to-site IPsec VPN over the Internet.
+\begin{enumerate}
+\item List \textbf{three} advantages of the site-to-site IPsec VPN solution over the leased line.
+\item List \textbf{two} disadvantages of the VPN solution.
+\item Conclude by recommending one solution for a small enterprise with a limited budget, justifying your choice.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Completing a network diagram]
+The diagram below shows the partial network of a company with two sites in the same town. Copy the diagram and complete it by inserting the appropriate device in each box (switch, router or firewall) and by labelling the network type of each segment (LAN or MAN).
+\begin{popfigure}
+\begin{tikzpicture}[every node/.style={font=\small}]
+\node[draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm] (pc1) at (0,0) {PCs Site A};
+\node[draw, fill=white, minimum width=1.4cm, minimum height=0.8cm] (d1) at (3,0) {?};
+\node[draw, fill=white, minimum width=1.4cm, minimum height=0.8cm] (d2) at (6,0) {?};
+\node[draw, fill=white, minimum width=1.4cm, minimum height=0.8cm] (d3) at (9,0) {?};
+\node[draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm] (pc2) at (12,0) {PCs Site B};
+\node[draw, ellipse, fill=popgreenL, minimum width=2.6cm, minimum height=1.2cm] (isp) at (6,2.2) {ISP};
+\draw[thick] (pc1) -- (d1) -- (d2) -- (d3) -- (pc2);
+\draw[thick, dashed] (d2) -- (isp);
+\end{tikzpicture}
+\legende{Partial company network to be completed.}
+\end{popfigure}
+\end{exercice}
+
+\begin{exercice}[Cost comparison — leased line versus 4G backup]
+A 10 Mbps MPLS link between Yaoundé and Douala (about $300\ \mathrm{km}$) costs CFA $150\,000$ per kilometre per month. A 4G LTE backup connection costs CFA $25\,000$ per month with an availability of $99.5\ \%$.
+\begin{enumerate}
+\item Calculate the monthly OPEX of the MPLS link.
+\item Calculate the total cost of each solution over a 5-year horizon.
+\item Compute, for the 4G solution, the expected number of hours of unavailability per month (take 1 month $= 30$ days).
+\item Which solution is more cost-effective over 5 years? Discuss one non-financial factor that could still justify the MPLS link.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question — classifying networks]
+(a) Define the following network types and state the typical geographical coverage of each: PAN, LAN, MAN, WAN. \hfill (8 marks)
+
+(b) For each of the following Cameroonian situations, identify the most appropriate network type and justify your answer:
+\begin{enumerate}
+\item a mobile money agent pairing his smartphone with a receipt printer;
+\item the computer network of a hospital occupying a single building;
+\item a fibre ring interconnecting the campuses of the University of Douala across the city;
+\item the national backbone operated by CAMTEL interconnecting several towns. \hfill (8 marks)
+\end{enumerate}
+
+(c) State two criteria, other than geographical coverage, that can be used to classify computer networks. \hfill (4 marks)
+\end{exercice}
+
+\begin{exercice}[Case study essay — e-commerce expansion]
+A Cameroonian e-commerce startup based in Yaoundé plans to expand to Douala and Bafoussam. Each new site will host about 20 employees, a local server room and point-of-sale terminals that must access the central database in Yaoundé in real time.
+
+Write an essay of about one page in which you:
+\begin{enumerate}
+\item propose a network architecture for the three sites, indicating the network type (LAN, MAN, WAN) of each segment and the devices required (switches, routers, firewalls); \hfill (8 marks)
+\item justify the choice between a MAN, a WAN built on leased lines, and site-to-site VPNs over the Internet, considering cost, security, availability and scalability; \hfill (8 marks)
+\item outline a four-step migration plan from the current single-site network to the new architecture, including staff training and a backup solution. \hfill (4 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Problem — designing a school network]
+The administration of a Government High School wants to interconnect three buildings (Administration, Classrooms block, Computer laboratory) spread over a campus of $800\ \mathrm{m} \times 500\ \mathrm{m}$, and to give teachers access to the Internet through a CAMTEL fibre subscription.
+
+(a) State the type of network to be deployed and justify your answer. \hfill (2 marks)
+
+(b) Draw a labelled diagram of the proposed network, showing the switch(es), the router, the firewall, the wireless access points and the ISP connection. \hfill (6 marks)
+
+(c) The school hesitates between wired Ethernet and Wi-Fi for the classroom block. Give two advantages of each technology and make a justified recommendation. \hfill (6 marks)
+
+(d) The ISP offers two subscriptions: 20 Mbps at CFA $75\,000$ per month and 50 Mbps at CFA $120\,000$ per month. The school has 200 students who each need at least $0.2\ \mathrm{Mbps}$ during practical sessions. Determine, by calculation, which subscription is sufficient, and compute its annual cost. \hfill (6 marks)
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple-choice questions]
+\begin{enumerate}
+\item \textbf{Answer: a) a PAN.} A Bluetooth link between a smartphone and an earpiece operates over a few metres around one person: this is the definition of a \cle{Personal Area Network} (typical range $\leq 10\ \mathrm{m}$).
+\item \textbf{Answer: b) a LAN/CAN.} The network is confined to the buildings of a single school campus (a few hundred metres to about $1\ \mathrm{km}$), which corresponds to a \cle{Local Area Network}, more precisely a \cle{Campus Area Network} when several buildings are interconnected.
+\item \textbf{Answer: c) a MAN.} The system covers a whole city (Douala), i.e.\ a few kilometres to tens of kilometres: this is a \cle{Metropolitan Area Network}.
+\item \textbf{Answer: d) a WAN.} The branches are located in different towns spread over the national territory (hundreds of kilometres apart); interconnecting them requires a \cle{Wide Area Network}, generally built on operator links (CAMTEL, MTN, Orange) or VPNs.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{False.} A WAN usually spans distances far beyond what one organisation can cable; it is generally built on \emph{leased} infrastructure belonging to telecommunications operators (e.g.\ CAMTEL's backbone), or on VPN tunnels over the public Internet.
+\item \textbf{True.} The Internet interconnects millions of networks on all continents; it is the largest WAN in existence — a ``network of networks''.
+\item \textbf{True.} A \cle{VPN} creates an encrypted tunnel through a public network (the Internet), so that remote sites or users communicate as if they were on the same private network, with confidentiality guaranteed by encryption (e.g.\ IPsec).
+\item \textbf{False.} It is the opposite: a MAN covers a town or city (a few km to $\approx 100\ \mathrm{km}$), whereas a LAN is limited to a building or a small site (a few metres to $\approx 1\ \mathrm{km}$). The order of increasing size is PAN $<$ LAN $<$ MAN $<$ WAN.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{PAN (Personal Area Network):} a very small network interconnecting the personal devices of one individual within a range of a few metres, usually wirelessly (Bluetooth, NFC). \emph{Example:} a smartphone paired with a Bluetooth headset.
+\item \textbf{LAN (Local Area Network):} a network covering a single building or a small site (up to about $1\ \mathrm{km}$), owned and managed by one organisation, using Ethernet or Wi-Fi. \emph{Example:} the computer laboratory network of a secondary school.
+\item \textbf{MAN (Metropolitan Area Network):} a network covering a town or city (a few km to about $100\ \mathrm{km}$), often built on fibre rings. \emph{Example:} a fibre ring interconnecting the campuses of the University of Douala.
+\item \textbf{WAN (Wide Area Network):} a network covering very large distances (regions, countries, continents), generally using operator infrastructure (leased lines, MPLS, satellite) or VPNs over the Internet. \emph{Example:} the network interconnecting the branches of a bank across Cameroon.
+\item \textbf{VPN (Virtual Private Network):} a technology that extends a private network securely over a public network by creating an encrypted tunnel between sites or users. \emph{Example:} a site-to-site IPsec VPN linking the Douala headquarters of a company to its Bafoussam branch through the Internet.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculation: link cost]
+\textbf{Given:} unit price $= \text{CFA }150\,000$ per km per month; distance $d = 12\ \mathrm{km}$.
+\begin{enumerate}
+\item Monthly cost:
+\[ C_{\text{month}} = 150\,000 \times 12 = \text{CFA }1\,800\,000. \]
+\item Annual cost (12 months):
+\[ C_{\text{year}} = 1\,800\,000 \times 12 = \text{CFA }21\,600\,000. \]
+\item Cost over 3 years without discount: $21\,600\,000 \times 3 = \text{CFA }64\,800\,000$.\\
+With a $10\ \%$ discount:
+\[ C_{3\text{ years}} = 64\,800\,000 \times (1 - 0.10) = 64\,800\,000 \times 0.9 = \text{CFA }58\,320\,000. \]
+The discount represents a saving of $64\,800\,000 - 58\,320\,000 = \text{CFA }6\,480\,000$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Matching scenarios to network types]
+\begin{enumerate}
+\item \textbf{PAN} — Bluetooth between a laptop and a printer works over a few metres around one user, which is the defining range of a PAN.
+\item \textbf{LAN} — a computer laboratory is a single room/building owned by one school, the typical scope of a LAN.
+\item \textbf{MAN} — the cameras are spread over the whole city of Yaoundé (several kilometres), which corresponds to a metropolitan coverage.
+\item \textbf{WAN} — offices located in the ten regions of Cameroon are hundreds of kilometres apart, so only a WAN (operator links or VPNs) can interconnect them.
+\item \textbf{CAN (campus area network, a large LAN)} — the sensors cover a single university campus of $5\ \mathrm{km}^2$, i.e.\ several buildings of one site: larger than a room-scale LAN but far smaller than a MAN.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Advantages and disadvantages of a VPN]
+\begin{enumerate}
+\item \textbf{Three advantages of the site-to-site IPsec VPN over the leased line:}
+\begin{itemize}
+\item \textbf{Lower cost:} it reuses ordinary Internet subscriptions instead of paying an expensive dedicated link per kilometre.
+\item \textbf{Security by encryption:} IPsec encrypts and authenticates all traffic in the tunnel, protecting the company's data on the public network.
+\item \textbf{Flexibility and scalability:} adding a new site or a mobile worker only requires an Internet connection and a VPN configuration, with no new physical line to install.
+\end{itemize}
+\item \textbf{Two disadvantages:}
+\begin{itemize}
+\item \textbf{Performance depends on the public Internet:} bandwidth and latency are not guaranteed (no service-level agreement on the tunnel itself), unlike a leased line.
+\item \textbf{Dependence on Internet availability and configuration complexity:} if the ISP link fails the VPN fails too, and setting up IPsec correctly requires skilled staff (misconfiguration creates security holes).
+\end{itemize}
+\item \textbf{Recommendation:} for a small enterprise with a limited budget, the \textbf{site-to-site IPsec VPN} is recommended: it offers an acceptable level of security (encryption) at a fraction of the cost of a leased line, and it can be deployed quickly over existing Internet subscriptions. A 4G backup connection can be added to mitigate the availability weakness.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Completing a network diagram]
+\textbf{Reasoning.} Within each site, the PCs are interconnected by a \textbf{switch}: this segment is a \textbf{LAN}. To leave the site and reach the other site through the ISP, traffic must pass through a \textbf{router}, which interconnects different networks; the link between the two sites via the ISP, within the same town, is a \textbf{MAN}. A \textbf{firewall} is placed at the boundary between the private network and the ISP to filter incoming and outgoing traffic. Hence, from left to right: switch, router, firewall.
+
+\begin{popfigure}
+\begin{tikzpicture}[every node/.style={font=\small}]
+\node[draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm] (pc1) at (0,0) {PCs Site A};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (d1) at (3,0) {Switch};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (d2) at (6,0) {Router};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (d3) at (9,0) {Firewall};
+\node[draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm] (pc2) at (12,0) {PCs Site B};
+\node[draw, ellipse, fill=popgreenL, minimum width=2.6cm, minimum height=1.2cm] (isp) at (6,2.2) {ISP};
+\draw[thick] (pc1) -- (d1) -- (d2) -- (d3) -- (pc2);
+\draw[thick, dashed] (d2) -- (isp);
+\node[font=\footnotesize\itshape, text=popdark] at (1.5,-0.9) {LAN (Site A)};
+\node[font=\footnotesize\itshape, text=popdark] at (7.5,-0.9) {MAN via ISP};
+\node[font=\footnotesize\itshape, text=popdark] at (11,-0.9) {LAN (Site B)};
+\end{tikzpicture}
+\legende{Completed network: switch -- router -- firewall; LAN segments on each site, MAN link through the ISP.}
+\end{popfigure}
+
+\textbf{Note:} a symmetric drawing (firewall--router--switch on each side of the ISP cloud) is equally acceptable, provided each site has its own switch (LAN), a router to reach the other network, and a firewall protecting the connection to the ISP.
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Cost comparison: leased line versus 4G backup]
+\textbf{Given:} MPLS: CFA $150\,000$/km/month over $300\ \mathrm{km}$; 4G: CFA $25\,000$/month, availability $99.5\ \%$.
+\begin{enumerate}
+\item Monthly OPEX of the MPLS link:
+\[ C_{\text{MPLS/month}} = 150\,000 \times 300 = \text{CFA }45\,000\,000. \]
+\item Over 5 years ($= 60$ months):
+\[ C_{\text{MPLS}} = 45\,000\,000 \times 60 = \text{CFA }2\,700\,000\,000; \qquad
+C_{\text{4G}} = 25\,000 \times 60 = \text{CFA }1\,500\,000. \]
+\item Unavailability of the 4G solution: the unavailability rate is $100\ \% - 99.5\ \% = 0.5\ \%$. One month $= 30 \times 24 = 720\ \mathrm{h}$, hence:
+\[ T_{\text{down}} = 720 \times 0.005 = 3.6\ \mathrm{h\ per\ month} \quad (\text{about } 3\ \mathrm{h}\ 36\ \mathrm{min}). \]
+\item \textbf{Cost-effectiveness:} the 4G solution is overwhelmingly cheaper (CFA $1.5$ million versus CFA $2.7$ billion over 5 years). \textbf{Non-financial factor justifying the MPLS link:} a leased MPLS line offers \emph{guaranteed bandwidth, low latency and a service-level agreement} (committed availability, priority repair), whereas 4G bandwidth is shared and variable — for real-time applications (banking transactions, videoconferencing, a central database accessed in real time) this guaranteed quality of service can justify the cost.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured question: classifying networks]
+\textbf{(a) (8 marks — 2 per network: 1 for the definition, 1 for the coverage)}
+\begin{itemize}
+\item \textbf{PAN:} network interconnecting the personal devices of one user; coverage: a few metres ($\leq 10\ \mathrm{m}$), e.g.\ Bluetooth.
+\item \textbf{LAN:} network of a single building or small site, owned by one organisation; coverage: a few metres to about $1\ \mathrm{km}$ (Ethernet, Wi-Fi).
+\item \textbf{MAN:} network covering a town or city; coverage: a few km to about $100\ \mathrm{km}$, usually fibre rings.
+\item \textbf{WAN:} network covering regions, countries or continents; coverage: hundreds to thousands of km, using operator infrastructure or VPNs over the Internet.
+\end{itemize}
+\textbf{(b) (8 marks — 2 per situation: 1 for the type, 1 for the justification)}
+\begin{enumerate}
+\item \textbf{PAN} — the smartphone and the receipt printer are paired by Bluetooth within arm's reach of the agent.
+\item \textbf{LAN} — the hospital occupies a single building, so its network is local and owned by one organisation.
+\item \textbf{MAN} — the fibre ring interconnects sites spread across the city of Douala, i.e.\ a metropolitan coverage.
+\item \textbf{WAN} — CAMTEL's backbone interconnects towns hundreds of kilometres apart on the national territory.
+\end{enumerate}
+\textbf{(c) (4 marks — 2 per criterion, any two of)}
+\begin{itemize}
+\item \textbf{Transmission technology / media:} wired (twisted pair, fibre) versus wireless (Wi-Fi, Bluetooth, 4G).
+\item \textbf{Ownership / administration:} private networks (owned by one organisation) versus public networks (operated by carriers).
+\item \textbf{Topology:} bus, star, ring, mesh. \quad \textbf{Architecture:} client--server versus peer-to-peer.
+\end{itemize}
+\emph{Examiner's expectations:} precise definitions with an order of magnitude for the coverage; justifications in (b) must explicitly refer to distance/coverage; in (c) the criteria must be \emph{other than} coverage and must be named clearly.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Case study essay: e-commerce expansion]
+\textbf{Indicative mark scheme (20 marks):} (a) architecture 8; (b) justification 8; (c) migration plan 4. Award marks for a coherent structure, correct vocabulary (LAN/WAN/VPN, switch, router, firewall) and justified choices.
+
+\textbf{Model answer (outline of a full essay).}
+
+\textbf{(a) Proposed architecture.} Each of the three sites (Yaoundé headquarters, Douala and Bafoussam branches) deploys its own \textbf{LAN}: the 20 workstations, point-of-sale terminals and the local server are connected to Ethernet \textbf{switches}; Wi-Fi access points serve mobile devices. Each LAN is headed by a \textbf{router} that connects the site to the outside, protected by a \textbf{firewall} at the boundary with the Internet. Since the sites are in different towns, the interconnection is a \textbf{WAN}: site-to-site \textbf{IPsec VPN tunnels} over the Internet link Douala and Bafoussam to Yaoundé, where the central database server sits in a secured server room behind the firewall. The POS terminals therefore reach the database through the encrypted tunnel in real time.
+
+\textbf{(b) Choice of the interconnection.} A \textbf{MAN} is impossible: the sites are in different cities, beyond metropolitan reach. A WAN built on \textbf{leased lines} offers guaranteed bandwidth, low latency and strong availability (SLA), but at a very high cost per kilometre per month — heavy for a startup — and each new site requires a new line. \textbf{Site-to-site VPNs over the Internet} are far cheaper (ordinary fibre/4G subscriptions), secure thanks to IPsec encryption and authentication, and highly scalable: a new branch only needs an Internet connection. Their weaknesses — variable performance and dependence on ISP availability — are mitigated by choosing good subscriptions and a 4G backup. Conclusion: \textbf{VPN over the Internet} is the best compromise of cost, security, availability and scalability for this startup.
+
+\textbf{(c) Four-step migration plan.}
+\begin{enumerate}
+\item \textbf{Audit and design:} inventory the existing network, size bandwidth needs, plan IP addressing and the security policy.
+\item \textbf{Deploy and test:} install the LANs, routers, firewalls and VPN tunnels at the new sites; test connectivity and real-time access to the database before opening.
+\item \textbf{Train staff:} train employees on the new tools and security rules (passwords, VPN use), and train a local administrator per site.
+\item \textbf{Switch over and secure continuity:} migrate progressively, set up a \textbf{4G backup link} and regular \textbf{backups of the central database} (with copies kept off-site), then monitor the network.
+\end{enumerate}
+\emph{Examiner's expectations:} a structured essay with an introduction, labelled paragraphs (a), (b), (c), a comparison table or explicit criteria (cost, security, availability, scalability), and a justified conclusion.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Problem: designing a school network]
+\textbf{(a) (2 marks)} The network to deploy is a \textbf{LAN}, more precisely a \textbf{Campus Area Network (CAN)}: the three buildings belong to a single school and are spread over a campus of $800\ \mathrm{m} \times 500\ \mathrm{m}$, i.e.\ within the local/campus range (well under a few kilometres), owned and managed by one organisation.
+
+\textbf{(b) (6 marks — 1 per correctly placed and labelled element: switches, router, firewall, access points, ISP link, buildings)}
+
+\begin{popfigure}
+\begin{tikzpicture}[every node/.style={font=\small}]
+\node[draw, rounded corners, fill=popblueL, minimum width=2.6cm, minimum height=1cm] (adm) at (0,2.5) {Administration};
+\node[draw, rounded corners, fill=popblueL, minimum width=2.6cm, minimum height=1cm] (cla) at (0,0) {Classrooms block};
+\node[draw, rounded corners, fill=popblueL, minimum width=2.6cm, minimum height=1cm] (lab) at (0,-2.5) {Computer lab};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (sw1) at (3.2,2.5) {Switch};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (sw2) at (3.2,0) {Switch};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (sw3) at (3.2,-2.5) {Switch};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (rt) at (6.4,0) {Router};
+\node[draw, fill=white, minimum width=1.6cm, minimum height=0.8cm] (fw) at (9,0) {Firewall};
+\node[draw, ellipse, fill=popgreenL, minimum width=2.8cm, minimum height=1.2cm] (isp) at (12,0) {CAMTEL fibre};
+\node[draw, fill=popgreenL, minimum width=1.2cm, minimum height=0.7cm] (ap1) at (3.2,1.3) {AP};
+\node[draw, fill=popgreenL, minimum width=1.2cm, minimum height=0.7cm] (ap2) at (3.2,-1.2) {AP};
+\draw[thick] (adm) -- (sw1); \draw[thick] (cla) -- (sw2); \draw[thick] (lab) -- (sw3);
+\draw[thick] (sw1) -- (rt); \draw[thick] (sw2) -- (rt); \draw[thick] (sw3) -- (rt);
+\draw[thick] (rt) -- (fw) -- (isp);
+\draw[thick, dashed] (ap1) -- (sw2); \draw[thick, dashed] (ap2) -- (sw3);
+\node[font=\footnotesize\itshape, text=popdark] at (4.8,3.4) {Campus LAN (Ethernet + Wi-Fi)};
+\end{tikzpicture}
+\legende{Proposed school network: one switch per building, central router, firewall, Wi-Fi access points, CAMTEL fibre link.}
+\end{popfigure}
+
+\textbf{(c) (6 marks — 2 advantages per technology, 2 for the justified recommendation)}
+\begin{itemize}
+\item \textbf{Wired Ethernet:} (i) high, stable bandwidth and low latency, not affected by interference; (ii) better security, since an intruder must physically plug into the network.
+\item \textbf{Wi-Fi:} (i) mobility — students and teachers connect anywhere in the building with laptops and tablets; (ii) lower installation cost and no cabling work in existing classrooms, easy to extend.
+\item \textbf{Recommendation:} use \textbf{wired Ethernet for the computer laboratory} (fixed desktop PCs needing stable, fast connections for practical sessions) and \textbf{Wi-Fi in the classroom block} (mobile devices, flexibility), i.e.\ a hybrid solution combining the strengths of both.
+\end{itemize}
+
+\textbf{(d) (6 marks — 2 for the need, 2 for the comparison, 2 for the annual cost)}\\
+Total bandwidth required during practical sessions:
+\[ D = 200 \times 0.2\ \mathrm{Mbps} = 40\ \mathrm{Mbps}. \]
+The 20 Mbps subscription ($20 < 40$) is \textbf{insufficient}; the 50 Mbps subscription ($50 \geq 40$) is \textbf{sufficient}.\\
+Annual cost of the chosen subscription:
+\[ C = 120\,000 \times 12 = \text{CFA }1\,440\,000\ \text{per year}. \]
+\emph{Examiner's expectations:} the diagram must be labelled and show the firewall \emph{between} the router and the ISP; the calculation in (d) must compare the aggregated demand with each offer before concluding.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, font=\small},
+    concept color=popblue,
+    level 1/.append style={level distance=5.5cm, sibling angle=360/7},
+    level 2/.append style={level distance=3.5cm, sibling angle=360/7}]
+\node[concept] {Classification of Computer Networks}
+    child[concept color=poporange] {node[concept] {PAN}}
+    child[concept color=popgreen] {node[concept] {LAN}}
+    child[concept color=poppurple] {node[concept] {CAN}}
+    child[concept color=poppink] {node[concept] {MAN}}
+    child[concept color=popgold] {node[concept] {WAN}}
+    child[concept color=popblueL] {node[concept] {Internet}}
+    child[concept color=popgreenL] {node[concept] {Selection Criteria}};
+\end{tikzpicture}
+\legende{Mind map of network classification by coverage area and selection factors}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key Definitions}
+\begin{itemize}
+\item \cle{PAN} (Personal Area Network): covers a few metres, e.g. Bluetooth, USB, NFC.
+\item \cle{LAN} (Local Area Network): covers a building or campus, high speed (100 Mbps–10 Gbps), owned by one organisation.
+\item \cle{CAN} (Campus Area Network): interconnects several LANs within a limited geographical area (university, hospital).
+\item \cle{MAN} (Metropolitan Area Network): spans a city, typically operated by a telecom provider (e.g. CAMTEL fibre ring).
+\item \cle{WAN} (Wide Area Network): covers large distances (countries, continents), uses leased lines, satellite, MPLS, the Internet.
+\item \cle{Internet}: global system of interconnected WANs using TCP/IP.
+\item \cle{Bandwidth}: maximum data rate (bits/s) a link can carry.
+\item \cle{Latency}: time for a packet to travel from source to destination.
+\item \cle{Scalability}: ability to add users/devices without major redesign.
+\item \cle{Security}: confidentiality, integrity, availability measures (firewalls, VPN, encryption).
+\end{itemize}
+
+\textbf{Laws / Formulas / Theorems (examinable)}
+\begin{itemize}
+\item No numeric formulae are required for this chapter. Focus on qualitative comparison tables and justification arguments.
+\item Remember the \emph{coverage–cost–performance trade‑off}: larger coverage $\rightarrow$ higher cost, lower bandwidth per user, higher latency.
+\end{itemize}
+
+\textbf{Method: Choosing the Right Network for an Organisation}
+\begin{enumerate}
+\item \textbf{Define the geographical scope} – single room (PAN), one building (LAN), multiple buildings (CAN), city (MAN), multi‑city/country (WAN).
+\item \textbf{Estimate users and devices} – count workstations, servers, IoT, mobile devices.
+\item \textbf{Determine bandwidth and latency requirements} – video conferencing, cloud apps, real‑time control.
+\item \textbf{Assess budget} – capital expenditure (cabling, switches, routers) vs operational expenditure (leased line fees, ISP contracts).
+\item \textbf{Evaluate security and compliance} – data sensitivity, regulatory needs (e.g. ANTIC guidelines), need for VPN or private MPLS.
+\item \textbf{Select technology and topology} – Ethernet/Wi‑Fi for LAN, fibre/MPLS for MAN/WAN, VPN over Internet for cost‑effective secure WAN.
+\item \textbf{Plan for scalability and management} – hierarchical design (core, distribution, access), monitoring tools, redundancy.
+\end{enumerate}
+
+\textbf{Common Mistakes (Traps)}
+\begin{itemize}
+\item Confusing \cle{CAN} with \cle{MAN}: CAN is privately owned, limited to a campus; MAN is a public/operator service across a city.
+\item Thinking \cle{WAN} always means “the Internet” – a private WAN (MPLS, leased line) is not the public Internet.
+\item Ignoring \cle{latency} when choosing a WAN technology; satellite links have high latency unsuitable for real‑time apps.
+\item Forgetting to justify the choice with at least three criteria (coverage, cost, bandwidth, security, scalability).
+\item Drawing network diagrams without labelling devices (router, switch, firewall) and media (fibre, copper, wireless).
+\end{itemize}
+
+\textbf{GCE Advanced Level Tips}
+\begin{itemize}
+\item Memorise the \emph{definition table} (coverage, typical speed, ownership, example) for PAN, LAN, CAN, MAN, WAN, Internet.
+\item Be ready to \textbf{compare} two network types in a structured table (criteria as rows, network types as columns).
+\item In essay questions, \textbf{state the scenario}, list the \textbf{selection criteria}, then \textbf{recommend} with justification.
+\item Practice sketching a simple \textbf{hierarchical network diagram} (core–distribution–access) and label media types.
+\item Know the role of \cle{ANTIC} (regulatory) and major Cameroonian ISPs (CAMTEL, MTN, Orange) as real‑world examples.
+\item Time management: allocate 5 min for definitions, 10 min for comparison table, 15 min for design justification.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
