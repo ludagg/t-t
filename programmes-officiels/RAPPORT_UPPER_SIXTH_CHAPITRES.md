@@ -1,10 +1,9 @@
 # Upper Sixth (série générale anglophone) — matières retenues et chapitres
 
-Unité de génération = le **chapitre** (les « leçons » de la fiche décrivent son contenu). Matières exclues : Film directing, Screenwriting II, Sociology of cinema, Film economy and law, Professional film production project, Physical Education and sports, Cameroon history, Manual Labour (3), Guidance and Counselling. Données : `upper_sixth_chapters.json`.
+Unité de génération = le **chapitre** (les « leçons » de la fiche décrivent son contenu). Matières exclues : Film directing, Screenwriting II, Sociology of cinema, Film economy and law, Professional film production project, Physical Education and sports, Cameroon history, Manual Labour (3), Guidance and Counselling, Accounting. Données : `upper_sixth_chapters.json`.
 
 | Matière | Chapitres |
 |---|---|
-| Accounting | 6 |
 | Biology | 9 |
 | Chemistry | 6 |
 | Computer Science | 19 |
@@ -23,4 +22,4 @@ Unité de génération = le **chapitre** (les « leçons » de la fiche décrive
 | Pure mathematics with statistics | 16 |
 | World history | 9 |
 
-Total : 18 matières, 195 chapitres.
+Total : 17 matières, 189 chapitres.
