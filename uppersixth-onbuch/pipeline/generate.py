@@ -349,6 +349,7 @@ def ce_fix(body):
 def repair_damage(body):
     """Répare les dégâts d'anciennes règles : $^{..}$ à l'intérieur d'un contexte déjà math."""
     body = re.sub(r"\\\[\s*\\\[(\\boxed\{[^\n]*\})\\\]\s*\\\]", lambda m: "\\[" + m.group(1) + "\\]", body)
+    body = re.sub(r"(\\\[(?:(?!\\\]).)*?\n)\\\[(\\boxed\{[^\n]*\})\\\]\s*\n(\\\])", lambda m: m.group(1) + m.group(2) + "\n" + m.group(3), body, flags=re.S)
     body = re.sub(r"\^\\prime(?=[a-z_^])", "'", body)
     body = re.sub(r"\$\^\\prime\$(?=[a-z])", "'", body)
     def strip(m):
@@ -374,15 +375,18 @@ def us_fix(body):
                   lambda m: m.group(1) + "={" + (m.group(2) if "$" in m.group(2) else _text_scripts(m.group(2))) + "}", body)
     # \boxed{..} seul sur sa ligne, hors math -> formule centrée (sans doubler un \[ existant)
     def _boxed(body):
-        L, out = body.split("\n"), []
-        for i, l in enumerate(L):
+        L, out, depth = body.split("\n"), [], 0
+        for l in L:
             m = re.match(r"^[ \t]*(\\boxed\{.*\})[ \t]*$", l)
-            prev = next((x.strip() for x in reversed(out) if x.strip()), "")
-            if m and prev not in ("\\[", "$$") and not prev.endswith("\\begin{align*}"):
-                l = "\\[" + m.group(1).replace("$", "") + "\\]"
+            if m and depth <= 0:
+                out.append("\\[" + m.group(1).replace("$", "") + "\\]")
+                continue
+            depth += l.count("\\[") - l.count("\\]")
+            depth += l.count("\\begin{align") + l.count("\\begin{equation") + l.count("\\begin{gather") - l.count("\\end{align") - l.count("\\end{equation") - l.count("\\end{gather")
             out.append(l)
         return "\n".join(out)
     body = _boxed(body)
+    body = re.sub(r"\\addlegendentry\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}", lambda m: "\\addlegendentry{" + re.sub(r"\\to(?![A-Za-z])", lambda _k: "\\rightarrow ", re.sub(r"\\bar\b", lambda _k: "\\overline", m.group(1))).replace("{,}", ",").replace(",", "{,}") + "}", body)  # \bar est une commande pgfplots
     body = re.sub(r"\\clip\[[^\]\n]*\]", lambda _m: "\\clip", body)   # \clip n'accepte pas d'options
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"(?<![\w}])\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
