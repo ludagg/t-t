@@ -333,8 +333,9 @@ def ce_fix(body):
         for x, y in (("·", "."), ("→", "->"), ("⇌", "<=>"), ("⇄", "<=>"), ("−", "-"), ("–", "-"), ("’", "'"), ("°", "^\\circ ")):
             s = s.replace(x, y)
         s = re.sub(r"\s<\s", " $<$ ", s)
+        s = re.sub(r"\s>\s", " $>$ ", s)
         inner = s[4:-1]
-        if re.search(r"\\|\$|<-|\bF\d?B", inner):
+        if re.search(r"\\|\$|<-|\bF\d?B|'", inner):
             return _ce_math(inner)
         arrow = "->" in inner or "<=>" in inner or "<-" in inner
         if arrow:
@@ -347,7 +348,7 @@ def ce_fix(body):
 
 def repair_damage(body):
     """Répare les dégâts d'anciennes règles : $^{..}$ à l'intérieur d'un contexte déjà math."""
-    body = re.sub(r"\^\\prime(?=[a-z])", "'", body)
+    body = re.sub(r"\^\\prime(?=[a-z_^])", "'", body)
     body = re.sub(r"\$\^\\prime\$(?=[a-z])", "'", body)
     def strip(m):
         return re.sub(r"\$([\^_]\{[^{}]*\})\$", r"\1", m.group(0))
@@ -360,14 +361,18 @@ def us_fix(body):
     body = ce_fix(body)
     body = text_scripts_fix(body)
     def _fmt(m):  # ^ / _ dans \textbf/\emph/\textit (y compris dans les nœuds TikZ)
-        inner = m.group(2)
+        inner = m.group(2)[1:-1]
         if "$" in inner or "\\" in inner:
             return m.group(0)
         inner = re.sub(r"\^(\{[^{}]*\}|\w)", lambda k: "$^{" + k.group(1).strip("{}") + "}$", inner)
         inner = re.sub(r"(?<!\\)_(\{[^{}]*\}|\w)", lambda k: "$_{" + k.group(1).strip("{}") + "}$", inner)
         return m.group(1) + "{" + inner + "}"
-    body = re.sub(r"(\\(?:emph|textbf|textit))\{([^{}]*[\^_][^{}]*)\}", _fmt, body)
+    body = re.sub(r"(\\(?:emph|textbf|textit))(\{(?:[^{}]|\{[^{}]*\})*\})", lambda m: _fmt(m) if re.search(r"[\^_]", m.group(2)) else m.group(0), body)
+    # ^ / _ dans les étiquettes de pgfplots (texte, pas math)
+    body = re.sub(r"\b((?:x|y|z)?label|title)\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}",
+                  lambda m: m.group(1) + "={" + (m.group(2) if "$" in m.group(2) else _text_scripts(m.group(2))) + "}", body)
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
+    body = re.sub(r"(?<![\w}])\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
     body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info)\}",
                   lambda m: "\\" + m.group(1) + ("{aretenir}" if m.group(2) in ("examtip", "examtips", "tip", "keypoint", "keypoints", "summary") else "{exemplebox}" if m.group(2) in ("example", "worked") else "{attention}"), body)
