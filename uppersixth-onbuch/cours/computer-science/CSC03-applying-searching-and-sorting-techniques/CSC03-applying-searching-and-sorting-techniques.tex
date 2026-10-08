@@ -1,0 +1,3061 @@
+% Applying searching and sorting techniques. — Computer Science Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic CSC03-applying-searching-and-sorting-techniques.tex
+\newcommand{\DOCMATIERE}{Computer Science}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Computer Science}
+\newcommand{\DOCLECON}{3}
+\newcommand{\DOCTITRE}{Applying searching and sorting techniques.}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Applying searching and sorting techniques.}{Computer Science}{Upper Sixth}{Upper Sixth — Computer Science}{3}{2 periods}{This chapter presents the fundamental searching algorithms (linear and binary search) and the classic sorting algorithms (bubble, selection, insertion), with their step-by-step traces, implementations and efficiency analysis. Students learn to compare algorithms and to select the appropriate technique for a given problem, a core skill for the GCE Advanced Level examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can explain what searching and sorting mean and why they matter in real applications.
+\item By the end of this chapter I can trace and implement a linear (sequential) search on a list of values.
+\item By the end of this chapter I can trace and implement a binary search and state the condition under which it works.
+\item By the end of this chapter I can compare the efficiency of linear and binary search using the number of comparisons.
+\item By the end of this chapter I can trace and implement bubble sort, selection sort and insertion sort on a small data set.
+\item By the end of this chapter I can count the number of comparisons and swaps performed by a sorting algorithm.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Searching Algorithms I: Linear Search
+\item Searching Algorithms II: Binary Search
+\item Sorting Algorithms I: Bubble Sort and Selection Sort
+\item Sorting Algorithms II: Insertion Sort, Comparison and Choice of Algorithms
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can explain what searching and sorting mean and why they matter in real applications.
+\item By the end of this chapter I can trace and implement a linear (sequential) search on a list of values.
+\item By the end of this chapter I can trace and implement a binary search and state the condition under which it works.
+\item By the end of this chapter I can compare the efficiency of linear and binary search using the number of comparisons.
+\item By the end of this chapter I can trace and implement bubble sort, selection sort and insertion sort on a small data set.
+\item By the end of this chapter I can count the number of comparisons and swaps performed by a sorting algorithm.
+\item By the end of this chapter I can compare the time complexity of the studied algorithms using Big-O notation.
+\item By the end of this chapter I can choose the most appropriate searching or sorting algorithm for a given situation and justify my choice.
+\item By the end of this chapter I can write correct pseudocode and a program (e.g. in C or Python) for each studied algorithm.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Arrays (one-dimensional lists): declaration, indexing, traversal (Lower Sixth).
+\item Loops (for, while) and conditional structures (if...else).
+\item Writing and reading simple pseudocode and flowcharts.
+\item Basic notions of algorithm efficiency: counting elementary operations.
+\item Functions/procedures and parameter passing.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Searching Algorithms I: Linear Search}
+
+Every morning at the Mokolo market in Yaoundé, a trader searching for one customer's name in a 500-page debt notebook flips page after page — unless she keeps the notebook sorted alphabetically, in which case she finds the name in seconds. The same drama plays out in every computer: a school database of 2\,000 students, a phone contact list, the electoral register. How a program searches, and how it first organises its data, can mean the difference between an answer in a millisecond and an answer in an hour. In this chapter we discover the classic searching and sorting algorithms, measure their efficiency, and learn to choose the right one for the job.
+
+\courssub{What is Searching?}
+
+\begin{definition}[Searching and the Search Key]
+\textbf{Searching} is the process of determining whether a specific value, called the \cle{search key} (or simply \cle{key}), exists in a collection of data (an array, a list, a file, etc.) and, if it does, returning its position (index). If the key is not present, the algorithm reports failure (often by returning \texttt{-1} or a Boolean \texttt{false}).
+\end{definition}
+
+In daily life we search constantly: a student looks for her name on an exam results sheet, a librarian finds a book by its call number, a phone contacts app locates a number when you type a name. In all these cases there is a \emph{collection} (the results sheet, the catalogue, the contact list) and a \emph{target value} (the name, the call number, the phone number). The efficiency of the search depends on how the collection is organised and on the algorithm used.
+
+\begin{savaistu}[Historical Note]
+The concept of sequential search is as old as written records. Ancient Mesopotamian scribes used linear search on clay tablets to verify tax payments. In the 19th century, library catalogues used card drawers where a linear scan was the only option until Melvil Dewey's classification system (1876) introduced a sorted structure, enabling faster lookup — a physical analogue of moving from $O(n)$ to $O(\log n)$.
+\end{savaistu}
+
+\courssub{Linear (Sequential) Search: Principle}
+
+\begin{definition}[Linear (Sequential) Search]
+\textbf{Linear search} (also called \textbf{sequential search}) examines each element of the collection one by one, starting from the first, until either the key is found or the end of the collection is reached. It makes no assumption about the order of the data; it works on both sorted and unsorted lists.
+\end{definition}
+
+Imagine you have lost your student ID card in a classroom. You check each desk, one after another, until you find it or you have checked every desk. That is exactly linear search.
+
+\begin{exemplebox}[Linear Search on an Array of Integers]
+Consider the array \texttt{A} of 8 integers below. We search for the key \texttt{42}.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Array cells
+\foreach \i/\val in {0/12, 1/7, 2/42, 3/19, 4/3, 5/56, 6/8, 7/25} {
+    \node[draw, minimum width=1cm, minimum height=0.8cm] (c\i) at (\i*1.1, 0) {\val};
+    \node[below=0.1cm of c\i] {\texttt{[\i]}};
+}
+% Arrow scanning
+\draw[poporange, thick, ->] (c0.north) ++(0,0.5) -- ++(0,0.5) node[above] {Start};
+\foreach \i in {0,1,2} {
+    \pgfmathtruncatemacro{\step}{\i+1}
+    \draw[poporange, thick, ->] (c\i.north) ++(0,0.8) -- ++(0,0.3) node[above, text width=1.2cm, align=center] {Compare \#\step};
+}
+% Highlight found
+\node[draw=popgreen, thick, minimum width=1cm, minimum height=0.8cm] at (2*1.1, 0) {42};
+\node[below=0.1cm of c2, popgreen] {\textbf{Found!}};
+\end{tikzpicture}
+\legende{Linear search for key 42: the algorithm checks indices 0, 1, then 2 where the key is found. Three comparisons were made.}
+\end{popfigure}
+
+\textbf{Trace table:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|c|X|}\hline
+\textbf{Step} & \textbf{Index examined} & \textbf{Element} & \textbf{Comparison result} \\ \hline
+1 & 0 & 12 & $12 \neq 42$ → continue \\ \hline
+2 & 1 & 7 & $7 \neq 42$ → continue \\ \hline
+3 & 2 & 42 & $42 = 42$ → \textbf{key found at index 2} \\ \hline
+\end{tabularx}
+\end{center}
+The search stops immediately when the key is found. If the key were \texttt{99} (not in the array), the algorithm would make 8 comparisons and then report ``not found''.
+\end{exemplebox}
+
+\courssub{Pseudocode and Implementation}
+
+\begin{methode}[Linear Search Algorithm (returning index or -1)]
+\begin{enumerate}
+    \item Input: array \texttt{A} of size \texttt{n}, search key \texttt{key}.
+    \item For \texttt{i} from \texttt{0} to \texttt{n-1} do:
+    \item \quad If \texttt{A[i] == key} then return \texttt{i}  \quad (key found at index \texttt{i})
+    \item End For
+    \item Return \texttt{-1}  \quad (key not found after examining all elements)
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Pseudocode and Python Implementation]
+\textbf{Pseudocode (0-based indexing, standard for implementation):}
+\begin{itemize}
+    \item \texttt{FUNCTION linearSearch(A, n, key)}
+    \item \texttt{    FOR i = 0 TO n-1}
+    \item \texttt{        IF A[i] == key THEN}
+    \item \texttt{            RETURN i}
+    \item \texttt{        END IF}
+    \item \texttt{    END FOR}
+    \item \texttt{    RETURN -1}
+    \item \texttt{END FUNCTION}
+\end{itemize}
+
+\textbf{Python code:}
+\begin{itemize}
+    \item \texttt{def linear\_search(arr, key):}
+    \item \texttt{    for i in range(len(arr)):}
+    \item \texttt{        if arr[i] == key:}
+    \item \texttt{            return i}
+    \item \texttt{    return -1}
+\end{itemize}
+
+\textbf{Note:} In GCE pseudocode, 1-based indexing (\texttt{FOR i = 1 TO n}) is also accepted. If using 1-based indexing, adjust the return value accordingly (return \texttt{i} for position, \texttt{0} or \texttt{-1} for not found). Always state your indexing convention.
+\end{exemplebox}
+
+\courssub{Variant: Linear Search on a Sorted List with Early Stop}
+
+If the list is \emph{sorted in ascending order}, we can stop as soon as the current element exceeds the key, because all subsequent elements will be even larger.
+
+\begin{methode}[Linear Search on Sorted Array (Ascending)]
+\begin{enumerate}
+    \item Input: sorted array \texttt{A} of size \texttt{n} (ascending), search key \texttt{key}.
+    \item For \texttt{i} from \texttt{0} to \texttt{n-1} do:
+    \item \quad If \texttt{A[i] == key} then return \texttt{i}
+    \item \quad Else if \texttt{A[i] > key} then return \texttt{-1}  \quad (key cannot appear later)
+    \item End For
+    \item Return \texttt{-1}
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Early Stop on Sorted Array]
+Array \texttt{B = [3, 7, 12, 19, 25, 42, 56, 78]} (sorted). Search for \texttt{20}.
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|c|X|}\hline
+\textbf{Step} & \textbf{Index} & \textbf{Element} & \textbf{Decision} \\ \hline
+1 & 0 & 3 & $3 < 20$ → continue \\ \hline
+2 & 1 & 7 & $7 < 20$ → continue \\ \hline
+3 & 2 & 12 & $12 < 20$ → continue \\ \hline
+4 & 3 & 19 & $19 < 20$ → continue \\ \hline
+5 & 4 & 25 & $25 > 20$ → \textbf{stop, key not found} \\ \hline
+\end{tabularx}
+\end{center}
+Only 5 comparisons instead of 8. The early stop does not change the worst-case complexity (still $O(n)$) but improves the average case when the key is absent or located near the beginning.
+\end{exemplebox}
+
+\courssub{Efficiency Analysis}
+
+\begin{propriete}[Time Complexity of Linear Search]
+For a list of \texttt{n} elements:
+\begin{itemize}
+    \item \textbf{Best case:} 1 comparison (key is at the first position, index 0). $\Omega(1)$.
+    \item \textbf{Worst case:} \texttt{n} comparisons (key is at the last position, index \texttt{n-1}, or not present). $O(n)$.
+    \item \textbf{Average case (successful search, uniform distribution):} $\frac{n+1}{2} \approx \frac{n}{2}$ comparisons. $\Theta(n)$.
+    \item \textbf{Average case (unsuccessful search):} \texttt{n} comparisons.
+\end{itemize}
+The time complexity is \textbf{linear}, denoted $O(n)$.
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=\linewidth,
+    height=7cm,
+    ybar,
+    bar width=6pt,
+    ylabel={Number of comparisons},
+    xlabel={List size $n$},
+    xtick={1,2,3},
+    xticklabels={$n=10$, $n=100$, $n=1000$},
+    legend style={at={(0.5,1.05)}, anchor=south, legend columns=3},
+    ymin=0,
+    ymax=1100,
+    enlarge x limits=0.2,
+]
+\addplot[popblue, fill=popblueL] coordinates {(1,1) (2,1) (3,1)};
+\addplot[poporange, fill=poporange!30] coordinates {(1,5.5) (2,50.5) (3,500.5)};
+\addplot[poppink, fill=poppink!30] coordinates {(1,10) (2,100) (3,1000)};
+\legend{Best case (1), Average case $\approx n/2$, Worst case ($n$)}
+\end{axis}
+\end{tikzpicture}
+\legende{Comparison counts for linear search: best case is always 1, average grows as $n/2$, worst case grows as $n$.}
+\end{popfigure}
+
+\courssub{Advantages and Limitations}
+
+\begin{aretenir}[Linear Search: When to Use It]
+\begin{itemize}
+    \item \textbf{Advantages:}
+    \begin{itemize}
+        \item Works on \textbf{any} list — sorted or unsorted.
+        \item Very simple to understand, implement, and debug.
+        \item No preprocessing (sorting) required.
+        \item Efficient for \textbf{small} data sets (e.g., $n < 50$) or when searches are infrequent.
+    \end{itemize}
+    \item \textbf{Limitations:}
+    \begin{itemize}
+        \item Slow for large data sets: doubling the list size doubles the search time.
+        \item Not suitable for real-time systems with large databases where $O(\log n)$ or $O(1)$ searches are needed.
+    \end{itemize}
+\end{itemize}
+\end{aretenir}
+
+\courssub{Common Mistakes and Traps}
+
+\begin{attention}[Frequent Errors in Linear Search]
+\begin{enumerate}
+    \item \textbf{Forgetting the ``not found'' case.} If the loop ends without returning, you \emph{must} return a sentinel value (\texttt{-1}, \texttt{None}, \texttt{false}) or raise an exception. Many students omit this and the function returns nothing (or garbage).
+    \item \textbf{Off-by-one errors in the loop bounds.} Using \texttt{i <= n} instead of \texttt{i < n} (0-based indexing) causes an out-of-bounds access. In 1-based pseudocode, the loop is \texttt{FOR i = 1 TO n}.
+    \item \textbf{Modifying the loop variable inside the loop.} Never write \texttt{i = i + 1} inside a \texttt{for} loop that already increments \texttt{i}.
+    \item \textbf{Confusing the key with the index.} The condition is \texttt{A[i] == key}, not \texttt{i == key}.
+    \item \textbf{Using linear search on a large sorted list when binary search is possible.} If the list is sorted and large, binary search ($O(\log n)$) is dramatically faster. Linear search on a sorted list is only justified for very small $n$ or when the list is stored on a medium that does not support random access (e.g., a tape drive).
+\end{enumerate}
+\end{attention}
+
+\courssub{Worked Examination-Style Exercise}
+
+\begin{exoresolu}[Linear Search Trace and Complexity]
+\textbf{Statement:} An array \texttt{SCORES} contains the marks of 12 students in a Computer Science test:
+\[
+\texttt{SCORES} = [45, 62, 38, 71, 55, 62, 80, 49, 55, 67, 53, 60]
+\]
+The pass mark is 50. A teacher wants to find the \textbf{first} student who scored exactly 62.
+\begin{enumerate}
+    \item Trace the linear search algorithm for key = 62, showing the index examined and the comparison at each step until the key is found.
+    \item How many comparisons are made?
+    \item If the teacher instead searches for the key 90 (which is not in the array), how many comparisons will be made?
+    \item State the best-case, worst-case, and average-case time complexities of linear search for an array of size $n$.
+\end{enumerate}
+
+\tcblower
+\textbf{Detailed solution:}
+\begin{enumerate}
+    \item \textbf{Trace table for key = 62:}
+    \begin{center}
+    \begin{tabularx}{\linewidth}{|c|c|c|X|}\hline
+    \textbf{Step} & \textbf{Index $i$} & \texttt{SCORES[i]} & \textbf{Comparison} \\ \hline
+    1 & 0 & 45 & $45 \neq 62$ → continue \\ \hline
+    2 & 1 & 62 & $62 = 62$ → \textbf{found at index 1} \\ \hline
+    \end{tabularx}
+    \end{center}
+    The algorithm stops at step 2 because the first occurrence of 62 is at index 1.
+    \item \textbf{Number of comparisons:} 2.
+    \item \textbf{Search for key = 90 (absent):} The algorithm examines all 12 elements (indices 0 to 11) and finds no match. \textbf{12 comparisons} are made, then it returns -1.
+    \item \textbf{Complexities for size $n$:}
+    \begin{itemize}
+        \item Best case: $\Omega(1)$ (1 comparison, key at index 0).
+        \item Worst case: $O(n)$ ($n$ comparisons, key at index $n-1$ or absent).
+        \item Average case (successful, uniform): $\Theta(n)$ ($\approx n/2$ comparisons).
+    \end{itemize}
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Summary}
+
+\begin{aretenir}[Key Points: Linear Search]
+\begin{itemize}
+    \item Linear search scans the list sequentially from the beginning.
+    \item It works on \textbf{unsorted} and \textbf{sorted} lists.
+    \item Pseudocode: loop \texttt{i = 0 .. n-1}, if \texttt{A[i] == key} return \texttt{i}; after loop return \texttt{-1}.
+    \item On a sorted list, add an early stop: if \texttt{A[i] > key} return \texttt{-1}.
+    \item Time complexity: best $O(1)$, worst $O(n)$, average $O(n)$.
+    \item Use for small lists or when the list is unsorted and you cannot sort it (or sorting would cost more than the search).
+    \item Always handle the ``not found'' case and check loop bounds carefully.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice Exercises]
+\begin{enumerate}
+    \item Write a pseudocode function \texttt{linearSearchLast(A, n, key)} that returns the index of the \textbf{last} occurrence of \texttt{key} in \texttt{A}, or -1 if absent. Trace it on \texttt{A = [5, 2, 5, 8, 5]} with key = 5.
+    \item A sorted array \texttt{AGES} of length 20 contains the ages of students in ascending order. The teacher searches for age 17 using linear search with early stop. The array does not contain 17, but it contains 16 and 18. At which index will the search stop? Explain.
+    \item Compare the number of comparisons made by linear search (without early stop) and linear search with early stop when searching for a key that is \textbf{larger than all elements} in a sorted array of size $n$.
+    \item \textbf{Programming task:} Implement linear search in Python (or your preferred language) that returns a list of \textbf{all} indices where the key occurs. Test it on \texttt{[10, 20, 10, 30, 10]} with key 10.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\texttt{linearSearchLast(A, n, key)}:
+\begin{itemize}
+    \item \texttt{lastPos = -1}
+    \item \texttt{FOR i = 0 TO n-1}
+    \item \texttt{    IF A[i] == key THEN lastPos = i}
+    \item \texttt{END FOR}
+    \item \texttt{RETURN lastPos}
+\end{itemize}
+Trace on \texttt{[5,2,5,8,5]}, key=5:
+i=0: A[0]=5 → lastPos=0; i=1: A[1]=2 → no change; i=2: A[2]=5 → lastPos=2; i=3: A[3]=8 → no change; i=4: A[4]=5 → lastPos=4. Returns 4.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+Since the array is sorted ascending and contains 16 and 18 but not 17, the early stop triggers when the first element > 17 is encountered. That element is 18. If 18 is at index \texttt{k}, the search stops at index \texttt{k} (after comparing \texttt{AGES[k]} with 17 and finding \texttt{AGES[k] > 17}). The exact index depends on the data, but it will be the position of the first element greater than 17.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Key larger than all elements:
+\begin{itemize}
+    \item Standard linear search: examines all $n$ elements → $n$ comparisons.
+    \item Linear search with early stop: examines all $n$ elements because no element exceeds the key until the end (actually, the condition \texttt{A[i] > key} is never true, so it also does $n$ comparisons). Both make $n$ comparisons.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Python implementation:
+\begin{itemize}
+    \item \texttt{def linear\_search\_all(arr, key):}
+    \item \texttt{    indices = []}
+    \item \texttt{    for i in range(len(arr)):}
+    \item \texttt{        if arr[i] == key:}
+    \item \texttt{            indices.append(i)}
+    \item \texttt{    return indices}
+\end{itemize}
+Test: \texttt{linear\_search\_all([10,20,10,30,10], 10)} returns \texttt{[0, 2, 4]}.
+\end{corrige}
+
+\coursec{Searching Algorithms II: Binary Search}
+
+In the previous section we studied \emph{linear search}, a simple but brute-force technique that checks every element one by one. Its time complexity is $O(n)$, which becomes prohibitive when the data set grows to millions of records. Fortunately, if we invest the effort to keep our data \emph{sorted}, we can exploit that order to eliminate half of the remaining candidates at each step. This is the idea behind \emph{binary search}, also called \emph{dichotomous search}, which reduces the worst-case number of comparisons from $n$ to approximately $\log_2 n$.
+
+\courssub{The Intuition: Divide and Conquer on Sorted Data}
+
+Imagine you are looking for the word ``algorithm'' in a printed dictionary. You do not start at page~1 and read every word. Instead, you open the book roughly in the middle. If the word on that page comes \emph{after} ``algorithm'', you know the target must be in the left half; otherwise it is in the right half. You then repeat the process on the chosen half, again jumping to its middle. Each step discards half of the remaining pages. This is exactly how binary search works on a sorted array.
+
+\begin{definition}[Binary Search (Dichotomous Search)]
+Binary search is an efficient algorithm for finding a target value (the \cle{key}) within a \textbf{sorted} array. It works by repeatedly dividing the search interval in half: compare the key with the middle element; if they are equal, the search stops successfully; if the key is smaller, continue the search on the left sub-array; if it is larger, continue on the right sub-array. The process repeats until the key is found or the interval becomes empty.
+\end{definition}
+
+\begin{savaistu}[Divide and Conquer]
+Binary search is the simplest example of a general algorithm design strategy called \cle{divide and conquer}: break a problem into smaller sub-problems of the same type, solve them, and combine the results. The same strategy powers the fast sorting algorithms (merge sort, quick sort) that you will meet later in this chapter.
+\end{savaistu}
+
+\courssub{Precondition: The Data Must Be Sorted}
+
+This is the single most important condition for binary search. The algorithm \textbf{assumes} the array is sorted in ascending (or descending) order. If the data is not sorted, the logic ``key $<$ middle $\Rightarrow$ go left'' is meaningless, and the algorithm will either miss the target or return a wrong index.
+
+\begin{attention}[Binary Search Requires Sorted Data]
+Never apply binary search on an unsorted collection. The result is undefined and usually incorrect. If your data is not sorted, you must either sort it first (which costs $O(n \log n)$ with a good sorting algorithm) or use linear search ($O(n)$). For a \emph{single} search on unsorted data, linear search is faster overall because sorting takes longer than the search itself. Binary search becomes worthwhile when you perform \emph{many} searches on the same sorted data, amortising the initial sorting cost.
+\end{attention}
+
+\courssub{The Binary Search Algorithm}
+
+We maintain two indices, \texttt{low} and \texttt{high}, that delimit the current search interval (inclusive). Initially \texttt{low = 0} and \texttt{high = n - 1}. At each step:
+\begin{enumerate}
+    \item Compute \texttt{mid = (low + high) div 2} (integer division, rounding down).
+    \item Compare \texttt{key} with \texttt{A[mid]}.
+    \item If \texttt{key == A[mid]}: return \texttt{mid} (found).
+    \item If \texttt{key < A[mid]}: the key can only be in the left half $\Rightarrow$ set \texttt{high = mid - 1}.
+    \item If \texttt{key > A[mid]}: the key can only be in the right half $\Rightarrow$ set \texttt{low = mid + 1}.
+    \item Repeat while \texttt{low <= high}. If the loop ends, the key is not present; return \texttt{-1}.
+\end{enumerate}
+
+\begin{methode}[Computing \texttt{mid} and Updating the Interval]
+\begin{enumerate}
+    \item \textbf{Middle index:} \texttt{mid = (low + high) div 2} (integer division, rounds down).
+    \item \textbf{Key found:} return \texttt{mid}.
+    \item \textbf{Key smaller:} discard the middle and the right half $\rightarrow$ \texttt{high = mid - 1}.
+    \item \textbf{Key larger:} discard the left half and the middle $\rightarrow$ \texttt{low = mid + 1}.
+    \item \textbf{Loop condition:} continue while \texttt{low <= high}.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Infinite Loop Trap: Wrong Interval Update]
+A classic mistake is to write \texttt{high = mid} or \texttt{low = mid} instead of \texttt{mid - 1} / \texttt{mid + 1}. If the key is not present and \texttt{mid} stops changing (for example when \texttt{low} and \texttt{high} become equal), the interval never shrinks and the loop runs forever. \textbf{Always exclude the middle element}, because you have just compared it and know it is not the key.
+\end{attention}
+
+\textbf{Iterative Pseudocode}
+\begin{center}
+\begin{tabular}{l}
+\hline
+\texttt{function binarySearch(A[0..n-1], key):} \\
+\texttt{\ \ \ \ low $\leftarrow$ 0} \\
+\texttt{\ \ \ \ high $\leftarrow$ n - 1} \\
+\texttt{\ \ \ \ while low <= high do} \\
+\texttt{\ \ \ \ \ \ \ \ mid $\leftarrow$ (low + high) div 2} \\
+\texttt{\ \ \ \ \ \ \ \ if A[mid] == key then} \\
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ return mid} \\
+\texttt{\ \ \ \ \ \ \ \ else if key < A[mid] then} \\
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ high $\leftarrow$ mid - 1} \\
+\texttt{\ \ \ \ \ \ \ \ else} \\
+\texttt{\ \ \ \ \ \ \ \ \ \ \ \ low $\leftarrow$ mid + 1} \\
+\texttt{\ \ \ \ \ \ \ \ end if} \\
+\texttt{\ \ \ \ end while} \\
+\texttt{\ \ \ \ return -1} \quad // not found \\
+\texttt{end function} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Recursive Version (Extension)}
+The same logic can be expressed recursively:
+\begin{center}
+\begin{tabular}{l}
+\hline
+\texttt{function binarySearchRec(A, key, low, high):} \\
+\texttt{\ \ \ \ if low > high then return -1} \\
+\texttt{\ \ \ \ mid $\leftarrow$ (low + high) div 2} \\
+\texttt{\ \ \ \ if A[mid] == key then return mid} \\
+\texttt{\ \ \ \ else if key < A[mid] then} \\
+\texttt{\ \ \ \ \ \ \ \ return binarySearchRec(A, key, low, mid - 1)} \\
+\texttt{\ \ \ \ else} \\
+\texttt{\ \ \ \ \ \ \ \ return binarySearchRec(A, key, mid + 1, high)} \\
+\texttt{end function} \\
+\hline
+\end{tabular}
+\end{center}
+The recursive version uses $O(\log n)$ stack space, while the iterative version uses $O(1)$ auxiliary space. For GCE purposes, the iterative version is preferred unless recursion is explicitly requested.
+
+\courssub{Tracing Binary Search: A Detailed Example}
+
+Let us trace the search for \texttt{key = 55} in the following sorted array of 15 elements (indices 0 to 14).
+\[
+A = [3, 7, 12, 19, 23, 28, 31, 42, 47, \mathbf{55}, 61, 68, 72, 80, 94]
+\]
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|l|}
+\hline
+\rowcolor{popblueL}
+Step & low & high & mid & A[mid] & Action \\
+\hline
+1 & 0 & 14 & 7 & 42 & 55 > 42 $\rightarrow$ low = 8 \\
+2 & 8 & 14 & 11 & 68 & 55 < 68 $\rightarrow$ high = 10 \\
+3 & 8 & 10 & 9 & 55 & \textbf{Found at index 9} \\
+\hline
+\end{tabular}
+\end{center}
+
+Only 3 comparisons were needed for an array of size 15. The figure below visualises how the search interval shrinks at each step.
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[font=\small]
+% Step 1
+\node[anchor=west, font=\small\bfseries] at (0,0) {Step 1: low=0, high=14, mid=7};
+\foreach \i/\v in {0/3,1/7,2/12,3/19,4/23,5/28,6/31,7/42,8/47,9/55,10/61,11/68,12/72,13/80,14/94} {
+  \draw (\i*0.62+1.2,-0.55) rectangle (\i*0.62+1.82,0.05);
+  \node at (\i*0.62+1.51,-0.25) {\v};
+}
+\fill[poporange!40] (7*0.62+1.2,-0.55) rectangle (7*0.62+1.82,0.05);
+\node at (7*0.62+1.51,-0.25) {42};
+\draw[popblue, thick, ->] (7*0.62+1.51,-0.7) -- (7*0.62+1.51,-1.1) node[below, popblue]{mid: 55 > 42, keep right half};
+% Step 2
+\node[anchor=west, font=\small\bfseries] at (0,-2.3) {Step 2: low=8, high=14, mid=11};
+\foreach \i/\v in {8/47,9/55,10/61,11/68,12/72,13/80,14/94} {
+  \draw (\i*0.62+1.2,-2.85) rectangle (\i*0.62+1.82,-2.25);
+  \node at (\i*0.62+1.51,-2.55) {\v};
+}
+\fill[poporange!40] (11*0.62+1.2,-2.85) rectangle (11*0.62+1.82,-2.25);
+\node at (11*0.62+1.51,-2.55) {68};
+\draw[popblue, thick, ->] (11*0.62+1.51,-3.0) -- (11*0.62+1.51,-3.4) node[below, popblue]{mid: 55 < 68, keep left half};
+% Step 3
+\node[anchor=west, font=\small\bfseries] at (0,-4.6) {Step 3: low=8, high=10, mid=9};
+\foreach \i/\v in {8/47,9/55,10/61} {
+  \draw (\i*0.62+1.2,-5.15) rectangle (\i*0.62+1.82,-4.55);
+  \node at (\i*0.62+1.51,-4.85) {\v};
+}
+\fill[popgreen!40] (9*0.62+1.2,-5.15) rectangle (9*0.62+1.82,-4.55);
+\node at (9*0.62+1.51,-4.85) {55};
+\draw[popgreen, thick, ->] (9*0.62+1.51,-5.3) -- (9*0.62+1.51,-5.7) node[below, popgreen]{Found at index 9!};
+\end{tikzpicture}
+\legende{The search interval halves at each step: 15 elements, then 7, then 3. The shaded cell is the middle element examined at that step.}
+\end{popfigure}
+
+In the worst case (key not present, or found only when the interval has shrunk to a single cell), the number of steps equals the number of times we can halve $n$ before reaching 1.
+
+\courssub{Efficiency Analysis: Logarithmic Time}
+
+At each iteration the search interval is halved. Starting with $n$ elements, after $k$ steps the interval size is at most $n/2^k$. The process stops when the interval size drops below 1, i.e. when $n/2^k < 1 \Rightarrow 2^k > n \Rightarrow k > \log_2 n$. Hence the maximum number of iterations is about $\lceil \log_2 n \rceil$. Each iteration does a constant amount of work (one comparison and a few assignments).
+
+\begin{propriete}[Time Complexity of Binary Search]
+\begin{itemize}
+    \item \textbf{Worst case:} about $\lceil \log_2 n \rceil$ comparisons $\in O(\log n)$.
+    \item \textbf{Best case:} 1 comparison (the key is the middle element) $\in O(1)$.
+    \item \textbf{Average case:} $O(\log n)$.
+    \item \textbf{Space complexity:} $O(1)$ for the iterative version; $O(\log n)$ for the recursive version (call stack).
+\end{itemize}
+\textbf{Examinable:} you must be able to state the complexity and explain why it is logarithmic (the interval is halved at each step).
+\end{propriete}
+
+\begin{aretenir}[Numerical Comparison: Linear vs Binary]
+For $n = 1\,000\,000$:
+\begin{itemize}
+    \item Linear search worst case: \textbf{1\,000\,000} comparisons.
+    \item Binary search worst case: $\lceil \log_2 1\,000\,000 \rceil = \mathbf{20}$ comparisons.
+\end{itemize}
+Binary search is roughly \textbf{50\,000 times fewer comparisons} in the worst case for one million elements. The gap widens dramatically as $n$ grows.
+\end{aretenir}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=7cm,
+    domain=1:1000,
+    samples=100,
+    xlabel={$n$ (array size)},
+    ylabel={Comparisons (worst case)},
+    legend pos=north west,
+    grid=major,
+    grid style={popmuted},
+    axis lines=middle,
+    enlargelimits=0.05,
+    tick label style={font=\small},
+    label style={font=\small},
+    legend style={font=\small, fill=white, draw=popline},
+]
+\addplot[popblue, thick] {x};
+\addlegendentry{Linear search: $n$}
+\addplot[poporange, thick] {max(1, ln(x)/ln(2))};
+\addlegendentry{Binary search: $\log_2 n$}
+\end{axis}
+\end{tikzpicture}
+\legende{Growth of worst-case comparisons for linear ($n$) and binary ($\log_2 n$) search. The logarithmic curve is almost flat compared to the linear one.}
+\end{popfigure}
+
+\courssub{When to Prefer Each Algorithm}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Linear Search} & \textbf{Binary Search} \\
+\hline
+Data order & Works on \textbf{unsorted} data. & \textbf{Requires sorted} data (ascending or descending). \\
+\hline
+Single search on unsorted data & \textbf{Better}: $O(n)$ versus $O(n \log n)$ to sort first. & Not applicable unless data is already sorted. \\
+\hline
+Multiple searches on same data & Poor: $O(m \times n)$ for $m$ searches. & \textbf{Excellent}: sort once in $O(n \log n)$, then $m \times O(\log n)$. \\
+\hline
+Small $n$ (e.g. $n < 50$) & Simpler, often fast enough. & Overhead of index calculations may not pay off. \\
+\hline
+Data structure & Works on arrays \textbf{and} linked lists (sequential access). & Requires \textbf{random access} (arrays); inefficient on linked lists. \\
+\hline
+Implementation complexity & Trivial. & Slightly more subtle (interval updates). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Worked Example}
+
+\begin{exoresolu}[Binary Search Trace and Complexity]
+\textbf{Statement:} Consider the sorted array \texttt{A = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29]} (indices 0 to 9).
+\begin{enumerate}
+    \item Trace the execution of the iterative binary search algorithm for \texttt{key = 17}. Show the values of \texttt{low}, \texttt{high}, \texttt{mid}, \texttt{A[mid]} and the decision at each step.
+    \item How many comparisons are made in the worst case for an array of size 10? Justify using the formula.
+    \item Suppose we mistakenly write \texttt{high = mid} instead of \texttt{high = mid - 1} when \texttt{key < A[mid]}. Trace the search for \texttt{key = 1} (which is not in the array) and explain what happens.
+\end{enumerate}
+
+\tcblower
+\textbf{Detailed Solution:}
+
+\textbf{1. Trace for key = 17}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|l|}
+\hline
+\rowcolor{popblueL}
+Step & low & high & mid & A[mid] & Decision \\
+\hline
+1 & 0 & 9 & 4 & 14 & 17 > 14 $\rightarrow$ low = 5 \\
+2 & 5 & 9 & 7 & 23 & 17 < 23 $\rightarrow$ high = 6 \\
+3 & 5 & 6 & 5 & 17 & \textbf{Found at index 5} \\
+\hline
+\end{tabular}
+\end{center}
+The algorithm terminates after \textbf{3 comparisons}.
+
+\textbf{2. Worst-case comparisons for n = 10}
+
+$\lceil \log_2 10 \rceil = \lceil 3.32 \rceil = 4$. The worst case requires \textbf{4 comparisons} (for example searching for a value that forces the algorithm down to an interval of size 1 before concluding). Indeed, we can halve 10 at most 4 times: $10 \to 5 \to 2 \to 1 \to 0$.
+
+\textbf{3. Effect of the bug \texttt{high = mid}}
+
+Search for \texttt{key = 1} (smaller than all elements).
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|l|}
+\hline
+\rowcolor{popblueL}
+Step & low & high & mid & A[mid] & Decision (buggy) \\
+\hline
+1 & 0 & 9 & 4 & 14 & 1 < 14 $\rightarrow$ high = 4 \\
+2 & 0 & 4 & 2 & 8 & 1 < 8 $\rightarrow$ high = 2 \\
+3 & 0 & 2 & 1 & 5 & 1 < 5 $\rightarrow$ high = 1 \\
+4 & 0 & 1 & 0 & 2 & 1 < 2 $\rightarrow$ high = 0 \\
+5 & 0 & 0 & 0 & 2 & 1 < 2 $\rightarrow$ high = 0 \\
+\hline
+\end{tabular}
+\end{center}
+From step 4 onward, \texttt{low = 0}, \texttt{high = 0}, \texttt{mid = 0} repeatedly. The condition \texttt{low <= high} remains true forever $\rightarrow$ \textbf{infinite loop}. The interval never becomes empty because the middle element is never excluded. This confirms the rule: \textbf{always use \texttt{mid - 1} and \texttt{mid + 1}}.
+\end{exoresolu}
+
+\courssub{Summary of Key Points}
+
+\begin{aretenir}[Binary Search Checklist]
+\begin{itemize}
+    \item \textbf{Precondition:} the array \textbf{must be sorted} (ascending or descending).
+    \item \textbf{Core idea:} compare with the middle, discard half, repeat $\rightarrow$ divide and conquer.
+    \item \textbf{Iterative variables:} \texttt{low}, \texttt{high}, \texttt{mid = (low + high) div 2}.
+    \item \textbf{Updates:} \texttt{key < A[mid] $\Rightarrow$ high = mid - 1}; \texttt{key > A[mid] $\Rightarrow$ low = mid + 1}.
+    \item \textbf{Stop condition:} \texttt{low > high} (not found) or \texttt{A[mid] == key} (found).
+    \item \textbf{Complexity:} $O(\log n)$ time, $O(1)$ space (iterative).
+    \item \textbf{Use when:} data is sorted \textbf{and} multiple searches are performed, or $n$ is large.
+    \item \textbf{Common bug:} \texttt{high = mid} / \texttt{low = mid} causes an infinite loop.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice: Binary Search]
+\begin{enumerate}
+    \item Write the iterative binary search algorithm in pseudocode for an array sorted in \textbf{descending} order. Only the comparison direction changes.
+    \item An array of size 1000 is searched using binary search. What is the maximum number of comparisons? What is the maximum for an array of size 10000?
+    \item \textbf{Critical thinking:} You have an unsorted array of 10\,000 integers and you need to perform exactly \textbf{one} search. Should you sort the array first (using an $O(n \log n)$ sort) and then use binary search, or just use linear search? Justify your answer with approximate operation counts.
+    \item Implement the iterative binary search in Python (or your preferred language) and test it with the array from the worked example, searching for keys 2, 29, 15, and 30.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1. Descending order pseudocode:} swap the two branches: when \texttt{key > A[mid]} set \texttt{high = mid - 1} (larger values are on the left), and when \texttt{key < A[mid]} set \texttt{low = mid + 1}.
+
+\textbf{2. Max comparisons:} $n = 1000 \Rightarrow \lceil \log_2 1000 \rceil = 10$ (since $2^{10} = 1024 \geq 1000$). $n = 10000 \Rightarrow \lceil \log_2 10000 \rceil = 14$ (since $2^{14} = 16384 \geq 10000$).
+
+\textbf{3. One search on unsorted data:} linear search costs at most $10\,000$ comparisons. Sorting first costs about $n \log_2 n \approx 10\,000 \times 14 = 140\,000$ operations, plus 14 for the binary search. \textbf{Linear search is far better} for a single search on unsorted data.
+
+\textbf{4. Implementation:} standard iterative code; the test cases should return indices 0, 9, $-1$, and $-1$ respectively.
+\end{corrige}
+
+\coursec{Sorting Algorithms I: Bubble Sort and Selection Sort}
+
+In the previous section we discovered the power of \cle{binary search}: it can locate a value among a million records in about twenty comparisons. But binary search has one strict condition --- the data must already be \emph{sorted}. A natural question therefore arises: \emph{how do we get the data into sorted order in the first place?} That is exactly the problem this section solves. We study the two simplest sorting algorithms, \cle{bubble sort} and \cle{selection sort}, which are the foundation for everything else you will meet in this chapter.
+
+\courssub{What is Sorting?}
+
+Imagine the GCE Board has just received the results of 5\,000 candidates in a school. The marks are stored in the order the scripts were marked --- completely mixed up. To publish a merit list, to find the pass mark, or simply to answer the question ``who came first?'', the marks must be \emph{arranged in order}. This operation is called \cle{sorting}.
+
+\begin{definition}[Sorting, ascending and descending order]
+\cle{Sorting} a collection of data means rearranging its elements so that they follow a well-defined order:
+\begin{itemize}
+\item \cle{ascending order}: each element is less than or equal to the next one, e.g.\ $2, 5, 7, 9, 12$;
+\item \cle{descending order}: each element is greater than or equal to the next one, e.g.\ $12, 9, 7, 5, 2$.
+\end{itemize}
+In this course, unless stated otherwise, we sort in \textbf{ascending} order.
+\end{definition}
+
+\begin{definition}[Swap (exchange)]
+A \cle{swap} is the operation that exchanges the contents of two variables (or two positions of an array). Swapping $A[i]$ and $A[j]$ requires a \textbf{temporary variable}:
+\begin{itemize}
+\item[] \texttt{temp $\leftarrow$ A[i]}
+\item[] \texttt{A[i] $\leftarrow$ A[j]}
+\item[] \texttt{A[j] $\leftarrow$ temp}
+\end{itemize}
+\end{definition}
+
+\begin{attention}[The classic swap trap]
+Writing \texttt{A[i] $\leftarrow$ A[j]} then \texttt{A[j] $\leftarrow$ A[i]} does \textbf{not} swap the values: after the first line, both positions contain the old value of \texttt{A[j]}, and the old value of \texttt{A[i]} is lost forever. The temporary variable is compulsory. This is a favourite GCE trap question.
+\end{attention}
+
+Why does sorted data matter so much?
+\begin{itemize}
+\item \textbf{Fast searching}: binary search (previous section) only works on sorted data.
+\item \textbf{Reports and rankings}: merit lists, league tables, price lists, telephone directories.
+\item \textbf{Data presentation}: humans read ordered information far more easily.
+\end{itemize}
+
+Throughout this section we use four key words: a \cle{comparison} tests the order of two elements (e.g.\ \texttt{A[j] > A[j+1]}); a \cle{swap} exchanges them; a \cle{pass} is one complete sweep through (part of) the array; and as the algorithm progresses, the array splits into a \cle{sorted region} (already in final order) and an \cle{unsorted region} (still to be processed).
+
+\courssub{Bubble Sort}
+
+\textbf{Intuition.} Fill a glass with Fanta and watch the bubbles: the lightest bubbles rise to the top, one after another. Bubble sort works the same way. We sweep through the array comparing \emph{adjacent} pairs; whenever a pair is out of order, we swap it. At the end of the first pass, the \emph{largest} element has ``bubbled up'' to the last position. After the second pass, the second largest is in the second-to-last position, and so on.
+
+\begin{definition}[Bubble sort]
+\cle{Bubble sort} repeatedly scans the array, comparing each pair of \textbf{adjacent} elements and swapping them if they are in the wrong order. After pass number $k$, the $k$ largest elements occupy their final positions at the right end of the array (the sorted region), so each new pass can stop one position earlier.
+\end{definition}
+
+\begin{exemplebox}[Full trace of bubble sort]
+Sort the array $A = [5,\ 1,\ 4,\ 2,\ 8]$ in ascending order. We write \textbf{C} for a comparison and \textbf{S} for a swap.
+
+\textbf{Pass 1} (compare positions 1--2, 2--3, 3--4, 4--5):
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Comparison & Result & Swap? & Array after \\
+\hline
+$5$ vs $1$ & $5>1$ & Yes & $[1, 5, 4, 2, 8]$ \\
+\hline
+$5$ vs $4$ & $5>4$ & Yes & $[1, 4, 5, 2, 8]$ \\
+\hline
+$5$ vs $2$ & $5>2$ & Yes & $[1, 4, 2, 5, 8]$ \\
+\hline
+$5$ vs $8$ & $5<8$ & No & $[1, 4, 2, 5, \mathbf{8}]$ \\
+\hline
+\end{tabular}
+\end{center}
+After pass 1: 4 comparisons, 3 swaps; the largest value $8$ is fixed at the end.
+
+\textbf{Pass 2} (positions 1--2, 2--3, 3--4 only):
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Comparison & Result & Swap? & Array after \\
+\hline
+$1$ vs $4$ & $1<4$ & No & $[1, 4, 2, 5, 8]$ \\
+\hline
+$4$ vs $2$ & $4>2$ & Yes & $[1, 2, 4, 5, 8]$ \\
+\hline
+$4$ vs $5$ & $4<5$ & No & $[1, 2, 4, \mathbf{5}, 8]$ \\
+\hline
+\end{tabular}
+\end{center}
+After pass 2: 3 comparisons, 1 swap; $5$ is fixed.
+
+\textbf{Pass 3} (positions 1--2, 2--3): $1<2$ (no swap), $2<4$ (no swap). 2 comparisons, 0 swaps; $4$ is fixed.
+
+\textbf{Pass 4}: $1<2$ (no swap). 1 comparison; $2$ is fixed. The array is sorted.
+
+\textbf{Totals}: $4+3+2+1 = 10$ comparisons, $4$ swaps. Note that $10 = \dfrac{5 \times 4}{2} = \dfrac{n(n-1)}{2}$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.62, every node/.style={transform shape}]
+\tikzset{cell/.style={draw=popink, minimum width=0.85cm, minimum height=0.85cm, font=\small},
+fix/.style={cell, fill=popgreenL},
+sw/.style={cell, fill=popblueL}}
+% Pass 0
+\node[font=\small\bfseries, text=popdark] at (-1.6,0) {Start};
+\node[cell] (a1) at (0,0) {5}; \node[cell] at (0.9,0) {1}; \node[cell] at (1.8,0) {4}; \node[cell] at (2.7,0) {2}; \node[cell] at (3.6,0) {8};
+% Pass 1
+\node[font=\small\bfseries, text=popdark] at (-1.6,-1.3) {Pass 1};
+\node[sw] at (0,-1.3) {1}; \node[sw] at (0.9,-1.3) {4}; \node[sw] at (1.8,-1.3) {2}; \node[sw] at (2.7,-1.3) {5}; \node[fix] at (3.6,-1.3) {8};
+\draw[<->, thick, poporange] (0,-0.5) -- (0.9,-0.5);
+\draw[<->, thick, poporange] (0.9,-0.5) -- (1.8,-0.5);
+\draw[<->, thick, poporange] (1.8,-0.5) -- (2.7,-0.5);
+% Pass 2
+\node[font=\small\bfseries, text=popdark] at (-1.6,-2.6) {Pass 2};
+\node[cell] at (0,-2.6) {1}; \node[sw] at (0.9,-2.6) {2}; \node[sw] at (1.8,-2.6) {4}; \node[fix] at (2.7,-2.6) {5}; \node[fix] at (3.6,-2.6) {8};
+\draw[<->, thick, poporange] (0.9,-1.8) -- (1.8,-1.8);
+% Pass 3
+\node[font=\small\bfseries, text=popdark] at (-1.6,-3.9) {Pass 3};
+\node[cell] at (0,-3.9) {1}; \node[cell] at (0.9,-3.9) {2}; \node[fix] at (1.8,-3.9) {4}; \node[fix] at (2.7,-3.9) {5}; \node[fix] at (3.6,-3.9) {8};
+% Pass 4
+\node[font=\small\bfseries, text=popdark] at (-1.6,-5.2) {Pass 4};
+\node[fix] at (0,-5.2) {1}; \node[fix] at (0.9,-5.2) {2}; \node[fix] at (1.8,-5.2) {4}; \node[fix] at (2.7,-5.2) {5}; \node[fix] at (3.6,-5.2) {8};
+% legend
+\node[sw, minimum width=0.4cm, minimum height=0.4cm] at (5.2,-1.3) {}; \node[right, font=\small] at (5.5,-1.3) {unsorted};
+\node[fix, minimum width=0.4cm, minimum height=0.4cm] at (5.2,-2.1) {}; \node[right, font=\small] at (5.5,-2.1) {sorted};
+\draw[<->, thick, poporange] (5.2,-2.9) -- (5.9,-2.9); \node[right, font=\small] at (6.0,-2.9) {swap};
+\end{tikzpicture}
+\legende{Bubble sort on $[5,1,4,2,8]$: at each pass the largest unsorted value bubbles to its final position (green). Orange arrows show the swaps performed during the pass.}
+\end{popfigure}
+
+\begin{methode}[Tracing a sorting algorithm (exam technique)]
+\begin{enumerate}
+\item Draw a table with \textbf{one row per pass}.
+\item In each row, write the full array \emph{as it stands at the end of that pass}.
+\item Shade or underline the \textbf{sorted region} (it grows by one cell per pass).
+\item Count the comparisons and swaps of the pass in two extra columns.
+\item Check at the end: the sorted region must never change again.
+\end{enumerate}
+\end{methode}
+
+\textbf{Pseudocode of bubble sort (basic version).} The array $A$ has $n$ elements, indexed from $1$ to $n$.
+
+\begin{itemize}
+\item[] \texttt{FOR i $\leftarrow$ 1 TO n - 1 DO}
+\item[] \texttt{\quad FOR j $\leftarrow$ 1 TO n - i DO}
+\item[] \texttt{\quad\quad IF A[j] > A[j+1] THEN}
+\item[] \texttt{\quad\quad\quad temp $\leftarrow$ A[j] ; A[j] $\leftarrow$ A[j+1] ; A[j+1] $\leftarrow$ temp}
+\item[] \texttt{\quad\quad END IF}
+\item[] \texttt{\quad END FOR}
+\item[] \texttt{END FOR}
+\end{itemize}
+
+Notice the inner bound \texttt{n - i}: after pass $i$, the last $i$ elements are already in place, so we must not touch them again.
+
+\textbf{Optimised version (early stop).} In our trace, pass 3 made \emph{no swap at all}. That means the array was already sorted --- yet the basic version still ran pass 4! We add a Boolean flag: if a pass performs no swap, we stop immediately.
+
+\begin{itemize}
+\item[] \texttt{i $\leftarrow$ 1}
+\item[] \texttt{REPEAT}
+\item[] \texttt{\quad swapped $\leftarrow$ FALSE}
+\item[] \texttt{\quad FOR j $\leftarrow$ 1 TO n - i DO}
+\item[] \texttt{\quad\quad IF A[j] > A[j+1] THEN}
+\item[] \texttt{\quad\quad\quad temp $\leftarrow$ A[j] ; A[j] $\leftarrow$ A[j+1] ; A[j+1] $\leftarrow$ temp}
+\item[] \texttt{\quad\quad\quad swapped $\leftarrow$ TRUE}
+\item[] \texttt{\quad\quad END IF}
+\item[] \texttt{\quad END FOR}
+\item[] \texttt{\quad i $\leftarrow$ i + 1}
+\item[] \texttt{UNTIL swapped = FALSE OR i = n}
+\end{itemize}
+
+\begin{attention}[Loop bounds: the most common mistake]
+The inner loop of bubble sort \textbf{must shrink} after each pass (\texttt{j} goes from $1$ to $n-i$, not to $n$). If you always loop to $n$, two things go wrong: you waste time re-comparing elements that are already in place, and worse, \texttt{A[j+1]} eventually reads \textbf{beyond the end of the array} --- an out-of-range error. In the GCE, always show the shrinking bound.
+\end{attention}
+
+\courssub{Selection Sort}
+
+\textbf{Intuition.} A teacher arranging students by height does it differently: she scans the whole line, picks out the \emph{shortest} student, and places him at the front. Then she scans the remaining students, picks the shortest of those, and places him second. And so on. That is exactly selection sort.
+
+\begin{definition}[Selection sort]
+\cle{Selection sort} divides the array into a sorted region (initially empty, on the left) and an unsorted region. At each pass, it \textbf{finds the smallest element of the unsorted region} and swaps it with the \textbf{first element of the unsorted region}. The sorted region then grows by one element. After $n-1$ passes, the array is sorted.
+\end{definition}
+
+\begin{exemplebox}[Full trace of selection sort]
+Same array $A = [5,\ 1,\ 4,\ 2,\ 8]$. The sorted region is shown in bold.
+
+\textbf{Pass 1}: minimum of $[5,1,4,2,8]$ is $1$ (position 2). Swap with position 1: $[\mathbf{1},\ 5,\ 4,\ 2,\ 8]$. (4 comparisons, 1 swap)
+
+\textbf{Pass 2}: minimum of $[5,4,2,8]$ is $2$ (position 4). Swap with position 2: $[\mathbf{1, 2},\ 4,\ 5,\ 8]$. (3 comparisons, 1 swap)
+
+\textbf{Pass 3}: minimum of $[4,5,8]$ is $4$ (position 3). It is already in place, so no swap is needed: $[\mathbf{1, 2, 4},\ 5,\ 8]$. (2 comparisons, 0 swaps)
+
+\textbf{Pass 4}: minimum of $[5,8]$ is $5$ (position 4). Already in place: $[\mathbf{1, 2, 4, 5},\ 8]$. (1 comparison, 0 swaps)
+
+The last element is automatically in place. \textbf{Totals}: $4+3+2+1 = 10$ comparisons, only $2$ real swaps.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.62, every node/.style={transform shape}]
+\tikzset{cell/.style={draw=popink, minimum width=0.85cm, minimum height=0.85cm, font=\small},
+fix/.style={cell, fill=popgreenL},
+mn/.style={cell, fill=popgold},
+fr/.style={cell, fill=popblueL}}
+% Pass 2 state
+\node[font=\small\bfseries, text=popdark] at (-1.9,0) {Pass 2};
+\node[fix] at (0,0) {1};
+\node[fr] (p2) at (0.9,0) {5};
+\node[cell] at (1.8,0) {4};
+\node[mn] (mn2) at (2.7,0) {2};
+\node[cell] at (3.6,0) {8};
+\draw[->, very thick, poppurple] (2.7,1.1) -- (2.7,0.55);
+\node[above, font=\small, text=poppurple] at (2.7,1.1) {min of unsorted};
+\draw[<->, very thick, poporange] (0.9,-0.6) .. controls (1.4,-1.3) and (2.2,-1.3) .. (2.7,-0.6);
+\node[below, font=\small, text=poporange] at (1.8,-1.35) {swap};
+% Result
+\node[font=\small\bfseries, text=popdark] at (-1.9,-2.6) {After};
+\node[fix] at (0,-2.6) {1};
+\node[fix] at (0.9,-2.6) {2};
+\node[cell] at (1.8,-2.6) {4};
+\node[cell] at (2.7,-2.6) {5};
+\node[cell] at (3.6,-2.6) {8};
+\draw[thick, popgreen, dashed] (-0.45,-3.15) rectangle (1.35,-2.05);
+\node[below, font=\small, text=popgreen] at (0.45,-3.2) {sorted region grows};
+\end{tikzpicture}
+\legende{Selection sort, pass 2: the minimum of the unsorted region ($2$) is located, then swapped with the first unsorted cell ($5$). The sorted region (green) grows by one element.}
+\end{popfigure}
+
+\textbf{Pseudocode of selection sort.}
+
+\begin{itemize}
+\item[] \texttt{FOR i $\leftarrow$ 1 TO n - 1 DO}
+\item[] \texttt{\quad minPos $\leftarrow$ i}
+\item[] \texttt{\quad FOR j $\leftarrow$ i + 1 TO n DO}
+\item[] \texttt{\quad\quad IF A[j] < A[minPos] THEN minPos $\leftarrow$ j}
+\item[] \texttt{\quad END FOR}
+\item[] \texttt{\quad IF minPos $\neq$ i THEN swap A[i] and A[minPos]}
+\item[] \texttt{END FOR}
+\end{itemize}
+
+The inner loop only \emph{searches} (it never swaps); the single swap happens \emph{after} the inner loop, once the position of the minimum is known.
+
+\courssub{Efficiency: Comparisons and Swaps}
+
+Let us count precisely, for an array of $n$ elements. In \textbf{both} algorithms, pass $i$ performs $n - i$ comparisons, so the total number of comparisons is
+\[
+(n-1) + (n-2) + \dots + 2 + 1 \;=\; \sum_{k=1}^{n-1} k \;=\; \frac{n(n-1)}{2}.
+\]
+For $n = 5$: $\frac{5 \times 4}{2} = 10$ comparisons --- exactly what our two traces gave. For $n = 100$: $4\,950$ comparisons; for $n = 1\,000$: $499\,500$. The number of comparisons grows roughly like $n^2$: doubling the data \emph{quadruples} the work.
+
+\begin{propriete}[Complexity of bubble sort and selection sort]
+Bubble sort and selection sort both perform $\dfrac{n(n-1)}{2}$ comparisons in the worst case: they are \cle{quadratic} algorithms, written $O(n^2)$. They differ in the number of \textbf{swaps}:
+\begin{itemize}
+\item bubble sort may perform up to $\frac{n(n-1)}{2}$ swaps (one per comparison);
+\item selection sort performs \textbf{at most $n-1$ swaps} (exactly one per pass).
+\end{itemize}
+(The proof is the summation above; being able to \emph{reproduce the count} on a small array is examinable.)
+\end{propriete}
+
+\begin{aretenir}[Bubble sort vs selection sort]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Bubble sort} & \textbf{Selection sort} \\
+\hline
+Idea & Swap adjacent out-of-order pairs & Find the minimum, swap it into place \\
+\hline
+Comparisons (worst case) & $\frac{n(n-1)}{2}$ & $\frac{n(n-1)}{2}$ \\
+\hline
+Swaps (worst case) & up to $\frac{n(n-1)}{2}$ & at most $n-1$ \\
+\hline
+Early stop possible? & Yes (flag \texttt{swapped}) & No \\
+\hline
+Best when & Data nearly sorted & Swaps are costly (large records) \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{exoresolu}[GCE-style question]
+The array $A = [7,\ 3,\ 9,\ 1]$ is to be sorted in ascending order.
+\begin{enumerate}
+\item Show the state of $A$ after \textbf{one full pass} of bubble sort.
+\item Show the state of $A$ after \textbf{one full pass} of selection sort.
+\item How many comparisons does each algorithm use in total on this array?
+\end{enumerate}
+\tcblower
+\textbf{1. Bubble sort, pass 1} (compare adjacent pairs, swap if out of order):
+\begin{itemize}
+\item $7$ vs $3$: swap $\rightarrow [3, 7, 9, 1]$
+\item $7$ vs $9$: no swap $\rightarrow [3, 7, 9, 1]$
+\item $9$ vs $1$: swap $\rightarrow [3, 7, 1, \mathbf{9}]$
+\end{itemize}
+State after pass 1: $\boxed{[3,\ 7,\ 1,\ 9]}$ --- the largest value $9$ has bubbled to the end.
+
+\textbf{2. Selection sort, pass 1}: the minimum of $[7,3,9,1]$ is $1$ (position 4); swap it with position 1: $\boxed{[1,\ 3,\ 9,\ 7]}$.
+
+\textbf{3. Comparisons}: $n = 4$, so each algorithm uses $\dfrac{n(n-1)}{2} = \dfrac{4 \times 3}{2} = \mathbf{6}$ comparisons in total ($3+2+1$).
+\end{exoresolu}
+
+\begin{attention}[Exam tip --- GCE]
+A very common question is: ``\emph{Give the content of the array after the second pass.}'' Do \textbf{not} try to guess the final sorted array --- the examiner wants the \emph{intermediate} state. Apply the method rigorously, pass by pass, and mark the sorted region. Also remember: for bubble sort the sorted region grows at the \textbf{right} (largest values), for selection sort it grows at the \textbf{left} (smallest values).
+\end{attention}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Trace bubble sort on $[6,\ 2,\ 5,\ 3,\ 9]$, giving the array after each pass and the total number of comparisons and swaps.
+\item Trace selection sort on the same array. Compare the number of swaps with question 1 and comment.
+\item A class contains $50$ students. How many comparisons does selection sort need to rank their average marks? Use the formula $\frac{n(n-1)}{2}$.
+\item Explain why the optimised bubble sort can be much faster than selection sort on the array $[1, 2, 3, 5, 4]$, even though both are $O(n^2)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Bubble sort on $[6,2,5,3,9]$:
+\begin{itemize}
+\item Pass 1: $6\!\leftrightarrow\!2$, $6\!\leftrightarrow\!5$, $6\!\leftrightarrow\!3$, $6<9$ $\rightarrow [2,5,3,6,\mathbf{9}]$ (4 C, 3 S)
+\item Pass 2: $2<5$, $5\!\leftrightarrow\!3$, $5<6$ $\rightarrow [2,3,5,\mathbf{6,9}]$ (3 C, 1 S)
+\item Pass 3: $2<3$, $3<5$ $\rightarrow [2,3,\mathbf{5,6,9}]$ (2 C, 0 S)
+\item Pass 4: $2<3$ $\rightarrow$ sorted (1 C). \textbf{Total: 10 comparisons, 4 swaps.}
+\end{itemize}
+\textbf{2.} Selection sort: min $2$ swapped with $6$ $\rightarrow [2,6,5,3,9]$; min $3$ swapped with $6$ $\rightarrow [2,3,5,6,9]$; min $5$ in place; min $6$ in place. \textbf{10 comparisons, 2 swaps} --- fewer swaps than bubble sort, as expected (at most $n-1=4$).
+
+\textbf{3.} $\dfrac{50 \times 49}{2} = 1\,225$ comparisons.
+
+\textbf{4.} On $[1,2,3,5,4]$, one pass of bubble sort swaps $5$ and $4$; the next pass makes no swap, so the flag stops the algorithm after only $4+3 = 7$ comparisons. Selection sort cannot stop early: it always performs all $\frac{5 \times 4}{2} = 10$ comparisons.
+\end{corrige}
+
+\begin{savaistu}[Did you know?]
+Bubble sort is one of the oldest sorting algorithms ever described, and it is famously slow on large data --- yet it survives in every syllabus because it is the simplest sort to understand and to trace by hand. In practice, real systems (banking software, the GCE Board's result processing) use much faster $O(n \log n)$ algorithms such as \emph{merge sort} or \emph{quicksort}, which you may meet in higher studies. But the ideas you have mastered here --- comparisons, swaps, passes, sorted regions --- are the building blocks of \emph{all} of them.
+\end{savaistu}
+
+You can now sort data in two different ways and, above all, \emph{justify} the cost of each method. In the next section we complete the picture with \cle{insertion sort} and learn how to \emph{choose} the right algorithm for a given situation.
+
+\coursec{Sorting Algorithms II: Insertion Sort, Comparison and Choice of Algorithms}
+
+In the previous section we studied \cle{Bubble Sort} and \cle{Selection Sort}. Both are simple to understand but share a major drawback: their time complexity is \cle{O(n$^2$)} in almost every situation, even when the data is already nearly sorted. In this section we introduce \cle{Insertion Sort}, an algorithm that keeps the O(n$^2$) worst case but shines when the input is already partially ordered — a very common real-world scenario. We will then formalise \cle{Big-O notation} to compare growth rates, build a complete comparison table of all algorithms seen so far, and give a practical decision guide for choosing the right tool.
+
+\courssub{Insertion Sort: Principle and Intuition}
+
+Imagine you are holding a hand of playing cards. You pick up the cards one by one from the table and insert each new card into its correct position among the cards you already hold, which are kept sorted. You do this by sliding larger cards one step to the right to make room. This is exactly how Insertion Sort works on an array.
+
+\begin{definition}[Insertion Sort]
+Insertion Sort builds the final sorted array one element at a time. It maintains a \cle{sorted subarray} at the left (indices 0 to i-1) and an \cle{unsorted subarray} at the right (indices i to n-1). At each step i, it takes the element at index i (the \cle{key}), compares it backwards through the sorted part, shifts all larger elements one position to the right, and inserts the key into the vacant spot.
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+% Array representation at step i=4 (0-indexed) on array [3, 5, 7, 9, 4, 6, 8]
+% Sorted part: indices 0..3 (3.5,7.9). Key = 4 at index 4.
+% We show the state during shifting: 9 moved right, 7 moved right, 5 moved right, about to place 4.
+\draw[popblue, thick] (0,0) rectangle (7,1.5);
+% Cells
+\foreach \x/\val in {0/3, 1/5, 2/7, 3/9, 4/4, 5/6, 6/8} {
+    \draw (\x,0) rectangle (\x+1,1);
+    \node at (\x+0.5,0.5) {\val};
+    \node[below] at (\x+0.5,-0.3) {\x};
+}
+% Highlight sorted part
+\draw[popgreen, thick, dashed] (-0.1,1.1) -- (4.1,1.1) node[midway, above=2pt] {Sorted part (indices 0..3)};
+% Key being inserted
+\draw[poporange, thick] (4,1) rectangle (5,2);
+\node[poporange] at (4.5,2.3) {Key = 4};
+% Arrows showing shifts
+\draw[->, popred, thick] (3.5,1.2) -- (4.5,1.2) node[midway, above] {shift 9};
+\draw[->, popred, thick] (2.5,1.2) -- (3.5,1.2) node[midway, above] {shift 7};
+\draw[->, popred, thick] (1.5,1.2) -- (2.5,1.2) node[midway, above] {shift 5};
+% Hand metaphor
+\node[align=center, poppurple] at (3.5,-1.5) {Like arranging cards in your hand:\\ pick key, slide larger cards right, insert key.};
+\end{tikzpicture}
+\legende{Insertion Sort metaphor: the key (4) is inserted into the sorted left part by shifting larger elements right.}
+\end{popfigure}
+
+\courssub{Step-by-Step Trace of Insertion Sort}
+
+Let us trace Insertion Sort on the array \texttt{A = [8, 3, 6, 2, 7]} (n=5). We count \cle{comparisons} (key vs sorted elements) and \cle{shifts} (moving an element one slot right).
+
+\begin{exemplebox}[{Trace of Insertion Sort on [8, 3, 6, 2, 7]}]
+\textbf{Initial:} [8, 3, 6, 2, 7] \quad Sorted part: [8] (index 0)
+
+\textbf{Pass i=1 (key=3):}
+\begin{itemize}
+    \item Compare 3 with 8 $\rightarrow$ 3 < 8, shift 8 right $\rightarrow$ [\_, 8, 6, 2, 7] (1 comparison, 1 shift)
+    \item Reached start, insert 3 at index 0 $\rightarrow$ [3, 8, 6, 2, 7]
+\end{itemize}
+Sorted part: [3, 8]
+
+\textbf{Pass i=2 (key=6):}
+\begin{itemize}
+    \item Compare 6 with 8 $\rightarrow$ 6 < 8, shift 8 right $\rightarrow$ [3, \_, 8, 2, 7] (1 comp, 1 shift)
+    \item Compare 6 with 3 $\rightarrow$ 6 > 3, stop. Insert 6 at index 1 $\rightarrow$ [3, 6, 8, 2, 7] (1 comp, 0 shift)
+\end{itemize}
+Sorted part: [3, 6, 8]
+
+\textbf{Pass i=3 (key=2):}
+\begin{itemize}
+    \item Compare 2 with 8 $\rightarrow$ shift 8 $\rightarrow$ [3, 6, \_, 8, 7] (1 comp, 1 shift)
+    \item Compare 2 with 6 $\rightarrow$ shift 6 $\rightarrow$ [3, \_, 6, 8, 7] (1 comp, 1 shift)
+    \item Compare 2 with 3 $\rightarrow$ shift 3 $\rightarrow$ [\_, 3, 6, 8, 7] (1 comp, 1 shift)
+    \item Reached start, insert 2 at index 0 $\rightarrow$ [2, 3, 6, 8, 7] (0 comp)
+\end{itemize}
+Sorted part: [2, 3, 6, 8]
+
+\textbf{Pass i=4 (key=7):}
+\begin{itemize}
+    \item Compare 7 with 8 $\rightarrow$ shift 8 $\rightarrow$ [2, 3, 6, \_, 8] (1 comp, 1 shift)
+    \item Compare 7 with 6 $\rightarrow$ 7 > 6, stop. Insert 7 at index 3 $\rightarrow$ [2, 3, 6, 7, 8] (1 comp, 0 shift)
+\end{itemize}
+
+\textbf{Final sorted array:} [2, 3, 6, 7, 8]
+
+\textbf{Summary counts:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+Pass (i) & Key & Comparisons & Shifts \\ \hline
+1 & 3 & 1 & 1 \\
+2 & 6 & 2 & 1 \\
+3 & 2 & 3 & 3 \\
+4 & 7 & 2 & 1 \\ \hline
+\textbf{Total} & & \textbf{8} & \textbf{6} \\ \hline
+\end{tabular}
+\end{center}
+\end{exemplebox}
+
+\begin{attention}[Shifting vs Swapping]
+In Bubble Sort and Selection Sort we \cle{swap} two elements (three assignments). In Insertion Sort we \cle{shift} elements one position right (one assignment per shift) and finally place the key (one assignment). A common mistake in traces is to write ``swap key with 8'' instead of ``shift 8 right''. Remember: the key is held in a temporary variable; it is not swapped until the very end of the pass.
+\end{attention}
+
+\courssub{Pseudocode and Implementation}
+
+\begin{methode}[Insertion Sort Algorithm]
+\begin{enumerate}
+    \item For i from 1 to n-1:
+    \item \quad key $\leftarrow$ A[i]
+    \item \quad j $\leftarrow$ i - 1
+    \item \quad While j $\ge$ 0 \textbf{and} A[j] > key:
+    \item \qquad A[j+1] $\leftarrow$ A[j] \quad (shift right)
+    \item \qquad j $\leftarrow$ j - 1
+    \item \quad End While
+    \item \quad A[j+1] $\leftarrow$ key \quad (insert key)
+    \item End For
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Python Implementation]
+\texttt{def insertion\_sort(arr):}\\
+\texttt{\quad n = len(arr)}\\
+\texttt{\quad for i in range(1, n):}\\
+\texttt{\quad\quad key = arr[i]}\\
+\texttt{\quad\quad j = i - 1}\\
+\texttt{\quad\quad \# Shift elements greater than key to the right}\\
+\texttt{\quad\quad while j >= 0 and arr[j] > key:}\\
+\texttt{\quad\quad\quad arr[j + 1] = arr[j]}\\
+\texttt{\quad\quad\quad j -= 1}\\
+\texttt{\quad\quad arr[j + 1] = key}\\
+\texttt{\quad return arr}
+\end{exemplebox}
+
+\courssub{Efficiency of Insertion Sort}
+
+\begin{propriete}[Time Complexity of Insertion Sort]
+\begin{itemize}
+    \item \textbf{Worst case:} O(n$^2$) — when the array is reverse sorted. Every key must travel all the way to the front. Comparisons $\approx$ n$^2$/2, Shifts $\approx$ n$^2$/2.
+    \item \textbf{Average case:} O(n$^2$) — on random data, each key moves about halfway through the sorted part.
+    \item \textbf{Best case:} O(n) — when the array is \textbf{already sorted} (or nearly sorted). The while loop condition fails immediately (0 shifts, 1 comparison per pass). Total comparisons = n-1.
+\end{itemize}
+Space complexity: O(1) auxiliary (in-place). Insertion Sort is \cle{stable} (equal elements keep their relative order).
+\end{propriete}
+
+\begin{aretenir}[Why Insertion Sort matters]
+Although O(n$^2$) in the worst case, Insertion Sort is often the \textbf{fastest} of the simple sorts for:
+\begin{itemize}
+    \item Small arrays (n < 50).
+    \item Nearly sorted data (e.g. a list where only a few new entries are added).
+    \item Online sorting (data arrives piece by piece).
+\end{itemize}
+Many hybrid algorithms (like Timsort used in Python and Java) switch to Insertion Sort for small subarrays.
+\end{aretenir}
+
+\courssub{Big-O Notation: Comparing Growth Rates}
+
+To compare algorithms independently of hardware, we use \cle{Big-O notation}. It describes the \emph{asymptotic upper bound} on the number of elementary operations as a function of input size n.
+
+\begin{definition}[Big-O Notation]
+We say an algorithm runs in \cle{O(f(n))} time if there exist constants $c > 0$ and $n_0$ such that for all $n \ge n_0$, the running time $T(n) \le c \cdot f(n)$. In plain words: for large n, the running time grows no faster than a constant multiple of $f(n)$.
+\end{definition}
+
+The common complexity classes we have met (and one we will meet later) are:
+
+\begin{center}
+\begin{tabular}{|l|l|l|}\hline
+\rowcolor{popblueL}
+\textbf{Class} & \textbf{Name} & \textbf{Typical Algorithm} \\ \hline
+O(1) & Constant & Array access, hash lookup \\ \hline
+O(log n) & Logarithmic & Binary Search \\ \hline
+O(n) & Linear & Linear Search, Insertion Sort (best) \\ \hline
+O(n log n) & Linearithmic & Merge Sort, Quicksort, Heapsort \\ \hline
+O(n$^2$) & Quadratic & Bubble, Selection, Insertion (worst/avg) \\ \hline
+\end{tabular}
+\end{center}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=\linewidth,
+    height=8cm,
+    xlabel={Input size $n$},
+    ylabel={Relative operations (arb. units)},
+    xmin=0, xmax=1000,
+    ymin=0, ymax=1000000,
+    domain=1:1000,
+    samples=100,
+    legend pos=north west,
+    grid=major,
+    log basis y=10,
+    ymode=log,
+    tick label style={font=\small},
+    label style={font=\small},
+    legend style={font=\small},
+]
+\addplot[popblue, thick] {x} node[right, pos=0.9] {O(n)};
+\addplot[poporange, thick] {x*ln(x)/ln(2)} node[right, pos=0.9] {O(n log n)};
+\addplot[popred, thick] {x*x/1000} node[right, pos=0.9] {O(n$^2$)};
+\addplot[popgreen, thick] {10*ln(x)/ln(2)} node[right, pos=0.9] {O(log n)};
+\addplot[poppurple, thick] {100} node[right, pos=0.9] {O(1)};
+\legend{O(n), O(n log n), O(n$^2$), O(log n), O(1)}
+\end{axis}
+\end{tikzpicture}
+\legende{Growth curves on a log-scale y-axis. Notice how O(n$^2$) explodes while O(n log n) stays close to O(n) for moderate n.}
+\end{popfigure}
+
+\begin{savaistu}[Concrete timings]
+Assume a computer does $10^9$ operations per second.
+\begin{itemize}
+    \item n = 10,000: O(n) $\approx$ 0.01 ms; O(n log n) $\approx$ 0.13 ms; O(n$^2$) $\approx$ 100 seconds.
+    \item n = 1,000,000: O(n) $\approx$ 1 ms; O(n log n) $\approx$ 20 ms; O(n$^2$) $\approx$ 11.5 days!
+\end{itemize}
+This is why O(n log n) sorts (Merge Sort, Quicksort) are used for large data in practice.
+\end{savaistu}
+
+\courssub{Complete Comparison Table}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Algorithm} & \textbf{Best} & \textbf{Average} & \textbf{Worst} & \textbf{Space} & \textbf{Stable?} \\ \hline
+Linear Search & O(1) & O(n) & O(n) & O(1) & N/A \\ \hline
+Binary Search & O(1) & O(log n) & O(log n) & O(1) & N/A \\ \hline
+Bubble Sort & O(n) & O(n$^2$) & O(n$^2$) & O(1) & Yes \\ \hline
+Selection Sort & O(n$^2$) & O(n$^2$) & O(n$^2$) & O(1) & No* \\ \hline
+Insertion Sort & O(n) & O(n$^2$) & O(n$^2$) & O(1) & Yes \\ \hline
+\end{tabularx}
+\end{center}
+\emph{* Selection Sort can be made stable with extra space or linked lists, but the standard array version is not stable.}
+
+\begin{aretenir}[Key takeaways from the table]
+\begin{itemize}
+    \item \textbf{Search:} If data is sorted $\rightarrow$ Binary Search (O(log n)). If unsorted or tiny $\rightarrow$ Linear Search (O(n)).
+    \item \textbf{Sort small/nearly sorted:} Insertion Sort (O(n) best, stable, in-place).
+    \item \textbf{Sort small, memory writes costly:} Selection Sort (only O(n) swaps).
+    \item \textbf{Sort large data:} Need O(n log n) algorithms (Merge Sort, Quicksort) — see enrichment box.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Decision Guide: Choosing the Right Algorithm}
+
+When you face a problem in the exam or in a project, follow this decision process.
+
+\begin{methode}[How to choose a searching/sorting algorithm]
+\begin{enumerate}
+    \item \textbf{What is the task?} Search $\rightarrow$ go to step 2. Sort $\rightarrow$ go to step 3.
+    \item \textbf{Search:} Is the data sorted?
+        \begin{itemize}
+            \item Yes $\rightarrow$ Binary Search (O(log n)).
+            \item No $\rightarrow$ Can you sort it once and search many times? If yes, sort first (step 3) then Binary Search. If only one search $\rightarrow$ Linear Search (O(n)).
+        \end{itemize}
+    \item \textbf{Sort:} How large is n?
+        \begin{itemize}
+            \item n $\le$ 50 (or data nearly sorted) $\rightarrow$ Insertion Sort (simple, fast, stable).
+            \item n small but memory writes expensive (e.g. Flash/EEPROM) $\rightarrow$ Selection Sort (min swaps).
+            \item n large (hundreds or more) $\rightarrow$ Use an O(n log n) sort: Merge Sort (stable, guaranteed O(n log n)) or Quicksort (fast in practice, cache-friendly). In exams, if asked to ``write an efficient sort for large n'', name Merge Sort or Quicksort and state O(n log n).
+        \end{itemize}
+    \item \textbf{Stability required?} (Equal keys must keep original order) $\rightarrow$ Insertion Sort, Merge Sort, Bubble Sort. Avoid Selection Sort, Quicksort (standard version).
+    \item \textbf{Extra memory allowed?} O(1) only $\rightarrow$ Insertion, Selection, Bubble, Quicksort (in-place). O(n) allowed $\rightarrow$ Merge Sort (standard).
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    decision/.style={diamond, draw=popblue, thick, aspect=2, text width=2.5cm, align=center, inner sep=2pt},
+    process/.style={rectangle, draw=popgreen, thick, rounded corners, text width=2.8cm, align=center, inner sep=2pt},
+    startstop/.style={ellipse, draw=poporange, thick, text width=2cm, align=center, inner sep=2pt},
+    arrow/.style={->, thick, popdark}
+]
+\node[startstop] (start) {Start};
+\node[decision, below=1.2cm of start] (task) {Search or Sort?};
+\node[decision, below left=1.2cm and 2cm of task] (search_sorted) {Data sorted?};
+\node[process, below right=1.2cm and 2cm of task] (sort_size) {How large is n?};
+\node[process, below=1cm of search_sorted, align=center] (bin){Binary Search\\O(log n)};
+\node[process, below=1cm of bin, align=center] (lin){Linear Search\\O(n)};
+\node[decision, below=1.2cm of sort_size, align=center] (small){n $\le$ 50 or\\nearly sorted?};
+\node[process, below left=1.2cm and 1.5cm of small, align=center] (ins){Insertion Sort\\O(n) best, stable};
+\node[decision, below right=1.2cm and 1.5cm of small] (writes) {Writes costly?};
+\node[process, below left=1.2cm and 1.5cm of writes, align=center] (sel){Selection Sort\\O(n) swaps};
+\node[process, below right=1.2cm and 1.5cm of writes, align=center] (fast){Merge Sort / Quicksort\\O(n log n)};
+\node[startstop, below=1.5cm of ins] (end1) {Done};
+\node[startstop, below=1.5cm of sel] (end2) {Done};
+\node[startstop, below=1.5cm of fast] (end3) {Done};
+\node[startstop, below=1.5cm of lin] (end4) {Done};
+
+\draw[arrow] (start) -- (task);
+\draw[arrow] (task) -| node[near start, above] {Search} (search_sorted);
+\draw[arrow] (task) -| node[near start, above] {Sort} (sort_size);
+\draw[arrow] (search_sorted) -| node[near start, left] {Yes} (bin);
+\draw[arrow] (search_sorted) -| node[near start, right] {No} (lin);
+\draw[arrow] (sort_size) -- (small);
+\draw[arrow] (small) -| node[near start, left] {Yes} (ins);
+\draw[arrow] (small) -| node[near start, right] {No} (writes);
+\draw[arrow] (writes) -| node[near start, left] {Yes} (sel);
+\draw[arrow] (writes) -| node[near start, right] {No} (fast);
+\draw[arrow] (bin) -- (end4);
+\draw[arrow] (lin) -- (end4);
+\draw[arrow] (ins) -- (end1);
+\draw[arrow] (sel) -- (end2);
+\draw[arrow] (fast) -- (end3);
+\end{tikzpicture}
+\legende{Decision flowchart for choosing a searching or sorting algorithm.}
+\end{popfigure}
+
+\courssub{Worked Example: Algorithm Selection}
+
+\begin{exoresolu}[Choosing algorithms for three scenarios]
+For each scenario, state the most appropriate algorithm from the syllabus (Linear Search, Binary Search, Bubble Sort, Selection Sort, Insertion Sort) and justify your choice in terms of time complexity and data characteristics.
+
+\textbf{Scenario A:} A school database of 800 students (sorted by admission number) must find a student by admission number. This search happens dozens of times per day.
+
+\textbf{Scenario B:} A sensor records 20 temperature readings per minute into a small buffer. At the end of each minute, the buffer (size 20) must be sorted to find the median. The buffer is usually almost sorted because temperature changes slowly.
+
+\textbf{Scenario C:} An embedded system with very limited RAM (2 KB) must sort an array of 100 integers stored in Flash memory. Writing to Flash is slow and wears out the memory.
+
+\tcblower
+\textbf{Solution:}
+
+\textbf{A: Binary Search.}
+\begin{itemize}
+    \item Data is \textbf{sorted} (by admission number).
+    \item Many repeated searches $\rightarrow$ O(log n) per search is crucial. 800 $\rightarrow$ log$_2$800 $\approx$ 10 comparisons vs 400 average for Linear Search.
+    \item No sorting needed.
+\end{itemize}
+
+\textbf{B: Insertion Sort.}
+\begin{itemize}
+    \item n = 20 (small).
+    \item Data is \textbf{nearly sorted} (temperature changes slowly) $\rightarrow$ Insertion Sort runs in near O(n) time (best case).
+    \item Stable, in-place, simple to code.
+\end{itemize}
+
+\textbf{C: Selection Sort.}
+\begin{itemize}
+    \item n = 100 (moderate, but O(n$^2$) = 10,000 ops is acceptable).
+    \item \textbf{Writes are costly} (Flash wear). Selection Sort performs only O(n) swaps (writes), whereas Insertion Sort does O(n$^2$) shifts (writes) in worst/average case.
+    \item Space O(1) fits tight RAM.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Enrichment: Faster Sorting Algorithms (Beyond Syllabus)}
+
+\begin{savaistu}[Merge Sort and Quicksort — O(n log n)]
+The syllabus requires you to know that \cle{Merge Sort} and \cle{Quicksort} exist and achieve \cle{O(n log n)} worst-case (Merge Sort) or average-case (Quicksort) time. You are \textbf{not} required to write their code or trace them in detail for the GCE, but knowing their names and complexity is an enrichment that shows depth.
+
+\begin{itemize}
+    \item \textbf{Merge Sort:} Divide array in halves recursively, sort each half, then \cle{merge} two sorted halves in O(n). Guaranteed O(n log n) worst case, stable, but needs O(n) extra space.
+    \item \textbf{Quicksort:} Pick a \cle{pivot}, partition array into elements $<$ pivot and $>$ pivot, recurse on both sides. In-place, cache-efficient, average O(n log n), but worst case O(n$^2$) (rare with good pivot choice). Not stable.
+    \item \textbf{Built-in sorts:} Python's \texttt{sorted()} / \texttt{list.sort()} (Timsort, hybrid Merge+Insertion), Java's \texttt{Arrays.sort()} (Dual-pivot Quicksort for primitives, Timsort for objects), C++ \texttt{std::sort} (Introsort = Quicksort + Heapsort fallback). Always prefer built-in sorts in real projects.
+\end{itemize}
+\end{savaistu}
+
+\courssub{Practice Exercise}
+
+\begin{exercice}[Insertion Sort trace and algorithm choice]
+\begin{enumerate}
+    \item Trace Insertion Sort on the array \texttt{B = [12, 5, 9, 5, 14, 3]}. Show the array after each complete pass (i = 1 to 5). Count total comparisons and total shifts.
+    \item Is Insertion Sort stable? Justify using your trace (note the two 5's).
+    \item A program must maintain a sorted list of at most 30 product codes. New codes are inserted one at a time, and the list must stay sorted after each insertion. Which sorting algorithm from the syllabus is most suitable? Explain.
+    \item A dataset of 50,000 records must be sorted once a week. The records are stored on disk. Which \emph{type} of algorithm (name the complexity class and give an example) should be used? Why are the three algorithms studied in detail (Bubble, Selection, Insertion) unsuitable?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise: Insertion Sort trace and algorithm choice]
+\begin{enumerate}
+    \item \textbf{Trace on B = [12, 5, 9, 5, 14, 3]:}
+    \begin{itemize}
+        \item i=1, key=5: compare 5<12, shift 12 $\rightarrow$ [5, 12, 9, 5, 14, 3] (1 comp, 1 shift)
+        \item i=2, key=9: compare 9<12, shift 12; compare 9>5 stop $\rightarrow$ [5, 9, 12, 5, 14, 3] (2 comp, 1 shift)
+        \item i=3, key=5: compare 5<12 shift; 5<9 shift; 5=5? (5>5 false) stop at first 5 $\rightarrow$ [5, 5, 9, 12, 14, 3] (3 comp, 2 shifts) \textbf{Stability preserved: new 5 placed after existing 5.}
+        \item i=4, key=14: compare 14>12 stop $\rightarrow$ [5, 5, 9, 12, 14, 3] (1 comp, 0 shifts)
+        \item i=5, key=3: compare 3<14 shift; 3<12 shift; 3<9 shift; 3<5 shift; 3<5 shift; start $\rightarrow$ [3, 5, 5, 9, 12, 14] (5 comp, 5 shifts)
+    \end{itemize}
+    \textbf{Total comparisons:} 1+2+3+1+5 = 12. \textbf{Total shifts:} 1+1+2+0+5 = 9.
+    \item \textbf{Yes, Insertion Sort is stable.} In pass i=3, the key 5 stopped at the first 5 (since 5 > 5 is false) and was inserted \emph{after} it. The original order of the two 5's (index 0 then index 3) is preserved.
+    \item \textbf{Insertion Sort.} The list is small (n $\le$ 30) and we insert one element at a time into an already sorted list. This is exactly the best-case scenario for Insertion Sort: each insertion takes O(k) where k is current size, but since the new element is just one, it's essentially O(n) per insertion, or we can view the whole process as Insertion Sort's natural online behaviour. It is simple, in-place, and stable.
+    \item \textbf{O(n log n) algorithm, e.g. Merge Sort or Quicksort.} For n = 50,000, O(n$^2$) algorithms would require ~2.5 billion operations — far too slow (minutes to hours). O(n log n) requires ~50,000 $\times$ 16 $\approx$ 800,000 operations — milliseconds. Bubble, Selection, Insertion are all O(n$^2$) in worst/average case and cannot handle 50,000 records in reasonable time.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Chapter Summary: Searching \& Sorting]
+\begin{itemize}
+    \item \textbf{Search:} Linear (O(n), unsorted) vs Binary (O(log n), sorted).
+    \item \textbf{Simple Sorts (O(n$^2$)):} Bubble (stable, detects sorted), Selection (min swaps), Insertion (fast on nearly sorted, stable, online).
+    \item \textbf{Big-O:} Classifies growth: O(1) < O(log n) < O(n) < O(n log n) < O(n$^2$).
+    \item \textbf{Choose wisely:} Consider n, sortedness, stability, memory, write cost.
+    \item \textbf{Real world:} Use built-in O(n log n) sorts (Timsort, Introsort) for large data.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+\begin{aretenir}[Learning outcomes]
+By the end of this integration activity, you should be able to:
+\begin{itemize}
+    \item Trace and compare the behaviour of \cle{selection sort} and \cle{insertion sort} on a small data set, counting comparisons and data movements.
+    \item Write clear pseudocode and implement a complete program (in C or Python) that sorts a list of student records by descending average and displays the top 10.
+    \item Implement both \cle{linear search} (on unsorted data) and \cle{binary search} (on data sorted by the search key) to retrieve a student's rank and average.
+    \item Analyse the time complexity of each algorithm and justify the choice of searching and sorting strategies for a growing database (from 60 to 6\,000 records).
+    \item Present and defend your algorithmic choices in a structured oral presentation.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Situation}
+\begin{experience}[The College Results Board]
+The principal of \textbf{Government Bilingual High School (GBHS) Mfoundi} in Yaoundé wishes to publish the \emph{Upper Sixth Honour Roll} for the current academic year. The school has 60 students in Upper Sixth. Their names and annual averages (out of 20) are stored in two parallel arrays, \texttt{names[60]} and \texttt{averages[60]}, in the order of registration (i.e. \textbf{unsorted}).
+
+The principal asks the Computer Science club to develop a program that will:
+\begin{enumerate}
+    \item Sort the 60 students by \textbf{descending average} so that the top performers appear first.
+    \item Display the \textbf{top 10} students (name, average, rank) on the school notice board.
+    \item Allow a user to type a student's name and instantly see that student's \textbf{rank} and \textbf{average}.
+\end{enumerate}
+
+Because the club wants to learn and compare algorithms, they decide to:
+\begin{itemize}
+    \item First work by hand on a \textbf{sample of 8 students} to trace two sorting algorithms (selection sort and insertion sort) and count their operations.
+    \item Then write pseudocode and a full program for the complete list of 60.
+    \item Implement two search modules: linear search on the original unsorted arrays, and binary search on a version of the arrays sorted by the search key.
+    \item Compare the worst-case number of comparisons for 60 students and extrapolate to a regional database of \textbf{6\,000 students} (e.g. all Upper Sixth students in the Centre Region).
+\end{itemize}
+
+\textbf{Sample data (8 students):}
+\begin{center}
+\begin{tabular}{|c|l|c|}
+\hline
+\rowcolor{popblueL}\textbf{Index} & \textbf{Name} & \textbf{Average} \\
+\hline
+0 & \texttt{ABANDA Marc} & 14.5 \\
+1 & \texttt{BIKOI Alice} & 16.2 \\
+2 & \texttt{CHOUAIBOU Karim} & 12.8 \\
+3 & \texttt{DJOUMESSI Fatima} & 18.0 \\
+4 & \texttt{ESSOMBA Paul} & 15.5 \\
+5 & \texttt{FOUDA Grace} & 13.0 \\
+6 & \texttt{GUIMDO Serge} & 17.3 \\
+7 & \texttt{HAPPI Mireille} & 11.9 \\
+\hline
+\end{tabular}
+\end{center}
+
+The club will work in groups of 3--4. Each group must produce:
+\begin{itemize}
+    \item Hand-written traces for both sorts on the 8-student sample.
+    \item Pseudocode and a working C or Python program for the full 60-student list.
+    \item A short report ($\approx$300 words) comparing the search strategies and recommending one for the regional scale.
+    \item A 10-minute oral defence of their work.
+\end{itemize}
+\end{experience}
+
+\courssub{Tasks}
+\begin{enumerate}
+    \item \textbf{Hand trace of sorting algorithms (sample of 8).}
+    \begin{enumerate}
+        \item Trace \textbf{selection sort} (descending order) on the \texttt{averages} array, keeping \texttt{names} in parallel. Show the array after each outer iteration. Count the total number of \emph{comparisons} between averages and the total number of \emph{swaps} (exchanges of both average and name).
+        \item Trace \textbf{insertion sort} (descending order) on the same initial data. Show the array after each insertion step. Count the total number of \emph{comparisons} and \emph{shifts} (moving an element one position to the right).
+        \item Which algorithm performed fewer comparisons on this sample? Which performed fewer data moves? Write a one-sentence conclusion.
+    \end{enumerate}
+
+    \item \textbf{Pseudocode and program for the full list (60 students).}
+    \begin{enumerate}
+        \item Write pseudocode for a \textbf{selection sort} that sorts two parallel arrays (\texttt{names}, \texttt{averages}) in descending order of \texttt{averages}.
+        \item Write pseudocode for a function \texttt{displayTop10(names, averages)} that prints the rank (1--10), name, and average of the first ten entries.
+        \item Implement the complete program in \textbf{C} or \textbf{Python}. The program must:
+              \begin{itemize}
+                  \item Read the 60 names and averages from a text file \texttt{results.txt} (one line per student: \texttt{Name Average}).
+                  \item Sort the arrays using your selection sort.
+                  \item Call \texttt{displayTop10}.
+                  \item Enter a loop: prompt the user for a name; if the name is \texttt{"END"} stop; otherwise search for the name and display rank and average (see Task 3).
+              \end{itemize}
+    \end{enumerate}
+
+    \item \textbf{Search modules.}
+    \begin{enumerate}
+        \item Write pseudocode for \texttt{linearSearch(names, n, target)} that returns the index of \texttt{target} in the \textbf{original unsorted} \texttt{names} array (or $-1$ if not found). Count the number of comparisons made.
+        \item Write pseudocode for \texttt{binarySearch(sortedNames, sortedAverages, n, target)} that assumes the arrays are \textbf{sorted alphabetically by name} (the search key). The function must return the index and the average. Count the number of comparisons.
+        \item In your program, implement both searches. For a given query, first run linear search on the original arrays (you must keep a copy), then run binary search on the name-sorted copy. Display the number of comparisons each made.
+    \end{enumerate}
+
+    \item \textbf{Complexity analysis and justification.}
+    \begin{enumerate}
+        \item Give the worst-case number of comparisons for linear search and binary search when $n = 60$ and when $n = 6\,000$.
+        \item Assuming the honour roll is generated once per term but the search module is used \textbf{daily} by hundreds of students, which search strategy should the school adopt? Justify in a paragraph ($\approx$100 words) considering both time complexity and the overhead of keeping an array sorted.
+        \item If the regional database grows to 6\,000 records and new students are added frequently, which sorting algorithm (selection sort or insertion sort) would be more suitable for \emph{incremental} updates? Explain briefly.
+    \end{enumerate}
+\end{enumerate}
+
+\courssub{Model answer}
+
+\begin{attention}[A crucial precondition for binary search — read before tracing]
+Binary search only works on an array that is \textbf{sorted by the search key}. Here the user types a \emph{name}, so binary search requires an array sorted \emph{alphabetically by name}. The honour-roll array is sorted by \emph{average}, which does \textbf{not} order the names alphabetically; applying binary search by name on it would give wrong results. The correct design is to keep \textbf{two sorted copies}:
+\begin{itemize}
+    \item one copy sorted by \textbf{descending average} (for the honour roll and the rank);
+    \item one copy sorted \textbf{alphabetically by name} (for binary search).
+\end{itemize}
+Linear search, by contrast, has \textbf{no precondition}: it works on the original unsorted arrays. This distinction is exactly what the GCE examiner expects you to state.
+\end{attention}
+
+\begin{exemplebox}[Task 1: Hand traces on the 8-student sample]
+\textbf{Initial averages array:}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL}\textbf{Index} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+\textbf{Average} & 14.5 & 16.2 & 12.8 & 18.0 & 15.5 & 13.0 & 17.3 & 11.9 \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Selection sort (descending).} Outer loop $i = 0$ to $n-2$: find the index \texttt{maxIdx} of the maximum in positions $i$ to $n-1$, then swap it into position $i$ (the \texttt{names} array is swapped in parallel). Bold entries are those placed (or confirmed) during the pass.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL}\textbf{Pass} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+Start & 14.5 & 16.2 & 12.8 & 18.0 & 15.5 & 13.0 & 17.3 & 11.9 \\
+\hline
+$i=0$ & \textbf{18.0} & 16.2 & 12.8 & 14.5 & 15.5 & 13.0 & 17.3 & 11.9 \\
+$i=1$ & 18.0 & \textbf{17.3} & 12.8 & 14.5 & 15.5 & 13.0 & 16.2 & 11.9 \\
+$i=2$ & 18.0 & 17.3 & \textbf{16.2} & 14.5 & 15.5 & 13.0 & 12.8 & 11.9 \\
+$i=3$ & 18.0 & 17.3 & 16.2 & \textbf{15.5} & 14.5 & 13.0 & 12.8 & 11.9 \\
+$i=4$ & 18.0 & 17.3 & 16.2 & 15.5 & \textbf{14.5} & 13.0 & 12.8 & 11.9 \\
+$i=5$ & 18.0 & 17.3 & 16.2 & 15.5 & 14.5 & \textbf{13.0} & 12.8 & 11.9 \\
+$i=6$ & 18.0 & 17.3 & 16.2 & 15.5 & 14.5 & 13.0 & \textbf{12.8} & 11.9 \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Pass-by-pass accounting:}
+\begin{itemize}
+    \item $i=0$: scan indices 0--7, max $=18.0$ at index 3; swap indices 0 and 3. Comparisons: 7, swaps: 1.
+    \item $i=1$: scan indices 1--7, max $=17.3$ at index 6; swap indices 1 and 6. Comparisons: 6, swaps: 1.
+    \item $i=2$: scan indices 2--7, max $=16.2$ at index 6; swap indices 2 and 6. Comparisons: 5, swaps: 1.
+    \item $i=3$: scan indices 3--7, max $=15.5$ at index 4; swap indices 3 and 4. Comparisons: 4, swaps: 1.
+    \item $i=4$: scan indices 4--7, max $=14.5$ already at index 4; no swap needed. Comparisons: 3, swaps: 0.
+    \item $i=5$: scan indices 5--7, max $=13.0$ already at index 5; no swap. Comparisons: 2, swaps: 0.
+    \item $i=6$: scan indices 6--7, max $=12.8$ already at index 6; no swap. Comparisons: 1, swaps: 0.
+\end{itemize}
+
+\noindent\textbf{Total comparisons} $= 7+6+5+4+3+2+1 = \dfrac{n(n-1)}{2} = 28$ (always, whatever the data). \textbf{Total real swaps} $= 4$ (at most one per pass, so at most $n-1$).
+
+\medskip
+\noindent\textbf{Insertion sort (descending).} Outer loop $i = 1$ to $n-1$: take \texttt{key = averages[i]} (and the parallel name), shift every element of the sorted prefix that is \emph{smaller} than the key one position to the right, then insert the key in the gap.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL}\textbf{Pass} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+Start & 14.5 & 16.2 & 12.8 & 18.0 & 15.5 & 13.0 & 17.3 & 11.9 \\
+\hline
+$i=1$ & \textbf{16.2} & 14.5 & 12.8 & 18.0 & 15.5 & 13.0 & 17.3 & 11.9 \\
+$i=2$ & 16.2 & 14.5 & 12.8 & 18.0 & 15.5 & 13.0 & 17.3 & 11.9 \\
+$i=3$ & \textbf{18.0} & 16.2 & 14.5 & 12.8 & 15.5 & 13.0 & 17.3 & 11.9 \\
+$i=4$ & 18.0 & 16.2 & \textbf{15.5} & 14.5 & 12.8 & 13.0 & 17.3 & 11.9 \\
+$i=5$ & 18.0 & 16.2 & 15.5 & 14.5 & \textbf{13.0} & 12.8 & 17.3 & 11.9 \\
+$i=6$ & 18.0 & \textbf{17.3} & 16.2 & 15.5 & 14.5 & 13.0 & 12.8 & 11.9 \\
+$i=7$ & 18.0 & 17.3 & 16.2 & 15.5 & 14.5 & 13.0 & 12.8 & 11.9 \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Comparisons and shifts per pass} (we compare the key with each prefix element from right to left; each smaller element found is shifted):
+\begin{itemize}
+    \item $i=1$: key $=16.2$; compare with 14.5 (smaller, shift); prefix exhausted. 1 comparison, 1 shift.
+    \item $i=2$: key $=12.8$; compare with 14.5 (larger, stop). 1 comparison, 0 shifts.
+    \item $i=3$: key $=18.0$; compare with 12.8, 14.5, 16.2 (all smaller, all shifted); prefix exhausted. 3 comparisons, 3 shifts.
+    \item $i=4$: key $=15.5$; compare with 12.8 (shift), 14.5 (shift), 16.2 (larger, stop). 3 comparisons, 2 shifts.
+    \item $i=5$: key $=13.0$; compare with 12.8 (shift), 14.5 (shift), 15.5 (shift), 16.2 (larger, stop). 4 comparisons, 3 shifts.
+    \item $i=6$: key $=17.3$; compare with 12.8, 13.0, 14.5, 15.5, 16.2 (all smaller, all shifted), then 18.0 (larger, stop). 6 comparisons, 5 shifts. The key is inserted at index 1, \textbf{not} index 0, because $17.3 < 18.0$.
+    \item $i=7$: key $=11.9$; compare with 12.8 (larger, stop). 1 comparison, 0 shifts.
+\end{itemize}
+
+\noindent\textbf{Total comparisons} $= 1+1+3+3+4+6+1 = 19$. \textbf{Total shifts} $= 1+0+3+2+3+5+0 = 14$.
+
+\medskip
+\noindent\textbf{Conclusion:} on this sample, \textbf{insertion sort} used fewer comparisons (19 against 28) because it stops scanning as soon as the right position is found, whereas selection sort always scans the whole unsorted region; the data movements are comparable (14 shifts against 4 swaps, each swap costing 3 assignments per array). Insertion sort \emph{adapts} to partially ordered data; selection sort always performs exactly $\frac{n(n-1)}{2}$ comparisons.
+\end{exemplebox}
+
+\begin{methode}[Task 2: Pseudocode for selection sort and displayTop10]
+\textbf{Selection sort (parallel arrays, descending):}
+\begin{itemize}
+    \item \texttt{procedure selectionSortDesc(names, averages, n)}
+    \item \texttt{~~~~for i = 0 to n-2 do}
+    \item \texttt{~~~~~~~~maxIdx = i}
+    \item \texttt{~~~~~~~~for j = i+1 to n-1 do}
+    \item \texttt{~~~~~~~~~~~~if averages[j] > averages[maxIdx] then}
+    \item \texttt{~~~~~~~~~~~~~~~~maxIdx = j}
+    \item \texttt{~~~~~~~~~~~~end if}
+    \item \texttt{~~~~~~~~end for}
+    \item \texttt{~~~~~~~~if maxIdx <> i then}
+    \item \texttt{~~~~~~~~~~~~swap(averages[i], averages[maxIdx])}
+    \item \texttt{~~~~~~~~~~~~swap(names[i], names[maxIdx])}
+    \item \texttt{~~~~~~~~end if}
+    \item \texttt{~~~~end for}
+    \item \texttt{end procedure}
+\end{itemize}
+
+\textbf{Display top 10:}
+\begin{itemize}
+    \item \texttt{procedure displayTop10(names, averages)}
+    \item \texttt{~~~~print "Rank | Name | Average"}
+    \item \texttt{~~~~for i = 0 to 9 do}
+    \item \texttt{~~~~~~~~print i+1, names[i], averages[i]}
+    \item \texttt{~~~~end for}
+    \item \texttt{end procedure}
+\end{itemize}
+\end{methode}
+
+\begin{exemplebox}[Task 2: Python implementation (complete program)]
+Structure of the program \texttt{honours.py} (presented as annotated pseudocode close to Python):
+\begin{itemize}
+    \item \texttt{def selection\_sort\_desc(names, averages):}
+    \item \texttt{~~~~n = len(averages)}
+    \item \texttt{~~~~for i in range(n - 1):}
+    \item \texttt{~~~~~~~~max\_idx = i}
+    \item \texttt{~~~~~~~~for j in range(i + 1, n):}
+    \item \texttt{~~~~~~~~~~~~if averages[j] > averages[max\_idx]: max\_idx = j}
+    \item \texttt{~~~~~~~~if max\_idx != i:}
+    \item \texttt{~~~~~~~~~~~~swap averages[i] with averages[max\_idx]}
+    \item \texttt{~~~~~~~~~~~~swap names[i] with names[max\_idx]}
+    \item \texttt{def display\_top10(names, averages):}
+    \item \texttt{~~~~print header "Rank  Name  Average"}
+    \item \texttt{~~~~for i in range(10): print i+1, names[i], averages[i]}
+    \item \texttt{def read\_file(filename):}
+    \item \texttt{~~~~open file; for each line, split into name and average;}
+    \item \texttt{~~~~append name to names list, float(average) to averages list}
+    \item \texttt{~~~~return names, averages}
+\end{itemize}
+The main part reads \texttt{results.txt}, keeps an \textbf{original copy} for linear search, sorts a second copy by descending average for the honour roll, sorts a third copy alphabetically by name for binary search (Task 3), displays the top 10, then enters the query loop.
+\end{exemplebox}
+
+\begin{exemplebox}[Task 3: Search pseudocode and Python functions]
+\textbf{Linear search (on the original unsorted arrays):}
+\begin{itemize}
+    \item \texttt{function linearSearch(origNames, n, target)}
+    \item \texttt{~~~~comparisons = 0}
+    \item \texttt{~~~~for i = 0 to n-1 do}
+    \item \texttt{~~~~~~~~comparisons = comparisons + 1}
+    \item \texttt{~~~~~~~~if origNames[i] = target then}
+    \item \texttt{~~~~~~~~~~~~return i, comparisons}
+    \item \texttt{~~~~~~~~end if}
+    \item \texttt{~~~~end for}
+    \item \texttt{~~~~return -1, comparisons}
+    \item \texttt{end function}
+\end{itemize}
+
+\textbf{Binary search (on the copy sorted alphabetically by name):}
+\begin{itemize}
+    \item \texttt{function binarySearch(sortedNames, sortedAverages, n, target)}
+    \item \texttt{~~~~low = 0; high = n-1; comparisons = 0}
+    \item \texttt{~~~~while low <= high do}
+    \item \texttt{~~~~~~~~mid = (low + high) div 2}
+    \item \texttt{~~~~~~~~comparisons = comparisons + 1}
+    \item \texttt{~~~~~~~~if sortedNames[mid] = target then}
+    \item \texttt{~~~~~~~~~~~~return mid, comparisons}
+    \item \texttt{~~~~~~~~else if sortedNames[mid] < target then}
+    \item \texttt{~~~~~~~~~~~~low = mid + 1}
+    \item \texttt{~~~~~~~~else}
+    \item \texttt{~~~~~~~~~~~~high = mid - 1}
+    \item \texttt{~~~~~~~~end if}
+    \item \texttt{~~~~end while}
+    \item \texttt{~~~~return -1, comparisons}
+    \item \texttt{end function}
+\end{itemize}
+
+\textbf{Main query loop (Python-style):}
+\begin{itemize}
+    \item \texttt{orig\_names, orig\_averages = read\_file("results.txt")}
+    \item \texttt{avg\_names, avg\_averages = copies sorted by descending average}
+    \item \texttt{display\_top10(avg\_names, avg\_averages)}
+    \item \texttt{name\_names, name\_averages = copies sorted alphabetically by name}
+    \item \texttt{repeat:}
+    \item \texttt{~~~~query = input("Enter student name (END to quit): ")}
+    \item \texttt{~~~~if query = "END": stop}
+    \item \texttt{~~~~idxL, compL = linear\_search(orig\_names, query)}
+    \item \texttt{~~~~idxB, compB = binary\_search(name\_names, name\_averages, query)}
+    \item \texttt{~~~~if found: display rank and average from each method,}
+    \item \texttt{~~~~plus the comparison counts compL and compB}
+\end{itemize}
+Note: the \emph{rank} on the honour roll is the position in the \textbf{average-sorted} array (index $+1$); the binary search gives the position in the \textbf{name-sorted} array, from which we retrieve the average, and the rank can then be recovered by locating that average in the average-sorted array.
+\end{exemplebox}
+
+\begin{exemplebox}[Task 4: Complexity analysis and justification]
+\textbf{Worst-case number of comparisons:}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL}$n$ & Linear search (worst case) & Binary search (worst case) \\
+\hline
+60 & 60 & $\lceil \log_2 60 \rceil = 6$ \\
+6\,000 & 6\,000 & $\lceil \log_2 6000 \rceil = 13$ \\
+\hline
+\end{tabular}
+\end{center}
+(For binary search the worst case is $\lceil \log_2 n \rceil$ or $\lfloor \log_2 n \rfloor + 1$ depending on convention; with $n=60$, $2^5 = 32 < 60 \le 64 = 2^6$, so 6 comparisons suffice; with $n = 6\,000$, $2^{12} = 4\,096 < 6\,000 \le 8\,192 = 2^{13}$, so 13 comparisons suffice.)
+
+\medskip
+\noindent\textbf{Recommendation paragraph ($\approx$100 words):}
+For the daily search module, the school should adopt \textbf{binary search on an alphabetically sorted copy of the student list}. With 60 students, linear search costs up to 60 comparisons per query while binary search needs at most 6 — already a gain, but modest. At the regional scale of 6\,000 students, the gap becomes decisive: 6\,000 comparisons against only 13. Since the honour roll is produced once per term, the one-time cost of sorting a copy by name is negligible compared with hundreds of daily queries. Keeping two sorted copies (by average for the roll, by name for searching) is simple and gives optimal performance for both tasks. Binary search is therefore the clear choice for a growing database.
+
+\medskip
+\noindent\textbf{Incremental updates:} if new students are added frequently, \textbf{insertion sort} is more suitable than selection sort for maintaining the sorted arrays. Inserting one new record into an already sorted array costs only $O(n)$ (find the position, shift, insert), and insertion sort runs in $O(n)$ on nearly sorted data, whereas selection sort always costs $O(n^2)$ comparisons regardless of the existing order. For frequent incremental updates, insertion sort (or binary insertion sort, which locates the position by binary search) should be preferred.
+\end{exemplebox}
+
+\begin{aretenir}[Key takeaways for the defence]
+\begin{itemize}
+    \item Selection sort: exactly $\frac{n(n-1)}{2}$ comparisons in all cases, at most $n-1$ swaps; simple but not adaptive.
+    \item Insertion sort: $O(n^2)$ in the worst case but $O(n)$ on nearly sorted data; adaptive, and performs fewer comparisons on partially ordered sets.
+    \item Linear search: $O(n)$, no precondition on the data, but slow for large $n$.
+    \item Binary search: $O(\log n)$, but \textbf{requires the array to be sorted by the search key}; keep one sorted copy per search key.
+    \item For a static honour roll (sorted once per term) with frequent name searches, keep two sorted arrays — one by average, one by name — and use binary search on the name-sorted array.
+    \item For incremental updates, insertion sort outperforms selection sort because it exploits the existing order.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Chapter CSC03: Applying Searching and Sorting Techniques}
+
+\courssub{Searching Algorithms I: Linear Search}
+
+\begin{methode}[Linear Search Algorithm]
+    \textbf{Goal:} Find the index of a target value in an unsorted array (or confirm its absence).
+    \begin{enumerate}
+        \item \textbf{Input:} Array $A$ of size $n$, target value $key$.
+        \item \textbf{Initialise:} Set $i \leftarrow 0$ (first index).
+        \item \textbf{Loop:} While $i < n$:
+            \begin{itemize}
+                \item If $A[i] = key$, return $i$ (found).
+                \item Else $i \leftarrow i + 1$.
+            \end{itemize}
+        \item \textbf{Not found:} After loop, return $-1$ (or a sentinel value).
+    \end{enumerate}
+    \textbf{Key Reflexes:}
+    \begin{itemize}
+        \item Works on \emph{any} array (sorted or unsorted).
+        \item Time complexity: Best $O(1)$, Worst $O(n)$, Average $O(n)$.
+        \item Space complexity: $O(1)$ (in-place, iterative).
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Linear Search Trace and Complexity]
+    Consider the array $A = [12, 7, 25, 3, 18, 7, 30]$ (0-indexed). 
+    \begin{enumerate}
+        \item Trace the linear search algorithm to find the \textbf{first occurrence} of $key = 7$. Show the value of $i$ and $A[i]$ at each iteration.
+        \item How many comparisons are made in the best case for this specific array? In the worst case?
+        \item Write the pseudocode for a version that returns \textbf{all indices} where $key$ occurs.
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Trace for $key = 7$ (first occurrence):}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|}\hline
+            \rowcolor{popblueL}
+            Iteration & $i$ & $A[i]$ & $A[i] = 7$? \\ \hline
+            1 & 0 & 12 & No \\ \hline
+            2 & 1 & 7 & \textbf{Yes} $\rightarrow$ Return $1$ \\ \hline
+            \end{tabular}
+            \end{center}
+            The algorithm stops at iteration 2 and returns index $1$.
+        \item \textbf{Comparisons:}
+            \begin{itemize}
+                \item \textbf{Best case:} $key = 12$ (first element). Only \textbf{1 comparison}.
+                \item \textbf{Worst case:} $key = 30$ (last element) or $key = 100$ (absent). \textbf{7 comparisons} ($n$ comparisons).
+            \end{itemize}
+        \item \textbf{Pseudocode for all indices:}
+            \begin{itemize}
+                \item \texttt{Function LinearSearchAll(A, n, key)}
+                \item \texttt{\quad indices $\leftarrow$ empty list}
+                \item \texttt{\quad For i $\leftarrow$ 0 to n-1}
+                \item \texttt{\quad\quad If A[i] = key Then}
+                \item \texttt{\quad\quad\quad Append i to indices}
+                \item \texttt{\quad\quad End If}
+                \item \texttt{\quad End For}
+                \item \texttt{\quad Return indices}
+                \item \texttt{End Function}
+            \end{itemize}
+    \end{enumerate}
+\end{exoresolu}
+
+\courssub{Searching Algorithms II: Binary Search}
+
+\begin{methode}[Binary Search Algorithm (Iterative)]
+    \textbf{Precondition:} Array $A$ must be \textbf{sorted in ascending order}.
+    \textbf{Goal:} Find index of $key$ in $O(\log n)$ time.
+    \begin{enumerate}
+        \item \textbf{Initialise:} $low \leftarrow 0$, $high \leftarrow n-1$.
+        \item \textbf{Loop:} While $low \le high$:
+            \begin{itemize}
+                \item $mid \leftarrow \lfloor (low + high) / 2 \rfloor$ (integer division).
+                \item If $A[mid] = key$: Return $mid$.
+                \item Else if $A[mid] < key$: $low \leftarrow mid + 1$ (search right half).
+                \item Else: $high \leftarrow mid - 1$ (search left half).
+            \end{itemize}
+        \item \textbf{Not found:} Return $-1$.
+    \end{enumerate}
+    \textbf{Key Reflexes:}
+    \begin{itemize}
+        \item \textbf{Mid calculation:} Use $low + \lfloor (high - low)/2 \rfloor$ to avoid integer overflow (good practice).
+        \item \textbf{Loop condition:} $low \le high$ (not $<$). If $low = high$, one element remains to check.
+        \item \textbf{Update bounds:} Always $mid \pm 1$ to avoid infinite loops.
+        \item Complexity: Time $O(\log_2 n)$, Space $O(1)$ iterative / $O(\log n)$ recursive (stack).
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Binary Search Trace and Boundary Analysis]
+    Given the sorted array $A = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]$ (size $n=10$, indices 0..9).
+    \begin{enumerate}
+        \item Trace the iterative binary search for $key = 23$. Draw a table with columns: Iteration, $low$, $high$, $mid$, $A[mid]$, Decision.
+        \item Trace for $key = 50$ (not in array). Show the final values of $low$ and $high$ when the loop terminates.
+        \item Explain why the condition is $low \le high$ and not $low < high$. Give a concrete example from the array above where $low < high$ would fail.
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Trace for $key = 23$:}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c|}\hline
+            \rowcolor{popblueL}
+            Iter & $low$ & $high$ & $mid$ & $A[mid]$ & Decision \\ \hline
+            1 & 0 & 9 & 4 & 16 & $16 < 23 \rightarrow low = 5$ \\ \hline
+            2 & 5 & 9 & 7 & 56 & $56 > 23 \rightarrow high = 6$ \\ \hline
+            3 & 5 & 6 & 5 & 23 & \textbf{Found! Return 5} \\ \hline
+            \end{tabular}
+            \end{center}
+        \item \textbf{Trace for $key = 50$:}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c|}\hline
+            \rowcolor{popblueL}
+            Iter & $low$ & $high$ & $mid$ & $A[mid]$ & Decision \\ \hline
+            1 & 0 & 9 & 4 & 16 & $16 < 50 \rightarrow low = 5$ \\ \hline
+            2 & 5 & 9 & 7 & 56 & $56 > 50 \rightarrow high = 6$ \\ \hline
+            3 & 5 & 6 & 5 & 23 & $23 < 50 \rightarrow low = 6$ \\ \hline
+            4 & 6 & 6 & 6 & 38 & $38 < 50 \rightarrow low = 7$ \\ \hline
+            \end{tabular}
+            \end{center}
+            Loop condition $low \le high$ becomes $7 \le 6$ (False). Terminates. Returns $-1$.
+            Final state: $low = 7$, $high = 6$. Note: $low$ is the insertion point (index of first element $> 50$).
+        \item \textbf{Why $low \le high$?}
+            If $low = high$, there is exactly \textbf{one element} left to check (the search space has size 1).
+            Example: Search for $key = 91$ (last element).
+            \begin{itemize}
+                \item Iter 1: $low=0, high=9, mid=4, A[4]=16 \rightarrow low=5$.
+                \item Iter 2: $low=5, high=9, mid=7, A[7]=56 \rightarrow low=8$.
+                \item Iter 3: $low=8, high=9, mid=8, A[8]=72 \rightarrow low=9$.
+                \item Iter 4: $low=9, high=9$. \textbf{With $\le$:} Loop enters. $mid=9, A[9]=91$. Found!
+                \item \textbf{With $<$:} Condition $9 < 9$ is False. Loop skips. Returns $-1$ (Missed the last element!).
+            \end{itemize}
+    \end{enumerate}
+\end{exoresolu}
+
+\courssub{Sorting Algorithms I: Bubble Sort and Selection Sort}
+
+\begin{methode}[Bubble Sort Algorithm]
+    \textbf{Goal:} Sort array $A$ of size $n$ in ascending order (in-place).
+    \textbf{Idea:} Repeatedly step through the list, compare adjacent elements and swap if in wrong order. Largest elements "bubble" to the end.
+    \begin{enumerate}
+        \item \textbf{Outer loop (Passes):} For $pass \leftarrow 0$ to $n-2$ (or $n-1$).
+        \item \textbf{Inner loop (Comparisons):} For $i \leftarrow 0$ to $n-2-pass$.
+            \begin{itemize}
+                \item If $A[i] > A[i+1]$: Swap $A[i]$ and $A[i+1]$.
+            \end{itemize}
+        \item \textbf{Optimisation (Early Exit):} If a complete pass makes \textbf{zero swaps}, the array is sorted $\rightarrow$ Break.
+    \end{enumerate}
+    \textbf{Key Reflexes:}
+    \begin{itemize}
+        \item Inner loop bound shrinks by 1 each pass (last $pass$ elements are already sorted).
+        \item Stability: \textbf{Stable} (equal elements never swap).
+        \item Complexity: Time Worst/Average $O(n^2)$, Best $O(n)$ (with early exit on sorted array). Space $O(1)$.
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Bubble Sort Trace with Early Exit]
+    Sort the array $A = [5, 1, 4, 2, 8]$ using Bubble Sort with the early exit optimisation.
+    \begin{enumerate}
+        \item Show the state of the array after \textbf{each complete pass}. Indicate the number of swaps in that pass.
+        \item How many passes are actually executed? How many comparisons in total?
+        \item If the array was initially sorted $[1, 2, 4, 5, 8]$, how many passes and comparisons would occur?
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Trace:} $n=5$. Indices 0..4.
+            \begin{itemize}
+                \item \textbf{Pass 0} ($i=0..3$): 
+                    Compare (5,1) $\rightarrow$ Swap $\rightarrow [1,5,4,2,8]$
+                    Compare (5,4) $\rightarrow$ Swap $\rightarrow [1,4,5,2,8]$
+                    Compare (5,2) $\rightarrow$ Swap $\rightarrow [1,4,2,5,8]$
+                    Compare (5,8) $\rightarrow$ No Swap.
+                    \textbf{Array: $[1,4,2,5,8]$, Swaps: 3}
+                \item \textbf{Pass 1} ($i=0..2$):
+                    Compare (1,4) $\rightarrow$ No Swap.
+                    Compare (4,2) $\rightarrow$ Swap $\rightarrow [1,2,4,5,8]$
+                    Compare (4,5) $\rightarrow$ No Swap.
+                    \textbf{Array: $[1,2,4,5,8]$, Swaps: 1}
+                \item \textbf{Pass 2} ($i=0..1$):
+                    Compare (1,2) $\rightarrow$ No Swap.
+                    Compare (2,4) $\rightarrow$ No Swap.
+                    \textbf{Array: $[1,2,4,5,8]$, Swaps: 0 $\rightarrow$ \textbf{STOP (Early Exit)}}
+            \end{itemize}
+        \item \textbf{Executed Passes:} 3 (Pass 0, 1, 2). Pass 3 and 4 skipped.
+            \textbf{Comparisons:} Pass 0: 4, Pass 1: 3, Pass 2: 2. Total = \textbf{9 comparisons}.
+        \item \textbf{Already sorted array $[1,2,4,5,8]$:}
+            Pass 0: 4 comparisons, 0 swaps $\rightarrow$ Early Exit immediately.
+            \textbf{Passes: 1, Comparisons: 4 ($n-1$).} Best case $O(n)$ achieved.
+    \end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Selection Sort Algorithm]
+    \textbf{Goal:} Sort array $A$ of size $n$ in ascending order (in-place).
+    \textbf{Idea:} Divide array into sorted prefix (left) and unsorted suffix (right). Repeatedly select the \textbf{minimum} from unsorted part and swap it with the first element of unsorted part.
+    \begin{enumerate}
+        \item For $i \leftarrow 0$ to $n-2$ (boundary of sorted part):
+            \begin{itemize}
+                \item $min\_idx \leftarrow i$.
+                \item For $j \leftarrow i+1$ to $n-1$:
+                    \item If $A[j] < A[min\_idx]$: $min\_idx \leftarrow j$.
+                \item If $min\_idx \ne i$: Swap $A[i]$ and $A[min\_idx]$.
+            \end{itemize}
+    \end{enumerate}
+    \textbf{Key Reflexes:}
+    \begin{itemize}
+        \item \textbf{Exactly $n-1$ swaps maximum} (one per pass). Minimises data movement (good for EEPROM/Flash).
+        \item \textbf{Not Stable:} Swapping $A[i]$ with a distant $A[min\_idx]$ can move equal elements past each other.
+        \item Complexity: Time \textbf{Always $O(n^2)$} (Best/Average/Worst). No early exit. Space $O(1)$.
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Selection Sort Trace and Stability Counter-Example]
+    \begin{enumerate}
+        \item Trace Selection Sort on $A = [29, 10, 14, 37, 13]$. Show the array after each pass $i$, the $min\_idx$ found, and whether a swap occurred.
+        \item Demonstrate that Selection Sort is \textbf{unstable} using the array $B = [5_a, 5_b, 3]$ where $5_a$ and $5_b$ are equal keys with distinct identities (e.g., records). Show the final order of the 5s.
+        \item Why does Selection Sort have the same $O(n^2)$ time complexity even on an already sorted array?
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Trace on $[29, 10, 14, 37, 13]$:}
+            \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}\hline
+            \rowcolor{popblueL}
+            Pass $i$ & Unsorted Part & $min\_idx$ & $min\_val$ & Array After Pass \\ \hline
+            0 & $[29, 10, 14, 37, 13]$ & 1 & 10 & \textbf{Swap 0,1} $\rightarrow [10, 29, 14, 37, 13]$ \\ \hline
+            1 & $[29, 14, 37, 13]$ & 4 & 13 & \textbf{Swap 1,4} $\rightarrow [10, 13, 14, 37, 29]$ \\ \hline
+            2 & $[14, 37, 29]$ & 2 & 14 & No Swap ($min\_idx=2=i$) $\rightarrow [10, 13, 14, 37, 29]$ \\ \hline
+            3 & $[37, 29]$ & 4 & 29 & \textbf{Swap 3,4} $\rightarrow [10, 13, 14, 29, 37]$ \\ \hline
+            \end{tabular}
+            \end{center}
+            Sorted array: $[10, 13, 14, 29, 37]$.
+        \item \textbf{Stability Counter-Example:} $B = [5_a, 5_b, 3]$ (indices 0,1,2).
+            \begin{itemize}
+                \item Pass $i=0$: Unsorted $[5_a, 5_b, 3]$. Min is $3$ at index 2.
+                \item Swap $B[0]$ ($5_a$) with $B[2]$ ($3$).
+                \item Array becomes: $[3, 5_b, 5_a]$.
+            \end{itemize}
+            Original order of 5s: $5_a$ then $5_b$. Final order: $5_b$ then $5_a$. \textbf{Order reversed $\rightarrow$ Unstable.}
+        \item \textbf{Why always $O(n^2)$?} The inner loop \textbf{always} scans the entire unsorted portion ($n-i-1$ elements) to find the minimum, regardless of the initial order. It cannot "detect" sortedness. Comparisons $\sum_{i=0}^{n-2} (n-i-1) = n(n-1)/2 \in \Theta(n^2)$.
+    \end{enumerate}
+\end{exoresolu}
+
+\courssub{Sorting Algorithms II: Insertion Sort, Comparison and Choice of Algorithms}
+
+\begin{methode}[Insertion Sort Algorithm]
+    \textbf{Goal:} Sort array $A$ of size $n$ in ascending order (in-place).
+    \textbf{Idea:} Build sorted prefix one element at a time. Take next element ($key$), shift larger elements right to make a hole, insert $key$.
+    \begin{enumerate}
+        \item For $i \leftarrow 1$ to $n-1$:
+            \begin{itemize}
+                \item $key \leftarrow A[i]$.
+                \item $j \leftarrow i - 1$.
+                \item While $j \ge 0$ \textbf{AND} $A[j] > key$:
+                    \item $A[j+1] \leftarrow A[j]$ (Shift right).
+                    \item $j \leftarrow j - 1$.
+                \item $A[j+1] \leftarrow key$ (Insert).
+            \end{itemize}
+    \end{enumerate}
+    \textbf{Key Reflexes:}
+    \begin{itemize}
+        \item \textbf{Stable:} Condition is $A[j] > key$ (strict), so equal elements are not shifted past $key$.
+        \item \textbf{Adaptive:} Best case $O(n)$ (already sorted: inner loop never runs). Worst case $O(n^2)$ (reverse sorted).
+        \item \textbf{Online:} Can sort a list as it arrives (streaming).
+        \item \textbf{Low Overhead:} Excellent for small $n$ ($n < 50$) or nearly sorted data. Often used as base case in hybrid sorts (Timsort, Introsort).
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Insertion Sort Trace and Shift Counting]
+    Sort $A = [12, 11, 13, 5, 6]$ using Insertion Sort.
+    \begin{enumerate}
+        \item Trace the algorithm. For each $i=1..4$, show: $key$, the shifting process (values of $j$ and $A[j]$ shifted), and the array after insertion.
+        \item Count the total number of \textbf{shifts} (assignments $A[j+1] \leftarrow A[j]$) and \textbf{comparisons} ($A[j] > key$ evaluated).
+        \item If the array was reverse sorted $[13, 12, 11, 6, 5]$, what would be the total shifts and comparisons? Relate to formula.
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Trace:}
+            \begin{itemize}
+                \item \textbf{i=1:} $key=11$. $j=0, A[0]=12 > 11$. Shift $A[1]=12$. $j=-1$. Insert $A[0]=11$. Array: $[11, 12, 13, 5, 6]$. (1 shift, 1 comp + 1 fail).
+                \item \textbf{i=2:} $key=13$. $j=1, A[1]=12 \ngtr 13$. No shift. Insert $A[2]=13$. Array: $[11, 12, 13, 5, 6]$. (0 shifts, 1 comp).
+                \item \textbf{i=3:} $key=5$. $j=2, A[2]=13>5$ Shift $\rightarrow A[3]=13$. $j=1, A[1]=12>5$ Shift $\rightarrow A[2]=12$. $j=0, A[0]=11>5$ Shift $\rightarrow A[1]=11$. $j=-1$. Insert $A[0]=5$. Array: $[5, 11, 12, 13, 6]$. (3 shifts, 3 comps + 1 fail).
+                \item \textbf{i=4:} $key=6$. $j=3, A[3]=13>6$ Shift $\rightarrow A[4]=13$. $j=2, A[2]=12>6$ Shift $\rightarrow A[3]=12$. $j=1, A[1]=11>6$ Shift $\rightarrow A[2]=11$. $j=0, A[0]=5 \ngtr 6$. Insert $A[1]=6$. Array: $[5, 6, 11, 12, 13]$. (3 shifts, 4 comps).
+            \end{itemize}
+        \item \textbf{Totals:} Shifts = $1+0+3+3 = \mathbf{7}$. Comparisons = $(1+1)+(1)+(3+1)+(3+1) = \mathbf{11}$ (counting the failing comparison each while loop).
+        \item \textbf{Reverse Sorted $[13, 12, 11, 6, 5]$ (Worst Case):}
+            For $i=1..4$, $key$ is smaller than all previous. Inner loop runs $i$ times.
+            Shifts = $\sum_{i=1}^{4} i = 10 = n(n-1)/2$.
+            Comparisons = $\sum_{i=1}^{4} (i+1) = (2+3+4+5) = 14 = n(n-1)/2 + (n-1)$.
+            Time complexity $\Theta(n^2)$.
+    \end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Choosing a Sorting Algorithm: Decision Framework]
+    \textbf{No single "best" sort.} Choice depends on constraints. Use this checklist:
+    \begin{enumerate}
+        \item \textbf{Data Size ($n$):}
+            \begin{itemize}
+                \item Small ($n \le 50$): \textbf{Insertion Sort} (low overhead, fast in practice).
+                \item Large: Need $O(n \log n)$ (Merge, Quick, Heap, Timsort).
+            \end{itemize}
+        \item \textbf{Initial Order:}
+            \begin{itemize}
+                \item Nearly Sorted: \textbf{Insertion Sort} ($O(n)$), Timsort (built for this).
+                \item Random: Quick Sort (average $O(n \log n)$, cache friendly), Merge Sort (guaranteed $O(n \log n)$).
+                \item Reverse Sorted: Avoid Quick Sort (worst $O(n^2)$ without good pivot). Use Merge/Heap.
+            \end{itemize}
+        \item \textbf{Stability Required?} (Preserve order of equal keys)
+            \begin{itemize}
+                \item Yes: Merge Sort, Insertion Sort, Bubble Sort, Timsort, Counting/Radix.
+                \item No: Quick Sort, Heap Sort, Selection Sort.
+            \end{itemize}
+        \item \textbf{Memory Constraints:}
+            \begin{itemize}
+                \item $O(1)$ Extra Space (In-place): Quick Sort (stack $\log n$), Heap Sort, Insertion/Selection/Bubble.
+                \item $O(n)$ Auxiliary Array OK: Merge Sort (standard), Timsort.
+            \end{itemize}
+        \item \textbf{Data Type / Keys:}
+            \begin{itemize}
+                \item Integers in small range $[0..k]$: \textbf{Counting Sort} $O(n+k)$.
+                \item Integers / Strings (fixed length): \textbf{Radix Sort} $O(d(n+b))$.
+            \end{itemize}
+    \end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Algorithm Selection for Cameroonian Context Scenarios]
+    For each scenario, state the \textbf{most appropriate sorting algorithm} from the syllabus (Bubble, Selection, Insertion, Merge, Quick) and justify using \textbf{at least two criteria} from the decision framework.
+    \begin{enumerate}
+        \item A microcontroller in a Yaoundé traffic light system sorts 20 sensor readings (integers 0-100) every second. RAM is 2 KB. The array is often nearly sorted.
+        \item A database server in Douala sorts 1,000,000 customer records by "Account Balance" (float). Stability is required for secondary sort by "Date". Ample RAM available.
+        \item An embedded system in a Buea weather station sorts 100 temperature logs (structs: float temp, int timestamp) stored in Flash memory. Write cycles to Flash must be minimised.
+        \item A student's GCE project sorts a linked list of 500 strings (names) in Python. The language's built-in \texttt{sorted()} uses Timsort. Explain why Timsort fits.
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Algorithm: Insertion Sort.}
+            \begin{itemize}
+                \item \textbf{Small $n=20$:} Insertion Sort has minimal overhead, faster than $O(n \log n)$ algorithms for tiny $n$.
+                \item \textbf{Nearly Sorted:} Best case $O(n)$ adaptive behaviour.
+                \item \textbf{RAM 2KB / In-place:} $O(1)$ extra space. No recursion stack overflow risk.
+            \end{itemize}
+        \item \textbf{Algorithm: Merge Sort (or Timsort).}
+            \begin{itemize}
+                \item \textbf{Large $n=10^6$:} Requires $O(n \log n)$ guaranteed. Quick Sort worst case $O(n^2)$ risky for server.
+                \item \textbf{Stability Required:} Merge Sort is stable. Quick Sort / Heap Sort are not.
+                \item \textbf{Ample RAM:} $O(n)$ auxiliary array acceptable.
+            \end{itemize}
+        \item \textbf{Algorithm: Selection Sort.}
+            \begin{itemize}
+                \item \textbf{Minimise Writes (Flash):} Selection Sort performs at most $n-1 = 99$ swaps (writes). Insertion Sort shifts ($O(n^2)$ writes). Bubble Sort swaps ($O(n^2)$ writes).
+                \item \textbf{Small $n=100$:} $O(n^2)$ time acceptable.
+                \item \textbf{In-place:} $O(1)$ space.
+            \end{itemize}
+        \item \textbf{Timsort Justification:}
+            \begin{itemize}
+                \item \textbf{Hybrid (Merge + Insertion):} Uses Insertion Sort for small runs ($n < 64$), Merge Sort for merging runs. Optimal for all sizes.
+                \item \textbf{Adaptive (Natural Runs):} Detects existing ordered subsequences (ascending/descending) in the linked list. Exploits partial order $\rightarrow$ often $O(n)$.
+                \item \textbf{Stable:} Preserves order of equal names (important for secondary keys).
+                \item \textbf{Linked List Friendly:} Merge Sort works naturally on linked lists ($O(1)$ merge space). Timsort leverages this.
+            \end{itemize}
+    \end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Complexity Analysis: The Master Theorem (for Divide \& Conquer Sorts)]
+    \textbf{Use:} Analyse recursive algorithms like Merge Sort and Quick Sort.
+    Recurrence: $T(n) = a T(n/b) + f(n)$.
+    \begin{itemize}
+        \item $a$: Number of subproblems.
+        \item $n/b$: Size of each subproblem.
+        \item $f(n)$: Cost to divide + combine.
+    \end{itemize}
+    \textbf{Three Cases (simplified):}
+    \begin{enumerate}
+        \item If $f(n) = O(n^{\log_b a - \epsilon})$: $T(n) = \Theta(n^{\log_b a})$ (Leaves dominate).
+        \item If $f(n) = \Theta(n^{\log_b a} \log^k n)$: $T(n) = \Theta(n^{\log_b a} \log^{k+1} n)$ (Balanced).
+        \item If $f(n) = \Omega(n^{\log_b a + \epsilon})$ and $af(n/b) \le cf(n)$: $T(n) = \Theta(f(n))$ (Root dominates).
+    \end{enumerate}
+    \textbf{Application to Syllabus Sorts:}
+    \begin{itemize}
+        \item \textbf{Merge Sort:} $T(n) = 2T(n/2) + \Theta(n)$. $a=2, b=2, \log_2 2 = 1$. $f(n)=\Theta(n^1)$. Case 2 ($k=0$). $\rightarrow \Theta(n \log n)$.
+        \item \textbf{Quick Sort (Average):} $T(n) = 2T(n/2) + \Theta(n) \rightarrow \Theta(n \log n)$.
+        \item \textbf{Quick Sort (Worst):} $T(n) = T(n-1) + \Theta(n) \rightarrow \Theta(n^2)$ (Master Theorem not directly applicable, use substitution/tree).
+    \end{itemize}
+\end{methode}
+
+\begin{exoresolu}[Merge Sort Recurrence and Trace]
+    \begin{enumerate}
+        \item Write the recurrence relation for the worst-case time complexity of Merge Sort. Solve it using the Master Theorem, stating $a$, $b$, $f(n)$ and the case used.
+        \item Trace the \textbf{divide phase} (splitting) and \textbf{merge phase} for the array $A = [38, 27, 43, 3, 9, 82, 10]$. Draw the recursion tree showing subarrays at each level.
+        \item How many \textbf{extra array cells} (auxiliary space) are needed in total during the merge of the final two halves for this array of size 7?
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Recurrence:} $T(n) = 2T(n/2) + \Theta(n)$ for $n>1$, $T(1)=\Theta(1)$.
+            \begin{itemize}
+                \item $a = 2$ (two recursive calls).
+                \item $b = 2$ (each half size).
+                \item $f(n) = \Theta(n)$ (merge step linear).
+                \item $\log_b a = \log_2 2 = 1$.
+                \item $f(n) = \Theta(n) = \Theta(n^{\log_b a})$. \textbf{Case 2} with $k=0$.
+                \item Solution: $T(n) = \Theta(n \log n)$.
+            \end{itemize}
+        \item \textbf{Recursion Tree Trace:}
+            \begin{center}
+            \begin{tikzpicture}[level distance=1.2cm, sibling distance=2.5cm, scale=0.8, transform shape]
+                \node { $[38,27,43,3,9,82,10]$ }
+                    child { node { $[38,27,43,3]$ }
+                        child { node { $[38,27]$ }
+                            child { node { $[38]$ } }
+                            child { node { $[27]$ } }
+                        }
+                        child { node { $[43,3]$ }
+                            child { node { $[43]$ } }
+                            child { node { $[3]$ } }
+                        }
+                    }
+                    child { node { $[9,82,10]$ }
+                        child { node { $[9]$ } }
+                        child { node { $[82,10]$ }
+                            child { node { $[82]$ } }
+                            child { node { $[10]$ } }
+                        }
+                    };
+            \end{tikzpicture}
+            \end{center}
+            \textbf{Merge Phase (Bottom-Up):}
+            \begin{itemize}
+                \item Merge $[38],[27] \rightarrow [27,38]$
+                \item Merge $[43],[3] \rightarrow [3,43]$
+                \item Merge $[27,38],[3,43] \rightarrow [3,27,38,43]$
+                \item Merge $[82],[10] \rightarrow [10,82]$
+                \item Merge $[9],[10,82] \rightarrow [9,10,82]$
+                \item Merge $[3,27,38,43],[9,10,82] \rightarrow [3,9,10,27,38,43,82]$
+            \end{itemize}
+        \item \textbf{Auxiliary Space:} Standard Merge Sort merges two halves of total size $n$ into a temporary array of size $n$.
+            For $n=7$, final merge needs \textbf{7 extra cells}.
+            (Note: Total extra space allocated over lifetime can be $O(n \log n)$ if not reused, but standard implementation allocates one temp array of size $n$ $\rightarrow$ $O(n)$ space complexity).
+    \end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Quick Sort: Partitioning (Lomuto Scheme) and Pivot Choice]
+    \textbf{Core:} Partition array around a \textbf{pivot}. Elements $<$ pivot left, $>$ pivot right. Pivot ends in final sorted position. Recurse on left/right parts.
+    \textbf{Lomuto Partition (Pivot = Last Element $A[high]$):}
+    \begin{enumerate}
+        \item $pivot \leftarrow A[high]$.
+        \item $i \leftarrow low - 1$ (index of smaller element).
+        \item For $j \leftarrow low$ to $high-1$:
+            \item If $A[j] \le pivot$: $i \leftarrow i+1$; Swap $A[i], A[j]$.
+        \item Swap $A[i+1], A[high]$ (Place pivot).
+        \item Return $i+1$ (pivot index).
+    \end{enumerate}
+    \textbf{Pivot Choice Strategies (Critical for Performance):}
+    \begin{itemize}
+        \item \textbf{Fixed (First/Last):} Simple. Worst case $O(n^2)$ on sorted/reverse sorted arrays.
+        \item \textbf{Random:} Expected $O(n \log n)$. Defeats adversarial input.
+        \item \textbf{Median-of-Three (First, Mid, Last):} Robust practical choice. Avoids worst case on sorted data.
+    \end{itemize}
+    \textbf{Properties:} In-place ($O(\log n)$ stack), Unstable, Cache-friendly.
+\end{methode}
+
+\begin{exoresolu}[Quick Sort Partition Trace and Worst Case]
+    Array $A = [10, 80, 30, 90, 40, 50, 70]$ (indices 0..6). Use Lomuto Partition with pivot = last element ($70$).
+    \begin{enumerate}
+        \item Trace the partition loop. Show a table: $j$, $A[j]$, Condition ($A[j] \le 70$?), $i$ after inc, Array state after potential swap.
+        \item State the final array after partition and the returned pivot index.
+        \item Show the array configuration (values) that would cause \textbf{worst-case $O(n^2)$} behaviour for Quick Sort with "Last Element" pivot on an array of size 5. Explain why.
+    \end{enumerate}
+    \tcblower
+    \textbf{Detailed Solution}
+    \begin{enumerate}
+        \item \textbf{Partition Trace ($pivot=70$):}
+            \begin{center}
+            \begin{tabularx}{\linewidth}{|c|c|c|c|c|X|}\hline
+            \rowcolor{popblueL}
+            $j$ & $A[j]$ & $A[j] \le 70$? & $i$ (before) & Action & Array State \\ \hline
+            Init & - & - & -1 & - & $[10, 80, 30, 90, 40, 50, 70]$ \\ \hline
+            0 & 10 & Yes & -1 $\rightarrow$ 0 & Swap $A[0],A[0]$ & $[10, 80, 30, 90, 40, 50, 70]$ \\ \hline
+            1 & 80 & No & 0 & None & $[10, 80, 30, 90, 40, 50, 70]$ \\ \hline
+            2 & 30 & Yes & 0 $\rightarrow$ 1 & Swap $A[1],A[2]$ & $[10, \mathbf{30}, \mathbf{80}, 90, 40, 50, 70]$ \\ \hline
+            3 & 90 & No & 1 & None & $[10, 30, 80, 90, 40, 50, 70]$ \\ \hline
+            4 & 40 & Yes & 1 $\rightarrow$ 2 & Swap $A[2],A[4]$ & $[10, 30, \mathbf{40}, 90, \mathbf{80}, 50, 70]$ \\ \hline
+            5 & 50 & Yes & 2 $\rightarrow$ 3 & Swap $A[3],A[5]$ & $[10, 30, 40, \mathbf{50}, 80, \mathbf{90}, 70]$ \\ \hline
+            End & - & - & 3 & Swap $A[4], A[6]$ (Pivot) & $[10, 30, 40, 50, \mathbf{70}, 90, 80]$ \\ \hline
+            \end{tabularx}
+            \end{center}
+        \item \textbf{Result:} Array = $[10, 30, 40, 50, 70, 90, 80]$. Pivot Index = \textbf{4}. Left: $[10,30,40,50]$ ($<70$). Right: $[90,80]$ ($>70$).
+        \item \textbf{Worst Case Config (Size 5, Pivot=Last):} \textbf{Already Sorted Ascending:} $[10, 20, 30, 40, 50]$.
+            \begin{itemize}
+                \item Call 1: Pivot=50. Partition: Left size 4, Right size 0. Comparisons: 4.
+                \item Call 2: Pivot=40. Left size 3, Right 0. Comparisons: 3.
+                \item Call 3: Pivot=30. Left size 2. Comparisons: 2.
+                \item Call 4: Pivot=20. Left size 1. Comparisons: 1.
+                \item Total Comparisons: $4+3+2+1 = 10 = n(n-1)/2 = \Theta(n^2)$.
+            \end{itemize}
+            \textbf{Why?} Pivot is always the \textbf{maximum} element. Partition is maximally unbalanced ($n-1$ and $0$). Recursion depth $n$.
+    \end{enumerate}
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+\begin{exercice}[MCQ on Searching]
+Which of the following statements about linear search and binary search is correct?
+\begin{enumerate}
+\item Linear search requires the array to be sorted.
+\item Binary search has a worst-case time complexity of $O(n)$.
+\item Linear search has a worst-case time complexity of $O(n)$.
+\item Binary search can be applied directly on an unsorted array.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False with Justification]
+State whether each statement is true or false. Justify your answer.
+\begin{enumerate}
+\item Bubble sort always performs the same number of comparisons regardless of the initial order of the elements.
+\item Selection sort is a stable sorting algorithm.
+\item Insertion sort performs well on nearly sorted lists.
+\item The best-case time complexity of binary search is $O(1)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define the following terms:
+\begin{enumerate}
+\item Searching algorithm
+\item Sorting algorithm
+\item Stable sort
+\item In-place sort
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct Calculations]
+An array contains $500\,000$ elements.
+\begin{enumerate}
+\item What is the maximum number of comparisons required by linear search in the worst case?
+\item What is the maximum number of comparisons required by binary search in the worst case? (Give the exact integer value.)
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+\begin{exercice}[Bubble Sort Trace]
+Given the array \texttt{[42, 17, 8, 29, 13]}, show the state of the array after each pass of the standard bubble sort algorithm (with the optimization that stops if no swaps occur in a pass). Also state the total number of comparisons and swaps performed.
+\end{exercice}
+
+\begin{exercice}[Binary Search Trace]
+Consider the sorted array \texttt{[3, 7, 11, 18, 25, 31, 40, 46, 52, 60]}. Perform a binary search for the key \texttt{31} and then for the key \texttt{20}. For each search, show the values of \texttt{low}, \texttt{high}, and \texttt{mid} at each step, and indicate whether the key is found.
+\end{exercice}
+
+\begin{exercice}[Code Completion -- Linear Search]
+Complete the following Python function that performs linear search. It should return the index of the first occurrence of \texttt{key} in \texttt{arr}, or \texttt{-1} if not found.
+\begin{verbatim}
+def linear_search(arr, key):
+    # TODO: complete the function
+    pass
+\end{verbatim}
+\end{exercice}
+
+\begin{exercice}[Error Hunting -- Binary Search]
+The following pseudocode for binary search contains three bugs. Identify and correct them.
+\begin{verbatim}
+function binary_search(arr, key):
+    low = 0
+    high = length(arr)      // Bug 1
+    while low < high:       // Bug 2
+        mid = (low + high) / 2
+        if arr[mid] == key:
+            return mid
+        else if arr[mid] < key:
+            low = mid       // Bug 3
+        else:
+            high = mid
+    return -1
+\end{verbatim}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+\begin{exercice}[Comparison Problem -- Cybercafé Database]
+A cybercafé in Douala maintains a database of 500,000 customer records. The manager wants to search for a customer by their ID number.
+\begin{enumerate}
+\item Calculate the maximum number of comparisons required if linear search is used. [2 marks]
+\item Calculate the maximum number of comparisons required if binary search is used (assume the records are sorted by ID). [2 marks]
+\item If each comparison takes 0.1 microseconds, estimate the worst-case search time for each method. [2 marks]
+\item Based on your calculations, which method is feasible for real-time use? Justify your answer. [2 marks]
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Algorithm Choice Essay]
+For each of the following scenarios, choose the most appropriate searching or sorting strategy and justify your choice.
+\begin{enumerate}
+\item A small unsorted list of 20 student names that needs to be sorted once. [3 marks]
+\item A huge sorted register of 1,000,000 telephone numbers that is searched frequently. [3 marks]
+\item A nearly sorted list of 500 examination scores that arrives daily and must be sorted. [3 marks]
+\item A list of 100 items that must be searched only once and is not sorted. [3 marks]
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Structured GCE-Style Question]
+\begin{enumerate}
+\item Define the term \emph{sorting}. [2 marks]
+\item Trace the selection sort algorithm on the array \texttt{[64, 25, 12, 22, 11, 90]}. Show the array after each pass. [6 marks]
+\item State the time complexity of selection sort in the best, average, and worst cases. [3 marks]
+\item Name one sorting algorithm that is asymptotically faster than selection sort for large datasets. [1 mark]
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\courssub{I check my knowledge}
+
+\begin{corrige}[Exercise 1 --- MCQ on Searching]
+\textbf{Correct answer: (c) Linear search has a worst-case time complexity of $O(n)$.}
+
+\textbf{Justification of each option:}
+\begin{enumerate}
+\item \textbf{False.} Linear search examines elements sequentially from the first to the last; it works on \emph{any} array, sorted or not. This absence of a precondition is its main advantage for small or unsorted datasets.
+\item \textbf{False.} Binary search halves the search interval at each step, so its worst-case complexity is $O(\log_2 n)$, not $O(n)$.
+\item \textbf{True.} In the worst case (key absent or located at the last position), linear search compares the key with all $n$ elements, performing exactly $n$ comparisons, hence $O(n)$.
+\item \textbf{False.} Binary search is only correct if the array is \cle{sorted} (ascending or descending). On an unsorted array, eliminating half of the elements based on a comparison with the middle element may discard the key, leading to incorrect results.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True/False with Justification]
+\begin{enumerate}
+\item \textbf{False} (for the optimized version). Standard bubble sort with an ``early exit'' flag stops as soon as a complete pass performs no swap. On an already sorted array it performs only $n-1$ comparisons (one pass), whereas on a reverse-sorted array it performs $\dfrac{n(n-1)}{2}$ comparisons. Only the \emph{unoptimized} version always performs the same number of comparisons regardless of input order.
+\item \textbf{False.} Selection sort is \emph{not} stable: swapping the minimum element found in the unsorted part with the element at the current position can move an element over another element with an equal key, changing their relative order. Example: sorting \texttt{[2a, 2b, 1]} (where \texttt{2a} and \texttt{2b} are distinct records with equal key 2) gives \texttt{[1, 2b, 2a]}, reversing the order of the two 2s.
+\item \textbf{True.} Insertion sort is \cle{adaptive}: on a nearly sorted list, each element is already close to its final position, so very few shifts are needed. Its best-case complexity is $O(n)$ and it approaches this performance on nearly sorted data.
+\item \textbf{True.} In the best case, the key is exactly at the middle position on the very first probe: a single comparison suffices, hence $O(1)$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Definitions]
+\begin{enumerate}
+\item \textbf{Searching algorithm:} a systematic procedure that determines whether a given value (the \cle{key}) is present in a collection of data and, if so, returns its position (or the associated record).
+\item \textbf{Sorting algorithm:} a systematic procedure that rearranges the elements of a collection into a specified order (ascending or descending) according to a comparison key.
+\item \textbf{Stable sort:} a sorting algorithm that preserves the relative order of elements having equal keys: if two equal elements $A$ and $B$ appear with $A$ before $B$ in the input, then $A$ still appears before $B$ in the output.
+\item \textbf{In-place sort:} a sorting algorithm that requires only a constant amount $O(1)$ of extra memory, rearranging the elements within the original array itself (apart from a few temporary variables for swapping).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Direct Calculations]
+\begin{enumerate}
+\item \textbf{Linear search (worst case):} the key is compared with every element, so the maximum number of comparisons is exactly
+\[ n = 500\,000 \text{ comparisons.} \]
+\item \textbf{Binary search (worst case):} the maximum number of comparisons for a successful or unsuccessful search is $\lfloor \log_2 n \rfloor + 1$. Compute:
+\[ 2^{18} = 262\,144 \quad \text{and} \quad 2^{19} = 524\,288. \]
+Since $2^{18} < 500\,000 \leq 2^{19}$, we have $\lfloor \log_2 500\,000 \rfloor = 18$, hence the worst case is
+\[ 18 + 1 = \textbf{19 comparisons.} \]
+\end{enumerate}
+\textbf{Remark:} binary search reduces half a million checks to at most 19 --- this is why sorted data and binary search are so valuable in practice.
+\end{corrige}
+
+\courssub{I practise}
+
+\begin{corrige}[Exercise 5 --- Bubble Sort Trace]
+Array: \texttt{[42, 17, 8, 29, 13]}, $n = 5$. We use the optimized version with a \texttt{swapped} flag.
+
+\textbf{Pass 1} (compare adjacent pairs from index 0 to 3):
+\begin{itemize}
+\item $42 > 17$: swap $\to$ \texttt{[17, 42, 8, 29, 13]}
+\item $42 > 8$: swap $\to$ \texttt{[17, 8, 42, 29, 13]}
+\item $42 > 29$: swap $\to$ \texttt{[17, 8, 29, 42, 13]}
+\item $42 > 13$: swap $\to$ \texttt{[17, 8, 29, 13, 42]}
+\end{itemize}
+After pass 1: \texttt{[17, 8, 29, 13, 42]} --- 4 comparisons, 4 swaps. Largest element (42) bubbled to the end.
+
+\textbf{Pass 2} (last element 42 is in place; compare indices 0 to 2):
+\begin{itemize}
+\item $17 > 8$: swap $\to$ \texttt{[8, 17, 29, 13, 42]}
+\item $17 < 29$: no swap
+\item $29 > 13$: swap $\to$ \texttt{[8, 17, 13, 29, 42]}
+\end{itemize}
+After pass 2: \texttt{[8, 17, 13, 29, 42]} --- 3 comparisons, 2 swaps.
+
+\textbf{Pass 3} (last two elements sorted; compare indices 0 to 1):
+\begin{itemize}
+\item $8 < 17$: no swap
+\item $17 > 13$: swap $\to$ \texttt{[8, 13, 17, 29, 42]}
+\end{itemize}
+After pass 3: \texttt{[8, 13, 17, 29, 42]} --- 2 comparisons, 1 swap.
+
+\textbf{Pass 4} (last three elements sorted; compare index 0 only):
+\begin{itemize}
+\item $8 < 13$: no swap. No swap occurred during the whole pass $\Rightarrow$ \textbf{algorithm stops early}.
+\end{itemize}
+After pass 4: \texttt{[8, 13, 17, 29, 42]} --- 1 comparison, 0 swaps.
+
+\textbf{Totals:} $4 + 3 + 2 + 1 = \textbf{10 comparisons}$ and $4 + 2 + 1 = \textbf{7 swaps}$. The array is sorted: \texttt{[8, 13, 17, 29, 42]}.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- Binary Search Trace]
+Array (indices 0 to 9): \texttt{[3, 7, 11, 18, 25, 31, 40, 46, 52, 60]}.
+
+\textbf{Search for key 31:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & \texttt{low} & \texttt{high} & \texttt{mid} & \texttt{arr[mid]} & Action \\
+\hline
+1 & 0 & 9 & 4 & 25 & $25 < 31$: \texttt{low} $= 5$ \\
+\hline
+2 & 5 & 9 & 7 & 46 & $46 > 31$: \texttt{high} $= 6$ \\
+\hline
+3 & 5 & 6 & 5 & 31 & Found! Return index 5 \\
+\hline
+\end{tabular}
+\end{center}
+The key \texttt{31} is \textbf{found at index 5} after 3 comparisons.
+
+\textbf{Search for key 20:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & \texttt{low} & \texttt{high} & \texttt{mid} & \texttt{arr[mid]} & Action \\
+\hline
+1 & 0 & 9 & 4 & 25 & $25 > 20$: \texttt{high} $= 3$ \\
+\hline
+2 & 0 & 3 & 1 & 7 & $7 < 20$: \texttt{low} $= 2$ \\
+\hline
+3 & 2 & 3 & 2 & 11 & $11 < 20$: \texttt{low} $= 3$ \\
+\hline
+4 & 3 & 3 & 3 & 18 & $18 < 20$: \texttt{low} $= 4$ \\
+\hline
+\end{tabular}
+\end{center}
+Now $\texttt{low} = 4 > \texttt{high} = 3$: the loop ends. The key \texttt{20} is \textbf{not found}; the algorithm returns $-1$ after 4 comparisons.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Code Completion (Linear Search)]
+A correct Python implementation:
+\begin{itemize}
+\item \texttt{def linear\_search(arr, key):}
+\item \quad \texttt{for i in range(len(arr)):}
+\item \quad \quad \texttt{if arr[i] == key:}
+\item \quad \quad \quad \texttt{return i}
+\item \quad \texttt{return -1}
+\end{itemize}
+\textbf{Explanation:} the loop scans the indices from $0$ to $\mathrm{len}(\texttt{arr}) - 1$. As soon as an element equals \texttt{key}, its index is returned immediately, which guarantees that the \emph{first} occurrence is returned. If the loop finishes without a match, the function returns $-1$. Worst-case complexity: $O(n)$; best case: $O(1)$ (key at index 0).
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- Error Hunting (Binary Search)]
+\textbf{Bug 1 --- wrong upper bound:} \texttt{high = length(arr)} is out of range, since valid indices run from $0$ to $\mathrm{length}(\texttt{arr}) - 1$. This can cause an index-out-of-range access when \texttt{mid} equals \texttt{length(arr)}.
+\textbf{Correction:} \texttt{high = length(arr) - 1}.
+
+\textbf{Bug 2 --- wrong loop condition:} \texttt{while low < high} skips the case $\texttt{low} = \texttt{high}$, where a single unexamined element remains (e.g. a one-element array would never be checked).
+\textbf{Correction:} \texttt{while low <= high}.
+
+\textbf{Bug 3 --- no progress on the lower bound:} \texttt{low = mid} does not exclude \texttt{arr[mid]}, which has already been tested and found not to match. Combined with integer division rounding down, the interval may never shrink, causing an \emph{infinite loop} (e.g. $\texttt{low} = 3$, $\texttt{high} = 4$ gives $\texttt{mid} = 3$ forever).
+\textbf{Correction:} \texttt{low = mid + 1}. (Symmetrically, \texttt{high = mid - 1} in the other branch.)
+
+\textbf{Corrected pseudocode:}
+\begin{itemize}
+\item \texttt{function binary\_search(arr, key):}
+\item \quad \texttt{low = 0}
+\item \quad \texttt{high = length(arr) - 1}
+\item \quad \texttt{while low <= high:}
+\item \quad \quad \texttt{mid = (low + high) div 2}
+\item \quad \quad \texttt{if arr[mid] == key: return mid}
+\item \quad \quad \texttt{else if arr[mid] < key: low = mid + 1}
+\item \quad \quad \texttt{else: high = mid - 1}
+\item \quad \texttt{return -1}
+\end{itemize}
+\end{corrige}
+
+\courssub{I prepare for the GCE}
+
+\begin{corrige}[Exercise 9 --- Comparison Problem (Cybercafé Database)]
+\textbf{(a) Linear search [2 marks]:} worst case = key absent or last record:
+\[ 500\,000 \text{ comparisons.} \]
+\emph{[1 mark for the principle $n$ comparisons; 1 mark for the numerical answer.]}
+
+\textbf{(b) Binary search [2 marks]:} worst case $= \lfloor \log_2 500\,000 \rfloor + 1$. Since $2^{18} = 262\,144 < 500\,000 \leq 2^{19} = 524\,288$:
+\[ \lfloor \log_2 500\,000 \rfloor + 1 = 18 + 1 = \textbf{19 comparisons.} \]
+\emph{[1 mark for the logarithmic formula; 1 mark for the exact value 19.]}
+
+\textbf{(c) Search times [2 marks]:} each comparison takes $0.1\ \mu\mathrm{s} = 10^{-7}\ \mathrm{s}$.
+\begin{itemize}
+\item Linear search: $500\,000 \times 0.1\ \mu\mathrm{s} = 50\,000\ \mu\mathrm{s} = \textbf{50 ms}$ ($0.05\ \mathrm{s}$).
+\item Binary search: $19 \times 0.1\ \mu\mathrm{s} = \textbf{1.9}\ \mu\mathrm{s}$.
+\end{itemize}
+\emph{[1 mark per correct time with unit.]}
+
+\textbf{(d) Conclusion [2 marks]:} \textbf{Binary search} is the feasible method for real-time use: at under 2 microseconds per query it is effectively instantaneous, even with many simultaneous users. Linear search at 50 ms per query would accumulate noticeable delays under heavy load (e.g. 100 queries $\approx 5$ s). The one-time cost of keeping records sorted by ID is amply repaid.
+\emph{[1 mark for the correct choice; 1 mark for a justification referring to the computed times.]}
+
+\textbf{Examiner's expectations:} exact integer 19 (not just ``$\log_2 n$''), correct unit conversions, and a conclusion that explicitly compares the two computed times.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- Algorithm Choice Essay]
+\textbf{(a) 20 student names, sorted once [3 marks]:} \textbf{Insertion sort} (or selection sort). The list is tiny, so asymptotic efficiency is irrelevant; a simple $O(n^2)$ algorithm is easy to implement correctly and runs instantly. Insertion sort is preferred as it is stable and simple. \emph{[1 mark choice, 2 marks justification mentioning small $n$ and simplicity.]}
+
+\textbf{(b) 1,000,000 sorted telephone numbers, searched frequently [3 marks]:} \textbf{Binary search}. The data is already sorted, so the precondition is satisfied; each search costs at most $\lfloor \log_2 10^6 \rfloor + 1 = 20$ comparisons instead of up to $10^6$ for linear search. Since searches are frequent, the saving is enormous. \emph{[1 mark choice, 2 marks justification with the logarithmic argument and the ``frequent searches'' observation.]}
+
+\textbf{(c) 500 nearly sorted examination scores arriving daily [3 marks]:} \textbf{Insertion sort}. It is \cle{adaptive}: on nearly sorted data it performs close to the best case $O(n)$, because each element is shifted only a few positions. Bubble sort with early exit would also be acceptable, but insertion sort is the classic answer. \emph{[1 mark choice, 2 marks justification using adaptivity / nearly sorted best case.]}
+
+\textbf{(d) 100 unsorted items, searched only once [3 marks]:} \textbf{Linear search}. Sorting first would cost $O(n \log n)$ at best (or $O(n^2)$ with a simple sort), which is far more than the $n = 100$ comparisons of a single linear scan. Sorting only pays off when many searches will reuse the sorted structure. \emph{[1 mark choice, 2 marks justification comparing one-off search cost with sort-then-search cost.]}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Structured GCE-Style Question]
+\textbf{(a) Definition of sorting [2 marks]:} sorting is the process of rearranging the elements of a collection into a specified order (ascending or descending) according to a comparison key. \emph{[1 mark ``rearranging elements''; 1 mark ``into a defined order''.]}
+
+\textbf{(b) Trace of selection sort on \texttt{[64, 25, 12, 22, 11, 90]} [6 marks]:}
+
+Principle: at pass $i$ (starting from 0), find the minimum of the unsorted part (indices $i$ to $n-1$) and swap it into position $i$.
+\begin{itemize}
+\item \textbf{Pass 1 ($i=0$):} minimum of \texttt{[64, 25, 12, 22, 11, 90]} is 11 (index 4); swap with 64 $\to$ \texttt{[11, 25, 12, 22, 64, 90]}
+\item \textbf{Pass 2 ($i=1$):} minimum of \texttt{[25, 12, 22, 64, 90]} is 12 (index 2); swap with 25 $\to$ \texttt{[11, 12, 25, 22, 64, 90]}
+\item \textbf{Pass 3 ($i=2$):} minimum of \texttt{[25, 22, 64, 90]} is 22 (index 3); swap with 25 $\to$ \texttt{[11, 12, 22, 25, 64, 90]}
+\item \textbf{Pass 4 ($i=3$):} minimum of \texttt{[25, 64, 90]} is 25, already in place $\to$ \texttt{[11, 12, 22, 25, 64, 90]}
+\item \textbf{Pass 5 ($i=4$):} minimum of \texttt{[64, 90]} is 64, already in place $\to$ \texttt{[11, 12, 22, 25, 64, 90]}
+\end{itemize}
+Final sorted array: \texttt{[11, 12, 22, 25, 64, 90]}.
+\emph{[1 mark per correct pass, up to 5 marks; 1 mark for the correct final array. The examiner expects the minimum to be identified explicitly at each pass.]}
+
+\textbf{(c) Time complexities of selection sort [3 marks]:}
+\begin{itemize}
+\item Best case: $O(n^2)$
+\item Average case: $O(n^2)$
+\item Worst case: $O(n^2)$
+\end{itemize}
+Selection sort always performs $\dfrac{n(n-1)}{2}$ comparisons whatever the initial order, since finding the minimum of the unsorted part requires scanning it entirely. The number of swaps is at most $n-1$. \emph{[1 mark per case.]}
+
+\textbf{(d) A faster algorithm [1 mark]:} \textbf{Merge sort} (or \textbf{quick sort}), with complexity $O(n \log n)$ on average (guaranteed for merge sort). \emph{[1 mark for any valid $O(n \log n)$ algorithm.]}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, concept color=popblue, grow cyclic,
+  level 1/.style={level distance=4.5cm, sibling angle=360/7},
+  level 2/.style={level distance=3cm, sibling angle=360/7}]
+\node[concept] {Searching \& Sorting}
+  child[concept color=poporange] {node[concept] {Linear Search}}
+  child[concept color=popgreen] {node[concept] {Binary Search}}
+  child[concept color=poppurple] {node[concept] {Bubble Sort}}
+  child[concept color=poppink] {node[concept] {Selection Sort}}
+  child[concept color=popgold] {node[concept] {Insertion Sort}}
+  child[concept color=popblue] {node[concept] {Complexity}}
+  child[concept color=popmuted] {node[concept] {Algorithm Choice}};
+\end{tikzpicture}
+\legende{Chapter CSC03 mind map: Searching and Sorting algorithms}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key Definitions}
+\begin{itemize}
+\item \cle{Linear Search}: sequential scan of an array until the target is found or the end is reached.
+\item \cle{Binary Search}: divide-and-conquer search on a \emph{sorted} array, halving the search interval each step.
+\item \cle{Bubble Sort}: repeatedly swaps adjacent out-of-order elements, bubbling the largest to the end of the unsorted portion.
+\item \cle{Selection Sort}: repeatedly selects the minimum (or maximum) from the unsorted part and swaps it into its final position.
+\item \cle{Insertion Sort}: builds the sorted array one element at a time by inserting each new element into its correct place among the already sorted elements.
+\item \cle{Time Complexity}: worst-case number of basic operations as a function of input size $n$.
+\item \cle{Space Complexity}: extra memory used besides the input array.
+\item \cle{Stability}: a sorting algorithm is stable if equal elements retain their original relative order.
+\item \cle{Adaptive}: an algorithm that performs better on partially sorted data (e.g., Insertion Sort, Bubble Sort with early exit).
+\end{itemize}
+
+\textbf{Complexity Laws (must know for GCE)}
+\begin{itemize}
+\item Linear Search: $O(n)$ time, $O(1)$ space.
+\item Binary Search (iterative): $O(\log n)$ time, $O(1)$ space; recursive version uses $O(\log n)$ stack space.
+\item Bubble Sort: $O(n^2)$ worst/average time, $O(1)$ space; best case $O(n)$ with early-exit flag.
+\item Selection Sort: $\Theta(n^2)$ comparisons always, $O(1)$ space; not stable.
+\item Insertion Sort: $O(n^2)$ worst/average, $O(n)$ best (already sorted), $O(1)$ space; stable and adaptive.
+\end{itemize}
+
+\textbf{Methods / Pseudocode Patterns}
+\begin{itemize}
+\item \textbf{Linear Search}: \texttt{for i = 0 to n-1: if A[i] == key return i; return -1;}
+\item \textbf{Binary Search (iterative)}: \texttt{low=0; high=n-1; while low <= high: mid=(low+high)/2; if A[mid]==key return mid; else if A[mid]<key low=mid+1; else high=mid-1; return -1;}
+\item \textbf{Bubble Sort}: \texttt{for i=0 to n-2: swapped=false; for j=0 to n-2-i: if A[j]>A[j+1] swap; swapped=true; if not swapped break;}
+\item \textbf{Selection Sort}: \texttt{for i=0 to n-2: minIdx=i; for j=i+1 to n-1: if A[j]<A[minIdx] minIdx=j; swap A[i],A[minIdx];}
+\item \textbf{Insertion Sort}: \texttt{for i=1 to n-1: key=A[i]; j=i-1; while j>=0 and A[j]>key: A[j+1]=A[j]; j--; A[j+1]=key;}
+\end{itemize}
+
+\textbf{Common Mistakes (GCE traps)}
+\begin{itemize}
+\item Forgetting that Binary Search \emph{requires} a sorted array; applying it on unsorted data yields incorrect results.
+\item Off-by-one errors in loop bounds (e.g., using \texttt{<=} vs \texttt{<} in Binary Search condition).
+\item Confusing the number of passes in Bubble Sort: exactly $n-1$ passes, inner loop shrinks by one each pass.
+\item Thinking Selection Sort is stable; it is \emph{not} stable because long-distance swaps can reorder equal elements.
+\item Assuming Insertion Sort is always $O(n^2)$; best case is $O(n)$ when data is already or nearly sorted.
+\item Not stating space complexity for recursive Binary Search ($O(\log n)$ stack frames).
+\item Omitting the early-exit optimisation in Bubble Sort when asked for best-case analysis.
+\end{itemize}
+
+\textbf{GCE Examination Tips}
+\begin{itemize}
+\item Always write the \cle{worst-case}, \cle{best-case}, and \cle{average-case} complexities when asked.
+\item For trace questions, show a clear \cle{trace table} with each pass/iteration, indices, and array state.
+\item When comparing algorithms, mention both time and space complexity, and stability if relevant.
+\item Pseudocode must be \emph{language-independent}: use \texttt{for}, \texttt{while}, \texttt{if}, \texttt{swap}, \texttt{return}.
+\item In essay-type questions, justify the choice of algorithm for a given scenario (e.g., small $n$ or nearly sorted $\rightarrow$ Insertion Sort; large sorted data $\rightarrow$ Binary Search).
+\item Remember that Bubble Sort with early exit can detect an already sorted array in $O(n)$ time.
+\item If asked to implement a search on unsorted data, Linear Search is the only correct choice unless you sort first (which adds $O(n\log n)$ or $O(n^2)$ overhead).
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
