@@ -1,0 +1,3487 @@
+% Integration — Pure Mathematics with Mechanics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PMM04-integration.tex
+\newcommand{\DOCMATIERE}{Pure Mathematics with Mechanics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Pure mathematics with mechanics}
+\newcommand{\DOCLECON}{4}
+\newcommand{\DOCTITRE}{Integration}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+\begin{document}
+
+\pagegarde{Integration}{Pure Mathematics with Mechanics}{Upper Sixth}{Upper Sixth — Pure mathematics with mechanics}{4}{9 periods}{This chapter develops the definite integral as the limit of Riemann sums and applies it to areas, volumes of revolution, centroids and centres of mass. It closes with numerical integration by the trapezoid rule and the mean value theorem for integrals, essential tools for the GCE Advanced Level examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can express a definite integral as the limit of a Riemann sum and interpret it as a signed area.
+\item By the end of this chapter I can use definite integrals to calculate the area between a curve and the x-axis, including regions below the axis.
+\item By the end of this chapter I can calculate the area between two curves and areas bounded by the y-axis.
+\item By the end of this chapter I can calculate volumes of solids of revolution about the x-axis and about the y-axis.
+\item By the end of this chapter I can use integration to locate centroids of plane regions and centres of mass of simple laminas and solids.
+\item By the end of this chapter I can approximate a definite integral with the trapezoid rule and estimate the accuracy of the approximation.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Section 1: The Definite Integral as a Limit of Riemann Sums
+\item Section 2: Areas Bounded by the x-axis and Between Curves
+\item Section 3: Areas Bounded by the y-axis
+\item Section 4: Volumes of Solids of Revolution
+\item Section 5: Centroids and Centres of Mass by Integration
+\item Section 6: Trapezoid Rule and the Mean Value Theorem for Integrals
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can express a definite integral as the limit of a Riemann sum and interpret it as a signed area.
+\item By the end of this chapter I can use definite integrals to calculate the area between a curve and the x-axis, including regions below the axis.
+\item By the end of this chapter I can calculate the area between two curves and areas bounded by the y-axis.
+\item By the end of this chapter I can calculate volumes of solids of revolution about the x-axis and about the y-axis.
+\item By the end of this chapter I can use integration to locate centroids of plane regions and centres of mass of simple laminas and solids.
+\item By the end of this chapter I can approximate a definite integral with the trapezoid rule and estimate the accuracy of the approximation.
+\item By the end of this chapter I can state and apply the mean value theorem for integrals and compute the mean value of a function on an interval.
+\item By the end of this chapter I can model and solve authentic GCE-style problems combining several of these skills.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Indefinite integration and the Fundamental Theorem of Calculus (Lower Sixth: antiderivatives, standard integrals, integration by substitution and by parts).
+\item Evaluation of definite integrals with correct handling of limits.
+\item Curve sketching of polynomials, rational, trigonometric, exponential and logarithmic functions.
+\item Solving simultaneous equations to find intersection points of curves.
+\item Sigma notation and limits of sums (sequences and series, Lower Sixth).
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Section 1: The Definite Integral as a Limit of Riemann Sums}
+
+A water engineer in Bamenda must estimate the volume of a reservoir whose cross-section is curved, while a cocoa cooperative in Kumba wants to know the average daily price of a bag of cocoa over the season. A road contractor between Douala and Yaound\'e needs the exact area of an irregular plot bounded by a curving river. None of these shapes is a rectangle, a triangle or a circle, so ordinary geometry fails. Integration, understood as the limit of a sum of infinitely many tiny pieces, gives the exact answer — and the trapezoid rule gives a quick estimate when the function is only known from measurements.
+
+\courssub{Why We Need a New Idea: Area Under a Curve}
+
+In earlier years you learned to compute areas of polygons, circles and sectors. But what if the boundary is a curve like $y = x^2$ or $y = \sin x$? There is no elementary formula for the area under such a curve between $x=a$ and $x=b$. The brilliant idea — due to Riemann and others — is to \emph{exhaust} the region with rectangles whose total area we can sum, then let the number of rectangles grow without bound while their width shrinks to zero. The limiting value, if it exists, is defined to be the \emph{definite integral} of the function over $[a,b]$.
+
+\courssub{Partitioning the Interval and Rectangular Approximations}
+
+Let $f$ be a function defined on a closed interval $[a,b]$. A \emph{partition} $P$ of $[a,b]$ is a finite set of points $\{x_0, x_1, \dots, x_n\}$ such that
+\[
+a = x_0 < x_1 < x_2 < \dots < x_n = b.
+\]
+The subintervals are $[x_{i-1}, x_i]$ and their widths are $\Delta x_i = x_i - x_{i-1}$. The \emph{mesh} (or norm) of the partition, denoted $\|P\|$, is the length of the largest subinterval: $\|P\| = \max_{1 \le i \le n} \Delta x_i$.
+
+For a \emph{regular partition} into $n$ equal subintervals,
+\[
+\Delta x = \frac{b-a}{n}, \qquad x_i = a + i\Delta x \quad (i=0,1,\dots,n).
+\]
+On each subinterval $[x_{i-1},x_i]$ we choose a sample point $x_i^* \in [x_{i-1},x_i]$ and build a rectangle of height $f(x_i^*)$ and width $\Delta x_i$. The sum of the areas of these rectangles is a \emph{Riemann sum}:
+\[
+S(P) = \sum_{i=1}^{n} f(x_i^*)\,\Delta x_i.
+\]
+For a regular partition with $\Delta x_i = \Delta x$, this simplifies to
+\[
+S_n = \sum_{i=1}^{n} f(x_i^*)\,\Delta x.
+\]
+Common choices for $x_i^*$ in a regular partition:
+\begin{itemize}
+\item \textbf{Left endpoint:} $x_i^* = x_{i-1}$  (left Riemann sum).
+\item \textbf{Right endpoint:} $x_i^* = x_i$  (right Riemann sum).
+\item \textbf{Midpoint:} $x_i^* = \frac{x_{i-1}+x_i}{2}$  (midpoint Riemann sum).
+\end{itemize}
+If $f$ is increasing, the left sum underestimates the area (lower sum) and the right sum overestimates it (upper sum); for a decreasing function the roles are reversed.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8]
+% Left: n=4
+\begin{scope}[xshift=0cm]
+\draw[->] (-0.2,0) -- (1.2,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$y$};
+\draw[domain=0:1,smooth,variable=\x,popblue,thick] plot ({\x},{\x*\x});
+\foreach \i in {0,...,3} {
+  \pgfmathsetmacro{\xi}{\i/4}
+  \pgfmathsetmacro{\xip}{(\i+1)/4}
+  \pgfmathsetmacro{\h}{\xi*\xi}
+  \draw[popgreen!70!black,fill=popgreen!20] (\xi,0) rectangle (\xip,\h);
+}
+\draw (0.5,-0.3) node {$n=4$ (left sum)};
+\end{scope}
+% Right: n=10
+\begin{scope}[xshift=6cm]
+\draw[->] (-0.2,0) -- (1.2,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,1.2) node[above] {$y$};
+\draw[domain=0:1,smooth,variable=\x,popblue,thick] plot ({\x},{\x*\x});
+\foreach \i in {0,...,9} {
+  \pgfmathsetmacro{\xi}{\i/10}
+  \pgfmathsetmacro{\xip}{(\i+1)/10}
+  \pgfmathsetmacro{\h}{\xi*\xi}
+  \draw[poporange!70!black,fill=poporange!20] (\xi,0) rectangle (\xip,\h);
+}
+\draw (0.5,-0.3) node {$n=10$ (left sum)};
+\end{scope}
+\end{tikzpicture}
+\legende{Left Riemann sums for $y=x^2$ on $[0,1]$ with $n=4$ and $n=10$. As $n$ increases the rectangles better approximate the area under the curve.}
+\end{popfigure}
+
+\courssub{Sigma Notation and Riemann Sums}
+
+The Riemann sum is compactly written with sigma notation:
+\[
+S_n = \sum_{i=1}^{n} f(x_i^*)\,\Delta x.
+\]
+For a regular partition $\Delta x = \frac{b-a}{n}$ and right endpoints $x_i^* = a + i\Delta x$, this becomes
+\[
+S_n = \sum_{i=1}^{n} f\!\left(a + i\,\frac{b-a}{n}\right) \frac{b-a}{n}.
+\]
+
+\begin{exemplebox}[{Riemann sum for $f(x)=x^2$ on $[0,1]$}]
+Take $a=0$, $b=1$, so $\Delta x = \frac{1}{n}$ and $x_i^* = \frac{i}{n}$. Then
+\[
+S_n = \sum_{i=1}^{n} \left(\frac{i}{n}\right)^2 \frac{1}{n}
+     = \frac{1}{n^3} \sum_{i=1}^{n} i^2.
+\]
+Using the well‑known formula $\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}$, we obtain
+\[
+S_n = \frac{1}{n^3}\cdot\frac{n(n+1)(2n+1)}{6}
+     = \frac{(n+1)(2n+1)}{6n^2}
+     = \frac{1}{3} + \frac{1}{2n} + \frac{1}{6n^2}.
+\]
+\end{exemplebox}
+
+\begin{exemplebox}[{Riemann sum for $f(x)=\frac{1}{x}$ on $[1,2]$}]
+Here $a=1$, $b=2$, $\Delta x = \frac{1}{n}$, $x_i^* = 1 + \frac{i}{n}$. The right Riemann sum is
+\[
+S_n = \sum_{i=1}^{n} \frac{1}{1+\frac{i}{n}} \cdot \frac{1}{n}
+     = \sum_{i=1}^{n} \frac{1}{n+i}.
+\]
+This sum does not simplify to a closed form using elementary formulas, but its limit as $n\to\infty$ exists and equals $\ln 2$.
+\end{exemplebox}
+
+\begin{methode}[Evaluating an integral from first principles]
+To compute $\int_a^b f(x)\,dx$ directly from the definition:
+\begin{enumerate}
+\item Write $\Delta x = \frac{b-a}{n}$ and choose a convenient sample point (usually right endpoint $x_i = a + i\Delta x$).
+\item Form the Riemann sum $S_n = \sum_{i=1}^{n} f(x_i)\,\Delta x$.
+\item Simplify the sum using known formulas:
+      $\sum_{i=1}^{n} 1 = n$,
+      $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$,
+      $\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}$,
+      $\sum_{i=1}^{n} i^3 = \left[\frac{n(n+1)}{2}\right]^2$.
+\item Take the limit $n\to\infty$ (i.e. $\Delta x\to 0$). The result is the value of the definite integral.
+\end{enumerate}
+\end{methode}
+
+\courssub{The Definite Integral as a Limit}
+
+\begin{definition}[Definite integral as a limit of Riemann sums]
+Let $f$ be defined on $[a,b]$. If the limit
+\[
+\lim_{\|P\|\to 0} \sum_{i=1}^{n} f(x_i^*)\,\Delta x_i
+\]
+exists and is the same for every choice of partitions $P$ and sample points $x_i^* \in [x_{i-1},x_i]$ as the mesh $\|P\|$ tends to zero, then $f$ is said to be \emph{integrable} on $[a,b]$ and the limit is called the \emph{definite integral} of $f$ from $a$ to $b$, denoted
+\[
+\int_a^b f(x)\,dx.
+\]
+For a regular partition this is equivalent to $\displaystyle\lim_{n\to\infty} \sum_{i=1}^{n} f(x_i^*)\,\Delta x$.
+\end{definition}
+
+\begin{propriete}[Integrability of continuous functions]
+If $f$ is continuous on the closed interval $[a,b]$, then $f$ is integrable on $[a,b]$. (This theorem is examinable; you may be asked to state it.)
+\end{propriete}
+
+\begin{exoresolu}[Evaluate $\int_0^1 x^2\,dx$ from the definition]
+We use the right Riemann sum computed earlier:
+\[
+S_n = \frac{1}{3} + \frac{1}{2n} + \frac{1}{6n^2}.
+\]
+Taking the limit as $n\to\infty$:
+\[
+\int_0^1 x^2\,dx = \lim_{n\to\infty} S_n = \frac{1}{3}.
+\]
+\tcblower
+\textbf{Check:} Using the Fundamental Theorem of Calculus, $\int_0^1 x^2\,dx = \left[\frac{x^3}{3}\right]_0^1 = \frac{1}{3}$. The two methods agree.
+\end{exoresolu}
+
+\courssub{Connection with the Fundamental Theorem of Calculus}
+
+The limit-of-sums definition and the antiderivative method are two faces of the same coin. The \textbf{Fundamental Theorem of Calculus} (FTC) states that if $f$ is continuous on $[a,b]$ and $F$ is any antiderivative of $f$ (i.e. $F' = f$), then
+\[
+\int_a^b f(x)\,dx = F(b) - F(a).
+\]
+Thus the definite integral, defined as a limit of Riemann sums, can be evaluated in practice by finding an antiderivative. The FTC also guarantees that the limit of Riemann sums exists for every continuous function, reinforcing the integrability theorem above.
+
+\courssub{Properties of the Definite Integral}
+
+All the following properties follow directly from the definition as a limit of sums (linearity of limits, additivity of partitions, order preservation).
+
+\begin{propriete}[Linearity, additivity and order properties of the definite integral]
+Let $f$ and $g$ be integrable on $[a,b]$ and $c$ a constant.
+\begin{enumerate}
+\item \textbf{Linearity:} $\displaystyle\int_a^b \bigl(c f(x) + g(x)\bigr)\,dx = c\int_a^b f(x)\,dx + \int_a^b g(x)\,dx$.
+\item \textbf{Additivity over intervals:} If $a < c < b$, then $\displaystyle\int_a^b f(x)\,dx = \int_a^c f(x)\,dx + \int_c^b f(x)\,dx$.
+\item \textbf{Reversal of limits:} $\displaystyle\int_a^b f(x)\,dx = -\int_b^a f(x)\,dx$. In particular $\displaystyle\int_a^a f(x)\,dx = 0$.
+\item \textbf{Non‑negativity:} If $f(x) \ge 0$ on $[a,b]$, then $\displaystyle\int_a^b f(x)\,dx \ge 0$.
+\item \textbf{Comparison:} If $f(x) \le g(x)$ on $[a,b]$, then $\displaystyle\int_a^b f(x)\,dx \le \int_a^b g(x)\,dx$.
+\end{enumerate}
+\end{propriete}
+
+\courssub{Signed Area Interpretation}
+
+The definite integral computes \emph{signed} area: regions where $f(x) > 0$ contribute positively, regions where $f(x) < 0$ contribute negatively. The integral is \emph{not} the total geometric area unless the function does not change sign.
+
+\begin{attention}[Signed area vs. geometric area]
+A negative value of $\int_a^b f(x)\,dx$ does \emph{not} mean ``negative surface''. It means the net signed area is negative because the part below the $x$-axis outweighs the part above. To find the actual geometric area between the curve and the $x$-axis, you must split the interval at the zeros of $f$ and integrate $|f(x)|$.
+\end{attention}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel=$y$,
+    domain=-2:3,
+    samples=200,
+    xmin=-2.2, xmax=3.2,
+    ymin=-2.2, ymax=2.2,
+    width=12cm, height=8cm,
+    tick style={thick},
+    xtick={-2,-1,1,2,3},
+    ytick={-2,-1,1,2},
+    grid=major,
+    grid style={popline!30},
+]
+% Curve
+\addplot[popblue, thick] {x*(x-1)*(x-2)};
+% Positive area fill
+\addplot[popblue!30, fill=popblue!30, domain=0:1] {x*(x-1)*(x-2)} \closedcycle;
+\addplot[popblue!30, fill=popblue!30, domain=2:3] {x*(x-1)*(x-2)} \closedcycle;
+% Negative area fill
+\addplot[poporange!30, fill=poporange!30, domain=-2:0] {x*(x-1)*(x-2)} \closedcycle;
+\addplot[poporange!30, fill=poporange!30, domain=1:2] {x*(x-1)*(x-2)} \closedcycle;
+% Labels
+\node[popblue] at (0.5,0.5) {$+$};
+\node[poporange] at (-1,-1) {$-$};
+\node[poporange] at (1.5,-0.3) {$-$};
+\node[popblue] at (2.5,1) {$+$};
+\end{axis}
+\end{tikzpicture}
+\legende{Signed area for $y=x(x-1)(x-2)$ on $[-2,3]$. Blue regions (above $x$-axis) contribute positively; orange regions (below $x$-axis) contribute negatively. The definite integral is the algebraic sum.}
+\end{popfigure}
+
+\courssub{Worked Example: Evaluating an Integral from First Principles}
+
+\begin{exoresolu}[Compute $\int_1^3 (2x+1)\,dx$ using the definition of the definite integral]
+\textbf{Step 1:} Partition $[1,3]$ into $n$ equal subintervals.
+\[
+\Delta x = \frac{3-1}{n} = \frac{2}{n},\qquad x_i = 1 + i\Delta x = 1 + \frac{2i}{n}.
+\]
+\textbf{Step 2:} Right Riemann sum:
+\[
+S_n = \sum_{i=1}^{n} f(x_i)\,\Delta x
+    = \sum_{i=1}^{n} \left(2\Bigl(1+\frac{2i}{n}\Bigr)+1\right)\frac{2}{n}
+    = \sum_{i=1}^{n} \left(3 + \frac{4i}{n}\right)\frac{2}{n}.
+\]
+\textbf{Step 3:} Distribute and separate sums:
+\[
+S_n = \frac{6}{n}\sum_{i=1}^{n} 1 + \frac{8}{n^2}\sum_{i=1}^{n} i
+    = \frac{6}{n}\cdot n + \frac{8}{n^2}\cdot\frac{n(n+1)}{2}
+    = 6 + 4\frac{n+1}{n}
+    = 6 + 4 + \frac{4}{n}
+    = 10 + \frac{4}{n}.
+\]
+\textbf{Step 4:} Take the limit $n\to\infty$:
+\[
+\int_1^3 (2x+1)\,dx = \lim_{n\to\infty} \left(10 + \frac{4}{n}\right) = 10.
+\]
+\tcblower
+\textbf{Verification with FTC:} An antiderivative of $2x+1$ is $x^2+x$.
+\[
+\left[x^2+x\right]_1^3 = (9+3) - (1+1) = 12 - 2 = 10.
+\]
+Both methods give the same result.
+\end{exoresolu}
+
+\courssub{Exercises}
+
+\begin{exercice}[Practice with Riemann sums]
+\begin{enumerate}
+\item Write the right Riemann sum for $f(x)=x^3$ on $[0,2]$ with $n$ subintervals. Simplify using $\sum i^3$ and find $\int_0^2 x^3\,dx$ by taking the limit.
+\item For $f(x)=\sqrt{x}$ on $[0,4]$, set up the left Riemann sum with $n$ subintervals. (You do not need to evaluate the limit.)
+\item Use the definition to evaluate $\int_0^2 (3x^2 - 2x)\,dx$.
+\item Explain why $\int_{-1}^1 x^3\,dx = 0$ without computing an antiderivative, using the signed area interpretation.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$\Delta x = \frac{2}{n}$, $x_i = \frac{2i}{n}$.
+$S_n = \sum_{i=1}^n \left(\frac{2i}{n}\right)^3 \frac{2}{n} = \frac{16}{n^4}\sum_{i=1}^n i^3 = \frac{16}{n^4}\left[\frac{n(n+1)}{2}\right]^2 = \frac{16}{n^4}\cdot\frac{n^2(n+1)^2}{4} = 4\frac{(n+1)^2}{n^2} = 4\left(1+\frac{1}{n}\right)^2$.
+Limit $n\to\infty$ gives $4$. Check: $\int_0^2 x^3\,dx = \left[\frac{x^4}{4}\right]_0^2 = \frac{16}{4}=4$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$\Delta x = \frac{4}{n}$, left endpoints $x_{i-1} = \frac{4(i-1)}{n}$ for $i=1,\dots,n$.
+Left Riemann sum: $S_n = \sum_{i=1}^n \sqrt{\frac{4(i-1)}{n}} \cdot \frac{4}{n} = \frac{8}{n\sqrt{n}} \sum_{i=1}^n \sqrt{i-1} = \frac{8}{n^{3/2}} \sum_{k=0}^{n-1} \sqrt{k}$.
+(No elementary closed form; the limit as $n\to\infty$ gives $\int_0^4 \sqrt{x}\,dx = \frac{16}{3}$.)
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$\Delta x = \frac{2}{n}$, $x_i = \frac{2i}{n}$.
+$S_n = \sum_{i=1}^n \left[3\left(\frac{2i}{n}\right)^2 - 2\left(\frac{2i}{n}\right)\right]\frac{2}{n}
+= \sum_{i=1}^n \left(\frac{24 i^2}{n^3} - \frac{8 i}{n^2}\right)
+= \frac{24}{n^3}\frac{n(n+1)(2n+1)}{6} - \frac{8}{n^2}\frac{n(n+1)}{2}
+= 4\frac{(n+1)(2n+1)}{n^2} - 4\frac{n+1}{n}
+= 4\left(2+\frac{3}{n}+\frac{1}{n^2}\right) - 4\left(1+\frac{1}{n}\right)
+= 8 + \frac{12}{n} + \frac{4}{n^2} - 4 - \frac{4}{n}
+= 4 + \frac{8}{n} + \frac{4}{n^2}$.
+Limit $= 4$. Check: $\int_0^2 (3x^2-2x)\,dx = [x^3-x^2]_0^2 = 8-4=4$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+The function $f(x)=x^3$ is odd: $f(-x)=-f(x)$. On the symmetric interval $[-1,1]$, the region above the $x$-axis on $[0,1]$ is exactly mirrored below the $x$-axis on $[-1,0]$. The signed areas cancel exactly, so the definite integral is zero.
+\end{corrige}
+
+\coursec{Section 2: Areas Bounded by the x-axis and Between Curves}
+
+In \textbf{Section 1} we built the definite integral from below: we sliced a region into thin rectangles, summed their areas, and passed to the limit to obtain the Riemann integral $\int_a^b f(x)\,dx$. We now harvest the fruit of that construction. Because the definite integral \emph{is}, by its very definition, a limit of areas of rectangles, it is the natural tool for computing areas exactly. In this section we answer three questions of increasing subtlety: How do we find the area between a curve and the $x$-axis? What happens when the curve dips below the axis? And how do we find the area trapped between \emph{two} curves? These questions appear every year at the GCE Advanced Level, usually carrying between 6 and 10 marks, so mastering them is essential.
+
+\courssub{Area between $y = f(x) \geq 0$ and the $x$-axis}
+
+Suppose $f$ is continuous and \cle{non-negative} on $[a,b]$. The region bounded by the curve $y = f(x)$, the $x$-axis, and the vertical lines $x = a$ and $x = b$ is exactly the region whose area the Riemann sums of Section 1 approximate. Passing to the limit gives the fundamental formula.
+
+\begin{propriete}[Area under a positive curve]
+If $f$ is continuous and $f(x) \geq 0$ for all $x \in [a,b]$, then the area of the region bounded by $y = f(x)$, the $x$-axis, $x = a$ and $x = b$ is
+\[
+A = \int_a^b f(x)\,dx.
+\]
+\end{propriete}
+
+\begin{exemplebox}[A first routine calculation]
+Find the area bounded by $y = x^2 + 1$, the $x$-axis and the lines $x = 0$ and $x = 2$.
+
+Since $x^2 + 1 > 0$ everywhere, we integrate directly:
+\[
+A = \int_0^2 (x^2+1)\,dx = \left[\frac{x^3}{3} + x\right]_0^2 = \frac{8}{3} + 2 = \frac{14}{3}\ \text{square units}.
+\]
+\end{exemplebox}
+
+\begin{exemplebox}[A trigonometric area]
+Find the area under one arch of $y = \sin x$.
+
+One arch lies above the $x$-axis on $[0, \pi]$, since $\sin x \geq 0$ there. Hence
+\[
+A = \int_0^{\pi} \sin x\,dx = \left[-\cos x\right]_0^{\pi} = -\cos\pi + \cos 0 = 1 + 1 = 2\ \text{square units}.
+\]
+Notice the elegance: the area under a whole arch of the sine curve is exactly $2$.
+\end{exemplebox}
+
+\courssub{Regions below the x-axis: the absolute value}
+
+Here is the crucial subtlety. The definite integral computes a \emph{signed} quantity: where $f(x) < 0$, the products $f(x_i)\,\Delta x$ in the Riemann sum are negative, so the integral counts that part of the region \emph{negatively}. But an area, as a physical quantity, is always positive. If a farmer near Buea measures a plot of land, the answer cannot be $-40$ square metres!
+
+\begin{savaistu}[Area and signed integrals]
+The word "quadrature" (from the Latin \emph{quadratura}, "making square") was the historical term for finding areas. Ancient Greek mathematicians like Archimedes used the method of exhaustion — a geometric ancestor of Riemann sums — to find the area under a parabola. The modern integral notation $\int$ is an elongated 'S' for \emph{summa} (sum), introduced by Leibniz. The distinction between \emph{signed area} (the integral) and \emph{geometric area} (the absolute integral) is the reason we must split at zeros.
+\end{savaistu}
+
+\begin{propriete}[Area when the curve crosses the axis]
+If $f$ is continuous on $[a,b]$, the total area between the curve $y = f(x)$ and the $x$-axis on $[a,b]$ is
+\[
+A = \int_a^b |f(x)|\,dx.
+\]
+Concretely, if $f(x) \leq 0$ on $[c,d]$, the area of that part is $A = -\displaystyle\int_c^d f(x)\,dx = \int_c^d \bigl(-f(x)\bigr)\,dx$.
+\end{propriete}
+
+This means that when $f$ changes sign inside $[a,b]$, we must \cle{split} the integral at every zero of $f$, integrate each piece separately, and take the absolute value of each result before adding.
+
+\begin{methode}[Four-step strategy for area with the x-axis]
+\begin{enumerate}
+\item \textbf{Sketch.} Draw the curve $y = f(x)$ on $[a,b]$ (a rough sketch is enough: sign and zeros matter, not beauty).
+\item \textbf{Zeros.} Solve $f(x) = 0$ to find where the curve meets the $x$-axis inside $[a,b]$.
+\item \textbf{Split.} Break $[a,b]$ into sub-intervals on which $f$ keeps a constant sign.
+\item \textbf{Absolute value.} Integrate on each sub-interval, take the absolute value of each partial integral, and add: $A = \sum \left|\int f(x)\,dx\right|$.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[The cancellation trap]
+Integrating across a zero of $f$ \emph{without splitting} makes the positive and negative parts cancel, giving an answer that is too small — sometimes even zero or negative, which is absurd for an area. For example,
+\[
+\int_0^{2\pi} \sin x\,dx = \left[-\cos x\right]_0^{2\pi} = -1 + 1 = 0,
+\]
+yet the true area between $y = \sin x$ and the $x$-axis on $[0, 2\pi]$ is $2 + 2 = 4$ square units. A zero or negative "area" in an examination is a signal that you forgot to split.
+\end{attention}
+
+\begin{exoresolu}[Area of a cubic crossing the axis]
+Find the total area enclosed between the curve $y = x(x-1)(x-2)$ and the $x$-axis.
+\tcblower
+\textbf{Step 1 — Sketch and zeros.} The cubic factorises, so its zeros are $x = 0, 1, 2$. A sign study gives: $y > 0$ on $(0,1)$ and $y < 0$ on $(1,2)$ (the curve starts negative for $x<0$, crosses up at $0$, down at $1$, up at $2$).
+
+\textbf{Step 2 — Expand.} $y = x(x-1)(x-2) = x^3 - 3x^2 + 2x$, with antiderivative $F(x) = \dfrac{x^4}{4} - x^3 + x^2$.
+
+\textbf{Step 3 — Split and integrate.}
+\[
+\int_0^1 y\,dx = F(1) - F(0) = \left(\tfrac14 - 1 + 1\right) - 0 = \tfrac14,
+\]
+\[
+\int_1^2 y\,dx = F(2) - F(1) = \left(4 - 8 + 4\right) - \tfrac14 = -\tfrac14.
+\]
+
+\textbf{Step 4 — Absolute values and total.}
+\[
+A = \left|\tfrac14\right| + \left|-\tfrac14\right| = \tfrac12\ \text{square units}.
+\]
+Had we integrated from $0$ to $2$ in one go, we would have obtained $F(2) - F(0) = 0$: the two equal lobes would have cancelled completely!
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=3]
+\draw[->, popmuted] (-0.3,0) -- (2.4,0) node[right] {\small $x$};
+\draw[->, popmuted] (0,-0.5) -- (0,0.5) node[above] {\small $y$};
+\fill[popblueL, opacity=0.85] plot[domain=0:1, samples=60, smooth] (\x, {\x*(\x-1)*(\x-2)}) -- (1,0) -- (0,0) -- cycle;
+\fill[poporange, opacity=0.45] plot[domain=1:2, samples=60, smooth] (\x, {\x*(\x-1)*(\x-2)}) -- (2,0) -- (1,0) -- cycle;
+\draw[very thick, popink] plot[domain=-0.2:2.2, samples=120, smooth] (\x, {\x*(\x-1)*(\x-2)});
+\fill[popdark] (0,0) circle (0.018) node[below left] {\small $0$};
+\fill[popdark] (1,0) circle (0.018) node[above right] {\small $1$};
+\fill[popdark] (2,0) circle (0.018) node[below right] {\small $2$};
+\node[popblue] at (0.42,0.22) {\small $A_1=\tfrac14$};
+\node[poporange] at (1.58,-0.28) {\small $A_2=\tfrac14$};
+\node[popink, anchor=west] at (2.3,0.3) {\small $y=x(x-1)(x-2)$};
+\end{tikzpicture}
+\end{center}
+\legende{The cubic $y = x(x-1)(x-2)$ crosses the $x$-axis three times. The two lobes must be integrated separately: $A = |A_1| + |A_2|$.}
+\end{popfigure}
+
+\courssub{Area between two curves}
+
+Now suppose two continuous curves $y = f(x)$ and $y = g(x)$ satisfy $f(x) \geq g(x)$ on $[a,b]$. Slice the region between them into thin vertical strips of width $\Delta x$: each strip is approximately a rectangle of height $f(x) - g(x)$, hence of area $\bigl(f(x) - g(x)\bigr)\Delta x$. Summing and passing to the limit (exactly the Riemann-sum argument of Section 1) yields the following property.
+
+\begin{propriete}[Top curve minus bottom curve]
+If $f$ and $g$ are continuous with $f(x) \geq g(x)$ for all $x \in [a,b]$, then the area of the region between the two curves from $x = a$ to $x = b$ is
+\[
+A = \int_a^b \bigl[f(x) - g(x)\bigr]\,dx \qquad (\text{top} - \text{bottom}).
+\]
+This formula remains valid even if one or both curves lie below the $x$-axis, because the \emph{difference} of heights is what matters.
+\end{propriete}
+
+Very often the limits $a$ and $b$ are not given: they are the $x$-coordinates of the \cle{intersection points} of the two curves, found by solving $f(x) = g(x)$.
+
+\begin{exoresolu}[Area between a parabola and an inverted parabola]
+Find the area of the region enclosed by $y = x^2$ and $y = 2 - x^2$.
+\tcblower
+\textbf{Intersections.} $x^2 = 2 - x^2 \iff 2x^2 = 2 \iff x = \pm 1$. The intersection points are $(-1, 1)$ and $(1, 1)$.
+
+\textbf{Which curve is on top?} Test $x = 0$: $2 - 0^2 = 2 > 0 = 0^2$, so $y = 2 - x^2$ is the top curve on $[-1, 1]$.
+
+\textbf{Integrate top minus bottom.}
+\begin{align*}
+A &= \int_{-1}^{1} \left[(2 - x^2) - x^2\right] dx = \int_{-1}^{1} (2 - 2x^2)\,dx = 2\int_{-1}^{1}(1 - x^2)\,dx\\
+&= 2\left[x - \frac{x^3}{3}\right]_{-1}^{1} = 2\left[\left(1 - \tfrac13\right) - \left(-1 + \tfrac13\right)\right] = 2 \times \frac{4}{3} = \frac{8}{3}.
+\end{align*}
+The enclosed area is $\dfrac{8}{3}$ square units. (Quick check by symmetry: $A = 2\displaystyle\int_0^1 (2-2x^2)\,dx = 4\left[x - \tfrac{x^3}{3}\right]_0^1 = 4 \times \tfrac23 = \tfrac83$. \checkmark)
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-1.8, xmax=1.8, ymin=-0.4, ymax=2.6,
+  xtick={-1,1}, ytick={1,2},
+  samples=100, domain=-1.6:1.6,
+  legend style={at={(0.02,0.98)}, anchor=north west, font=\small}
+]
+\addplot[name path=A, very thick, popblue] {x^2};
+\addplot[name path=B, very thick, poporange] {2 - x^2};
+\addplot[popgreenL] fill between[of=A and B, soft clip={domain=-1:1}];
+\addplot[only marks, mark=*, mark size=2pt, popdark] coordinates {(-1,1) (1,1)};
+\node[popdark, anchor=south east, font=\small] at (axis cs:-1,1) {$(-1,1)$};
+\node[popdark, anchor=south west, font=\small] at (axis cs:1,1) {$(1,1)$};
+\legend{$y=x^2$, $y=2-x^2$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The region enclosed by $y = x^2$ and $y = 2 - x^2$, with intersection points $(\pm 1, 1)$ marked. Area $= \int_{-1}^{1}\bigl[(2-x^2) - x^2\bigr]dx = \tfrac83$.}
+\end{popfigure}
+
+\courssub{Curves that cross inside the interval}
+
+When the two curves cross \emph{inside} the interval of interest, the identity of the "top" curve changes. We must then split at each intersection and integrate $|f(x) - g(x)|$ piece by piece — exactly the same philosophy as for the $x$-axis.
+
+\begin{exoresolu}[Two crossing curves]
+Find the total area of the regions enclosed between $y = \sin x$ and $y = \cos x$ on $[0, \pi]$.
+\tcblower
+\textbf{Intersections.} $\sin x = \cos x \iff \tan x = 1 \iff x = \dfrac{\pi}{4}$ in $[0,\pi]$.
+
+\textbf{Which is on top?} At $x = 0$: $\cos 0 = 1 > \sin 0 = 0$, so cosine is on top on $\left[0, \tfrac{\pi}{4}\right]$. At $x = \tfrac{\pi}{2}$: $\sin\tfrac{\pi}{2} = 1 > \cos\tfrac{\pi}{2} = 0$, so sine is on top on $\left[\tfrac{\pi}{4}, \pi\right]$.
+
+\textbf{Split and integrate.}
+\begin{align*}
+A_1 &= \int_0^{\pi/4}(\cos x - \sin x)\,dx = \left[\sin x + \cos x\right]_0^{\pi/4} = \left(\tfrac{\sqrt2}{2} + \tfrac{\sqrt2}{2}\right) - 1 = \sqrt{2} - 1,\\[2pt]
+A_2 &= \int_{\pi/4}^{\pi}(\sin x - \cos x)\,dx = \left[-\cos x - \sin x\right]_{\pi/4}^{\pi} = (1 - 0) - \left(-\tfrac{\sqrt2}{2} - \tfrac{\sqrt2}{2}\right) = 1 + \sqrt{2}.
+\end{align*}
+\textbf{Total.} $A = A_1 + A_2 = (\sqrt2 - 1) + (1 + \sqrt2) = 2\sqrt{2}$ square units.
+\end{exoresolu}
+
+\begin{attention}[Verify which curve is on top — on every sub-interval]
+Never assume the same curve stays on top throughout. After finding each intersection point, test a convenient value of $x$ in \emph{each} sub-interval (or use your sketch) to decide the order. Writing $\int_a^b (f - g)\,dx$ when $g$ overtakes $f$ halfway produces cancellation and a wrong, too-small answer — the same trap as crossing the $x$-axis.
+\end{attention}
+
+\courssub{GCE favourites: exponentials, logarithms and mixed curves}
+
+The GCE Board loves combining areas with the exponential and logarithmic functions, because they test both your integration techniques and your curve-sketching. Recall the key antiderivatives:
+\[
+\int e^x\,dx = e^x + C, \qquad \int \frac{1}{x}\,dx = \ln|x| + C, \qquad \int \ln x\,dx = x\ln x - x + C.
+\]
+
+\begin{exoresolu}[Area involving the exponential]
+Find the area bounded by $y = e^x$, the line $y = e$, and the $y$-axis.
+\tcblower
+\textbf{Sketch and intersections.} $y = e^x$ meets $y = e$ where $e^x = e$, i.e. $x = 1$. The $y$-axis is $x = 0$. On $[0,1]$, the line $y = e$ is above the curve (since $e^x \leq e$ for $x \leq 1$).
+
+\textbf{Integrate top minus bottom.}
+\[
+A = \int_0^1 \left(e - e^x\right) dx = \left[ex - e^x\right]_0^1 = (e - e) - (0 - 1) = 1\ \text{square unit}.
+\]
+A remarkably clean answer — typical of well-chosen GCE questions.
+\end{exoresolu}
+
+\begin{exemplebox}[Area under a hyperbola branch]
+Find the area under $y = \dfrac{1}{x}$ from $x = 1$ to $x = 2$.
+\[
+A = \int_1^2 \frac{dx}{x} = \left[\ln x\right]_1^2 = \ln 2 - \ln 1 = \ln 2\ \text{square units}.
+\]
+Leave the answer as $\ln 2$: it is exact, and examiners reward exactness.
+\end{exemplebox}
+
+\courssub{Examination technique}
+
+\begin{methode}[Presenting an area question at the GCE]
+\begin{enumerate}
+\item \textbf{Sketch first.} Even a rough diagram earns method marks and protects you from sign errors. Mark the intersection points and shade the required region.
+\item \textbf{Justify the limits.} Show the equation you solved (e.g. $x^2 = 2 - x^2$) to obtain $a$ and $b$; do not pull limits out of thin air.
+\item \textbf{State top minus bottom} (or $|f|$) explicitly before integrating, with a one-line justification ("on $[0,1]$, $e \geq e^x$").
+\item \textbf{Split at every zero or crossing}, and take absolute values of the pieces.
+\item \textbf{Give the exact answer} and finish with the words "square units".
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Exact answers unless told otherwise]
+Leave your final answers in exact form — surds, $\pi$, $e$, $\ln 2$ — unless the question explicitly requests a decimal approximation. Writing $A \approx 2.667$ instead of $A = \tfrac{8}{3}$ can cost the final accuracy mark. If a decimal is requested, give it to the required accuracy \emph{after} stating the exact value.
+\end{attention}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find the area bounded by $y = 4 - x^2$ and the $x$-axis.
+\item Find the total area between $y = x^3$ and the $x$-axis from $x = -1$ to $x = 2$.
+\item Find the area enclosed by $y = x^2$ and $y = x$.
+\item Find the area enclosed by $y = x^2 - 2x$ and $y = x$.
+\item Find the area bounded by $y = \cos x$, the $x$-axis, $x = 0$ and $x = \pi$ (careful!).
+\item Find the area of the region bounded by $y = \ln x$, the $x$-axis and the line $x = e$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercises 1--6]
+\textbf{1.} Zeros: $x = \pm 2$; curve above axis on $[-2,2]$. $A = \int_{-2}^{2}(4 - x^2)\,dx = \left[4x - \tfrac{x^3}{3}\right]_{-2}^{2} = \left(8 - \tfrac83\right) - \left(-8 + \tfrac83\right) = \tfrac{32}{3}$.
+
+\textbf{2.} Split at $x = 0$: $\int_{-1}^{0} x^3\,dx = -\tfrac14$, $\int_0^2 x^3\,dx = 4$. Total $A = \tfrac14 + 4 = \tfrac{17}{4}$.
+
+\textbf{3.} Intersections: $x^2 = x \Rightarrow x = 0, 1$; line on top. $A = \int_0^1 (x - x^2)\,dx = \tfrac12 - \tfrac13 = \tfrac16$.
+
+\textbf{4.} Intersections: $x^2 - 2x = x \Rightarrow x(x - 3) = 0 \Rightarrow x = 0, 3$; line on top. $A = \int_0^3 (3x - x^2)\,dx = \left[\tfrac{3x^2}{2} - \tfrac{x^3}{3}\right]_0^3 = \tfrac{27}{2} - 9 = \tfrac92$.
+
+\textbf{5.} $\cos x \geq 0$ on $[0, \tfrac{\pi}{2}]$, $\cos x \leq 0$ on $[\tfrac{\pi}{2}, \pi]$. $A = \int_0^{\pi/2}\cos x\,dx - \int_{\pi/2}^{\pi}\cos x\,dx = 1 - (-1) = 2$.
+
+\textbf{6.} $\ln x \geq 0$ for $x \geq 1$, so the region runs from $x = 1$ to $x = e$: $A = \int_1^e \ln x\,dx = \left[x\ln x - x\right]_1^e = (e - e) - (0 - 1) = 1$ square unit.
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 2]
+\begin{itemize}
+\item $f \geq 0$ on $[a,b]$: area $= \displaystyle\int_a^b f(x)\,dx$.
+\item In general: area $= \displaystyle\int_a^b |f(x)|\,dx$ — split at zeros, take absolute values.
+\item Between two curves: $A = \displaystyle\int_a^b (\text{top} - \text{bottom})\,dx$; find $a, b$ from intersections; split if the curves cross.
+\item Always sketch, always justify the limits, always finish with an exact answer in square units.
+\end{itemize}
+\end{aretenir}
+
+In the next section we rotate our point of view by ninety degrees: instead of integrating with respect to $x$, we shall compute areas bounded by the \emph{$y$-axis}, integrating with respect to $y$ — a small change of perspective that greatly simplifies many GCE problems.
+
+\coursec{Section 3: Areas Bounded by the y-axis}
+
+In Section 2 we learned to compute areas by slicing a region into thin \emph{vertical} strips of width $dx$ and height $f(x)$, leading to the formula $A=\displaystyle\int_a^b f(x)\,dx$. But nature does not always present regions in the most convenient orientation. Imagine a tailor in Buea cutting a piece of cloth bounded on the left by the vertical edge of the table (the $y$-axis) and on the right by a curved seam: it is far more natural to measure the cloth \emph{horizontally}, layer by layer from bottom to top. Mathematically this means slicing the region into \emph{horizontal} strips of thickness $dy$ and length $x$, and integrating with respect to $y$. This section develops that idea rigorously, shows how to rewrite $y=f(x)$ as $x=g(y)$ safely, and teaches you how to \emph{choose} the variable of integration wisely — a skill that the GCE examiners test regularly.
+
+\courssub{Area Between a Curve $x=g(y)$, the $y$-axis and the Lines $y=c$, $y=d$}
+
+\begin{experience}[Horizontal strips and Riemann sums]
+Consider the region bounded by the curve $x=g(y)$ (with $g(y)\geq 0$), the $y$-axis, and the horizontal lines $y=c$ and $y=d$ ($c<d$). Partition $[c,d]$ into $n$ subintervals of equal width $\Delta y=\dfrac{d-c}{n}$, and in each subinterval pick a sample point $y_k^*$. The horizontal strip at height $y_k^*$ is approximately a rectangle of height $\Delta y$ and length $g(y_k^*)$, hence of area $g(y_k^*)\,\Delta y$. Summing,
+\[
+A \approx \sum_{k=1}^{n} g(y_k^*)\,\Delta y .
+\]
+This is a Riemann sum of the function $g$ on $[c,d]$. As $n\to\infty$ the sum converges to the definite integral $\displaystyle\int_c^d g(y)\,dy$, exactly as in Section 1 — only the roles of $x$ and $y$ are interchanged.
+\end{experience}
+
+\begin{propriete}[Area bounded by the $y$-axis]
+Let $g$ be continuous on $[c,d]$ with $g(y)\geq 0$ for all $y\in[c,d]$. The area of the region bounded by the curve $x=g(y)$, the $y$-axis and the lines $y=c$ and $y=d$ is
+\[
+A=\int_c^d g(y)\,dy = \int_c^d x\,dy .
+\]
+If $g(y)\leq 0$ on $[c,d]$ (curve to the \emph{left} of the $y$-axis), the area is $A=\displaystyle\int_c^d \bigl|g(y)\bigr|\,dy = -\int_c^d g(y)\,dy$.
+\end{propriete}
+
+The justification is the Riemann-sum argument above; you may be asked to reproduce it briefly, so keep the picture of a horizontal strip of area $x\,\Delta y$ in mind.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.15]
+\draw[->,thick] (-0.4,0) -- (2.8,0) node[below left] {$x$};
+\draw[->,thick] (0,-0.4) -- (0,4.6) node[below left] {$y$};
+\fill[popblueL] (0,0) -- plot[domain=0:2,samples=40] (\x,{\x*\x}) -- (0,4) -- cycle;
+\draw[very thick,popblue] plot[domain=0:2.1,samples=60] (\x,{\x*\x});
+\foreach \y in {0.4,0.8,1.2,1.6,2.0,2.4,2.8,3.2,3.6}{
+  \draw[poporange] (0,\y) -- ({sqrt(max(0,\y))},\y);
+}
+\draw[popdark] (0,4) -- (2,4);
+\node[popdark] at (2.25,2.6) {$y=x^2$};
+\node[popdark,align=center] at (1.15,4.25) {$y=4$};
+\node[poporange,align=center,text width=2.6cm] at (2.45,0.7) {strip of\\ length $x=\sqrt{y}$};
+\draw[poporange,->] (2.1,0.75) -- (0.75,0.42);
+\node at (-0.15,4) [left] {$4$};
+\node at (2,-0.15) [below] {$2$};
+\end{tikzpicture}
+\legende{Horizontal strips for the region bounded by $y=x^2$, the $y$-axis and $y=4$: each strip has length $x=\sqrt{y}$ and thickness $dy$.}
+\end{popfigure}
+
+\begin{exemplebox}[First computation with respect to $y$]
+Find the area bounded by the curve $y=x^2$, the $y$-axis and the lines $y=0$ and $y=4$.
+
+\emph{Solution.} On the region of interest $x\geq 0$, so $y=x^2$ gives $x=\sqrt{y}$ (positive branch). Then
+\[
+A=\int_0^4 \sqrt{y}\,dy=\left[\frac{2}{3}y^{3/2}\right]_0^4=\frac{2}{3}(8-0)=\frac{16}{3}\ \text{square units}.
+\]
+\end{exemplebox}
+
+\courssub{Rewriting $y=f(x)$ as $x=g(y)$: Choosing the Correct Branch}
+
+To integrate with respect to $y$ we must express $x$ as a function of $y$. This is not always possible globally: the equation $y=f(x)$ may have \emph{several} solutions $x$ for a given $y$, and we must select the branch that actually borders our region.
+
+\begin{attention}[Check the branch on the whole interval]
+When solving $y=f(x)$ for $x$, check the \textbf{sign and branch} of $x$ on the \emph{whole} interval $[c,d]$.
+\begin{itemize}
+\item $y=x^2$ with $x\geq 0$ gives $x=\sqrt{y}$; with $x\leq 0$ it gives $x=-\sqrt{y}$. Using $x=\sqrt{y}$ for a region lying to the \emph{left} of the $y$-axis gives a wrong (even negative-looking) answer.
+\item If the curve crosses the $y$-axis inside $[c,d]$, split the integral: $A=\displaystyle\int_c^d |g(y)|\,dy$ must be broken where $g$ changes sign.
+\item Some relations cannot be solved nicely for $x$ (e.g.\ $y=x^3+x$); then integration with respect to $x$ is preferable.
+\end{itemize}
+\end{attention}
+
+\begin{exoresolu}[Region to the left of the $y$-axis]
+Find the area bounded by the curve $y=x^2$, the $y$-axis, and the lines $y=1$ and $y=4$, the region lying to the \emph{left} of the $y$-axis.
+\tcblower
+\textbf{Solution.} Here $x\leq 0$, so the correct branch is $x=-\sqrt{y}$, which is negative on $[1,4]$. The area is
+\[
+A=\int_1^4 \bigl|-\sqrt{y}\bigr|\,dy=\int_1^4 \sqrt{y}\,dy=\left[\frac{2}{3}y^{3/2}\right]_1^4=\frac{2}{3}(8-1)=\frac{14}{3}\ \text{square units}.
+\]
+Note the answer is positive, as an area must be.
+\end{exoresolu}
+
+\courssub{The Complement Method: Rectangle Minus $\displaystyle\int f(x)\,dx$}
+
+There is often a second route to the same area. The region bounded by $y=f(x)$, the $y$-axis and the lines $y=0$, $y=f(b)$ (with $f$ increasing on $[0,b]$, $f(0)=0$) fits inside the rectangle $[0,b]\times[0,f(b)]$, and
+\[
+\underbrace{\int_0^b f(x)\,dx}_{\text{under the curve}} + \underbrace{\int_0^{f(b)} g(y)\,dy}_{\text{left of the curve}} = b\,f(b),
+\]
+so that
+\[
+A = b\,f(b)-\int_0^b f(x)\,dx .
+\]
+This identity is the geometric heart of the \emph{integration by parts} formula, and it gives an excellent way to \emph{check} an answer.
+
+\begin{exemplebox}[The same area, two ways]
+For the region bounded by $y=x^2$, the $y$-axis, $y=0$ and $y=4$: the bounding rectangle has width $2$ and height $4$, hence area $8$. The area \emph{under} the curve from $x=0$ to $x=2$ is
+\[
+\int_0^2 x^2\,dx=\left[\frac{x^3}{3}\right]_0^2=\frac{8}{3}.
+\]
+Therefore $A=8-\dfrac{8}{3}=\dfrac{16}{3}$, confirming the direct computation $\displaystyle\int_0^4\sqrt{y}\,dy=\dfrac{16}{3}$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm, height=7.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-0.3, xmax=2.6, ymin=-0.3, ymax=4.9,
+  xtick={2}, ytick={4},
+  domain=0:2.15, samples=80,
+  legend style={at={(0.03,0.97)},anchor=north west,draw=none,fill=none}
+]
+\addplot[very thick,popblue] {x^2};
+\addlegendentry{$y=x^2$}
+\addplot[draw=none,name path=curve] {x^2};
+\addplot[draw=none,name path=axis] coordinates {(0,0) (0,4)};
+\addplot[popblueL] fill between[of=curve and axis, soft clip={domain y=0:4}];
+\draw[popmuted,dashed] (axis cs:2,0) -- (axis cs:2,4) -- (axis cs:0,4);
+\node[popdark,align=center] at (axis cs:1.35,3.4) {$A=\displaystyle\int_0^4\sqrt{y}\,dy$};
+\node[popdark,align=center] at (axis cs:1.5,0.75) {$\displaystyle\int_0^2 x^2\,dx$};
+\node[popmuted] at (axis cs:2.15,4.15) {rectangle $2\times 4$};
+\end{axis}
+\end{tikzpicture}
+\legende{The shaded area equals both $\displaystyle\int_0^4\sqrt{y}\,dy$ and $2\times 4-\displaystyle\int_0^2 x^2\,dx=\dfrac{16}{3}$.}
+\end{popfigure}
+
+\begin{savaistu}[Integration by parts is geometry]
+The formula $\displaystyle\int_0^b f(x)\,dx+\int_0^{f(b)} f^{-1}(y)\,dy=b\,f(b)$ for a strictly increasing function $f$ with $f(0)=0$ is exactly the statement that the two regions fill the rectangle. Substituting $y=f(x)$ in the second integral yields $\displaystyle\int u\,dv=uv-\int v\,du$: integration by parts is nothing more than splitting a rectangle!
+\end{savaistu}
+
+\courssub{Area Between Two Curves Expressed as Functions of $y$}
+
+If a region is bounded on the \emph{right} by $x=g_2(y)$ and on the \emph{left} by $x=g_1(y)$, with $g_2(y)\geq g_1(y)$ for all $y\in[c,d]$, then each horizontal strip has length $g_2(y)-g_1(y)$, and
+\[
+A=\int_c^d \bigl[g_2(y)-g_1(y)\bigr]\,dy .
+\]
+This is the exact analogue of the "top curve minus bottom curve" rule of Section 2, with "right minus left" replacing "top minus bottom". Note that the $y$-axis itself is simply the curve $x=0$, so the earlier formula is the special case $g_1\equiv 0$.
+
+\begin{exoresolu}[Integrating with respect to $y$ is simpler]
+Find the area of the region bounded by the parabola $y^2=4x$ and the line $y=x-3$.
+\tcblower
+\textbf{Solution.} \emph{Intersection points.} Substituting $x=y+3$ into $y^2=4x$: $y^2=4y+12$, i.e.\ $y^2-4y-12=0$, so $(y-6)(y+2)=0$ and $y=-2$ or $y=6$.
+
+\emph{Choice of variable.} With respect to $y$, the region is bounded on the right by the line $x=y+3$ and on the left by the parabola $x=\dfrac{y^2}{4}$ on the \emph{whole} interval $[-2,6]$ — one single integral. (With respect to $x$ we would need \emph{two} integrals, because the lower boundary changes from the lower branch of the parabola to the line at $x=1$.)
+
+\emph{Computation.}
+\begin{align*}
+A&=\int_{-2}^{6}\left[(y+3)-\frac{y^2}{4}\right]dy
+=\left[\frac{y^2}{2}+3y-\frac{y^3}{12}\right]_{-2}^{6}\\
+&=\left(18+18-18\right)-\left(2-6+\frac{2}{3}\right)
+=18-\left(-\frac{10}{3}\right)=\frac{64}{3}\ \text{square units}.
+\end{align*}
+\end{exoresolu}
+
+\courssub{Deciding the Variable of Integration: Mixed GCE Problems}
+
+GCE questions typically describe "the region bounded by the curve $\dots$, the $x$-axis / $y$-axis and the lines $\dots$" and expect you to set up and evaluate the integral yourself. The decision procedure below will serve you throughout the chapter (areas now, volumes and centroids later).
+
+\begin{methode}[Choosing between integration with respect to $x$ and to $y$]
+\begin{enumerate}
+\item \textbf{Sketch} the region: draw the curve(s), the axis and the given lines; mark intersection points by solving the relevant equations.
+\item \textbf{Draw one test strip}, vertical then horizontal. Ask: does each strip of a given orientation have \emph{both} ends on the \emph{same} two boundaries throughout the region?
+\item If vertical strips work with a single pair of boundaries, integrate with respect to $x$: $A=\displaystyle\int_a^b[\text{top}-\text{bottom}]\,dx$.
+\item If horizontal strips work with a single pair of boundaries, integrate with respect to $y$: $A=\displaystyle\int_c^d[\text{right}-\text{left}]\,dy$.
+\item If neither works with a single integral, choose the orientation that needs the \emph{fewest} pieces, or use the complement method (rectangle minus a simpler integral).
+\item \textbf{Check} that your integrand is non-negative on each piece, and sanity-check the numerical answer against an estimate from the sketch.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Exam tip: the quick sketch saves you]
+A 20-second sketch with one horizontal strip drawn on it prevents the two most frequent errors seen by examiners: (i) using the wrong branch when solving for $x$ in terms of $y$, and (ii) integrating $g(y)$ when $|g(y)|$ is required. Marks are also awarded for a correct, clearly labelled diagram — never skip it.
+\end{attention}
+
+\begin{exoresolu}[A mixed GCE-style problem]
+The curve $y=x^3$ meets the line $y=8$ at the point $P$. Find the area of the finite region bounded by the curve, the $y$-axis and the line $y=8$.
+\tcblower
+\textbf{Solution.} \emph{Intersection:} $x^3=8\Rightarrow x=2$, so $P=(2,8)$.
+
+\emph{Method 1 (with respect to $y$).} Solving for $x$: $x=y^{1/3}\geq 0$ on $[0,8]$. Hence
+\[
+A=\int_0^8 y^{1/3}\,dy=\left[\frac{3}{4}y^{4/3}\right]_0^8=\frac{3}{4}(16)=12\ \text{square units}.
+\]
+
+\emph{Method 2 (complement).} The rectangle $[0,2]\times[0,8]$ has area $16$, and
+\[
+\int_0^2 x^3\,dx=\left[\frac{x^4}{4}\right]_0^2=4,\qquad A=16-4=12.
+\]
+Both methods agree: $A=12$ square units.
+\end{exoresolu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Find the area bounded by the curve $x=y^2+1$, the $y$-axis and the lines $y=0$, $y=2$.
+\item Find the area bounded by $y=\sqrt{x}$, the $y$-axis and the line $y=3$, (a) integrating with respect to $y$, (b) by the complement method.
+\item Find the area of the region enclosed by $x=y^2$ and $x=2-y^2$.
+\item The region bounded by $y=2x-x^2$ and the $x$-axis is given. Explain why integrating with respect to $y$ requires two pieces, and compute the area with respect to $x$ instead.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item $x=y^2+1\geq 0$ on $[0,2]$: $A=\displaystyle\int_0^2(y^2+1)\,dy=\left[\frac{y^3}{3}+y\right]_0^2=\frac{8}{3}+2=\frac{14}{3}$.
+\item (a) $x=y^2$, $A=\displaystyle\int_0^3 y^2\,dy=9$. (b) Rectangle $9\times 3=27$ minus $\displaystyle\int_0^9\sqrt{x}\,dx=\frac{2}{3}(27)=18$: $A=27-18=9$.
+\item Intersections: $y^2=2-y^2\Rightarrow y=\pm1$. Right curve $x=2-y^2$, left curve $x=y^2$: $A=\displaystyle\int_{-1}^{1}(2-2y^2)\,dy=\left[2y-\frac{2y^3}{3}\right]_{-1}^{1}=\frac{8}{3}$.
+\item Solving $y=2x-x^2$ gives $x=1\pm\sqrt{1-y}$: the region is bounded on the left \emph{and} right by the parabola, so horizontal strips run from $1-\sqrt{1-y}$ to $1+\sqrt{1-y}$ — doable but awkward. With respect to $x$: $A=\displaystyle\int_0^2(2x-x^2)\,dx=\left[x^2-\frac{x^3}{3}\right]_0^2=4-\frac{8}{3}=\frac{4}{3}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of Section 3]
+\begin{itemize}
+\item Area between $x=g(y)\geq 0$, the $y$-axis, $y=c$, $y=d$: $\;A=\displaystyle\int_c^d g(y)\,dy$.
+\item If the curve lies to the left of the $y$-axis, integrate $|g(y)|$; split the integral at any sign change.
+\item Solving $y=f(x)$ for $x$: choose the branch matching the region (e.g.\ $x=\sqrt{y}$ for $x\geq 0$).
+\item Complement method: $A=b\,f(b)-\displaystyle\int_0^b f(x)\,dx$ — a powerful check.
+\item Between two curves of $y$: $A=\displaystyle\int_c^d[\text{right}-\text{left}]\,dy$.
+\item Always sketch first; let the strips choose the variable of integration for you.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Section 4: Volumes of Solids of Revolution}
+
+In the previous section we learned how to compute areas bounded by curves and the coordinate axes. We now extend this idea to three dimensions: when a plane region is rotated about a line (an axis) in its plane, it generates a \emph{solid of revolution}. The volume of such a solid can be obtained by slicing it into infinitesimally thin discs or washers and summing their volumes — a direct application of the definite integral as a limit of Riemann sums.
+
+\courssub{The Disc Method: Rotation about the \texorpdfstring{$x$}{x}-axis}
+
+Consider a continuous function $y = f(x) \ge 0$ on the interval $[a,b]$. The region bounded by the curve $y = f(x)$, the $x$-axis, and the vertical lines $x = a$ and $x = b$ is rotated completely about the $x$-axis. This generates a solid whose cross‑sections perpendicular to the $x$-axis are circular discs.
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=1.2, >=stealth]
+% Axes
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-2.5) -- (0,2.5) node[above] {$y$};
+% Curve y = sqrt(x)
+\draw[popblue, thick, domain=0:4, samples=100] plot (\x, {sqrt(max(0,\x))});
+\node[popblue, right] at (4,2) {$y = \sqrt{x}$};
+% Vertical lines
+\draw[dashed, popmuted] (0,0) -- (0,0);
+\draw[dashed, popmuted] (4,0) -- (4,2);
+% Highlight one disc at x = x0
+\def\x{2.5}
+\pgfmathsetmacro{\r}{sqrt(\x)}
+\draw[poporange, thick] (\x,-\r) -- (\x,\r) node[midway, right=2pt] {$f(x)$};
+\draw[poporange, thick, fill=poporange!20, opacity=0.6] (\x,0) ellipse (0.15 and \r);
+% 3D effect: draw the disc as a cylinder slice
+\draw[poporange, thick, fill=poporange!30, opacity=0.5] (\x-0.15,-\r) -- (\x+0.15,-\r) -- (\x+0.15,\r) -- (\x-0.15,\r) -- cycle;
+\draw[poporange, thick] (\x-0.15,-\r) -- (\x+0.15,-\r);
+\draw[poporange, thick] (\x-0.15,\r) -- (\x+0.15,\r);
+% Arrow indicating rotation
+\draw[popdark, ->] (2.5,2.2) arc (90:270:0.5 and 0.2);
+\node[popdark, above] at (2.5,2.5) {Rotation about $x$-axis};
+% Labels
+\node[below] at (0,0) {$a$};
+\node[below] at (4,0) {$b$};
+\node[below] at (\x,0) {$x$};
+\end{tikzpicture}
+\legende{Region under $y = \sqrt{x}$ on $[0,4]$ rotated about the $x$-axis. A typical disc of radius $f(x)$ and thickness $\mathrm{d}x$ is highlighted.}
+\end{popfigure}
+
+A typical disc at position $x$ has radius $f(x)$ and thickness $\mathrm{d}x$. Its volume is $\mathrm{d}V = \pi [f(x)]^2\,\mathrm{d}x$. Summing these discs from $x = a$ to $x = b$ and taking the limit gives the definite integral.
+
+\begin{propriete}[Volume of Revolution about the $x$-axis (Disc Method)]
+If $f$ is continuous and non‑negative on $[a,b]$, the volume of the solid generated by rotating the region under $y = f(x)$ about the $x$-axis is
+\[
+V_x = \pi \int_a^b [f(x)]^2\,\mathrm{d}x.
+\]
+This formula is derived directly from the limit of a Riemann sum of disc volumes and is examinable in the GCE.
+\end{propriete}
+
+\begin{aretenir}[Key Steps for the Disc Method about the $x$-axis]
+\begin{itemize}
+\item Sketch the region and identify the axis of rotation.
+\item The radius of a typical disc is the $y$-value of the curve: $R = f(x)$.
+\item The thickness is $\mathrm{d}x$; the limits of integration are the $x$-bounds of the region.
+\item Write $V = \pi \int_a^b [f(x)]^2\,\mathrm{d}x$ and evaluate.
+\item \textbf{Always check:} the integrand is $[f(x)]^2$, not $f(x^2)$, and the factor $\pi$ is essential.
+\end{itemize}
+\end{aretenir}
+
+\begin{exemplebox}[Standard Solids: Cone, Sphere, Cylinder]
+Verify the well‑known volume formulas using the disc method.
+\begin{enumerate}
+\item \textbf{Cone:} Rotate the line $y = \frac{r}{h}x$ on $[0,h]$ about the $x$-axis.
+\[
+V = \pi \int_0^h \left(\frac{r}{h}x\right)^2\mathrm{d}x = \pi \frac{r^2}{h^2} \left[\frac{x^3}{3}\right]_0^h = \frac{1}{3}\pi r^2 h.
+\]
+\item \textbf{Sphere:} Rotate the semicircle $y = \sqrt{r^2 - x^2}$ on $[-r,r]$ about the $x$-axis.
+\[
+V = \pi \int_{-r}^r (r^2 - x^2)\,\mathrm{d}x = \pi \left[ r^2x - \frac{x^3}{3} \right]_{-r}^r = \frac{4}{3}\pi r^3.
+\]
+\item \textbf{Cylinder:} Rotate the horizontal line $y = r$ on $[0,h]$ about the $x$-axis.
+\[
+V = \pi \int_0^h r^2\,\mathrm{d}x = \pi r^2 h.
+\]
+\end{enumerate}
+\end{exemplebox}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=1.2, >=stealth]
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel=$y$,
+    xmin=-2.5, xmax=2.5,
+    ymin=-0.5, ymax=2.5,
+    domain=-2:2,
+    samples=100,
+    width=10cm, height=7cm,
+    tick style={popmuted},
+    axis line style={popmuted},
+    label style={popdark},
+    tick label style={popdark},
+    clip=false
+]
+\addplot[popblue, thick] {sqrt(max(0,4 - x^2))};
+\addplot[popblue, thick] {-sqrt(max(0,4 - x^2))};
+\addplot[poporange, thick, fill=poporange!20, opacity=0.5, domain=-2:2] {sqrt(max(0,4 - x^2))} \closedcycle;
+\node[popdark, align=center] at (0,2.8) {Semicircle $y = \sqrt{r^2 - x^2}$ rotated about $x$-axis $\to$ Sphere};
+\end{axis}
+\end{tikzpicture}
+\legende{The semicircle $y = \sqrt{4 - x^2}$ (radius $r=2$) rotated about the $x$-axis generates a sphere of volume $\frac{4}{3}\pi r^3$.}
+\end{popfigure}
+
+\begin{exoresolu}[Volume of a Paraboloid]
+Find the volume of the solid generated by rotating the region bounded by $y = x^2$, the $x$-axis, and $x = 2$ about the $x$-axis.
+\tcblower
+\textbf{Solution:}
+The curve is $y = x^2 \ge 0$ on $[0,2]$. Using the disc method:
+\[
+V = \pi \int_0^2 (x^2)^2\,\mathrm{d}x = \pi \int_0^2 x^4\,\mathrm{d}x = \pi \left[ \frac{x^5}{5} \right]_0^2 = \frac{32\pi}{5}\ \mathrm{units}^3.
+\]
+\end{exoresolu}
+
+\courssub{The Disc Method: Rotation about the \texorpdfstring{$y$}{y}-axis}
+
+If the region is bounded by a curve expressed as $x = g(y)$ (with $g(y) \ge 0$) on $[c,d]$ and rotated about the $y$-axis, the discs are perpendicular to the $y$-axis. The radius is now $g(y)$ and the thickness is $\mathrm{d}y$.
+
+\begin{propriete}[Volume of Revolution about the $y$-axis (Disc Method)]
+If $g$ is continuous and non‑negative on $[c,d]$, the volume of the solid generated by rotating the region bounded by $x = g(y)$, the $y$-axis, and $y = c$, $y = d$ about the $y$-axis is
+\[
+V_y = \pi \int_c^d [g(y)]^2\,\mathrm{d}y.
+\]
+\end{propriete}
+
+\begin{attention}[Radii as Functions of $y$]
+When rotating about the $y$-axis, the radius of each disc must be expressed as a function of $y$. If the curve is given as $y = f(x)$, you must either:
+\begin{itemize}
+\item solve for $x = g(y)$ explicitly, or
+\item use the washer method directly with respect to $y$ (see below).
+\end{itemize}
+Forgetting to change variable is a frequent error in GCE examinations.
+\end{attention}
+
+\begin{exemplebox}[Volume about the $y$-axis]
+Find the volume when the region bounded by $y = x^2$, $y = 4$, and the $y$-axis is rotated about the $y$-axis.
+\tcblower
+\textbf{Solution:}
+The curve is $x = \sqrt{y}$ on $[0,4]$. Radius $R = \sqrt{y}$.
+\[
+V = \pi \int_0^4 (\sqrt{y})^2\,\mathrm{d}y = \pi \int_0^4 y\,\mathrm{d}y = \pi \left[ \frac{y^2}{2} \right]_0^4 = 8\pi\ \mathrm{units}^3.
+\]
+\end{exemplebox}
+
+\courssub{The Washer Method: Region Between Two Curves}
+
+When the rotated region is bounded by \emph{two} curves $y = f(x)$ (upper) and $y = g(x)$ (lower) with $f(x) \ge g(x) \ge 0$ on $[a,b]$, the cross‑section is a \emph{washer} (a disc with a hole). The outer radius is $R = f(x)$, the inner radius is $r = g(x)$.
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=1.3, >=stealth]
+% Axes
+\draw[->] (-0.5,0) -- (2.5,0) node[right] {$x$};
+\draw[->] (0,-0.5) -- (0,2.5) node[above] {$y$};
+% Curves
+\draw[popblue, thick, domain=0:2, samples=100] plot (\x, {\x}) node[right] {$y = x$};
+\draw[popgreen, thick, domain=0:2, samples=100] plot (\x, {\x*\x}) node[right] {$y = x^2$};
+% Vertical line at x = x0
+\def\x{1.2}
+\draw[dashed, popmuted] (\x,0) -- (\x,{\x}) -- (\x,{\x*\x});
+% Washer cross-section
+\pgfmathsetmacro{\R}{\x}
+\pgfmathsetmacro{\r}{\x*\x}
+\draw[poporange, thick, fill=poporange!30, opacity=0.6] (\x,-\R) -- (\x,-\r) -- (\x,\r) -- (\x,\R) -- cycle;
+\draw[poporange, thick] (\x,-\R) -- (\x,\R);
+\draw[poporange, thick] (\x,-\r) -- (\x,\r);
+% Labels
+\node[poporange, left] at (\x,\R) {$R = f(x)$};
+\node[poporange, left] at (\x,\r) {$r = g(x)$};
+\node[below] at (1,0) {$a$};
+\node[below] at (2,0) {$b$};
+\node[below] at (\x,0) {$x$};
+% Rotation arrow
+\draw[popdark, ->] (1.2,2.2) arc (90:270:0.4 and 0.15);
+\node[popdark, above] at (1.2,2.5) {Rotation about $x$-axis};
+\end{tikzpicture}
+\legende{Washer cross‑section for the region between $y = x$ (outer) and $y = x^2$ (inner) rotated about the $x$-axis.}
+\end{popfigure}
+
+\begin{propriete}[Washer Method about the $x$-axis]
+If $f$ and $g$ are continuous on $[a,b]$ with $f(x) \ge g(x) \ge 0$, the volume generated by rotating the region between them about the $x$-axis is
+\[
+V = \pi \int_a^b \bigl( [f(x)]^2 - [g(x)]^2 \bigr)\,\mathrm{d}x.
+\]
+\end{propriete}
+
+\begin{methode}[Disc vs Washer — Step by Step]
+\begin{enumerate}
+\item Sketch the region and the axis of rotation.
+\item Identify the \textbf{outer radius} $R$ (distance from axis to outer curve) and the \textbf{inner radius} $r$ (distance from axis to inner curve). If the region touches the axis, $r = 0$ (disc method).
+\item Determine the variable of integration ($x$ for rotation about $x$-axis, $y$ for rotation about $y$-axis).
+\item Write the integral: $V = \pi \int (R^2 - r^2)\,\mathrm{d}(\text{variable})$.
+\item Evaluate and give the answer in exact form (multiples of $\pi$) unless a decimal approximation is requested.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Washer Method Example]
+Find the volume of the solid obtained by rotating the region bounded by $y = x$ and $y = x^2$ about the $x$-axis.
+\tcblower
+\textbf{Solution:}
+The curves intersect at $x=0$ and $x=1$. On $[0,1]$, $x \ge x^2 \ge 0$. Outer radius $R = x$, inner radius $r = x^2$.
+\[
+V = \pi \int_0^1 \bigl( x^2 - (x^2)^2 \bigr)\,\mathrm{d}x = \pi \int_0^1 (x^2 - x^4)\,\mathrm{d}x = \pi \left[ \frac{x^3}{3} - \frac{x^5}{5} \right]_0^1 = \pi \left( \frac{1}{3} - \frac{1}{5} \right) = \frac{2\pi}{15}\ \mathrm{units}^3.
+\]
+\end{exoresolu}
+
+\courssub{Volumes about the \texorpdfstring{$y$}{y}-axis from \texorpdfstring{$y = f(x)$}{y = f(x)}: Washer Method}
+
+Often the curve is given as $y = f(x)$ but the rotation is about the $y$-axis. The standard approach is to use the washer method with respect to $y$. For a region bounded by $y = f(x)$, $y = 0$, $x = a$, $x = b$ (with $0 \le a < b$ and $f$ increasing), the cross‑sections perpendicular to the $y$-axis are washers. The outer radius is the constant $b$ (the right boundary), and the inner radius is $a$ for $0 \le y \le f(a)$, and $g(y)$ (the inverse of $f$) for $f(a) \le y \le f(b)$.
+
+\begin{propriete}[Washer Method about the $y$-axis for a Region under $y=f(x)$]
+Let $f$ be continuous and increasing on $[a,b]$ with $f(a) \ge 0$. The volume of the solid generated by rotating the region bounded by $y=f(x)$, $y=0$, $x=a$, $x=b$ about the $y$-axis is
+\[
+V = \pi \int_0^{f(a)} (b^2 - a^2)\,\mathrm{d}y + \pi \int_{f(a)}^{f(b)} \bigl( b^2 - [g(y)]^2 \bigr)\,\mathrm{d}y,
+\]
+where $x = g(y)$ is the inverse function of $f$. If $a = 0$, this simplifies to
+\[
+V = \pi \int_0^{f(b)} \bigl( b^2 - [g(y)]^2 \bigr)\,\mathrm{d}y.
+\]
+\end{propriete}
+
+\begin{exemplebox}[Washer Method about the $y$-axis]
+Find the volume of the solid generated by rotating the region bounded by $y = x^2$, $y = 0$, $x = 1$, and $x = 2$ about the $y$-axis.\tcblower
+\textbf{Solution:}
+The region is bounded by $y=x^2$, the $x$-axis, and the vertical lines $x=1$, $x=2$. Rotating about the $y$-axis.
+The curve $y=x^2$ gives $x = \sqrt{y}$ (inverse function $g(y) = \sqrt{y}$).
+$y$-limits: at $x=1$, $y=1$; at $x=2$, $y=4$.
+For $y \in [0,1]$, the cross-section is a washer with outer radius $R=2$ and inner radius $r=1$.
+For $y \in [1,4]$, the cross-section is a washer with outer radius $R=2$ and inner radius $r=\sqrt{y}$.
+\[
+V = \pi \int_0^1 (2^2 - 1^2)\,\mathrm{d}y + \pi \int_1^4 \bigl( 2^2 - (\sqrt{y})^2 \bigr)\,\mathrm{d}y
+= \pi \int_0^1 3\,\mathrm{d}y + \pi \int_1^4 (4 - y)\,\mathrm{d}y
+\]
+\[
+= \pi \bigl[ 3y \bigr]_0^1 + \pi \left[ 4y - \frac{y^2}{2} \right]_1^4
+= 3\pi + \pi \left( (16 - 8) - (4 - 0.5) \right)
+= 3\pi + \pi (8 - 3.5) = 3\pi + 4.5\pi = 7.5\pi = \frac{15\pi}{2}\ \mathrm{units}^3.
+\]
+\end{exemplebox}
+
+\courssub{Complementary Volume Method (Cylinder Minus Inner Solid)}
+
+An alternative technique, often quicker when the inverse function is simple, is to consider the solid as a cylinder with a cavity removed.
+
+\begin{propriete}[Complementary Volume Method]
+For the region bounded by $y=f(x)$, $y=0$, $x=a$, $x=b$ ($0 \le a < b$) rotated about the $y$-axis:
+The enclosing cylinder has radius $b$ and height $f(b)$. Its volume is $V_{\text{cyl}} = \pi b^2 f(b)$.
+The cavity is the solid generated by rotating the region bounded by $x=g(y)$ (inverse of $f$), $y=0$, $y=f(b)$, and the $y$-axis? No, the cavity corresponds to the region to the left of the curve $x=g(y)$ from $y=0$ to $y=f(a)$ (a cylinder of radius $a$) plus the region between $x=g(y)$ and $x=a$ from $y=f(a)$ to $y=f(b)$.
+Equivalently, the required volume is:
+\[
+V = \pi b^2 f(b) - \pi a^2 f(a) - \pi \int_{f(a)}^{f(b)} [g(y)]^2\,\mathrm{d}y.
+\]
+If $a=0$, this simplifies to $V = \pi b^2 f(b) - \pi \int_0^{f(b)} [g(y)]^2\,\mathrm{d}y$.
+\end{propriete}
+
+\begin{exemplebox}[Complementary Volume Technique]
+The region bounded by $y = x^2$, $y = 0$, and $x = 2$ is rotated about the $y$-axis. Find the volume.
+\tcblower
+\textbf{Method 1 (Washer method, $a=0$):}
+$x = \sqrt{y}$, limits $y=0$ to $y=4$. Outer radius $R=2$, inner radius $r=\sqrt{y}$.
+\[
+V = \pi \int_0^4 \bigl( 2^2 - (\sqrt{y})^2 \bigr)\,\mathrm{d}y = \pi \int_0^4 (4 - y)\,\mathrm{d}y = \pi \left[ 4y - \frac{y^2}{2} \right]_0^4 = \pi (16 - 8) = 8\pi.
+\]
+
+\textbf{Method 2 (Complementary volume):}
+Enclosing cylinder: radius $2$, height $f(2)=4$. $V_{\text{cyl}} = \pi \cdot 2^2 \cdot 4 = 16\pi$.
+Cavity volume (solid generated by rotating region under $x=\sqrt{y}$ from $y=0$ to $4$ about $y$-axis):
+$V_{\text{cav}} = \pi \int_0^4 (\sqrt{y})^2\,\mathrm{d}y = \pi \int_0^4 y\,\mathrm{d}y = 8\pi$.
+Required volume $V = V_{\text{cyl}} - V_{\text{cav}} = 16\pi - 8\pi = 8\pi$.
+\end{exemplebox}
+
+\begin{attention}[Common Pitfalls]
+\begin{itemize}
+\item \textbf{Missing $\pi$:} Always include $\pi$ in the formula.
+\item \textbf{Squaring the function incorrectly:} The integrand is $[f(x)]^2$, not $f(x^2)$. For example, if $f(x) = \sin x$, then $[f(x)]^2 = \sin^2 x$, not $\sin(x^2)$.
+\item \textbf{Wrong variable for $y$-axis rotation:} If the curve is $y = f(x)$ and you rotate about the $y$-axis, do \emph{not} write $\pi \int [f(x)]^2\,\mathrm{d}x$. You must express the radius in terms of $y$ (washer method) or use the complementary volume method.
+\item \textbf{Order of subtraction in washer method:} Always subtract the square of the inner radius from the square of the outer radius: $R^2 - r^2$. Reversing them gives a negative volume.
+\item \textbf{Limits of integration:} For rotation about the $y$-axis, limits must be $y$-values. Find them by substituting $x$-bounds into $y=f(x)$.
+\end{itemize}
+\end{attention}
+
+\courssub{Applications and Modelling Problems}
+
+GCE questions often present a real‑world object (a bowl, a funnel, a reservoir) whose profile is given by a curve. You must set up the correct integral and evaluate it exactly.
+
+\begin{exoresolu}[Modelling: A Parabolic Bowl]
+A bowl is shaped by rotating the curve $y = \frac{1}{4}x^2$ for $0 \le x \le 4$ about the $y$-axis. Find the volume of the bowl.
+\tcblower
+\textbf{Solution:}
+The curve is $x = 2\sqrt{y}$ (since $y = \frac{1}{4}x^2 \Rightarrow x^2 = 4y \Rightarrow x = 2\sqrt{y}$). The $y$-limits: when $x=0$, $y=0$; when $x=4$, $y=4$. Radius $R = 2\sqrt{y}$.
+\[
+V = \pi \int_0^4 (2\sqrt{y})^2\,\mathrm{d}y = \pi \int_0^4 4y\,\mathrm{d}y = 4\pi \left[ \frac{y^2}{2} \right]_0^4 = 4\pi \cdot 8 = 32\pi\ \mathrm{units}^3.
+\]
+\end{exoresolu}
+
+\begin{exoresolu}[Modelling: A Funnel]
+A funnel is formed by rotating the curve $y = \frac{1}{x}$ for $1 \le x \le 4$ about the $x$-axis. Find the volume of the funnel.
+\tcblower
+\textbf{Solution:}
+Disc method about $x$-axis: $R = \frac{1}{x}$.
+\[
+V = \pi \int_1^4 \left(\frac{1}{x}\right)^2\,\mathrm{d}x = \pi \int_1^4 x^{-2}\,\mathrm{d}x = \pi \left[ -\frac{1}{x} \right]_1^4 = \pi \left( -\frac{1}{4} + 1 \right) = \frac{3\pi}{4}\ \mathrm{units}^3.
+\]
+\end{exoresolu}
+
+\begin{savaistu}[Gabriel's Horn — A Paradox]
+The solid obtained by rotating $y = 1/x$ for $x \ge 1$ about the $x$-axis has \textbf{finite volume} but \textbf{infinite surface area}. This means you could fill it with a finite amount of paint ($\pi$ cubic units), but you could never paint its inner surface! It is a classic example of a counter‑intuitive result in calculus.
+\end{savaistu}
+
+\courssub{Examination-Style Practice}
+
+\begin{exercice}[GCE Type Questions]
+\begin{enumerate}
+\item The region bounded by $y = \sin x$, the $x$-axis, and $x = 0$, $x = \pi$ is rotated about the $x$-axis. Find the exact volume of the solid generated.
+\item The curve $y^2 = 4x$ and the line $x = 4$ enclose a region. This region is rotated about the $x$-axis. Find the volume.
+\item A reservoir has a cross‑section given by $y = 2\sqrt{x}$ for $0 \le x \le 9$ (units in metres). The reservoir is formed by rotating this cross‑section about the $y$-axis. Calculate its capacity in cubic metres, giving your answer as a multiple of $\pi$.
+\item The region between $y = x^2$ and $y = 2x$ is rotated about the $x$-axis. Find the volume of the resulting solid.
+\item A solid is generated by rotating the region bounded by $y = e^x$, $y = 0$, $x = 0$, and $x = \ln 2$ about the $y$-axis. Use the complementary volume method to find the exact volume.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$V = \pi \int_0^\pi \sin^2 x\,\mathrm{d}x = \pi \int_0^\pi \frac{1 - \cos 2x}{2}\,\mathrm{d}x = \frac{\pi}{2} \left[ x - \frac{\sin 2x}{2} \right]_0^\pi = \frac{\pi^2}{2}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+The curve is $y = \pm 2\sqrt{x}$. The region is symmetric about the $x$-axis. Using the upper half $y = 2\sqrt{x}$ from $x=0$ to $x=4$ and rotating about the $x$-axis gives a solid with volume
+$V = \pi \int_0^4 (2\sqrt{x})^2\,\mathrm{d}x = \pi \int_0^4 4x\,\mathrm{d}x = 4\pi \left[ \frac{x^2}{2} \right]_0^4 = 32\pi$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Curve: $x = \frac{y^2}{4}$ (since $y = 2\sqrt{x} \Rightarrow y^2 = 4x$). Limits: $y=0$ to $y=6$ (when $x=9$, $y=6$). Radius $R = \frac{y^2}{4}$.
+$V = \pi \int_0^6 \left(\frac{y^2}{4}\right)^2\,\mathrm{d}y = \pi \int_0^6 \frac{y^4}{16}\,\mathrm{d}y = \frac{\pi}{16} \left[ \frac{y^5}{5} \right]_0^6 = \frac{\pi}{16} \cdot \frac{7776}{5} = \frac{486\pi}{5}\ \mathrm{m}^3$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Intersections: $x^2 = 2x \Rightarrow x=0, 2$. On $[0,2]$, $2x \ge x^2 \ge 0$. Outer radius $R = 2x$, inner radius $r = x^2$.
+$V = \pi \int_0^2 \bigl( (2x)^2 - (x^2)^2 \bigr)\,\mathrm{d}x = \pi \int_0^2 (4x^2 - x^4)\,\mathrm{d}x = \pi \left[ \frac{4x^3}{3} - \frac{x^5}{5} \right]_0^2 = \pi \left( \frac{32}{3} - \frac{32}{5} \right) = \frac{64\pi}{15}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+Region: $y = e^x$ from $x=0$ to $x=\ln 2$, $y=0$. Rotate about $y$-axis.
+Cylinder enclosing it: radius $\ln 2$, height $e^{\ln 2} = 2$. Cylinder volume $V_{\text{cyl}} = \pi (\ln 2)^2 \cdot 2 = 2\pi (\ln 2)^2$.
+Volume of solid generated by region to the left of curve (i.e. $x = \ln y$ from $y=1$ to $y=2$):
+$V_{\text{left}} = \pi \int_1^2 (\ln y)^2\,\mathrm{d}y$. Integrate by parts twice:
+Let $u = (\ln y)^2$, $\mathrm{d}v = \mathrm{d}y$ $\Rightarrow$ $\mathrm{d}u = \frac{2\ln y}{y}\,\mathrm{d}y$, $v = y$.
+$\int (\ln y)^2\,\mathrm{d}y = y(\ln y)^2 - 2\int \ln y\,\mathrm{d}y = y(\ln y)^2 - 2(y\ln y - y) = y(\ln y)^2 - 2y\ln y + 2y$.
+Evaluate from $1$ to $2$: $2(\ln 2)^2 - 4\ln 2 + 4 - (0 - 0 + 2) = 2(\ln 2)^2 - 4\ln 2 + 2$.
+Thus $V_{\text{left}} = \pi \bigl( 2(\ln 2)^2 - 4\ln 2 + 2 \bigr)$.
+Required volume $V = V_{\text{cyl}} - V_{\text{left}} = 2\pi (\ln 2)^2 - \pi \bigl( 2(\ln 2)^2 - 4\ln 2 + 2 \bigr) = \pi (4\ln 2 - 2) = 2\pi (2\ln 2 - 1)$.
+\end{corrige}
+
+\begin{aretenir}[Summary of Volume Formulas]
+\begin{itemize}
+\item \textbf{Disc about $x$-axis:} $V = \pi \int_a^b [f(x)]^2\,\mathrm{d}x$
+\item \textbf{Disc about $y$-axis:} $V = \pi \int_c^d [g(y)]^2\,\mathrm{d}y$
+\item \textbf{Washer about $x$-axis:} $V = \pi \int_a^b \bigl( [f(x)]^2 - [g(x)]^2 \bigr)\,\mathrm{d}x$
+\item \textbf{Washer about $y$-axis:} $V = \pi \int_c^d \bigl( [G(y)]^2 - [H(y)]^2 \bigr)\,\mathrm{d}y$
+\item \textbf{Complementary volume (about $y$-axis, $a=0$):} $V = \pi b^2 f(b) - \pi \int_0^{f(b)} [g(y)]^2\,\mathrm{d}y$
+\item \textbf{Always:} sketch, identify radii, choose correct variable, include $\pi$, give exact answers.
+\end{itemize}
+\end{aretenir}
+
+\begin{experience}[Guided Demonstration: Deriving the Sphere Volume]
+Take a semicircle of radius $r$: $y = \sqrt{r^2 - x^2}$ on $[-r,r]$. Rotate about the $x$-axis.
+\begin{enumerate}
+\item Write the Riemann sum for $n$ discs of equal width $\Delta x = \frac{2r}{n}$.
+\item Show that the sum is $\pi \sum_{i=1}^n (r^2 - x_i^2)\Delta x$.
+\item Take the limit as $n \to \infty$ to obtain $\pi \int_{-r}^r (r^2 - x^2)\,\mathrm{d}x$.
+\item Evaluate the integral to confirm $V = \frac{4}{3}\pi r^3$.
+\end{enumerate}
+This derivation is a classic GCE proof question.
+\end{experience}
+
+\coursec{Section 5: Centroids and Centres of Mass by Integration}
+
+In Section 4 we used integration to add up infinitely many thin discs and so obtain the \emph{volume} of a solid of revolution. The very same idea — slicing a continuous object into thin pieces, computing the contribution of each piece, and adding the contributions with an integral — allows us to answer a new and very practical question: \textbf{where is the balancing point of a shape?} If you cut out a cardboard region bounded by a curve, on which single point could you balance it on the tip of a pencil? That point is the \cle{centroid}, and integration finds it exactly. This section is also a direct bridge to your Mechanics papers, where centres of mass appear constantly.
+
+\courssub{From Discrete Masses to Continuous Distributions}
+
+\textbf{Observation.} Suppose three small masses are placed on a light rod along the $x$-axis: $m_1$ at $x_1$, $m_2$ at $x_2$, $m_3$ at $x_3$. From Mechanics, the rod balances at the point
+\[
+\bar{x}=\frac{m_1x_1+m_2x_2+m_3x_3}{m_1+m_2+m_3}=\frac{\sum m_i x_i}{\sum m_i}.
+\]
+The numerator is the total \emph{moment} of the masses about the origin; the denominator is the total mass. The centre of mass is simply "total moment divided by total mass".
+
+Now imagine not three masses but a continuous sheet of metal (a \cle{lamina}) occupying a region of the plane. Slice it into thin vertical strips. A strip at position $x$, of width $dx$, has a small mass $dm$ and its moment about the origin is approximately $x\,dm$. Passing from the finite sum to the limit of infinitely many infinitely thin strips — exactly the Riemann-sum idea of Lesson 52 — replaces $\sum$ by $\int$:
+\[
+\bar{x}=\frac{\displaystyle\int x\,dm}{\displaystyle\int dm}.
+\]
+If the lamina has constant density $\rho$ (mass per unit area), then $dm = \rho\,dA$ where $dA$ is the area of the strip. The constant $\rho$ cancels in the fraction, so the balancing point depends only on the geometry. This geometric centre is called the \cle{centroid}.
+
+\begin{definition}[Centroid and centre of mass]
+The \cle{centroid} of a plane region is its geometric centre: the point $(\bar{x},\bar{y})$ where the region would balance if made from material of \emph{uniform} (constant) density. For a lamina of constant density, the \cle{centre of mass} and the centroid coincide, because the density factor cancels in "total moment $\div$ total mass". We therefore use the two words interchangeably for uniform bodies. If the density varies, the centre of mass is given by $\bar{x}=\frac{\int x\,\rho(x,y)\,dA}{\int \rho(x,y)\,dA}$ (and similarly for $\bar{y}$), but the GCE syllabus focuses on the uniform case.
+\end{definition}
+
+\courssub{Centroid of the Region Under a Curve $y=f(x)$}
+
+Consider the region $R$ bounded by the curve $y=f(x)$ (with $f(x)\geq 0$), the $x$-axis, and the lines $x=a$ and $x=b$. Take a thin vertical strip at position $x$, of width $dx$ and height $f(x)$.
+
+\begin{itemize}
+\item \textbf{Area of the strip:} $dA=f(x)\,dx$, so the total area is $A=\displaystyle\int_a^b f(x)\,dx$.
+\item \textbf{Moment about the $y$-axis:} the whole strip sits at distance $x$ from the $y$-axis, so its moment is $x\,f(x)\,dx$. Summing: $\displaystyle\int_a^b x f(x)\,dx$.
+\item \textbf{Moment about the $x$-axis:} the strip is a thin rectangle whose own centre is at height $\tfrac12 f(x)$, so its moment about the $x$-axis is $\tfrac12 f(x)\times f(x)\,dx=\tfrac12[f(x)]^2\,dx$. Summing: $\displaystyle\int_a^b \tfrac12 [f(x)]^2\,dx$.
+\end{itemize}
+
+\begin{propriete}[Centroid formulas for the region under $y=f(x)$]
+For the region under $y=f(x)\geq 0$ on $[a,b]$, with area $A=\displaystyle\int_a^b f(x)\,dx$:
+\[
+\bar{x}=\frac{1}{A}\int_a^b x\,f(x)\,dx,
+\qquad
+\bar{y}=\frac{1}{A}\int_a^b \frac{1}{2}\,[f(x)]^2\,dx.
+\]
+These formulas are examinable and should be quoted, then applied.
+\end{propriete}
+
+\begin{attention}[The most common GCE error in this topic]
+In the formula for $\bar{y}$, the integrand is $\dfrac{1}{2}[f(x)]^2$ — \textbf{not} $[f(x)]^2$ and \textbf{not} $\frac12 f(x)$. The $\frac12$ comes from the fact that the centre of a vertical strip of height $f(x)$ is at height $\frac12 f(x)$. Forgetting it doubles your $\bar{y}$ and costs several marks. Write the factor $\frac12$ down \emph{before} you start integrating.
+\end{attention}
+
+\begin{methode}[Finding a centroid: the three-step routine]
+\begin{enumerate}
+\item \textbf{Compute the area first:} $A=\displaystyle\int_a^b f(x)\,dx$.
+\item \textbf{Compute the two moments:} $M_y=\displaystyle\int_a^b x f(x)\,dx$ and $M_x=\displaystyle\int_a^b \tfrac12[f(x)]^2\,dx$.
+\item \textbf{Divide:} $\bar{x}=M_y/A$, $\bar{y}=M_x/A$. State the answer as a point $(\bar{x},\bar{y})$.
+\end{enumerate}
+Computing $A$ first is essential: it is the common denominator of both coordinates, and examiners award a mark for it separately.
+\end{methode}
+
+\begin{exoresolu}[Centroid of the triangle under a line]
+Find the centroid of the region bounded by $y=x$, the $x$-axis and the line $x=3$.
+\tcblower
+\textbf{Step 1 — Area.}
+\[
+A=\int_0^3 x\,dx=\left[\frac{x^2}{2}\right]_0^3=\frac{9}{2}.
+\]
+(Check: the region is a triangle of base $3$ and height $3$, area $\tfrac12\cdot 3\cdot 3=\tfrac92$. \checkmark)
+
+\textbf{Step 2 — Moments.}
+\[
+M_y=\int_0^3 x\cdot x\,dx=\int_0^3 x^2\,dx=\left[\frac{x^3}{3}\right]_0^3=9,
+\]
+\[
+M_x=\int_0^3 \frac12 (x)^2\,dx=\frac12\left[\frac{x^3}{3}\right]_0^3=\frac{9}{2}.
+\]
+
+\textbf{Step 3 — Divide.}
+\[
+\bar{x}=\frac{9}{9/2}=2,\qquad \bar{y}=\frac{9/2}{9/2}=1.
+\]
+The centroid is $(2,\,1)$. This agrees with the known result that the centroid of a triangle lies one third of the way up from the base: here $\bar{x}=2$ (two thirds of the base from the vertex at the origin) and $\bar{y}=1$ (one third of the height). \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Centroid of the region under a parabola]
+Find the centroid of the region bounded by $y=x^2$, the $x$-axis and the line $x=2$.
+\tcblower
+\textbf{Step 1 — Area.}
+\[
+A=\int_0^2 x^2\,dx=\left[\frac{x^3}{3}\right]_0^2=\frac{8}{3}.
+\]
+\textbf{Step 2 — Moments.}
+\[
+M_y=\int_0^2 x\cdot x^2\,dx=\int_0^2 x^3\,dx=\left[\frac{x^4}{4}\right]_0^2=4,
+\]
+\[
+M_x=\int_0^2 \frac12 (x^2)^2\,dx=\frac12\int_0^2 x^4\,dx=\frac12\left[\frac{x^5}{5}\right]_0^2=\frac12\cdot\frac{32}{5}=\frac{16}{5}.
+\]
+\textbf{Step 3 — Divide.}
+\[
+\bar{x}=\frac{4}{8/3}=\frac{3}{2},\qquad
+\bar{y}=\frac{16/5}{8/3}=\frac{16}{5}\times\frac{3}{8}=\frac{6}{5}.
+\]
+The centroid is $\left(\dfrac32,\,\dfrac65\right)$. Note that $\bar{x}=\tfrac32>\tfrac{2}{2}=1$: the region has more area near $x=2$ (where the parabola is tall), so the balance point shifts to the right of the midpoint — always check that your answer is plausible!
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.9]
+\fill[popblueL] plot[domain=0:2,smooth] (\x,{0.5*\x*\x}) -- (2,0) -- (0,0) -- cycle;
+\fill[poporange] (1.5,0) rectangle (1.62,1.125);
+\draw[->] (-0.2,0) -- (2.5,0) node[right] {$x$};
+\draw[->] (0,-0.2) -- (0,2.4) node[above] {$y$};
+\draw[popblue,thick,domain=0:2.15,smooth] plot (\x,{0.5*\x*\x}) node[right] {$y=x^2$};
+\draw[dashed,popmuted] (2,0) -- (2,2);
+\draw[popdark] (1.5,0) -- (1.62,0);
+\node[popdark,below] at (1.56,0) {\small $x$};
+\node[popdark] at (1.56,1.35) {\small strip};
+\fill[popink] (1.5,1.2) circle (0.045) node[right,popink] {\;centroid $\left(\frac32,\frac65\right)$};
+\node[below] at (2,0) {\small $2$};
+\end{tikzpicture}
+\legende{Region under $y=x^2$ on $[0,2]$. The shaded vertical strip at position $x$ has moment $x\,f(x)\,dx$ about the $y$-axis; the centroid (black dot) is the balance point of the whole region.}
+\end{popfigure}
+
+\begin{exoresolu}[Centroid under one arch of the sine curve]
+Find the centroid of the region bounded by $y=\sin x$ and the $x$-axis for $0\leq x\leq \pi$.
+\tcblower
+\textbf{Step 1 — Area.}
+\[
+A=\int_0^\pi \sin x\,dx=\big[-\cos x\big]_0^\pi=(-\cos\pi)-(-\cos 0)=1+1=2.
+\]
+\textbf{Step 2 — Moments.} For $M_y$, integrate by parts:
+\[
+M_y=\int_0^\pi x\sin x\,dx=\big[-x\cos x\big]_0^\pi+\int_0^\pi \cos x\,dx=\pi+\big[\sin x\big]_0^\pi=\pi.
+\]
+For $M_x$, use $\sin^2 x=\tfrac12(1-\cos 2x)$:
+\[
+M_x=\int_0^\pi \frac12\sin^2 x\,dx=\frac14\int_0^\pi (1-\cos 2x)\,dx=\frac14\left[x-\frac{\sin 2x}{2}\right]_0^\pi=\frac{\pi}{4}.
+\]
+\textbf{Step 3 — Divide.}
+\[
+\bar{x}=\frac{\pi}{2},\qquad \bar{y}=\frac{\pi/4}{2}=\frac{\pi}{8}.
+\]
+The centroid is $\left(\dfrac{\pi}{2},\,\dfrac{\pi}{8}\right)$. Notice that $\bar{x}=\tfrac{\pi}{2}$ could have been predicted \emph{without any calculation}: the arch is symmetric about $x=\tfrac{\pi}{2}$. We return to this idea below.
+\end{exoresolu}
+
+\courssub{Region Between Two Curves}
+
+If the region is bounded above by $y=f(x)$ and below by $y=g(x)$ on $[a,b]$ (with $f(x)\ge g(x)$), each vertical strip runs from $g(x)$ to $f(x)$. Its height is $f(x)-g(x)$, so its area is $[f(x)-g(x)]\,dx$. The centre of the strip is at height $\tfrac12[f(x)+g(x)]$. The moment about the $x$-axis is therefore
+\[
+\frac{f(x)+g(x)}{2}\,[f(x)-g(x)]\,dx=\frac12\big([f(x)]^2-[g(x)]^2\big)\,dx.
+\]
+
+\begin{propriete}[Centroid of the region between two curves]
+For the region between $y=f(x)$ (above) and $y=g(x)$ (below) on $[a,b]$, with $A=\displaystyle\int_a^b [f(x)-g(x)]\,dx$:
+\[
+\bar{x}=\frac{1}{A}\int_a^b x\,[f(x)-g(x)]\,dx,
+\qquad
+\bar{y}=\frac{1}{A}\int_a^b \frac12\Big([f(x)]^2-[g(x)]^2\Big)\,dx.
+\]
+Setting $g(x)=0$ recovers the single-curve formulas.
+\end{propriete}
+
+\begin{exemplebox}[Quick check with two lines]
+Region between $f(x)=4$ and $g(x)=x$ on $[0,4]$: $A=\int_0^4(4-x)\,dx=8$; $M_y=\int_0^4 x(4-x)\,dx=\left[2x^2-\frac{x^3}{3}\right]_0^4=\frac{32}{3}$; $M_x=\frac12\int_0^4(16-x^2)\,dx=\frac12\left[16x-\frac{x^3}{3}\right]_0^4=\frac{64}{3}$. Hence $\bar{x}=\frac{4}{3}$, $\bar{y}=\frac{8}{3}$ — the centroid of a triangle with vertices $(0,0),(0,4),(4,4)$, exactly the average of the vertices. \checkmark
+\end{exemplebox}
+
+\courssub{Centre of Mass of a Uniform Solid of Revolution}
+
+Rotate the region under $y=f(x)$ on $[a,b]$ about the $x$-axis. The solid obtained (a vase, a cone, a bowl\dots) is symmetric about the $x$-axis, so its centre of mass lies \emph{on} the axis: $\bar{y}=0$ automatically. To find $\bar{x}$, slice the solid into thin discs perpendicular to the $x$-axis. The disc at position $x$ has radius $f(x)$, thickness $dx$, hence volume $\pi[f(x)]^2\,dx$; for uniform density $\rho$, mass is $dm=\rho\pi[f(x)]^2\,dx$, and the disc's moment about the $y$-axis (through the origin) is $x\cdot\rho\pi[f(x)]^2\,dx$. The factors $\rho$ and $\pi$ cancel in the division.
+
+\begin{propriete}[Centre of mass of a solid of revolution about the $x$-axis]
+For the uniform solid generated by rotating $y=f(x)$ on $[a,b]$ about the $x$-axis:
+\[
+\bar{x}=\frac{\displaystyle\int_a^b x\,[f(x)]^2\,dx}{\displaystyle\int_a^b [f(x)]^2\,dx},
+\qquad \bar{y}=0 \ \text{(by symmetry).}
+\]
+Note the denominator is the volume \emph{divided by} $\pi$: $V=\pi\displaystyle\int_a^b[f(x)]^2dx$, so equivalently $\bar{x}=\dfrac{\pi}{V}\displaystyle\int_a^b x[f(x)]^2dx$.
+\end{propriete}
+
+\begin{exoresolu}[Centre of mass of a uniform cone]
+A right circular cone of height $h$ and base radius $r$ is formed by rotating the line $y=\dfrac{r}{h}x$ on $[0,h]$ about the $x$-axis. Find its centre of mass.
+\tcblower
+\textbf{Denominator (volume integral).}
+\[
+\int_0^h \left(\frac{r}{h}x\right)^2 dx=\frac{r^2}{h^2}\left[\frac{x^3}{3}\right]_0^h=\frac{r^2 h}{3}.
+\]
+\textbf{Numerator (moment integral).}
+\[
+\int_0^h x\left(\frac{r}{h}x\right)^2 dx=\frac{r^2}{h^2}\left[\frac{x^4}{4}\right]_0^h=\frac{r^2 h^2}{4}.
+\]
+\textbf{Divide.}
+\[
+\bar{x}=\frac{r^2h^2/4}{r^2h/3}=\frac{3h}{4},\qquad \bar{y}=0.
+\]
+The centre of mass of a uniform solid cone is at $\dfrac{3h}{4}$ from the vertex (equivalently $\dfrac{h}{4}$ from the base) — a standard result worth memorising for Mechanics.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0]
+\fill[popblueL] (0,0) -- (5,1.6) arc (90:-90:0.4 and 1.6) -- cycle;
+\draw[popblue,thick] (0,0) -- (5,1.6);
+\draw[popblue,thick] (0,0) -- (5,-1.6);
+\draw[popblue,thick] (5,1.6) arc (90:-90:0.4 and 1.6);
+\draw[popblue,thick,dashed] (5,1.6) arc (90:270:0.4 and 1.6);
+\fill[poporange,opacity=0.85] (3,0.96) arc (90:-90:0.24 and 0.96) -- (3.25,-1.04) arc (-90:90:0.26 and 1.04) -- cycle;
+\draw[popdark] (3,0.96) arc (90:-90:0.24 and 0.96);
+\draw[popdark] (3.25,1.04) arc (90:270:0.26 and 1.04);
+\draw[->,popmuted] (-0.3,0) -- (6.3,0) node[right] {$x$};
+\draw[<->,popdark] (0,-2.1) -- (5,-2.1) node[midway,below] {$h$};
+\draw[<->,popdark] (5.6,0) -- (5.6,1.6) node[midway,right] {$r$};
+\node[popdark] at (3.1,1.6) {\small disc at $x$};
+\fill[popink] (3.75,0) circle (0.06) node[below,popink] {$\bar{x}=\frac{3h}{4}$};
+\fill[popink] (0,0) circle (0.045) node[left,popink] {vertex};
+\end{tikzpicture}
+\legende{Uniform solid cone formed by rotating $y=\frac{r}{h}x$ about the $x$-axis. A disc slice at position $x$ has volume $\pi y^2\,dx$ and moment $x\pi y^2\,dx$; summing and dividing gives $\bar{x}=\frac{3h}{4}$ from the vertex.}
+\end{popfigure}
+
+\courssub{Exploiting Symmetry — a Time-Saving Exam Technique}
+
+\begin{aretenir}[Symmetry rule]
+If a region or solid has an axis of symmetry, the centroid lies \textbf{on} that axis. If it has two axes of symmetry, the centroid is at their intersection and \emph{no integration is needed} for either coordinate.
+\end{aretenir}
+
+\begin{exemplebox}[Symmetry in action]
+\begin{itemize}
+\item Rectangle, circle, ellipse: centroid at the geometric centre — immediately.
+\item Region under $y=\sin x$ on $[0,\pi]$: symmetric about $x=\tfrac{\pi}{2}$, so $\bar{x}=\tfrac{\pi}{2}$ with no calculation (only $\bar{y}$ needs integration).
+\item Any solid of revolution about the $x$-axis: $\bar{y}=0$ by symmetry; only $\bar{x}$ is computed.
+\item Semicircular lamina of radius $r$ (symmetric about the $y$-axis): $\bar{x}=0$, and integration gives the standard result $\bar{y}=\dfrac{4r}{3\pi}$.
+\end{itemize}
+In the exam, \textbf{state the symmetry argument explicitly} ("by symmetry, $\bar{x}=\frac{\pi}{2}$") — it earns the mark and halves your work.
+\end{exemplebox}
+
+\courssub{Composite Laminas (Useful for Mechanics Papers)}
+
+Many Mechanics questions involve laminas built from standard shapes (rectangles, triangles, circles, semicircles). Since moments add, you may treat each part separately and combine:
+\[
+\bar{x}=\frac{\sum A_i\,\bar{x}_i}{\sum A_i},\qquad \bar{y}=\frac{\sum A_i\,\bar{y}_i}{\sum A_i},
+\]
+where a \emph{removed} part (a hole) is counted with \textbf{negative} area. Standard centroids to know: rectangle — centre; triangle — one third of the height from the base; semicircle of radius $r$ — $\frac{4r}{3\pi}$ from the diameter; solid cone — $\frac{h}{4}$ from the base.
+
+\begin{exemplebox}[Rectangle with a triangular corner removed]
+A lamina is the rectangle $[0,6]\times[0,4]$ with the triangle of vertices $(4,0),(6,0),(6,4)$ removed. Rectangle: $A_1=24$, centre $(3,2)$. Triangle: $A_2=\tfrac12(2)(4)=4$, centroid at the average of its vertices $\left(\tfrac{16}{3},\tfrac{4}{3}\right)$, counted negatively:
+\[
+\bar{x}=\frac{24(3)-4\left(\tfrac{16}{3}\right)}{24-4}=\frac{72-\tfrac{64}{3}}{20}=\frac{38}{15},\qquad
+\bar{y}=\frac{24(2)-4\left(\tfrac{4}{3}\right)}{20}=\frac{48-\tfrac{16}{3}}{20}=\frac{32}{15}.
+\]
+Both coordinates lie inside the remaining shape and are shifted away from the removed corner, as expected.
+\end{exemplebox}
+
+\begin{attention}[Traps to avoid]
+\begin{itemize}
+\item Forgetting the factor $\tfrac12$ in $\bar{y}=\frac{1}{A}\int \tfrac12[f(x)]^2dx$.
+\item Squaring $f(x)$ wrongly: for $y=\sin x$, $[f(x)]^2=\sin^2 x$ — use the identity $\sin^2x=\tfrac12(1-\cos2x)$ before integrating.
+\item Mixing up the two moments: $M_y=\int x f(x)\,dx$ gives $\bar{x}$ (moment about the $y$-axis gives the $x$-coordinate).
+\item For a region between curves, using $[f(x)-g(x)]^2$ in $\bar{y}$ instead of $\tfrac12\big([f(x)]^2-[g(x)]^2\big)$. These are \emph{not} the same!
+\item Giving $\bar{x}$ and $\bar{y}$ but forgetting to check plausibility: the centroid must lie inside (or on the boundary of) a convex region.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[Consolidation]
+\begin{enumerate}
+\item Find the centroid of the region bounded by $y=4-x^2$ and the $x$-axis. (Use symmetry for $\bar{x}$.)
+\item Find the centroid of the region between $y=x^2$ and $y=x$ on $[0,1]$.
+\item The region under $y=\sqrt{x}$ on $[0,4]$ is rotated about the $x$-axis. Find the centre of mass of the solid formed.
+\item A uniform lamina consists of a square of side $2$ with a semicircle of radius $1$ attached to one side. Locate its centre of mass.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $A=\int_{-2}^{2}(4-x^2)\,dx=\left[4x-\frac{x^3}{3}\right]_{-2}^{2}=\frac{32}{3}$. By symmetry $\bar{x}=0$. $M_x=\frac12\int_{-2}^{2}(4-x^2)^2dx=\frac12\int_{-2}^{2}(16-8x^2+x^4)\,dx=\frac12\left[16x-\frac{8x^3}{3}+\frac{x^5}{5}\right]_{-2}^{2}=\frac{256}{15}$. Hence $\bar{y}=\frac{256/15}{32/3}=\frac{8}{5}$. Centroid: $\left(0,\tfrac85\right)$.
+
+\textbf{2.} $A=\int_0^1(x-x^2)\,dx=\frac16$. $M_y=\int_0^1 x(x-x^2)\,dx=\left[\frac{x^3}{3}-\frac{x^4}{4}\right]_0^1=\frac{1}{12}$, so $\bar{x}=\frac{1/12}{1/6}=\frac12$. $M_x=\frac12\int_0^1(x^2-x^4)\,dx=\frac12\left[\frac{x^3}{3}-\frac{x^5}{5}\right]_0^1=\frac{1}{15}$, so $\bar{y}=\frac{1/15}{1/6}=\frac25$. Centroid: $\left(\tfrac12,\tfrac25\right)$.
+
+\textbf{3.} Denominator: $\int_0^4 x\,dx=8$. Numerator: $\int_0^4 x\cdot x\,dx=\frac{64}{3}$. Hence $\bar{x}=\frac{64/3}{8}=\frac83$, $\bar{y}=0$.
+
+\textbf{4.} Put the square on $[0,2]\times[0,2]$ and the semicircle on the side $x=2$, bulging right. Square: $A_1=4$, centre $(1,1)$. Semicircle: $A_2=\frac{\pi}{2}$, centre $\left(2+\frac{4}{3\pi},\,1\right)$. By symmetry $\bar{y}=1$; $\bar{x}=\dfrac{4(1)+\frac{\pi}{2}\left(2+\frac{4}{3\pi}\right)}{4+\frac{\pi}{2}}=\dfrac{4+\pi+\frac23}{4+\frac{\pi}{2}}=\dfrac{\frac{14}{3}+\pi}{4+\frac{\pi}{2}}\approx 1.31$.
+\end{corrige}
+
+\begin{savaistu}[Why engineers care]
+Civil engineers designing the beams and bridges that cross the rivers of Cameroon must know exactly where the centroid of each cross-section lies: bending stresses are computed about an axis through the centroid. The same formulas you have just used also locate the centre of gravity of aircraft wings, ship hulls and satellite components — a beautiful example of a Riemann sum keeping real structures safe.
+\end{savaistu}
+
+\coursec{Section 6: Trapezoid Rule and the Mean Value Theorem for Integrals}
+
+Having mastered the computation of centroids and centres of mass by integration, we now turn to two practical tools that every scientist and engineer must possess: \textbf{numerical integration} when an exact antiderivative is unavailable, and the \textbf{mean value of a function} which gives a single representative number for a whole interval. Both ideas are built on the same geometric intuition that has guided us since the definite integral was introduced as a limit of Riemann sums.
+
+\courssub{Why Numerical Integration?}
+
+In earlier sections we evaluated definite integrals by finding an antiderivative $F$ of $f$ and applying the Fundamental Theorem of Calculus: $\int_a^b f(x)\,dx = F(b)-F(a)$. This works beautifully when $f$ has an elementary antiderivative. However, in real-world situations we often encounter:
+
+\begin{itemize}
+\item Functions defined only by experimental data (e.g., temperature readings every hour, cocoa prices at the market each day, velocity of a vehicle recorded by a sensor).
+\item Functions that do have an antiderivative but it cannot be expressed in terms of elementary functions (e.g., $e^{-x^2}$, $\frac{\sin x}{x}$, $\sqrt{1+x^3}$).
+\end{itemize}
+
+In such cases we must \emph{approximate} the integral numerically. The simplest and most widely taught method at this level is the \textbf{trapezoid rule} (also called the trapezium rule). It replaces the area under the curve by the sum of areas of trapezia whose top edges are chords of the curve.
+
+\courssub{The Trapezoid Rule}
+
+Consider a continuous function $f$ on $[a,b]$. Divide $[a,b]$ into $n$ equal strips of width
+\[
+h = \frac{b-a}{n}.
+\]
+Let the ordinates be $y_0 = f(x_0), y_1 = f(x_1), \dots, y_n = f(x_n)$ where $x_k = a + kh$. The area of the $k$-th trapezium (between $x_{k-1}$ and $x_k$) is $\frac{h}{2}(y_{k-1}+y_k)$. Summing from $k=1$ to $n$ gives the trapezoid rule approximation:
+
+\begin{propriete}[Trapezoid Rule with $n$ Equal Strips]
+If $f$ is continuous on $[a,b]$ and $h = \frac{b-a}{n}$, then
+\[
+\int_a^b f(x)\,dx \;\approx\; \frac{h}{2}\Bigl[\,y_0 + 2(y_1+y_2+\cdots+y_{n-1}) + y_n\,\Bigr],
+\]
+where $y_k = f(x_k)$ and $x_k = a+kh$ for $k=0,1,\dots,n$.
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9]
+\draw[->] (-0.5,0) -- (5.5,0) node[right] {$x$};
+\draw[->] (0,-0.5) -- (0,4.5) node[above] {$y$};
+% curve: y = 0.2*(x-1)^3 - 0.5*(x-1)^2 + 2
+\draw[popblue, thick, domain=0.5:4.5, smooth, variable=\x] plot ({\x}, {0.2*(\x-1)^3 - 0.5*(\x-1)^2 + 2});
+% vertical lines at x = 1, 1.75, 2.5, 3.25, 4
+\foreach \x/\lbl in {1/x_0, 1.75/x_1, 2.5/x_2, 3.25/x_3, 4/x_4} {
+    \draw[dashed, gray] (\x,0) -- (\x, {0.2*(\x-1)^3 - 0.5*(\x-1)^2 + 2});
+    \node[below] at (\x,0) {$\lbl$};
+}
+% trapezia shading
+\foreach \x/\xx in {1/1.75, 1.75/2.5, 2.5/3.25, 3.25/4} {
+    \pgfmathsetmacro{\y}{0.2*(\x-1)^3 - 0.5*(\x-1)^2 + 2}
+    \pgfmathsetmacro{\yy}{0.2*(\xx-1)^3 - 0.5*(\xx-1)^2 + 2}
+    \fill[popblueL, opacity=0.4] (\x,0) -- (\x,\y) -- (\xx,\yy) -- (\xx,0) -- cycle;
+}
+% ordinates labels
+\foreach \x/\lbl in {1/y_0, 1.75/y_1, 2.5/y_2, 3.25/y_3, 4/y_4} {
+    \pgfmathsetmacro{\y}{0.2*(\x-1)^3 - 0.5*(\x-1)^2 + 2}
+    \node[left] at (\x,\y) {$\lbl$};
+}
+% h label
+\draw[<->, poporange] (1,-0.3) -- (1.75,-0.3) node[midway, below] {$h$};
+\end{tikzpicture}
+\legende{Trapezoid rule with $n=4$ strips: the chords approximate the curve, and the shaded trapezia approximate the area under the curve.}
+\end{popfigure}
+
+\courssub{Organising Computations: The Ordinate Table}
+
+To avoid errors, especially in examination conditions, always set up an \textbf{ordinate table}. This is a simple two-row table listing the $x$-values and the corresponding $y$-values.
+
+\begin{methode}[Ordinate Table for the Trapezoid Rule]
+\begin{enumerate}
+\item Determine $a$, $b$ and the number of strips $n$ (or the strip width $h$).
+\item Compute $h = \frac{b-a}{n}$.
+\item List the $x$-values: $x_0=a,\; x_1=a+h,\; \dots,\; x_n=b$.
+\item Evaluate $y_k = f(x_k)$ for each $x_k$ (or read them from a given data table).
+\item Write the ordinates in a row, then apply the formula:
+\[
+\text{Area} \approx \frac{h}{2}\bigl[ y_0 + 2(y_1+\cdots+y_{n-1}) + y_n \bigr].
+\]
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[First and Last Ordinates Count Once!]
+A very common mistake is to multiply \emph{all} ordinates by 2. Remember: the first ordinate $y_0$ and the last ordinate $y_n$ are multiplied by 1 (i.e., not doubled), while every interior ordinate $y_1,\dots,y_{n-1}$ is multiplied by 2.
+\end{attention}
+
+\begin{exemplebox}[Trapezoid Rule from a Formula]
+Use the trapezoid rule with $n=4$ strips to approximate $\int_1^3 \frac{1}{x}\,dx$.
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+Here $a=1$, $b=3$, $n=4$, so $h = \frac{3-1}{4} = 0.5$.
+\[
+\begin{array}{c|ccccc}
+x & 1 & 1.5 & 2 & 2.5 & 3 \\ \hline
+y = 1/x & 1.0000 & 0.6667 & 0.5000 & 0.4000 & 0.3333
+\end{array}
+\]
+\[
+\begin{aligned}
+\int_1^3 \frac{1}{x}\,dx &\approx \frac{0.5}{2}\Bigl[ 1.0000 + 2(0.6667+0.5000+0.4000) + 0.3333 \Bigr] \\
+&= 0.25\Bigl[ 1.0000 + 2(1.5667) + 0.3333 \Bigr] \\
+&= 0.25\Bigl[ 1.0000 + 3.1334 + 0.3333 \Bigr] \\
+&= 0.25 \times 4.4667 = 1.1167.
+\end{aligned}
+\]
+The exact value is $\ln 3 \approx 1.0986$, so the approximation overestimates by about $0.0181$.
+\end{exoresolu}
+
+\begin{exemplebox}[Trapezoid Rule from Experimental Data]
+The speed $v$ (in $\mathrm{m\,s^{-1}}$) of a car was recorded every 2 seconds:
+
+\[
+\begin{array}{c|ccccccc}
+t\ (\mathrm{s}) & 0 & 2 & 4 & 6 & 8 & 10 & 12 \\ \hline
+v\ (\mathrm{m\,s^{-1}}) & 0 & 5.2 & 9.8 & 12.1 & 13.0 & 12.5 & 11.0
+\end{array}
+\]
+
+Estimate the distance travelled in the first 12 seconds using the trapezoid rule.
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+Here the data are given directly; no formula for $v(t)$ is needed. We have $a=0$, $b=12$, $n=6$ strips, so $h = 2$.
+\[
+\begin{aligned}
+\text{Distance} &\approx \frac{2}{2}\Bigl[ 0 + 2(5.2+9.8+12.1+13.0+12.5) + 11.0 \Bigr] \\
+&= 1 \times \Bigl[ 0 + 2(52.6) + 11.0 \Bigr] \\
+&= 105.2 + 11.0 = 116.2\ \mathrm{m}.
+\end{aligned}
+\]
+\end{exoresolu}
+
+\courssub{Accuracy and Error Behaviour}
+
+The trapezoid rule is exact for linear functions. For curved graphs, the error depends on the \textbf{concavity}:
+
+\begin{itemize}
+\item If $f$ is \textbf{concave up} ($f''(x) > 0$) on $[a,b]$, the chords lie \emph{above} the curve $\Rightarrow$ trapezoid rule \textbf{overestimates} the integral.
+\item If $f$ is \textbf{concave down} ($f''(x) < 0$) on $[a,b]$, the chords lie \emph{below} the curve $\Rightarrow$ trapezoid rule \textbf{underestimates} the integral.
+\end{itemize}
+
+Increasing $n$ (decreasing $h$) reduces the error. The error is proportional to $h^2$ (or $1/n^2$), so doubling $n$ roughly quarters the error.
+
+\begin{attention}[Exam Tip]
+Always state the value of $h$ explicitly. Keep at least 4 decimal places in intermediate ordinate values to avoid rounding errors that accumulate in the final sum.
+\end{attention}
+
+\courssub{The Mean Value of a Function}
+
+If a function $f$ is continuous on $[a,b]$, its \textbf{mean value} (or average value) on that interval is the constant height $\bar{f}$ such that a rectangle of width $b-a$ and height $\bar{f}$ has the same area as the region under the curve.
+
+\begin{definition}[Mean Value of a Function]
+The mean value of a continuous function $f$ on the interval $[a,b]$ is
+\[
+\bar{f} = \frac{1}{b-a}\int_a^b f(x)\,dx.
+\]
+\end{definition}
+
+Geometrically, $\bar{f}$ is the height of the rectangle with base $[a,b]$ whose area equals $\int_a^b f(x)\,dx$.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8]
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel=$y$,
+    xmin=0, xmax=5, ymin=0, ymax=4,
+    xtick={1,4}, xticklabels={$a$,$b$},
+    ytick={2.2}, yticklabels={$\bar{f}$},
+    tick label style={font=\small},
+    clip=false
+]
+\addplot[draw=none, domain=1:4, name path=axis] {0};
+\addplot[popblue, thick, domain=1:4, samples=100, name path=curve] {0.5*(x-1)*(4-x)+1};
+\addplot[poporange, dashed, thick, domain=1:4, name path=mean] {2.2};
+\addplot[popgreenL, opacity=0.3] fill between[of=curve and mean, soft clip={domain=1:4}];
+\addplot[popgreen, opacity=0.5] fill between[of=mean and axis, soft clip={domain=1:4}];
+\node[popblue, anchor=south west] at (axis cs:1.2,3.5) {$y=f(x)$};
+\node[poporange, anchor=south west] at (axis cs:1.2,2.4) {$y=\bar{f}$};
+\end{axis}
+\end{tikzpicture}
+\legende{The mean value $\bar{f}$ is the height of the rectangle (green) whose area equals the area under the curve (blue). The two shaded regions have equal area.}
+\end{popfigure}
+
+\begin{exemplebox}[Mean Value of a Polynomial]
+Find the mean value of $f(x)=x^2$ on $[0,2]$.
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+\[
+\bar{f} = \frac{1}{2-0}\int_0^2 x^2\,dx = \frac{1}{2}\left[\frac{x^3}{3}\right]_0^2 = \frac{1}{2}\cdot\frac{8}{3} = \frac{4}{3}.
+\]
+The rectangle of width 2 and height $4/3$ has area $8/3$, same as the integral.
+\end{exoresolu}
+
+\courssub{The Mean Value Theorem for Integrals}
+
+The Mean Value Theorem for Integrals guarantees that the mean value is actually attained by the function at some point in the interval (provided $f$ is continuous).
+
+\begin{propriete}[Mean Value Theorem for Integrals]
+If $f$ is continuous on $[a,b]$, then there exists at least one number $c \in [a,b]$ such that
+\[
+f(c) = \frac{1}{b-a}\int_a^b f(x)\,dx = \bar{f}.
+\]
+\end{propriete}
+
+\begin{aretenir}[Key Points]
+\begin{itemize}
+\item The theorem is an \textbf{existence} theorem: it tells us such a $c$ exists, but does not give a formula to find it.
+\item Graphically: the horizontal line $y=\bar{f}$ cuts the curve $y=f(x)$ at least once between $a$ and $b$.
+\item If $f$ is not continuous, the theorem may fail (e.g., a function with a jump discontinuity might never equal its mean value).
+\end{itemize}
+\end{aretenir}
+
+\begin{exemplebox}[Applying the Mean Value Theorem]
+Let $f(x)=x^2$ on $[0,2]$. We found $\bar{f}=4/3$. Find a value $c \in [0,2]$ such that $f(c)=\bar{f}$.
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+We need $c^2 = \frac{4}{3}$, so $c = \frac{2}{\sqrt{3}} \approx 1.155$. Indeed $c \in [0,2]$.
+\end{exoresolu}
+
+\courssub{Applications and Combined Problems}
+
+The mean value and the trapezoid rule often appear together in GCE questions. Typical applications include:
+
+\begin{itemize}
+\item \textbf{Average speed:} $\bar{v} = \frac{1}{t_2-t_1}\int_{t_1}^{t_2} v(t)\,dt$.
+\item \textbf{Average temperature:} $\bar{T} = \frac{1}{24}\int_0^{24} T(t)\,dt$ (if $t$ is in hours).
+\item \textbf{Average price of cocoa:} If the price per kilogram varies over a season, the mean price gives a fair single figure for contracts.
+\end{itemize}
+
+\begin{exemplebox}[Combined Problem: Trapezoid Estimate of Mean Value]
+The temperature $T$ (in $^\circ\mathrm{C}$) in a greenhouse was recorded over a 12-hour period:
+
+\[
+\begin{array}{c|ccccccc}
+t\ (\mathrm{h}) & 0 & 2 & 4 & 6 & 8 & 10 & 12 \\ \hline
+T\ (^\circ\mathrm{C}) & 18 & 20 & 23 & 25 & 24 & 22 & 20
+\end{array}
+\]
+
+\begin{enumerate}
+\item Use the trapezoid rule with 6 strips to estimate $\int_0^{12} T(t)\,dt$.
+\item Hence estimate the mean temperature over the 12-hour period.
+\end{enumerate}
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+\emph{Step 1:} $h = 2$, $n=6$.
+\[
+\begin{aligned}
+\int_0^{12} T(t)\,dt &\approx \frac{2}{2}\Bigl[ 18 + 2(20+23+25+24+22) + 20 \Bigr] \\
+&= 1 \times \Bigl[ 18 + 2(114) + 20 \Bigr] \\
+&= 18 + 228 + 20 = 266\ \text{degree-hours}.
+\end{aligned}
+\]
+
+\emph{Step 2:} Mean temperature $\bar{T} = \frac{1}{12-0} \times 266 = \frac{266}{12} \approx 22.17^\circ\mathrm{C}$.
+\end{exoresolu}
+
+\begin{exemplebox}[GCE-Style Problem: Existence of $c$]
+The velocity of a particle is given by $v(t) = 3t^2 - 12t + 9$ for $0 \le t \le 4$. 
+\begin{enumerate}
+\item Find the mean velocity on $[0,4]$.
+\item Show that there is a time $c \in [0,4]$ when the instantaneous velocity equals the mean velocity, and find $c$.
+\end{enumerate}
+\end{exemplebox}
+
+\begin{exoresolu}[Solution]
+\emph{1.} Mean velocity $\bar{v} = \frac{1}{4}\int_0^4 (3t^2-12t+9)\,dt$.
+\[
+\int_0^4 (3t^2-12t+9)\,dt = \Bigl[ t^3 - 6t^2 + 9t \Bigr]_0^4 = (64 - 96 + 36) - 0 = 4.
+\]
+So $\bar{v} = \frac{4}{4} = 1\ \mathrm{m\,s^{-1}}$.
+
+\emph{2.} Since $v$ is continuous (polynomial), the Mean Value Theorem for Integrals guarantees a $c \in [0,4]$ with $v(c)=1$.
+Solve $3c^2 - 12c + 9 = 1 \Rightarrow 3c^2 - 12c + 8 = 0$.
+\[
+c = \frac{12 \pm \sqrt{144 - 96}}{6} = \frac{12 \pm \sqrt{48}}{6} = 2 \pm \frac{2\sqrt{3}}{3}.
+\]
+Both roots lie in $[0,4]$: $c_1 = 2 - \frac{2\sqrt{3}}{3} \approx 0.845$, $c_2 = 2 + \frac{2\sqrt{3}}{3} \approx 3.155$.
+\end{exoresolu}
+
+\begin{savaistu}[Did You Know?]
+The trapezoid rule is the simplest of the \textbf{Newton--Cotes} formulas. A more accurate method using parabolic arcs is \textbf{Simpson's rule}, which requires an even number of strips and gives exact results for polynomials up to degree 3. In Cameroon, numerical integration is used by engineers designing the Lom Pangar dam spillways and by agronomists estimating cocoa yield from discrete field samples.
+\end{savaistu}
+
+\begin{exercice}[Practice Problems]
+\begin{enumerate}
+\item Use the trapezoid rule with $n=5$ to approximate $\int_0^1 e^{-x^2}\,dx$. (Use $e^{-0.04}=0.9608$, $e^{-0.16}=0.8521$, $e^{-0.36}=0.6977$, $e^{-0.64}=0.5273$, $e^{-1}=0.3679$.)
+\item The table gives the rate of flow $R$ (in $\mathrm{m^3/s}$) of a river at 2-hour intervals:
+\[
+\begin{array}{c|cccccc}
+t\ (\mathrm{h}) & 0 & 2 & 4 & 6 & 8 & 10 \\ \hline
+R\ (\mathrm{m^3/s}) & 12 & 15 & 18 & 20 & 17 & 14
+\end{array}
+\]
+Estimate the total volume of water that passed in the 10-hour period. (Give your answer in $\mathrm{m^3}$.)
+\item Find the mean value of $f(x)=\sin x$ on $[0,\pi]$. Verify the Mean Value Theorem for Integrals by finding $c$.
+\item A farmer records the price of cocoa (in FCFA/kg) at the start of each month for 6 months: 1200, 1250, 1300, 1280, 1320, 1350. Assuming the price varies linearly between recordings, estimate the average price over the 6-month period using the trapezoid rule. (Take the time interval as 0 to 5 months, with 5 strips of width 1 month.)
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$h=0.2$. Ordinates: $y_0=1$, $y_1=0.9608$, $y_2=0.8521$, $y_3=0.6977$, $y_4=0.5273$, $y_5=0.3679$.
+\[
+\int_0^1 e^{-x^2}\,dx \approx \frac{0.2}{2}[1 + 2(0.9608+0.8521+0.6977+0.5273) + 0.3679] = 0.1[1 + 2(3.0379) + 0.3679] = 0.1[7.4437] = 0.7444.
+\]
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$h=2$ hours, $n=5$ strips.
+\[
+\int_0^{10} R(t)\,dt \approx \frac{2}{2}[12 + 2(15+18+20+17) + 14] = 1[12 + 2(70) + 14] = 166\ \mathrm{m^3/s \cdot h}.
+\]
+Since $1\ \mathrm{h} = 3600\ \mathrm{s}$, the volume is $166 \times 3600 = 597\,600\ \mathrm{m^3}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$\bar{f} = \frac{1}{\pi}\int_0^\pi \sin x\,dx = \frac{1}{\pi}[-\cos x]_0^\pi = \frac{2}{\pi}$.
+Solve $\sin c = \frac{2}{\pi} \Rightarrow c = \arcsin(2/\pi) \approx 0.69$ or $c = \pi - \arcsin(2/\pi) \approx 2.45$. Both in $[0,\pi]$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Time interval: $0$ to $5$ months (start of month 1 to start of month 6), $n=5$ strips, $h=1$ month.
+Prices: $y_0=1200$, $y_1=1250$, $y_2=1300$, $y_3=1280$, $y_4=1320$, $y_5=1350$.
+\[
+\text{Integral} \approx \frac{1}{2}[1200 + 2(1250+1300+1280+1320) + 1350] = 0.5[1200 + 2(5150) + 1350] = 0.5[12850] = 6425\ \text{FCFA$\cdot$month/kg}.
+\]
+Mean price $= \frac{1}{5} \times 6425 = 1285\ \text{FCFA/kg}$.
+(Note: The interval length is 5 months, not 6, because the 6 recordings are at the starts of months 1 through 6.)
+\end{corrige}
+
+\courssub{Summary of Key Formulas}
+
+\begin{aretenir}[Formulas to Remember]
+\begin{itemize}
+\item Trapezoid rule: $\displaystyle \int_a^b f(x)\,dx \approx \frac{h}{2}\bigl[ y_0 + 2\sum_{k=1}^{n-1} y_k + y_n \bigr]$, $h=\frac{b-a}{n}$.
+\item Mean value: $\displaystyle \bar{f} = \frac{1}{b-a}\int_a^b f(x)\,dx$.
+\item Mean Value Theorem for Integrals: If $f$ continuous on $[a,b]$, $\exists c\in[a,b]$ such that $f(c)=\bar{f}$.
+\end{itemize}
+\end{aretenir}
+
+With these tools you can tackle any GCE question on numerical integration or mean values. Practice setting up ordinate tables neatly, and always interpret your results in the context of the problem — whether it's the distance travelled by a taxi in Douala, the average temperature in Ngaoundéré, or the fair price of cocoa in the South-West region.
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This activity is a \cle{modelling project} that brings together all the major skills of the chapter in one realistic engineering task. By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item model a real container as a \cle{solid of revolution} and compute its exact capacity using $V=\pi\displaystyle\int_a^b y^2\,dx$;
+\item estimate the same quantity numerically with the \cle{trapezoid rule} and comment on the accuracy of the approximation;
+\item locate the \cle{centre of mass} of a solid of revolution by integration, and interpret it physically as a balancing point;
+\item use the trapezoid rule on \emph{discrete data} (a table of measurements) to estimate a total consumption, and deduce a \cle{mean value};
+\item communicate a complete mathematical argument: sketch, computation, units, conclusion and critical discussion.
+\end{itemize}
+
+\begin{attention}[Working in groups]
+Work in groups of three or four. Every member must be able to explain \emph{each} step: at the GCE Advanced Level, you will be alone in front of the paper! Keep all units in metres, cubic metres and litres ($1\ \mathrm{m^3}=1000$ litres).
+\end{attention}
+
+\courssub{Situation}
+
+The neighbourhood of Nkwen, on the slopes of Bamenda, suffers from irregular water supply during the dry season. A small local NGO plans to build a \textbf{horizontal reservoir with a curved (bowl-shaped) profile}, half-buried on the hillside, to store rainwater collected in the rainy season.
+
+The engineer proposes the following design. In a vertical plane through the axis of the reservoir, the upper wall of the container is modelled by the curve
+\[
+y=2\sqrt{x},\qquad 0\le x\le 9,
+\]
+where $x$ is the distance in metres measured along the axis from the narrow (closed) end, and $y$ is the radius of the circular cross-section at that point, also in metres. The reservoir is the \cle{solid of revolution} obtained by rotating this curve about the $x$-axis between $x=0$ and $x=9$. The wide end at $x=9$ is closed by a flat circular plate.
+
+Because the reservoir is heavy when full, it must rest on a \textbf{support cradle} placed exactly under the \cle{centre of mass} of the solid (assumed of uniform density), so that the structure does not tip over.
+
+During the first week of a field study, a flow meter on the outlet pipe gave the following readings of the outflow rate $r(t)$, in cubic metres per day, where $t$ is the time in days from Monday 6:00:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Day $t$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
+\hline Outflow $r(t)$ (m$^3$/day) & $12$ & $15$ & $18$ & $14$ & $10$ & $9$ & $11$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The NGO wants to know: \emph{Is the reservoir large enough to supply the neighbourhood for one week of dry season, starting full?} Your group is the consulting mathematics team.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Sketch the design.} Draw the curve $y=2\sqrt{x}$ for $0\le x\le 9$, shade the region to be rotated, and sketch the resulting solid of revolution. What is the radius of the circular plate closing the wide end?
+\item \textbf{Exact capacity.} Show that the exact volume of the reservoir is $V=\pi\displaystyle\int_0^9 4x\,dx$, and compute it exactly. Convert the capacity to litres.
+\item \textbf{Numerical check.} A worker can only \emph{measure} the radius at seven equally spaced positions: $x=0,\ 1.5,\ 3,\ 4.5,\ 6,\ 7.5,\ 9$. Compute the cross-sectional area $A(x)=\pi y^2$ at each position, then use the \cle{trapezoid rule} with these seven ordinates to estimate $V=\displaystyle\int_0^9 A(x)\,dx$. Compare with the exact value: give the absolute and percentage error, and comment on the result in the light of the shape of $A(x)$.
+\item \textbf{Position of the support cradle.} The centre of mass of a solid of revolution about the $x$-axis lies on the axis at
+\[
+\bar{x}=\dfrac{\displaystyle\int_0^9 x\,\pi y^2\,dx}{\displaystyle\int_0^9 \pi y^2\,dx}.
+\]
+Compute $\bar{x}$ exactly. How far from the narrow end must the cradle be placed? Is it before or after the midpoint of the reservoir? Justify physically.
+\item \textbf{Weekly consumption.} Using the outflow table and the trapezoid rule with step $h=1$ day, estimate the total volume of water consumed during the six recorded days, $Q=\displaystyle\int_0^6 r(t)\,dt$.
+\item \textbf{Mean daily outflow.} Deduce an estimate of the \cle{mean value} of the outflow rate over the week, $\bar{r}=\dfrac{1}{6}\displaystyle\int_0^6 r(t)\,dt$. State the Mean Value Theorem for integrals and explain what it guarantees here, assuming $r$ is continuous.
+\item \textbf{Verdict and discussion.} Starting full, is the reservoir sufficient for the week? Compute the margin (volume left or shortfall). Discuss two limitations of your model (for example: evaporation, leakage, the trapezoid approximation of $r$, or the idealised shape $y=2\sqrt{x}$), and suggest one improvement to the design or the data collection.
+\item \textbf{Presentation.} Prepare a five-minute group presentation with your sketches, the key integrals, and your recommendation to the NGO.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{1. Sketch.} The curve $y=2\sqrt{x}$ starts at the origin and rises to $y=2\sqrt{9}=6$ at $x=9$; it is concave (it flattens as $x$ grows). Rotating about the $x$-axis gives a bowl-shaped (paraboloid-like) reservoir, narrow at $x=0$ and wide at $x=9$. The closing plate at $x=9$ is a disc of radius $\SI{6}{m}$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.62]
+\draw[->,thick] (-0.3,0) -- (10,0) node[below left]{$x$};
+\draw[->,thick] (0,-6.8) -- (0,6.8) node[left]{$y$};
+\fill[popblueL,opacity=0.5,domain=0:9,samples=60] plot (\x,{2*sqrt(max(0,\x))}) -- plot[domain=9:0,samples=60] (\x,{-2*sqrt(max(0,\x))}) -- cycle;
+\draw[very thick,popblue,domain=0:9,samples=60] plot (\x,{2*sqrt(max(0,\x))});
+\draw[very thick,popblue,dashed,domain=0:9,samples=60] plot (\x,{-2*sqrt(max(0,\x))});
+\draw[popdark] (9,-6) -- (9,6);
+\node[popdark] at (9,-6.6) {$x=9$};
+\node[popblue] at (3.2,3.6) {$y=2\sqrt{x}$};
+\draw[<->,poporange,thick] (9.35,0) -- (9.35,6) node[midway,right]{$6$};
+\draw[<->,popgreen,thick] (0,-6.3) -- (9,-6.3) node[midway,below]{$9$ m};
+\end{tikzpicture}
+\end{center}
+\legende{The reservoir as a solid of revolution of $y=2\sqrt{x}$ about the $x$-axis.}
+\end{popfigure}
+
+\textbf{2. Exact capacity.} Since $y=2\sqrt{x}$, we have $y^2=4x$, so the cross-section at position $x$ is a disc of area $\pi y^2=4\pi x$. Hence
+\[
+V=\pi\int_0^9 y^2\,dx=\pi\int_0^9 4x\,dx=\pi\left[2x^2\right]_0^9=\pi(162-0)=162\pi\ \mathrm{m^3}.
+\]
+Numerically $V\approx 508.94\ \mathrm{m^3}$, i.e. about $508\,938$ litres.
+
+\textbf{3. Trapezoid check.} With $A(x)=\pi y^2=4\pi x$ and step $h=1.5$:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $1.5$ & $3$ & $4.5$ & $6$ & $7.5$ & $9$ \\
+\hline $A(x)=4\pi x$ & $0$ & $6\pi$ & $12\pi$ & $18\pi$ & $24\pi$ & $30\pi$ & $36\pi$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The trapezoid rule with $n=6$ strips gives
+\[
+V\approx \frac{h}{2}\left[A_0+A_6+2\big(A_1+A_2+A_3+A_4+A_5\big)\right].
+\]
+Factoring out $\pi$ from every ordinate:
+\[
+V\approx \frac{1.5}{2}\,\pi\left[0+36+2(6+12+18+24+30)\right]
+=0.75\,\pi\left[36+2\times 90\right]
+=0.75\,\pi\times 216
+=162\pi\ \mathrm{m^3}.
+\]
+The estimate is \emph{exactly} $162\pi$: the absolute error is $0$ and the percentage error is $0\%$. This is not a coincidence: $A(x)=4\pi x$ is a \emph{linear} function, and the trapezoid rule is exact for linear functions, because on each strip the chord (the top of the trapezium) coincides with the graph itself.
+
+\begin{attention}[Where the concavity argument really applies]
+The concavity remark concerns the \emph{radius} $y=2\sqrt{x}$, which is concave, not the area $A(x)=4\pi x$, which is linear. Had we applied the trapezoid rule to the radius values and then squared the result, we would have obtained an \emph{underestimate} of the true profile (the chords of a concave curve lie below the curve). Always apply the trapezoid rule to the quantity that actually appears under the integral sign — here $A(x)=\pi y^2$.
+\end{attention}
+
+\textbf{4. Support cradle.} Compute the numerator:
+\[
+\int_0^9 x\,\pi y^2\,dx=\pi\int_0^9 x\cdot 4x\,dx=\pi\int_0^9 4x^2\,dx=\pi\left[\frac{4x^3}{3}\right]_0^9=\pi\cdot\frac{4\times 729}{3}=972\pi.
+\]
+The denominator is the volume already found: $\displaystyle\int_0^9 \pi y^2\,dx=162\pi$. Hence
+\[
+\bar{x}=\frac{972\pi}{162\pi}=6\ \mathrm{m}.
+\]
+The cradle must be placed $\SI{6}{m}$ from the narrow end, i.e. \emph{beyond} the geometric midpoint ($4.5$ m). This is physically sensible: the reservoir is wider — and therefore heavier per unit length — towards the wide end, so the balancing point shifts towards $x=9$.
+
+\textbf{5. Weekly consumption.} With $h=1$ and the seven readings $12,15,18,14,10,9,11$:
+\[
+Q\approx \frac{1}{2}\left[12+11+2(15+18+14+10+9)\right]
+=\frac{1}{2}\left[23+2\times 66\right]
+=\frac{155}{2}=77.5\ \mathrm{m^3}.
+\]
+
+\textbf{6. Mean daily outflow.}
+\[
+\bar{r}=\frac{1}{6}\int_0^6 r(t)\,dt\approx\frac{77.5}{6}\approx 12.9\ \mathrm{m^3/day}.
+\]
+The \cle{Mean Value Theorem for integrals} states: if $r$ is continuous on $[a,b]$, then there exists at least one $c\in[a,b]$ such that
+\[
+r(c)=\frac{1}{b-a}\int_a^b r(t)\,dt.
+\]
+Here it guarantees that at some moment of the week the outflow rate was actually about $12.9\ \mathrm{m^3/day}$ — the average is a value genuinely attained by the flow, not just an arithmetic artefact.
+
+\textbf{7. Verdict.} Weekly consumption $\approx 77.5\ \mathrm{m^3}$ against a capacity of $162\pi\approx 508.94\ \mathrm{m^3}$. The week consumes only about $\dfrac{77.5}{508.94}\approx 15\%$ of the capacity, leaving a margin of roughly $508.94-77.5\approx 431\ \mathrm{m^3}$. \textbf{The reservoir is amply sufficient} — in fact, at this rate it could supply the neighbourhood for about $\dfrac{508.94}{77.5}\approx 6.6$ weeks.
+
+\emph{Limitations.} (i) The trapezoid estimate of $Q$ uses only one reading per day; night-time peaks are invisible — more frequent readings would improve it. (ii) The model ignores evaporation and leakage, which reduce the effective capacity. (iii) The idealised profile $y=2\sqrt{x}$ may differ from the structure actually built. \emph{Improvement:} record the outflow every two hours and repeat the trapezoid rule with $h=\tfrac{1}{12}$ day, and coat the interior of the reservoir to reduce leakage.
+
+\textbf{8. Presentation.} Each group presents: the sketch, the exact integral $V=162\pi\ \mathrm{m^3}$, the trapezoid verification, the cradle position $\bar{x}=6$ m, the consumption $Q\approx 77.5\ \mathrm{m^3}$ with mean $\bar{r}\approx 12.9\ \mathrm{m^3/day}$, and the final recommendation to the NGO.
+
+\begin{aretenir}[What this activity consolidates]
+\begin{itemize}
+\item Volume of revolution about the $x$-axis: $V=\pi\displaystyle\int_a^b y^2\,dx$.
+\item Centre of mass on the axis: $\bar{x}=\dfrac{\displaystyle\int_a^b x\,y^2\,dx}{\displaystyle\int_a^b y^2\,dx}$.
+\item Trapezoid rule: $\displaystyle\int_a^b f(x)\,dx\approx \frac{h}{2}\left[y_0+y_n+2\sum_{i=1}^{n-1}y_i\right]$ — exact for linear $f$.
+\item Mean value of a function: $\bar{f}=\dfrac{1}{b-a}\displaystyle\int_a^b f(x)\,dx$, and the Mean Value Theorem guarantees this value is attained when $f$ is continuous.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{The Definite Integral as a Limit of Riemann Sums}
+
+\courssub{Definition and Interpretation}
+
+\begin{definition}[Partition and Riemann Sum]
+Let $f$ be a function defined on a closed interval $[a,b]$. A \textbf{partition} $P$ of $[a,b]$ is a finite set of points $a=x_0<x_1<\dots<x_n=b$. The \textbf{norm} of the partition is $\|P\|=\max_{1\le i\le n}(x_i-x_{i-1})$. For each subinterval $[x_{i-1},x_i]$, choose a sample point $x_i^*\in[x_{i-1},x_i]$. The \textbf{Riemann sum} of $f$ associated with $P$ and the sample points is
+\[
+S(P,f)=\sum_{i=1}^{n} f(x_i^*)\,(x_i-x_{i-1}).
+\]
+If $f$ is continuous on $[a,b]$, the limit of Riemann sums as $\|P\|\to 0$ exists and is independent of the choice of partitions and sample points.
+\end{definition}
+
+\begin{propriete}[Definite Integral as a Limit of Riemann Sums]
+If $f$ is continuous on $[a,b]$, the \textbf{definite integral} of $f$ from $a$ to $b$ is defined by
+\[
+\int_a^b f(x)\,dx = \lim_{\|P\|\to 0} \sum_{i=1}^{n} f(x_i^*)\,\Delta x_i,
+\]
+where $\Delta x_i = x_i-x_{i-1}$. In particular, for a regular partition with $n$ equal subintervals of width $\Delta x = \frac{b-a}{n}$ and right endpoints $x_k = a+k\Delta x$,
+\[
+\int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{k=1}^{n} f(a+k\Delta x)\,\Delta x.
+\]
+\end{propriete}
+
+\courssub{Method: Evaluating a Definite Integral from the Definition}
+
+\begin{methode}[From Riemann sum to definite integral]
+To compute $\displaystyle\int_a^b f(x)\,dx$ directly from the definition using a regular partition and right endpoints:
+\begin{enumerate}
+\item Divide $[a,b]$ into $n$ equal sub-intervals of width $\Delta x = \dfrac{b-a}{n}$.
+\item Choose the right endpoints $x_k = a + k\Delta x$, $k=1,\dots,n$.
+\item Form the Riemann sum $S_n = \displaystyle\sum_{k=1}^{n} f(x_k)\,\Delta x$.
+\item Simplify $S_n$ using the standard sums
+\[
+\sum_{k=1}^{n} k = \frac{n(n+1)}{2},\quad
+\sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6},\quad
+\sum_{k=1}^{n} k^3 = \left[\frac{n(n+1)}{2}\right]^2.
+\]
+\item Take the limit: $\displaystyle\int_a^b f(x)\,dx = \lim_{n\to\infty} S_n$.
+\end{enumerate}
+\textbf{Reflex:} conversely, a limit of the form $\lim_{n\to\infty}\frac{1}{n}\sum_{k=1}^n f\!\left(\frac{k}{n}\right)$ equals $\int_0^1 f(x)\,dx$. More generally, $\lim_{n\to\infty}\frac{b-a}{n}\sum_{k=1}^n f\!\left(a+\frac{k(b-a)}{n}\right) = \int_a^b f(x)\,dx$.
+\end{methode}
+
+\begin{exoresolu}[{Riemann sum for $f(x)=x^2$ on $[0,1]$}]
+Using Riemann sums with $n$ equal sub-intervals and right endpoints, show that $\displaystyle\int_0^1 x^2\,dx = \frac{1}{3}$.
+\tcblower
+Here $a=0$, $b=1$, so $\Delta x = \dfrac{1}{n}$ and the right endpoints are $x_k = \dfrac{k}{n}$.
+The Riemann sum is
+\[
+S_n = \sum_{k=1}^{n} f(x_k)\,\Delta x = \sum_{k=1}^{n}\left(\frac{k}{n}\right)^2\cdot\frac{1}{n} = \frac{1}{n^3}\sum_{k=1}^{n}k^2.
+\]
+Using $\displaystyle\sum_{k=1}^{n}k^2 = \frac{n(n+1)(2n+1)}{6}$:
+\[
+S_n = \frac{n(n+1)(2n+1)}{6n^3} = \frac{(n+1)(2n+1)}{6n^2}.
+\]
+Expanding the numerator: $(n+1)(2n+1) = 2n^2 + 3n + 1$, so
+\[
+S_n = \frac{2n^2+3n+1}{6n^2} = \frac{1}{3} + \frac{1}{2n} + \frac{1}{6n^2}.
+\]
+Taking the limit as $n\to\infty$, the terms $\frac{1}{2n}$ and $\frac{1}{6n^2}$ tend to $0$, hence
+\[
+\int_0^1 x^2\,dx = \lim_{n\to\infty} S_n = \frac{1}{3}.
+\]
+\textbf{Check:} by antidifferentiation, $\int_0^1 x^2\,dx = \left[\frac{x^3}{3}\right]_0^1 = \frac{1}{3}$. $\checkmark$
+\end{exoresolu}
+
+\begin{experience}[Visualising Riemann Sums]
+The figure below shows the right-endpoint Riemann sums for $f(x)=x^2$ on $[0,1]$ with $n=4,8,16$. As $n$ increases, the rectangles fill the region under the curve, illustrating the convergence of the sum to the exact area $\frac13$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=3, declare function={f(\x)=\x*\x;}]
+\foreach \n/\xshift in {4/0, 8/3.5, 16/7} {
+  \begin{scope}[xshift=\xshift cm]
+    \draw[popline, thick] (0,0) -- (1,0) node[below] {$1$};
+    \draw[popline, thick] (0,0) -- (0,1) node[left] {$1$};
+    \draw[popdark, thick, domain=0:1] plot (\x,{f(\x)}) node[right] {$y=x^2$};
+    % Ensure integer limit for foreach to avoid pgffor@scanround error
+    \pgfmathtruncatemacro{\N}{\n}
+    \foreach \k in {1,...,\N} {
+      \pgfmathsetmacro{\xk}{\k/\n}
+      \pgfmathsetmacro{\xkm}{(\k-1)/\n} % Fixed missing brace
+      \fill[popblueL, opacity=0.6] (\xkm,0) rectangle (\xk,{f(\xk)});
+      \draw[popblue] (\xkm,0) -- (\xkm,{f(\xk)}) -- (\xk,{f(\xk)}) -- (\xk,0);
+    }
+    \node[below] at (0.5,-0.15) {$n=\n$};
+  \end{scope}
+}
+\end{tikzpicture}
+\legende{Right-endpoint Riemann sums for $y=x^2$ on $[0,1]$ with increasing $n$.}
+\end{popfigure}
+\end{experience}
+
+\coursec{Areas Bounded by the x-axis and Between Curves}
+
+\courssub{Area between a Curve and the x-axis}
+
+\begin{methode}[Area bounded by the $x$-axis]
+To find the area enclosed by $y=f(x)$, the $x$-axis, and the lines $x=a$, $x=b$:
+\begin{enumerate}
+\item Sketch the curve and locate its intersections with the $x$-axis on $[a,b]$ (solve $f(x)=0$).
+\item Determine the \textbf{sign} of $f$ on each sub-interval.
+\item On intervals where $f(x)\ge 0$: area $=\int f(x)\,dx$. Where $f(x)\le 0$: area $= -\int f(x)\,dx$ (or $\int|f(x)|\,dx$).
+\item Add the \emph{positive} contributions of each piece.
+\end{enumerate}
+\begin{attention}[The sign trap]
+$\displaystyle\int_a^b f(x)\,dx$ gives the \emph{algebraic} (signed) area. If the curve crosses the axis, a single integral may give $0$ or a small number while the true area is large. Always split at the zeros of $f$.
+\end{attention}
+\end{methode}
+
+\begin{exoresolu}[Area under $y = x^2 - 4$ between $x=0$ and $x=3$]
+Find the area of the region bounded by the curve $y = x^2 - 4$, the $x$-axis and the lines $x=0$ and $x=3$.
+\tcblower
+\textbf{Step 1: zeros of $f$.} $x^2 - 4 = 0 \iff x = \pm 2$. On $[0,3]$, the curve crosses the axis at $x=2$.
+
+\textbf{Step 2: sign of $f$.} For $0\le x < 2$, $x^2 - 4 < 0$ (curve below the axis). For $2 < x \le 3$, $x^2 - 4 > 0$ (curve above).
+
+\textbf{Step 3: split the integral.}
+\[
+A = -\int_0^2 (x^2-4)\,dx + \int_2^3 (x^2-4)\,dx.
+\]
+An antiderivative is $F(x) = \dfrac{x^3}{3} - 4x$.
+
+First piece:
+\[
+\int_0^2 (x^2-4)\,dx = \left[\frac{x^3}{3}-4x\right]_0^2 = \frac{8}{3} - 8 = -\frac{16}{3}.
+\]
+Second piece:
+\[
+\int_2^3 (x^2-4)\,dx = \left(\frac{27}{3}-12\right) - \left(\frac{8}{3}-8\right) = -3 + \frac{16}{3} = \frac{7}{3}.
+\]
+\textbf{Step 4: total area.}
+\[
+A = \frac{16}{3} + \frac{7}{3} = \frac{23}{3}\ \text{square units}.
+\]
+\textbf{Remark:} the naive single integral gives $\int_0^3(x^2-4)dx = -3$, which is \emph{not} the area — a classic GCE trap.
+\end{exoresolu}
+
+\courssub{Area between Two Curves}
+
+\begin{methode}[Area between $y=f(x)$ and $y=g(x)$]
+\begin{enumerate}
+\item Find the intersection points: solve $f(x)=g(x)$; call the solutions $a<b$ (these are usually the limits).
+\item On $[a,b]$, identify the \textbf{upper} curve $f$ and the \textbf{lower} curve $g$ (test one value).
+\item Compute $\displaystyle A = \int_a^b \big[f(x)-g(x)\big]\,dx$.
+\item If the curves cross inside the interval, split and take absolute values of each piece.
+\end{enumerate}
+\textbf{Reflex:} the formula $A=\int_a^b(\text{top}-\text{bottom})\,dx$ works even if both curves are below the $x$-axis.
+\end{methode}
+
+\begin{exoresolu}[Area between $y=x^2$ and $y=2x$]
+Find the area of the finite region enclosed by the parabola $y = x^2$ and the line $y = 2x$.
+\tcblower
+\textbf{Step 1: intersections.} $x^2 = 2x \iff x(x-2)=0 \iff x=0$ or $x=2$. The limits are $a=0$, $b=2$.
+
+\textbf{Step 2: which curve is on top?} Test $x=1$: line gives $y=2$, parabola gives $y=1$. The line $y=2x$ is above on $(0,2)$.
+
+\textbf{Step 3: integrate top minus bottom.}
+\begin{align*}
+A &= \int_0^2 \left(2x - x^2\right)dx = \left[x^2 - \frac{x^3}{3}\right]_0^2 \\
+&= \left(4 - \frac{8}{3}\right) - 0 = \frac{12-8}{3} = \frac{4}{3}.
+\end{align*}
+The area of the region is $\dfrac{4}{3}$ square units.
+
+\textbf{Check with a sketch:} the region is a small "lens" between the parabola and the chord joining $(0,0)$ to $(2,4)$; a value slightly bigger than $1$ is plausible. $\checkmark$
+\end{exoresolu}
+
+\begin{experience}[Visualising Area between Curves]
+The shaded region below represents the area between $y=x^2$ (lower) and $y=2x$ (upper) from $x=0$ to $x=2$.
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, declare function={f(\x)=\x*\x; g(\x)=2*\x;}]
+\draw[popline, ->] (-0.2,0) -- (2.5,0) node[right] {$x$};
+\draw[popline, ->] (0,-0.2) -- (0,4.5) node[above] {$y$};
+\draw[popdark, thick, domain=0:2] plot (\x,{f(\x)}) node[right] {$y=x^2$};
+\draw[poporange, thick, domain=0:2] plot (\x,{g(\x)}) node[above right] {$y=2x$};
+\foreach \x in {0,0.5,1,1.5,2} {
+  \draw[popmuted, dashed] (\x,{f(\x)}) -- (\x,{g(\x)});
+}
+\fill[popblueL, opacity=0.4] plot[domain=0:2] (\x,{f(\x)}) -- plot[domain=2:0] (\x,{g(\x)}) -- cycle;
+\node[popdark] at (1,2.5) {$A=\int_0^2(2x-x^2)dx$};
+\foreach \x/\lbl in {0/0, 1/1, 2/2} \draw (\x,0.05) -- (\x,-0.05) node[below] {$\lbl$};
+\foreach \y/\lbl in {1/1, 2/2, 3/3, 4/4} \draw (0.05,\y) -- (-0.05,\y) node[left] {$\lbl$};
+\end{tikzpicture}
+\legende{Area between two curves: top minus bottom.}
+\end{popfigure}
+\end{experience}
+
+\coursec{Areas Bounded by the y-axis}
+
+\courssub{Integrating with Respect to y}
+
+\begin{methode}[Integrating with respect to $y$]
+For a region bounded by the curve $x = g(y)$, the $y$-axis, and the horizontal lines $y=c$, $y=d$:
+\begin{enumerate}
+\item Rewrite the equation of the curve as $x$ in terms of $y$: $x = g(y)$.
+\item Identify the horizontal bounds $y=c$ and $y=d$ (from given lines or intersection points).
+\item Compute $\displaystyle A = \int_c^d g(y)\,dy$ if $g(y)\ge 0$; more generally $A = \int_c^d |g(y)|\,dy$, or $\int_c^d(\text{right curve}-\text{left curve})\,dy$ between two curves.
+\end{enumerate}
+\textbf{Reflex:} "bounded by the $y$-axis" $\Rightarrow$ integrate with respect to $y$; the roles of $x$ and $y$ are swapped.
+\end{methode}
+
+\begin{exoresolu}[Area between $y^2 = 4x$, the $y$-axis and $y=4$]
+Find the area of the region in the first quadrant bounded by the curve $y^2 = 4x$, the $y$-axis and the line $y = 4$.
+\tcblower
+\textbf{Step 1: express $x$ as a function of $y$.} From $y^2 = 4x$ we get $x = \dfrac{y^2}{4}$.
+
+\textbf{Step 2: bounds.} The region runs from $y=0$ (the $x$-axis, where the curve meets the $y$-axis at the origin) to $y=4$. For $y\in[0,4]$, $x = \frac{y^2}{4} \ge 0$, so the curve is to the right of the $y$-axis.
+
+\textbf{Step 3: integrate with respect to $y$.}
+\[
+A = \int_0^4 \frac{y^2}{4}\,dy = \frac{1}{4}\left[\frac{y^3}{3}\right]_0^4 = \frac{1}{4}\cdot\frac{64}{3} = \frac{16}{3}.
+\]
+The area is $\dfrac{16}{3}$ square units.
+
+\textbf{Alternative check (integrating in $x$):} the curve is $y = 2\sqrt{x}$; at $y=4$, $x=4$. The rectangle $[0,4]\times[0,4]$ has area $16$, and the area under the curve is $\int_0^4 2\sqrt{x}\,dx = \left[\frac{4}{3}x^{3/2}\right]_0^4 = \frac{4}{3}\cdot 8 = \frac{32}{3}$. Hence the region between the curve and the $y$-axis has area $16 - \frac{32}{3} = \frac{16}{3}$. $\checkmark$
+\end{exoresolu}
+
+\coursec{Volumes of Solids of Revolution}
+
+\courssub{Revolution about the x-axis: Disc and Washer Methods}
+
+\begin{methode}[Disc method about the $x$-axis]
+The region under $y=f(x)\ge 0$ from $x=a$ to $x=b$, rotated through $360^{\circ}$ about the $x$-axis, generates a solid of volume
+\[
+V = \pi\int_a^b \big[f(x)\big]^2 dx.
+\]
+\begin{enumerate}
+\item Sketch the region and confirm it touches the axis of rotation (otherwise use the washer method below).
+\item Square the function — \textbf{before} integrating: $V = \pi\int y^2\,dx$, never $\pi\left(\int y\,dx\right)^2$.
+\item Integrate and multiply by $\pi$; leave the answer in terms of $\pi$ unless told otherwise.
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Washer method about the $x$-axis]
+If the region is bounded by two curves $y=f(x)$ (outer) and $y=g(x)$ (inner) with $f(x)\ge g(x)\ge 0$ on $[a,b]$, rotation about the $x$-axis gives a hollow solid of volume
+\[
+V = \pi\int_a^b \left[f(x)^2 - g(x)^2\right]dx.
+\]
+\end{methode}
+
+\begin{exoresolu}[Volume generated by $y=\sqrt{x}$ and by a region between two curves]
+(a) The region under $y=\sqrt{x}$ from $x=0$ to $x=4$ is rotated through $360^{\circ}$ about the $x$-axis. Find the volume generated.
+
+(b) The region enclosed by $y = x$ and $y = x^2$ is rotated about the $x$-axis. Find the volume generated.
+\tcblower
+\textbf{(a)} Apply the disc formula with $f(x)=\sqrt{x}$:
+\[
+V = \pi\int_0^4 \left(\sqrt{x}\right)^2 dx = \pi\int_0^4 x\,dx = \pi\left[\frac{x^2}{2}\right]_0^4 = \pi\cdot\frac{16}{2} = 8\pi.
+\]
+The volume is $8\pi$ cubic units.
+
+\textbf{(b)} \textbf{Step 1: intersections.} $x = x^2 \iff x(1-x)=0 \iff x=0$ or $x=1$.
+
+\textbf{Step 2: upper and lower curves.} On $(0,1)$, test $x=\tfrac12$: $y=x$ gives $\tfrac12$, $y=x^2$ gives $\tfrac14$. So $y=x$ is the outer radius, $y=x^2$ the inner radius.
+
+\textbf{Step 3: washer formula.}
+\begin{align*}
+V &= \pi\int_0^1 \left[x^2 - \left(x^2\right)^2\right]dx = \pi\int_0^1\left(x^2 - x^4\right)dx \\
+&= \pi\left[\frac{x^3}{3} - \frac{x^5}{5}\right]_0^1 = \pi\left(\frac{1}{3}-\frac{1}{5}\right) = \pi\cdot\frac{5-3}{15} = \frac{2\pi}{15}.
+\end{align*}
+The volume is $\dfrac{2\pi}{15}$ cubic units.
+\end{exoresolu}
+
+\courssub{Revolution about the y-axis: Disc Method}
+
+\begin{methode}[Disc method about the $y$-axis]
+The region between $x=g(y)\ge 0$ and the $y$-axis, from $y=c$ to $y=d$, rotated about the $y$-axis, gives
+\[
+V = \pi\int_c^d \big[g(y)\big]^2 dy = \pi\int_c^d x^2\,dy.
+\]
+\begin{enumerate}
+\item Express $x^2$ in terms of $y$ from the equation of the curve.
+\item Convert the bounds to $y$-values.
+\item Integrate $x^2$ with respect to $y$ and multiply by $\pi$.
+\end{enumerate}
+\textbf{Reflex:} rotation about the $y$-axis $\Rightarrow$ integrate $x^2$ with respect to $y$; rotation about the $x$-axis $\Rightarrow$ integrate $y^2$ with respect to $x$.
+\end{methode}
+
+\begin{exoresolu}[Volume of a paraboloid]
+The region bounded by the curve $y = x^2$, the line $y = 4$ and the $y$-axis (in the first quadrant) is rotated through $360^{\circ}$ about the $y$-axis. Find the volume of the solid formed.
+\tcblower
+\textbf{Step 1: express $x^2$ in terms of $y$.} From $y = x^2$ we have directly $x^2 = y$.
+
+\textbf{Step 2: bounds in $y$.} The region extends from $y = 0$ (origin) to $y = 4$.
+
+\textbf{Step 3: apply the formula.}
+\[
+V = \pi\int_0^4 x^2\,dy = \pi\int_0^4 y\,dy = \pi\left[\frac{y^2}{2}\right]_0^4 = \pi\cdot\frac{16}{2} = 8\pi.
+\]
+The volume of the paraboloid is $8\pi$ cubic units.
+
+\textbf{Consistency check:} the solid fits inside the cylinder of radius $2$ and height $4$ (volume $\pi r^2 h = 16\pi$), and $8\pi$ is exactly half of it — a classical result for a paraboloid. $\checkmark$
+\end{exoresolu}
+
+\courssub{Alternative: Cylindrical Shell Method}
+
+\begin{methode}[Shell method about the $y$-axis]
+The region under $y=f(x)\ge 0$ from $x=a$ to $x=b$ ($0\le a<b$), rotated about the $y$-axis, can also be computed by cylindrical shells:
+\[
+V = 2\pi\int_a^b x\,f(x)\,dx.
+\]
+Each vertical strip at $x$ of width $dx$ generates a cylindrical shell of radius $x$, height $f(x)$, and thickness $dx$.
+\begin{enumerate}
+\item Identify the radius $x$ and height $f(x)$ of a typical shell.
+\item Integrate $2\pi x f(x)$ with respect to $x$ from $a$ to $b$.
+\end{enumerate}
+\textbf{Note:} The shell method is often simpler when the disc/washer method would require solving for $x$ in terms of $y$.
+\end{methode}
+
+\begin{exoresolu}[Shell method: same paraboloid]
+Use the shell method to find the volume of the solid generated by rotating the region bounded by $y=x^2$, $y=4$, and the $y$-axis (first quadrant) about the $y$-axis.
+\tcblower
+The region is described by $x$ from $0$ to $2$ (since $y=4 \Rightarrow x=2$). A vertical strip at $x$ has height $4 - x^2$ (from the curve to the line $y=4$). The shell volume is
+\[
+V = 2\pi\int_0^2 x\,(4-x^2)\,dx = 2\pi\int_0^2 (4x - x^3)\,dx = 2\pi\left[2x^2 - \frac{x^4}{4}\right]_0^2 = 2\pi\left(8 - 4\right) = 8\pi.
+\]
+Same result as the disc method. $\checkmark$
+\end{exoresolu}
+
+\begin{experience}[Visualising Discs, Washers, and Shells]
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9]
+% Disc method
+\begin{scope}[xshift=0cm]
+\draw[popline, ->] (-0.5,0) -- (3,0) node[right] {$x$};
+\draw[popline, ->] (0,-0.5) -- (0,3) node[above] {$y$};
+\draw[popdark, thick, domain=0:2.5] plot (\x,{0.8*\x}) node[above right] {$y=f(x)$};
+\foreach \x in {0.5,1,1.5,2} {
+  \fill[popblueL, opacity=0.5] (\x,0) rectangle (\x+0.2,{0.8*\x});
+  \draw[popblue] (\x,0) -- (\x,{0.8*\x}) -- (\x+0.2,{0.8*\x}) -- (\x+0.2,0);
+}
+\node at (1.25,-0.7) {Disc method: $\pi\int y^2\,dx$};
+\end{scope}
+% Washer method
+\begin{scope}[xshift=5cm]
+\draw[popline, ->] (-0.5,0) -- (3,0) node[right] {$x$};
+\draw[popline, ->] (0,-0.5) -- (0,3) node[above] {$y$};
+\draw[popdark, thick, domain=0:2.5] plot (\x,{0.8*\x}) node[above right] {$y=f(x)$};
+\draw[poporange, thick, domain=0:2.5] plot (\x,{0.3*\x}) node[below right] {$y=g(x)$};
+\foreach \x in {0.5,1,1.5,2} {
+  \fill[popblueL, opacity=0.5] (\x,{0.3*\x}) rectangle (\x+0.2,{0.8*\x});
+  \draw[popblue] (\x,{0.3*\x}) -- (\x,{0.8*\x}) -- (\x+0.2,{0.8*\x}) -- (\x+0.2,{0.3*\x});
+}
+\node at (1.25,-0.7) {Washer method: $\pi\int(f^2-g^2)\,dx$};
+\end{scope}
+% Shell method
+\begin{scope}[xshift=10cm]
+\draw[popline, ->] (-0.5,0) -- (3,0) node[right] {$x$};
+\draw[popline, ->] (0,-0.5) -- (0,3) node[above] {$y$};
+\draw[popdark, thick, domain=0:2.5] plot (\x,{0.8*\x}) node[above right] {$y=f(x)$};
+\foreach \x in {0.5,1,1.5,2} {
+  \draw[popgreen, thick] (\x,0) -- (\x,{0.8*\x});
+  \draw[popgreen, dashed] (\x,{0.8*\x}) -- (0,{0.8*\x});
+  \node[popgreen, left] at (0,{0.8*\x}) {$f(x)$};
+  \node[popgreen, below] at (\x,0) {$x$};
+}
+\node at (1.25,-0.7) {Shell method: $2\pi\int x f(x)\,dx$};
+\end{scope}
+\end{tikzpicture}
+\legende{Three methods for volumes of revolution.}
+\end{popfigure}
+\end{experience}
+
+\coursec{Centroids and Centres of Mass by Integration}
+
+\courssub{Centroid of a Plane Region}
+
+\begin{methode}[Centroid of a region under a curve]
+For the region under $y=f(x)\ge 0$ from $x=a$ to $x=b$, of area $A = \int_a^b f(x)\,dx$, the centroid $(\bar{x},\bar{y})$ is given by
+\[
+\bar{x} = \frac{1}{A}\int_a^b x\,f(x)\,dx, \qquad \bar{y} = \frac{1}{2A}\int_a^b \big[f(x)\big]^2 dx.
+\]
+\begin{enumerate}
+\item Compute the area $A$ first.
+\item Compute the two "moment" integrals $\int_a^b x f(x)\,dx$ and $\frac12\int_a^b f(x)^2 dx$.
+\item Divide by $A$; check that $(\bar{x},\bar{y})$ lies inside (or on the boundary of) the region.
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Centroid of a region between two curves]
+For the region bounded by $y=f(x)$ (upper) and $y=g(x)$ (lower) on $[a,b]$, with $f(x)\ge g(x)$, area $A = \int_a^b [f(x)-g(x)]\,dx$, the centroid is
+\[
+\bar{x} = \frac{1}{A}\int_a^b x\big[f(x)-g(x)\big]\,dx, \qquad
+\bar{y} = \frac{1}{2A}\int_a^b \big[f(x)^2 - g(x)^2\big]\,dx.
+\]
+\end{methode}
+
+\begin{exoresolu}[Centroid of the region under $y=4-x^2$]
+Find the coordinates of the centroid of the region bounded by the parabola $y = 4 - x^2$ and the $x$-axis.
+\tcblower
+\textbf{Step 0: bounds.} $4 - x^2 = 0 \iff x = \pm 2$. The region is symmetric about the $y$-axis, so we expect $\bar{x}=0$; we verify by computation.
+
+\textbf{Step 1: area.}
+\[
+A = \int_{-2}^{2}(4-x^2)\,dx = \left[4x - \frac{x^3}{3}\right]_{-2}^{2} = \left(8-\frac{8}{3}\right) - \left(-8+\frac{8}{3}\right) = \frac{32}{3}.
+\]
+
+\textbf{Step 2: moment about the $y$-axis.}
+\[
+\int_{-2}^{2} x(4-x^2)\,dx = \int_{-2}^{2}(4x - x^3)\,dx.
+\]
+The integrand is an \textbf{odd} function integrated over a symmetric interval, so the integral is $0$. Hence $\bar{x} = \dfrac{0}{A} = 0$, confirming symmetry.
+
+\textbf{Step 3: moment about the $x$-axis.}
+\begin{align*}
+\int_{-2}^{2}(4-x^2)^2\,dx &= \int_{-2}^{2}\left(16 - 8x^2 + x^4\right)dx = \left[16x - \frac{8x^3}{3} + \frac{x^5}{5}\right]_{-2}^{2} \\
+&= 2\left(32 - \frac{64}{3} + \frac{32}{5}\right) = 2\cdot\frac{480 - 320 + 96}{15} = 2\cdot\frac{256}{15} = \frac{512}{15}.
+\end{align*}
+Therefore
+\[
+\bar{y} = \frac{1}{2A}\cdot\frac{512}{15} = \frac{1}{2}\cdot\frac{3}{32}\cdot\frac{512}{15} = \frac{3\cdot 512}{2\cdot 32\cdot 15} = \frac{1536}{960} = \frac{8}{5}.
+\]
+\textbf{Conclusion:} the centroid is $\left(0,\ \dfrac{8}{5}\right)$. Since $0 < \frac85 < 4$, the point lies inside the region. $\checkmark$
+\end{exoresolu}
+
+\courssub{Centroid of a Solid of Revolution}
+
+\begin{methode}[Centroid of a solid of revolution about the $x$-axis]
+The solid generated by rotating the region under $y=f(x)\ge 0$ on $[a,b]$ about the $x$-axis has volume $V = \pi\int_a^b f(x)^2\,dx$. By symmetry, the centroid lies on the $x$-axis: $\bar{y}=\bar{z}=0$. The $x$-coordinate is
+\[
+\bar{x} = \frac{1}{V}\int_a^b x\,\pi f(x)^2\,dx = \frac{\int_a^b x f(x)^2\,dx}{\int_a^b f(x)^2\,dx}.
+\]
+\end{methode}
+
+\begin{exoresolu}[Centroid of a paraboloid]
+Find the centroid of the solid generated by rotating the region under $y=\sqrt{x}$ on $[0,4]$ about the $x$-axis.
+\tcblower
+Volume: $V = \pi\int_0^4 x\,dx = 8\pi$.
+Moment: $\int_0^4 x\cdot \pi x\,dx = \pi\int_0^4 x^2\,dx = \pi\left[\frac{x^3}{3}\right]_0^4 = \frac{64\pi}{3}$.
+Thus $\bar{x} = \frac{64\pi/3}{8\pi} = \frac{8}{3}$.
+The centroid is $\left(\frac{8}{3}, 0, 0\right)$. $\checkmark$
+\end{exoresolu}
+
+\courssub{Centre of Mass of a Rod with Variable Density}
+
+\begin{methode}[Centre of mass of a non-uniform rod]
+A rod of length $L$ lies along the $x$-axis from $x=a$ to $x=b$ with linear density $\rho(x)$ (mass per unit length). Its total mass is $M = \int_a^b \rho(x)\,dx$, and the centre of mass is at
+\[
+\bar{x} = \frac{1}{M}\int_a^b x\,\rho(x)\,dx.
+\]
+\end{methode}
+
+\begin{exoresolu}[Rod with density proportional to distance]
+A rod of length $2$ m lies on the $x$-axis from $x=0$ to $x=2$. Its density is $\rho(x)=kx$ kg/m. Find the centre of mass.
+\tcblower
+Mass: $M = \int_0^2 kx\,dx = k\left[\frac{x^2}{2}\right]_0^2 = 2k$.
+Moment: $\int_0^2 x(kx)\,dx = k\int_0^2 x^2\,dx = k\left[\frac{x^3}{3}\right]_0^2 = \frac{8k}{3}$.
+Centre of mass: $\bar{x} = \frac{8k/3}{2k} = \frac{4}{3}$ m from the end $x=0$. $\checkmark$
+\end{exoresolu}
+
+\coursec{Trapezoid Rule and the Mean Value Theorem for Integrals}
+
+\courssub{Trapezoid Rule}
+
+\begin{methode}[Trapezoid rule]
+To approximate $\displaystyle\int_a^b f(x)\,dx$ with $n$ strips of equal width $h = \dfrac{b-a}{n}$ and ordinates $y_0, y_1, \dots, y_n$ at $x_k = a + kh$:
+\[
+\int_a^b f(x)\,dx \approx \frac{h}{2}\Big[y_0 + 2\big(y_1 + y_2 + \cdots + y_{n-1}\big) + y_n\Big].
+\]
+\begin{enumerate}
+\item Compute $h$ and list the ordinates in a table (work to at least 4 decimal places).
+\item Apply the pattern: \emph{first + last, twice all the middle ones}, times $\frac{h}{2}$.
+\item State the answer to the accuracy requested.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Trapezoid estimate]
+Use the trapezoid rule with $4$ strips to estimate $\displaystyle\int_0^2 \frac{1}{1+x^2}\,dx$, giving your answer to 3 decimal places.
+\tcblower
+Here $a=0$, $b=2$, $n=4$, so $h = \dfrac{2-0}{4} = 0.5$. Ordinates of $f(x)=\dfrac{1}{1+x^2}$:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $0.5$ & $1.0$ & $1.5$ & $2.0$ \\
+\hline
+$y=\frac{1}{1+x^2}$ & $1.0000$ & $0.8000$ & $0.5000$ & $0.3077$ & $0.2000$ \\
+\hline
+\end{tabular}
+\end{center}
+Apply the rule:
+\begin{align*}
+\int_0^2\frac{dx}{1+x^2} &\approx \frac{0.5}{2}\Big[y_0 + 2(y_1+y_2+y_3) + y_4\Big] \\
+&= 0.25\Big[1.0000 + 2(0.8000 + 0.5000 + 0.3077) + 0.2000\Big] \\
+&= 0.25\Big[1.2000 + 2(1.6077)\Big] = 0.25 \times 4.4154 = 1.10385.
+\end{align*}
+So $\displaystyle\int_0^2\frac{dx}{1+x^2} \approx 1.104$ (3 d.p.).
+
+\textbf{Comment:} the exact value is $\big[\arctan x\big]_0^2 = \arctan 2 \approx 1.1071$; the trapezoid estimate with only 4 strips is already within $0.004$.
+\end{exoresolu}
+
+\begin{experience}[Visualising the Trapezoid Rule]
+The figure shows the trapezoid approximation for $\int_0^2 \frac{dx}{1+x^2}$ with $n=4$. The area under the curve is approximated by the sum of trapezoid areas.
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, declare function={f(\x)=1/(1+\x*\x);}]
+\draw[popline, ->] (-0.2,0) -- (2.3,0) node[right] {$x$};
+\draw[popline, ->] (0,-0.2) -- (0,1.2) node[above] {$y$};
+\draw[popdark, thick, domain=0:2] plot (\x,{f(\x)}) node[above right] {$y=\frac{1}{1+x^2}$};
+\foreach \k in {0,...,4} {
+  \pgfmathsetmacro{\x}{\k*0.5}
+  \pgfmathsetmacro{\y}{f(\x)}
+  \draw[popmuted, dashed] (\x,0) -- (\x,\y);
+  \fill[popdark] (\x,\y) circle (1.5pt);
+}
+\foreach \k in {0,...,3} {
+  \pgfmathsetmacro{\x}{\k*0.5}
+  \pgfmathsetmacro{\xp}{(\k+1)*0.5}
+  \pgfmathsetmacro{\y}{f(\x)}
+  \pgfmathsetmacro{\yp}{f(\xp)}
+  \fill[poporange, opacity=0.3] (\x,0) -- (\x,\y) -- (\xp,\yp) -- (\xp,0) -- cycle;
+  \draw[poporange, thick] (\x,0) -- (\x,\y) -- (\xp,\yp) -- (\xp,0);
+}
+\foreach \x/\lbl in {0/0, 0.5/0.5, 1/1, 1.5/1.5, 2/2} \draw (\x,0.03) -- (\x,-0.03) node[below] {$\lbl$};
+\end{tikzpicture}
+\legende{Trapezoid rule with $n=4$ strips.}
+\end{popfigure}
+\end{experience}
+
+\courssub{Mean Value Theorem for Integrals}
+
+\begin{propriete}[Mean Value Theorem for Integrals]
+If $f$ is continuous on $[a,b]$, then there exists at least one number $c\in[a,b]$ such that
+\[
+f(c) = \frac{1}{b-a}\int_a^b f(x)\,dx.
+\]
+The value $\bar{f} = \frac{1}{b-a}\int_a^b f(x)\,dx$ is called the \textbf{mean value} (or average value) of $f$ on $[a,b]$.
+\end{propriete}
+
+\begin{exoresolu}[{Mean value of $\sin x$ on $[0,\pi]$}]
+Find the mean value of $f(x) = \sin x$ on $[0,\pi]$, and determine a value $c\in[0,\pi]$ at which $f(c)$ equals this mean value.
+\tcblower
+The mean value of $f(x)=\sin x$ on $[0,\pi]$ is
+\[
+\bar{f} = \frac{1}{\pi - 0}\int_0^\pi \sin x\,dx = \frac{1}{\pi}\big[-\cos x\big]_0^\pi = \frac{1}{\pi}\big(1+1\big) = \frac{2}{\pi}.
+\]
+By the Mean Value Theorem for integrals ($\sin$ is continuous), there exists $c\in[0,\pi]$ with $\sin c = \dfrac{2}{\pi}$. Solving:
+\[
+c = \arcsin\!\left(\frac{2}{\pi}\right) \approx \arcsin(0.6366) \approx 0.6901\ \text{rad},
+\]
+or, by symmetry of the sine curve, $c = \pi - 0.6901 \approx 2.4515$ rad. Both values lie in $[0,\pi]$, illustrating the theorem.
+\end{exoresolu}
+
+\begin{attention}[Frequent errors in this chapter]
+\begin{itemize}
+\item Forgetting the factor $\pi$ or squaring after integrating in volume problems: it is $V=\pi\int y^2\,dx$.
+\item Mixing the axes: about the $x$-axis use $y^2\,dx$; about the $y$-axis use $x^2\,dy$.
+\item Reporting a signed integral as an area when the curve crosses the axis.
+\item In the trapezoid rule, forgetting to double the interior ordinates or using $h$ instead of $\frac{h}{2}$.
+\item In centroid problems, forgetting the factor $\frac12$ in $\bar{y} = \frac{1}{2A}\int y^2\,dx$.
+\item Confusing the formulas for centroid of a plane area and centroid of a solid of revolution.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Riemann Sum Limit]
+Which of the following expressions correctly represents the definite integral $\int_0^1 (3x^2 + 1)\,dx$ as a limit of Riemann sums using a regular partition and right endpoints?
+\begin{enumerate}
+\item $\lim_{n\to\infty} \sum_{k=1}^n \left(3\left(\frac{k}{n}\right)^2 + 1\right)\frac{1}{n}$
+\item $\lim_{n\to\infty} \sum_{k=1}^n \left(3\left(\frac{k-1}{n}\right)^2 + 1\right)\frac{1}{n}$
+\item $\lim_{n\to\infty} \sum_{k=0}^{n-1} \left(3\left(\frac{k}{n}\right)^2 + 1\right)\frac{1}{n}$
+\item $\lim_{n\to\infty} \sum_{k=1}^n \left(3k^2 + 1\right)\frac{1}{n}$
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False with Justification]
+Determine whether each statement is true or false. Justify your answer.
+\begin{enumerate}
+\item The area bounded by the curve $y = x^3$ and the $x$-axis between $x = -1$ and $x = 1$ is given by $\int_{-1}^1 x^3\,dx$.
+\item When calculating the area between two curves $y = f(x)$ and $y = g(x)$ on $[a,b]$ where $f(x) \ge g(x)$, the formula is $\int_a^b [f(x) - g(x)]\,dx$.
+\item The volume of the solid generated by rotating the region under $y = f(x) \ge 0$ on $[a,b]$ about the $y$-axis is $V = \pi \int_a^b x^2 f(x)\,dx$.
+\item The centroid $(\bar{x}, \bar{y})$ of a plane region of area $A$ bounded by $y = f(x)$, $y = 0$, $x = a$, $x = b$ has $\bar{y} = \frac{1}{A}\int_a^b \frac{1}{2}[f(x)]^2\,dx$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions and Direct Calculations]
+\begin{enumerate}
+\item Write the definition of the definite integral $\int_a^b f(x)\,dx$ as the limit of a Riemann sum.
+\item State the Mean Value Theorem for Integrals.
+\item Evaluate directly: $\int_0^2 (4x - x^2)\,dx$.
+\item Use the Trapezoid Rule with 4 strips (5 ordinates) to approximate $\int_0^2 x^2\,dx$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Quick Applications]
+\begin{enumerate}
+\item Find the exact area enclosed by the curve $y = \sin x$ and the $x$-axis on the interval $[0, \pi]$.
+\item The region bounded by $y = \sqrt{x}$, $x = 0$, $x = 4$ and the $x$-axis is rotated about the $x$-axis. Write down the integral for the volume (do not evaluate).
+\item A uniform lamina occupies the region bounded by $y = x^2$ and $y = 4$. Write down the integral expressions for the coordinates of its centroid $(\bar{x}, \bar{y})$.
+\item Given the velocity $v(t) = 3t^2 - 12t + 9$ m/s, find the average velocity over the interval $0 \le t \le 4$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Area between Curve and x-axis]
+Find the exact total area enclosed between the curve $y = x^2 - 2x$ and the $x$-axis. Sketch the curve, indicate the region, and justify carefully why the integral must be split.
+\end{exercice}
+
+\begin{exercice}[Area between Two Curves]
+Find the exact area of the finite region bounded by the curves $y = x^2$ and $y = 8\sqrt{x}$. Include a clear sketch showing the points of intersection and the representative strip.
+\end{exercice}
+
+\begin{exercice}[Area with respect to y-axis]
+Calculate the exact area of the region bounded by the curve $y^2 = 4x$, the $y$-axis, and the lines $y = 0$ and $y = 4$, by integrating with respect to $y$. Provide a sketch of the region.
+\end{exercice}
+
+\begin{exercice}[Volume of Revolution about x-axis]
+The region under the curve $y = \sqrt{\sin x}$ on the interval $[0, \pi]$ is rotated completely about the $x$-axis. Find the exact volume of the solid generated.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Volume by Washer Method - 8 marks]
+The region $R$ is bounded by the curves $y = x^2$ and $y = x$.
+\begin{enumerate}
+\item Sketch the region $R$, showing clearly the coordinates of the points of intersection. [2]
+\item The region $R$ is rotated through $360^\circ$ about the $x$-axis. Using the washer method, show that the volume $V$ of the solid generated is given by $V = \pi \int_0^1 (x^2 - x^4)\,dx$. [3]
+\item Evaluate this integral to find the exact volume. [2]
+\item If the same region $R$ is rotated about the $y$-axis, write down (but do not evaluate) the integral for the volume using the shell method. [1]
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Centroid and Centre of Mass - 10 marks]
+\begin{enumerate}
+\item Find the coordinates of the centroid of the plane region bounded by the parabola $y = 4 - x^2$ and the $x$-axis. [6]
+\item A uniform solid of revolution is formed by rotating the curve $y = \sqrt{x}$, for $0 \le x \le 4$, about the $x$-axis. Determine the $x$-coordinate of the centre of mass of this solid. [4]
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Trapezoid Rule and Mean Value Theorem - 9 marks]
+\begin{enumerate}
+\item Using the trapezoid rule with 5 ordinates, estimate the value of the integral $\int_0^1 \frac{1}{1+x^2}\,dx$. Give your answer correct to 4 decimal places. [4]
+\item Hence deduce an approximation for $\pi$. [1]
+\item The temperature $T$ (in degrees Celsius) in Yaoundé over a 12-hour period is modelled by the function $T(t) = 22 + 5\sin\left(\frac{\pi t}{12}\right)$, where $t$ is the time in hours after 6:00 am ($0 \le t \le 12$).
+\begin{enumerate}
+\item Find the mean temperature over this 12-hour period. [2]
+\item State the Mean Value Theorem for Integrals and explain why it guarantees that there is at least one instant $t = c$ in $[0, 12]$ when the actual temperature equals this mean temperature. [2]
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Riemann Sum Limit]
+The correct answer is \textbf{(a)}.
+
+\textbf{Justification.} For a regular partition of $[0,1]$ into $n$ subintervals, the width of each strip is $\Delta x = \dfrac{1-0}{n} = \dfrac{1}{n}$. The right endpoint of the $k$-th subinterval is $x_k = a + k\Delta x = \dfrac{k}{n}$, for $k = 1, 2, \dots, n$. Hence
+\[
+\int_0^1 (3x^2+1)\,dx = \lim_{n\to\infty}\sum_{k=1}^n f(x_k)\,\Delta x = \lim_{n\to\infty}\sum_{k=1}^n \left(3\left(\frac{k}{n}\right)^2 + 1\right)\frac{1}{n}.
+\]
+
+\textbf{Why the others fail:}
+\begin{itemize}
+\item (b) and (c) use \emph{left} endpoints $x_{k-1} = \dfrac{k-1}{n}$ (both describe the same left-endpoint sum);
+\item (d) evaluates $f$ at $k$ instead of $x_k = k/n$, so it does not even converge to a finite integral (the sum grows like $n^2$).
+\end{itemize}
+Note that (b) and (c) would still converge to the same integral (since $f$ is continuous, any choice of sample point works), but the question specifically demands \emph{right endpoints}, so only (a) is correct.
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True/False with Justification]
+\begin{enumerate}
+\item \textbf{False.} On $[-1,0]$, $x^3 \le 0$, so $\int_{-1}^1 x^3\,dx = 0$ (the function is odd) — this is the \emph{signed} area, not the geometric area. The true area is
+\[
+A = \int_{-1}^1 |x^3|\,dx = -\int_{-1}^0 x^3\,dx + \int_0^1 x^3\,dx = \frac{1}{4}+\frac{1}{4} = \frac{1}{2}.
+\]
+\item \textbf{True.} If $f(x) \ge g(x)$ on $[a,b]$, the height of a vertical strip is $f(x)-g(x) \ge 0$, and summing gives $A = \int_a^b [f(x)-g(x)]\,dx$. This holds even if the curves cross the $x$-axis, since shifting both curves up by a constant does not change the area.
+\item \textbf{False.} The formula given mixes methods incorrectly. Rotation about the $y$-axis by the \emph{shell} method gives $V = 2\pi\int_a^b x\,f(x)\,dx$ (for $0 \le a < b$); by the \emph{disc/washer} method one integrates with respect to $y$: $V = \pi\int_c^d [x(y)]^2\,dy$ (with washers if the region does not touch the axis). The factor $2\pi$ is missing and $x^2 f(x)$ has the wrong structure.
+\item \textbf{True.} A vertical strip at position $x$ has height $f(x)$, area $f(x)\,dx$, and its own centroid at height $\tfrac{1}{2}f(x)$. Taking moments about the $x$-axis:
+\[
+A\bar{y} = \int_a^b \tfrac{1}{2}f(x)\cdot f(x)\,dx = \int_a^b \tfrac{1}{2}[f(x)]^2\,dx,
+\]
+so $\bar{y} = \dfrac{1}{A}\displaystyle\int_a^b \tfrac{1}{2}[f(x)]^2\,dx$. \qed
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions and Direct Calculations]
+\begin{enumerate}
+\item Partition $[a,b]$ into $n$ subintervals $[x_{k-1}, x_k]$ of width $\Delta x_k = x_k - x_{k-1}$, and choose any sample point $\xi_k \in [x_{k-1}, x_k]$. Then
+\[
+\int_a^b f(x)\,dx = \lim_{\max \Delta x_k \to 0}\ \sum_{k=1}^n f(\xi_k)\,\Delta x_k,
+\]
+provided this limit exists and is independent of the partition and of the choice of $\xi_k$. For a regular partition with right endpoints: $\displaystyle\int_a^b f(x)\,dx = \lim_{n\to\infty}\frac{b-a}{n}\sum_{k=1}^n f\!\left(a + k\frac{b-a}{n}\right)$.
+
+\item \textbf{Mean Value Theorem for Integrals.} If $f$ is continuous on $[a,b]$, then there exists at least one $c \in [a,b]$ such that
+\[
+\int_a^b f(x)\,dx = f(c)\,(b-a), \qquad\text{i.e.}\qquad f(c) = \frac{1}{b-a}\int_a^b f(x)\,dx.
+\]
+
+\item 
+\[
+\int_0^2 (4x - x^2)\,dx = \left[2x^2 - \frac{x^3}{3}\right]_0^2 = \left(8 - \frac{8}{3}\right) - 0 = \frac{16}{3}.
+\]
+
+\item Here $h = \dfrac{2-0}{4} = 0.5$, ordinates at $x = 0, 0.5, 1, 1.5, 2$ with $f(x) = x^2$:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $0.5$ & $1$ & $1.5$ & $2$ \\
+\hline
+$f(x)$ & $0$ & $0.25$ & $1$ & $2.25$ & $4$ \\
+\hline
+\end{tabular}
+\end{center}
+\[
+T = \frac{h}{2}\left[y_0 + y_4 + 2(y_1 + y_2 + y_3)\right] = \frac{0.5}{2}\left[0 + 4 + 2(0.25 + 1 + 2.25)\right] = 0.25 \times 11 = 2.75.
+\]
+(The exact value is $\tfrac{8}{3} \approx 2.667$; the trapezoid rule overestimates here because $x^2$ is convex.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Quick Applications]
+\begin{enumerate}
+\item Since $\sin x \ge 0$ on $[0,\pi]$:
+\[
+A = \int_0^\pi \sin x\,dx = \left[-\cos x\right]_0^\pi = -(-1) - (-1) = 2 \text{ square units}.
+\]
+
+\item Disc method about the $x$-axis:
+\[
+V = \pi \int_0^4 \left(\sqrt{x}\right)^2 dx = \pi\int_0^4 x\,dx.
+\]
+
+\item The curves meet where $x^2 = 4$, i.e. $x = \pm 2$. By symmetry $\bar{x} = 0$. With $A = \displaystyle\int_{-2}^{2}(4 - x^2)\,dx$:
+\[
+\bar{x} = \frac{1}{A}\int_{-2}^{2} x\,(4 - x^2)\,dx = 0, \qquad
+\bar{y} = \frac{1}{A}\int_{-2}^{2} \frac{1}{2}\left(4^2 - (x^2)^2\right)dx = \frac{1}{2A}\int_{-2}^{2}\left(16 - x^4\right)dx.
+\]
+
+\item Average velocity $=$ mean value of $v$ on $[0,4]$:
+\[
+\bar{v} = \frac{1}{4-0}\int_0^4 (3t^2 - 12t + 9)\,dt = \frac{1}{4}\left[t^3 - 6t^2 + 9t\right]_0^4 = \frac{1}{4}(64 - 96 + 36) = \frac{4}{4} = 1\ \mathrm{m\,s^{-1}}.
+\]
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Area between Curve and x-axis]
+\textbf{Sketch and sign analysis.} $y = x^2 - 2x = x(x-2)$ is a parabola opening upwards, crossing the $x$-axis at $x = 0$ and $x = 2$, with vertex $(1, -1)$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=9cm, height=6.5cm, axis lines=middle, xlabel={$x$}, ylabel={$y$}, xmin=-0.8, xmax=3, ymin=-1.8, ymax=2.2, xtick={0,1,2}, ytick={-1,1}, samples=100, domain=-0.6:2.6]
+\addplot[popblue, thick] {x^2 - 2*x};
+\addplot[popblueL, draw=none, fill=popblueL] {x^2 - 2*x} \closedcycle;
+\addplot[draw=none, domain=-0.6:2.6] {0};
+\addplot[popblueL, draw=none] coordinates {(0,0) (2,0)} \closedcycle;
+\node[popdark] at (axis cs:1,-0.55) {$A$};
+\node[popdark] at (axis cs:1,-1.15) {$(1,-1)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The region between $y = x^2 - 2x$ and the $x$-axis lies \emph{below} the axis on $(0,2)$.}
+\end{popfigure}
+
+\textbf{Why split?} On $[0,2]$, $y = x(x-2) \le 0$, so $\int_0^2 (x^2-2x)\,dx$ is \emph{negative}: it gives the signed area. The geometric area requires $|y|$:
+\[
+A = \int_0^2 |x^2 - 2x|\,dx = -\int_0^2 (x^2 - 2x)\,dx.
+\]
+(Here a single piece suffices since the curve does not change sign inside $(0,2)$; in general one splits at every root.)
+
+\textbf{Computation.}
+\[
+\int_0^2 (x^2 - 2x)\,dx = \left[\frac{x^3}{3} - x^2\right]_0^2 = \frac{8}{3} - 4 = -\frac{4}{3}.
+\]
+\[
+\[\boxed{A = \frac{4}{3} \text{ square units}}\]
+\]
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Area between Two Curves]
+\textbf{Intersections.} $x^2 = 8\sqrt{x}$ with $x \ge 0$: squaring, $x^4 = 64x$, so $x(x^3 - 64) = 0$, giving $x = 0$ or $x = 4$. Points: $(0,0)$ and $(4,16)$.
+
+\textbf{Which curve is above?} Test $x = 1$: $x^2 = 1$ and $8\sqrt{x} = 8$. Hence $8\sqrt{x} \ge x^2$ on $[0,4]$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=9.5cm, height=7cm, axis lines=middle, xlabel={$x$}, ylabel={$y$}, xmin=-0.5, xmax=5.5, ymin=-1, ymax=19, xtick={1,2,3,4}, ytick={4,8,12,16}, samples=100, domain=0:5.2, legend style={at={(0.03,0.97)}, anchor=north west, font=\small}]
+\addplot[popblue, thick] {x^2};
+\addlegendentry{$y = x^2$}
+\addplot[poporange, thick, domain=0:5.2] {8*sqrt(max(0,x))};
+\addlegendentry{$y = 8\sqrt{x}$}
+\addplot[popgreenL, draw=none, fill=popgreenL] coordinates {(0,0)} \closedcycle;
+\draw[popdark, thick] (axis cs:2,4) -- (axis cs:2,11.31);
+\node[popdark, font=\small] at (axis cs:2.35,7.6) {strip};
+\node[popdark, font=\small] at (axis cs:4.35,16.5) {$(4,16)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Region bounded by $y = x^2$ and $y = 8\sqrt{x}$; representative strip of height $8\sqrt{x} - x^2$.}
+\end{popfigure}
+
+\textbf{Area.}
+\begin{align*}
+A &= \int_0^4 \left(8\sqrt{x} - x^2\right)dx = \int_0^4 \left(8x^{1/2} - x^2\right)dx = \left[\frac{16}{3}x^{3/2} - \frac{x^3}{3}\right]_0^4 \\
+&= \frac{16}{3}(8) - \frac{64}{3} = \frac{128 - 64}{3} = \boxed{\frac{64}{3} \text{ square units}}.
+\end{align*}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Area with respect to y-axis]
+\textbf{Express $x$ as a function of $y$.} From $y^2 = 4x$ we get $x = \dfrac{y^2}{4}$ (right-hand parabola, $x \ge 0$). The region is bounded by this curve, the $y$-axis ($x = 0$), and $y = 0$, $y = 4$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=9cm, height=7cm, axis lines=middle, xlabel={$x$}, ylabel={$y$}, xmin=-0.6, xmax=5.5, ymin=-0.6, ymax=5.2, xtick={1,2,3,4}, ytick={1,2,3,4}, samples=100]
+\addplot[popblue, thick, domain=0:4.6] ({x^2/4}, x);
+\addplot[popblueL, draw=none, fill=popblueL] coordinates {(0,0) (4,4) (0,4)} \closedcycle;
+\draw[popdark, thick] (axis cs:0,2) -- (axis cs:1,2);
+\node[popdark, font=\small] at (axis cs:1.6,2.25) {$x = \frac{y^2}{4}$};
+\node[popdark, font=\small] at (axis cs:0.9,3.4) {$A$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Horizontal strip of length $x = y^2/4$ and thickness $dy$.}
+\end{popfigure}
+
+\textbf{Area.} A horizontal strip at height $y$ has length $\dfrac{y^2}{4} - 0$ and thickness $dy$:
+\[
+A = \int_0^4 \frac{y^2}{4}\,dy = \frac{1}{4}\left[\frac{y^3}{3}\right]_0^4 = \frac{1}{4}\cdot\frac{64}{3} = \boxed{\frac{16}{3} \text{ square units}}.
+\]
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Volume of Revolution about x-axis]
+By the disc method, $V = \pi\displaystyle\int_0^\pi y^2\,dx$ with $y^2 = \sin x$:
+\[
+V = \pi\int_0^\pi \sin x\,dx = \pi\left[-\cos x\right]_0^\pi = \pi\left(-(-1) + 1\right) = \boxed{2\pi \text{ cubic units}}.
+\]
+\textbf{Remark.} No splitting is needed: $\sin x \ge 0$ on $[0,\pi]$, so $y = \sqrt{\sin x}$ is real and non-negative throughout, and squaring removes the root exactly.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Volume by Washer Method (GCE-type, 8 marks)]
+\begin{enumerate}
+\item \textbf{Sketch [2 marks].} Intersections: $x^2 = x \Rightarrow x(x-1) = 0 \Rightarrow x = 0, 1$. Points $(0,0)$ and $(1,1)$. On $[0,1]$, $x \ge x^2$ (test $x = \tfrac12$: $\tfrac12 > \tfrac14$).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=8.5cm, height=6.5cm, axis lines=middle, xlabel={$x$}, ylabel={$y$}, xmin=-0.2, xmax=1.4, ymin=-0.15, ymax=1.3, xtick={0.5,1}, ytick={0.5,1}, samples=100, domain=-0.1:1.3]
+\addplot[popblue, thick] {x^2};
+\addplot[poporange, thick] {x};
+\addplot[popgreenL, draw=none, fill=popgreenL] coordinates {(0,0) (1,1)} \closedcycle;
+\node[popdark, font=\small] at (axis cs:1.12,1.08) {$(1,1)$};
+\node[popblue, font=\small] at (axis cs:0.75,0.35) {$y=x^2$};
+\node[poporange, font=\small] at (axis cs:0.35,0.55) {$y=x$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Region $R$ between $y = x$ (outer radius) and $y = x^2$ (inner radius).}
+\end{popfigure}
+
+\textit{Examiner expects:} both curves drawn, intersection coordinates labelled, region $R$ shaded. \textbf{[B1 curves, B1 points + shading]}
+
+\item \textbf{Washer set-up [3 marks].} Rotating a vertical strip about the $x$-axis gives a washer (annulus) with outer radius $R(x) = x$ and inner radius $r(x) = x^2$. The cross-sectional area is
+\[
+A(x) = \pi R^2 - \pi r^2 = \pi\left(x^2 - x^4\right).
+\]
+Summing (integrating) these slices from $x = 0$ to $x = 1$:
+\[
+V = \int_0^1 A(x)\,dx = \pi\int_0^1 \left(x^2 - x^4\right)dx. \qquad \textbf{[M1 washer area, A1 limits, A1 result]}
+\]
+
+\item \textbf{Evaluation [2 marks].}
+\[
+V = \pi\left[\frac{x^3}{3} - \frac{x^5}{5}\right]_0^1 = \pi\left(\frac{1}{3} - \frac{1}{5}\right) = \boxed{\frac{2\pi}{15} \text{ cubic units}}. \qquad \textbf{[M1 integration, A1 exact value]}
+\]
+
+\item \textbf{Shell method about the $y$-axis [1 mark].} A vertical strip at $x$ has height $x - x^2$ and rotates into a cylindrical shell of radius $x$:
+\[
+V = 2\pi\int_0^1 x\left(x - x^2\right)dx. \qquad \textbf{[B1]}
+\]
+\end{enumerate}
+\textit{Typical pitfalls penalised:} writing $\pi\int (x - x^2)^2 dx$ (squaring the difference instead of subtracting the squares), and forgetting the factor $2\pi$ in the shell formula.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Centroid and Centre of Mass (GCE-type, 10 marks)]
+\begin{enumerate}
+\item \textbf{Centroid of the region under $y = 4 - x^2$ [6 marks].}
+
+Zeros: $4 - x^2 = 0 \Rightarrow x = \pm 2$. The curve is above the $x$-axis on $[-2,2]$.
+
+\textbf{Area:}
+\[
+A = \int_{-2}^{2}(4 - x^2)\,dx = \left[4x - \frac{x^3}{3}\right]_{-2}^{2} = \left(8 - \frac{8}{3}\right) - \left(-8 + \frac{8}{3}\right) = \frac{32}{3}. \quad \textbf{[M1 A1]}
+\]
+
+\textbf{$\bar{x}$:} The region is symmetric about the $y$-axis (equivalently, $x(4-x^2)$ is odd, so its integral over $[-2,2]$ vanishes):
+\[
+\bar{x} = \frac{1}{A}\int_{-2}^{2} x(4 - x^2)\,dx = 0. \quad \textbf{[M1 A1]}
+\]
+
+\textbf{$\bar{y}$:} Using $\bar{y} = \dfrac{1}{A}\displaystyle\int_{-2}^{2}\tfrac{1}{2}y^2\,dx$:
+\[
+\int_{-2}^{2}\tfrac{1}{2}(4 - x^2)^2\,dx = \frac{1}{2}\int_{-2}^{2}\left(16 - 8x^2 + x^4\right)dx = \frac{1}{2}\left[16x - \frac{8x^3}{3} + \frac{x^5}{5}\right]_{-2}^{2}.
+\]
+At $x = 2$: $32 - \dfrac{64}{3} + \dfrac{32}{5} = \dfrac{480 - 320 + 96}{15} = \dfrac{256}{15}$; doubling (even function) and halving:
+\[
+\frac{1}{2}\cdot 2\cdot\frac{256}{15} = \frac{256}{15}.
+\]
+Hence
+\[
+\bar{y} = \frac{256/15}{32/3} = \frac{256}{15}\times\frac{3}{32} = \frac{8}{5}. \quad \textbf{[M1 A1]}
+\]
+\[
+\[\boxed{(\bar{x}, \bar{y}) = \left(0,\ \tfrac{8}{5}\right)}\]
+\]
+
+\item \textbf{Centre of mass of the solid from $y = \sqrt{x}$, $0 \le x \le 4$ [4 marks].}
+
+By symmetry the centre of mass lies on the $x$-axis. For a uniform solid of revolution, using discs of cross-section $\pi y^2 = \pi x$:
+\[
+\bar{x} = \frac{\displaystyle\int_0^4 x\cdot \pi y^2\,dx}{\displaystyle\int_0^4 \pi y^2\,dx} = \frac{\displaystyle\int_0^4 x^2\,dx}{\displaystyle\int_0^4 x\,dx}. \quad \textbf{[M1]}
+\]
+\[
+\int_0^4 x^2\,dx = \left[\frac{x^3}{3}\right]_0^4 = \frac{64}{3}, \qquad \int_0^4 x\,dx = \left[\frac{x^2}{2}\right]_0^4 = 8. \quad \textbf{[M1 A1]}
+\]
+\[
+\bar{x} = \frac{64/3}{8} = \boxed{\frac{8}{3}}. \quad \textbf{[A1]}
+\]
+\end{enumerate}
+\textit{Examiner expectations:} correct use of the disc moment formula $\int x\,\pi y^2 dx$ in the numerator; the density $\rho$ and $\pi$ cancel, which should be noted. A common error is weighting by $y$ instead of by the cross-sectional area $\pi y^2$.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Trapezoid Rule and Mean Value Theorem (GCE-type, 9 marks)]
+\begin{enumerate}
+\item \textbf{Trapezoid rule, 5 ordinates [4 marks].} Five ordinates means 4 strips: $h = \dfrac{1-0}{4} = 0.25$, with $f(x) = \dfrac{1}{1+x^2}$:
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+\rowcolor{popblueL} $x$ & $0$ & $0.25$ & $0.5$ & $0.75$ & $1$ \\
+\hline
+$f(x)$ & $1$ & $0.941176$ & $0.8$ & $0.64$ & $0.5$ \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{[B1 correct $h$ and ordinates, M1 formula]}
+\begin{align*}
+T &= \frac{h}{2}\left[y_0 + y_4 + 2(y_1 + y_2 + y_3)\right] \\
+&= \frac{0.25}{2}\left[1 + 0.5 + 2(0.941176 + 0.8 + 0.64)\right] \\
+&= 0.125 \times \left[1.5 + 2(2.381176)\right] = 0.125 \times 6.262353 = 0.782794.
+\end{align*}
+\[
+\[\boxed{\displaystyle\int_0^1 \frac{dx}{1+x^2} \approx 0.7828 \text{ (4 d.p.)}} \qquad \textbf{[A1 value, A1 rounding]}\]
+\]
+
+\item \textbf{Approximation of $\pi$ [1 mark].} Since $\displaystyle\int_0^1 \frac{dx}{1+x^2} = \left[\arctan x\right]_0^1 = \frac{\pi}{4}$, we get
+\[
+\pi \approx 4 \times 0.7828 = \boxed{3.1312}. \qquad \textbf{[B1]}
+\]
+
+\item 
+\begin{enumerate}
+\item \textbf{Mean temperature [2 marks].}
+\[
+\bar{T} = \frac{1}{12}\int_0^{12}\left(22 + 5\sin\frac{\pi t}{12}\right)dt = \frac{1}{12}\left[22t - \frac{60}{\pi}\cos\frac{\pi t}{12}\right]_0^{12}. \quad \textbf{[M1]}
+\]
+\[
+= \frac{1}{12}\left[\left(264 - \frac{60}{\pi}\cos\pi\right) - \left(0 - \frac{60}{\pi}\cos 0\right)\right] = \frac{1}{12}\left(264 + \frac{120}{\pi}\right) = 22 + \frac{10}{\pi}.
+\]
+\[
+\[\boxed{\bar{T} = 22 + \frac{10}{\pi} \approx 25.18^\circ\mathrm{C}} \qquad \textbf{[A1]}\]
+\]
+
+\item \textbf{MVT for Integrals [2 marks].} \emph{Statement:} if $f$ is continuous on $[a,b]$, there exists $c \in [a,b]$ such that $\displaystyle\int_a^b f(x)\,dx = f(c)(b-a)$. \textbf{[B1]}
+
+Here $T(t) = 22 + 5\sin\left(\frac{\pi t}{12}\right)$ is continuous on $[0,12]$ (a sum of continuous functions). The MVT therefore guarantees some $c \in [0,12]$ with $T(c) = \bar{T} = 22 + \frac{10}{\pi}$: at that instant the actual temperature equals the 12-hour mean temperature. \textbf{[B1]}
+
+(Indeed $\sin\frac{\pi c}{12} = \frac{2}{\pi}$ gives $c = \frac{12}{\pi}\arcsin\frac{2}{\pi} \approx 2.63$ h, i.e. about 8:38 am — existence is what the theorem guarantees.)
+\end{enumerate}
+\end{enumerate}
+\textit{Examiner expectations:} in (a), the formula $\frac{h}{2}[y_0 + y_n + 2(\text{middle ordinates})]$ must be quoted or clearly used; premature rounding of ordinates below 5 d.p. loses the final accuracy mark. In (c)(ii), continuity of $T$ must be explicitly invoked — the MVT does not apply to discontinuous functions.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, text=white, align=center, font=\small},
+root concept/.append style={concept color=popink, font=\bfseries},
+level 1/.append style={level distance=3.4cm, sibling angle=51.4},
+level 2/.append style={level distance=2.2cm, sibling angle=40, font=\scriptsize}]
+\node[root concept, align=center]{Integration\\(PMM04)}
+  child[concept color=popblue]{ node {Riemann sums}
+    child { node {$\int_a^b f=\lim\sum f(\xi_i)\Delta x$} }
+    child { node {Area under a curve} }
+  }
+  child[concept color=poporange]{ node {Areas: $x$-axis}
+    child { node {$A=\int_a^b f\,dx$} }
+    child { node {Between curves: $\int(f-g)$} }
+  }
+  child[concept color=popgreen]{ node {Areas: $y$-axis}
+    child { node {$A=\int_c^d g(y)\,dy$} }
+  }
+  child[concept color=popgold]{ node {Volumes}
+    child { node {$V_x=\pi\int y^2dx$} }
+    child { node {$V_y=\pi\int x^2dy$} }
+  }
+  child[concept color=poppurple]{ node {Centroids}
+    child { node {$\bar{x}=\frac{\int x f\,dx}{\int f\,dx}$} }
+    child { node {Centre of mass: $\bar{x}=\frac{\int x\rho\,dx}{\int\rho\,dx}$} }
+  }
+  child[concept color=poppink]{ node {Trapezoid rule}
+    child { node {$\frac{h}{2}[y_0+2\sum y_i+y_n]$} }
+  }
+  child[concept color=popdark]{ node {Mean value theorem}
+    child { node {$f(c)=\frac{1}{b-a}\int_a^b f$} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter Integration: from Riemann sums to applications.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions.}
+\begin{itemize}
+\item A \cle{Riemann sum} of $f$ on $[a,b]$ is $\sum_{i=1}^{n} f(\xi_i)\,\Delta x_i$ where $\Delta x_i=x_i-x_{i-1}$ and $\xi_i\in[x_{i-1},x_i]$.
+\item The \cle{definite integral} is the limit of Riemann sums as the mesh tends to $0$:
+$\displaystyle \int_a^b f(x)\,dx=\lim_{n\to\infty}\sum_{i=1}^n f(\xi_i)\,\frac{b-a}{n}$ (for equal subdivisions).
+\item $\displaystyle \int_a^b f(x)\,dx = F(b)-F(a)$ where $F$ is any primitive of $f$ (Fundamental Theorem).
+\end{itemize}
+
+\textbf{Formulas to know by heart.}
+\begin{itemize}
+\item Area under a curve ($f\ge 0$ on $[a,b]$): $\displaystyle A=\int_a^b f(x)\,dx$. If $f\le 0$, $A=-\displaystyle\int_a^b f(x)\,dx$ (area is always positive).
+\item Area between two curves ($f\ge g$ on $[a,b]$): $\displaystyle A=\int_a^b \bigl[f(x)-g(x)\bigr]dx$.
+\item Area bounded by the $y$-axis ($x=g(y)\ge 0$): $\displaystyle A=\int_c^d g(y)\,dy$.
+\item Volume of revolution about the $x$-axis: $\displaystyle V=\pi\int_a^b [f(x)]^2\,dx$.
+\item Volume of revolution about the $y$-axis: $\displaystyle V=\pi\int_c^d [g(y)]^2\,dy$.
+\item Volume of a washer (region between $f$ and $g$ rotated about the $x$-axis): $\displaystyle V=\pi\int_a^b\bigl([f(x)]^2-[g(x)]^2\bigr)dx$.
+\item Centroid of the region under $y=f(x)$, $a\le x\le b$:
+$\displaystyle \bar{x}=\frac{\int_a^b x f(x)\,dx}{\int_a^b f(x)\,dx},\qquad \bar{y}=\frac{\tfrac12\int_a^b [f(x)]^2dx}{\int_a^b f(x)\,dx}$.
+\item Centre of mass of a rod of density $\rho(x)$: $\displaystyle \bar{x}=\frac{\int_a^b x\,\rho(x)\,dx}{\int_a^b \rho(x)\,dx}$; for a lamina use moments $M_y=\int x\,dA$, $M_x=\int y\,dA$.
+\item \cle{Trapezoid rule} with $n$ strips of width $h=\dfrac{b-a}{n}$:
+$\displaystyle \int_a^b f(x)\,dx\approx \frac{h}{2}\Bigl[y_0+2(y_1+\dots+y_{n-1})+y_n\Bigr]$.
+\item \cle{Mean value theorem for integrals}: if $f$ is continuous on $[a,b]$, there exists $c\in[a,b]$ with
+$\displaystyle f(c)=\frac{1}{b-a}\int_a^b f(x)\,dx$ (mean value of $f$).
+\end{itemize}
+
+\textbf{Methods.}
+\begin{itemize}
+\item To compute an area: sketch the curve(s), find intersections (solve $f(x)=g(x)$), decide on the variable of integration, split the integral where the sign or the upper curve changes, then integrate.
+\item To compute a volume: identify the axis of rotation, express the radius as a function of the variable of integration, square it, multiply by $\pi$, integrate.
+\item Trapezoid rule: build the table of ordinates $y_0,\dots,y_n$ at $x_i=a+ih$, then apply the formula; more strips give a better approximation.
+\end{itemize}
+
+\textbf{Common mistakes.}
+\begin{itemize}
+\item Forgetting that an integral can be negative while an area is always positive: take absolute values or split at the zeros of $f$.
+\item Forgetting the factor $\pi$ or forgetting to \emph{square} the radius in volume formulas.
+\item Mixing the axes: $\pi\int y^2dx$ is about the $x$-axis; $\pi\int x^2dy$ is about the $y$-axis.
+\item In the trapezoid rule, forgetting the factor $2$ on interior ordinates or using $h$ instead of $h/2$.
+\item Wrong limits when integrating with respect to $y$: limits must be $y$-values.
+\end{itemize}
+
+\textbf{GCE tips.}
+\begin{itemize}
+\item Always sketch the region first: most marks are lost through wrong limits, not wrong integration.
+\item State the formula before substituting; examiners award method marks.
+\item Give volumes and areas as exact values (in terms of $\pi$) unless a decimal is requested.
+\item For the trapezoid rule, keep at least 4 decimal places in intermediate ordinates.
+\item Check plausibility: compare a volume with that of the containing cylinder, an area with that of a bounding rectangle.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
