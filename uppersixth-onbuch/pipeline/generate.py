@@ -371,6 +371,8 @@ def us_fix(body):
     # ^ / _ dans les étiquettes de pgfplots (texte, pas math)
     body = re.sub(r"\b((?:x|y|z)?label|title)\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}",
                   lambda m: m.group(1) + "={" + (m.group(2) if "$" in m.group(2) else _text_scripts(m.group(2))) + "}", body)
+    # \boxed{..} seul sur sa ligne (hors math) -> formule centrée
+    body = re.sub(r"^[ \t]*(\\boxed\{.*\})[ \t]*$", lambda m: "\\[" + m.group(1).replace("$", "") + "\\]", body, flags=re.M)
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"(?<![\w}])\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
