@@ -1,0 +1,2859 @@
+% Electronics — Physics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic PHY13-electronics.tex
+\newcommand{\DOCMATIERE}{Physics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Physics}
+\newcommand{\DOCLECON}{13}
+\newcommand{\DOCTITRE}{Electronics}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+\begin{document}
+
+\pagegarde{Electronics}{Physics}{Upper Sixth}{Upper Sixth — Physics}{13}{3 periods}{This chapter introduces the physical principles of modern electronics: thermionic emission and the electron gun, semiconductors and doping, the p-n junction diode with its biasing and applications, and finally the transistor as an amplifier and as a switch in logic gates. It prepares Upper Sixth students for the GCE Advanced Level paper by linking microscopic charge-carrier physics to concrete circuits.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can explain thermionic emission and describe the structure and role of each electrode of an electron gun.
+\item By the end of this chapter I can apply the equations W = eV and ½mv² = eV to compute the speed and kinetic energy of accelerated electrons.
+\item By the end of this chapter I can distinguish intrinsic from extrinsic semiconductors and explain n-type and p-type doping.
+\item By the end of this chapter I can describe the formation of the depletion layer and the barrier potential in a p-n junction.
+\item By the end of this chapter I can explain forward and reverse biasing and sketch the I–V characteristic of a diode.
+\item By the end of this chapter I can analyse half-wave and full-wave rectifier circuits and describe diode applications (rectification, clipping, protection).
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Thermionic Emission and the Electron Gun
+\item Semiconductors, Doping and the p-n Junction
+\item The Junction Diode: Biasing, Characteristics and Applications
+\item The Transistor: Amplifiers and Logic Gates
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can explain thermionic emission and describe the structure and role of each electrode of an electron gun.
+\item By the end of this chapter I can apply the equations W = eV and ½mv² = eV to compute the speed and kinetic energy of accelerated electrons.
+\item By the end of this chapter I can distinguish intrinsic from extrinsic semiconductors and explain n-type and p-type doping.
+\item By the end of this chapter I can describe the formation of the depletion layer and the barrier potential in a p-n junction.
+\item By the end of this chapter I can explain forward and reverse biasing and sketch the I–V characteristic of a diode.
+\item By the end of this chapter I can analyse half-wave and full-wave rectifier circuits and describe diode applications (rectification, clipping, protection).
+\item By the end of this chapter I can describe the structure and operation of an npn transistor and state the relation I\_E = I\_B + I\_C.
+\item By the end of this chapter I can explain how a transistor works as an amplifier and as a switch, and identify the basic logic gates (NOT, AND, OR, NAND, NOR) with their truth tables.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Electric current, potential difference and Ohm's law (Lower Sixth DC circuits)
+\item Kinetic energy, work–energy theorem and the electronvolt (Mechanics and Fields, Lower Sixth)
+\item Electric fields and acceleration of charges between plates (Lower Sixth, electrostatics)
+\item Atomic structure: electrons, holes concept, energy bands (Lower Sixth, modern physics introduction)
+\item Alternating current: sinusoidal e.m.f., peak and r.m.s. values (Lower Sixth AC circuits)
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Thermionic Emission and the Electron Gun}
+
+In Douala, a technician repairs a radio using a tiny silicon diode worth 50 FCFA, while in a hospital in Yaoundé, an X-ray machine relies on a beam of electrons fired from a heated filament. From the torch-light that still works during ENEO power cuts to the mobile phone in every student's pocket, all modern electronics rests on two pillars: the controlled emission of electrons and the behaviour of semiconductor junctions. How can heating a metal 'boil off' electrons, and how can a sandwich of doped silicon let current pass in only one direction? This chapter answers these questions and reveals how diodes and transistors became the building blocks of the digital age.
+
+\courssub{Metallic Conductors, Free Electrons and the Work Function}
+
+In a metal, the outer electrons of the atoms are not bound to any particular nucleus; they form a \cle{sea of free electrons} (or conduction electrons) moving randomly throughout the crystal lattice. At room temperature, these electrons have thermal kinetic energies of the order of $kT \approx 0.025\ \mathrm{eV}$ ($k = 1.38 \times 10^{-23}\ \mathrm{J\,K^{-1}}$). However, they cannot simply fly out of the metal surface. They are held inside by the attractive force of the positive ion lattice. To pull an electron out, we must supply a minimum amount of energy to overcome this attraction.
+
+\begin{definition}[Work Function $\phi$]
+The \textbf{work function} $\phi$ of a metal is the minimum energy required to extract an electron from the surface of the metal at absolute zero temperature (or from the Fermi level). It is a characteristic property of the material and the surface condition. Its SI unit is the joule (J), but it is almost always quoted in electronvolts (eV).
+\end{definition}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL}
+\textbf{Metal} & \textbf{Typical Work Function $\phi$ (eV)} \\ \hline
+Tungsten (W) & 4.5 \\
+Molybdenum (Mo) & 4.3 \\
+Nickel (Ni) & 5.0 \\
+Thoriated Tungsten (W-Th) & 2.6 \\
+Barium/Strontium Oxide coated & 1.0 -- 2.0 \\ \hline
+\end{tabularx}
+\end{center}
+
+\courssub{Thermionic Emission: Boiling Off Electrons}
+
+If we heat the metal (the \cle{cathode} or \cle{filament}), the free electrons gain thermal energy. Their speed distribution follows the Maxwell-Boltzmann statistics. A small fraction at the high-energy tail of the distribution will have kinetic energy greater than the work function $\phi$. These electrons can escape the surface: this is \cle{thermionic emission}.
+
+\begin{definition}[Thermionic Emission]
+\textbf{Thermionic emission} is the liberation of electrons from a heated metal surface (cathode) when the thermal energy supplied is sufficient to overcome the work function of the material.
+\end{definition}
+
+The emission current density $J$ (current per unit area) is given by the \cle{Richardson-Dushman equation}:
+\[ J = A_0 T^2 e^{-\phi / (kT)} \]
+where $A_0 \approx 1.2 \times 10^6\ \mathrm{A\,m^{-2}\,K^{-2}}$ is the universal Richardson constant, $T$ is the absolute temperature (K), $\phi$ is the work function (J), and $k$ is Boltzmann's constant. The exponential term shows the extreme sensitivity to temperature and work function.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    width=0.9\linewidth, height=7cm,
+    xlabel={Cathode Temperature $T$ (K)}, ylabel={Emission Current Density $J$ (A/m$^2$)},
+    xmin=800, xmax=2800, ymin=0, ymax=1.5e5,
+    grid=major, grid style={popmuted},
+    tick label style={font=\small},
+    label style={font=\small},
+    legend pos=north west,
+    legend style={font=\small, fill=white, draw=popline},
+    y tick label style={/pgf/number format/sci, /pgf/number format/precision=1},
+    restrict y to domain=0:150000,
+    unbounded coords=jump,
+]
+\addplot[popblue, thick, domain=800:2800, samples=200] {1.2e6 * x^2 * exp(-1.5*1.602e-19 / (1.38e-23 * x))};
+\addlegendentry{$\phi = 1.5\ \mathrm{eV}$ (Oxide coated)}
+\addplot[poporange, thick, domain=800:2800, samples=200] {1.2e6 * x^2 * exp(-2.6*1.602e-19 / (1.38e-23 * x))};
+\addlegendentry{$\phi = 2.6\ \mathrm{eV}$ (Thoriated W)}
+\addplot[popgreen, thick, domain=800:2800, samples=200] {1.2e6 * x^2 * exp(-4.5*1.602e-19 / (1.38e-23 * x))};
+\addlegendentry{$\phi = 4.5\ \mathrm{eV}$ (Pure W)}
+\end{axis}
+\end{tikzpicture}
+\legende{Thermionic emission current density vs temperature for three cathode materials. Lower $\phi$ yields usable emission at much lower temperatures.}
+\end{popfigure}
+
+\begin{aretenir}[Key Factors Affecting Thermionic Emission]
+\begin{itemize}
+\item \textbf{Temperature $T$:} Emission increases extremely rapidly with $T$ (roughly $T^2 e^{-1/T}$). A small increase in filament current causes a large increase in beam current.
+\item \textbf{Work Function $\phi$:} Materials with low $\phi$ (oxide-coated cathodes) emit copiously at lower temperatures ($\sim 1000\ \mathrm{K}$), saving heater power and increasing cathode life. Pure tungsten requires $\sim 2500\ \mathrm{K}$.
+\item \textbf{Surface Area:} Total emission current $I = J \times A$. Cathodes are often shaped (cylinders, ribbons) to maximise emitting area.
+\item \textbf{Space Charge Effect:} Emitted electrons form a cloud near the cathode (space charge) which repels further emission. The actual current is limited by the \cle{Child-Langmuir Law} ($I \propto V_a^{3/2}$) until saturation is reached at high $V_a$.
+\end{itemize}
+\end{aretenir}
+
+\courssub{The Vacuum Requirement}
+
+The electron gun must be enclosed in a highly evacuated glass or metal envelope (vacuum $\sim 10^{-6}\ \mathrm{Pa}$ or better). Two critical reasons:
+
+\begin{enumerate}
+\item \textbf{Avoid Collisions:} At atmospheric pressure, the mean free path of an electron is $\sim 10^{-7}\ \mathrm{m}$. Electrons would collide with gas molecules, losing energy, scattering the beam, and ionising the gas (creating a glow discharge instead of a sharp beam).
+\item \textbf{Protect the Filament:} A hot tungsten filament ($>2000\ \mathrm{K}$) would oxidise and burn out instantly in air. Oxide-coated cathodes are chemically active and would be poisoned by residual gases.
+\end{enumerate}
+
+\begin{attention}[Common Confusion: Heating Current vs Beam Current]
+The \textbf{heating current} ($I_h$) passes \emph{through} the filament to raise its temperature. The \textbf{beam current} ($I_b$) is the current \emph{between} cathode and anode carried by emitted electrons. They are physically distinct circuits. In exam problems, do not confuse the voltage across the heater (typically $6.3\ \mathrm{V}$ AC) with the accelerating voltage $V_a$ (typically hundreds to thousands of volts DC).
+\end{attention}
+
+\courssub{Structure of the Electron Gun}
+
+The electron gun is the heart of the cathode ray tube (CRT), found in oscilloscopes, old television sets, and X-ray tubes. Its main components are:
+
+\begin{itemize}
+\item \textbf{Indirectly Heated Cathode:} A nickel sleeve coated with barium/strontium oxide. A tungsten heater wire inside (insulated by alumina) heats it to $\sim 1000\ \mathrm{K}$. This separates the heater supply from the cathode potential.
+\item \textbf{Control Grid (Wehnelt Cylinder):} A hollow cylinder with a small aperture, held at a negative potential $V_g$ relative to the cathode. It repels electrons, controlling the beam current (brightness) and focusing the beam into a narrow pencil.
+\item \textbf{Focusing Anode:} A cylinder at a high positive potential ($\sim 200-500\ \mathrm{V}$). It creates an electrostatic lens to focus the beam to a fine spot.
+\item \textbf{Accelerating Anode:} A cylinder at a very high positive potential $V_a$ ($1-20\ \mathrm{kV}$) with a small hole. It provides the main accelerating field. The beam passes through the hole and enters the field-free drift space at constant velocity.
+\end{itemize}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.1, >=stealth]
+% Heater supply
+\draw[popmuted, thick] (-3.5, 1.5) to[battery1, l_={$V_h \sim 6.3\ \mathrm{V}$}] (-3.5, -1.5);
+\draw[popmuted, thick] (-3.5, 1.5) -- (-2.5, 1.5);
+\draw[popmuted, thick] (-3.5, -1.5) -- (-2.5, -1.5);
+% Filament inside cathode (coil)
+\draw[poporange, thick] (-2.5, 0.15) -- (-1.5, 0.15);
+\draw[poporange, thick] (-1.5, 0.15) .. controls (-1.5, 0.3) and (-2.5, 0.3) .. (-2.5, 0.15);
+\draw[poporange, thick] (-2.5, 0.15) .. controls (-2.5, 0) and (-1.5, 0) .. (-1.5, 0.15);
+\draw[poporange, thick] (-1.5, 0.15) .. controls (-1.5, -0.15) and (-2.5, -0.15) .. (-2.5, -0.15);
+\draw[poporange, thick] (-2.5, -0.15) -- (-1.5, -0.15);
+\node[poporange, font=\tiny] at (-2.0, 0.4) {Heater};
+% Cathode sleeve
+\draw[popdark, thick, fill=popblueL!30] (-1.2, -0.6) rectangle (-0.6, 0.6);
+\node at (-0.9, 0) {\small Cathode};
+% Grid
+\draw[popdark, thick, fill=popgreenL!30] (-0.2, -0.8) rectangle (0.2, 0.8);
+\draw[popdark, thick] (-0.2, 0) -- (-0.4, 0) -- (-0.4, -0.1) -- (-0.2, -0.1); % aperture hint
+\node at (0, 0) {\small Grid};
+% Focusing Anode
+\draw[popdark, thick, fill=poppink!30] (1.0, -1.2) rectangle (1.6, 1.2);
+\node at (1.3, 0) {\small Focus};
+% Accelerating Anode
+\draw[popdark, thick, fill=popgold!30] (2.5, -1.5) rectangle (3.2, 1.5);
+\node at (2.85, 0) {\small Anode};
+% Aperture in anode
+\draw[white, thick] (2.85, -0.15) -- (2.85, 0.15);
+% Voltage labels
+\draw[<->, popblue] (-0.9, -1.2) -- (0, -1.2) node[midway, below, font=\small] {$V_g < 0$};
+\draw[<->, popblue] (1.3, -1.6) -- (2.85, -1.6) node[midway, below, font=\small] {$V_f$};
+\draw[<->, popblue] (-0.9, 1.8) -- (2.85, 1.8) node[midway, above, font=\small] {$V_a$ (Accelerating PD)};
+% Electron beam
+\draw[->, popink, very thick] (-0.9, 0) -- (3.5, 0) node[right, font=\small] {Electron Beam};
+\draw[popink, dashed] (-0.9, 0.1) -- (3.5, 0.1);
+\draw[popink, dashed] (-0.9, -0.1) -- (3.5, -0.1);
+% Ground symbol (manual)
+\draw[popmuted, thick] (-0.9, -0.6) -- (-0.9, -1.0);
+\draw[popmuted, thick] (-1.1, -1.0) -- (-0.7, -1.0);
+\draw[popmuted, thick] (-1.0, -1.05) -- (-0.8, -1.05);
+\draw[popmuted, thick] (-0.95, -1.1) -- (-0.85, -1.1);
+\end{tikzpicture}
+\legende{Structure of a typical electron gun (indirectly heated cathode). The grid controls beam current; the anodes focus and accelerate.}
+\end{popfigure}
+
+\courssub{Energy Analysis: From Potential Difference to Electron Speed}
+
+An electron of charge $-e$ ($e = 1.60 \times 10^{-19}\ \mathrm{C}$) starts from rest at the cathode (potential $0\ \mathrm{V}$) and is accelerated through a potential difference $V_a$ (anode potential). The electric field does work on the electron.
+
+\begin{propriete}[Kinetic Energy of an Accelerated Electron]
+The work done by the electric field on the electron is $W = e V_a$. By the work-energy theorem, this equals the gain in kinetic energy (non-relativistic approximation, valid for $V_a \ll 500\ \mathrm{kV}$):
+\[ \frac{1}{2} m_e v^2 = e V_a \]
+where $m_e = 9.11 \times 10^{-31}\ \mathrm{kg}$ is the electron mass. The speed attained is:
+\[ v = \sqrt{\frac{2 e V_a}{m_e}} \]
+\end{propriete}
+
+\begin{attention}[Unit Conversion Trap: eV vs Joules]
+The energy gained by an electron accelerated through $1\ \mathrm{V}$ is \textbf{1 electronvolt (1 eV)}.
+\[ 1\ \mathrm{eV} = 1.60 \times 10^{-19}\ \mathrm{J} \]
+In calculations, you can either:
+\begin{enumerate}
+\item Convert everything to SI: $E = e V_a$ (Joules), then $v = \sqrt{2E/m_e}$.
+\item Work in eV: $E = V_a$ (eV), convert $m_e$ to $\mathrm{eV}/c^2$ ($m_e c^2 = 0.511\ \mathrm{MeV}$), use $v = c\sqrt{2E/(m_ec^2)}$.
+\end{enumerate}
+\textbf{Most GCE errors come from forgetting the $1.60 \times 10^{-19}$ factor when mixing eV and Joules.}
+\end{attention}
+
+\begin{methode}[Solving Electron Gun Problems]
+\begin{enumerate}
+\item \textbf{Identify the accelerating PD $V_a$} (voltage between cathode and anode). Ignore heater voltage.
+\item \textbf{State energy conservation:} $\frac{1}{2}m_e v^2 = e V_a$.
+\item \textbf{Substitute constants:} $e = 1.60 \times 10^{-19}\ \mathrm{C}$, $m_e = 9.11 \times 10^{-31}\ \mathrm{kg}$.
+\item \textbf{Calculate $v$} in $\mathrm{m\,s^{-1}}$. Check if $v > 0.1c$ ($3 \times 10^7\ \mathrm{m/s}$); if so, relativistic correction is needed (not in GCE syllabus, but good to note).
+\item \textbf{If asked for kinetic energy:} Give answer in Joules \textbf{and} eV ($E(\mathrm{eV}) = V_a$).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Electron Speed in a CRT]
+An electron gun in a cathode ray oscilloscope operates with an anode potential of $V_a = 2.00\ \mathrm{kV}$ relative to the cathode. Calculate:
+\begin{enumerate}
+\item The kinetic energy of the electrons in joules and in electronvolts.
+\item The speed of the electrons as they emerge from the anode aperture.
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+\item \textbf{Kinetic Energy:}
+Work done $W = e V_a$.
+$E_k = (1.60 \times 10^{-19}\ \mathrm{C}) \times (2.00 \times 10^3\ \mathrm{V}) = 3.20 \times 10^{-16}\ \mathrm{J}$.
+In eV: $E_k = V_a = 2000\ \mathrm{eV} = 2.00\ \mathrm{keV}$.
+\item \textbf{Speed:}
+$v = \sqrt{\frac{2 E_k}{m_e}} = \sqrt{\frac{2 \times 3.20 \times 10^{-16}}{9.11 \times 10^{-31}}}$
+$v = \sqrt{7.025 \times 10^{14}} \approx 2.65 \times 10^7\ \mathrm{m\,s^{-1}}$.
+\textbf{Check:} $v/c \approx 0.088 < 0.1$, so non-relativistic formula is excellent.
+\end{enumerate}
+\cle{Answer:} $E_k = 3.20 \times 10^{-16}\ \mathrm{J}\ (2.00\ \mathrm{keV})$; $v = 2.65 \times 10^7\ \mathrm{m\,s^{-1}}$.
+\end{exoresolu}
+
+\courssub{Deflection of the Electron Beam}
+
+Once the electron beam leaves the anode aperture, it travels in a field-free region (drift space) at constant velocity $v$. To make it useful (drawing waveforms on a screen, scanning a TV picture), we must deflect it. Two methods exist:
+
+\begin{enumerate}
+\item \textbf{Electrostatic Deflection (CRO):} Two pairs of parallel plates (X-plates, Y-plates) create uniform electric fields $\vec{E}_x$, $\vec{E}_y$ perpendicular to the beam. The force $\vec{F} = -e\vec{E}$ gives a constant transverse acceleration $a = eE/m_e$ while the electron is between the plates. The deflection $y$ on the screen is proportional to the deflecting voltage $V_d$ (for small angles). This allows very fast response (up to GHz), essential for oscilloscopes.
+\item \textbf{Magnetic Deflection (TV Tubes):} A uniform magnetic field $\vec{B}$ perpendicular to the beam exerts a force $\vec{F} = -e(\vec{v} \wedge \vec{B})$. This force is centripetal, bending the beam into a circular arc of radius $r = m_e v / (e B)$. Magnetic deflection allows wider deflection angles (large screen TVs) and handles high beam power better, but has slower response due to inductance of deflection coils.
+\end{enumerate}
+
+\begin{aretenir}[Comparison for GCE]
+\begin{itemize}
+\item \textbf{CRO (Electrostatic):} Low voltage deflection, very high frequency response, small deflection angle $\rightarrow$ long tube, small screen.
+\item \textbf{TV/Monitor (Magnetic):} High current coils, lower bandwidth, wide angle $\rightarrow$ short tube, large screen.
+\item \textbf{Force direction:} Use Fleming's Left Hand Rule (Motor Rule) for \emph{conventional current}. Remember electron current is opposite to conventional current, so force on electrons is opposite to the thumb.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Applications: Beyond the Textbook}
+
+\begin{savaistu}[GCE-Useful Extras: X-Ray Tube]
+The X-ray tube is essentially a high-voltage electron gun.
+\begin{itemize}
+\item \textbf{Cathode:} Filament heated by low voltage ($I_h$). Emits electrons.
+\item \textbf{Anode (Target):} Heavy metal (Tungsten, Molybdenum) at high positive potential ($V_a = 20-150\ \mathrm{kV}$).
+\item \textbf{Process:} Electrons strike target $\rightarrow$ sudden deceleration $\rightarrow$ \textbf{Bremsstrahlung} (continuous X-ray spectrum) + \textbf{Characteristic X-rays} (line spectrum).
+\item \textbf{Duane-Hunt Law:} Minimum wavelength (maximum photon energy) $\lambda_{\min} = \frac{hc}{eV_a}$.
+\item \textbf{Heat problem:} $99\%$ of electron energy becomes heat. Anode rotates to spread heat; cooling oil/fins essential.
+\end{itemize}
+\end{savaistu}
+
+\begin{savaistu}[Cameroon Context: From CRT to LED]
+Twenty years ago, every TV repair shop in Mokolo market (Yaoundé) or Marché Central (Douala) dealt with bulky CRT televisions: heavy glass envelopes, high voltage ($25\ \mathrm{kV}$) flyback transformers, and magnetic deflection coils. Today, those are museum pieces. Flat screens (LCD, LED, OLED) use semiconductor junctions (LEDs for backlight or pixels) — no thermionic emission, no vacuum, low voltage. The physics you learn here (thermionics) explains the \emph{past} and the \emph{fundamentals} (electron behaviour in fields); the next sections (semiconductors, diodes, transistors) explain the \emph{present} and \emph{future} in your pocket.
+\end{savaistu}
+
+\begin{exercice}[Practice Problems]
+\begin{itemize}
+\item A tungsten filament ($\phi = 4.5\ \mathrm{eV}$) is heated to $2500\ \mathrm{K}$. Estimate the order of magnitude of the emission current density using Richardson's law ($A_0 = 1.2 \times 10^6\ \mathrm{A\,m^{-2}\,K^{-2}}$). Why are oxide-coated cathodes preferred for receiving tubes?
+\item In an X-ray tube, the accelerating voltage is $80\ \mathrm{kV}$. Calculate the maximum speed of the electrons striking the target. Is the non-relativistic approximation valid? ($m_e = 9.11 \times 10^{-31}\ \mathrm{kg}$, $c = 3.00 \times 10^8\ \mathrm{m/s}$).
+\item An electron enters a uniform magnetic field $B = 5.0\ \mathrm{mT}$ perpendicular to its velocity $v = 2.0 \times 10^7\ \mathrm{m/s}$. Calculate the radius of its circular path.
+\end{itemize}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$J = A_0 T^2 e^{-\phi/kT}$.
+$\phi = 4.5 \times 1.60 \times 10^{-19} = 7.2 \times 10^{-19}\ \mathrm{J}$.
+$kT = 1.38 \times 10^{-23} \times 2500 = 3.45 \times 10^{-20}\ \mathrm{J}$.
+$\phi/kT \approx 20.9$.
+$e^{-20.9} \approx 8.5 \times 10^{-10}$.
+$J \approx 1.2 \times 10^6 \times (2500)^2 \times 8.5 \times 10^{-10} \approx 6.4\ \mathrm{A/m^2}$.
+Oxide cathodes ($\phi \approx 1.5\ \mathrm{eV}$) operate at $\sim 1000\ \mathrm{K}$. Typical emission densities are $0.1-1\ \mathrm{A/cm^2}$ ($10^3-10^4\ \mathrm{A/m^2}$) at this lower temperature, giving longer life and less heater power.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$E_k = e V_a = 80\ \mathrm{keV} = 80 \times 10^3 \times 1.60 \times 10^{-19} = 1.28 \times 10^{-14}\ \mathrm{J}$.
+$v = \sqrt{2E_k/m_e} = \sqrt{2 \times 1.28 \times 10^{-14} / 9.11 \times 10^{-31}} = \sqrt{2.81 \times 10^{16}} \approx 1.68 \times 10^8\ \mathrm{m/s}$.
+$v/c \approx 0.56$. \textbf{Relativistic effects are significant.} Non-relativistic formula overestimates speed. (Relativistic $v \approx 1.64 \times 10^8\ \mathrm{m/s}$).
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Centripetal force = Magnetic force: $m_e v^2 / r = e v B$.
+$r = m_e v / (e B) = (9.11 \times 10^{-31} \times 2.0 \times 10^7) / (1.60 \times 10^{-19} \times 5.0 \times 10^{-3})$.
+$r = (1.822 \times 10^{-23}) / (8.0 \times 10^{-22}) = 0.0228\ \mathrm{m} = 2.28\ \mathrm{cm}$.
+\end{corrige}
+
+\coursec{Semiconductors, Doping and the p-n Junction}
+
+In the previous section we saw how free electrons can be torn out of a heated metal by \cle{thermionic emission}, and how an electron gun then accelerates and focuses them into a beam. That approach works, but it is hot, bulky and fragile --- the very reason old radio sets used glowing valves. Modern electronics took a completely different route: instead of pulling electrons \emph{out} of a material, we learnt to control the electrons \emph{inside} a special class of materials called \cle{semiconductors}. The diode in your phone charger, the transistor in every microchip, the solar panels appearing on roofs in Yaound\'e and Bamenda --- all of them are made of doped semiconductor crystals joined together. This section explains what a semiconductor is, how doping creates two types of material (n-type and p-type), and what happens when the two are brought into contact to form the famous \cle{p-n junction}, the heart of all solid-state electronics.
+
+\courssub{Conductors, Semiconductors and Insulators: the Energy Band Picture}
+
+\textbf{From observation to explanation.}\par
+A copper wire carries current easily; a dry piece of glass practically does not; and a silicon crystal sits somewhere in between --- and, curiously, conducts \emph{better} when warm, whereas copper conducts \emph{worse} when warm. To explain these facts we need the \cle{energy band} model of solids.
+
+In an isolated atom, electrons occupy discrete energy levels. When about $10^{23}$ atoms pack together into a crystal, each atomic level splits into a huge number of extremely close levels, forming continuous \emph{bands} of allowed energies, separated by \emph{forbidden gaps} that no electron may occupy. Two bands matter for conduction:
+
+\begin{itemize}
+\item the \cle{valence band} (VB): the highest band that is filled (or nearly filled) with electrons at low temperature; these electrons are bound to atoms and cannot carry current;
+\item the \cle{conduction band} (CB): the next band above; an electron here is essentially free to wander through the crystal and carry current.
+\end{itemize}
+
+The energy separation between the top of the valence band and the bottom of the conduction band is the \cle{forbidden energy gap} (or \emph{band gap}), written $E_g$.
+
+\begin{definition}[Conductor, semiconductor, insulator]
+A solid is classified by the size of its band gap $E_g$ and the occupancy of its bands:
+\begin{itemize}
+\item \textbf{Conductor} (e.g.\ Cu, Al): the valence and conduction bands \emph{overlap} ($E_g \approx 0$). Free electrons are always available; resistivity is very low, of order $10^{-8}\ \mathrm{\Omega\,m}$.
+\item \textbf{Semiconductor} (e.g.\ Si, Ge): a \emph{small} gap, $E_g \approx 1\ \mathrm{eV}$ ($E_g \approx 1.1\ \mathrm{eV}$ for silicon, $0.7\ \mathrm{eV}$ for germanium). At absolute zero the valence band is full and the material is an insulator; at room temperature thermal energy lifts a few electrons into the conduction band. Resistivity is intermediate, of order $10^{-4}$ to $10^{4}\ \mathrm{\Omega\,m}$.
+\item \textbf{Insulator} (e.g.\ diamond, glass): a \emph{large} gap, $E_g \gtrsim 5\ \mathrm{eV}$. Thermal energy at ordinary temperatures cannot promote electrons across it; resistivity is very high, of order $10^{8}$ to $10^{16}\ \mathrm{\Omega\,m}$.
+\end{itemize}
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% ---------- Conductor ----------
+\begin{scope}[xshift=0cm]
+\fill[popblueL] (0,0) rectangle (3,1.4);
+\fill[popgreenL] (0,1.1) rectangle (3,2.5);
+\draw[thick] (0,0) rectangle (3,1.4);
+\draw[thick] (0,1.1) rectangle (3,2.5);
+\node at (1.5,0.7) {Valence band};
+\node at (1.5,1.85) {Conduction band};
+\node[below] at (1.5,-0.1) {\textbf{Conductor}};
+\node[align=center] at (1.5,3.0) {bands overlap\\ $E_g \approx 0$};
+\end{scope}
+% ---------- Semiconductor ----------
+\begin{scope}[xshift=5.5cm]
+\fill[popblueL] (0,0) rectangle (3,1.4);
+\fill[popgreenL] (0,2.2) rectangle (3,3.6);
+\draw[thick] (0,0) rectangle (3,1.4);
+\draw[thick] (0,2.2) rectangle (3,3.6);
+\node at (1.5,0.7) {Valence band};
+\node at (1.5,2.9) {Conduction band};
+\draw[<->,thick,poporange] (3.25,1.4) -- (3.25,2.2);
+\node[right,poporange] at (3.35,1.8) {$E_g \approx 1\ \mathrm{eV}$};
+\node[below] at (1.5,-0.1) {\textbf{Semiconductor}};
+\end{scope}
+% ---------- Insulator ----------
+\begin{scope}[xshift=11cm]
+\fill[popblueL] (0,0) rectangle (3,1.4);
+\fill[popgreenL] (0,3.4) rectangle (3,4.8);
+\draw[thick] (0,0) rectangle (3,1.4);
+\draw[thick] (0,3.4) rectangle (3,4.8);
+\node at (1.5,0.7) {Valence band};
+\node at (1.5,4.1) {Conduction band};
+\draw[<->,thick,poporange] (3.25,1.4) -- (3.25,3.4);
+\node[right,poporange] at (3.35,2.4) {$E_g \gtrsim 5\ \mathrm{eV}$};
+\node[below] at (1.5,-0.1) {\textbf{Insulator}};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Energy band diagrams. In a conductor the bands overlap; in a semiconductor the gap is small enough for thermal excitation; in an insulator the gap is too wide.}
+\end{popfigure}
+
+\begin{aretenir}[Key point]
+Conduction requires electrons in the conduction band. The size of the band gap decides how easily electrons get there --- and hence whether the material is a conductor, a semiconductor or an insulator.
+\end{aretenir}
+
+\courssub{Intrinsic Semiconductors: Electron--Hole Pairs}
+
+Pure silicon or germanium is called an \cle{intrinsic} semiconductor. Each Si atom has four valence electrons and forms four covalent bonds with its four neighbours, so at $T = 0\ \mathrm{K}$ every electron is locked in a bond: the crystal is a perfect insulator.
+
+At room temperature, thermal agitation breaks a few bonds: an electron gains enough energy (about $1.1\ \mathrm{eV}$ for Si) to jump from the valence band to the conduction band. Two charge carriers are created at once:
+
+\begin{itemize}
+\item the freed \textbf{electron} in the conduction band (charge $-e$);
+\item the empty place left in the bond, called a \cle{hole}, which behaves as a mobile positive charge $+e$: a neighbouring valence electron can hop into the hole, so the hole effectively moves through the crystal.
+\end{itemize}
+
+This process is called \cle{electron--hole pair generation}. The reverse process, \emph{recombination}, constantly occurs too, so at a given temperature a dynamic equilibrium is established with a certain concentration of pairs.
+
+\begin{propriete}[Intrinsic carrier concentrations]
+In an intrinsic (pure) semiconductor, every electron in the conduction band comes with exactly one hole, so the concentrations are equal:
+\[
+n = p = n_i
+\]
+where $n$ is the free-electron concentration, $p$ the hole concentration, and $n_i$ the \emph{intrinsic carrier concentration}. $n_i$ increases rapidly with temperature. (This equality is examinable as a statement; its derivation from statistical physics is not required.)
+\end{propriete}
+
+\begin{attention}[A hole is not a positron!]
+A hole is \emph{not} an antimatter particle. It is simply the absence of an electron in an otherwise complete covalent bond structure, which \emph{behaves} like a mobile charge $+e$. Also note: an intrinsic semiconductor with many electron--hole pairs is still electrically \emph{neutral} overall.
+\end{attention}
+
+\courssub{Doping: n-type and p-type Semiconductors}
+
+\textbf{The idea.}\par
+The resistivity of pure silicon is far too high for practical devices, and worse, it is fixed by nature. The breakthrough was to discover that adding a \emph{tiny} controlled amount of impurity --- about one atom in a million --- transforms the conductivity and lets us choose which carrier dominates. This is \cle{doping}.
+
+\begin{definition}[Doping, n-type and p-type semiconductors]
+\cle{Doping} is the deliberate introduction of a very small, controlled concentration of impurity atoms into a pure semiconductor crystal in order to increase its conductivity.
+\begin{itemize}
+\item Doping with a \textbf{pentavalent} impurity (5 valence electrons, e.g.\ phosphorus P, arsenic As --- group V) produces an \cle{n-type} semiconductor, in which \textbf{electrons are the majority carriers}. The impurity is called a \emph{donor}.
+\item Doping with a \textbf{trivalent} impurity (3 valence electrons, e.g.\ boron B, aluminium Al --- group III) produces a \cle{p-type} semiconductor, in which \textbf{holes are the majority carriers}. The impurity is called an \emph{acceptor}.
+\end{itemize}
+A doped semiconductor is called an \emph{extrinsic} semiconductor.
+\end{definition}
+
+\textbf{How n-type doping works.}\par
+A phosphorus atom has five valence electrons. When it replaces a silicon atom in the lattice, four of its electrons complete the four covalent bonds; the \emph{fifth} electron is very weakly bound (its binding energy is only about $0.05\ \mathrm{eV}$, far less than the band gap) and is set free by thermal energy at room temperature. Each donor atom therefore contributes one nearly-free electron to the conduction band, becoming itself a fixed positive ion. Electrons are now the \cle{majority carriers}; the few holes still created thermally are the \cle{minority carriers}.
+
+\textbf{How p-type doping works.}\par
+A boron atom has only three valence electrons, so when it replaces a silicon atom one covalent bond is incomplete: a \emph{hole} exists. An electron from a neighbouring bond easily moves in to fill it, and the hole wanders away. Each acceptor atom therefore contributes one mobile hole, becoming itself a fixed negative ion. Holes are the majority carriers; electrons are the minority carriers.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+% n-type
+\begin{scope}[xshift=0cm]
+\draw[thick,popline] (0,0) grid (4,3);
+\foreach \x in {0,1,2,3,4} \foreach \y in {0,1,2,3} {
+  \node[circle,draw,fill=popblueL,inner sep=1.5pt] at (\x,\y) {};
+}
+\node[circle,draw,fill=poporange,inner sep=2.5pt,label={[font=\footnotesize]above:P}] at (2,1) {};
+\node[circle,draw,fill=white,inner sep=1.2pt,label={[font=\footnotesize]right:$-e$}] at (3.5,2.2) {};
+\node[circle,draw,fill=white,inner sep=1.2pt] at (0.6,2.6) {};
+\node[below,align=center] at (2,-0.25) {\textbf{n-type}: donor (P, As)\\ majority carriers: electrons ($-$)};
+\end{scope}
+% p-type
+\begin{scope}[xshift=8cm]
+\draw[thick,popline] (0,0) grid (4,3);
+\foreach \x in {0,1,2,3,4} \foreach \y in {0,1,2,3} {
+  \node[circle,draw,fill=popblueL,inner sep=1.5pt] at (\x,\y) {};
+}
+\node[circle,draw,fill=poppurple,inner sep=2.5pt,label={[font=\footnotesize]above:B}] at (2,1) {};
+\node[circle,draw,thick,popdark,fill=white,inner sep=2.2pt,label={[font=\footnotesize]right:$+e$}] at (3.5,2.2) {};
+\node[circle,draw,thick,popdark,fill=white,inner sep=2.2pt] at (0.6,2.6) {};
+\node[below,align=center] at (2,-0.25) {\textbf{p-type}: acceptor (B, Al)\\ majority carriers: holes ($+$)};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Doped crystals. Left: a pentavalent P atom frees its fifth electron (n-type). Right: a trivalent B atom creates a mobile hole, shown as an empty circle (p-type).}
+\end{popfigure}
+
+\begin{propriete}[Overall electrical neutrality]
+A doped semiconductor remains \cle{electrically neutral} overall. Doping redistributes the carriers but adds no net charge: in n-type material, the extra mobile electrons are exactly balanced by the fixed positive donor ions; in p-type material, the mobile holes are balanced by the fixed negative acceptor ions. The impurity atoms introduced were themselves neutral.
+\end{propriete}
+
+\begin{attention}[Common mistake: ``n-type means negatively charged'']
+Many candidates write that n-type material is negatively charged and p-type positively charged. This is \textbf{wrong} and costs marks. ``n-type'' means only that the \emph{mobile majority carriers} are negative (electrons); the material as a whole is neutral, because every donated electron leaves behind a positive donor ion fixed in the lattice. Similarly p-type material is neutral, with holes as majority carriers.
+\end{attention}
+
+\begin{methode}[Identifying the carrier type from the dopant]
+\begin{enumerate}
+\item Find the number of valence electrons (group) of the impurity atom.
+\item \textbf{Group V} (5 valence electrons: P, As, Sb) $\rightarrow$ one spare electron $\rightarrow$ \textbf{n-type}, majority carriers = electrons.
+\item \textbf{Group III} (3 valence electrons: B, Al, Ga) $\rightarrow$ one missing electron (hole) $\rightarrow$ \textbf{p-type}, majority carriers = holes.
+\item Conclude on neutrality: in both cases the material stays neutral overall.
+\end{enumerate}
+Memory aid: group \textbf{V} gives fi\textbf{V}e electrons, one too many $\rightarrow$ \textbf{n}egative carriers; group III $\rightarrow$ \textbf{p}ositive carriers (holes).
+\end{methode}
+
+\begin{exoresolu}[Doping and carrier concentrations]
+A silicon crystal is doped with phosphorus at a concentration of $N_d = 1.0\times 10^{22}$ donor atoms per cubic metre; every donor is ionised at room temperature. The intrinsic concentration of silicon at this temperature is $n_i = 1.5\times 10^{16}\ \mathrm{m^{-3}}$, and the product $np = n_i^2$ holds. (a) State the type of semiconductor obtained and the majority carriers. (b) Calculate the electron concentration $n$ and the hole concentration $p$. (c) Is the material negatively charged? Justify.
+\tcblower
+\textbf{Solution.}\par
+(a) Phosphorus is pentavalent (group V): it is a donor. The material is \textbf{n-type} and the majority carriers are \textbf{electrons}.\par
+(b) Each ionised donor gives one free electron, so
+\[
+n \approx N_d = 1.0\times 10^{22}\ \mathrm{m^{-3}}.
+\]
+Using $np = n_i^2$:
+\[
+p = \frac{n_i^2}{n} = \frac{(1.5\times 10^{16})^2}{1.0\times 10^{22}} = 2.25\times 10^{10}\ \mathrm{m^{-3}} \approx 2.3\times 10^{10}\ \mathrm{m^{-3}}.
+\]
+The hole concentration is about $10^{12}$ times smaller than the electron concentration: holes are truly \emph{minority} carriers.\par
+(c) \textbf{No.} The material is electrically neutral: the $1.0\times 10^{22}\ \mathrm{m^{-3}}$ mobile electrons are balanced by the same concentration of fixed positive P$^+$ ions (plus the tiny, mutually balancing electron--hole pair contribution). n-type describes the \emph{sign of the majority carriers}, not the charge of the material.
+\end{exoresolu}
+
+\courssub{The p-n Junction: Depletion Layer and Barrier Potential}
+
+\textbf{What happens when p meets n?}\par
+Take a single crystal of silicon, doped p-type on one side and n-type on the other (in practice both regions are made in the \emph{same} crystal --- simply pressing two separate crystals together does not work). The moment the junction forms, a spontaneous process begins.
+
+In the n-region electrons are abundant and holes scarce; in the p-region the reverse is true. Because of this concentration gradient, electrons \cle{diffuse} from the n-side into the p-side, and holes diffuse from the p-side into the n-side. Near the junction, the diffusing electrons and holes meet and \emph{recombine}: each electron fills a hole and both disappear as mobile carriers.
+
+But the impurity ions cannot move --- they are locked in the lattice. As carriers leave the junction region, they leave behind:
+
+\begin{itemize}
+\item on the \textbf{n-side}: uncovered \emph{positive} donor ions;
+\item on the \textbf{p-side}: uncovered \emph{negative} acceptor ions.
+\end{itemize}
+
+A thin region on either side of the junction is thus \emph{emptied of mobile carriers} and contains only fixed ions: this is the \cle{depletion layer}. The double layer of fixed charges creates an internal electric field directed from n to p, which opposes any further diffusion. Equilibrium is reached when the field exactly balances the tendency to diffuse.
+
+\begin{definition}[Depletion layer and barrier potential]
+The \cle{depletion layer} (or depletion region) is the thin zone around a p-n junction that has been emptied of mobile charge carriers and contains only fixed ionised donor and acceptor atoms. It behaves almost like an insulator.
+The \cle{barrier potential} (or junction potential) $V_0$ is the potential difference established across the depletion layer by the fixed ions, with the n-side positive relative to the p-side. It opposes the diffusion of majority carriers across the junction. Its typical value at room temperature is
+\[
+V_0 \approx 0.7\ \mathrm{V} \text{ for silicon}, \qquad V_0 \approx 0.3\ \mathrm{V} \text{ for germanium}.
+\]
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, every node/.style={font=\small}]
+% p region
+\fill[popgreenL] (0,0) rectangle (3,3);
+% n region
+\fill[popblueL] (5,0) rectangle (8,3);
+% depletion layer
+\fill[gray!35] (3,0) rectangle (5,3);
+\draw[thick] (0,0) rectangle (8,3);
+\draw[dashed,thick,popdark] (3,0) -- (3,3);
+\draw[dashed,thick,popdark] (5,0) -- (5,3);
+% fixed ions in depletion layer
+\foreach \y in {0.4,1.1,1.8,2.5} {
+  \node[popdark] at (3.4,\y) {$-$};
+  \node[popdark] at (4.6,\y) {$+$};
+}
+% mobile carriers
+\foreach \p in {(0.6,0.5),(1.4,1.6),(0.9,2.4),(2.2,0.9),(1.8,2.6)} {
+  \node[circle,draw,thick,popdark,fill=white,inner sep=1.6pt] at \p {};
+}
+\node[popdark] at (0.9,1.15) {\footnotesize holes};
+\foreach \p in {(5.7,0.6),(6.5,1.7),(7.3,0.9),(6.1,2.5),(7.4,2.4)} {
+  \node[circle,draw,fill=popink,inner sep=1.2pt] at \p {};
+}
+\node[popdark] at (7.0,1.25) {\footnotesize electrons};
+% diffusion arrows
+\draw[->,thick,poporange] (5.6,2.85) -- (4.7,2.85);
+\draw[->,thick,poporange] (2.4,2.85) -- (3.3,2.85);
+% labels
+\node at (1.5,-0.35) {\textbf{p-type}};
+\node at (6.5,-0.35) {\textbf{n-type}};
+\node[align=center] at (4,-0.75) {depletion layer\\ (fixed ions only)};
+% barrier potential
+\draw[<->,thick,poporange] (3,3.35) -- (5,3.35);
+\node[above,poporange] at (4,3.35) {$V_0 \approx 0.7\ \mathrm{V}$ (Si)};
+% internal field
+\draw[->,thick,popblue] (4.6,0.35) -- (3.4,0.35);
+\node[below,popblue] at (4.0,0.28) {\footnotesize field $\vec{E}$};
+\end{tikzpicture}
+\end{center}
+\legende{The p-n junction at equilibrium. Diffusion of majority carriers leaves fixed negative acceptor ions on the p-side and positive donor ions on the n-side, forming the depletion layer and the barrier potential $V_0$.}
+\end{popfigure}
+
+\begin{aretenir}[To remember]
+\begin{itemize}
+\item The depletion layer contains \emph{no mobile carriers}, only fixed ions; it is widest exactly at the junction and typically a fraction of a micrometre thick.
+\item The barrier potential $V_0$ is about $0.7\ \mathrm{V}$ for Si and $0.3\ \mathrm{V}$ for Ge. A junction conducts significantly only when an external forward voltage overcomes $V_0$ --- this is why a silicon diode ``turns on'' near $0.7\ \mathrm{V}$ (next section).
+\item The junction is neutral overall; charge is merely \emph{redistributed} near the boundary.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Effect of Temperature on Semiconductor Resistance}
+
+Heat a copper wire and its resistance \emph{increases}; heat a silicon rod and its resistance \emph{decreases}. This opposite behaviour is a striking experimental signature of semiconductors, easily demonstrated in the school laboratory with a thermistor and an ohmmeter.
+
+\textbf{Explanation.} In a metal, the number of free electrons is fixed; raising the temperature only makes the lattice ions vibrate more, so electrons are scattered more often and resistivity rises. In a semiconductor, two effects compete: increased scattering (which raises resistance) and, far more importantly, the generation of \emph{many more electron--hole pairs} as thermal energy lifts electrons across the band gap. The carrier concentration grows roughly exponentially with temperature and wins the competition, so the resistance falls.
+
+\begin{propriete}[Negative temperature coefficient]
+A semiconductor has a \cle{negative temperature coefficient} of resistance: its resistance \emph{decreases} as temperature increases, because the number of charge carriers (electron--hole pairs) increases rapidly with temperature. Metals have a positive temperature coefficient: their resistance increases with temperature because lattice vibrations scatter a fixed number of carriers more strongly.
+\end{propriete}
+
+\begin{exemplebox}[The thermistor]
+A \emph{thermistor} is a semiconductor resistor whose resistance drops sharply when warm. It is used as a temperature sensor in digital thermometers, in fire alarms, and to protect circuits against overheating. A typical bead thermistor may fall from several kilo-ohms in a cool room to a few hundred ohms when held between warm fingers --- a direct, measurable consequence of electron--hole pair generation.
+\end{exemplebox}
+
+\begin{savaistu}[Did you know?]
+Silicon is the second most abundant element in the Earth's crust --- it is essentially purified sand. The entire modern electronics industry, from the phone in your pocket to the solar charge controllers used in off-grid villages in the Far North Region of Cameroon, rests on our ability to dope sand with one atom of phosphorus or boron in a million and to join p-type and n-type regions within a single crystal. The p-n junction you have just studied is quite literally the most manufactured structure in human history.
+\end{savaistu}
+
+\begin{exercice}[Check your understanding]
+\begin{enumerate}
+\item Germanium is doped with a small amount of aluminium. State the type of semiconductor obtained, the majority and minority carriers, and whether the material carries a net charge.
+\item Explain, in terms of energy bands, why pure silicon is an insulator at $0\ \mathrm{K}$ but conducts (weakly) at room temperature.
+\item A student claims: ``In a p-n junction, the depletion layer is negatively charged on the n-side and positively charged on the p-side.'' Correct the statement.
+\item Why does the resistance of a semiconductor fall when it is heated, while that of a metal rises?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Aluminium is trivalent (group III): it is an acceptor. The material is \textbf{p-type}; majority carriers are \textbf{holes}, minority carriers are electrons. The material is \textbf{electrically neutral} overall: mobile holes are balanced by fixed negative Al$^-$ ions.
+\item At $0\ \mathrm{K}$ the valence band is completely full and the conduction band completely empty, separated by the gap $E_g \approx 1.1\ \mathrm{eV}$; with no carriers, silicon is an insulator. At room temperature, thermal energy excites some electrons across the (small) gap into the conduction band, leaving holes in the valence band; both carriers conduct, so silicon conducts weakly.
+\item The statement is reversed. Electrons diffuse from n to p, leaving fixed \emph{positive} donor ions on the \textbf{n-side} and fixed \emph{negative} acceptor ions on the \textbf{p-side}. The n-side of the depletion layer is therefore the positive side (which is why the barrier potential makes the n-region positive relative to the p-region).
+\item In a semiconductor, heating creates many extra electron--hole pairs; the large increase in carrier concentration outweighs the increased lattice scattering, so resistance falls (negative temperature coefficient). In a metal the carrier number is fixed, and heating only increases scattering of electrons by the vibrating lattice, so resistance rises (positive temperature coefficient).
+\end{enumerate}
+\end{corrige}
+
+We now have a p-n junction sitting at equilibrium, with its depletion layer and its barrier potential of about $0.7\ \mathrm{V}$. The junction becomes truly useful only when we connect it to a battery: depending on the polarity, the depletion layer narrows or widens dramatically, and the device conducts freely in one direction but blocks current in the other. That one-way behaviour --- \emph{biasing} --- and its applications in rectification are the subject of the next section: the junction diode.
+
+\coursec{The Junction Diode: Biasing, Characteristics and Applications}
+
+In the previous section we built the \cle{p-n junction} and discovered its most remarkable feature: the \cle{depletion layer} acts as a one-way gate for charge carriers. A junction left to itself is only a curiosity; it becomes a useful device --- the \cle{junction diode} --- only when we connect it to an external source, that is, when we \emph{bias} it. In this section we learn how to bias a diode, how to read its current--voltage characteristic, and how this simple two-terminal component performs one of the most important tasks in electronics: converting alternating current into direct current, as in every phone charger and every laboratory power supply in Yaound\'e or Bamenda.
+
+\courssub{Circuit Symbol and Terminals of the Diode}
+
+\begin{definition}[The junction diode]
+A \cle{diode} is a two-terminal device made from a single p-n junction. The terminal connected to the \cle{p-type} material is the \cle{anode} (A); the terminal connected to the \cle{n-type} material is the \cle{cathode} (K). Its circuit symbol is a triangle touching a bar; the triangle points in the direction of conventional current when the diode conducts.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\draw[thick, popblue] (0,0) -- (1,0);
+\draw[thick, popblue, fill=popblueL] (1,-0.4) -- (1,0.4) -- (2,0) -- cycle;
+\draw[thick, popblue] (2,-0.4) -- (2,0.4);
+\draw[thick, popblue] (2,0) -- (3,0);
+\node[below] at (0.5,-0.1) {\small Anode (A, p-side)};
+\node[below] at (2.6,-0.1) {\small Cathode (K, n-side)};
+\draw[->, thick, poporange] (1.1,0.8) -- (2.2,0.8) node[midway, above]{\small conventional current when ON};
+\end{tikzpicture}
+\legende{Circuit symbol of a junction diode. The triangle points from anode to cathode, in the direction of conventional current flow when the diode conducts.}
+\end{center}
+\end{popfigure}
+
+\begin{attention}[Do not reverse the symbol]
+The most frequent error in circuit diagrams is drawing the diode the wrong way round. Remember: \textbf{conventional current flows in the direction of the arrow} (triangle), from anode to cathode, and is blocked by the bar. A useful memory aid: the bar is a wall --- current hits it and stops. On a real diode, the cathode is marked by a coloured band painted on the body of the component.
+\end{attention}
+
+\courssub{Biasing the Junction: Forward and Reverse}
+
+\emph{Biasing} simply means applying an external d.c. voltage across the junction. There are only two possibilities, and they produce dramatically different results.
+
+\textbf{Forward bias.} Connect the \textbf{p-side to the positive terminal} of the battery and the n-side to the negative terminal. The positive terminal repels the holes of the p-region towards the junction, and the negative terminal pushes the electrons of the n-region towards the junction. These majority carriers flood into the depletion layer and neutralise part of the fixed ions: the \cle{depletion layer narrows}, the potential barrier (about \SI{0.7}{V} for silicon) is reduced, and once the applied voltage overcomes it, a large current flows. The diode behaves almost like a closed switch.
+
+\textbf{Reverse bias.} Now connect the p-side to the \textbf{negative} terminal and the n-side to the \textbf{positive} terminal. Holes in the p-region are attracted away from the junction towards the negative terminal, and electrons in the n-region are attracted towards the positive terminal. The depletion layer \emph{widens}, the potential barrier grows, and no majority-carrier current can flow. Only the few minority carriers (thermally generated electron--hole pairs) cross the junction, giving a tiny \cle{reverse leakage current}, typically of the order of microamperes. If the reverse voltage is made very large, the junction eventually \emph{breaks down}: the intense electric field tears electrons from covalent bonds and accelerates them, these electrons knock further electrons free (avalanche effect), and the reverse current rises sharply, usually destroying an ordinary diode.
+
+\begin{definition}[Forward and reverse bias]
+A p-n junction is \cle{forward biased} when the p-side is connected to the positive terminal of the source and the n-side to the negative terminal; the depletion layer narrows and current flows easily beyond the knee voltage. It is \cle{reverse biased} when the p-side is connected to the negative terminal and the n-side to the positive terminal; the depletion layer widens and only a tiny leakage current flows, until breakdown occurs at a high reverse voltage.
+\end{definition}
+
+\begin{propriete}[Knee voltage of a silicon diode]
+A forward-biased \textbf{silicon} diode conducts appreciably only when the p.d. across it exceeds the \cle{knee voltage} (or threshold voltage) $V_K \approx \SI{0.7}{V}$. For a germanium diode, $V_K \approx \SI{0.3}{V}$. Below the knee, the forward current is negligibly small; above it, the current increases very rapidly for a small extra voltage. (Not a proof-based result: it is an experimental characteristic you must know.)
+\end{propriete}
+
+\courssub{The I--V Characteristic of a Diode}
+
+The complete behaviour of the diode is summarised by its \cle{I--V characteristic}: a graph of the current $I$ through the diode against the p.d. $V$ across it. It is obtained experimentally with a circuit containing a variable d.c. supply, an ammeter in series with the diode and a voltmeter across it; the supply is then reversed to explore the reverse region.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=8cm,
+  axis lines=middle,
+  xlabel={$V$ / V}, ylabel={$I$},
+  xmin=-5, xmax=1.6,
+  ymin=-60, ymax=60,
+  xtick={-4,-3,-2,-1,0,0.7,1},
+  ytick=\empty,
+  x label style={anchor=west},
+  y label style={anchor=south},
+  every axis plot/.append style={very thick, popblue},
+  clip=false
+]
+\addplot[domain=0:1.0, samples=60] {55*exp(6*(x-1.0))};
+\addplot[domain=-3.8:0, samples=20] {-4};
+\addplot[domain=-4.6:-3.8, samples=30] {-4 - 220*(x+3.8)^2};
+\draw[dashed, popmuted] (axis cs:0.7,0) -- (axis cs:0.7,30);
+\node[popdark, anchor=west] at (axis cs:0.72,38) {\small knee $V_K \approx 0.7$ V};
+\node[popdark] at (axis cs:-1.6,8) {\small leakage current ($\mu$A)};
+\node[popdark, anchor=east] at (axis cs:-4.0,-45) {\small breakdown};
+\node[popdark] at (axis cs:1.05,52) {\small forward region};
+\end{axis}
+\end{tikzpicture}
+\legende{I--V characteristic of a silicon diode (not to scale: the reverse current is in microamperes, the forward current in milliamperes). Note the knee near \SI{0.7}{V}, the tiny reverse leakage, and the sharp breakdown at large reverse voltage.}
+\end{center}
+\end{popfigure}
+
+Three regions must be recognised at sight in the examination:
+\begin{itemize}
+\item \textbf{Forward region} ($V>0$): almost no current until $V$ reaches the knee $V_K \approx \SI{0.7}{V}$ (Si); beyond it, $I$ rises steeply --- the diode is \emph{ON}.
+\item \textbf{Reverse region} ($V<0$, moderate): a very small, nearly constant leakage current due to minority carriers --- the diode is \emph{OFF}.
+\item \textbf{Breakdown region} (large negative $V$): the reverse current suddenly increases enormously; an ordinary diode is damaged unless the current is limited by an external resistor. (Zener diodes are specially made to operate safely in this region and are used for voltage stabilisation.)
+\end{itemize}
+
+\begin{aretenir}[Ideal versus real diode]
+For circuit analysis we use two models:
+\begin{itemize}
+\item \textbf{Ideal diode}: zero resistance when forward biased (acts as a closed switch, $V=0$ across it); infinite resistance when reverse biased (open switch, $I=0$).
+\item \textbf{Real diode (practical model)}: when ON, it keeps a roughly constant p.d. of \SI{0.7}{V} (Si) across itself; when OFF, it passes no current. Use this model whenever a numerical supply voltage is given.
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Current through a silicon diode]
+A silicon diode is connected in series with a resistor $R = \SI{330}{\Omega}$ across a d.c. supply of e.m.f. $E = \SI{6.0}{V}$, the diode being forward biased. Using the practical model, calculate the current in the circuit.
+\tcblower
+\textbf{Solution.} The diode is ON, so it maintains $V_D = \SI{0.7}{V}$ across itself. Applying Kirchhoff's voltage law around the loop:
+\[
+E = V_D + V_R \quad\Longrightarrow\quad V_R = E - V_D = 6.0 - 0.7 = \SI{5.3}{V}.
+\]
+Then by Ohm's law:
+\[
+I = \frac{V_R}{R} = \frac{5.3}{330} = \SI{1.61e-2}{A} \approx \SI{16}{mA}.
+\]
+(The ideal-diode model would give $I = 6.0/330 = \SI{18}{mA}$; the practical model is more accurate.)
+\end{exoresolu}
+
+\courssub{Rectification: Converting a.c. into d.c.}
+
+The mains supply in Cameroon is alternating at about \SI{50}{Hz}, yet radios, phone chargers and laboratory power packs need direct current. The diode's one-way action performs the first step: \cle{rectification}.
+
+\textbf{Half-wave rectification.}
+
+A single diode is placed in series with the a.c. source and the load resistor $R$. During the \emph{positive} half-cycle, the anode is positive with respect to the cathode: the diode is forward biased and conducts, so the input voltage (minus about \SI{0.7}{V}) appears across $R$. During the \emph{negative} half-cycle, the diode is reverse biased and blocks: no current flows, and the output voltage is zero. The output is a series of positive half-sine pulses --- a fluctuating but \emph{unidirectional} voltage.
+
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.95]
+\draw (0,0) to[sV=$u$] (0,2) to[D=$D$] (3,2) to[R=$R$, v={$u_R$}] (3,0) -- (0,0);
+\end{circuitikz}
+\hspace{0.6cm}
+\begin{tikzpicture}[scale=0.95]
+\begin{scope}[xshift=0cm, yshift=0.4cm]
+\draw[->] (0,0) -- (4.4,0) node[right]{\small $t$};
+\draw[->] (0,-1.3) -- (0,1.5) node[above]{\small $u$};
+\draw[thick, poppurple, domain=0:4.2, samples=80] plot (\x, {1.1*sin(\x*150)});
+\node at (2.1,-1.7) {\small input a.c.};
+\end{scope}
+\begin{scope}[xshift=5.4cm, yshift=0.4cm]
+\draw[->] (0,0) -- (4.4,0) node[right]{\small $t$};
+\draw[->] (0,-1.3) -- (0,1.5) node[above]{\small $u_R$};
+\draw[thick, poporange, domain=0:4.2, samples=80] plot (\x, {max(0,1.1*sin(\x*150))});
+\draw[dashed, popmuted, domain=0:4.2, samples=80] plot (\x, {1.1*sin(\x*150)});
+\node at (2.1,-1.7) {\small half-wave output};
+\end{scope}
+\end{tikzpicture}
+\legende{Half-wave rectifier. The diode passes only the positive half-cycles; the negative half-cycles (dashed) are suppressed.}
+\end{center}
+\end{popfigure}
+
+The average (d.c.) value of the half-wave output over a full period is obtained by averaging one half-sine pulse over the whole cycle:
+\[
+U_{\text{av}} = \frac{1}{T}\int_0^{T/2} U_m \sin\!\left(\tfrac{2\pi t}{T}\right) dt = \frac{U_m}{\pi} \approx 0.318\,U_m .
+\]
+
+\textbf{Full-wave rectification.} Half-wave rectification wastes half of every cycle. Two circuits recover the missing half.
+
+\emph{Centre-tap rectifier.} The secondary of the transformer has a centre tap taken as reference (\SI{0}{V}). Two diodes connect the two ends of the secondary to the load. During one half-cycle the upper diode conducts; during the other half-cycle the lower diode conducts. In both cases the current passes through the load \emph{in the same direction}.
+
+\emph{Bridge rectifier (Graetz bridge).} Four diodes are arranged in a diamond (bridge) around the load --- no centre-tapped transformer is needed. During the positive half-cycle, diodes $D_1$ and $D_4$ conduct and carry current through $R$ from top to bottom, while $D_2$ and $D_3$ are reverse biased. During the negative half-cycle, $D_2$ and $D_3$ conduct, and the current through $R$ is \emph{again} from top to bottom. Both half-cycles therefore appear at the output, all with the same polarity.
+
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.95]
+\draw (1,3.4) to[sV=$u$] (4,3.4);
+\draw (1,3.4) -- (1,1);
+\draw (4,3.4) -- (4,1);
+\draw (1,1) to[D=$D_1$] (2.5,2.5);
+\draw (2.5,2.5) to[D=$D_2$] (4,1);
+\draw (1,1) to[D=$D_3$] (2.5,-0.5);
+\draw (2.5,-0.5) to[D=$D_4$] (4,1);
+\draw (2.5,2.5) -- (5.6,2.5) to[R=$R$, v={$u_R$}] (5.6,-0.5) -- (2.5,-0.5);
+\end{circuitikz}
+\hspace{0.6cm}
+\begin{tikzpicture}[scale=0.95]
+\begin{scope}[yshift=1.0cm]
+\draw[->] (0,0) -- (5.0,0) node[right]{\small $t$};
+\draw[->] (0,-0.3) -- (0,1.7) node[above]{\small $u_R$};
+\draw[dashed, popmuted, domain=0:4.8, samples=120] plot (\x, {abs(1.2*sin(\x*180))});
+\draw[very thick, poporange, domain=0:4.8, samples=200] plot (\x, {0.95 + 0.2*abs(sin(\x*180))});
+\node[popdark] at (2.4,2.0) {\small smoothed output (capacitor)};
+\end{scope}
+\end{tikzpicture}
+\legende{Bridge rectifier: during each half-cycle one diagonal pair of diodes conducts, so the current through $R$ keeps the same direction. Dashed: full-wave rectified waveform; solid: output smoothed by a reservoir capacitor.}
+\end{center}
+\end{popfigure}
+
+For the full-wave output, every half-cycle is used, so the average value doubles:
+\[
+U_{\text{av}} = \frac{2U_m}{\pi} \approx 0.637\,U_m .
+\]
+
+\begin{methode}[Drawing a rectifier output waveform]
+\begin{enumerate}
+\item Mark the input a.c. waveform and split it into positive and negative half-cycles.
+\item For each half-cycle, decide which diode(s) are forward biased (anode more positive than cathode by about \SI{0.7}{V}): those conduct; the others block.
+\item Trace the current path through the conducting diodes and note the \emph{direction} of the current in the load.
+\item Draw the output: half-wave rectifier --- only the half-cycles of one polarity appear; bridge or centre-tap rectifier --- \emph{both} half-cycles appear, flipped to the same polarity.
+\item Check: the full-wave output repeats twice as fast as the input.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Ripple frequency is doubled]
+A classic examination trap: candidates draw the full-wave output with the same repetition rate as the input. Wrong! Because \emph{both} half-cycles are rectified, the output pulses occur twice per input cycle. If the mains frequency is $f = \SI{50}{Hz}$, the ripple frequency of a full-wave rectifier is $f_r = 2f = \SI{100}{Hz}$ (for a half-wave rectifier, $f_r = f$).
+\end{attention}
+
+\textbf{Smoothing with a reservoir capacitor.} The rectified voltage still fluctuates between $0$ and $U_m$ --- unsuitable for delicate electronics. Connecting a large capacitor $C$ in parallel with the load fixes this: while the rectified voltage rises, the capacitor charges to nearly $U_m$; when the rectified voltage falls, the diode(s) stop conducting and the capacitor discharges slowly through $R$, maintaining the output. The result is an almost steady d.c. voltage with a small \cle{ripple}. The larger the product $RC$ compared with the period of the ripple, the smaller the ripple.
+
+\textbf{Other applications of the diode.}
+\begin{itemize}
+\item \textbf{Clipping / limiting circuits}: diodes prevent a signal from exceeding a chosen level, protecting sensitive inputs.
+\item \textbf{Reverse-polarity protection}: a diode in series with a device conducts only when the battery is connected the right way round.
+\item \textbf{Light-emitting diode (LED)}: a special junction diode, usually made from gallium arsenide compounds, which emits light when forward biased (knee voltage about \SI{2}{V}, higher than silicon). Always protect an LED with a series resistor to limit the current.
+\end{itemize}
+
+\begin{exoresolu}[Average value of a rectified voltage]
+The secondary of a transformer delivers a sinusoidal voltage of peak value $U_m = \SI{12}{V}$ at \SI{50}{Hz}. It feeds (a) a half-wave rectifier, (b) a bridge rectifier, each with a resistive load. Ignoring the diode knee voltages, find the average output voltage and the ripple frequency in each case.
+\tcblower
+\textbf{Solution.}
+(a) Half-wave:
+\[
+U_{\text{av}} = \frac{U_m}{\pi} = \frac{12}{3.1416} \approx \SI{3.8}{V}, \qquad f_r = f = \SI{50}{Hz}.
+\]
+(b) Full-wave (bridge):
+\[
+U_{\text{av}} = \frac{2U_m}{\pi} = \frac{2 \times 12}{3.1416} \approx \SI{7.6}{V}, \qquad f_r = 2f = \SI{100}{Hz}.
+\]
+The full-wave rectifier gives twice the average voltage and a ripple that is easier to smooth because its frequency is higher.
+\end{exoresolu}
+
+\begin{exercice}[Diode circuit analysis]
+In the circuit of the first worked example above, the \SI{6.0}{V} supply is replaced by a \SI{9.0}{V} battery and the resistor by $R = \SI{470}{\Omega}$. (1) Calculate the current, taking $V_K = \SI{0.7}{V}$. (2) The battery is now reversed. State, with justification, the new current (leakage current neglected).
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(1) The diode is forward biased and ON: $V_R = 9.0 - 0.7 = \SI{8.3}{V}$, so $I = 8.3/470 = \SI{1.77e-2}{A} \approx \SI{18}{mA}$.
+(2) With the battery reversed, the diode is reverse biased and blocks: the depletion layer widens, so $I \approx \SI{0}{A}$ (only a negligible leakage current flows).
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A diode conducts only when forward biased (p-side to $+$) beyond the knee voltage: \SI{0.7}{V} for silicon, \SI{0.3}{V} for germanium.
+\item Reverse biased, it passes only a tiny leakage current until breakdown.
+\item Conventional current flows in the direction of the arrow of the symbol, anode $\to$ cathode.
+\item Half-wave rectifier: one diode, $U_{\text{av}} = U_m/\pi$, ripple frequency $= f$.
+\item Bridge rectifier: four diodes conducting in diagonal pairs, $U_{\text{av}} = 2U_m/\pi$, ripple frequency $= 2f$.
+\item A reservoir capacitor across the load smooths the rectified output into nearly steady d.c.
+\end{itemize}
+\end{aretenir}
+
+\coursec{The Transistor: Amplifiers and Logic Gates}
+
+In the previous section we met the \cle{p-n junction diode}: a two-terminal device whose current depends dramatically on the polarity of the applied voltage. A diode can rectify, but it cannot amplify --- it has no third terminal through which a small signal could \emph{control} a large current. The \cle{transistor} is precisely the device that adds this third terminal. By sandwiching two p-n junctions back to back, we obtain a component in which a tiny current injected into one terminal commands a much larger current flowing between the other two. This single idea --- a small signal controlling a large one --- is the foundation of all modern electronics: the amplifier in a radio receiver in Yaound\'e, the switching elements in the phone in your pocket, and the logic gates inside every computer are all built from transistors. In this section we study the \cle{bipolar junction transistor} (BJT), its two great modes of use --- the \cle{switch} and the \cle{amplifier} --- and finally how transistor switches are assembled into the \cle{logic gates} of digital electronics.
+
+\courssub{Structure and Symbols of the Bipolar Junction Transistor}
+
+\begin{definition}[The bipolar junction transistor]
+A \cle{bipolar junction transistor} (BJT) is a semiconductor device made of three doped regions forming two p-n junctions back to back. The three regions are called the \cle{emitter} (E), the \cle{base} (B) and the \cle{collector} (C). Two arrangements exist:
+\begin{itemize}
+\item the \textbf{npn} transistor: a thin p-type base between two n-type regions;
+\item the \textbf{pnp} transistor: a thin n-type base between two p-type regions.
+\end{itemize}
+The emitter is heavily doped, the collector moderately doped, and the base is \textbf{very thin and lightly doped} --- this is the key to transistor action. The word \emph{bipolar} recalls that both types of charge carrier, electrons and holes, take part in the conduction.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.95, font=\small]
+% npn structure
+\fill[popblueL] (0,0) rectangle (1.6,1.6);
+\fill[poppink!40] (1.6,0) rectangle (2.4,1.6);
+\fill[popblueL] (2.4,0) rectangle (4.6,1.6);
+\node at (0.8,0.8) {n (E)};
+\node at (2.0,0.8) {p};
+\node at (3.5,0.8) {n (C)};
+\draw[thick] (0,0) rectangle (4.6,1.6);
+\draw[thick,popink] (0.8,0) -- (0.8,-0.5) node[below]{E};
+\draw[thick,popink] (2.0,1.6) -- (2.0,2.1) node[above]{B};
+\draw[thick,popink] (3.5,0) -- (3.5,-0.5) node[below]{C};
+\node at (2.3,-1.1) {\textbf{npn structure}};
+% npn symbol
+\begin{scope}[xshift=6.2cm,yshift=0.8cm]
+\draw[thick,popink] (0,0.55) -- (0,-0.55);
+\draw[thick,popink] (0,0.3) -- (0.9,0.85);
+\draw[thick,popink] (0,-0.3) -- (0.9,-0.85);
+\draw[-latex,thick,popink] (0.55,-0.62) -- (0.9,-0.85);
+\draw[thick,popink] (0.9,0.85) -- (0.9,1.3) node[above]{C};
+\draw[thick,popink] (0.9,-0.85) -- (0.9,-1.3) node[below]{E};
+\draw[thick,popink] (-0.7,0) node[left]{B} -- (0,0);
+\node at (0.45,-1.9) {\textbf{npn symbol}};
+\end{scope}
+% pnp symbol
+\begin{scope}[xshift=9.2cm,yshift=0.8cm]
+\draw[thick,popink] (0,0.55) -- (0,-0.55);
+\draw[thick,popink] (0,0.3) -- (0.9,0.85);
+\draw[thick,popink] (0,-0.3) -- (0.9,-0.85);
+\draw[-latex,thick,popink] (0.9,-0.85) -- (0.55,-0.62);
+\draw[thick,popink] (0.9,0.85) -- (0.9,1.3) node[above]{C};
+\draw[thick,popink] (0.9,-0.85) -- (0.9,-1.3) node[below]{E};
+\draw[thick,popink] (-0.7,0) node[left]{B} -- (0,0);
+\node at (0.45,-1.9) {\textbf{pnp symbol}};
+\end{scope}
+\end{tikzpicture}
+\legende{Structure of the npn transistor and circuit symbols of the npn and pnp transistors. The arrow on the emitter shows the direction of conventional emitter current.}
+\end{center}
+\end{popfigure}
+
+\begin{attention}[Reading the symbol]
+The arrow is always on the \textbf{emitter}, and it points in the direction of conventional current when the base--emitter junction is forward biased: \emph{outwards} for an npn transistor, \emph{inwards} for a pnp. A symbol with the arrow on the collector is wrong. In the GCE examination, npn transistors are by far the most common; the pnp works identically but with all supply polarities and current directions reversed.
+\end{attention}
+
+\courssub{Transistor Action and the Current Gain}
+
+Consider an npn transistor connected so that the base--emitter junction is \textbf{forward biased} and the base--collector junction is \textbf{reverse biased}; this is called \cle{normal active operation}. The forward-biased base--emitter junction injects a flood of electrons from the heavily doped emitter into the base. Because the base is \textbf{very thin and lightly doped}, only a small fraction of these electrons recombine with holes there (this small loss constitutes the base current $I_B$); the overwhelming majority diffuse straight across the base and are swept into the collector by the strong reverse field of the base--collector junction, forming the collector current $I_C$. Conservation of charge then gives the fundamental law.
+
+\begin{propriete}[Current relation in a transistor]
+For a transistor in normal operation, the currents at the three terminals satisfy
+\[ I_E = I_B + I_C \]
+and, because the base is thin and lightly doped, $I_B \ll I_C$, so that $I_E \approx I_C$. (This relation follows directly from Kirchhoff's current law applied to the transistor treated as a single node; it is examinable.)
+\end{propriete}
+
+The usefulness of the transistor is that the large collector current is \emph{proportional} to the small base current.
+
+\begin{definition}[Current gain]
+The \cle{common-emitter current gain} of a transistor is
+\[ \beta = \frac{I_C}{I_B} \]
+Typical values for small-signal transistors range from about $50$ to $500$. A gain $\beta = 100$ means that a base current of only $10\ \mu\mathrm{A}$ controls a collector current of $1\ \mathrm{mA}$.
+\end{definition}
+
+\begin{exoresolu}[Calculating transistor currents]
+A transistor with $\beta = 120$ is connected in normal operation. Its base current is measured to be $I_B = 25\ \mu\mathrm{A}$. Calculate $I_C$ and $I_E$.
+\tcblower
+\textbf{Solution.} From the definition of the gain,
+\[ I_C = \beta I_B = 120 \times 25\ \mu\mathrm{A} = 3000\ \mu\mathrm{A} = 3.0\ \mathrm{mA}. \]
+Then the current relation gives
+\[ I_E = I_B + I_C = 0.025\ \mathrm{mA} + 3.0\ \mathrm{mA} = 3.025\ \mathrm{mA} \approx 3.0\ \mathrm{mA}. \]
+Note how small $I_B$ is compared with $I_C$: the approximation $I_E \approx I_C$ is excellent.
+\end{exoresolu}
+
+\begin{attention}[Biasing is not optional]
+A transistor is \textbf{not} a magic current generator. The relation $I_C = \beta I_B$ holds only when the base--emitter junction is correctly forward biased ($V_{BE} \approx 0.7\ \mathrm{V}$ for silicon) and the base--collector junction reverse biased. If you forget the base resistor, the base--emitter junction is destroyed by excessive current; if you reverse the supplies, no controlled current flows at all. Always check the biasing before applying $I_C = \beta I_B$.
+\end{attention}
+
+\courssub{The Transistor as a Switch}
+
+When the input of a transistor is driven between two extremes, the transistor behaves like an electrically operated switch between collector and emitter.
+
+\begin{definition}[Cut-off and saturation]
+\begin{itemize}
+\item \textbf{Cut-off:} $I_B = 0$ (base--emitter junction not forward biased). Then $I_C = 0$; the transistor is \textbf{OFF}, equivalent to an open switch between C and E. The full supply voltage appears across the transistor: $V_{CE} \approx V_{CC}$.
+\item \textbf{Saturation:} $I_B$ is large enough that $I_C$ has reached its maximum possible value, limited by the external circuit, $I_C \approx V_{CC}/R_C$. The voltage $V_{CE}$ falls to nearly zero ($V_{CE,\mathrm{sat}} \approx 0.2\ \mathrm{V}$); the transistor is \textbf{ON}, equivalent to a closed switch.
+\end{itemize}
+In saturation the relation $I_C = \beta I_B$ no longer holds: the collector current is fixed by $V_{CC}$ and $R_C$, not by $I_B$.
+\end{definition}
+
+\begin{exoresolu}[Designing a transistor switch]
+An LED lamp of operating current $20\ \mathrm{mA}$ is to be switched by an npn transistor from a $V_{CC} = 6\ \mathrm{V}$ supply, with a collector resistor $R_C$ chosen so that the saturation current is $20\ \mathrm{mA}$. The transistor has $\beta = 100$ and $V_{BE} = 0.7\ \mathrm{V}$. The base is driven from a $5\ \mathrm{V}$ logic output through a base resistor $R_B$. (a) Calculate $R_C$ (take $V_{CE,\mathrm{sat}} \approx 0$). (b) Calculate the minimum base current needed for saturation. (c) Choose $R_B$ so that the base current is about twice this minimum.
+\tcblower
+\textbf{Solution.} (a) At saturation,
+\[ R_C = \frac{V_{CC}}{I_{C,\mathrm{sat}}} = \frac{6}{20\times 10^{-3}} = 300\ \Omega. \]
+(b) The base current must satisfy $I_B \geq I_{C,\mathrm{sat}}/\beta$:
+\[ I_{B,\min} = \frac{20\ \mathrm{mA}}{100} = 0.20\ \mathrm{mA}. \]
+(c) We choose $I_B = 2 \times 0.20 = 0.40\ \mathrm{mA}$ to guarantee saturation. Applying Kirchhoff's voltage law to the base loop,
+\[ R_B = \frac{5 - V_{BE}}{I_B} = \frac{5 - 0.7}{0.40\times 10^{-3}} = \frac{4.3}{0.40\times 10^{-3}} \approx 1.1\times 10^{4}\ \Omega = 11\ \mathrm{k\Omega}. \]
+A standard $10\ \mathrm{k\Omega}$ resistor is a safe practical choice.
+\end{exoresolu}
+
+\begin{experience}[A light-operated switch]
+An LDR and a fixed resistor $R$ form a potential divider feeding the base of an npn transistor; a lamp (or LED with protective resistor) sits in the collector circuit. In darkness the LDR resistance is high, the base voltage falls below $0.7\ \mathrm{V}$, the transistor is cut off and the lamp is out. When light falls on the LDR its resistance drops, the base voltage rises above $0.7\ \mathrm{V}$, base current flows, and the transistor saturates: the lamp lights. Swapping the LDR and the fixed resistor reverses the logic, giving a circuit that switches on at nightfall --- the principle of automatic street lighting used in many Cameroonian towns.
+\end{experience}
+
+\courssub{The Transistor as an Amplifier: the Common-Emitter Configuration}
+
+Between cut-off and saturation lies the \cle{active region}, where $I_C = \beta I_B$ holds. If we bias the transistor at a steady point in the middle of this region (using a base resistor) and superpose a small alternating input signal $v_{in}$ on the base, the collector current swings up and down in sympathy. These swings flow through the collector resistor $R_C$, producing an output voltage $v_{out} = V_{CC} - I_C R_C$ whose variations are much \emph{larger} than those of the input: this is \cle{amplification}. The configuration is called \cle{common-emitter} because the emitter is common to both the input (base) loop and the output (collector) loop.
+
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.9, transform shape]
+\draw (0,0) to[sV=$v_{in}$] (0,1.6) to[R=$R_B$] (2.4,1.6) -- (2.4,1.0);
+\draw (2.4,1.0) node[npn, anchor=B](Q){};
+\node at (3.4,0.6) {$T$};
+\draw (Q.C) -- (4.0,1.9) to[R=$R_C$] (4.0,3.4) node[above]{$+V_{CC}$};
+\draw (Q.E) -- (4.0,-0.6);
+\draw (0,0) -- (4.0,-0.6) node[ground]{};
+\draw (Q.C) to[C=$C_2$] (6.4,1.9);
+\draw (6.4,1.9) to[short,-o] (6.8,1.9);
+\node at (6.8,1.3) {$v_{out}$};
+\end{circuitikz}
+\legende{Common-emitter amplifier: the input signal is applied to the base through $R_B$; the amplified, inverted output is taken at the collector through the coupling capacitor $C_2$, which blocks the d.c. component.}
+\end{center}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+% input waveform
+\begin{scope}
+\draw[->] (0,0) -- (6.4,0) node[right]{$t$};
+\draw[->] (0,-1.2) -- (0,1.4);
+\draw[domain=0:6.1,smooth,samples=100,thick,popblue] plot (\x,{0.5*sin(2*\x r)});
+\node[popblue] at (3.0,1.15) {$v_{in}$ (small)};
+\end{scope}
+% output waveform
+\begin{scope}[yshift=-4.2cm]
+\draw[->] (0,0) -- (6.4,0) node[right]{$t$};
+\draw[->] (0,-1.6) -- (0,1.8);
+\draw[domain=0:6.1,smooth,samples=100,thick,poporange] plot (\x,{-1.3*sin(2*\x r)});
+\node[poporange] at (3.0,-1.5) {$v_{out}$ (large, inverted)};
+\end{scope}
+\end{tikzpicture}
+\legende{Input and output waveforms of the common-emitter amplifier: the output is amplified and shifted by $180^\circ$.}
+\end{center}
+\end{popfigure}
+
+\begin{propriete}[Phase inversion in the common-emitter amplifier]
+In the common-emitter amplifier, the output voltage is \textbf{inverted} with respect to the input: there is a phase shift of $180^\circ$ between $v_{out}$ and $v_{in}$.
+\emph{Justification (examinable):} when $v_{in}$ rises, $I_B$ rises, so $I_C = \beta I_B$ rises; the voltage drop $I_C R_C$ across the collector resistor increases, and since $v_{out} = V_{CC} - I_C R_C$, the output \emph{falls}. A rising input produces a falling output.
+\end{propriete}
+
+\begin{savaistu}[Load line and operating point]
+Plotting $I_C$ against $V_{CE}$ for the transistor, the circuit equation $V_{CC} = I_C R_C + V_{CE}$ is a straight line --- the \cle{load line} --- joining $(V_{CC}, 0)$ to $(0, V_{CC}/R_C)$. The transistor must operate somewhere on this line; the chosen resting point is the \cle{operating point} (quiescent point). Placing it in the middle of the load line allows the largest undistorted output swing: too near saturation or cut-off, the tops or bottoms of the waveform are clipped. This graphical method is a useful extra for strong GCE candidates.
+\end{savaistu}
+
+\courssub{Digital Electronics: Logic Levels and Truth Tables}
+
+In \cle{digital electronics} a voltage represents one of only two states: \textbf{logic 0} (LOW, near $0\ \mathrm{V}$) and \textbf{logic 1} (HIGH, near the supply voltage, e.g. $5\ \mathrm{V}$). A \cle{logic gate} is a circuit whose output state is completely determined by the states of its inputs. The complete behaviour of a gate is summarised in a \cle{truth table}, which lists the output for \emph{every} possible combination of inputs.
+
+\begin{methode}[Building a truth table and analysing a gate combination]
+\begin{enumerate}
+\item Count the inputs $n$; the table has $2^n$ rows.
+\item Write the input combinations in binary counting order (for two inputs: 00, 01, 10, 11).
+\item Work through the circuit \emph{gate by gate}: label each intermediate wire, and fill in a column for each intermediate signal before the final output.
+\item Apply each gate's rule mechanically, row by row.
+\item Check your result on at least two rows by re-reading the circuit.
+\end{enumerate}
+\end{methode}
+
+\courssub{The Basic Logic Gates}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, scale=0.9]
+% NOT
+\draw[thick,popink] (0,0) -- (0,1) -- (1.1,0.5) -- cycle;
+\draw[thick,popink,fill=white] (1.22,0.5) circle (0.12);
+\draw[thick] (-0.6,0.5) node[left]{$A$} -- (0,0.5);
+\draw[thick] (1.34,0.5) -- (1.9,0.5) node[right]{$Q=\overline{A}$};
+\node at (0.6,-0.5) {\textbf{NOT}};
+% AND
+\begin{scope}[xshift=3.4cm]
+\draw[thick,popink] (0,0) -- (0.5,0) arc(-90:90:0.5) -- (0,1) -- cycle;
+\draw[thick] (-0.6,0.75) node[left]{$A$} -- (0,0.75);
+\draw[thick] (-0.6,0.25) node[left]{$B$} -- (0,0.25);
+\draw[thick] (1.0,0.5) -- (1.6,0.5) node[right]{$Q=A\cdot B$};
+\node at (0.5,-0.5) {\textbf{AND}};
+\end{scope}
+% OR
+\begin{scope}[xshift=7.2cm]
+\draw[thick,popink] (0,0) .. controls (0.25,0.3) and (0.25,0.7) .. (0,1)
+ .. controls (0.55,0.9) and (0.95,0.75) .. (1.15,0.5)
+ .. controls (0.95,0.25) and (0.55,0.1) .. (0,0);
+\draw[thick] (-0.6,0.75) node[left]{$A$} -- (0.12,0.75);
+\draw[thick] (-0.6,0.25) node[left]{$B$} -- (0.12,0.25);
+\draw[thick] (1.15,0.5) -- (1.7,0.5) node[right]{$Q=A+B$};
+\node at (0.6,-0.5) {\textbf{OR}};
+\end{scope}
+% NAND
+\begin{scope}[xshift=11.0cm]
+\draw[thick,popink] (0,0) -- (0.5,0) arc(-90:90:0.5) -- (0,1) -- cycle;
+\draw[thick,popink,fill=white] (1.12,0.5) circle (0.12);
+\draw[thick] (-0.6,0.75) node[left]{$A$} -- (0,0.75);
+\draw[thick] (-0.6,0.25) node[left]{$B$} -- (0,0.25);
+\draw[thick] (1.24,0.5) -- (1.8,0.5) node[right]{$Q=\overline{A\cdot B}$};
+\node at (0.6,-0.5) {\textbf{NAND}};
+\end{scope}
+% NOR
+\begin{scope}[xshift=7.2cm,yshift=-2.6cm]
+\draw[thick,popink] (0,0) .. controls (0.25,0.3) and (0.25,0.7) .. (0,1)
+ .. controls (0.55,0.9) and (0.95,0.75) .. (1.15,0.5)
+ .. controls (0.95,0.25) and (0.55,0.1) .. (0,0);
+\draw[thick,popink,fill=white] (1.27,0.5) circle (0.12);
+\draw[thick] (-0.6,0.75) node[left]{$A$} -- (0.12,0.75);
+\draw[thick] (-0.6,0.25) node[left]{$B$} -- (0.12,0.25);
+\draw[thick] (1.39,0.5) -- (1.95,0.5) node[right]{$Q=\overline{A+B}$};
+\node at (0.7,-0.5) {\textbf{NOR}};
+\end{scope}
+\end{tikzpicture}
+\legende{Symbols of the five basic logic gates. The small circle (bubble) always indicates inversion.}
+\end{center}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & NOT $A$ & AND $A\cdot B$ & OR $A+B$ & NAND $\overline{A\cdot B}$ & NOR $\overline{A+B}$ \\
+\hline
+0 & 0 & 1 & 0 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 1 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 1 & 1 & 0 \\
+\hline
+1 & 1 & 0 & 1 & 1 & 0 & 0 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[The five gates in words]
+\begin{itemize}
+\item \textbf{NOT} (inverter): the output is the opposite of the input.
+\item \textbf{AND}: output is 1 only if \emph{both} inputs are 1.
+\item \textbf{OR}: output is 1 if \emph{at least one} input is 1.
+\item \textbf{NAND}: AND followed by NOT --- output is 0 only when both inputs are 1.
+\item \textbf{NOR}: OR followed by NOT --- output is 1 only when both inputs are 0.
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Symbol traps at the GCE]
+\begin{itemize}
+\item Do not confuse AND and OR: the AND symbol has a \emph{flat} input side and a rounded output side; the OR symbol is \emph{curved} on both sides, pointed at the output.
+\item Never forget the \textbf{inversion bubble} on NAND and NOR. A NAND drawn without its bubble is an AND, and your whole truth table will be wrong. The bubble means ``invert'' wherever it appears, input or output.
+\item In Boolean expressions, the bar covers exactly what is inverted: $\overline{A\cdot B}$ (NAND) is \emph{not} the same as $\overline{A}\cdot\overline{B}$.
+\end{itemize}
+\end{attention}
+
+\courssub{Realising Gates with Transistors: the RTL Inverter}
+
+Logic gates are physically built from transistor switches. The simplest example is the \cle{RTL inverter} (resistor--transistor logic): an npn transistor with a collector resistor $R_C$ connected to $+V_{CC}$, the input $A$ applied to the base through a resistor, and the output $Q$ taken at the collector.
+
+\begin{itemize}
+\item If $A = 0$ (input at $0\ \mathrm{V}$): no base current, the transistor is \textbf{cut off}, $I_C = 0$, so there is no voltage drop across $R_C$ and $Q \approx V_{CC}$: output is \textbf{1}.
+\item If $A = 1$ (input HIGH): base current flows, the transistor \textbf{saturates}, $V_{CE} \approx 0$ and $Q \approx 0\ \mathrm{V}$: output is \textbf{0}.
+\end{itemize}
+
+The output is always the opposite of the input: this is exactly the NOT gate. Adding a second input transistor in parallel turns the same circuit into a NOR gate (the output falls to 0 if \emph{either} transistor conducts), and combinations of such gates build every digital system, from a simple alarm to a microprocessor containing billions of transistors.
+
+\begin{exoresolu}[Analysing a combination of gates]
+Inputs $A$ and $B$ feed an AND gate; the output of this AND gate and a third input $C$ feed an OR gate. Write the expression for the final output $Q$ and give its truth table.
+\tcblower
+\textbf{Solution.} The intermediate signal is $X = A\cdot B$, and the output is $Q = X + C = A\cdot B + C$. With $n = 3$ inputs there are $2^3 = 8$ rows:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $C$ & $X=A\cdot B$ & $Q=X+C$ \\
+\hline
+0 & 0 & 0 & 0 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 1 \\
+\hline
+0 & 1 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 0 & 1 \\
+\hline
+1 & 0 & 0 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 1 \\
+\hline
+1 & 1 & 0 & 1 & 1 \\
+\hline
+1 & 1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+Check: $Q = 0$ only when $C = 0$ and at least one of $A$, $B$ is 0 --- consistent with the circuit.
+\end{exoresolu}
+
+\begin{exercice}[Transistor currents and switching]
+\begin{enumerate}
+\item A transistor has $I_C = 4.8\ \mathrm{mA}$ and $I_B = 40\ \mu\mathrm{A}$. Calculate $\beta$ and $I_E$.
+\item In a switching circuit the supply is $V_{CC} = 9\ \mathrm{V}$ and the collector resistor is $R_C = 1.5\ \mathrm{k\Omega}$. Calculate the collector current at saturation (take $V_{CE,\mathrm{sat}} \approx 0$).
+\item Draw the truth table of a two-input NOR gate and state in words when its output is 1.
+\item The output of a two-input OR gate is connected to the input of a NOT gate. Name the single equivalent gate and write its Boolean expression.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item $\beta = I_C / I_B = 4.8\ \mathrm{mA} / 0.040\ \mathrm{mA} = 120$; $I_E = I_B + I_C = 0.040 + 4.8 = 4.84\ \mathrm{mA}$.
+\item $I_{C,\mathrm{sat}} = V_{CC}/R_C = 9 / 1500 = 6.0\times 10^{-3}\ \mathrm{A} = 6.0\ \mathrm{mA}$.
+\item NOR output: 1, 0, 0, 0 for inputs 00, 01, 10, 11. The output is 1 only when \emph{both} inputs are 0.
+\item OR followed by NOT is a \textbf{NOR} gate: $Q = \overline{A + B}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item A BJT has three terminals --- emitter, base, collector --- and exists in npn and pnp forms; the arrow on the emitter gives the direction of conventional current.
+\item Normal operation: base--emitter forward biased ($V_{BE} \approx 0.7\ \mathrm{V}$ for silicon), base--collector reverse biased; then $I_E = I_B + I_C$ and $I_C = \beta I_B$ with $\beta$ typically $50$--$500$.
+\item As a \textbf{switch}, the transistor operates between cut-off (OFF, $I_C = 0$) and saturation (ON, $V_{CE} \approx 0$, $I_C \approx V_{CC}/R_C$).
+\item As a \textbf{common-emitter amplifier}, a small input signal produces a larger output signal, inverted by $180^\circ$.
+\item Digital gates (NOT, AND, OR, NAND, NOR) are described by truth tables and are physically built from transistor switches; the bubble on a symbol means inversion.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+By the end of this activity, you should be able to:
+
+\begin{itemize}
+\item apply the theory of the \cle{bridge rectifier} and the \cle{smoothing capacitor} to convert a low-voltage a.c. supply into a usable d.c. supply;
+\item use the \cle{potential divider} idea together with a light-dependent resistor (LDR) to sense darkness;
+\item operate an \cle{npn transistor} as a \cle{switch} (cut-off and saturation), and compute the base and collector currents using $I_E = I_B + I_C$ and $\beta = I_C/I_B$;
+\item sketch and interpret the waveforms at the key points of the circuit;
+\item justify, in correct physical language, the choice and polarity of every component, and communicate a complete design to an audience.
+\end{itemize}
+
+This activity integrates Lessons 45, 47 and 49: it is exactly the kind of multi-skill design task that the GCE Advanced Level practical and structured papers reward.
+
+\courssub{Situation}
+
+\begin{experience}[An automatic security lamp for a home in Bamenda]
+Manka's family lives in Nkwen, Bamenda. Their compound is lit at night by a small lamp that someone must remember to switch on every evening and off every morning. During the rainy season the family often forgets, and the compound stays dark, which is unsafe. Manka's uncle, a technician, gives her a small transformer (of the type used with solar kits and battery chargers) which delivers an a.c. voltage of r.m.s. value $V_{\mathrm{rms}} = 12\ \mathrm{V}$ at frequency $f = 50\ \mathrm{Hz}$. He challenges her: \emph{``Use what you learnt in Physics to build a lamp that switches itself on at night and off at dawn.''}
+
+Manka decides to design a low-voltage automatic LED lamp with the following available components:
+
+\begin{itemize}
+\item four silicon junction diodes, each with a forward voltage drop $V_F = 0.7\ \mathrm{V}$ when conducting;
+\item an electrolytic smoothing capacitor $C = 1000\ \mu\mathrm{F}$;
+\item an LDR whose resistance is $R_{\mathrm{LDR}} \approx 1\ \mathrm{k\Omega}$ in daylight and $R_{\mathrm{LDR}} \approx 100\ \mathrm{k\Omega}$ in darkness;
+\item an npn silicon transistor with current gain $\beta = 200$ and base--emitter voltage $V_{BE} = 0.7\ \mathrm{V}$ when conducting;
+\item a fixed resistor $R = 10\ \mathrm{k\Omega}$ and a base resistor $R_B$ to be determined;
+\item an LED lamp unit which requires $I_C = 20\ \mathrm{mA}$ at about $12\ \mathrm{V}$ d.c.
+\end{itemize}
+
+The design must: (i) rectify and smooth the $12\ \mathrm{V}$ a.c. into a nearly steady d.c. supply; (ii) sense night and day with the LDR; (iii) switch the LED lamp on automatically at night using the transistor. Manka must justify every choice and present the full circuit to her classmates.
+\end{experience}
+
+\courssub{Tasks}
+
+\textbf{Part A: From a.c. to d.c.}\par
+\begin{enumerate}
+\item Calculate the peak value $V_m$ of the transformer output voltage.
+\item Draw the bridge rectifier circuit with four diodes and the load, indicating the direction of the current through the load for each half-cycle.
+\item Explain why the peak d.c. voltage across the load is approximately $V_m - 2V_F$, and compute its value.
+\item Sketch, on the same time axis over two periods, the a.c. input voltage and the rectified voltage without a capacitor.
+\item Explain the role of the smoothing capacitor $C$ and sketch the smoothed voltage. Estimate the ripple and explain why the d.c. level stays close to the peak value.
+\end{enumerate}
+
+\textbf{Part B: Sensing the night}\par
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item The fixed resistor $R = 10\ \mathrm{k\Omega}$ and the LDR form a potential divider across the d.c. supply, with $R$ connected to $+V_{CC}$ (top) and the LDR connected to ground (bottom). The base of the transistor is fed from the junction of the divider through $R_B$. Write the expression for the voltage $V_B$ at the junction of the divider.
+\item Compute $V_B$ (i) in daylight and (ii) in darkness, taking $V_{CC} = 15.3\ \mathrm{V}$. In each case, decide whether the transistor conducts, given that the base--emitter junction needs $V_{BE} \approx 0.7\ \mathrm{V}$ to conduct and that the base is fed through a large resistor $R_B$.
+\item Explain why the LDR is placed \emph{below} $R$ (on the ground side) and not above it. What would happen if the positions were swapped?
+\end{enumerate}
+
+\textbf{Part C: The transistor as a switch}\par
+\begin{enumerate}
+\setcounter{enumi}{8}
+\item In darkness, assume the base current is $I_B = 0.15\ \mathrm{mA}$. Using $\beta = 200$, compute the collector current $I_C$ the transistor tries to pass, and check that it is sufficient for the LED lamp ($20\ \mathrm{mA}$).
+\item Using $I_E = I_B + I_C$, compute the emitter current when the lamp is on.
+\item The base resistor $R_B$ is chosen so that in darkness $I_B = 0.15\ \mathrm{mA}$ flows with $V_B \approx 13.9\ \mathrm{V}$ and $V_{BE} = 0.7\ \mathrm{V}$. Compute $R_B$ and choose a standard value; verify that the transistor still saturates.
+\item State the two operating modes of the transistor (cut-off and saturation) and explain why a switch must operate between these two regions rather than in the active region.
+\end{enumerate}
+
+\textbf{Part D: Communication}\par
+\begin{enumerate}
+\setcounter{enumi}{12}
+\item Draw the complete circuit (bridge rectifier, capacitor, divider, transistor, LED lamp) and prepare a two-minute explanation of its operation for the class, justifying the polarity of each diode and of the capacitor.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A: From a.c. to d.c.}\par
+
+\textbf{1.} The peak value of a sinusoidal voltage is
+\[
+V_m = V_{\mathrm{rms}}\sqrt{2} = 12 \times 1.414 \approx 17.0\ \mathrm{V}.
+\]
+
+\textbf{2.} The bridge rectifier:
+
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.9, transform shape]
+\draw (0,1) to[sV=$12\ \mathrm{V}$] (0,4);
+\draw (0,4) -- (2,4);
+\draw (2,4) to[D, l={$D_1$}] (5,4);
+\draw (5,1) to[D, l={$D_2$}] (5,4);
+\draw (2,1) to[D, l={$D_3$}] (2,4);
+\draw (2,1) to[D, l={$D_4$}] (5,1);
+\draw (0,1) -- (0,-0.3) -- (5,-0.3) -- (5,1);
+\draw (5,4) -- (7,4) to[R=$R_L$, v={$u_R$}] (7,0.4) -- (2,0.4) -- (2,1);
+\node[above] at (6,4) {$+$};
+\node[below] at (4.5,0.4) {$-$};
+\end{circuitikz}
+\end{center}
+\legende{Bridge rectifier: on each half-cycle, two diagonally opposite diodes conduct and the current through $R_L$ keeps the same direction.}
+\end{popfigure}
+
+During the positive half-cycle (upper a.c. terminal positive), $D_1$ and $D_4$ conduct; during the negative half-cycle, $D_2$ and $D_3$ conduct. In both cases the current flows through the load $R_L$ in the \textbf{same direction}: the output is \cle{full-wave rectified}.
+
+\textbf{3.} On each half-cycle the current passes through \emph{two} conducting diodes in series, so two forward drops are lost:
+\[
+V_{\mathrm{dc,peak}} = V_m - 2V_F = 17.0 - 2(0.7) = 15.6\ \mathrm{V}.
+\]
+Allowing for a small ripple, the smoothed supply is taken as $V_{CC} \approx 15.3\ \mathrm{V}$.
+
+\textbf{4. and 5.} Waveforms:
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=13cm, height=5.5cm, xlabel={$t$ (ms)}, ylabel={$u$ (V)},
+xmin=0, xmax=40, ymin=-18, ymax=18, xtick={0,10,20,30,40},
+ytick={-17,0,15.6,17}, grid=both, grid style={popline, dashed}, legend style={at={(0.98,0.05)}, anchor=south east, font=\small}]
+\addplot[popmuted, domain=0:40, samples=200] {17*sin(360*50*x/1000)};
+\addlegendentry{a.c. input}
+\addplot[popblue, very thick, domain=0:40, samples=400] {abs(17*sin(360*50*x/1000))-1.4};
+\addlegendentry{rectified (no $C$)}
+\addplot[poporange, very thick, domain=0:40, samples=400] {max(15.6-2*mod(x,10)/10, abs(17*sin(360*50*x/1000))-1.4)};
+\addlegendentry{smoothed (with $C$)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Input, full-wave rectified and smoothed voltages. The capacitor charges to the peak and discharges slowly between peaks (ripple exaggerated on the sketch for visibility).}
+\end{popfigure}
+
+The capacitor $C$ charges rapidly to the peak $15.6\ \mathrm{V}$ whenever the rectified voltage exceeds its own voltage, and discharges slowly through the load between peaks. With $C = 1000\ \mu\mathrm{F}$ and a load current of only $20\ \mathrm{mA}$, the discharge between two successive peaks ($\Delta t \approx 10\ \mathrm{ms}$, since the rectified voltage pulsates at $2f = 100\ \mathrm{Hz}$) gives a ripple of
+\[
+\Delta V \approx \frac{I\,\Delta t}{C} = \frac{0.020 \times 0.010}{1000\times 10^{-6}} = 0.2\ \mathrm{V},
+\]
+which is negligible compared with $15.6\ \mathrm{V}$: the supply is practically a steady $V_{CC} \approx 15.3\ \mathrm{V}$.
+
+\textbf{Part B: Sensing the night}\par
+
+\textbf{6.} With $R$ on top and the LDR to ground, the divider gives
+\[
+V_B = V_{CC}\,\frac{R_{\mathrm{LDR}}}{R + R_{\mathrm{LDR}}}.
+\]
+
+\textbf{7.} In daylight ($R_{\mathrm{LDR}} = 1\ \mathrm{k\Omega}$):
+\[
+V_B = 15.3 \times \frac{1}{10 + 1} \approx 1.39\ \mathrm{V}.
+\]
+At first sight $1.39\ \mathrm{V} > 0.7\ \mathrm{V}$, so we must check more carefully. As soon as the base--emitter junction conducts, it clamps the junction of the divider at about $0.7\ \mathrm{V}$. The divider behaves as a source of e.m.f. $1.39\ \mathrm{V}$ with internal resistance $R \parallel R_{\mathrm{LDR}} = \dfrac{10 \times 1}{10 + 1} \approx 0.91\ \mathrm{k\Omega}$, feeding the base through $R_B$ (of the order of $100\ \mathrm{k\Omega}$, see Part C). The base current is then only
+\[
+I_B \approx \frac{1.39 - 0.7}{0.91\ \mathrm{k\Omega} + R_B} \approx \frac{0.69}{101\ \mathrm{k\Omega}} \approx 7\ \mu\mathrm{A},
+\]
+giving $I_C \approx \beta I_B \approx 1.4\ \mathrm{mA} \ll 20\ \mathrm{mA}$: the LED unit is effectively \textbf{off} by day.
+
+In darkness ($R_{\mathrm{LDR}} = 100\ \mathrm{k\Omega}$):
+\[
+V_B = 15.3 \times \frac{100}{10 + 100} \approx 13.9\ \mathrm{V},
+\]
+which is more than enough to drive a strong base current through $R_B$ and turn the transistor fully \textbf{on}.
+
+\textbf{8.} The base must receive a \emph{high} voltage at night and a \emph{low} voltage by day. Since $R_{\mathrm{LDR}}$ is \emph{large} in darkness, the LDR must be the element \emph{across which} $V_B$ is developed, i.e. on the ground side of the divider. If the LDR were placed on top, then $V_B = V_{CC}\,\dfrac{R}{R + R_{\mathrm{LDR}}}$: by day $V_B = 15.3 \times \dfrac{10}{11} \approx 13.9\ \mathrm{V}$ (lamp on in sunshine!) and at night $V_B \approx 1.4\ \mathrm{V}$ (lamp off). The logic would be inverted — useless for a security lamp.
+
+\textbf{Part C: The transistor as a switch}\par
+
+\textbf{9.} The transistor attempts
+\[
+I_C = \beta I_B = 200 \times 0.15\ \mathrm{mA} = 30\ \mathrm{mA}.
+\]
+The lamp only draws $20\ \mathrm{mA}$, so the transistor is driven into \cle{saturation}: the lamp receives its full current and $V_{CE}$ falls to a small value ($V_{CE,\mathrm{sat}} \approx 0.2\ \mathrm{V}$). The design has a comfortable safety margin.
+
+\textbf{10.} With the lamp on, $I_C = 20\ \mathrm{mA}$ (fixed by the lamp, not by $\beta$) and
+\[
+I_E = I_B + I_C = 0.15 + 20 = 20.15\ \mathrm{mA} \approx 20.2\ \mathrm{mA}.
+\]
+Note that $I_E \approx I_C$ because $I_B \ll I_C$.
+
+\textbf{11.} Applying Kirchhoff's voltage law around the base loop in darkness:
+\[
+V_B = R_B I_B + V_{BE}
+\quad\Longrightarrow\quad
+R_B = \frac{V_B - V_{BE}}{I_B} = \frac{13.9 - 0.7}{0.15\times 10^{-3}} = 88\ \mathrm{k\Omega}.
+\]
+A standard value of $82\ \mathrm{k\Omega}$ is chosen. Strictly, the divider itself has an internal resistance $R \parallel R_{\mathrm{LDR}} = \dfrac{10 \times 100}{110} \approx 9.1\ \mathrm{k\Omega}$ in series with the base loop, so the actual base current is
+\[
+I_B \approx \frac{13.9 - 0.7}{82 + 9.1}\ \mathrm{mA} \approx 0.145\ \mathrm{mA},
+\]
+and $\beta I_B \approx 29\ \mathrm{mA} > 20\ \mathrm{mA}$: the transistor still saturates. The design is robust.
+
+\textbf{12.} In \cle{cut-off}, $V_{BE} < 0.7\ \mathrm{V}$, so $I_B = 0$ and $I_C = 0$: the switch is open (lamp off). In \cle{saturation}, $I_B$ is large enough that $I_C$ is limited only by the external circuit (the lamp), and $V_{CE} \approx 0$: the switch is closed (lamp fully on). In both states the power dissipated in the transistor, $P = V_{CE}I_C$, is very small (in cut-off $I_C \approx 0$; in saturation $V_{CE} \approx 0$). Operating instead in the active region would leave a large $V_{CE}$ across the transistor while a substantial $I_C$ flows: the transistor would heat up, waste energy, and the lamp would glow at an uncertain, partial brightness.
+
+\textbf{Part D: Complete circuit}\par
+
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.85, transform shape]
+\draw (0,1) to[sV=$12\ \mathrm{V}$] (0,4);
+\draw (0,4) -- (2,4);
+\draw (2,4) to[D] (5,4);
+\draw (5,1) to[D] (5,4);
+\draw (2,1) to[D] (2,4);
+\draw (2,1) to[D] (5,1);
+\draw (0,1) -- (0,-0.3) -- (5,-0.3) -- (5,1);
+\draw (5,4) -- (12.3,4);
+\draw (2,1) -- (2,0.4) -- (12.3,0.4);
+\draw (6.5,4) to[C=$C$] (6.5,0.4);
+\draw (8.5,4) to[R=$R$] (8.5,2.5);
+\draw (8.5,2.5) to[photoresistor, l={$R_{\mathrm{LDR}}$}] (8.5,0.4);
+\draw (8.5,2.5) to[R=$R_B$] (10.6,2.5);
+\draw (12.3,4) to[lamp, l=LED lamp] (12.3,3.0);
+\draw (12.3,3.0) node[npn, anchor=C](Q){};
+\draw (10.6,2.5) -- (Q.B);
+\draw (Q.E) -- (12.3,0.4);
+\node[above] at (10.5,4) {$+V_{CC} \approx 15.3\ \mathrm{V}$};
+\node[below] at (10.5,0.4) {$0\ \mathrm{V}$};
+\end{circuitikz}
+\end{center}
+\legende{Complete automatic security lamp: bridge rectifier, smoothing capacitor, $R$/LDR potential divider and npn transistor switching the LED lamp.}
+\end{popfigure}
+
+\textbf{Explanation to the class.} The transformer delivers $12\ \mathrm{V}$ a.c.; the four diodes, arranged as a bridge with their polarities chosen so that each half-cycle is redirected the same way through the output, produce a pulsating d.c. of peak $15.6\ \mathrm{V}$. The electrolytic capacitor — connected with its positive terminal to the positive rail, otherwise it would be damaged — smooths this to about $15.3\ \mathrm{V}$ with a ripple of only $0.2\ \mathrm{V}$. By day the LDR has a low resistance ($1\ \mathrm{k\Omega}$), the divider holds the base line too low to drive any significant current, the transistor is cut off and the lamp is off. At night the LDR resistance rises to about $100\ \mathrm{k\Omega}$, the divider voltage rises to about $13.9\ \mathrm{V}$, a base current $I_B \approx 0.15\ \mathrm{mA}$ flows through $R_B = 82\ \mathrm{k\Omega}$, and since $\beta I_B \approx 29\ \mathrm{mA} > 20\ \mathrm{mA}$ the transistor saturates and the LED lamp lights fully. At dawn the process reverses automatically. Manka's compound is now lit every night — with no one needing to remember a switch.
+
+\begin{attention}[Common mistakes in this activity]
+\begin{itemize}
+\item Forgetting the factor $\sqrt{2}$ between r.m.s. and peak values: $V_m = V_{\mathrm{rms}}\sqrt{2}$.
+\item Subtracting only one diode drop in a bridge rectifier: the current always crosses \textbf{two} conducting diodes, so the peak output is $V_m - 2V_F$.
+\item Reversing the electrolytic capacitor or the diodes: an electrolytic capacitor connected backwards can be destroyed.
+\item Placing the LDR on the wrong side of the divider, which inverts the day/night logic: the element whose resistance \emph{increases} at night must be the one \emph{across which} the base voltage is taken.
+\item Using $I_C = \beta I_B$ blindly in saturation: in saturation $I_C$ is fixed by the external circuit (the lamp), not by $\beta$; the condition $\beta I_B > I_{C,\mathrm{load}}$ is precisely what guarantees saturation.
+\item Comparing the open-circuit divider voltage directly with $0.7\ \mathrm{V}$ without checking the loading effect of the base--emitter junction: once the junction conducts, it clamps the node near $0.7\ \mathrm{V}$ and only a small current flows through the large base resistor.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1 — Analysing the Electron Gun: Energy Gained and Speed of Electrons}
+
+In a cathode-ray tube, the \cle{electron gun} produces a fine, fast beam of electrons. A metal filament (the \cle{cathode}) is heated by a current until it glows; the thermal agitation gives some electrons enough energy to escape from the metal surface. This is \cle{thermionic emission} --- exactly analogous to the evaporation of water molecules from a hot surface. The emitted electrons are then accelerated towards a perforated \cle{anode} held at a high positive potential $V_A$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, >=stealth]
+% evacuated tube outline
+\draw[thick, popink, rounded corners=6pt] (-0.4,-1.6) rectangle (9.4,1.6);
+% cathode
+\draw[very thick, poporange] (0.2,-0.5) -- (0.2,0.5);
+\node[popdark, align=center, text width=1.6cm] at (0.2,-1.1) {\small cathode (heated)};
+% heater
+\draw[poporange] (0.0,-0.7) sin (0.1,-0.85) cos (0.2,-0.7) sin (0.3,-0.85) cos (0.4,-0.7);
+% anode
+\draw[very thick, popblue] (2.2,-0.8) -- (2.2,-0.15);
+\draw[very thick, popblue] (2.2,0.15) -- (2.2,0.8);
+\node[popdark] at (2.2,-1.2) {\small anode $+V_A$};
+% electron paths
+\draw[->, poppurple, thick] (0.35,0.1) -- (2.05,0.06);
+\draw[->, poppurple, thick] (0.35,-0.1) -- (2.05,-0.06);
+\draw[->, poppurple, thick] (2.35,0) -- (8.9,0);
+\node[poppurple] at (5.6,0.35) {\small electron beam, speed $v$};
+% screen
+\draw[very thick, popgreen] (9.0,-1.2) -- (9.0,1.2);
+\node[popdark, align=center, text width=1.6cm] at (9.0,-1.55) {\small fluorescent screen};
+% supply
+\draw (0.2,-0.5) -- (0.2,-2.2) -- (2.2,-2.2) -- (2.2,-0.8);
+\draw[thick] (1.0,-2.2) -- (1.0,-2.0);
+\draw[thick] (1.4,-2.2) -- (1.4,-2.4);
+\node[popdark] at (1.2,-2.7) {\small accelerating p.d.\ $V_A$};
+\end{tikzpicture}
+\end{center}
+\legende{The electron gun: thermionic emission at the hot cathode, acceleration through the p.d.\ $V_A$, and a narrow beam emerging through the hole in the anode.}
+\end{popfigure}
+
+\begin{methode}[Speed of an electron accelerated through a p.d.]
+When an electron (charge $-e$, mass $m_e$) is emitted thermionically from a hot cathode and accelerated through a potential difference $V_A$ (the \cle{anode voltage}), follow these steps:
+\begin{enumerate}
+\item \textbf{Apply energy conservation.} The kinetic energy gained equals the electric potential energy lost:
+\[ eV_A = \tfrac{1}{2}m_e v^2 \]
+(assuming the electron leaves the cathode with negligible speed).
+\item \textbf{Solve for the speed:}
+\[ v = \sqrt{\dfrac{2eV_A}{m_e}} \]
+\item \textbf{Check the units:} $eV_A$ in joules, $m_e$ in kg, $v$ in $\mathrm{m\,s^{-1}}$.
+\item \textbf{Convert to electron-volts if needed:} an electron accelerated through $V$ volts gains a kinetic energy of $V$ electron-volts; $1\ \mathrm{eV} = 1.60\times10^{-19}\ \mathrm{J}$.
+\item \textbf{Sanity check:} the speed must be less than $c = 3.00\times10^{8}\ \mathrm{m\,s^{-1}}$. If your answer exceeds $c$, you have made an error (at GCE level relativistic corrections are not required, but such speeds signal a mistake).
+\end{enumerate}
+\textbf{Key data:} $e = 1.60\times10^{-19}\ \mathrm{C}$, $m_e = 9.11\times10^{-31}\ \mathrm{kg}$.
+\end{methode}
+
+\begin{exoresolu}[Electron gun of a cathode-ray tube]
+In the electron gun of a cathode-ray oscilloscope, electrons are emitted from a heated cathode with negligible initial speed and are accelerated towards an anode held at a potential of $+2000\ \mathrm{V}$ relative to the cathode.
+\begin{enumerate}
+\item Calculate the kinetic energy of an electron as it passes through the hole in the anode, in joules and in electron-volts.
+\item Calculate the speed of the electron at the anode.
+\item The beam carries a current of $0.50\ \mathrm{mA}$. Calculate the number of electrons reaching the screen each second.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Kinetic energy.} By energy conservation, the work done by the electric field becomes kinetic energy:
+\[ E_k = eV_A = (1.60\times10^{-19}\ \mathrm{C})(2000\ \mathrm{V}) = 3.20\times10^{-16}\ \mathrm{J}. \]
+In electron-volts, an electron accelerated through $2000\ \mathrm{V}$ gains
+\[ E_k = 2000\ \mathrm{eV} = 2.0\ \mathrm{keV}. \]
+\item \textbf{Speed.} From $\tfrac{1}{2}m_e v^2 = eV_A$:
+\[ v = \sqrt{\dfrac{2eV_A}{m_e}} = \sqrt{\dfrac{2\times(1.60\times10^{-19})\times 2000}{9.11\times10^{-31}}} = \sqrt{7.03\times10^{14}} = 2.65\times10^{7}\ \mathrm{m\,s^{-1}}. \]
+This is about $9\%$ of the speed of light: acceptable, and below $c$ as required.
+\item \textbf{Number of electrons per second.} Current is the rate of flow of charge, $I = \dfrac{Q}{t} = \dfrac{Ne}{t}$, so
+\[ \dfrac{N}{t} = \dfrac{I}{e} = \dfrac{0.50\times10^{-3}}{1.60\times10^{-19}} = 3.13\times10^{15}\ \text{electrons per second}. \]
+\end{enumerate}
+\textbf{Comment.} Note the huge number of electrons per second even for a small beam current: this is why the screen of a CRO glows continuously.
+\end{exoresolu}
+
+\courssub{Method 2 — Deflection of an Electron Beam in a Uniform Electric Field}
+
+Once the beam leaves the gun, the CRO steers it with two pairs of deflecting plates. Between a pair of parallel plates the field is uniform, $E = V/d$, so the electron experiences a \emph{constant} force while between the plates --- exactly the same mathematics as projectile motion in a uniform gravitational field, with $eE/m_e$ playing the role of $g$.
+
+\begin{methode}[Deflection between parallel plates]
+An electron travelling horizontally with speed $v$ enters the uniform field $E = V/d$ between deflecting plates of length $l$ separated by $d$.
+\begin{enumerate}
+\item \textbf{Resolve the motion.} Horizontally: constant velocity, so the time between the plates is $t = l/v$. Vertically: constant acceleration
+\[ a = \dfrac{F}{m_e} = \dfrac{eE}{m_e} = \dfrac{eV}{m_e d}. \]
+\item \textbf{Vertical displacement inside the plates:} $y = \tfrac{1}{2}at^2 = \dfrac{eVl^2}{2m_e d\, v^2}$.
+\item \textbf{Exit angle:} $\tan\theta = \dfrac{v_y}{v} = \dfrac{at}{v}$.
+\item \textbf{Deflection on the screen:} after leaving the plates the electron travels in a straight line; add $D\tan\theta$ where $D$ is the plate-to-screen distance.
+\item \textbf{Direction:} electrons are deflected \emph{towards the positive plate} (force opposite to $\vec{E}$ since $q=-e$).
+\end{enumerate}
+\textbf{Reflex:} always compute $t = l/v$ first; everything else follows from it.
+\end{methode}
+
+\begin{exoresolu}[Deflection in a CRO]
+An electron is accelerated from rest through a p.d. of $1500\ \mathrm{V}$ and then passes midway between two horizontal deflecting plates of length $l = 2.0\ \mathrm{cm}$ and separation $d = 5.0\ \mathrm{mm}$, across which a p.d. of $50\ \mathrm{V}$ is applied.
+\begin{enumerate}
+\item Calculate the speed of the electron on entering the plates.
+\item Calculate the time spent between the plates.
+\item Calculate the vertical deflection of the electron while between the plates.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Speed:}
+\[ v = \sqrt{\dfrac{2eV_A}{m_e}} = \sqrt{\dfrac{2\times1.60\times10^{-19}\times1500}{9.11\times10^{-31}}} = 2.30\times10^{7}\ \mathrm{m\,s^{-1}}. \]
+\item \textbf{Time of flight:}
+\[ t = \dfrac{l}{v} = \dfrac{2.0\times10^{-2}}{2.30\times10^{7}} = 8.71\times10^{-10}\ \mathrm{s}. \]
+\item \textbf{Deflection.} The field between the plates is
+\[ E = \dfrac{V}{d} = \dfrac{50}{5.0\times10^{-3}} = 1.0\times10^{4}\ \mathrm{V\,m^{-1}}. \]
+The vertical acceleration is
+\[ a = \dfrac{eE}{m_e} = \dfrac{1.60\times10^{-19}\times1.0\times10^{4}}{9.11\times10^{-31}} = 1.76\times10^{15}\ \mathrm{m\,s^{-2}}. \]
+Hence
+\[ y = \tfrac{1}{2}at^2 = \tfrac{1}{2}\times1.76\times10^{15}\times(8.71\times10^{-10})^2 = 6.7\times10^{-4}\ \mathrm{m} = 0.67\ \mathrm{mm}. \]
+The deflection is towards the positive plate.
+\end{enumerate}
+\textbf{Check:} $y \ll d/2 = 2.5\ \mathrm{mm}$, so the electron does not strike the plate: the answer is physically consistent.
+\end{exoresolu}
+
+\courssub{Method 3 — Semiconductors: Carrier Density, Doping and Conductivity}
+
+\begin{methode}[Intrinsic and doped semiconductors]
+\begin{enumerate}
+\item \textbf{Intrinsic semiconductor} (pure Si or Ge): thermal energy breaks covalent bonds, creating \cle{electron--hole pairs}. At all times $n = p = n_i$ (equal concentrations of free electrons and holes).
+\item \textbf{n-type doping:} add a Group V element (P, As, Sb) with 5 valence electrons. Each donor atom gives one free electron: $n \approx N_D$, holes are the minority carriers.
+\item \textbf{p-type doping:} add a Group III element (B, Al, Ga, In) with 3 valence electrons. Each acceptor atom creates one hole: $p \approx N_A$, electrons are the minority carriers.
+\item \textbf{Conductivity:} both carrier types conduct:
+\[ \sigma = e(n\mu_n + p\mu_p) \qquad\text{and}\qquad R = \dfrac{l}{\sigma A}. \]
+\item \textbf{Effect of temperature:} unlike metals, the resistance of a semiconductor \emph{decreases} as temperature rises, because more electron--hole pairs are created. This is the basis of the \cle{thermistor}.
+\end{enumerate}
+\textbf{Reflex:} identify the dopant's group first (III $\Rightarrow$ p-type, V $\Rightarrow$ n-type) before any calculation.
+\end{methode}
+
+\begin{exoresolu}[Doping a silicon crystal]
+A small silicon crystal of length $4.0\ \mathrm{mm}$ and cross-sectional area $1.0\ \mathrm{mm^2}$ is doped with phosphorus so that the concentration of free electrons is $n = 5.0\times10^{21}\ \mathrm{m^{-3}}$. The mobility of the electrons is $\mu_n = 0.14\ \mathrm{m^2\,V^{-1}\,s^{-1}}$; the contribution of holes is negligible.
+\begin{enumerate}
+\item State the type of semiconductor obtained and name the majority and minority carriers.
+\item Calculate the conductivity of the doped crystal.
+\item Calculate its resistance.
+\item Explain what happens to this resistance when the crystal is heated.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Phosphorus is in Group V (5 valence electrons), so it is a \textbf{donor}: the crystal is \textbf{n-type}. Majority carriers: free electrons; minority carriers: holes.
+\item \textbf{Conductivity:}
+\[ \sigma = en\mu_n = (1.60\times10^{-19})(5.0\times10^{21})(0.14) = 112\ \mathrm{S\,m^{-1}}. \]
+\item \textbf{Resistance:}
+\[ R = \dfrac{l}{\sigma A} = \dfrac{4.0\times10^{-3}}{112\times1.0\times10^{-6}} = 35.7\ \Omega \approx 36\ \Omega. \]
+\item On heating, more covalent bonds break and more electron--hole pairs are created, so $n$ (and $p$) increase. Since $\sigma = en\mu_n$ grows, the resistance \textbf{decreases}. This negative temperature coefficient is the opposite of the behaviour of a metal such as copper, whose resistance increases with temperature.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 4 — The Junction Diode: Biasing and Simple Circuit Calculations}
+
+Where p-type and n-type materials meet, electrons diffuse across the boundary and recombine with holes, leaving a thin \cle{depletion layer} with a built-in potential barrier. This \cle{p--n junction} conducts easily in one direction only: it is a \cle{diode}.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+\begin{axis}[
+  width=9.5cm, height=6.5cm,
+  axis lines=middle,
+  xlabel={$V$ / V}, ylabel={$I$},
+  xmin=-4.5, xmax=1.6, ymin=-1.2, ymax=4.2,
+  xtick={-4,-3,-2,-1,0,0.6,1},
+  ytick=\empty,
+  x label style={at={(ticklabel* cs:1.02)}, anchor=west},
+  y label style={at={(ticklabel* cs:1.05)}, anchor=south},
+  every axis plot/.append style={very thick, popblue},
+]
+\addplot[domain=-3.4:0.55, samples=60] {0.02};
+\addplot[domain=0.55:1.15, samples=60] {0.02 + 14*(x-0.55)^2};
+\addplot[domain=-4.2:-3.4, samples=20] {0.02 - 2.2*(x+3.4)^2};
+\end{axis}
+\node[popdark] at (8.3,4.6) {\small forward bias};
+\node[popdark] at (1.6,4.6) {\small reverse bias};
+\node[popdark] at (6.9,2.15) {\small $V_\gamma \approx 0.6$ V};
+\node[popdark, align=center] at (0.9,1.3) {\small breakdown};
+\end{tikzpicture}
+\end{center}
+\legende{Characteristic $I$--$V$ curve of a silicon junction diode: negligible current in reverse bias (until breakdown), rapid rise beyond the knee voltage $V_\gamma$ in forward bias.}
+\end{popfigure}
+
+\begin{methode}[Analysing a diode circuit]
+\begin{enumerate}
+\item \textbf{Identify the bias.} The diode is \cle{forward biased} when the p-side (anode) is connected to the positive terminal; it conducts once $V \geq V_\gamma$ (about $0.6\ \mathrm{V}$ for Si, $0.2\ \mathrm{V}$ for Ge). It is \cle{reverse biased} when the p-side is at the lower potential: only a tiny leakage current flows (until breakdown).
+\item \textbf{Model for calculations:} replace a conducting silicon diode by a $0.6\ \mathrm{V}$ source opposing the current; replace a non-conducting diode by an open switch.
+\item \textbf{Apply Kirchhoff's voltage law} to the loop to find the current:
+\[ I = \dfrac{E - V_\gamma}{R}. \]
+\item \textbf{Always include a series resistor} to limit the current; a diode connected directly across a supply is destroyed.
+\item \textbf{Rectification:} in half-wave rectification the diode passes only the positive half-cycles; with a bridge of four diodes both half-cycles are rectified (full-wave). A large capacitor in parallel with the load smooths the output.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Diode in a d.c. circuit]
+A silicon diode is connected in series with a resistor $R = 220\ \Omega$ across a $9.0\ \mathrm{V}$ battery, the anode of the diode being connected to the positive terminal. Take the knee voltage of the diode as $0.6\ \mathrm{V}$.
+\begin{enumerate}
+\item State the bias of the diode and justify your answer.
+\item Calculate the current in the circuit.
+\item Calculate the power dissipated in the resistor.
+\item The battery is now reversed. State, with a reason, the new value of the current.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item The anode (p-side) is at the higher potential: the diode is \textbf{forward biased}, and since $9.0\ \mathrm{V} > 0.6\ \mathrm{V}$ it conducts.
+\item \textbf{Current.} Kirchhoff's voltage law around the loop:
+\[ E = V_\gamma + RI \quad\Longrightarrow\quad I = \dfrac{E - V_\gamma}{R} = \dfrac{9.0 - 0.6}{220} = 3.82\times10^{-2}\ \mathrm{A} \approx 38\ \mathrm{mA}. \]
+\item \textbf{Power in the resistor:}
+\[ P = RI^2 = 220\times(3.82\times10^{-2})^2 = 0.32\ \mathrm{W}. \]
+\item With the battery reversed, the anode is now at the lower potential: the diode is \textbf{reverse biased} and behaves as an open switch. The current is essentially \textbf{zero} (in reality a negligible leakage current of the order of microamperes flows).
+\end{enumerate}
+\end{exoresolu}
+
+\begin{attention}[Common mistake with the knee voltage]
+Do not write $I = E/R = 41\ \mathrm{mA}$ in the exercise above: that ignores the $0.6\ \mathrm{V}$ dropped across the conducting diode. Always subtract the knee voltage first.
+\end{attention}
+
+\courssub{Method 5 — Rectification: Reading and Using CRO Waveforms}
+
+\begin{methode}[Interpreting rectifier output on a CRO]
+\begin{enumerate}
+\item \textbf{Read the CRO settings:} peak voltage $V_0 = (\text{number of divisions})\times(\text{V/div})$; period $T = (\text{divisions per cycle})\times(\text{time/div})$, then $f = 1/T$.
+\item \textbf{Half-wave:} the output shows one pulse per input cycle; the negative half is missing. Output frequency $=$ input frequency.
+\item \textbf{Full-wave (bridge):} two pulses per input cycle; output ripple frequency $= 2f$.
+\item \textbf{Smoothing:} a capacitor across the load charges to $V_0$ and discharges slowly through the load between peaks, giving a nearly steady d.c. with a small ripple. Larger $C$ or larger $R$ $\Rightarrow$ smaller ripple.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+% input a.c.
+\begin{scope}
+\draw[->, popmuted] (0,0) -- (4.4,0) node[right, popdark]{\small $t$};
+\draw[->, popmuted] (0,-1.3) -- (0,1.5) node[above, popdark]{\small $V$};
+\draw[very thick, popblue, domain=0:4.2, samples=100] plot (\x, {1.1*sin(270*\x)});
+\node[popdark] at (2.1,-1.7) {\small a.c.\ input};
+\end{scope}
+% full-wave rectified
+\begin{scope}[xshift=5.2cm]
+\draw[->, popmuted] (0,0) -- (4.4,0) node[right, popdark]{\small $t$};
+\draw[->, popmuted] (0,-1.3) -- (0,1.5) node[above, popdark]{\small $V$};
+\draw[very thick, poporange, domain=0:4.2, samples=100] plot (\x, {1.1*abs(sin(270*\x))});
+\node[popdark] at (2.1,-1.7) {\small full-wave output};
+\end{scope}
+% smoothed
+\begin{scope}[xshift=10.4cm]
+\draw[->, popmuted] (0,0) -- (4.4,0) node[right, popdark]{\small $t$};
+\draw[->, popmuted] (0,-1.3) -- (0,1.5) node[above, popdark]{\small $V$};
+\draw[very thick, popgreen, domain=0:4.2, samples=200] plot (\x, {1.1*abs(sin(270*\x))});
+\draw[very thick, poppurple, domain=0:4.2, samples=200] plot (\x, {0.92 + 0.18*abs(sin(270*\x))});
+\node[popdark] at (2.1,-1.7) {\small smoothed output};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{From a.c.\ to steady d.c.: the bridge rectifier flips the negative half-cycles up (two pulses per period), and the smoothing capacitor fills the gaps between peaks.}
+\end{popfigure}
+
+\begin{exoresolu}[Full-wave rectifier on a CRO]
+The $240\ \mathrm{V}$, $50\ \mathrm{Hz}$ mains supply in Yaound\'e is stepped down and fed to a bridge rectifier. The smoothed output is used to charge a phone battery.
+\begin{enumerate}
+\item Sketch (describe) the waveform at the output of the bridge before smoothing, and state its ripple frequency.
+\item Explain, with the aid of the charge/discharge idea, how the smoothing capacitor reduces the ripple.
+\item On a CRO set to $5\ \mathrm{V/div}$, the smoothed output peaks at 3.6 divisions above the zero line. Calculate the peak output voltage.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Before smoothing, the output is a succession of identical positive half-sine pulses: during each half-cycle of the a.c. input, one pair of diodes of the bridge conducts, so \emph{both} half-cycles appear as positive pulses. There are two pulses per input period, so the ripple frequency is
+\[ f_r = 2\times 50 = 100\ \mathrm{Hz}. \]
+\item While the rectified voltage rises towards its peak, the capacitor charges rapidly to $V_0$. When the rectified voltage falls, the diodes stop conducting and the capacitor discharges \emph{slowly} through the load (time constant $RC$ large). The load voltage therefore falls only slightly before the next pulse recharges the capacitor: the output is a steady d.c. with a small ripple.
+\item \textbf{Peak voltage:}
+\[ V_0 = 3.6\times 5\ \mathrm{V} = 18\ \mathrm{V}. \]
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 6 — The Transistor as an Amplifier: Currents and Biasing}
+
+A bipolar junction transistor is a sandwich of three doped regions (n--p--n or p--n--p). In the \cle{common-emitter} amplifier below, a tiny base current $I_B$ controls a much larger collector current $I_C = \beta I_B$: the transistor is a current amplifier.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[european, scale=1.0, >=stealth]
+\draw (4,3) node[npn](Q){};
+\node[popdark] at (5.1,3.0) {\small $T$};
+\node[popdark, left] at (2.9,3.55) {\small C};
+\node[popdark, left] at (2.9,2.45) {\small E};
+\node[popdark, above] at (3.35,3.0) {\small B};
+\draw (Q.C) to[R=$R_C$, l_={$1.0\ \mathrm{k\Omega}$}] (4,5.4) -- (4,5.9);
+\draw (4,5.9) node[above, popdark]{\small $+V_{CC} = 9.0\ \mathrm{V}$};
+\draw (Q.B) to[R=$R_B$, l_={$470\ \mathrm{k\Omega}$}] (0.6,3) -- (0.6,5.9) -- (4,5.9);
+\draw (Q.E) -- (4,1.6) node[ground]{};
+\draw[->, poppurple, thick] (1.5,2.6) -- (1.5,3.4) node[midway, left, popdark]{\small $I_B$};
+\draw[->, poppurple, thick] (4.55,4.9) -- (4.55,4.1) node[midway, right, popdark]{\small $I_C$};
+\end{tikzpicture}
+\end{center}
+\legende{Common-emitter stage: $R_B$ fixes the base current, $R_C$ converts the collector current into an output voltage $V_{CE} = V_{CC} - R_C I_C$.}
+\end{popfigure}
+
+\begin{methode}[Analysing an npn transistor circuit]
+\begin{enumerate}
+\item \textbf{Recall the current relations:}
+\[ I_E = I_B + I_C, \qquad I_C = \beta I_B \quad(\beta = h_{FE} = \text{current gain, typically } 50\text{--}300). \]
+\item \textbf{Junction rule:} the base--emitter junction is a forward-biased diode, so for a conducting silicon transistor $V_{BE} \approx 0.6\ \mathrm{V}$; the base--collector junction is reverse biased (active mode).
+\item \textbf{Find $I_B$} from the base circuit: $I_B = \dfrac{V_{CC} - V_{BE}}{R_B}$.
+\item \textbf{Find $I_C = \beta I_B$}, then the output voltage:
+\[ V_{CE} = V_{CC} - R_C I_C. \]
+\item \textbf{Check the operating point:} for amplification the transistor must be in the active region, i.e.\ $V_{CE}$ well between $0$ (saturation) and $V_{CC}$ (cut-off). As a switch, it is driven between cut-off (OFF) and saturation (ON).
+\item \textbf{Voltage gain} of a common-emitter stage: $A_v = \dfrac{v_{out}}{v_{in}}$, with a phase inversion ($180^\circ$).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Common-emitter amplifier]
+An npn silicon transistor of current gain $\beta = 100$ is used in a common-emitter circuit with $V_{CC} = 9.0\ \mathrm{V}$, base resistor $R_B = 470\ \mathrm{k\Omega}$ and collector resistor $R_C = 1.0\ \mathrm{k\Omega}$. Take $V_{BE} = 0.6\ \mathrm{V}$.
+\begin{enumerate}
+\item Calculate the base current $I_B$.
+\item Calculate the collector current $I_C$ and the emitter current $I_E$.
+\item Calculate $V_{CE}$ and verify that the transistor operates in its active region.
+\item A small a.c. signal raises $I_B$ by $2.0\ \mathrm{\mu A}$. Calculate the corresponding change in the output voltage $V_{CE}$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Base current:}
+\[ I_B = \dfrac{V_{CC} - V_{BE}}{R_B} = \dfrac{9.0 - 0.6}{470\times10^{3}} = 1.79\times10^{-5}\ \mathrm{A} \approx 18\ \mathrm{\mu A}. \]
+\item \textbf{Collector and emitter currents:}
+\[ I_C = \beta I_B = 100\times1.79\times10^{-5} = 1.79\ \mathrm{mA}; \]
+\[ I_E = I_B + I_C = 0.018 + 1.79 = 1.81\ \mathrm{mA}. \]
+\item \textbf{Collector--emitter voltage:}
+\[ V_{CE} = V_{CC} - R_C I_C = 9.0 - (1.0\times10^{3})(1.79\times10^{-3}) = 9.0 - 1.79 = 7.2\ \mathrm{V}. \]
+Since $0 < 7.2\ \mathrm{V} < 9.0\ \mathrm{V}$, the transistor is neither saturated nor cut off: it is in the \textbf{active region}, suitable for amplification.
+\item \textbf{Change in output.} The change in collector current is
+\[ \Delta I_C = \beta\,\Delta I_B = 100\times2.0\times10^{-6} = 2.0\times10^{-4}\ \mathrm{A}, \]
+so the change in output voltage is
+\[ |\Delta V_{CE}| = R_C\,\Delta I_C = (1.0\times10^{3})(2.0\times10^{-4}) = 0.20\ \mathrm{V}. \]
+A base-current change of only $2\ \mathrm{\mu A}$ produces an output change of $0.20\ \mathrm{V}$: this is the amplifying action of the transistor. Note that when $I_C$ increases, $V_{CE}$ \emph{decreases}: the output is inverted relative to the input.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 7 — Logic Gates: Truth Tables and Combinations}
+
+When a transistor is driven hard between cut-off and saturation it becomes an excellent \emph{switch}: OFF (output high) or ON (output low). Combinations of such switches realise the \cle{logic gates}, the building blocks of all digital electronics.
+
+\begin{methode}[Solving a logic-gate problem]
+\begin{enumerate}
+\item \textbf{Know the five basic gates by heart:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Gate} & \textbf{Boolean expression} & \textbf{Output is 1 when\ldots} \\
+\hline
+NOT & $Y = \overline{A}$ & the input is 0 \\
+\hline
+AND & $Y = A\cdot B$ & \emph{all} inputs are 1 \\
+\hline
+OR & $Y = A + B$ & \emph{at least one} input is 1 \\
+\hline
+NAND & $Y = \overline{A\cdot B}$ & at least one input is 0 \\
+\hline
+NOR & $Y = \overline{A + B}$ & all inputs are 0 \\
+\hline
+\end{tabularx}
+\end{center}
+\item \textbf{Build the truth table column by column:} list all $2^n$ input combinations, then evaluate each intermediate gate output before the final one.
+\item \textbf{Physical levels:} logic 1 $\approx +5\ \mathrm{V}$, logic 0 $\approx 0\ \mathrm{V}$; transistor switches (cut-off/saturation) are the physical basis of the gates.
+\item \textbf{Check} your table against the verbal definition of each gate.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, >=stealth]
+% NOT gate
+\draw[thick, popink] (0,0.9) -- (0,-0.1) -- (1.0,0.4) -- cycle;
+\draw[thick, popink] (1.0,0.4) circle (0.08);
+\draw ( -0.7,0.4) -- (0,0.4);
+\draw (1.08,0.4) -- (1.8,0.4);
+\node[popdark, left] at (-0.7,0.4) {\small $B$};
+\node[popdark, right] at (1.8,0.4) {\small $\overline{B}$};
+\node[popdark] at (0.5,-0.5) {\small NOT};
+% AND gate
+\begin{scope}[xshift=3.4cm]
+\draw[thick, popink] (0,1.1) -- (0.5,1.1) arc (90:-90:0.7) -- (0,-0.3) -- cycle;
+\draw (-0.7,0.75) -- (0,0.75);
+\draw (-0.7,0.05) -- (0,0.05);
+\draw (1.2,0.4) -- (2.0,0.4);
+\node[popdark, left] at (-0.7,0.75) {\small $A$};
+\node[popdark, left] at (-0.7,0.05) {\small $\overline{B}$};
+\node[popdark, right] at (2.0,0.4) {\small $Y$};
+\node[popdark] at (0.55,-0.75) {\small AND};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Gate combination for the bank alarm: $B$ is inverted, then combined with $A$ in an AND gate to give $Y = A\cdot\overline{B}$.}
+\end{popfigure}
+
+\begin{exoresolu}[Designing a two-input alarm logic]
+A security system in a Douala bank has two sensors: $A$ (door switch) and $B$ (motion detector). The alarm $Y$ must sound (logic 1) when the door is open \emph{and} no motion has yet been confirmed, i.e.\ $Y = A\cdot\overline{B}$.
+\begin{enumerate}
+\item Draw (describe) the combination of gates required.
+\item Construct the full truth table, showing the intermediate signal $\overline{B}$.
+\item The circuit is built with transistor switches operating between $0\ \mathrm{V}$ and $+5\ \mathrm{V}$. State the output voltage when $A = 1$ and $B = 0$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item The signal $B$ is first passed through a \textbf{NOT} gate to give $\overline{B}$; the signals $A$ and $\overline{B}$ are then fed into a two-input \textbf{AND} gate, whose output is $Y = A\cdot\overline{B}$ (see the figure above).
+\item \textbf{Truth table:}
+\begin{center}
+\begin{tabularx}{0.7\linewidth}{|c|c|X|X|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $\overline{B}$ & $Y = A\cdot\overline{B}$ \\
+\hline
+0 & 0 & 1 & 0 \\
+\hline
+0 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 1 \\
+\hline
+1 & 1 & 0 & 0 \\
+\hline
+\end{tabularx}
+\end{center}
+The alarm sounds only in the third row: door open ($A=1$) and no motion detected ($B=0$), exactly as required.
+\item For $A = 1$, $B = 0$ the output is logic 1, i.e.\ an output voltage of approximately $+5\ \mathrm{V}$.
+\end{enumerate}
+\textbf{Remark.} NAND and NOR gates are called \emph{universal gates} because any logic function, including this one, can be built from NAND gates alone (or NOR gates alone); this is how real integrated circuits are manufactured.
+\end{exoresolu}
+
+\begin{attention}[Frequent traps in this chapter]
+\begin{itemize}
+\item Forgetting that the electron is negatively charged: it is deflected \emph{towards the positive} plate, and conventional current in a diode flows from p to n.
+\item Confusing majority carriers: n-type $\Rightarrow$ electrons; p-type $\Rightarrow$ holes. The letter gives the \emph{sign of the majority carrier}.
+\item Omitting the knee voltage ($0.6\ \mathrm{V}$ Si) in diode and transistor base-circuit calculations.
+\item Writing $I_C = I_E$: the correct relation is $I_E = I_B + I_C$.
+\item Mixing up AND and OR in truth tables: read the verbal definition carefully before filling in the table.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer and justify your choice in one sentence.
+\begin{enumerate}
+\item In an electron gun, the kinetic energy gained by an electron accelerated through a potential difference $V$ is:
+\begin{enumerate}
+\item $eV^2$ \quad (b) $\dfrac{1}{2}eV$ \quad (c) $eV$ \quad (d) $\dfrac{eV}{m_e}$
+\end{enumerate}
+\item Doping a pure silicon crystal with phosphorus (group V) produces:
+\begin{enumerate}
+\item a p-type semiconductor \quad (b) an n-type semiconductor \quad (c) an insulator \quad (d) a superconductor
+\end{enumerate}
+\item A p-n junction conducts a large current when:
+\begin{enumerate}
+\item the p-side is connected to the negative terminal of the supply
+\item the p-side is connected to the positive terminal of the supply
+\item it is not connected to any supply
+\item the temperature is lowered
+\end{enumerate}
+\item For a transistor in normal operation, the currents satisfy:
+\begin{enumerate}
+\item $I_E = I_C - I_B$ \quad (b) $I_C = I_E + I_B$ \quad (c) $I_E = I_C + I_B$ \quad (d) $I_B = I_C + I_E$
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each statement is true or false, and justify your answer briefly.
+\begin{enumerate}
+\item Thermionic emission is the escape of electrons from a metal surface when the metal is heated.
+\item The depletion layer of an unbiased p-n junction contains a large number of free charge carriers.
+\item In forward bias, the width of the depletion layer increases.
+\item A NAND gate gives an output of 1 only when all its inputs are 1.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two sentences, giving one example or application where possible:
+\begin{enumerate}
+\item thermionic emission;
+\item doping;
+\item depletion layer;
+\item current gain $\beta$ of a transistor.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item An electron is accelerated from rest through a potential difference of $\SI{500}{V}$. Calculate the kinetic energy gained, in joules. ($e = \SI{1.6e-19}{C}$)
+\item A transistor has $I_B = \SI{40}{\micro A}$ and $\beta = 120$. Calculate $I_C$ and $I_E$.
+\item A full-wave rectifier is supplied from the $\SI{50}{Hz}$ mains. State the ripple frequency of the output.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[The electron gun]
+An electron is accelerated from rest through a potential difference of $\SI{3.0}{kV}$ in an electron gun.
+\begin{enumerate}
+\item Calculate its kinetic energy in joules and in electron-volts.
+\item Calculate its final speed. ($e = \SI{1.6e-19}{C}$, $m_e = \SI{9.1e-31}{kg}$)
+\item Explain why the speed obtained is much greater than any speed that could be given to a proton accelerated through the same voltage.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[The p-n junction]
+\begin{enumerate}
+\item With the aid of labelled diagrams, explain how the depletion layer of a p-n junction is formed when p-type and n-type materials are joined.
+\item Explain why the junction conducts easily when forward biased but blocks the current when reverse biased.
+\item State one practical application of a reverse-biased diode.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Diode characteristic and half-wave rectifier]
+\begin{enumerate}
+\item Sketch the current--voltage ($I$--$V$) characteristic of a silicon junction diode, marking the knee voltage and the breakdown region.
+\item Use the characteristic to explain the working of a half-wave rectifier.
+\item Draw the circuit of a half-wave rectifier with a load resistor and sketch the output waveform across the load for a sinusoidal input.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Transistor currents and gates]
+\begin{enumerate}
+\item An npn transistor has $I_B = \SI{50}{\micro A}$ and $I_C = \SI{5}{mA}$. Calculate $\beta$ and $I_E$.
+\item Draw the circuit symbols and write the truth tables of the NAND and NOR gates.
+\item Using truth tables, show how two NAND gates can be combined to produce an AND gate.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[GCE-style structured question: the electron gun and the diode]
+\textbf{(a)} Describe, with the aid of a labelled diagram, the structure of an electron gun and explain the role of each electrode. \hfill (5 marks)
+
+\textbf{(b)} An electron is emitted with negligible speed from the cathode and accelerated through a potential difference of $\SI{2.5}{kV}$.
+\begin{enumerate}
+\item Show that the kinetic energy of the electron on reaching the anode is $\SI{4.0e-16}{J}$. \hfill (2 marks)
+\item Calculate the speed of the electron at the anode. Comment on the value obtained. \hfill (3 marks)
+\end{enumerate}
+($e = \SI{1.6e-19}{C}$, $m_e = \SI{9.1e-31}{kg}$)
+
+\textbf{(c)} The electron beam is used in a cathode-ray tube. State two applications of cathode-ray tubes in Cameroonian hospitals or laboratories. \hfill (2 marks)
+
+\textbf{(d)} Explain briefly why the electron gun must be enclosed in an evacuated tube. \hfill (2 marks)
+\end{exercice}
+
+\begin{exercice}[GCE-style structured question: rectification]
+A bridge rectifier is connected to the secondary of a $240\ \mathrm{V}/12\ \mathrm{V}$ transformer supplied from the $\SI{50}{Hz}$ mains.
+
+\textbf{(a)} Draw the complete circuit of the bridge rectifier with a load resistor $R$, and indicate the direction of the current through $R$ for each half-cycle of the input. \hfill (5 marks)
+
+\textbf{(b)} State the ripple frequency of the voltage across the load, justifying your answer. \hfill (2 marks)
+
+\textbf{(c)} Sketch, on the same axes, the input alternating voltage and the output voltage across $R$ for two full cycles. \hfill (3 marks)
+
+\textbf{(d)} Explain, with the aid of a circuit diagram and a waveform sketch, how a capacitor connected across the load smooths the output. State how the capacitance should be chosen for effective smoothing. \hfill (4 marks)
+
+\textbf{(e)} Give one reason why a Zener diode may be added after the smoothing capacitor. \hfill (1 mark)
+\end{exercice}
+
+\begin{exercice}[GCE-style data analysis: the transistor]
+In an experiment to study an npn transistor in common-emitter connection, a student varies the base current $I_B$ and measures the collector current $I_C$:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $I_B$ / \si{\micro A} & 10 & 20 & 30 & 40 & 50 & 60 \\
+\hline
+$I_C$ / \si{mA} & 1.0 & 2.1 & 3.0 & 3.9 & 5.1 & 5.9 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{(a)} Draw the circuit the student could have used, showing the transistor, both power supplies and the measuring instruments. \hfill (4 marks)
+
+\textbf{(b)} Plot a graph of $I_C$ (vertical axis) against $I_B$ (horizontal axis). \hfill (4 marks)
+
+\textbf{(c)} Deduce the current gain $\beta$ of the transistor from your graph. \hfill (3 marks)
+
+\textbf{(d)} Comment on the linearity of the transistor over the range studied, and state why linearity matters when the transistor is used as an amplifier. \hfill (2 marks)
+
+\textbf{(e)} Explain how the same transistor can be used as a switch, stating the values of $I_B$ (small or large) corresponding to the OFF and ON states. \hfill (2 marks)
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Corrigés des Exercices du Chapitre PHY13}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer (c): $eV$.} The work done by the electric field on a charge $e$ moved through a potential difference $V$ is $W = eV$; by the work--energy theorem this becomes the kinetic energy gained, $E_k = eV$.
+\item \textbf{Answer (b): an n-type semiconductor.} Phosphorus has five valence electrons; four form bonds and the fifth becomes a free electron, so electrons are the majority carriers (n-type).
+\item \textbf{Answer (b): the p-side is connected to the positive terminal of the supply.} This is forward bias: the depletion layer narrows and majority carriers flow easily across the junction.
+\item \textbf{Answer (c): $I_E = I_C + I_B$.} By Kirchhoff's current law, the emitter current leaving the transistor equals the sum of the collector and base currents entering it.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{True.} Heating a metal gives some electrons enough kinetic energy to overcome the work function and escape from the surface; this is exactly the definition of thermionic emission.
+\item \textbf{False.} The depletion layer is a region \emph{depleted} of mobile charge carriers: electrons and holes have recombined there, leaving only fixed ionised donor and acceptor atoms.
+\item \textbf{False.} In forward bias the applied voltage pushes majority carriers towards the junction, so the depletion layer \emph{narrows} (it widens in reverse bias).
+\item \textbf{False.} A NAND gate gives output $0$ only when \emph{all} inputs are $1$; for all other input combinations the output is $1$. (It is the AND gate whose output is 1 only when all inputs are 1.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Thermionic emission:} the release of electrons from the surface of a metal (or coated cathode) when it is heated to a sufficiently high temperature. \emph{Example:} the heated cathode of an electron gun in a cathode-ray tube.
+\item \textbf{Doping:} the deliberate addition of a very small, controlled amount of impurity atoms (group III or group V) to a pure semiconductor in order to increase its conductivity. \emph{Example:} adding phosphorus to silicon to obtain an n-type material.
+\item \textbf{Depletion layer:} the thin region on either side of a p-n junction which contains no mobile charge carriers, because electrons and holes have diffused across the junction and recombined, leaving fixed ions that create a potential barrier.
+\item \textbf{Current gain $\beta$:} the ratio of the collector current to the base current of a transistor in normal (active) operation, $\beta = \dfrac{I_C}{I_B}$. \emph{Example:} with $\beta = 100$, a base current of $\SI{10}{\micro A}$ controls a collector current of $\SI{1}{mA}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item The kinetic energy gained equals the electrical work done:
+\[ E_k = eV = 1.6\times 10^{-19} \times 500 = \SI{8.0e-17}{J}. \]
+\item $I_C = \beta I_B = 120 \times 40\times 10^{-6} = \SI{4.8e-3}{A} = \SI{4.8}{mA}$.
+
+$I_E = I_C + I_B = 4.8\ \mathrm{mA} + 0.040\ \mathrm{mA} = \SI{4.84}{mA}$.
+\item In full-wave rectification both half-cycles are used, so the output pulses twice per input cycle: $f_{\text{ripple}} = 2 \times 50 = \SI{100}{Hz}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — The electron gun]
+\begin{enumerate}
+\item Kinetic energy: $E_k = eV = 1.6\times 10^{-19} \times 3.0\times 10^{3} = \SI{4.8e-16}{J}$.
+
+In electron-volts, by definition: $E_k = \SI{3.0}{keV}$ (an electron through $1\ \mathrm{V}$ gains $1\ \mathrm{eV}$).
+\item From $E_k = \dfrac{1}{2}m_e v^2$:
+\[ v = \sqrt{\frac{2E_k}{m_e}} = \sqrt{\frac{2 \times 4.8\times 10^{-16}}{9.11\times 10^{-31}}} = \sqrt{1.054\times 10^{15}} \approx \SI{3.2e7}{m.s^{-1}}. \]
+\item For the same voltage, $E_k = eV$ is the same (same charge magnitude), but $v = \sqrt{2E_k/m}$, so the speed varies as $1/\sqrt{m}$. The proton is about $1836$ times more massive than the electron, so its speed is $\sqrt{1836} \approx 43$ times smaller. The much lighter electron therefore reaches a far greater speed.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — The p-n junction]
+\begin{enumerate}
+\item \textbf{Formation of the depletion layer.} When p-type and n-type materials are joined, free electrons from the n-side (where they are majority carriers) diffuse across the junction into the p-side, and holes diffuse from the p-side into the n-side. Near the junction, electrons and holes recombine. This leaves, on the n-side, positively charged donor ions, and on the p-side, negatively charged acceptor ions. These fixed ions form a thin region with no mobile carriers — the \cle{depletion layer} — and create an internal potential barrier (about $\SI{0.6}{V}$ for silicon) which opposes further diffusion.
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+\fill[popblueL] (0,0) rectangle (2.4,1.6);
+\fill[popgreenL] (3.2,0) rectangle (5.6,1.6);
+\fill[gray!40] (2.4,0) rectangle (3.2,1.6);
+\node at (1.2,1.9) {\small p-type};
+\node at (4.4,1.9) {\small n-type};
+\node at (2.8,0.8) {\small depletion};
+\node at (1.2,0.8) {\small $\ominus\ \ominus$};
+\node at (4.4,0.8) {\small $\oplus\ \oplus$};
+\draw[thick] (0,0) rectangle (5.6,1.6);
+\draw[->,thick,popdark] (2.0,-0.5) -- (3.6,-0.5) node[midway,below]{\small diffusion of electrons};
+\end{tikzpicture}
+\end{center}
+\legende{Formation of the depletion layer at a p-n junction.}
+\end{popfigure}
+\item \textbf{Forward bias} (p to $+$, n to $-$): the applied voltage drives majority carriers towards the junction, the depletion layer narrows and the potential barrier is reduced, so a large current flows once the knee voltage ($\approx \SI{0.6}{V}$) is exceeded. \textbf{Reverse bias} (p to $-$, n to $+$): majority carriers are pulled away from the junction, the depletion layer widens and the barrier increases, so only a tiny leakage current flows.
+\item Application of a reverse-biased diode: a \textbf{Zener diode} used as a voltage regulator (operated in reverse breakdown), or a photodiode used in reverse bias as a light sensor.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Diode characteristic and half-wave rectifier]
+\begin{enumerate}
+\item The $I$--$V$ characteristic:
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\draw[->,thick] (-4,0) -- (4.3,0) node[right]{\small $V$};
+\draw[->,thick] (0,-1.8) -- (0,3.2) node[above]{\small $I$};
+\draw[very thick,popblue] (-3.2,-1.2) -- (-0.6,-0.05) -- (0,0);
+\draw[very thick,popblue] (0,0) .. controls (0.5,0.05) and (1.0,0.3) .. (1.3,2.9);
+\draw[very thick,popblue] (-3.2,-1.2) -- (-3.5,-1.7);
+\draw[dashed,popmuted] (1.0,0) node[below]{\small $V_K \approx 0.6\ \mathrm{V}$} -- (1.0,0.5);
+\node at (-2.6,-1.5) {\small breakdown};
+\node at (2.6,1.9) {\small forward};
+\node at (-1.9,0.5) {\small reverse (leakage)};
+\end{tikzpicture}
+\end{center}
+\legende{Current--voltage characteristic of a silicon diode.}
+\end{popfigure}
+In forward bias the current stays small until the knee voltage $V_K \approx \SI{0.6}{V}$, then rises steeply. In reverse bias only a tiny leakage current flows until the breakdown voltage, where the current increases sharply.
+\item \textbf{Working of the half-wave rectifier.} During the positive half-cycle of the input, the diode is forward biased (input exceeds $V_K$): it conducts and current flows through the load, so the output follows the input. During the negative half-cycle, the diode is reverse biased: it blocks the current and the output voltage is zero. The load therefore receives only one polarity — a pulsating direct voltage.
+\item Circuit and output waveform:
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.9, transform shape]
+\draw (0,0) to[sV=$u$] (0,2.4) to[D=$D$] (2.6,2.4) -- (2.6,1.6) to[R=$R$, v={$u_R$}] (2.6,0) -- (0,0);
+\end{circuitikz}
+\end{center}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\draw[->,thick] (-0.3,0) -- (7,0) node[right]{\small $t$};
+\draw[->,thick] (0,-1.8) -- (0,2) node[above]{\small $u_R$};
+\draw[very thick,poporange] (0,0) sin (1.5,1.5) cos (3,0);
+\draw[very thick,poporange] (3,0) -- (6,0);
+\draw[dashed,popmuted] (0,0) sin (1.5,-1.5) cos (3,0) sin (4.5,1.5) cos (6,0);
+\node at (4.5,-1.9) {\small dashed: blocked half-cycle};
+\end{tikzpicture}
+\end{center}
+\legende{Half-wave rectifier circuit and output waveform across $R$.}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Transistor currents and gates]
+\begin{enumerate}
+\item $\beta = \dfrac{I_C}{I_B} = \dfrac{5\times 10^{-3}}{50\times 10^{-6}} = 100$.
+
+$I_E = I_C + I_B = 5.0\ \mathrm{mA} + 0.050\ \mathrm{mA} = \SI{5.05}{mA}$.
+\item Symbols and truth tables:
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+\draw[thick] (0,0) rectangle (1.4,1.4);
+\node at (0.7,0.7) {\small \&};
+\draw[thick] (0.7,0.7) circle (0.85);
+\draw[thick] (1.4,0.7) circle (0.12);
+\draw (-0.9,1.05) -- (0,1.05); \node[left] at (-0.9,1.05) {\small $A$};
+\draw (-0.9,0.35) -- (0,0.35); \node[left] at (-0.9,0.35) {\small $B$};
+\draw (1.52,0.7) -- (2.3,0.7); \node[right] at (2.3,0.7) {\small $S$};
+\node at (0.7,-0.5) {\small NAND};
+\begin{scope}[xshift=5.2cm]
+\draw[thick] (0,0) rectangle (1.4,1.4);
+\node at (0.7,0.7) {\small $\geq 1$};
+\draw[thick] (1.4,0.7) circle (0.12);
+\draw (-0.9,1.05) -- (0,1.05); \node[left] at (-0.9,1.05) {\small $A$};
+\draw (-0.9,0.35) -- (0,0.35); \node[left] at (-0.9,0.35) {\small $B$};
+\draw (1.52,0.7) -- (2.3,0.7); \node[right] at (2.3,0.7) {\small $S$};
+\node at (0.7,-0.5) {\small NOR};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Logic symbols of the NAND and NOR gates.}
+\end{popfigure}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & NAND $S=\overline{A\cdot B}$ & NOR $S=\overline{A+B}$ \\
+\hline
+0 & 0 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 \\
+\hline
+1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\item Feed the output of a first NAND gate into \emph{both} inputs of a second NAND gate (which then acts as a NOT gate):
+\[ S_1 = \overline{A\cdot B}, \qquad S = \overline{S_1 \cdot S_1} = \overline{S_1} = A\cdot B. \]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $S_1=\overline{A\cdot B}$ & $S=\overline{S_1}$ \\
+\hline
+0 & 0 & 1 & 0 \\
+\hline
+0 & 1 & 1 & 0 \\
+\hline
+1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+The last column is exactly the AND truth table, so two NAND gates connected this way realise an AND gate.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — GCE-style: the electron gun and the diode]
+\textbf{(a) Structure of the electron gun (5 marks).} \emph{Expected: labelled diagram (2 marks) + roles of electrodes (3 marks).}
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+\draw[thick] (0,0.9) -- (0,-0.9);
+\draw[thick] (0.35,0.9) -- (0.35,-0.9);
+\node at (0.17,1.15) {\small heater};
+\draw[thick] (1.1,0.9) -- (1.1,-0.9);
+\node at (1.1,1.15) {\small cathode};
+\draw[thick] (2.1,0.9) -- (2.1,0.15); \draw[thick] (2.1,-0.9) -- (2.1,-0.15);
+\node at (2.1,1.15) {\small grid};
+\draw[thick] (3.3,0.9) -- (3.3,0.15); \draw[thick] (3.3,-0.9) -- (3.3,-0.15);
+\node at (3.3,1.15) {\small anode};
+\draw[->,very thick,popblue] (1.2,0) -- (4.6,0) node[right]{\small beam};
+\end{tikzpicture}
+\end{center}
+\legende{Electrodes of an electron gun.}
+\end{popfigure}
+\begin{itemize}
+\item \textbf{Heater (filament):} heats the cathode so that it emits electrons by thermionic emission.
+\item \textbf{Cathode:} the heated electrode that emits the electrons.
+\item \textbf{Control grid:} held negative with respect to the cathode; it controls the number of electrons passing, hence the beam intensity (brightness).
+\item \textbf{Anode:} held at a high positive potential; it accelerates the electrons through the potential difference $V$ and its hole lets the fine beam out.
+\end{itemize}
+
+\textbf{(b) (i) Kinetic energy (2 marks).} By the work--energy theorem, the work of the electric force becomes kinetic energy:
+\[ E_k = eV = 1.6\times 10^{-19} \times 2.5\times 10^{3} = \SI{4.0e-16}{J}. \quad\blacksquare \]
+\emph{Mark scheme: 1 mark for $E_k = eV$, 1 mark for the correct numerical value with unit.}
+
+\textbf{(ii) Speed (3 marks).}
+\[ v = \sqrt{\frac{2E_k}{m_e}} = \sqrt{\frac{2 \times 4.0\times 10^{-16}}{9.11\times 10^{-31}}} \approx \SI{3.0e7}{m.s^{-1}}. \]
+\emph{Comment:} this is about one tenth of the speed of light — an enormous speed, yet the non-relativistic formula remains acceptable here. \emph{(1 mark formula, 1 mark value with unit, 1 mark sensible comment.)}
+
+\textbf{(c) Applications (2 marks, any two):} oscilloscopes used in hospital and school laboratories to display electrical signals; older X-ray tubes / X-ray imaging equipment in hospitals; display monitors of medical monitoring equipment.
+
+\textbf{(d) Why evacuated (2 marks):} the tube must be evacuated so that the electrons do not collide with gas molecules, which would scatter or slow the beam (and ionise the gas); the vacuum also protects the hot cathode from oxidation, so it is not burnt out.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — GCE-style: rectification]
+\textbf{(a) Bridge rectifier circuit (5 marks).} \emph{Expected: four diodes correctly oriented in a bridge (3 marks), load $R$ (1 mark), current direction through $R$ the same for both half-cycles (1 mark).}
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.95, transform shape]
+\draw (0,0) to[sV=$u$] (0,3);
+\draw (0,3) -- (1.2,3);
+\draw (1.2,3) to[D=$D_1$] (2.6,4.4);
+\draw (1.2,3) to[D=$D_2$] (2.6,1.6);
+\draw (2.6,4.4) to[D=$D_3$] (4,3);
+\draw (2.6,1.6) to[D=$D_4$] (4,3);
+\draw (4,3) -- (5,3);
+\draw (5,0) -- (0,0);
+\draw (2.6,4.4) -- (2.6,5.2) -- (5.6,5.2) to[R=$R$, v={$u_R$}, i={$i$}] (5.6,1.2) -- (2.6,1.2) -- (2.6,1.6);
+\end{circuitikz}
+\end{center}
+\legende{Bridge rectifier: the current $i$ through $R$ keeps the same direction for both half-cycles.}
+\end{popfigure}
+On the positive half-cycle, $D_1$ and $D_4$ conduct; on the negative half-cycle, $D_2$ and $D_3$ conduct. In both cases the current passes through $R$ in the \emph{same} direction.
+
+\textbf{(b) Ripple frequency (2 marks).} Both half-cycles produce an output pulse, so there are two pulses per input period: $f_{\text{ripple}} = 2 \times 50 = \SI{100}{Hz}$. \emph{(1 mark value, 1 mark justification.)}
+
+\textbf{(c) Waveforms (3 marks).} \emph{Expected: sinusoidal input (1 mark), rectified output with both humps positive (1 mark), correct relative timing (1 mark).}
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\draw[->,thick] (-0.3,0) -- (13,0) node[right]{\small $t$};
+\draw[->,thick] (0,-2) -- (0,2.2) node[above]{\small $u$};
+\draw[thick,popmuted,dashed] (0,0) sin (1.5,1.6) cos (3,0) sin (4.5,-1.6) cos (6,0) sin (7.5,1.6) cos (9,0) sin (10.5,-1.6) cos (12,0);
+\draw[very thick,poporange] (0,0) sin (1.5,1.6) cos (3,0) (3,0) sin (4.5,1.6) cos (6,0) (6,0) sin (7.5,1.6) cos (9,0) (9,0) sin (10.5,1.6) cos (12,0);
+\node[popmuted] at (11.2,-1.4) {\small input};
+\node[poporange] at (8.3,2.0) {\small output};
+\end{tikzpicture}
+\end{center}
+\legende{Input (dashed) and full-wave rectified output (solid).}
+\end{popfigure}
+
+\textbf{(d) Smoothing capacitor (4 marks).} A large capacitor is connected \emph{in parallel} with the load. When the rectified voltage rises, the capacitor charges quickly to the peak value; when the rectified voltage falls, the capacitor discharges slowly through $R$, maintaining the voltage. The output is therefore a nearly steady direct voltage with only a small ripple.
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+\draw[->,thick] (-0.3,0) -- (13,0) node[right]{\small $t$};
+\draw[->,thick] (0,-0.4) -- (0,2.2) node[above]{\small $u_R$};
+\draw[very thick,popgreen] (0,0) sin (1.5,1.6) cos (2.6,0.55) (2.6,0.55) .. controls (3.3,0.35) .. (4.4,0.4) sin (5.9,1.6) cos (7.0,0.55) (7.0,0.55) .. controls (7.7,0.35) .. (8.8,0.4) sin (10.3,1.6) cos (11.4,0.55);
+\node at (6,2.0) {\small smoothed output with small ripple};
+\end{tikzpicture}
+\end{center}
+\legende{Effect of the smoothing capacitor across the load.}
+\end{popfigure}
+For effective smoothing the time constant $\tau = RC$ must be much greater than the period of the ripple ($\tau \gg 1/f_{\text{ripple}}$), so a \emph{large} capacitance $C$ is chosen. \emph{(1 mark diagram/position, 1 mark charge--discharge explanation, 1 mark waveform, 1 mark choice of $C$.)}
+
+\textbf{(e) Zener diode (1 mark):} a Zener diode, operated in reverse breakdown, keeps the output voltage \emph{constant} (voltage regulation) even if the load or the mains voltage fluctuates.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE-style: data analysis on the transistor]
+\textbf{(a) Circuit (4 marks).} \emph{Expected: npn transistor in common-emitter (1), base supply with variable resistor and microammeter (1), collector supply with milliammeter (1), emitter common to both loops (1).}
+\begin{popfigure}
+\begin{center}
+\begin{circuitikz}[european, scale=0.95, transform shape]
+\draw (4,2) node[npn](T){};
+\draw (T.B) -- (1.6,2) to[ammeter, l={$\mu$}A] (0.2,2) to[vR=$R_B$] (0.2,4) to[battery1, l_={$V_{BB}$}] (0.2,5.6) -- (4,5.6);
+\draw (T.C) -- (4,3.4) to[ammeter, l=mA] (4,4.6) -- (4,5.6);
+\draw (T.E) -- (4,0.8) -- (0.2,0.8) -- (0.2,2);
+\draw (4,5.6) -- (6.4,5.6) to[battery1, l_={$V_{CC}$}] (6.4,0.8) -- (4,0.8);
+\end{circuitikz}
+\end{center}
+\legende{Common-emitter test circuit with base and collector current measurement.}
+\end{popfigure}
+
+\textbf{(b) Graph (4 marks).} \emph{Expected: labelled axes with units and sensible scales (1), all six points correctly plotted (2), best straight line through the origin (1).}
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=9.5cm, height=6.5cm,
+xlabel={$I_B$ / \si{\micro A}}, ylabel={$I_C$ / \si{mA}},
+xmin=0, xmax=65, ymin=0, ymax=6.5,
+grid=both, grid style={popline, very thin},
+tick label style={font=\small}, label style={font=\small}]
+\addplot[only marks, mark=*, mark size=2pt, popblue] coordinates {(10,1.0) (20,2.1) (30,3.0) (40,3.9) (50,5.1) (60,5.9)};
+\addplot[domain=0:62, thick, poporange] {0.1*x};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Transfer characteristic $I_C = f(I_B)$: a straight line through the origin.}
+\end{popfigure}
+
+\textbf{(c) Current gain (3 marks).} $\beta$ is the gradient of the line. Taking a point on the best-fit line, e.g. $(60\ \mu\mathrm{A};\ 6.0\ \mathrm{mA})$:
+\[ \beta = \frac{\Delta I_C}{\Delta I_B} = \frac{6.0\times 10^{-3}}{60\times 10^{-6}} = 100. \]
+\emph{(1 mark method — gradient, 1 mark reading of coordinates from the line, 1 mark value $\beta \approx 100$, no unit.)}
+
+\textbf{(d) Linearity (2 marks).} The points lie very close to a straight line through the origin, so $I_C$ is proportional to $I_B$ over the whole range: the transistor is linear here. Linearity matters in an amplifier because the output must be an exact enlarged copy of the input signal; any non-linearity would distort the amplified signal.
+
+\textbf{(e) Transistor as a switch (2 marks).} \textbf{OFF:} $I_B = 0$ (very small) — the transistor is cut off, $I_C \approx 0$, like an open switch. \textbf{ON:} $I_B$ large enough to drive the transistor into saturation — $I_C$ reaches its maximum (limited by the collector resistor), the voltage across the transistor is nearly zero, like a closed switch.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[grow cyclic, text width=2.6cm, align=center,
+  level 1/.style={level distance=3.8cm, sibling angle=51.4},
+  every node/.style={font=\small},
+  edge from parent/.style={draw=popmuted, thick}]
+\node[circle, draw=popink, fill=popblueL, text width=2.8cm, align=center, font=\bfseries] {Electronics\\ PHY13}
+  child { node[draw=popblue, fill=popblueL, rounded corners, align=center]{\textbf{Thermionic emission}\\ heated cathode, $\frac{1}{2}m_e v^2 = eV_A$, electron gun} }
+  child { node[draw=poporange, fill=popgreenL, rounded corners, align=center]{\textbf{CRO}\\ deflection, time base, $U$, $T$, $f$} }
+  child { node[draw=popgreen, fill=popgreenL, rounded corners, align=center]{\textbf{Semiconductors}\\ intrinsic, doping, n-type, p-type} }
+  child { node[draw=poppurple, fill=popblueL, rounded corners, align=center]{\textbf{p--n junction}\\ depletion layer, barrier $\approx 0.6$ V (Si)} }
+  child { node[draw=popgold, fill=popgreenL, rounded corners, align=center]{\textbf{Diode}\\ biasing, $I$--$V$ curve, rectification, LED, Zener} }
+  child { node[draw=poppink, fill=popblueL, rounded corners, align=center]{\textbf{Transistor}\\ $I_E=I_C+I_B$, $I_C=\beta I_B$, switch, amplifier} }
+  child { node[draw=popdark, fill=popgreenL, rounded corners, align=center]{\textbf{Logic gates}\\ NOT, AND, OR, NAND, NOR, truth tables} };
+\end{tikzpicture}
+\legende{Mind map of the chapter PHY13 -- Electronics: from the electron gun to logic gates.}
+\end{popfigure}
+
+\begin{aretenir}[Key definitions]
+\begin{itemize}
+\item \cle{Thermionic emission}: release of electrons from the surface of a metal heated to a high temperature. The heated metal is the \textbf{cathode}; it must be placed in an evacuated (vacuum) tube so that the emitted electrons are not scattered by air molecules.
+\item \cle{Electron gun}: device producing a fine, fast beam of electrons by thermionic emission at a heated cathode, acceleration towards an anode held at a high positive potential $V_A$, and focusing by cylindrical electrodes.
+\item \cle{Semiconductor}: material (silicon Si, germanium Ge) whose electrical conductivity lies between that of conductors and insulators and which, unlike a metal, conducts \emph{better} as temperature rises.
+\item \cle{Doping}: deliberate addition of a tiny proportion of impurity atoms to a pure (intrinsic) semiconductor. \textbf{n-type}: pentavalent donor atoms (e.g.\ phosphorus) provide free electrons as majority carriers. \textbf{p-type}: trivalent acceptor atoms (e.g.\ boron) provide holes as majority carriers. A doped semiconductor remains electrically neutral overall.
+\item \cle{p--n junction}: boundary between p-type and n-type regions of the same crystal; a \textbf{depletion layer} (region emptied of mobile carriers) forms there, together with a \textbf{potential barrier} ($\approx \SI{0.6}{V}$ for Si, $\approx \SI{0.2}{V}$ for Ge).
+\item \cle{Forward bias}: $p$-side connected to the positive terminal of the supply; the barrier is reduced and the junction conducts (above the threshold voltage $V_s$). \cle{Reverse bias}: $p$-side to the negative terminal; the barrier is increased and only a tiny leakage current flows.
+\item \cle{Transistor} (n-p-n junction transistor): three-terminal device (emitter, base, collector) in which a small base current $I_B$ controls a large collector current $I_C$; $I_E = I_C + I_B$ and the current gain is $\beta = I_C/I_B$.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Laws and formulas to know]
+\begin{itemize}
+\item Electron gun (energy balance): the work done by the accelerating voltage becomes kinetic energy,
+\[ eV_A = \tfrac{1}{2}m_e v^2 \quad\Longrightarrow\quad v = \sqrt{\frac{2eV_A}{m_e}}. \]
+\item CRO measurements: peak voltage $U_{\max} = y \times (\text{V/div})$; period $T = x \times (\text{time/div})$; frequency $f = 1/T$; for a sinusoid $U_{\text{rms}} = U_{\max}/\sqrt{2}$.
+\item Junction diode: conducts in forward bias only when $V \geq V_s$ ($V_s \approx \SI{0.6}{V}$ Si, $\SI{0.2}{V}$ Ge). Protective series resistor for an LED: $R = (E - V_D)/I_D$, where $V_D$ is the diode operating voltage and $I_D$ the desired current.
+\item Rectification of $u = U_{\max}\sin\omega t$: half-wave mean value $\langle u \rangle = U_{\max}/\pi$; full-wave mean value $\langle u \rangle = 2U_{\max}/\pi$. A smoothing capacitor connected across the load reduces the ripple.
+\item Transistor: $I_E = I_C + I_B$; in the active region $I_C = \beta I_B$. As a switch: cut-off when $I_B = 0$ (switch OFF, $V_{CE}\approx E$); saturation when $V_{CE}\approx 0$ (switch ON, $I_C < \beta I_B$). As an amplifier: voltage gain $A_v = \Delta V_{\text{out}}/\Delta V_{\text{in}}$.
+\item Logic gates: NOT ($S=\bar{A}$), AND ($S=A\cdot B$), OR ($S=A+B$), NAND ($S=\overline{A\cdot B}$), NOR ($S=\overline{A+B}$); truth tables must be reproduced exactly.
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Methods to master]
+\begin{itemize}
+\item \textbf{Electron gun:} always start from the energy balance -- electrical work $eV_A$ becomes kinetic energy $\tfrac{1}{2}m_e v^2$ -- then solve for $v$. Check that the result is well below $c = \SI{3.00e8}{m.s^{-1}}$.
+\item \textbf{CRO readings:} count the number of divisions first, then multiply by the sensitivity setting (V/div or time/div), and state the unit. For frequency, measure $T$ over several periods and divide.
+\item \textbf{Diode problems:} assume a state (conducting or blocked), compute the current or voltage, then check consistency with the threshold voltage $V_s$; if inconsistent, change the assumed state.
+\item \textbf{Transistor:} compute $I_B$ from the base circuit, then $I_C = \beta I_B$; verify whether the transistor is saturated by checking whether the collector circuit can actually supply $\beta I_B$ (if not, the transistor is saturated and $I_C < \beta I_B$).
+\item \textbf{Logic circuits:} build the truth table line by line, propagating the states from the inputs through each gate to the output.
+\end{itemize}
+\end{methode}
+
+\begin{attention}[Common mistakes]
+\begin{itemize}
+\item Confusing the electron flow (cathode $\to$ anode) with the conventional current direction (anode $\to$ cathode outside the tube).
+\item Forgetting that holes are positive charge carriers whose motion is opposite to that of electrons.
+\item Mixing up majority carriers: electrons are majority in n-type, holes in p-type; in both cases the material remains neutral overall.
+\item Using $U_{\max}$ instead of $U_{\text{rms}}$, or forgetting the factor $\sqrt{2}$ between them.
+\item Believing the diode conducts at any forward voltage: it conducts appreciably only for $V \geq V_s$.
+\item Writing $I_C = I_E$ exactly; the correct relation is $I_E = I_B + I_C$ (with $I_B$ small but not zero).
+\item Inverting NAND and AND outputs (or NOR and OR) in truth tables.
+\item Forgetting the protective series resistor when connecting an LED to a supply.
+\end{itemize}
+\end{attention}
+
+\begin{methode}[GCE examination tips]
+\begin{itemize}
+\item Draw the electron gun and the CRO screen neatly and label them fully: heated cathode, anode with accelerating voltage $V_A$, focusing electrodes, deflecting plates, fluorescent screen.
+\item Show every step of a calculation: formula in symbols, substitution with SI units, result with unit and 2--3 significant figures.
+\item Know the $I$--$V$ characteristic of a junction diode by heart, with the forward threshold $V_s$, the reverse leakage current and the reverse breakdown region clearly labelled.
+\item For rectification, sketch the input and output waveforms on the same time axis, and show the effect of the smoothing capacitor.
+\item Use $e = \SI{1.60e-19}{C}$, $m_e = \SI{9.11e-31}{kg}$; quote electron speeds sensibly (they must remain below $c$; if not, check your arithmetic).
+\end{itemize}
+\end{methode}
+
+\findecours
+
+\end{document}
