@@ -1,0 +1,3249 @@
+% Selecting and manipulating abstract data types (adts) and data structures — Computer Science Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic CSC02-selecting-and-manipulating-abstract-data-types-adts-and-data.tex
+\newcommand{\DOCMATIERE}{Computer Science}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Computer Science}
+\newcommand{\DOCLECON}{2}
+\newcommand{\DOCTITRE}{Selecting and manipulating abstract data types (adts) and data structures}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Selecting and manipulating abstract data types (adts) and data structures}{Computer Science}{Upper Sixth}{Upper Sixth — Computer Science}{2}{4 periods}{This chapter introduces Abstract Data Types (ADTs) as mathematical models for data organisation, explores binary trees as a fundamental hierarchical structure, and shows how ADTs solve real‑world problems. By the end, you will be able to select, implement, and manipulate the right ADT for any algorithmic task in the GCE Advanced Level Computer Science exam.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item Define an Abstract Data Type and distinguish it from a concrete data structure.
+\item Specify the core operations of common ADTs (stack, queue, list, set, map, tree).
+\item Describe binary tree terminology, properties, and both array‑based and linked representations.
+\item Implement recursive and iterative traversals (pre‑order, in‑order, post‑order, level‑order).
+\item Apply stacks to expression evaluation and queues to scheduling problems.
+\item Choose the most appropriate ADT for a given problem and justify the choice.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Abstract Data Types: Foundations
+\item Binary Tree Concepts and Representation
+\item Applications of ADTs
+\item Integration Activity \& Exam Preparation
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item Define an Abstract Data Type and distinguish it from a concrete data structure.
+\item Specify the core operations of common ADTs (stack, queue, list, set, map, tree).
+\item Describe binary tree terminology, properties, and both array‑based and linked representations.
+\item Implement recursive and iterative traversals (pre‑order, in‑order, post‑order, level‑order).
+\item Apply stacks to expression evaluation and queues to scheduling problems.
+\item Choose the most appropriate ADT for a given problem and justify the choice.
+\item Analyse time and space complexity of basic ADT operations.
+\item Design a small integrated system (e.g., library management) using multiple ADTs.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Basic programming constructs (variables, loops, functions) from Lower Sixth.
+\item Understanding of arrays, pointers/references, and recursion.
+\item Familiarity with algorithmic notation (pseudocode, flowcharts).
+\item Concept of complexity analysis (Big‑O) introduced earlier.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Abstract Data Types: Foundations}
+
+\courssub{Introduction: From the Market to the Machine}
+
+Imagine a busy market in Yaoundé where vendors must quickly serve customers, keep track of stock, and prioritise urgent orders. A fruit seller stacks mangoes in a neat pyramid — the last mango placed on top is the first one sold. A tailor keeps a notebook of client measurements — she can look up any client by name, add new clients, or remove old ones. At the bus station, passengers form a queue: the person who arrives first boards first. The way these vendors organise queues, stack goods, and catalogue items mirrors the \cle{abstract data types} that power modern software. Understanding these structures lets you design efficient solutions for everyday Cameroonian challenges — from managing a hospital's patient waiting list to optimising a mobile money transaction log.
+
+In this section, we formalise these intuitive ideas. We will learn what an \cle{Abstract Data Type (ADT)} is, how it differs from a concrete \cle{data structure}, and how to specify the behaviour of the core ADTs required by the syllabus: \cle{Stack}, \cle{Queue}, \cle{List}, \cle{Set}, \cle{Map}, and \cle{Tree}. We will also see how \cle{encapsulation} and \cle{information hiding} make our programs modular and maintainable.
+
+\courssub{What Is an Abstract Data Type?}
+
+\begin{definition}[Abstract Data Type (ADT)]
+An \textbf{Abstract Data Type (ADT)} is a mathematical model that defines:
+\begin{itemize}
+    \item A \textbf{set of values} (the data it can hold), and
+    \item A \textbf{set of operations} that can be performed on those values,
+\end{itemize}
+\emph{without specifying how the data is stored or how the operations are implemented}. An ADT describes \textbf{what} the data type does, not \textbf{how} it does it.
+\end{definition}
+
+Think of an ADT as a \textbf{contract} or an \textbf{interface}. The client code (the part of the program that uses the ADT) knows only the operations and their expected behaviour. The implementation details — arrays, linked lists, memory layout — are hidden behind this interface.
+
+\begin{propriete}[Encapsulation and Information Hiding]
+\textbf{Encapsulation} is the principle of bundling data and the operations that manipulate that data into a single unit (the ADT), and restricting direct access to the internal representation. \textbf{Information hiding} ensures that the client cannot depend on implementation details. This allows the implementation to be changed (e.g., switching from an array-based stack to a linked-list stack) without breaking any client code.
+\end{propriete}
+
+\begin{attention}[Common Mistake: Confusing ADT with Implementation]
+Many students confuse the \textbf{ADT} (e.g., \texttt{Stack}) with a particular \textbf{implementation} (e.g., \texttt{ArrayStack} or \texttt{LinkedStack}). Remember:
+\begin{itemize}
+    \item \textbf{Stack} is an ADT: it specifies \texttt{push}, \texttt{pop}, \texttt{peek}, \texttt{isEmpty}.
+    \item \textbf{ArrayStack} is a data structure: it uses an array and an integer \texttt{top} index.
+    \item \textbf{LinkedStack} is another data structure: it uses a linked list with a \texttt{head} pointer.
+\end{itemize}
+Both \texttt{ArrayStack} and \texttt{LinkedStack} \emph{implement} the \texttt{Stack} ADT. In examinations, if a question asks for the \textbf{ADT}, describe the operations and their semantics. If it asks for an \textbf{implementation}, give the concrete representation and algorithms.
+\end{attention}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    box/.style={draw=popdark, thick, rounded corners, fill=popblueL, minimum width=3.5cm, minimum height=1.8cm, align=center},
+    implbox/.style={draw=popdark, thick, rounded corners, fill=popgreenL, minimum width=3.5cm, minimum height=2.2cm, align=center},
+    arrow/.style={->, thick, popdark}
+]
+\node[box, align=center] (adt) at (0,0){\textbf{Stack ADT (Interface)}\\\texttt{push(item)}\\\texttt{pop()}\\\texttt{peek()}\\\texttt{isEmpty()}};
+\node[implbox, align=center] (arr) at (-4.5,-3){\textbf{ArrayStack}\\\texttt{items: Array[0..MAX-1]}\\\texttt{top: Integer}\\\texttt{push: items[++top]=item}\\\texttt{pop: return items[top--]}};
+\node[implbox, align=center] (ll) at (4.5,-3){\textbf{LinkedStack}\\\texttt{head: Node}\\\texttt{push: new Node(item, head)}\\\texttt{pop: head = head.next}};
+\draw[arrow] (adt.south west) -- ++(-0.5,-0.5) -| (arr.north);
+\draw[arrow] (adt.south east) -- ++(0.5,-0.5) -| (ll.north);
+\node[align=center, text width=3cm] at (-4.5,-5.5) {Concrete implementation\\using an array};
+\node[align=center, text width=3cm] at (4.5,-5.5) {Concrete implementation\\using a linked list};
+\end{tikzpicture}
+\legende{An ADT (Stack) separates the interface from two possible concrete implementations.}
+\end{popfigure}
+
+\courssub{Core ADTs Required by the Syllabus}
+
+The GCE Advanced Level syllabus expects you to know the following six fundamental ADTs. For each, we list the \textbf{essential operations}, their \textbf{parameters}, \textbf{return values}, and typical \textbf{exceptions} (pre-condition violations).
+
+\courssub{Stack ADT — Last-In, First-Out (LIFO)}
+
+A \cle{Stack} models a pile of objects where insertion and removal happen at the same end, called the \cle{top}. The last element pushed is the first popped.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description / Pre-condition} \\
+\hline
+\texttt{push(item)} & \texttt{item: Element} & \texttt{void} & Adds \texttt{item} to the top. Pre: stack not full (if bounded). \\
+\texttt{pop()} & \texttt{none} & \texttt{Element} & Removes and returns the top element. Pre: \texttt{!isEmpty()}. \\
+\texttt{peek()} or \texttt{top()} & \texttt{none} & \texttt{Element} & Returns the top element without removing it. Pre: \texttt{!isEmpty()}. \\
+\texttt{isEmpty()} & \texttt{none} & \texttt{Boolean} & Returns \texttt{true} iff the stack contains no elements. \\
+\texttt{size()} & \texttt{none} & \texttt{Integer} & Returns the number of elements in the stack. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Queue ADT — First-In, First-Out (FIFO)}
+
+A \cle{Queue} models a waiting line. Elements are inserted at the \cle{rear} (or \cle{tail}) and removed from the \cle{front} (or \cle{head}).
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description / Pre-condition} \\
+\hline
+\texttt{enqueue(item)} & \texttt{item: Element} & \texttt{void} & Adds \texttt{item} to the rear. Pre: queue not full (if bounded). \\
+\texttt{dequeue()} & \texttt{none} & \texttt{Element} & Removes and returns the front element. Pre: \texttt{!isEmpty()}. \\
+\texttt{front()} or \texttt{peek()} & \texttt{none} & \texttt{Element} & Returns the front element without removing it. Pre: \texttt{!isEmpty()}. \\
+\texttt{isEmpty()} & \texttt{none} & \texttt{Boolean} & Returns \texttt{true} iff the queue contains no elements. \\
+\texttt{size()} & \texttt{none} & \texttt{Integer} & Returns the number of elements in the queue. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{List ADT — Ordered Collection with Positional Access}
+
+A \cle{List} stores a sequence of elements where each element has a \cle{position} (index). It allows insertion, deletion, and access at any position.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description / Pre-condition} \\
+\hline
+\texttt{insert(pos, item)} & \texttt{pos: Integer, item: Element} & \texttt{void} & Inserts \texttt{item} at position \texttt{pos} (0-based). Pre: $0 \le \texttt{pos} \le \texttt{size()}$. \\
+\texttt{remove(pos)} & \texttt{pos: Integer} & \texttt{Element} & Removes and returns element at \texttt{pos}. Pre: $0 \le \texttt{pos} < \texttt{size()}$. \\
+\texttt{get(pos)} & \texttt{pos: Integer} & \texttt{Element} & Returns element at \texttt{pos} without removing. Pre: $0 \le \texttt{pos} < \texttt{size()}$. \\
+\texttt{set(pos, item)} & \texttt{pos: Integer, item: Element} & \texttt{Element} & Replaces element at \texttt{pos} with \texttt{item}, returns old. Pre: $0 \le \texttt{pos} < \texttt{size()}$. \\
+\texttt{indexOf(item)} & \texttt{item: Element} & \texttt{Integer} & Returns first position of \texttt{item}, or $-1$ if not found. \\
+\texttt{isEmpty()} & \texttt{none} & \texttt{Boolean} & Returns \texttt{true} iff list has no elements. \\
+\texttt{size()} & \texttt{none} & \texttt{Integer} & Returns number of elements. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Set ADT — Unordered Collection of Distinct Elements}
+
+A \cle{Set} models the mathematical notion of a set: no duplicates, no inherent order.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description / Pre-condition} \\
+\hline
+\texttt{add(item)} & \texttt{item: Element} & \texttt{Boolean} & Adds \texttt{item} if not present; returns \texttt{true} if added. \\
+\texttt{remove(item)} & \texttt{item: Element} & \texttt{Boolean} & Removes \texttt{item} if present; returns \texttt{true} if removed. \\
+\texttt{contains(item)} & \texttt{item: Element} & \texttt{Boolean} & Returns \texttt{true} iff \texttt{item} is in the set. \\
+\texttt{union(other)} & \texttt{other: Set} & \texttt{Set} & Returns a new set with all elements from this and \texttt{other}. \\
+\texttt{intersection(other)} & \texttt{other: Set} & \texttt{Set} & Returns a new set with elements common to both. \\
+\texttt{difference(other)} & \texttt{other: Set} & \texttt{Set} & Returns a new set with elements in this but not in \texttt{other}. \\
+\texttt{isEmpty()} & \texttt{none} & \texttt{Boolean} & Returns \texttt{true} iff set has no elements. \\
+\texttt{size()} & \texttt{none} & \texttt{Integer} & Returns number of elements. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Map ADT — Key-Value Associations (Dictionary)}
+
+A \cle{Map} (also called \cle{Dictionary} or \cle{Associative Array}) stores pairs $(\texttt{key}, \texttt{value})$. Keys are unique; each key maps to exactly one value.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description / Pre-condition} \\
+\hline
+\texttt{put(key, value)} & \texttt{key: Key, value: Value} & \texttt{Value} & Associates \texttt{value} with \texttt{key}. Returns previous value or \texttt{null}. \\
+\texttt{get(key)} & \texttt{key: Key} & \texttt{Value} & Returns value for \texttt{key}, or \texttt{null} if absent. \\
+\texttt{remove(key)} & \texttt{key: Key} & \texttt{Value} & Removes mapping for \texttt{key}, returns its value or \texttt{null}. \\
+\texttt{containsKey(key)} & \texttt{key: Key} & \texttt{Boolean} & Returns \texttt{true} iff \texttt{key} is in the map. \\
+\texttt{containsValue(value)} & \texttt{value: Value} & \texttt{Boolean} & Returns \texttt{true} iff \texttt{value} is mapped by some key. \\
+\texttt{keySet()} & \texttt{none} & \texttt{Set<Key>} & Returns a set view of all keys. \\
+\texttt{values()} & \texttt{none} & \texttt{Collection<Value>} & Returns a collection view of all values. \\
+\texttt{isEmpty()} / \texttt{size()} & \texttt{none} & \texttt{Boolean/Integer} & Standard collection queries. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Tree ADT — Hierarchical Structure}
+
+A \cle{Tree} is a non-linear ADT representing a hierarchy. We will study binary trees in depth in Section 2. Here is the general Tree ADT interface.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Parameters} & \textbf{Return} & \textbf{Description} \\
+\hline
+\texttt{root()} & \texttt{none} & \texttt{Node} & Returns the root node (or \texttt{null} if empty). \\
+\texttt{parent(node)} & \texttt{node: Node} & \texttt{Node} & Returns parent of \texttt{node} (\texttt{null} for root). \\
+\texttt{children(node)} & \texttt{node: Node} & \texttt{List<Node>} & Returns list of children of \texttt{node}. \\
+\texttt{isInternal(node)} & \texttt{node: Node} & \texttt{Boolean} & True if \texttt{node} has at least one child. \\
+\texttt{isExternal(node)} / \texttt{isLeaf(node)} & \texttt{node: Node} & \texttt{Boolean} & True if \texttt{node} has no children. \\
+\texttt{size()} & \texttt{none} & \texttt{Integer} & Number of nodes in the tree. \\
+\texttt{isEmpty()} & \texttt{none} & \texttt{Boolean} & True if tree has no nodes. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Specifying ADTs: Pre-conditions, Post-conditions, and Invariants}
+
+To describe an ADT rigorously, we use \cle{pre-conditions}, \cle{post-conditions}, and \cle{invariants}. This style of specification is examinable and mirrors formal methods used in software engineering.
+
+\begin{definition}[Pre-condition, Post-condition, Invariant]
+\begin{itemize}
+    \item A \textbf{pre-condition} is a predicate that must be true \textbf{before} an operation is called. If violated, the operation's behaviour is undefined (typically an exception is raised).
+    \item A \textbf{post-condition} is a predicate that must be true \textbf{after} the operation completes (assuming the pre-condition held).
+    \item An \textbf{invariant} is a predicate that is true \textbf{before and after every public operation} of the ADT. It characterises the valid states of the data structure.
+\end{itemize}
+\end{definition}
+
+\begin{methode}[Writing an ADT Specification]
+To specify an ADT operation formally:
+\begin{enumerate}
+    \item \textbf{Name and signature}: Give the operation name, parameter types, and return type.
+    \item \textbf{Pre-condition}: State what must be true before the call (e.g., \texttt{!isEmpty()}).
+    \item \textbf{Post-condition}: State what is true after the call, relating the new state to the old state. Use \texttt{old} notation for previous values (e.g., \texttt{size() = old.size() + 1}).
+    \item \textbf{Exceptions}: List what happens if the pre-condition is violated (e.g., \texttt{throw EmptyStackException}).
+    \item \textbf{Invariant (optional but recommended)}: State the property that always holds (e.g., \texttt{0 <= top < capacity} for an array stack).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Formal Specification of Stack ADT Operations]
+\textbf{ADT: Stack of Elements}
+
+\textbf{State:} A finite sequence $S = \langle e_1, e_2, \dots, e_n \rangle$ where $e_n$ is the top. $n = \texttt{size()}$.
+
+\textbf{Invariant:} $n \ge 0$. (If bounded: $n \le \texttt{CAPACITY}$.)
+
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Specification} \\
+\hline
+\texttt{push(item)} & \textbf{Pre:} $n < \texttt{CAPACITY}$ (if bounded). \\
+& \textbf{Post:} $S' = \langle e_1, \dots, e_n, \texttt{item} \rangle$; $\texttt{size()}' = n+1$. \\
+\hline
+\texttt{pop()} & \textbf{Pre:} $n > 0$ (i.e., \texttt{!isEmpty()}). \\
+& \textbf{Post:} Returns $e_n$; $S' = \langle e_1, \dots, e_{n-1} \rangle$; $\texttt{size()}' = n-1$. \\
+\hline
+\texttt{peek()} & \textbf{Pre:} $n > 0$. \\
+& \textbf{Post:} Returns $e_n$; $S' = S$ (state unchanged). \\
+\hline
+\texttt{isEmpty()} & \textbf{Pre:} \texttt{true} (always). \\
+& \textbf{Post:} Returns $(n = 0)$; state unchanged. \\
+\hline
+\end{tabularx}
+\end{exemplebox}
+
+\begin{exemplebox}[Formal Specification of Queue ADT Operations]
+\textbf{ADT: Queue of Elements}
+
+\textbf{State:} A finite sequence $Q = \langle e_1, e_2, \dots, e_n \rangle$ where $e_1$ is the front, $e_n$ is the rear.
+
+\textbf{Invariant:} $n \ge 0$.
+
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{Specification} \\
+\hline
+\texttt{enqueue(item)} & \textbf{Pre:} $n < \texttt{CAPACITY}$ (if bounded). \\
+& \textbf{Post:} $Q' = \langle e_1, \dots, e_n, \texttt{item} \rangle$; $\texttt{size()}' = n+1$. \\
+\hline
+\texttt{dequeue()} & \textbf{Pre:} $n > 0$. \\
+& \textbf{Post:} Returns $e_1$; $Q' = \langle e_2, \dots, e_n \rangle$; $\texttt{size()}' = n-1$. \\
+\hline
+\texttt{front()} & \textbf{Pre:} $n > 0$. \\
+& \textbf{Post:} Returns $e_1$; $Q' = Q$. \\
+\hline
+\end{tabularx}
+\end{exemplebox}
+
+\courssub{Worked Example: Specifying a Bounded Stack ADT in Pseudocode}
+
+\begin{exoresolu}[Complete ADT Specification for a Bounded Stack]
+\textbf{Problem:} Write a complete ADT specification for a \texttt{BoundedStack} of integers with a fixed capacity \texttt{MAX}. Include the data structure (hidden), the invariant, and full pre/post conditions for each operation. Use the pseudocode style expected in GCE examinations.
+\tcblower
+\textbf{Solution:}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{ADT BoundedStack} \\
+\hline
+\textbf{Data Structure (Hidden):} \\
+\begin{minipage}{\linewidth}
+\texttt{items: Array[0..MAX-1] of Integer} \\
+\texttt{top: Integer} \quad \textit{// index of top element, -1 means empty}
+\end{minipage} \\
+\hline
+\textbf{Invariant:} \\
+\begin{minipage}{\linewidth}
+\texttt{0 <= top+1 <= MAX} \quad \textit{// size = top+1} \\
+\texttt{items[0..top]} hold the stack elements, bottom at index 0.
+\end{minipage} \\
+\hline
+\textbf{Operations:} \\
+\begin{minipage}{\linewidth}
+\texttt{procedure push(item: Integer)} \\
+\quad \textbf{Pre:} \texttt{top < MAX-1} \quad \textit{// stack not full} \\
+\quad \textbf{Post:} \texttt{top = old.top + 1} \textbf{ and } \texttt{items[top] = item} \\
+\quad \textbf{Exception:} \textbf{if} \texttt{top = MAX-1} \textbf{ then raise StackOverflowException} \\
+\\
+\texttt{function pop(): Integer} \\
+\quad \textbf{Pre:} \texttt{top >= 0} \quad \textit{// stack not empty} \\
+\quad \textbf{Post:} \texttt{result = items[old.top]} \textbf{ and } \texttt{top = old.top - 1} \\
+\quad \textbf{Exception:} \textbf{if} \texttt{top < 0} \textbf{ then raise EmptyStackException} \\
+\\
+\texttt{function peek(): Integer} \\
+\quad \textbf{Pre:} \texttt{top >= 0} \\
+\quad \textbf{Post:} \texttt{result = items[top]} \textbf{ and } \texttt{top = old.top} \quad \textit{// state unchanged} \\
+\quad \textbf{Exception:} \textbf{if} \texttt{top < 0} \textbf{ then raise EmptyStackException} \\
+\\
+\texttt{function isEmpty(): Boolean} \\
+\quad \textbf{Pre:} \texttt{true} \\
+\quad \textbf{Post:} \texttt{result = (top = -1)} \\
+\\
+\texttt{function size(): Integer} \\
+\quad \textbf{Pre:} \texttt{true} \\
+\quad \textbf{Post:} \texttt{result = top + 1} \\
+\\
+\texttt{function isFull(): Boolean} \\
+\quad \textbf{Pre:} \texttt{true} \\
+\quad \textbf{Post:} \texttt{result = (top = MAX-1)}
+\end{minipage} \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Examiner's Notes:}
+\begin{itemize}
+    \item The \textbf{Data Structure} section shows the concrete representation — this is \emph{not} part of the ADT visible to the client, but it is required when you are asked to \emph{implement} the ADT.
+    \item The \textbf{Invariant} uses the hidden variables. It must hold after construction and after every public operation.
+    \item \texttt{old.top} denotes the value of \texttt{top} before the operation. This is standard notation in formal specifications.
+    \item Exceptions are explicitly stated. In GCE pseudocode, write \texttt{raise ExceptionName} or \texttt{throw ExceptionName}.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Why ADTs Matter: Modularity and Maintainability}
+
+\begin{aretenir}[Key Points: Benefits of ADTs]
+\begin{enumerate}
+    \item \textbf{Abstraction:} Clients reason about \emph{what} the data structure does, not \emph{how}. This reduces cognitive load.
+    \item \textbf{Interchangeability:} You can replace an \texttt{ArrayStack} with a \texttt{LinkedStack} without changing a single line of client code, provided both implement the same \texttt{Stack} interface.
+    \item \textbf{Team Development:} One programmer designs the ADT interface; another implements it. They work in parallel.
+    \item \textbf{Testing:} You can test client code against a mock implementation, then swap in the real one.
+    \item \textbf{Maintenance:} Bug fixes or performance improvements in the implementation do not affect clients.
+\end{enumerate}
+\end{aretenir}
+
+\begin{savaistu}[ADTs in Real Cameroonian Systems]
+Mobile money platforms (like MTN MoMo or Orange Money) use \textbf{Queues} to process transaction requests in order, \textbf{Maps} to look up user balances by phone number (key), and \textbf{Stacks} to implement "undo" functionality in USSD menus. The core banking software hides all these behind clean ADT interfaces so that when the engineering team optimises the queue from a simple array to a priority queue (for VIP customers), the USSD menu code does not need to change.
+\end{savaistu}
+
+\courssub{Common Pitfalls and Examination Tips}
+
+\begin{attention}[Examination Traps]
+\begin{enumerate}
+    \item \textbf{Confusing ADT vs. Data Structure:} "Describe the Stack ADT" $\neq$ "Describe how to implement a stack using an array." The first asks for operations and semantics; the second asks for variables and algorithms.
+    \item \textbf{Forgetting Pre-conditions:} Always state pre-conditions for \texttt{pop}, \texttt{peek}, \texttt{dequeue}, \texttt{front}, \texttt{get}, \texttt{remove}. An operation without a pre-condition is incomplete.
+    \item \textbf{Ignoring Exceptions:} If a pre-condition can be violated, say what happens (raise exception, return error code, etc.). "Undefined behaviour" is not an acceptable answer.
+    \item \textbf{Wrong Invariant:} The invariant must be expressible in terms of the \textbf{hidden} data structure variables, not the abstract state. For a linked-list stack, the invariant might be \texttt{head = null $\iff$ size = 0}.
+    \item \textbf{Off-by-one in Bounded Structures:} For an array of size \texttt{MAX}, valid indices are \texttt{0..MAX-1}. \texttt{top = -1} means empty; \texttt{top = MAX-1} means full. Check your boundary conditions.
+\end{enumerate}
+\end{attention}
+
+\begin{exercice}[Practice: ADT Specification]
+\textbf{1.} Write the full ADT specification (invariant, pre/post conditions) for a \textbf{Bounded Queue} implemented with a circular array of capacity \texttt{MAX}. Use hidden variables \texttt{items[0..MAX-1]}, \texttt{front}, \texttt{rear}, \texttt{count}.
+
+\textbf{2.} A \textbf{Set} ADT is implemented using a \textbf{sorted array} (no duplicates). Write the invariant and the specification for \texttt{add(item)} and \texttt{contains(item)}.
+
+\textbf{3.} Explain why a \texttt{List} ADT with operations \texttt{insert(pos, item)} and \texttt{remove(pos)} cannot be efficiently implemented with a singly linked list if the client frequently accesses positions near the end. What data structure would you choose instead?
+
+\textbf{4.} \textit{(GCE-style)} A stack is used to evaluate postfix expressions. Given the postfix expression \texttt{5 3 2 * + 4 -}, trace the stack contents after each token is processed. What is the final result?
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{Bounded Circular Queue ADT Specification}
+
+\textbf{Data Structure (Hidden):}
+\begin{itemize}
+    \item \texttt{items: Array[0..MAX-1] of Element}
+    \item \texttt{front: Integer} \quad \textit{// index of front element}
+    \item \texttt{rear: Integer} \quad \textit{// index where next element will be inserted}
+    \item \texttt{count: Integer} \quad \textit{// number of elements in queue}
+\end{itemize}
+
+\textbf{Invariant:}
+\begin{itemize}
+    \item $0 \le \texttt{count} \le \texttt{MAX}$
+    \item If $\texttt{count} = 0$: \texttt{front} and \texttt{rear} are undefined (or equal, by convention).
+    \item If $\texttt{count} > 0$: elements are stored in \texttt{items[front]}, \texttt{items[(front+1)\%MAX]}, \dots, \texttt{items[(front+count-1)\%MAX]}.
+    \item \texttt{rear = (front + count) \% MAX}
+\end{itemize}
+
+\textbf{Operations:}
+\begin{itemize}
+    \item \texttt{enqueue(item)}: Pre: $\texttt{count} < \texttt{MAX}$. Post: \texttt{items[rear] = item}; \texttt{rear = (rear+1)\%MAX}; \texttt{count = count+1}. Exception: \texttt{QueueOverflow}.
+    \item \texttt{dequeue()}: Pre: $\texttt{count} > 0$. Post: \texttt{result = items[front]}; \texttt{front = (front+1)\%MAX}; \texttt{count = count-1}. Exception: \texttt{EmptyQueue}.
+    \item \texttt{front()}: Pre: $\texttt{count} > 0$. Post: \texttt{result = items[front]}; state unchanged.
+    \item \texttt{isEmpty()}: Post: \texttt{result = (count = 0)}.
+    \item \texttt{isFull()}: Post: \texttt{result = (count = MAX)}.
+    \item \texttt{size()}: Post: \texttt{result = count}.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+\textbf{Set via Sorted Array}
+
+\textbf{Data Structure:} \texttt{elements: Array[0..MAX-1] of Element} (sorted ascending), \texttt{size: Integer}.
+
+\textbf{Invariant:} $0 \le \texttt{size} \le \texttt{MAX}$; \texttt{elements[0..size-1]} are strictly increasing (no duplicates).
+
+\textbf{Operations:}
+\begin{itemize}
+    \item \texttt{add(item)}: Pre: $\texttt{size} < \texttt{MAX}$. Post: If \texttt{item} not in \texttt{elements[0..size-1]}, it is inserted at the correct position to maintain sorted order, all larger elements shifted right, \texttt{size = old.size+1}, returns \texttt{true}. If already present, state unchanged, returns \texttt{false}. (Binary search for position: $O(\log n)$; shift: $O(n)$.)
+    \item \texttt{contains(item)}: Pre: \texttt{true}. Post: Returns \texttt{true} iff \texttt{item} found in \texttt{elements[0..size-1]} (binary search, $O(\log n)$). State unchanged.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+A singly linked list only allows forward traversal from the head. Accessing position $k$ takes $O(k)$ time. If the client frequently inserts/removes near the end (large $k$), each operation takes $O(n)$ time just to find the position. A \textbf{doubly linked list} with a \texttt{tail} pointer allows $O(1)$ access to the end, but still $O(k)$ for arbitrary positions. For efficient arbitrary positional access, a \textbf{dynamic array} (e.g., \texttt{ArrayList}) gives $O(1)$ \texttt{get/set} and amortized $O(1)$ \texttt{add} at end, though \texttt{insert/remove} in the middle remain $O(n)$ due to shifting. A \textbf{balanced binary search tree} with size fields in nodes (order-statistic tree) gives $O(\log n)$ for all operations.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+\textbf{Postfix Evaluation Trace:} \texttt{5 3 2 * + 4 -}
+
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\rowcolor{popblueL}
+\textbf{Token} & \textbf{Action} & \textbf{Stack (top on right)} \\
+\hline
+5 & push 5 & \texttt{[5]} \\
+3 & push 3 & \texttt{[5, 3]} \\
+2 & push 2 & \texttt{[5, 3, 2]} \\
+* & pop 2, pop 3, push $3\times2=6$ & \texttt{[5, 6]} \\
++ & pop 6, pop 5, push $5+6=11$ & \texttt{[11]} \\
+4 & push 4 & \texttt{[11, 4]} \\
+- & pop 4, pop 11, push $11-4=7$ & \texttt{[7]} \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{Final result: 7.}
+\end{corrige}
+
+\courssub{Summary}
+
+In this section, we have established the foundation of Abstract Data Types:
+\begin{itemize}
+    \item An \textbf{ADT} defines a set of values and operations \emph{independently} of implementation.
+    \item The six core ADTs — \textbf{Stack, Queue, List, Set, Map, Tree} — each have a characteristic set of operations and semantic rules (LIFO, FIFO, positional, unique keys, hierarchy).
+    \item Rigorous specification uses \textbf{pre-conditions}, \textbf{post-conditions}, and \textbf{invariants}.
+    \item \textbf{Encapsulation} separates interface from implementation, enabling modular, maintainable, and testable code.
+    \item In examinations, distinguish clearly between \textbf{specifying the ADT} (what it does) and \textbf{implementing it} (how it stores data and executes operations).
+\end{itemize}
+
+In the next section, we will dive deep into \textbf{Binary Tree Concepts and Representation}, where the hierarchical Tree ADT takes concrete form.
+
+\coursec{Binary Tree Concepts and Representation}
+
+In the previous section we met \cle{abstract data types} such as the stack, the queue and the list, and we saw that an ADT is defined by its \emph{operations}, not by its implementation. All of those structures are \emph{linear}: each element has at most one successor. But many real situations are \emph{hierarchical}: the file system on a school computer, the administrative chart of a college (principal $\rightarrow$ vice-principals $\rightarrow$ heads of department $\rightarrow$ teachers), the classification of living things, or the draw of a knockout football tournament like the Cameroon Cup. None of these fit naturally into a line. In this section we study the most important hierarchical structure at A-Level: the \cle{binary tree}.
+
+\courssub{Tree Terminology}
+
+\begin{definition}[Tree]
+A \cle{tree} is a finite set of \cle{nodes} connected by \cle{edges} such that:
+\begin{itemize}
+\item there is exactly one distinguished node called the \cle{root}, which has no parent;
+\item every other node has exactly one \cle{parent};
+\item there are no cycles (following edges from the root, you can never return to a node already visited).
+\end{itemize}
+\end{definition}
+
+The vocabulary of trees is borrowed from family trees and from botany. Fix it precisely, because GCE questions test it directly:
+
+\begin{itemize}
+\item \cle{Node}: an element of the tree holding data (and, in a linked implementation, pointers).
+\item \cle{Edge}: a link between a parent and a child.
+\item \cle{Root}: the unique top node (no parent).
+\item \cle{Parent} / \cle{child}: node $P$ is the parent of node $C$ if an edge goes from $P$ down to $C$; $C$ is a child of $P$.
+\item \cle{Siblings}: nodes sharing the same parent.
+\item \cle{Leaf} (external node): a node with no children. Nodes that are not leaves are \cle{internal nodes}.
+\item \cle{Subtree}: any node together with all its descendants forms a tree in its own right.
+\item \cle{Depth} of a node: the number of edges from the root to that node (the root has depth $0$).
+\item \cle{Level}: the set of all nodes having the same depth.
+\item \cle{Height} of a tree: the number of edges on the longest downward path from the root to a leaf (equivalently, the maximum depth). A tree with a single node has height $0$.
+\end{itemize}
+
+\begin{attention}[Depth vs.\ height]
+Depth is measured \emph{from the root down to a node}; height is measured \emph{from a node (or the root) down to the furthest leaf}. Examiners love to swap them. Also note the convention used here: height counts \emph{edges}, so a single node has height $0$, not $1$. State your convention in the exam if the question is ambiguous.
+\end{attention}
+
+\courssub{Binary Trees: Definition and Special Forms}
+
+\begin{definition}[Binary Tree]
+A \cle{binary tree} is a tree in which every node has \textbf{at most two children}, distinguished as the \cle{left child} and the \cle{right child}. The order matters: a node with only a left child is \emph{not} the same tree as a node with only a right child.
+\end{definition}
+
+Several special shapes appear constantly in examination questions:
+
+\begin{itemize}
+\item \cle{Full} (strict) binary tree: every node has $0$ or $2$ children — never exactly $1$.
+\item \cle{Complete} binary tree: every level is completely filled, except possibly the last, which is filled \emph{from left to right} with no gaps. (This is exactly the shape of a heap.)
+\item \cle{Perfect} binary tree: all internal nodes have two children and all leaves are at the same level.
+\item \cle{Balanced} binary tree: for every node, the heights of its left and right subtrees differ by at most $1$ (informally: the tree stays ``bushy'', so its height remains small, about $\log_2 n$).
+\item \cle{Binary search tree} (BST): for every node, all keys in its \emph{left} subtree are \textbf{smaller} than the node's key, and all keys in its \emph{right} subtree are \textbf{greater}. This ordering property makes searching fast.
+\end{itemize}
+
+\begin{propriete}[Maximum number of nodes]
+A binary tree of height $h$ contains at most $2^{h+1}-1$ nodes (and exactly $2^{i}$ nodes on level $i$ in a perfect tree).
+\end{propriete}
+
+\emph{Justification (instructive, not required for reproduction).} Level $i$ can hold at most twice as many nodes as level $i-1$, and level $0$ holds $1$ node, so level $i$ holds at most $2^{i}$ nodes. Summing the geometric progression over levels $0$ to $h$:
+\[
+1+2+4+\dots+2^{h}=\sum_{i=0}^{h}2^{i}=2^{h+1}-1.
+\]
+Conversely, a tree with $n$ nodes has height at least $\lceil \log_2(n+1)\rceil - 1$ (balanced case) and at most $n-1$ (degenerate ``chain'' case).
+
+\begin{exemplebox}[Counting]
+A perfect binary tree of height $3$ has $2^{4}-1=15$ nodes: $1$ root, $2$ on level $1$, $4$ on level $2$, $8$ leaves on level $3$.
+\end{exemplebox}
+
+\courssub{Array (Heap-Style) Representation}
+
+A complete binary tree can be stored very compactly in an array, without any pointers. This is the representation used by the \emph{heap} you will meet later. Using \textbf{1-based indexing} (root at index $1$), the nodes are stored level by level, left to right, and:
+
+\begin{propriete}[Array index formulas (1-based)]
+For the node stored at index $i$:
+\begin{itemize}
+\item its \textbf{parent} is at index $\lfloor i/2 \rfloor$;
+\item its \textbf{left child} is at index $2i$;
+\item its \textbf{right child} is at index $2i+1$.
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Off-by-one errors]
+These formulas assume the root is at index $1$. If your array is 0-based (root at index $0$), the formulas become: parent $\lfloor (i-1)/2 \rfloor$, left child $2i+1$, right child $2i+2$. Mixing the two conventions is the single most common source of wrong answers in trace questions. Always write down which convention you are using before computing.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  every node/.style={circle, draw=popblue, thick, fill=popblueL, minimum size=8mm, inner sep=1pt, font=\small},
+  level 1/.style={sibling distance=48mm},
+  level 2/.style={sibling distance=24mm},
+  level 3/.style={sibling distance=12mm},
+  edge from parent/.style={draw=popmuted, thick}]
+\node {A[1]}
+  child { node {B[2]}
+    child { node {D[4]}
+      child { node {H[8]} }
+      child { node {I[9]} } }
+    child { node {E[5]} } }
+  child { node {C[3]}
+    child { node {F[6]} }
+    child { node {G[7]} } };
+\end{tikzpicture}
+\end{center}
+\legende{A binary tree with each node labelled by its data and its 1-based array index in brackets. The array stores: index 1:A, 2:B, 3:C, 4:D, 5:E, 6:F, 7:G, 8:H, 9:I.}
+\end{popfigure}
+
+\begin{exemplebox}[Using the formulas]
+In the tree above, node E is at index $5$: its parent is at $\lfloor 5/2\rfloor = 2$ (node B), its left child would be at $2\times5=10$ and its right child at $11$ — both absent, so E is a leaf.
+\end{exemplebox}
+
+The array representation is memory-efficient for \emph{complete} trees but wasteful for sparse ones (a degenerate tree of height $h$ would need an array of size about $2^{h+1}$).
+
+\courssub{Linked Representation}
+
+The most flexible representation uses one record per node:
+
+\begin{itemize}
+\item \texttt{TYPE TreeNode = RECORD}
+\item \texttt{\quad data : ElementType}
+\item \texttt{\quad left  : POINTER TO TreeNode}
+\item \texttt{\quad right : POINTER TO TreeNode}
+\item \texttt{END RECORD}
+\end{itemize}
+
+A whole tree is then simply a pointer to its root; an empty tree is the null pointer. This structure is naturally \emph{recursive}: the left and right fields of a node point to the roots of its left and right subtrees. That is why recursive algorithms fit binary trees so well.
+
+\courssub{Traversal Algorithms}
+
+To \cle{traverse} a tree means to visit every node exactly once, in a systematic order. Three recursive depth-first orders and one breadth-first order are required.
+
+\begin{methode}[Recursive in-order traversal]
+For a BST, in-order traversal visits the keys in \textbf{ascending order} — a fact frequently examined.
+\begin{enumerate}
+\item Traverse the \textbf{left} subtree (recursively).
+\item \textbf{Process} (visit) the current node.
+\item Traverse the \textbf{right} subtree (recursively).
+\end{enumerate}
+\end{methode}
+
+\begin{itemize}
+\item \texttt{PROCEDURE InOrder(node)}
+\item \texttt{\quad IF node $\neq$ NULL THEN}
+\item \texttt{\quad\quad InOrder(node.left)}
+\item \texttt{\quad\quad OUTPUT node.data}
+\item \texttt{\quad\quad InOrder(node.right)}
+\item \texttt{\quad END IF}
+\item \texttt{END PROCEDURE}
+\end{itemize}
+
+The other two depth-first orders differ only in the position of the visit:
+
+\begin{itemize}
+\item \cle{Pre-order} (node, left, right): useful to \emph{copy} a tree or to print a directory structure.
+\item \cle{Post-order} (left, right, node): useful to \emph{delete} a tree (children freed before the parent) or to evaluate an expression tree.
+\end{itemize}
+
+\begin{exoresolu}[Traversals of a small tree]
+Consider the BST with root $8$, left child $3$ (with children $1$ and $6$), right child $10$ (with right child $14$).
+\tcblower
+\begin{itemize}
+\item Pre-order: $8, 3, 1, 6, 10, 14$
+\item In-order: $1, 3, 6, 8, 10, 14$ — sorted, as expected for a BST.
+\item Post-order: $1, 6, 3, 14, 10, 8$
+\end{itemize}
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  stack/.style={rectangle, draw=poppurple, thick, fill=popblueL, minimum width=34mm, minimum height=6mm, font=\small},
+  lab/.style={font=\small\itshape, text=popdark}]
+\node[stack] (s1) at (0,0) {InOrder(1) — output 1};
+\node[stack] (s2) at (0,0.75) {InOrder(3) — output 3};
+\node[stack] (s3) at (0,1.5) {InOrder(8) — output 8};
+\node[lab] at (0,-0.7) {call stack grows upward};
+\draw[->, thick, poporange] (2.4,0) -- (2.4,1.5) node[midway, right, font=\small] {recursive calls};
+\node[lab, text width=52mm] at (6.3,0.8) {Each call first pushes a frame for its left child; when the left subtree is exhausted, the frame outputs its node, then calls the right subtree.};
+\end{tikzpicture}
+\end{center}
+\legende{Snapshot of the call stack during in-order traversal of the BST $\{8,3,1,6,10,14\}$, at the moment node $1$ is being output.}
+\end{popfigure}
+
+\begin{methode}[Iterative level-order traversal (breadth-first) using a queue]
+\begin{enumerate}
+\item Create an empty queue $Q$; \textbf{enqueue} the root.
+\item \textbf{While} $Q$ is not empty:
+\begin{enumerate}
+\item \textbf{Dequeue} a node and process it.
+\item \textbf{Enqueue} its left child (if it exists), then its right child (if it exists).
+\end{enumerate}
+\end{enumerate}
+The queue guarantees that nodes are visited level by level, left to right.
+\end{methode}
+
+\begin{itemize}
+\item \texttt{PROCEDURE LevelOrder(root)}
+\item \texttt{\quad Q $\leftarrow$ empty queue; Enqueue(Q, root)}
+\item \texttt{\quad WHILE NOT IsEmpty(Q) DO}
+\item \texttt{\quad\quad node $\leftarrow$ Dequeue(Q)}
+\item \texttt{\quad\quad OUTPUT node.data}
+\item \texttt{\quad\quad IF node.left $\neq$ NULL THEN Enqueue(Q, node.left)}
+\item \texttt{\quad\quad IF node.right $\neq$ NULL THEN Enqueue(Q, node.right)}
+\item \texttt{\quad END WHILE}
+\item \texttt{END PROCEDURE}
+\end{itemize}
+
+For the worked-example BST, level-order gives $8, 3, 10, 1, 6, 14$.
+
+\courssub{Operations on a Binary Search Tree}
+
+\textbf{Search.} Compare the target key with the current node: if equal, stop; if smaller, go left; if greater, go right; if you fall off the tree (NULL), the key is absent.
+
+\begin{itemize}
+\item \texttt{FUNCTION Search(node, key)}
+\item \texttt{\quad IF node = NULL OR node.data = key THEN RETURN node}
+\item \texttt{\quad IF key $<$ node.data THEN RETURN Search(node.left, key)}
+\item \texttt{\quad ELSE RETURN Search(node.right, key)}
+\item \texttt{END FUNCTION}
+\end{itemize}
+
+\textbf{Insertion.} Search for the key; when you reach a NULL position, attach the new node there (duplicates are usually rejected or sent consistently to one side).
+
+\begin{itemize}
+\item \texttt{PROCEDURE Insert(VAR node, key)}
+\item \texttt{\quad IF node = NULL THEN node $\leftarrow$ new TreeNode(key, NULL, NULL)}
+\item \texttt{\quad ELSE IF key $<$ node.data THEN Insert(node.left, key)}
+\item \texttt{\quad ELSE IF key $>$ node.data THEN Insert(node.right, key)}
+\item \texttt{END PROCEDURE}
+\end{itemize}
+
+\textbf{Deletion} has three cases for the node $N$ to remove:
+\begin{enumerate}
+\item $N$ is a \textbf{leaf}: simply detach it (set the parent's pointer to NULL).
+\item $N$ has \textbf{one child}: replace $N$ by that child.
+\item $N$ has \textbf{two children}: find $N$'s \emph{in-order successor} — the smallest node in its right subtree (go right once, then left as far as possible) — copy its key into $N$, then delete that successor (which has at most one child, so case 1 or 2 applies).
+\end{enumerate}
+
+\begin{attention}[BST deletion traps]
+\begin{itemize}
+\item In the two-children case, do \emph{not} delete the node and try to reattach both subtrees; replace by the in-order successor (or predecessor).
+\item After deletion, the BST property must still hold for \emph{every} node — check the whole affected path, not just the deleted node.
+\end{itemize}
+\end{attention}
+
+\courssub{Complexity: Balanced vs.\ Degenerate Trees}
+
+The cost of search, insertion and deletion is proportional to the number of nodes visited on one root-to-leaf path, i.e.\ to the \emph{height} $h$ of the tree.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Shape} & \textbf{Height for $n$ nodes} & \textbf{Cost of search / insert / delete} \\
+\hline
+Balanced (e.g.\ complete) & $h \approx \log_2 n$ & $O(\log n)$ \\
+\hline
+Degenerate (chain, e.g.\ inserting sorted data into a BST) & $h = n-1$ & $O(n)$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+For example, with $n = 1\,000\,000$ records, a balanced BST needs about $\log_2 10^{6} \approx 20$ comparisons per search, while a degenerate tree may need up to a million — no better than an unsorted list. This is why keeping trees \emph{balanced} matters in practice (AVL trees, red-black trees), and why level-order traversal, which uses a queue, costs $O(n)$ time and up to $O(n)$ extra space for the widest level.
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item A perfect binary tree has $63$ nodes. What is its height? How many leaves does it have?
+\item In a 1-based array representation, the node at index $13$ — what are the indices of its parent, left child and right child?
+\item Insert the keys $50, 30, 70, 20, 40, 60, 80$ in this order into an empty BST. Draw the tree, then give its pre-order, in-order, post-order and level-order traversals. Is the tree balanced?
+\item From your tree, delete $70$ using the in-order successor method. Draw the result.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise n°1]
+\begin{enumerate}
+\item $63 = 2^{h+1}-1 \Rightarrow 2^{h+1}=64 \Rightarrow h=5$. Leaves $=2^{5}=32$.
+\item Parent: $\lfloor 13/2\rfloor = 6$; left child: $2\times13=26$; right child: $27$.
+\item The tree is perfect/balanced of height $2$: root $50$; children $30, 70$; grandchildren $20, 40, 60, 80$. Pre-order: $50,30,20,40,70,60,80$. In-order: $20,30,40,50,60,70,80$. Post-order: $20,40,30,60,80,70,50$. Level-order: $50,30,70,20,40,60,80$. Yes, balanced.
+\item The in-order successor of $70$ is $80$ (right child, no left subtree). Copy $80$ into the node, then delete the leaf $80$: root $50$, right child $80$, whose left child is $60$.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A binary tree node has at most two ordered children; master the vocabulary (root, leaf, depth, height, level).
+\item Maximum nodes at height $h$: $2^{h+1}-1$; a balanced tree with $n$ nodes has height $\approx \log_2 n$.
+\item Array representation (1-based): parent $\lfloor i/2\rfloor$, left $2i$, right $2i+1$ — beware 0-based conversions.
+\item Linked representation: node = data + left pointer + right pointer; recursion fits naturally.
+\item Traversals: pre-order (NLR), in-order (LNR — sorted for a BST), post-order (LRN), level-order (queue).
+\item BST operations (search, insert, delete) cost $O(h)$: $O(\log n)$ if balanced, $O(n)$ if degenerate.
+\end{itemize}
+\end{aretenir}
+
+In the next section we put these structures to work: we will see how stacks, queues, trees and other ADTs combine to solve real problems — expression evaluation, priority scheduling, and more — which is exactly the kind of synthesis the GCE Paper expects.
+
+\coursec{Applications of ADTs}
+
+Having explored the internal structure and representation of binary trees, we now turn to the practical power of Abstract Data Types. An ADT is a contract: it specifies \emph{what} operations are available, not \emph{how} they are implemented. This separation allows us to choose the most efficient concrete structure (array, linked list, tree, hash table) for a given problem. In this section we examine classic applications of stacks, queues, lists, sets, maps and trees, and we build two case studies that combine several ADTs.
+
+\courssub{Stack Application: Expression Evaluation}
+
+Arithmetic expressions written in \emph{infix} notation (e.g. \texttt{3 + 4 * 2}) are natural for humans but awkward for computers because operator precedence and parentheses dictate the order of evaluation. A stack solves this elegantly.
+
+\begin{propriete}[Operator Precedence and Associativity]
+For the basic arithmetic operators:
+\begin{center}
+\begin{tabular}{|c|c|c|}\hline
+\textbf{Operator} & \textbf{Precedence} & \textbf{Associativity} \\ \hline
+\texttt{*}, \texttt{/} & High (2) & Left \\ \hline
+\texttt{+}, \texttt{-} & Low (1) & Left \\ \hline
+\end{tabular}
+\end{center}
+Higher precedence operators are applied before lower precedence ones. Operators of equal precedence are evaluated left-to-right (left-associative) except exponentiation (right-associative), which is not required for the GCE syllabus.
+\end{propriete}
+
+\begin{propriete}[Stack LIFO and Operator Ordering]
+The Last-In-First-Out behaviour of a stack guarantees that when we convert an infix expression to postfix (Reverse Polish Notation), operators are output in the exact order required for correct evaluation. The most recently seen operator of higher or equal precedence is applied before earlier ones.
+\end{propriete}
+
+\paragraph{Shunting‑Yard Algorithm (Dijkstra).}
+The algorithm reads tokens left‑to‑right, uses an \emph{operator stack} and an \emph{output queue}.
+
+\begin{methode}[Infix‑to‑Postfix Conversion]
+\begin{enumerate}
+\item Initialise empty operator stack $S$ and output queue $Q$.
+\item For each token $t$ in the infix expression:
+  \begin{itemize}
+  \item If $t$ is an operand, enqueue $t$ to $Q$.
+  \item If $t$ is a left parenthesis `(', push $t$ onto $S$.
+  \item If $t$ is a right parenthesis `)':
+        Pop operators from $S$ to $Q$ until a `(' is found; discard the parentheses.
+  \item If $t$ is an operator $op$:
+        While $S$ is not empty and top of $S$ is an operator with \emph{higher} precedence, or equal precedence and $op$ is left‑associative, pop top of $S$ to $Q$.
+        Push $op$ onto $S$.
+  \end{itemize}
+\item After all tokens, pop any remaining operators from $S$ to $Q$.
+\item $Q$ now holds the postfix expression.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Converting \texttt{3+4*2/(1-5)}]
+We trace the algorithm step by step.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+\textbf{Token} & \textbf{Action} & \textbf{Stack $S$ (top right)} & \textbf{Output $Q$} \\ \hline
+3 & operand $\to$ output & \texttt{[]} & \texttt{3} \\
++ & push + & \texttt{[+]} & \texttt{3} \\
+4 & operand $\to$ output & \texttt{[+]} & \texttt{3 4} \\
+* & top is + (lower prec) $\to$ push * & \texttt{[+ *]} & \texttt{3 4} \\
+2 & operand $\to$ output & \texttt{[+ *]} & \texttt{3 4 2} \\
+/ & top is * (same prec, left-assoc) $\to$ pop * to output, push / & \texttt{[+ /]} & \texttt{3 4 2 *} \\
+( & push ( & \texttt{[+ / (]} & \texttt{3 4 2 *} \\
+1 & operand $\to$ output & \texttt{[+ / (]} & \texttt{3 4 2 * 1} \\
+- & push - & \texttt{[+ / ( -]} & \texttt{3 4 2 * 1} \\
+5 & operand $\to$ output & \texttt{[+ / ( -]} & \texttt{3 4 2 * 1 5} \\
+) & pop until ( : pop - to output, discard ( & \texttt{[+ /]} & \texttt{3 4 2 * 1 5 -} \\
+end & pop remaining: / then + & \texttt{[]} & \texttt{3 4 2 * 1 5 - / +} \\ \hline
+\end{tabular}
+\end{center}
+Postfix: \texttt{3 4 2 * 1 5 - / +}.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.8cm, >=Stealth, thick,
+  proc/.style={rectangle, draw=popblue, fill=popblueL, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center},
+  dec/.style={diamond, draw=poporange, fill=poporange!20, aspect=2, minimum width=2.5cm, minimum height=1cm, align=center},
+  io/.style={trapezium, draw=popgreen, fill=popgreenL, trapezium left angle=70, trapezium right angle=110, minimum width=2.5cm, minimum height=1cm, align=center},
+  term/.style={ellipse, draw=poppurple, fill=poppurple!20, minimum width=2cm, minimum height=1cm, align=center}]
+\node[term] (start) {Start};
+\node[io, below of=start] (read) {Read next token};
+\node[dec, below of=read] (type) {Token type?};
+\node[proc, left of=type, xshift=-3.5cm] (operand) {Enqueue operand to output};
+\node[dec, below of=type, yshift=-1.2cm] (leftpar) {Left parenthesis?};
+\node[proc, left of=leftpar, xshift=-3.5cm] (pushlp) {Push `(' to stack};
+\node[dec, below of=leftpar] (rightpar) {Right parenthesis?};
+\node[proc, left of=rightpar, xshift=-3.5cm] (poprp) {Pop operators to output until `('; discard parentheses};
+\node[dec, below of=rightpar] (operator) {Operator?};
+\node[proc, left of=operator, xshift=-3.5cm, align=center] (handleop){While top of stack has higher/equal precedence:\\pop to output; push current operator};
+\node[dec, below of=operator] (more) {More tokens?};
+\node[proc, below of=more] (finalpop) {Pop all remaining operators to output};
+\node[term, below of=finalpop] (end) {End};
+
+\draw[->] (start) -- (read);
+\draw[->] (read) -- (type);
+\draw[->] (type) -- node[above] {operand} (operand);
+\draw[->] (operand) |- (more);
+\draw[->] (type) -- node[above] {`('} (pushlp);
+\draw[->] (pushlp) |- (more);
+\draw[->] (type) -- (leftpar);
+\draw[->] (leftpar) -- node[above] {no} (rightpar);
+\draw[->] (leftpar) -- node[above] {yes} (pushlp);
+\draw[->] (rightpar) -- node[above] {no} (operator);
+\draw[->] (rightpar) -- node[above] {yes} (poprp);
+\draw[->] (poprp) |- (more);
+\draw[->] (operator) -- node[above] {no} (more);
+\draw[->] (operator) -- node[above] {yes} (handleop);
+\draw[->] (handleop) |- (more);
+\draw[->] (more) -- node[right] {yes} (read);
+\draw[->] (more) -- node[right] {no} (finalpop);
+\draw[->] (finalpop) -- (end);
+\end{tikzpicture}
+\legende{Flowchart of the Shunting‑Yard algorithm for \texttt{3+4*2/(1-5)}}
+\end{popfigure}
+
+\paragraph{Postfix Evaluation.}
+Once we have postfix, evaluation uses a single operand stack.
+
+\begin{methode}[Postfix Evaluation]
+\begin{enumerate}
+\item Initialise empty operand stack $S$.
+\item For each token $t$ in postfix:
+  \begin{itemize}
+  \item If $t$ is an operand, push $t$ onto $S$.
+  \item If $t$ is an operator $op$:
+        Pop $b$, then $a$ from $S$ ($a$ is left operand, $b$ right).
+        Compute $a\ op\ b$, push result onto $S$.
+  \end{itemize}
+\item Final result is the only value left on $S$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Evaluate \texttt{3 4 2 * 1 5 - / +}]
+\begin{enumerate}
+\item Push 3, 4, 2. Stack: \texttt{[3, 4, 2]} (top right).
+\item `*': pop 2, 4 $\to$ 4*2=8, push 8. Stack: \texttt{[3, 8]}.
+\item Push 1, 5. Stack: \texttt{[3, 8, 1, 5]}.
+\item `-': pop 5, 1 $\to$ 1-5=-4, push -4. Stack: \texttt{[3, 8, -4]}.
+\item `/': pop -4, 8 $\to$ 8/(-4)=-2, push -2. Stack: \texttt{[3, -2]}.
+\item `+': pop -2, 3 $\to$ 3+(-2)=1, push 1. Stack: \texttt{[1]}.
+\item Result = 1.
+\end{enumerate}
+\tcblower
+The algorithm correctly respects precedence: multiplication and division before addition, parentheses first.
+\end{exoresolu}
+
+\begin{attention}[Stack Overflow]
+Recursive expression evaluation or deeply nested parentheses can exhaust the call stack or the explicit operator stack. In production code, set a maximum stack depth (e.g. 1000) and report an error if exceeded. Iterative Shunting‑Yard avoids recursion limits.
+\end{attention}
+
+\begin{attention}[Integer vs Floating‑Point]
+If the language uses integer division, \texttt{5/2} yields 2. For a general calculator, use floating‑point (double) throughout, or detect decimal points in tokenisation.
+\end{attention}
+
+\courssub{Queue Application: Scheduling and Breadth‑First Search}
+
+A queue’s First‑In‑First‑Out discipline models any system where \emph{order of arrival} determines \emph{order of service}.
+
+\begin{itemize}
+\item \textbf{Print Job Spooler.} Jobs are enqueued as users submit them; the printer dequeues and prints in the same order. Priority queues (a variant) can handle urgent jobs.
+\item \textbf{Breadth‑First Search (BFS) in Graphs.} Starting from a source vertex, we enqueue it. While the queue is not empty, dequeue a vertex, visit its unvisited neighbours and enqueue them. This guarantees shortest‑path (in edges) discovery in unweighted graphs.
+\item \textbf{Waiting‑Line Simulation.} Customers arrive at random intervals (Poisson process), join a queue, are served by one or more servers (exponential service time). Queue length and waiting time statistics inform staffing decisions (e.g. at a bank or a hospital triage).
+\end{itemize}
+
+\begin{exemplebox}[BFS Pseudocode]
+\begin{itemize}
+\item \texttt{queue $\leftarrow$ empty}
+\item \texttt{enqueue(queue, start)}
+\item \texttt{visited[start] $\leftarrow$ true}
+\item \texttt{while not empty(queue):}
+\item \quad \texttt{u $\leftarrow$ dequeue(queue)}
+\item \quad \texttt{for each neighbour v of u:}
+\item \quad\quad \texttt{if not visited[v]:}
+\item \quad\quad\quad \texttt{visited[v] $\leftarrow$ true}
+\item \quad\quad\quad \texttt{enqueue(queue, v)}
+\end{itemize}
+\end{exemplebox}
+
+\courssub{List Application: Dynamic Collections}
+
+Lists (array‑based or linked) support insertion and deletion at any position, making them ideal for ordered collections that change frequently.
+
+\begin{exemplebox}[Student Record Management with a List]
+A school maintains an alphabetical list of students. Each record: \texttt{(ID, Name, Form, Average)}.
+\begin{itemize}
+\item \textbf{Insert:} Find correct position (binary search on name if array list, linear if linked), shift elements (array) or relink nodes (linked), insert new record.
+\item \textbf{Delete:} Locate record by ID, remove, shift/relink.
+\item \textbf{Update:} Locate, modify fields (e.g. new average after exams).
+\item \textbf{Report:} Traverse list in order to print termly report cards.
+\end{itemize}
+A linked list avoids costly shifting for large datasets; an array list gives cache‑friendly traversal for reporting.
+\end{exemplebox}
+
+\courssub{Set Application: Uniqueness and Membership}
+
+A set stores \emph{distinct} elements with fast membership testing.
+
+\begin{itemize}
+\item \textbf{Removing Duplicates from a Data Stream.} Read each item; if not in set, add to set and write to output. Guarantees each value appears once.
+\item \textbf{Membership Testing.} Check if a student ID exists in the set of registered candidates for an exam. Hash‑set gives $O(1)$ average time.
+\end{itemize}
+
+\begin{exemplebox}[Duplicate Removal in a Log File]
+A server log contains IP addresses. To count unique visitors:
+\begin{itemize}
+\item \texttt{unique\_ips $\leftarrow$ empty hash set}
+\item \texttt{for each line in log:}
+\item \quad \texttt{ip $\leftarrow$ extract\_ip(line)}
+\item \quad \texttt{if ip not in unique\_ips: add ip to unique\_ips}
+\item \texttt{print size(unique\_ips)}
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Map (Dictionary) Application: Key‑Value Lookup}
+
+A map associates a unique key with a value. Operations: \texttt{put(key, value)}, \texttt{get(key)}, \texttt{remove(key)}.
+
+\begin{definition}[Symbol Table]
+A \emph{symbol table} is a map used by a compiler or interpreter to store information about identifiers (variables, functions, classes). Keys are identifier names; values are attributes (type, scope, memory address, line numbers). Fast lookup ($O(1)$ average with hash map, $O(\log n)$ with balanced tree) is critical during compilation.
+\end{definition}
+
+\begin{exemplebox}[Student‑ID $\to$ Record Lookup]
+A school database uses a hash map: \texttt{Map<String, StudentRecord>}.
+\begin{itemize}
+\item Key: admission number (e.g. \texttt{"2024/SC/00123"}).
+\item Value: object containing name, form, subjects, grades.
+\item \texttt{get("2024/SC/00123")} retrieves the record in constant time for fee payment, transcript printing, etc.
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Tree Application: Hierarchical Data}
+
+Trees naturally represent hierarchies: each node has a parent (except root) and zero or more children.
+
+\begin{itemize}
+\item \textbf{File System.} Directories are internal nodes; files are leaves. Path \texttt{/home/student/docs/report.pdf} corresponds to a root‑to‑leaf traversal.
+\item \textbf{Organisation Chart.} CEO at root, directors as children, managers below, employees as leaves.
+\item \textbf{Decision Tree.} Internal nodes are tests (e.g. \texttt{age > 18?}), branches are outcomes, leaves are decisions (e.g. \texttt{Eligible}, \texttt{Not Eligible}).
+\end{itemize}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  dir/.style={rectangle, draw=popblue, fill=popblueL, rounded corners, minimum width=2.2cm, minimum height=0.8cm, align=center},
+  file/.style={rectangle, draw=popgreen, fill=popgreenL, minimum width=2.2cm, minimum height=0.8cm, align=center},
+  edge/.style={->, thick, popdark},
+  level distance=1.5cm,
+  sibling distance=2.5cm,
+  growth parent anchor=south
+]
+\node[dir] (root) {/ (root)}
+  child {node[dir] (home) {home}
+    child {node[dir] (student) {student}
+      child {node[dir] (docs) {docs}
+        child {node[file] (rep) {report.pdf}}
+        child {node[file] (notes) {notes.txt}}}
+      child {node[dir] (pics) {pictures}
+        child {node[file] (img1) {photo1.jpg}}
+        child {node[file] (img2) {photo2.png}}}}
+    child {node[dir] (teacher) {teacher}
+      child {node[file] (grades) {grades.xlsx}}}}
+  child {node[dir] (etc) {etc}
+    child {node[file] (passwd) {passwd}}
+    child {node[file] (hosts) {hosts}}}
+  child {node[dir] (var) {var}
+    child {node[dir] (log) {log}
+      child {node[file] (syslog) {syslog}}
+      child {node[file] (auth) {auth.log}}}};
+\end{tikzpicture}
+\legende{File‑system tree: directories (blue) and files (green)}
+\end{popfigure}
+
+\courssub{Case Study 1: Simple Calculator with Operator Precedence}
+
+We build a calculator that reads an infix expression from the user, converts it to postfix using the Shunting‑Yard algorithm, then evaluates the postfix expression. This demonstrates the stack as the central ADT for both phases.
+
+\begin{methode}[Calculator Algorithm]
+\begin{enumerate}
+\item Read input string (e.g. \texttt{"3+4*2/(1-5)"}).
+\item Tokenise: numbers (multi‑digit), operators \texttt{+ - * /}, parentheses.
+\item Apply Shunting‑Yard to produce postfix token list.
+\item Evaluate postfix with operand stack.
+\item Display result.
+\item Handle errors: division by zero, mismatched parentheses, invalid tokens.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Calculator Trace for \texttt{10+20*3}]
+\begin{enumerate}
+\item Tokens: \texttt{10, +, 20, *, 3}.
+\item Postfix: \texttt{10 20 3 * +}.
+\item Evaluation:
+  \begin{itemize}
+  \item Push 10, 20, 3.
+  \item `*': pop 3, 20 $\to$ 60, push 60.
+  \item `+': pop 60, 10 $\to$ 70, push 70.
+  \item Result = 70.
+  \end{itemize}
+\end{enumerate}
+\tcblower
+The calculator correctly computes $10 + (20 \times 3) = 70$, not $(10+20)\times3 = 90$.
+\end{exoresolu}
+
+\courssub{Case Study 2: Mini Student‑Management System}
+
+We combine a \textbf{Map} for $O(1)$ ID lookup and a \textbf{List} for ordered reports (e.g. alphabetical or by merit).
+
+\begin{methode}[System Design]
+\begin{enumerate}
+\item \textbf{Data Structures:}
+  \begin{itemize}
+  \item \texttt{Map<String, Student> idMap} — key = admission number.
+  \item \texttt{List<Student> alphaList} — kept sorted by name (or use a TreeSet with custom comparator).
+  \end{itemize}
+\item \textbf{Operations:}
+  \begin{itemize}
+  \item \texttt{addStudent(Student s)}: \texttt{idMap.put(s.id, s)}; insert into \texttt{alphaList} at sorted position.
+  \item \texttt{findById(String id)}: \texttt{return idMap.get(id)} — $O(1)$.
+  \item \texttt{removeStudent(String id)}: \texttt{Student s = idMap.remove(id)}; \texttt{alphaList.remove(s)}.
+  \item \texttt{printAlphabetical()}: traverse \texttt{alphaList}.
+  \item \texttt{printMeritOrder()}: copy \texttt{alphaList} to array, sort by average descending, print.
+  \end{itemize}
+\item \textbf{Consistency:} Every mutation updates both structures atomically (or within a transaction).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Cameroon Context: GCE Registration]
+During GCE Advanced Level registration, a centre enters candidates. The map allows instant verification: “Has candidate \texttt{2025/AL/00456} already registered?” The list produces the alphabetical nominal roll for the examination board. At the end of term, a merit list (sorted by average) is generated for prize‑giving.
+\end{exemplebox}
+
+\courssub{Choosing the Right ADT}
+
+\begin{methode}[Choosing an ADT — Decision Guide]
+\begin{enumerate}
+\item \textbf{Identify the core operations:} Insert, delete, search, traverse, access by index, access by key, FIFO, LIFO, hierarchy.
+\item \textbf{Match to ADT strengths:}
+  \begin{itemize}
+  \item Need LIFO (undo, expression eval) $\to$ \textbf{Stack}.
+  \item Need FIFO (scheduling, BFS) $\to$ \textbf{Queue}.
+  \item Need ordered sequence with frequent insert/delete anywhere $\to$ \textbf{List} (linked for many mutations, array for cache‑friendly reads).
+  \item Need uniqueness and fast membership $\to$ \textbf{Set} (hash set for $O(1)$, tree set for ordered iteration).
+  \item Need key‑value association with fast lookup $\to$ \textbf{Map} (hash map for $O(1)$, tree map for sorted keys).
+  \item Need hierarchy, path queries, prefix search $\to$ \textbf{Tree} (general tree, binary search tree, trie).
+  \end{itemize}
+\item \textbf{Consider constraints:} Memory, latency, concurrency, persistence.
+\item \textbf{Prototype and benchmark:} Implement with two candidate structures, test with realistic data sizes.
+\end{enumerate}
+\end{methode}
+
+\begin{aretenir}[Key Points for Examination]
+\begin{itemize}
+\item Stack: infix→postfix (Shunting‑Yard), postfix evaluation, undo mechanisms, recursion simulation.
+\item Queue: print spooling, BFS, simulation of waiting lines.
+\item List: dynamic ordered collections (student records, playlists).
+\item Set: duplicate removal, membership testing, mathematical set operations (union, intersection).
+\item Map: symbol tables, dictionaries, ID→record lookup, caching.
+\item Tree: file systems, organisation charts, decision trees, XML/JSON parsing.
+\item Always justify your ADT choice by the required operations and their complexity.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice Questions]
+\begin{enumerate}
+\item Convert the infix expression \texttt{(A+B)*(C-D)/E} to postfix using the Shunting‑Yard algorithm. Show the stack and output at each step.
+\item A printer receives jobs J1, J2, J3, J4 in that order. J2 is a high‑priority job. Explain how a priority queue would change the print order compared to a simple FIFO queue.
+\item Design a data structure to store a dictionary of English words for a spell‑checker. The operations are: \texttt{addWord}, \texttt{checkWord}, \texttt{suggestCorrections} (words with edit distance 1). Which ADT(s) would you use and why?
+\item In the mini student‑management system, suppose we also need to quickly find all students in a given form (e.g. Upper Sixth). How would you modify the design?
+\item Draw the file‑system tree for the following paths:
+  \texttt{/etc/passwd}, \texttt{/etc/hosts}, \texttt{/home/alice/docs/report.pdf}, \texttt{/home/bob/music/song.mp3}, \texttt{/var/log/syslog}.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Tokens: `(', A, +, B, `)', *, `(', C, -, D, `)', /, E.
+Trace:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+Token & Action & Stack & Output \\ \hline
+( & push ( & [(] & [] \\
+A & output & [(] & [A] \\
++ & push + & [( +] & [A] \\
+B & output & [( +] & [A B] \\
+) & pop +, pop ( & [] & [A B +] \\
+* & push * & [*] & [A B +] \\
+( & push ( & [* (] & [A B +] \\
+C & output & [* (] & [A B + C] \\
+- & push - & [* ( -] & [A B + C] \\
+D & output & [* ( -] & [A B + C D] \\
+) & pop -, pop ( & [*] & [A B + C D -] \\
+/ & pop * (same prec, left-assoc), push / & [/] & [A B + C D - *] \\
+E & output & [/] & [A B + C D - * E] \\
+end & pop / & [] & [A B + C D - * E /] \\ \hline
+\end{tabular}
+\end{center}
+Postfix: \texttt{A B + C D - * E /}.
+\end{corrige}
+
+\begin{savaistu}[Did You Know?]
+The Shunting‑Yard algorithm was invented by Edsger Dijkstra in 1961. Its name comes from the resemblance to a railway shunting yard where trains (tokens) are rearranged from an input track to an output track using a holding siding (the stack). Dijkstra also gave us the shortest‑path algorithm and the concept of structured programming.
+\end{savaistu}
+
+\coursec{Integration Activity \& Exam Preparation}
+
+In the previous sections we saw how abstract data types appear in real software: queues in print servers, stacks in expression evaluation, trees in file systems, and maps in databases. Each ADT was studied in isolation, with its specification, its representation and its operations. But real problems never come labelled ``use a queue here''. The true skill of a computer scientist --- and the skill the GCE Advanced Level examiner rewards --- is to \emph{look at a messy, realistic situation and decide which ADTs to combine, and why}. That is exactly what an \cle{Integration Activity} trains you to do. This final section brings the whole chapter together: we review every ADT, we learn a repeatable design methodology, we apply it to a complete mini-project, and we finish with GCE-style practice and a self-assessment checklist.
+
+\begin{definition}[Integration Activity]
+An \cle{Integration Activity} is a guided project that requires \textbf{combining several ADTs} to solve a realistic problem. It tests not only knowledge of each ADT (specification, representation, operations) but also the higher-order skills of \emph{analysing requirements}, \emph{selecting appropriate structures}, and \emph{justifying choices} in terms of efficiency and clarity.
+\end{definition}
+
+\courssub{Review of All ADTs Covered}
+
+Before designing anything, let us consolidate what we know. The table below summarises each ADT studied in this chapter: its specification (what it \emph{does}), its usual representation (how it is \emph{stored}), and typical use-cases.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{ADT} & \textbf{Specification (key operations)} & \textbf{Common representation} & \textbf{Typical use-cases} \\
+\hline
+Stack & \texttt{push}, \texttt{pop}, \texttt{top}, \texttt{isEmpty} --- LIFO & Array + top pointer, or linked list & Undo, expression evaluation, function calls \\
+\hline
+Queue & \texttt{enqueue}, \texttt{dequeue}, \texttt{front}, \texttt{isEmpty} --- FIFO & Circular array, or linked list with two pointers & Print jobs, process scheduling, reservations \\
+\hline
+List & \texttt{insert}, \texttt{delete}, \texttt{search}, \texttt{traverse} & Array or linked nodes & Simple collections, small datasets \\
+\hline
+Binary Tree / BST & \texttt{insert}, \texttt{search}, \texttt{delete}, traversals (pre/in/post-order) & Linked nodes (2 pointers) or array (heap indexing) & Sorted indexes, expression trees, dictionaries \\
+\hline
+Map (Dictionary) & \texttt{put(key,value)}, \texttt{get(key)}, \texttt{remove(key)} & Hash table, or BST of (key, value) pairs & Catalogues, symbol tables, lookups by key \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{propriete}[Time Complexity Summary]
+For the standard operations, the expected time complexities are:
+\begin{itemize}
+\item \textbf{Stack / Queue:} \texttt{push}/\texttt{pop}/\texttt{enqueue}/\texttt{dequeue} in $O(1)$.
+\item \textbf{List:} \texttt{search} in $O(n)$ (linear scan); \texttt{insert} at head in $O(1)$ for a linked list.
+\item \textbf{BST:} \texttt{search}/\texttt{insert} in $O(\log n)$ \emph{on average} (balanced tree), $O(n)$ in the worst case (degenerate tree).
+\item \textbf{Map (hash table):} \texttt{get}/\texttt{put} in $O(1)$ \emph{on average}, $O(n)$ worst case (many collisions).
+\end{itemize}
+This summary is examinable: you must be able to \emph{state} these complexities and \emph{use them to justify} an ADT choice.
+\end{propriete}
+
+\begin{attention}[Over-engineering]
+A frequent mistake --- in exams and in real life --- is \cle{over-engineering}: reaching for a complex ADT when a simple one suffices. If a shopkeeper in Bamenda keeps only 15 customers and just needs to process them in arrival order, a \textbf{queue} (or even a plain list) is enough; a balanced BST would add complexity with zero benefit. Rule of thumb: \emph{choose the simplest ADT whose operations match the requirements and whose complexity is acceptable for the expected data size.}
+\end{attention}
+
+\courssub{A Step-by-Step Design Methodology}
+
+How do we move from a problem statement to a working ADT-based solution? Follow this disciplined pipeline: \emph{requirements} $\rightarrow$ \emph{ADT selection} $\rightarrow$ \emph{interface design} $\rightarrow$ \emph{pseudocode} $\rightarrow$ \emph{test cases}.
+
+\begin{methode}[ADT-Driven Design]
+\begin{enumerate}
+\item \textbf{List the operations needed.} Read the problem and extract verbs: ``add a book'', ``find a member'', ``serve the next reservation''. Each verb is a candidate operation.
+\item \textbf{Pick an ADT per group of operations.} Match each group to the ADT whose specification fits: LIFO? Stack. FIFO? Queue. Fast key lookup? Map. Sorted order? BST.
+\item \textbf{Write the interface.} For each chosen ADT, write the operation signatures with \textbf{pre-conditions} and \textbf{post-conditions} (e.g., \texttt{dequeue(Q)} requires $Q$ non-empty).
+\item \textbf{Outline the implementation.} Choose a representation (array or linked), write the pseudocode of each operation, then design \textbf{test cases}: normal cases, boundary cases (empty structure), and error cases (dequeue from empty queue).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Formal ADT Interface for the Catalogue Map]
+As an illustration of Step 3, here is the formal interface for the \texttt{CatalogueMap} used in the mini-project below.
+
+\begin{itemize}
+\item \texttt{put(isbn: String, book: BookRecord)}
+  \begin{itemize}
+  \item \textbf{Pre:} \texttt{isbn} not already in map (or update allowed).
+  \item \textbf{Post:} Map contains association \texttt{isbn $\mapsto$ book}.
+  \end{itemize}
+\item \texttt{get(isbn: String) : BookRecord}
+  \begin{itemize}
+  \item \textbf{Pre:} None.
+  \item \textbf{Post:} Returns the \texttt{BookRecord} associated with \texttt{isbn}, or \texttt{null} if absent; map unchanged.
+  \end{itemize}
+\item \texttt{remove(isbn: String)}
+  \begin{itemize}
+  \item \textbf{Pre:} \texttt{isbn} exists in map.
+  \item \textbf{Post:} Association removed; map size decreases by 1.
+  \end{itemize}
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Mini-Project: A Library Management System}
+
+Let us apply the methodology to a realistic Cameroonian scenario: the municipal library of Buea wants a small computerised system.
+
+\textbf{Step 1 --- Identify the entities.} Reading the requirements, three entities emerge: \cle{Book} (title, author, ISBN, copies), \cle{Member} (name, ID, contact), and \cle{Loan} (which member borrowed which book, due date).
+
+\textbf{Step 2 --- List the operations needed.}
+\begin{itemize}
+\item Look up a book instantly by ISBN $\Rightarrow$ key-based lookup.
+\item Manage a waiting list when all copies of a popular book (say, a GCE revision guide) are out $\Rightarrow$ first come, first served.
+\item Produce an alphabetical listing of books by author $\Rightarrow$ sorted traversal.
+\end{itemize}
+
+\textbf{Step 3 --- Choose the ADTs.}
+\begin{itemize}
+\item A \textbf{Map} (hash table) for the \emph{catalogue}: key = ISBN, value = Book record. Justification: $O(1)$ average lookup.
+\item A \textbf{Queue} for \emph{reservations}: members wait in arrival order. Justification: fairness is exactly FIFO.
+\item A \textbf{BST} for the \emph{author index}: books ordered by author name. Justification: in-order traversal gives the alphabetical listing in $O(n)$, and insertion is $O(\log n)$ on average.
+\end{itemize}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, every node/.style={align=center, text width=3.8cm}]
+% Map
+\draw[fill=popblueL, draw=popblue, thick, rounded corners=3pt] (0,4) rectangle (4.2,6.2);
+\node[font=\small\bfseries] at (2.1,5.9) {CatalogueMap};
+\draw[draw=popblue] (0,5.6) -- (4.2,5.6);
+\node[anchor=west] at (0.1,5.35) {\texttt{put(isbn, book)}};
+\node[anchor=west] at (0.1,5.05) {\texttt{get(isbn) : Book}};
+\node[anchor=west] at (0.1,4.75) {\texttt{remove(isbn)}};
+\node[anchor=west, text=popmuted] at (0.1,4.4) {\emph{impl: hash table}};
+% Queue
+\draw[fill=popgreenL, draw=popgreen, thick, rounded corners=3pt] (5.4,4) rectangle (9.6,6.2);
+\node[font=\small\bfseries] at (7.5,5.9) {ReservationQueue};
+\draw[draw=popgreen] (5.4,5.6) -- (9.6,5.6);
+\node[anchor=west] at (5.5,5.35) {\texttt{enqueue(member)}};
+\node[anchor=west] at (5.5,5.05) {\texttt{dequeue() : Member}};
+\node[anchor=west] at (5.5,4.75) {\texttt{isEmpty() : Boolean}};
+\node[anchor=west, text=popmuted] at (5.5,4.4) {\emph{impl: linked list}};
+% BST
+\draw[fill=popblueL, draw=poppurple, thick, rounded corners=3pt] (2.7,0) rectangle (6.9,2.2);
+\node[font=\small\bfseries] at (4.8,1.9) {AuthorIndexBST};
+\draw[draw=poppurple] (2.7,1.6) -- (6.9,1.6);
+\node[anchor=west] at (2.8,1.35) {\texttt{insert(author, book)}};
+\node[anchor=west] at (2.8,1.05) {\texttt{search(author) : Book}};
+\node[anchor=west] at (2.8,0.75) {\texttt{inOrder() : listing}};
+\node[anchor=west, text=popmuted] at (2.8,0.4) {\emph{impl: linked nodes}};
+% Associations
+\draw[thick, popdark, dashed] (2.1,4) -- (3.6,2.2);
+\draw[thick, popdark, dashed] (7.5,4) -- (6.0,2.2);
+\node[text=popmuted] at (1.6,3.1) {Book};
+\node[text=popmuted] at (8.1,3.1) {Member};
+\end{tikzpicture}
+\end{center}
+\legende{Simplified UML-style class diagram of the Library Management System: each class exposes an ADT interface and records its chosen implementation.}
+\end{popfigure}
+
+\textbf{Step 4 --- Core operation pseudocode.}
+
+\begin{itemize}
+\item \texttt{procedure BorrowBook(isbn, member)}
+\item \texttt{\quad book $\leftarrow$ CatalogueMap.get(isbn)}
+\item \texttt{\quad if book = null then output "Unknown ISBN"}
+\item \texttt{\quad else if book.copies $>$ 0 then}
+\item \texttt{\quad\quad book.copies $\leftarrow$ book.copies $-$ 1; record Loan(member, book)}
+\item \texttt{\quad else ReservationQueue.enqueue(member)}
+\item \texttt{procedure ReturnBook(isbn)}
+\item \texttt{\quad book $\leftarrow$ CatalogueMap.get(isbn)}
+\item \texttt{\quad if not ReservationQueue.isEmpty() then}
+\item \texttt{\quad\quad next $\leftarrow$ ReservationQueue.dequeue(); record Loan(next, book)}
+\item \texttt{\quad else book.copies $\leftarrow$ book.copies $+$ 1}
+\end{itemize}
+
+Notice how the ADTs cooperate: the Map locates the book, the Queue decides fairly who gets a returned copy, and the BST would produce the end-of-term printed catalogue by author.
+
+\textbf{Step 5 --- Test cases.} (i) Borrow an available book: copies decrease by 1. (ii) Borrow an unavailable book: member joins the queue. (iii) Return a book with a non-empty queue: the \emph{first} waiting member receives it. (iv) Return with an empty queue: copies increase. (v) Unknown ISBN: error message, no state change.
+
+\courssub{Common GCE-Style Questions}
+
+Certain question types return again and again at the Advanced Level. Master these four patterns.
+
+\begin{enumerate}
+\item \textbf{Trace a traversal.} Given a drawn binary tree, write the pre-order, in-order and post-order sequences. Method: mark each node and apply the rule mechanically (Root-Left-Right, Left-Root-Right, Left-Right-Root).
+\item \textbf{Convert an expression.} Infix to postfix using a stack (operators wait on the stack according to precedence; operands go straight out), or build an expression tree and read it in post-order.
+\item \textbf{Justify an ADT choice.} ``Which ADT should model X? Justify.'' Always answer in three parts: name the ADT, match its behaviour to the requirement, and cite the relevant complexity.
+\item \textbf{Implement a queue with two stacks.} A classic: \texttt{enqueue} pushes onto stack $S_1$; \texttt{dequeue} pops from $S_2$, and if $S_2$ is empty, first transfer everything from $S_1$ to $S_2$ (which reverses the order, restoring FIFO).
+\end{enumerate}
+
+\begin{exoresolu}[Queue with Two Stacks]
+Show the state of stacks $S_1$ and $S_2$ after: \texttt{enqueue(A)}, \texttt{enqueue(B)}, \texttt{dequeue()}, \texttt{enqueue(C)}, \texttt{dequeue()}.
+\tcblower
+\textbf{Solution.} \texttt{enqueue} pushes on $S_1$; \texttt{dequeue} pops from $S_2$ after transferring if $S_2$ is empty.
+\begin{center}
+\begin{tabular}{|l|c|c|l|}
+\hline
+\rowcolor{popblueL} \textbf{Operation} & $S_1$ (top right) & $S_2$ (top right) & \textbf{Output} \\
+\hline
+\texttt{enqueue(A)} & A & --- & --- \\
+\hline
+\texttt{enqueue(B)} & A B & --- & --- \\
+\hline
+\texttt{dequeue()} & --- & B & A \\
+\hline
+\texttt{enqueue(C)} & C & B & --- \\
+\hline
+\texttt{dequeue()} & C & --- & B \\
+\hline
+\end{tabular}
+\end{center}
+For the first \texttt{dequeue}, $S_2$ is empty, so we transfer $S_1$: popping B then A from $S_1$ and pushing them onto $S_2$ gives $S_2 = [\text{B}, \text{A}]$ with A on top; popping yields A. The second \texttt{dequeue} pops B directly. The queue behaves FIFO: A leaves before B. $\blacksquare$
+\end{exoresolu}
+
+\courssub{Array vs.\ Linked Representations of Binary Trees}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Array representation} & \textbf{Linked representation} \\
+\hline
+Memory usage & Wasteful for sparse/unbalanced trees (empty slots) & Exactly one node per element + 2 pointers \\
+\hline
+Access to parent/children & $O(1)$ via indices ($2i$, $2i{+}1$, $\lfloor i/2 \rfloor$) & $O(1)$ via pointers (child); parent needs extra pointer \\
+\hline
+Insertion / deletion & Costly if restructuring is needed & $O(1)$ pointer updates once located \\
+\hline
+Traversal & Simple index arithmetic & Simple recursion on pointers \\
+\hline
+Best suited for & Complete trees (heaps, priority queues) & General BSTs, expression trees \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Exam Technique and Self-Assessment}
+
+\begin{methode}[Exam Answer Structure]
+For any ``design'' or ``justify'' question, structure your answer in four moves:
+\begin{enumerate}
+\item \textbf{State the ADT} (and its representation if asked).
+\item \textbf{Give the pseudocode} of the key operations, with pre- and post-conditions.
+\item \textbf{Analyse the complexity} of each operation.
+\item \textbf{Provide a trace example} (a small table or tree diagram showing the structure evolving).
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Reading Pseudocode Carefully]
+In the exam: (i) check whether indices start at 0 or 1; (ii) check whether a queue's ``front'' pointer indicates the element or the slot before it; (iii) when drawing trees, insert values \emph{one at a time} in the given order --- inserting a whole set at once is the most common cause of wrong BSTs; (iv) always state pre-conditions such as ``the stack is not empty'' before \texttt{pop}.
+\end{attention}
+
+\begin{exercice}[Choosing and Justifying ADTs]
+A hospital in Douala needs to manage: (a) patients waiting to see a doctor, in arrival order; (b) instant access to a patient's file from their national ID number; (c) an alphabetical printout of all registered patients. For each requirement, choose an ADT, justify it in two sentences including a complexity argument, and give the pseudocode signature of one key operation.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) \textbf{Queue}: waiting is first-come-first-served, which is exactly FIFO; \texttt{enqueue}/\texttt{dequeue} are $O(1)$. Signature: \texttt{enqueue(patient)}. (b) \textbf{Map} (hash table): lookup by a unique key (ID number) is $O(1)$ on average, far better than a linear scan in $O(n)$. Signature: \texttt{get(id) : PatientFile}. (c) \textbf{BST} keyed on patient name: in-order traversal produces the alphabetical listing in $O(n)$, and each insertion costs $O(\log n)$ on average. Signature: \texttt{inOrder(root)}.
+\end{corrige}
+
+\begin{exercice}[Traversal Trace]
+A BST is built by inserting, in this order: 50, 30, 70, 20, 40, 60, 80. Draw the tree and give its in-order, pre-order and post-order traversals.
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+50 is the root; 30 goes left, 70 right; 20 left of 30, 40 right of 30; 60 left of 70, 80 right of 70. In-order: 20, 30, 40, 50, 60, 70, 80 (sorted, as expected for a BST). Pre-order: 50, 30, 20, 40, 70, 60, 80. Post-order: 20, 40, 30, 60, 80, 70, 50.
+\end{corrige}
+
+\begin{aretenir}[Self-Assessment Checklist]
+Before the examination, confirm that you can:
+\begin{itemize}
+\item \textbf{Lesson 6:} define an ADT, distinguish \emph{specification} from \emph{implementation}, and write an interface with pre/post-conditions.
+\item \textbf{Lesson 7:} define binary tree vocabulary (root, leaf, height, depth), perform the three traversals, and represent a tree with arrays and with linked nodes.
+\item \textbf{Lesson 8:} match real-life situations (print server, undo, dictionary, file system) to the right ADT and justify the match.
+\item \textbf{Lesson 9:} run the full design pipeline (requirements $\rightarrow$ ADT $\rightarrow$ interface $\rightarrow$ pseudocode $\rightarrow$ tests) on an unseen problem, and quote the complexity table from memory.
+\end{itemize}
+If every box is ticked, you are ready: you do not merely know the ADTs --- you can \emph{think} with them.
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity brings together everything you have studied in this chapter: the notion of an \cle{abstract data type} (ADT), the specification of operations with \cle{preconditions} and \cle{postconditions}, the \cle{binary search tree} (BST), and the classic structures \cle{list}, \cle{queue} and \cle{map}. It is deliberately built like a Paper 2 design question: a realistic situation, a requirements document, and a set of tasks moving from analysis to design to tracing. By the end of the activity you should be able to:
+
+\begin{itemize}
+\item analyse a real requirements document and identify the functional areas of a system;
+\item \textbf{select} an appropriate ADT for each functional area and \textbf{justify} the choice in terms of the operations needed and their efficiency;
+\item \textbf{write} formal ADT interfaces (signatures, preconditions, postconditions);
+\item \textbf{design} pseudocode for core operations that compose several ADTs;
+\item \textbf{draw} a class diagram showing the relationships between the classes of the system;
+\item \textbf{trace} a scenario step by step, showing the state of each structure, as expected in Paper 2 of the GCE Advanced Level.
+\end{itemize}
+
+\begin{methode}[How to work]
+Work in groups of 3--4. Appoint a \emph{secretary} (writes the interfaces), an \emph{analyst} (justifies the ADT choices), a \emph{programmer} (writes the pseudocode) and a \emph{presenter} (prepares the 5-minute demonstration). Rotate roles if the activity is done over two sessions. Keep every justification short and technical, in three sentences:
+\begin{enumerate}
+\item one sentence \textbf{naming the ADT} chosen;
+\item one sentence naming the \textbf{operations} it offers that the system needs;
+\item one sentence on \textbf{efficiency or ordering} (why it beats the obvious alternative).
+\end{enumerate}
+This three-sentence discipline is exactly the style of justification that earns full marks in the examination.
+\end{methode}
+
+\courssub{Situation}
+
+\textbf{Buea Central Community Library.} The Buea Central Community Library, situated near Molyko, serves secondary school students, university students and teachers of the South West Region. Until now, all loans have been recorded in a paper register. The librarian, Mrs.\ Eposi, complains of three recurring problems:
+
+\begin{itemize}
+\item when a popular textbook (for example an Advanced Level Physics revision guide) is out on loan, several borrowers queue informally and quarrels arise about ``who came first'';
+\item at the end of each term, she must flip through the whole register by hand to find \emph{overdue} loans (books kept beyond the 14-day limit) in order to telephone the members concerned;
+\item searching the catalogue for a book by its title is slow because the cards are not perfectly ordered.
+\end{itemize}
+
+Observe that each complaint points directly at one ADT studied in this chapter: the quarrels point at a \cle{queue} (fair, first-come-first-served), the overdue search points at a \cle{list} that can be scanned, and the slow catalogue points at an \emph{ordered} structure such as a \cle{binary search tree}. The library committee has obtained a modest grant to computerise the service and has asked your class to produce the \emph{design} of the new system. The requirements document given to your group reads as follows.
+
+\begin{exemplebox}[Requirements document (extract)]
+\begin{enumerate}
+\item \textbf{Catalogue.} Each book has a unique ISBN (a string), a title, an author and a number of copies. The system must allow a book to be added or removed, and must allow fast look-up of a book by ISBN and an alphabetical listing of titles.
+\item \textbf{Members.} Each member has a unique membership number, a name and a telephone number. Members can be registered and removed.
+\item \textbf{Loans.} A member may borrow at most 3 books at a time. A loan records the ISBN, the membership number and the date borrowed. The loan period is 14 days. The system must process a borrow request, process a return, and produce the list of overdue loans for a given ``today'' date.
+\item \textbf{Reservations.} If all copies of a book are out on loan, a member may reserve it. Reservations for a given book must be served strictly in arrival order (first come, first served). When a copy is returned, it is offered to the member at the front of that book's reservation queue.
+\end{enumerate}
+\end{exemplebox}
+
+For the demonstration scenario, Mrs.\ Eposi provides the following small data set.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|c|}
+\hline
+\rowcolor{popblueL} \textbf{ISBN} & \textbf{Title} & \textbf{Author} & \textbf{Copies} \\
+\hline
+978-001 & Advanced Level Physics Revision & T.~Ndi & 1 \\
+\hline
+978-002 & Cameroon GCE Mathematics & A.~Fon & 2 \\
+\hline
+978-003 & Things Fall Apart & C.~Achebe & 1 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Member no.} & \textbf{Name} & \textbf{Telephone} \\
+\hline
+M01 & Ngong Blessing & 677 00 11 22 \\
+\hline
+M02 & Ekane Samuel & 690 33 44 55 \\
+\hline
+M03 & Abena Larissa & 655 66 77 88 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Trace scenario for the demo.} Today is day 1. M01 borrows 978-001. M02 borrows 978-001 (it is out, so M02 reserves it). M03 also reserves 978-001. On day 20, M01 returns 978-001: the copy is offered to M02 (front of the queue), and M03 remains waiting. Also on day 20, the overdue report must show that the loan of 978-001 by M01 (borrowed day 1, due day 15) was overdue from day 16 until its return.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Identify the functional areas.} From the requirements document, list the four functional areas of the system and, for each one, the operations it must support.
+
+\item \textbf{Choose and justify the ADTs.} For each functional area, choose one ADT studied in this chapter (List, Queue, Map, BST) and justify your choice in three sentences: the ADT, the operations it provides that you need, and why it fits better than the alternatives. Pay particular attention to:
+\begin{enumerate}
+\item the catalogue, which needs \emph{fast look-up by ISBN} and \emph{alphabetical listing};
+\item the reservations, which must be served \emph{first come, first served};
+\item the link between a book and its reservation queue, and between a member number and the member's record.
+\end{enumerate}
+
+\item \textbf{Write the ADT interfaces.} Give the interface (name of each operation, parameters, return type, precondition, postcondition) for the two ADTs you consider most delicate: the \texttt{ReservationQueue} and the \texttt{Catalogue}.
+
+\item \textbf{Pseudocode of the core operations.} Write clear pseudocode for:
+\begin{enumerate}
+\item \texttt{Borrow(isbn, memberNo, today)} — including the check of the 3-book limit and the case where no copy is available (the member is then added to the reservation queue);
+\item \texttt{Return(isbn, today)} — including the offer of the copy to the front of the reservation queue;
+\item \texttt{OverdueReport(today)} — producing the list of overdue loans with member names and telephone numbers.
+\end{enumerate}
+
+\item \textbf{Class diagram.} Draw a class diagram showing the classes \texttt{Book}, \texttt{Member}, \texttt{Loan}, \texttt{Catalogue}, \texttt{MemberRegister}, \texttt{LoanList} and \texttt{ReservationManager}, with the associations between them (for example: the catalogue \emph{contains} books; a loan \emph{links} one member and one book).
+
+\item \textbf{Demonstration.} Prepare a 5-minute presentation tracing the scenario of the situation. Show, in a trace table, the state of the reservation queue for 978-001 and of the loan list after each event, and state what Mrs.\ Eposi sees on her screen at each step.
+\end{enumerate}
+
+\begin{attention}[Common traps]
+\begin{itemize}
+\item Choosing a \textbf{stack} for reservations: a stack is last-in-first-out, which would serve the \emph{last} arrival first — exactly the quarrel Mrs.\ Eposi wants to avoid. Reservations demand a \textbf{queue} (FIFO).
+\item Forgetting the \textbf{precondition} of \texttt{dequeue}: the queue must not be empty. In \texttt{Return}, always test \texttt{isEmpty()} before offering the copy.
+\item Confusing the \textbf{Map} (key $\rightarrow$ value association, e.g.\ ISBN $\rightarrow$ reservation queue) with the \textbf{BST} (ordered storage for fast search and sorted listing). Both appear in a good solution, for different jobs.
+\item In the overdue report, a loan is overdue only if it is \emph{still current} (not yet returned) \textbf{and} $today - dateBorrowed > 14$. A loan exactly 14 days old is \emph{not} yet overdue.
+\item Removing a book from the catalogue while a copy is still out on loan: the precondition of \texttt{remove} must forbid this, otherwise the loan list would refer to a book that no longer exists.
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+\textbf{Task 1 — Functional areas.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Area} & \textbf{Operations required} \\
+\hline
+Catalogue & add book, remove book, find by ISBN, list titles alphabetically \\
+\hline
+Members & register member, remove member, find by membership number \\
+\hline
+Loans & borrow, return, count a member's current loans, list overdue loans \\
+\hline
+Reservations & reserve a book, serve the longest-waiting member, cancel \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Task 2 — Choice and justification of ADTs.}
+
+\begin{itemize}
+\item \textbf{Catalogue: a BST keyed on ISBN.} A binary search tree gives \texttt{search}, \texttt{insert} and \texttt{delete} in $O(\log n)$ on average, and an \emph{in-order traversal} produces the books in sorted key order. If we key the tree on title (or keep a second index), the in-order traversal gives the alphabetical listing Mrs.\ Eposi needs. A simple list would force an $O(n)$ search for every look-up.
+\item \textbf{Members: a Map (membership number $\rightarrow$ member record).} A map is exactly the ``dictionary'' structure: \texttt{put}, \texttt{get}, \texttt{remove} by key. We never need members in sorted order, only direct access by number.
+\item \textbf{Loans: a List.} Loans are processed by scanning (overdue report, counting a member's loans) and there is no natural key for fast look-up; a dynamic list with \texttt{add}, \texttt{remove} and iteration is sufficient and simple.
+\item \textbf{Reservations: a Queue per book, stored in a Map (ISBN $\rightarrow$ Queue).} A queue guarantees first-in-first-out service, which is precisely the ``first come, first served'' rule. The map lets us find the queue of a given book instantly, without scanning all reservations.
+\end{itemize}
+
+\textbf{Task 3 — ADT interfaces.}
+
+\begin{exemplebox}[Interface ReservationQueue (a FIFO queue of membership numbers)]
+\begin{itemize}
+\item \texttt{enqueue(m)} — \emph{Pre:} true. \emph{Post:} member \texttt{m} is added at the rear; size increases by 1.
+\item \texttt{dequeue() $\rightarrow$ MemberNo} — \emph{Pre:} the queue is not empty. \emph{Post:} the front member is removed and returned; size decreases by 1.
+\item \texttt{front() $\rightarrow$ MemberNo} — \emph{Pre:} the queue is not empty. \emph{Post:} returns the front member without removing it.
+\item \texttt{isEmpty() $\rightarrow$ Boolean} — \emph{Pre:} true. \emph{Post:} returns true exactly when size $= 0$.
+\item \texttt{size() $\rightarrow$ Integer} — \emph{Pre:} true. \emph{Post:} returns the number of waiting members.
+\end{itemize}
+\end{exemplebox}
+
+\begin{exemplebox}[Interface Catalogue (a BST keyed on ISBN)]
+\begin{itemize}
+\item \texttt{insert(book)} — \emph{Pre:} no book with the same ISBN exists. \emph{Post:} \texttt{book} is stored; the BST ordering property is preserved.
+\item \texttt{remove(isbn)} — \emph{Pre:} a book with this ISBN exists and has no current loan. \emph{Post:} the book is deleted; the BST property is preserved.
+\item \texttt{search(isbn) $\rightarrow$ Book} — \emph{Pre:} true. \emph{Post:} returns the book with this ISBN, or \texttt{null} if absent.
+\item \texttt{inOrder() $\rightarrow$ List of Book} — \emph{Pre:} true. \emph{Post:} returns all books in ascending key order.
+\end{itemize}
+\end{exemplebox}
+
+\textbf{Task 4 — Pseudocode of the core operations.}
+
+\begin{exemplebox}[Borrow, Return and OverdueReport]
+\begin{itemize}
+\item[] \texttt{PROCEDURE Borrow(isbn, memberNo, today)}
+\item[] \texttt{\quad book $\leftarrow$ Catalogue.search(isbn)}
+\item[] \texttt{\quad IF book = null THEN output "Unknown book"; STOP}
+\item[] \texttt{\quad IF LoanList.countFor(memberNo) $\geq$ 3 THEN}
+\item[] \texttt{\quad\quad output "Limit of 3 loans reached"; STOP}
+\item[] \texttt{\quad IF book.copiesAvailable $>$ 0 THEN}
+\item[] \texttt{\quad\quad book.copiesAvailable $\leftarrow$ book.copiesAvailable $-$ 1}
+\item[] \texttt{\quad\quad LoanList.add(Loan(isbn, memberNo, today))}
+\item[] \texttt{\quad ELSE}
+\item[] \texttt{\quad\quad q $\leftarrow$ Reservations.get(isbn) \quad // a Queue}
+\item[] \texttt{\quad\quad q.enqueue(memberNo)}
+\item[] \texttt{\quad\quad output "Reserved; position " + q.size()}
+\item[] \texttt{PROCEDURE Return(isbn, today)}
+\item[] \texttt{\quad loan $\leftarrow$ LoanList.findCurrent(isbn)}
+\item[] \texttt{\quad LoanList.remove(loan)}
+\item[] \texttt{\quad book $\leftarrow$ Catalogue.search(isbn)}
+\item[] \texttt{\quad q $\leftarrow$ Reservations.get(isbn)}
+\item[] \texttt{\quad IF NOT q.isEmpty() THEN}
+\item[] \texttt{\quad\quad next $\leftarrow$ q.dequeue()}
+\item[] \texttt{\quad\quad LoanList.add(Loan(isbn, next, today))}
+\item[] \texttt{\quad\quad output "Copy offered to " + next}
+\item[] \texttt{\quad ELSE}
+\item[] \texttt{\quad\quad book.copiesAvailable $\leftarrow$ book.copiesAvailable $+$ 1}
+\item[] \texttt{FUNCTION OverdueReport(today) $\rightarrow$ List}
+\item[] \texttt{\quad report $\leftarrow$ empty list}
+\item[] \texttt{\quad FOR EACH loan IN LoanList DO}
+\item[] \texttt{\quad\quad IF today $-$ loan.dateBorrowed $>$ 14 THEN}
+\item[] \texttt{\quad\quad\quad m $\leftarrow$ Members.get(loan.memberNo)}
+\item[] \texttt{\quad\quad\quad report.add(loan, m.name, m.telephone)}
+\item[] \texttt{\quad RETURN report}
+\end{itemize}
+\end{exemplebox}
+
+Notice how the three procedures \emph{compose} the ADTs: \texttt{Borrow} uses the catalogue (BST), the loan list (List) and the reservation map of queues (Map + Queue) in a single operation. This composition of abstract data types is the central skill of this chapter.
+
+\textbf{Task 5 — Class diagram.}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.92, every node/.style={font=\small},
+box/.style={draw=popblue, thick, fill=popblueL, rounded corners=2pt, align=center, inner sep=4pt}]
+\node[box, align=center] (cat) at (0,3){\textbf{Catalogue}\\ (BST of Book)};
+\node[box, align=center] (book) at (0,0.8){\textbf{Book}\\ isbn, title, copies};
+\node[box, align=center] (mem) at (5.2,3){\textbf{MemberRegister}\\ (Map of Member)};
+\node[box, align=center] (member) at (5.2,0.8){\textbf{Member}\\ number, name, tel};
+\node[box, align=center] (loans) at (10.4,3){\textbf{LoanList}\\ (List of Loan)};
+\node[box, align=center] (loan) at (10.4,0.8){\textbf{Loan}\\ isbn, memberNo, date};
+\node[box, align=center] (res) at (5.2,5.6){\textbf{ReservationManager}\\ (Map: isbn $\to$ Queue)};
+\draw[thick, popdark] (cat) -- (book) node[midway, right, font=\scriptsize]{contains};
+\draw[thick, popdark] (mem) -- (member) node[midway, right, font=\scriptsize]{contains};
+\draw[thick, popdark] (loans) -- (loan) node[midway, right, font=\scriptsize]{contains};
+\draw[thick, popdark] (loan) -- (book) node[midway, below, font=\scriptsize]{refers to};
+\draw[thick, popdark] (loan) -- (member) node[midway, below, font=\scriptsize]{made by};
+\draw[thick, popdark] (res) -- (book) node[midway, above, font=\scriptsize, sloped]{queues for};
+\end{tikzpicture}
+\end{center}
+\legende{Class diagram of the library system: each functional area is a class built on one ADT.}
+\end{popfigure}
+
+\textbf{Task 6 — Trace of the demonstration scenario.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Day} & \textbf{Event} & \textbf{Queue for 978-001 (front $\to$ rear)} & \textbf{LoanList (978-001 only)} \\
+\hline
+1 & M01 borrows & empty & M01 (day 1) \\
+\hline
+1 & M02 borrows $\to$ reserves & M02 & M01 (day 1) \\
+\hline
+1 & M03 reserves & M02, M03 & M01 (day 1) \\
+\hline
+20 & M01 returns; copy offered & M03 & M02 (day 20) \\
+\hline
+\end{tabularx}
+\end{center}
+
+On day 20, before the return is recorded, \texttt{OverdueReport(20)} scans the loan list: $20 - 1 = 19 > 14$, so the loan of M01 is reported overdue, with the message ``Ngong Blessing, 677 00 11 22 — Advanced Level Physics Revision, 5 days late'' (due on day $1 + 14 = 15$, so $20 - 15 = 5$ days late). After the return, M02 holds the copy and M03 is now at the front of the queue — no quarrel, because the queue enforced the arrival order.
+
+\begin{savaistu}[Why ``first come, first served'' matters beyond libraries]
+The same FIFO discipline designed here for Mrs.\ Eposi is used by operating systems to schedule print jobs, by call centres to answer callers in arrival order, and by mobile money platforms to process transactions fairly. Choosing the right ADT is not an academic exercise: it is a design decision with visible social consequences — here, the end of quarrels in front of the loans desk.
+\end{savaistu}
+
+\begin{aretenir}[What this activity demonstrates]
+A real system is built by \emph{composing} several ADTs: a \cle{BST} for fast ordered access to the catalogue, \cle{maps} for key-based registers, a \cle{list} for the loans, and \cle{queues} for fair reservations. The design work — choosing the ADT, writing the interface with preconditions and postconditions, and tracing the operations — is exactly what the GCE Advanced Level expects before any line of real code is written.
+\end{aretenir}
+
+\begin{exercice}[Extension: a stricter rule]
+The committee adds a new rule: \emph{a member who already has an overdue loan may not borrow or reserve any other book}. Modify the pseudocode of \texttt{Borrow} to enforce this rule, stating clearly which ADT operation you add or reuse, and write the precondition that must now appear in the \texttt{Borrow} specification.
+\end{exercice}
+
+\begin{corrige}[Extension: a stricter rule]
+Add a function \texttt{LoanList.hasOverdue(memberNo, today) $\rightarrow$ Boolean} that scans the loan list and returns true if some current loan of that member satisfies $today - dateBorrowed > 14$. In \texttt{Borrow}, immediately after the 3-book check, insert:
+\begin{itemize}
+\item[] \texttt{\quad IF LoanList.hasOverdue(memberNo, today) THEN}
+\item[] \texttt{\quad\quad output "Settle your overdue loan first"; STOP}
+\end{itemize}
+The new precondition of \texttt{Borrow} is: \emph{the member has fewer than 3 current loans and no overdue loan}. No new ADT is needed: the existing List simply gains one more scanning operation, which confirms that the List choice remains appropriate.
+\end{corrige}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Abstract Data Types: Foundations}
+
+\courssub{Method 1: Specifying an Abstract Data Type}
+
+\begin{methode}[Writing a complete ADT specification]
+To specify an \cle{abstract data type} rigorously, as expected at the GCE Advanced Level, proceed in numbered steps:
+\begin{enumerate}
+\item \textbf{Name and purpose.} Give the ADT a name (e.g.\ \texttt{Stack}, \texttt{Queue}, \texttt{List}) and state in one sentence what collection of values it models.
+\item \textbf{Domain of values.} Describe the set of possible values abstractly (e.g.\ ``a finite sequence of integers''), \emph{without} mentioning arrays, pointers or any implementation detail.
+\item \textbf{Operations (the interface).} For each operation give: its \textbf{name}, its \textbf{inputs} (parameters with types), its \textbf{output} (return type), and its \textbf{effect}. Distinguish \emph{constructors} (create the ADT), \emph{accessors/observers} (inspect without modifying, e.g.\ \texttt{isEmpty}, \texttt{top}) and \emph{mutators/transformers} (modify the state, e.g.\ \texttt{push}, \texttt{pop}).
+\item \textbf{Preconditions.} State when an operation is allowed (e.g.\ \texttt{pop} requires a non-empty stack).
+\item \textbf{Axioms / behaviour rules.} State the laws linking the operations, e.g.\ \texttt{pop(push(S, x)) = S} and \texttt{top(push(S, x)) = x}. These axioms define the ADT \emph{independently of any implementation}.
+\end{enumerate}
+\textbf{Reflex:} if your specification mentions ``array index'' or ``pointer'', you have slipped into implementation — remove it. The golden rule is \emph{what} the operations do, never \emph{how}.
+\end{methode}
+
+\begin{exoresolu}[Specifying the ADT Stack]
+A school in Bamenda keeps a pile of marked scripts: the last script placed on the pile is the first one taken away. Give a complete abstract specification of the ADT \texttt{Stack} modelling this pile, including constructors, accessors, mutators, preconditions and two axioms.
+\tcblower
+\textbf{Solution.}
+\textbf{1. Name and purpose.} \texttt{Stack}: models a collection of items managed in \cle{LIFO} order (Last In, First Out).
+
+\textbf{2. Domain of values.} A finite sequence of items of type \texttt{Item}, with a distinguished end called the \emph{top}.
+
+\textbf{3. Operations.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Operation} & \textbf{Signature} & \textbf{Effect} \\
+\hline
+\texttt{create()} & $\rightarrow$ \texttt{Stack} & Constructor: returns a new empty stack. \\
+\hline
+\texttt{isEmpty(S)} & \texttt{Stack} $\rightarrow$ \texttt{Boolean} & Accessor: true iff $S$ contains no item. \\
+\hline
+\texttt{push(S, x)} & \texttt{Stack} $\times$ \texttt{Item} $\rightarrow$ \texttt{Stack} & Mutator: places $x$ on the top of $S$. \\
+\hline
+\texttt{pop(S)} & \texttt{Stack} $\rightarrow$ \texttt{Stack} & Mutator: removes the top item. \textbf{Precondition:} $S$ not empty. \\
+\hline
+\texttt{top(S)} & \texttt{Stack} $\rightarrow$ \texttt{Item} & Accessor: returns the top item without removing it. \textbf{Precondition:} $S$ not empty. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{4. Axioms.} For every stack $S$ and item $x$:
+\begin{align*}
+\texttt{pop}(\texttt{push}(S, x)) &= S \\
+\texttt{top}(\texttt{push}(S, x)) &= x \\
+\texttt{isEmpty}(\texttt{create()}) &= \text{true}
+\end{align*}
+
+\textbf{Conclusion.} Nothing in this specification says whether the stack is stored in an array or a linked list: that is precisely the point of \emph{abstraction}. The LIFO behaviour is fully captured by the axioms.
+\end{exoresolu}
+
+\courssub{Method 2: Simulating Stack and Queue Operations}
+
+\begin{methode}[Tracing a sequence of push/pop or enqueue/dequeue]
+\begin{enumerate}
+\item Draw the structure as a column (stack, top at the top) or as a horizontal line (queue, front on the left, rear on the right).
+\item Process the operations \textbf{one at a time, from left to right}, redrawing or updating the structure after each one.
+\item For a \cle{stack}: \texttt{push} adds on top; \texttt{pop} removes from the \emph{same} end (LIFO).
+\item For a \cle{queue}: \texttt{enqueue} adds at the rear; \texttt{dequeue} removes from the \emph{opposite} end (FIFO).
+\item Before any \texttt{pop}/\texttt{dequeue}/\texttt{top}, \textbf{check the precondition} (structure non-empty); if violated, signal \emph{underflow}.
+\item If asked for output, record the value returned by each \texttt{pop}/\texttt{dequeue} in order.
+\end{enumerate}
+\textbf{Reflex:} a stack \emph{reverses} order; a queue \emph{preserves} order. Use this to check your final answer quickly.
+\end{methode}
+
+\begin{exoresolu}[Stack and queue trace]
+Consider the sequence of operations, applied in order to an initially empty stack $S$ and an initially empty queue $Q$:
+\texttt{push(S,5); push(S,8); push(S,3); pop(S); enqueue(Q,7); enqueue(Q, pop(S)); enqueue(Q,2); dequeue(Q); push(S, dequeue(Q))}.
+Give the final content of $S$ (top first) and of $Q$ (front first), and the list of all values output by \texttt{pop}/\texttt{dequeue}.
+\tcblower
+\textbf{Solution.} We trace step by step. Stack shown top-first, queue front-first.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|l|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Step} & \textbf{Operation} & \textbf{Stack $S$} & \textbf{Queue $Q$} & \textbf{Output} \\
+\hline
+1 & \texttt{push(S,5)} & 5 & --- & --- \\
+\hline
+2 & \texttt{push(S,8)} & 8, 5 & --- & --- \\
+\hline
+3 & \texttt{push(S,3)} & 3, 8, 5 & --- & --- \\
+\hline
+4 & \texttt{pop(S)} & 8, 5 & --- & 3 \\
+\hline
+5 & \texttt{enqueue(Q,7)} & 8, 5 & 7 & --- \\
+\hline
+6 & \texttt{enqueue(Q, pop(S))} & 5 & 7, 8 & 8 \\
+\hline
+7 & \texttt{enqueue(Q,2)} & 5 & 7, 8, 2 & --- \\
+\hline
+8 & \texttt{dequeue(Q)} & 5 & 8, 2 & 7 \\
+\hline
+9 & \texttt{push(S, dequeue(Q))} & 8, 5 & 2 & 8 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Details of the tricky steps:}
+\begin{itemize}
+\item Step 6: \texttt{pop(S)} returns $8$ (the current top) and this value is enqueued; $S$ becomes $[5]$, $Q$ becomes $[7,8]$.
+\item Step 9: \texttt{dequeue(Q)} removes the \emph{front}, which is $8$ (not $2$: FIFO!), and pushes it onto $S$.
+\end{itemize}
+
+\textbf{Final answer:} $S = [8, 5]$ (top first), $Q = [2]$ (front first), and the output sequence is $3, 8, 7, 8$.
+
+\textbf{Check:} the queue preserved order ($7$ entered before $8$, and $7$ left before $8$); the stack reversed order ($3$ pushed last among $\{5,8,3\}$ left first). Consistent.
+\end{exoresolu}
+
+\courssub{Method 3: Evaluating Expressions with a Stack (Postfix)}
+
+\begin{methode}[Evaluating a postfix (Reverse Polish) expression]
+\begin{enumerate}
+\item Scan the expression \textbf{from left to right}, one token at a time.
+\item If the token is an \textbf{operand} (number), \texttt{push} it onto the stack.
+\item If the token is an \textbf{operator}, \texttt{pop} the top two values: the \emph{first popped} is the \textbf{right} operand, the \emph{second popped} is the \textbf{left} operand. Compute \texttt{left op right} and \texttt{push} the result.
+\item At the end, the stack must contain exactly \textbf{one} value: the answer. If it contains more, or if a pop fails, the expression is invalid.
+\end{enumerate}
+\begin{attention}[Order of operands]
+For $-$ and $\div$, the order matters: in \texttt{6 2 -}, the result is $6-2=4$, not $2-6$. Always pop the right operand first.
+\end{attention}
+\end{methode}
+
+\begin{exoresolu}[Postfix evaluation]
+A calculator uses postfix notation. Evaluate the postfix expression
+\[ \texttt{5 \quad 1 \quad 2 \quad + \quad 4 \quad * \quad + \quad 3 \quad -} \]
+showing the state of the stack after each token. Then give the equivalent infix expression.
+\tcblower
+\textbf{Solution.} Stack shown with the top on the right.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Token} & \textbf{Stack after} & \textbf{Action} \\
+\hline
+\texttt{5} & 5 & push 5 \\
+\hline
+\texttt{1} & 5, 1 & push 1 \\
+\hline
+\texttt{2} & 5, 1, 2 & push 2 \\
+\hline
+\texttt{+} & 5, 3 & pop 2 (right), pop 1 (left); $1+2=3$; push 3 \\
+\hline
+\texttt{4} & 5, 3, 4 & push 4 \\
+\hline
+\texttt{*} & 5, 12 & pop 4, pop 3; $3\times 4=12$; push 12 \\
+\hline
+\texttt{+} & 17 & pop 12, pop 5; $5+12=17$; push 17 \\
+\hline
+\texttt{3} & 17, 3 & push 3 \\
+\hline
+\texttt{-} & 14 & pop 3 (right), pop 17 (left); $17-3=14$; push 14 \\
+\hline
+\end{tabularx}
+\end{center}
+
+One value remains: the result is $\boxed{14}$.
+
+\textbf{Infix equivalent:} reading the operations in the order they were applied: $5 + (1+2)\times 4 - 3 = 5 + 12 - 3 = 14$. \checkmark
+
+\textbf{Remark:} this is exactly how compilers evaluate arithmetic expressions, and why the stack is a fundamental ADT in computer science.
+\end{exoresolu}
+
+\coursec{Binary Tree Concepts and Representation}
+
+\courssub{Method 4: Performing Tree Traversals}
+
+\begin{methode}[Preorder, Inorder, Postorder on a binary tree]
+All three traversals are \cle{recursive}. Let $N$ = visit the node, $L$ = traverse the left subtree, $R$ = traverse the right subtree.
+\begin{enumerate}
+\item \textbf{Preorder (NLR):} visit the root \emph{first}, then left, then right. Use: copying a tree, prefix expressions.
+\item \textbf{Inorder (LNR):} left, then visit the root, then right. Use: on a \emph{binary search tree}, gives values in \textbf{ascending order}.
+\item \textbf{Postorder (LRN):} left, right, then the root \emph{last}. Use: deleting a tree, postfix expressions.
+\end{enumerate}
+\textbf{Practical reflex for the exam:} apply the recursion systematically — for each node, write the pattern (e.g.\ NLR) with the subtrees as placeholders, then expand each placeholder the same way. Never ``guess'' the order globally.
+\end{methode}
+
+\begin{exoresolu}[Three traversals of an expression tree]
+Consider the binary tree below, which represents an arithmetic expression:
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1.1cm,
+  level 1/.style={sibling distance=3.4cm},
+  level 2/.style={sibling distance=1.8cm},
+  every node/.style={circle, draw=popblue, thick, minimum size=7mm, inner sep=1pt}]
+\node {$*$}
+  child { node {$+$}
+    child { node {3} }
+    child { node {5} } }
+  child { node {$-$}
+    child { node {8} }
+    child { node {2} } };
+\end{tikzpicture}
+\legende{Expression tree for $(3+5)\times(8-2)$.}
+\end{popfigure}
+Give the preorder, inorder and postorder traversals of this tree. Evaluate the expression it represents.
+\tcblower
+\textbf{Solution.} The root is $*$; its left subtree is rooted at $+$, its right subtree at $-$.
+
+\textbf{Preorder (NLR):}
+\begin{itemize}
+\item Visit $*$; then preorder of left subtree: visit $+$, then $3$, then $5$; then preorder of right subtree: visit $-$, then $8$, then $2$.
+\item Result: $*\ +\ 3\ 5\ -\ 8\ 2$ (this is the \emph{prefix} form of the expression).
+\end{itemize}
+
+\textbf{Inorder (LNR):}
+\begin{itemize}
+\item Left subtree: $3, +, 5$; then root $*$; then right subtree: $8, -, 2$.
+\item Result: $3 + 5 * 8 - 2$ (the \emph{infix} form, up to parentheses).
+\end{itemize}
+
+\textbf{Postorder (LRN):}
+\begin{itemize}
+\item Left subtree: $3, 5, +$; right subtree: $8, 2, -$; then root $*$.
+\item Result: $3\ 5\ +\ 8\ 2\ -\ *$ (the \emph{postfix} form).
+\end{itemize}
+
+\textbf{Evaluation:} the tree means $(3+5) \times (8-2) = 8 \times 6 = 48$.
+
+\textbf{Check with Method 3} on the postfix form $3\ 5\ +\ 8\ 2\ -\ *$: push 3, 5; $+$ gives 8; push 8, 2; $-$ gives $8-2=6$; $*$ gives $8\times 6 = 48$. \checkmark
+
+\begin{attention}[Trap]
+In inorder, $3+5*8-2$ \emph{looks} ambiguous because of operator precedence; the tree structure itself removes all ambiguity. In an exam, add parentheses when interpreting an expression tree: $(3+5)*(8-2)$.
+\end{attention}
+\end{exoresolu}
+
+\courssub{Method 5: Building and Searching a Binary Search Tree}
+
+\begin{methode}[Inserting a sequence into a BST]
+A \cle{binary search tree} (BST) satisfies: for every node, all values in its \textbf{left} subtree are \emph{smaller}, all values in its \textbf{right} subtree are \emph{larger} (assuming distinct keys).
+\begin{enumerate}
+\item The \textbf{first} value becomes the root.
+\item For each new value, start at the root and compare: smaller $\rightarrow$ go left; larger $\rightarrow$ go right.
+\item Repeat until you reach an \textbf{empty position}; insert the new node there as a leaf.
+\item To \textbf{search}: same comparisons; stop when the value is found (success) or an empty position is reached (failure). The number of comparisons equals the depth reached.
+\item To \textbf{list values in ascending order}: perform an \textbf{inorder} traversal.
+\end{enumerate}
+\textbf{Reflex:} the \emph{shape} of the BST depends entirely on the \emph{order of insertion}; a sorted input produces a degenerate (linear) tree — the worst case.
+\end{methode}
+
+\begin{exoresolu}[Constructing a BST and analysing searches]
+The results (out of 20) of eight candidates in a Computer Science test in Buea are recorded in the order they were marked:
+\[ 12,\quad 7,\quad 15,\quad 3,\quad 9,\quad 18,\quad 11,\quad 5 \]
+\begin{enumerate}
+\item Draw the BST obtained by inserting these values in the given order.
+\item Give the inorder traversal and comment.
+\item Count the comparisons needed to search for $11$ and to search for $14$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\textbf{1. Construction, step by step:}
+\begin{itemize}
+\item $12$ $\rightarrow$ root.
+\item $7 < 12$ $\rightarrow$ left child of $12$.
+\item $15 > 12$ $\rightarrow$ right child of $12$.
+\item $3 < 12$, $3 < 7$ $\rightarrow$ left child of $7$.
+\item $9 < 12$, $9 > 7$ $\rightarrow$ right child of $7$.
+\item $18 > 12$, $18 > 15$ $\rightarrow$ right child of $15$.
+\item $11 < 12$, $11 > 7$, $11 > 9$ $\rightarrow$ right child of $9$.
+\item $5 < 12$, $5 < 7$, $5 > 3$ $\rightarrow$ right child of $3$.
+\end{itemize}
+
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1.15cm,
+  level 1/.style={sibling distance=4.2cm},
+  level 2/.style={sibling distance=2.2cm},
+  level 3/.style={sibling distance=1.4cm},
+  every node/.style={circle, draw=popgreen, thick, minimum size=7mm, inner sep=1pt}]
+\node {12}
+  child { node {7}
+    child { node {3}
+      child { node[draw=popmuted] {} edge from parent[draw=none] }
+      child { node {5} } }
+    child { node {9}
+      child { node[draw=popmuted] {} edge from parent[draw=none] }
+      child { node {11} } } }
+  child { node {15}
+    child { node[draw=popmuted] {} edge from parent[draw=none] }
+    child { node {18} } };
+\end{tikzpicture}
+\legende{BST built from the insertion order 12, 7, 15, 3, 9, 18, 11, 5.}
+\end{popfigure}
+
+\textbf{2. Inorder traversal (LNR):} left subtree of 12 gives $3, 5, 7, 9, 11$; then $12$; then right subtree gives $15, 18$.
+\[ 3,\ 5,\ 7,\ 9,\ 11,\ 12,\ 15,\ 18 \]
+\textbf{Comment:} as expected, the inorder traversal of a BST lists the marks in \textbf{ascending order} — this is the principle of the \emph{tree sort}.
+
+\textbf{3. Search comparisons:}
+\begin{itemize}
+\item Search $11$: compare with $12$ (go left, 1), with $7$ (go right, 2), with $9$ (go right, 3), with $11$ (found, 4). Total: \textbf{4 comparisons}.
+\item Search $14$: compare with $12$ (right, 1), with $15$ (left, 2); the left child of $15$ is empty $\Rightarrow$ \textbf{failure after 2 comparisons}, and we know $14$ would be inserted as the left child of $15$.
+\end{itemize}
+
+\textbf{Remark:} the tree has height $4$ (levels 1 to 4), so any search needs at most 4 comparisons here, instead of up to 8 in an unsorted list.
+\end{exoresolu}
+
+\courssub{Method 6: Representing a Binary Tree (Array and Linked)}
+
+\begin{methode}[Choosing and using a representation of a binary tree]
+\begin{enumerate}
+\item \textbf{Array (sequential) representation:} store the node at index $i$; its left child is at index $2i$, its right child at $2i+1$ (root at index $1$). Empty positions are marked with a sentinel (e.g.\ $-1$ or \texttt{null}).
+\item \textbf{Linked representation:} each node is a record with three fields: \texttt{data}, \texttt{left} (pointer to left child), \texttt{right} (pointer to right child); empty children hold \texttt{null}.
+\item \textbf{Choosing:} the array form is compact and simple for \emph{complete/nearly complete} trees (e.g.\ heaps) but wastes memory for sparse or skewed trees; the linked form uses exactly one node per value and makes insertion/deletion easy, at the cost of pointer storage.
+\end{enumerate}
+\textbf{Reflex for the exam:} to convert a drawn tree into an array, number the nodes \emph{level by level, left to right} (breadth-first order), leaving gaps for missing children.
+\end{methode}
+
+\begin{exoresolu}[Array representation of a given tree]
+The BST of the previous exercise contains the values $\{12, 7, 15, 3, 9, 18, 11, 5\}$.
+\begin{enumerate}
+\item Give the array representation of this tree using the rule ``children of node $i$ at $2i$ and $2i+1$'', with $0$ marking empty cells.
+\item How many cells does the array need? Comment on memory usage.
+\item State one advantage of the linked representation for this particular tree.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\textbf{1.} Place the root $12$ at index $1$. Its children $7$ and $15$ go to indices $2$ and $3$. Children of $7$ (index $2$): $3$ at $4$, $9$ at $5$. Children of $15$ (index $3$): empty at $6$, $18$ at $7$. Children of $3$ (index $4$): empty at $8$, $5$ at $9$. Children of $9$ (index $5$): empty at $10$, $11$ at $11$.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Index} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+\textbf{Value} & 12 & 7 & 15 & 3 & 9 & 0 & 18 & 0 & 5 & 0 & 11 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Check with the rule:} node $5$ is at index $9$; its parent is at index $\lfloor 9/2 \rfloor = 4$, which holds $3$ — correct, since $5$ is the right child of $3$.
+
+\textbf{2.} The deepest node ($5$ or $11$) sits at index $9$ and $11$, so the array needs \textbf{11 cells} for only \textbf{8 values}: 3 cells are wasted (indices 6, 8, 10). For a more unbalanced tree the waste grows exponentially with height.
+
+\textbf{3.} Advantage of the linked representation: it allocates \emph{exactly} one node per value (8 nodes), with no empty slots, and inserting a new mark (e.g.\ $14$) only requires creating one node and updating one pointer — no need to resize or shift an array.
+\end{exoresolu}
+
+\coursec{Applications of ADTs}
+
+\courssub{Method 7: Writing Recursive Algorithms on ADTs}
+
+\begin{methode}[Designing a recursive algorithm on a binary tree]
+\begin{enumerate}
+\item \textbf{Base case:} decide what happens for an \emph{empty} tree (return $0$, \texttt{true}, nothing, \ldots). This case must be written \emph{first} and must stop the recursion.
+\item \textbf{Recursive case:} express the answer for a tree in terms of the answers for its \emph{left} and \emph{right} subtrees, combined with the root.
+\item \textbf{Check termination:} each recursive call works on a strictly \emph{smaller} tree, so the empty tree is always reached.
+\item \textbf{Trace} the algorithm on a small example (trace table or call tree) before finalising.
+\end{enumerate}
+\textbf{Classic patterns:} size $= 1 + \text{size}(L) + \text{size}(R)$; height $= 1 + \max(\text{height}(L), \text{height}(R))$; a traversal $=$ visit root combined with two recursive calls in the appropriate order.
+\end{methode}
+
+\begin{exoresolu}[Counting leaves and computing height — integration]
+A school administration in Yaoundé stores a family tree of sponsored students as a binary tree. Each node is a record with fields \texttt{data}, \texttt{left}, \texttt{right}; an empty tree is \texttt{null}.
+\begin{enumerate}
+\item Write in pseudocode a function \texttt{countLeaves(T)} returning the number of leaves (nodes with no child) of tree $T$.
+\item Write a function \texttt{height(T)} returning the height of $T$ (an empty tree has height $0$).
+\item Trace \texttt{countLeaves} on the tree with root $A$, left child $B$ (a leaf) and right child $C$ whose left child is the leaf $D$.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\textbf{1. Counting leaves.} Base cases: empty tree $\rightarrow 0$; a node with two empty children $\rightarrow 1$. Otherwise, sum the leaves of both subtrees.
+
+\begin{itemize}
+\item[] \texttt{FUNCTION countLeaves(T) : Integer}
+\item[] \texttt{\quad IF T = null THEN}
+\item[] \texttt{\quad\quad RETURN 0}
+\item[] \texttt{\quad ELSE IF T.left = null AND T.right = null THEN}
+\item[] \texttt{\quad\quad RETURN 1}
+\item[] \texttt{\quad ELSE}
+\item[] \texttt{\quad\quad RETURN countLeaves(T.left) + countLeaves(T.right)}
+\item[] \texttt{\quad END IF}
+\item[] \texttt{END FUNCTION}
+\end{itemize}
+
+\textbf{2. Height.}
+
+\begin{itemize}
+\item[] \texttt{FUNCTION height(T) : Integer}
+\item[] \texttt{\quad IF T = null THEN}
+\item[] \texttt{\quad\quad RETURN 0}
+\item[] \texttt{\quad ELSE}
+\item[] \texttt{\quad\quad RETURN 1 + max(height(T.left), height(T.right))}
+\item[] \texttt{\quad END IF}
+\item[] \texttt{END FUNCTION}
+\end{itemize}
+
+\textbf{3. Trace of \texttt{countLeaves}} on the described tree ($A$ has children $B$ and $C$; $C$ has left child $D$; $B$ and $D$ are leaves):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Call} & \textbf{Reason} & \textbf{Returns} \\
+\hline
+\texttt{countLeaves(A)} & $A$ has children $\rightarrow$ sum of subtrees & $1 + 1 = 2$ \\
+\hline
+\texttt{countLeaves(B)} & $B$ is a leaf & $1$ \\
+\hline
+\texttt{countLeaves(C)} & $C$ has a left child $\rightarrow$ sum & $1 + 0 = 1$ \\
+\hline
+\texttt{countLeaves(D)} & $D$ is a leaf & $1$ \\
+\hline
+\texttt{countLeaves(null)} & right child of $C$ is empty & $0$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+The function returns $\boxed{2}$, which is correct: the leaves are $B$ and $D$.
+
+\textbf{Termination check:} every recursive call is made on a strictly smaller subtree, and the empty tree is a base case, so the recursion always ends. The height of this tree is $1 + \max(1, 2) = 3$, also verified by the algorithm.
+\end{exoresolu}
+
+\coursec{Integration Activity \& Exam Preparation}
+
+\begin{aretenir}[Summary of exam reflexes]
+\begin{itemize}
+\item An ADT is specified by its \emph{operations and axioms}, never by its implementation.
+\item Stack = LIFO (reverses order); Queue = FIFO (preserves order). Always check the non-empty precondition before \texttt{pop}/\texttt{dequeue}.
+\item Postfix evaluation: operand $\rightarrow$ push; operator $\rightarrow$ pop two (right first!), compute, push.
+\item Traversals: preorder NLR, inorder LNR, postorder LRN. Inorder of a BST $=$ ascending order.
+\item BST insertion: smaller left, larger right; the shape depends on the insertion order.
+\item Array representation: children of $i$ at $2i$ and $2i+1$; linked representation: \texttt{data}, \texttt{left}, \texttt{right}.
+\item Every recursive tree algorithm needs an explicit \emph{base case} (empty tree) and a \emph{recursive combination}.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: choosing the right ADT]
+For each of the following situations, choose the most appropriate abstract data type (A, B, C or D) and justify your choice in one sentence.
+\begin{enumerate}
+\item A printer server processes print jobs in the order they arrive. \\
+A. Stack \quad B. Queue \quad C. Binary search tree \quad D. Array
+\item A text editor must support an \emph{Undo} command that reverses the most recent action first. \\
+A. Stack \quad B. Queue \quad C. Linked list \quad D. Hash table
+\item A dictionary must allow very fast search, insertion and deletion of words kept in alphabetical order. \\
+A. Stack \quad B. Queue \quad C. Binary search tree \quad D. Simple array
+\item A program must evaluate an arithmetic expression written in postfix notation. \\
+A. Stack \quad B. Queue \quad C. Graph \quad D. Deque
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+State whether each statement is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item In a stack, the element removed is always the one that has been in the structure the longest.
+\item Every node of a binary tree has at most two children.
+\item A complete binary tree of height $h$ contains exactly $2^{h+1}-1$ nodes.
+\item An ADT specifies \emph{what} operations do, independently of \emph{how} they are implemented.
+\item The in-order traversal of a binary search tree always visits the keys in ascending order.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Key definitions]
+Give a precise definition of each of the following terms, as expected at the GCE Advanced Level:
+\begin{enumerate}
+\item Abstract Data Type (ADT);
+\item FIFO structure and LIFO structure (give one example of each);
+\item the \emph{height} of a binary tree and the \emph{depth} of a node;
+\item a \emph{full} binary tree and a \emph{complete} binary tree;
+\item a binary search tree (BST).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations on binary trees]
+A complete binary tree has height $h = 4$ (the root is at depth $0$).
+\begin{enumerate}
+\item How many nodes does the tree contain?
+\item How many leaves does it contain?
+\item If this tree is stored in an array using the standard indexing where the root is at index $1$, at which indices are the left child, the right child and the parent of the node stored at index $i = 6$?
+\item What is the minimum number of nodes a binary tree of height $4$ can contain? Draw such a tree.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Tree traversals]
+Consider the following binary tree, where the root contains the value $A$:
+\begin{center}
+\begin{tikzpicture}[level distance=1.1cm,
+level 1/.style={sibling distance=4.4cm},
+level 2/.style={sibling distance=2.2cm},
+level 3/.style={sibling distance=1.1cm},
+every node/.style={circle,draw=popblue,fill=popblueL,inner sep=1.6pt,font=\small}]
+\node {A}
+  child { node {B}
+    child { node {D}
+      child { node {H} }
+      child { node {I} } }
+    child { node {E} } }
+  child { node {C}
+    child { node {F} }
+    child { node {G} } };
+\end{tikzpicture}
+\end{center}
+\begin{enumerate}
+\item Give the sequence of nodes visited by the \emph{pre-order} traversal.
+\item Give the sequence of nodes visited by the \emph{in-order} traversal.
+\item Give the sequence of nodes visited by the \emph{post-order} traversal.
+\item Give the sequence of nodes visited by the \emph{level-order} (breadth-first) traversal, and state which ADT is used to implement it.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Infix to postfix and evaluation]
+Consider the infix expression $(A + B) * (C - D / E) + F$.
+\begin{enumerate}
+\item Using a stack, convert this expression into postfix notation. Show the content of the stack and the output produced after reading each token, in a trace table.
+\item Evaluate the postfix expression obtained for $A = 2$, $B = 3$, $C = 10$, $D = 8$, $E = 4$, $F = 1$, showing the state of the evaluation stack at each step.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Building a binary search tree]
+\begin{enumerate}
+\item Write, in clear pseudocode, a \emph{recursive} algorithm \texttt{Insert(root, key)} that inserts a key into a binary search tree.
+\item Starting from an empty tree, draw the binary search tree obtained after inserting, in this order, the keys: $50$, $30$, $70$, $20$, $40$, $60$, $80$.
+\item What is the height of the tree obtained? Give the in-order traversal of this tree and comment on the result.
+\item State the time complexity of the insertion in the best case and in the worst case, for a BST with $n$ nodes.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[A queue built from two stacks]
+A programmer has only the ADT \emph{Stack} (with operations \texttt{Push}, \texttt{Pop}, \texttt{IsEmpty}) available, and must implement the ADT \emph{Queue} (operations \texttt{Enqueue}, \texttt{Dequeue}) using \textbf{two} stacks $S_1$ and $S_2$.
+\begin{enumerate}
+\item Write pseudocode for \texttt{Enqueue(x)} and \texttt{Dequeue()} using only the stack operations.
+\item Trace your algorithms on the following sequence of operations, showing the content of $S_1$ and $S_2$ after each operation: \texttt{Enqueue(5)}, \texttt{Enqueue(8)}, \texttt{Enqueue(3)}, \texttt{Dequeue()}, \texttt{Enqueue(7)}, \texttt{Dequeue()}.
+\item Explain why the \emph{amortised} cost of \texttt{Dequeue} is $O(1)$, even though a single \texttt{Dequeue} may take $O(n)$ in the worst case.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Exam-style: choosing and justifying an ADT (10 marks)]
+The students' association of a large secondary school in Yaoundé is developing a mobile application to manage a music playlist for the end-of-year party. The requirements are:
+\begin{itemize}
+\item songs can be added quickly \emph{at the beginning} and \emph{at the end} of the playlist;
+\item the DJ frequently removes the song at the beginning once it has been played;
+\item occasionally, a ``priority request'' song must be inserted at the beginning;
+\item the total number of songs is not known in advance.
+\end{itemize}
+\begin{enumerate}
+\item Define the term \emph{abstract data type} and explain why it is useful to reason in terms of ADTs before choosing an implementation. \textbf{(3 marks)}
+\item Among the following ADTs — array, stack, simple queue, double-ended queue (deque), singly linked list — select the one you consider most suitable for this playlist. Justify your choice by analysing the time complexity of each required operation for at least \emph{two} candidate structures, presented in a comparison table. \textbf{(5 marks)}
+\item Write pseudocode for the operation that inserts a song at the beginning of your chosen structure. \textbf{(2 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Exam-style: binary tree representations and traversals (12 marks)]
+A school keeps, for each class, a binary tree recording the results of a quiz competition: each internal node contains the name of a match, and each leaf contains the name of a candidate.
+\begin{enumerate}
+\item Distinguish clearly between a \emph{binary tree} and a \emph{binary search tree}. \textbf{(2 marks)}
+\item Describe the \emph{array-based} (sequential) representation of a binary tree, giving the formulas that link the index of a node to the indices of its children and its parent. \textbf{(3 marks)}
+\item Describe the \emph{linked} representation of a binary tree, specifying the fields of a node. \textbf{(2 marks)}
+\item Compare the two representations in terms of memory usage (consider the case of a very unbalanced tree), ease of insertion of new nodes, and speed of access to the children of a node. Present your comparison in a table. \textbf{(3 marks)}
+\item A binary search tree contains the keys $40$, $25$, $60$, $15$, $35$, $50$, $70$ inserted in that order. Draw the tree and give its pre-order and post-order traversals. \textbf{(2 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Exam-style: expression evaluation and integration of ADTs (14 marks)]
+A calculator application evaluates arithmetic expressions typed by the user in ordinary (infix) notation.
+\begin{enumerate}
+\item Explain why a computer cannot evaluate an infix expression directly in one left-to-right pass, and why postfix (Reverse Polish) notation is easier to evaluate. \textbf{(3 marks)}
+\item Convert the infix expression $(A + B) * (C - D / E) + F$ to postfix, showing the stack trace. \textbf{(4 marks)}
+\item Write, in pseudocode, the algorithm that evaluates a postfix expression using a stack. \textbf{(3 marks)}
+\item Trace your algorithm on the postfix expression obtained in question 2 with $A = 2$, $B = 3$, $C = 10$, $D = 8$, $E = 4$, $F = 1$. \textbf{(2 marks)}
+\item The application must also keep a history of the last $20$ evaluated expressions so that the user can revisit the most recent one first. Which ADT do you recommend for this history? Justify your answer. \textbf{(2 marks)}
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: choosing the right ADT]
+\begin{enumerate}
+\item \textbf{B. Queue.} A printer server must process jobs in the order they arrive (First-In-First-Out), which is the defining behaviour of a queue.
+\item \textbf{A. Stack.} The \emph{Undo} command must reverse the most recent action first (Last-In-First-Out), exactly the behaviour of a stack.
+\item \textbf{C. Binary search tree.} A dictionary requires fast search, insertion and deletion while maintaining alphabetical order; a balanced BST provides $O(\log n)$ for all three operations.
+\item \textbf{A. Stack.} Evaluating a postfix expression requires storing operands and intermediate results and retrieving the two most recent operands when an operator is read, which is a classic stack application.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false — justify]
+\begin{enumerate}
+\item \textbf{False.} In a stack the element removed is the one most recently inserted (LIFO — Last-In-First-Out). The element that has been in the structure the longest is removed in a queue (FIFO).
+\item \textbf{True.} By definition, a binary tree is a tree in which every node has at most two children (a left child and/or a right child).
+\item \textbf{False.} A \emph{perfect} (or full) binary tree of height $h$ contains exactly $2^{h+1}-1$ nodes. A \emph{complete} binary tree of height $h$ contains between $2^h$ and $2^{h+1}-1$ nodes.
+\item \textbf{True.} An Abstract Data Type specifies the logical behaviour (\emph{what} operations do) without specifying the implementation details (\emph{how} they are done).
+\item \textbf{True.} The in-order traversal (Left–Root–Right) of a binary search tree visits keys in non-decreasing order because all keys in the left subtree are smaller than the root and all keys in the right subtree are larger.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Key definitions]
+\begin{enumerate}
+\item \textbf{Abstract Data Type (ADT):} A mathematical model that defines a data structure purely by its behaviour: a set of values and a set of operations on those values, without specifying how the values are stored or how the operations are implemented in memory.
+\item \textbf{FIFO structure (First-In-First-Out):} A structure where the first element inserted is the first one removed. Example: \emph{Queue}. \textbf{LIFO structure (Last-In-First-Out):} A structure where the last element inserted is the first one removed. Example: \emph{Stack}.
+\item \textbf{Height of a binary tree:} The number of edges on the longest path from the root to a leaf (or the maximum depth of any node). \textbf{Depth of a node:} The number of edges on the path from the root to that node (the root has depth $0$).
+\item \textbf{Full binary tree:} A binary tree in which every node has either $0$ or $2$ children (no node has exactly one child). \textbf{Complete binary tree:} A binary tree in which all levels are completely filled except possibly the last level, which is filled from left to right without gaps.
+\item \textbf{Binary Search Tree (BST):} A binary tree where for every node, all keys in its left subtree are strictly less than the node's key, and all keys in its right subtree are strictly greater than the node's key. This property holds recursively for all subtrees.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations on binary trees]
+\begin{enumerate}
+\item A complete binary tree of height $h=4$ (root depth $0$) that is also \emph{perfect} (all levels full) contains $2^{h+1}-1 = 2^5-1 = 31$ nodes.
+\item The number of leaves in a perfect binary tree of height $h$ is $2^h = 2^4 = 16$.
+\item Standard 1-based array indexing:
+\begin{itemize}
+\item Left child of node $i$: $2i = 2\times6 = 12$.
+\item Right child of node $i$: $2i+1 = 13$.
+\item Parent of node $i$: $\lfloor i/2 \rfloor = \lfloor 6/2 \rfloor = 3$.
+\end{itemize}
+\item The minimum number of nodes in a binary tree of height $4$ is $h+1 = 5$ (a completely skewed tree, each node having only one child).
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1cm, sibling distance=1.5cm, every node/.style={circle,draw=popblue,fill=popblueL,inner sep=2pt,font=\small}]
+\node {1}
+  child { node {2}
+    child { node {3}
+      child { node {4}
+        child { node {5} } } } };
+\end{tikzpicture}
+\legende{Minimum-node binary tree of height 4 (skewed).}
+\end{popfigure}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Tree traversals]
+The tree:
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1.1cm,
+level 1/.style={sibling distance=4.4cm},
+level 2/.style={sibling distance=2.2cm},
+level 3/.style={sibling distance=1.1cm},
+every node/.style={circle,draw=popblue,fill=popblueL,inner sep=1.6pt,font=\small}]
+\node {A}
+  child { node {B}
+    child { node {D}
+      child { node {H} }
+      child { node {I} } }
+    child { node {E} } }
+  child { node {C}
+    child { node {F} }
+    child { node {G} } };
+\end{tikzpicture}
+\legende{Binary tree for traversal exercises.}
+\end{popfigure}
+\begin{enumerate}
+\item \textbf{Pre-order (Root–Left–Right):} $A\ B\ D\ H\ I\ E\ C\ F\ G$
+\item \textbf{In-order (Left–Root–Right):} $H\ D\ I\ B\ E\ A\ F\ C\ G$
+\item \textbf{Post-order (Left–Right–Root):} $H\ I\ D\ E\ B\ F\ G\ C\ A$
+\item \textbf{Level-order (Breadth-first):} $A\ B\ C\ D\ E\ F\ G\ H\ I$. The ADT used to implement level-order traversal is a \textbf{Queue} (FIFO).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Infix to postfix and evaluation]
+\begin{enumerate}
+\item \textbf{Infix to Postfix conversion trace:}
+Expression: $(A + B) * (C - D / E) + F$
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Token} & \textbf{Action} & \textbf{Stack (top at right)} & \textbf{Output} \\ \hline
+( & Push ( & ( &  \\ \hline
+A & Output & ( & A \\ \hline
++ & Push + & ( + & A \\ \hline
+B & Output & ( + & A B \\ \hline
+) & Pop until ( & (empty) & A B + \\ \hline
+* & Push * & * & A B + \\ \hline
+( & Push ( & * ( & A B + \\ \hline
+C & Output & * ( & A B + C \\ \hline
+- & Push - & * ( - & A B + C \\ \hline
+D & Output & * ( - & A B + C D \\ \hline
+/ & Push / (higher prec than -) & * ( - / & A B + C D \\ \hline
+E & Output & * ( - / & A B + C D E \\ \hline
+) & Pop until ( & * & A B + C D E / - \\ \hline
++ & Pop * (higher prec), push + & + & A B + C D E / - * \\ \hline
+F & Output & + & A B + C D E / - * F \\ \hline
+End & Pop + & (empty) & A B + C D E / - * F + \\ \hline
+\end{tabularx}
+\end{center}
+Postfix expression: $A\ B\ +\ C\ D\ E\ /\ -\ *\ F\ +$
+
+\item \textbf{Evaluation of postfix for $A=2, B=3, C=10, D=8, E=4, F=1$:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Token} & \textbf{Action} & \textbf{Stack (top at right)} \\ \hline
+2 & Push 2 & 2 \\ \hline
+3 & Push 3 & 2, 3 \\ \hline
++ & Pop 3,2; push 2+3=5 & 5 \\ \hline
+10 & Push 10 & 5, 10 \\ \hline
+8 & Push 8 & 5, 10, 8 \\ \hline
+4 & Push 4 & 5, 10, 8, 4 \\ \hline
+/ & Pop 4,8; push 8/4=2 & 5, 10, 2 \\ \hline
+- & Pop 2,10; push 10-2=8 & 5, 8 \\ \hline
+* & Pop 8,5; push 5*8=40 & 40 \\ \hline
+1 & Push 1 & 40, 1 \\ \hline
++ & Pop 1,40; push 40+1=41 & 41 \\ \hline
+\end{tabularx}
+\end{center}
+Final result: $41$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Building a binary search tree]
+\begin{enumerate}
+\item \textbf{Recursive Insert pseudocode:}
+\begin{enumerate}
+\item \texttt{Function Insert(root, key)}
+\item \quad \texttt{If root = NULL Then}
+\item \quad \quad \texttt{Create new node with key}
+\item \quad \quad \texttt{Return new node}
+\item \quad \texttt{Else If key < root.key Then}
+\item \quad \quad \texttt{root.left = Insert(root.left, key)}
+\item \quad \texttt{Else If key > root.key Then}
+\item \quad \quad \texttt{root.right = Insert(root.right, key)}
+\item \quad \texttt{Return root}
+\item \texttt{End Function}
+\end{enumerate}
+
+\item \textbf{BST after inserting 50, 30, 70, 20, 40, 60, 80:}
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1.2cm,
+level 1/.style={sibling distance=3.5cm},
+level 2/.style={sibling distance=1.8cm},
+every node/.style={circle,draw=popblue,fill=popblueL,inner sep=2pt,font=\small}]
+\node {50}
+  child { node {30}
+    child { node {20} }
+    child { node {40} } }
+  child { node {70}
+    child { node {60} }
+    child { node {80} } };
+\end{tikzpicture}
+\legende{BST after inserting 50, 30, 70, 20, 40, 60, 80.}
+\end{popfigure}
+
+\item \textbf{Height:} The longest path from root (50) to a leaf (20, 40, 60, 80) has 2 edges. Height $= 2$.
+\textbf{In-order traversal:} $20\ 30\ 40\ 50\ 60\ 70\ 80$.
+\textbf{Comment:} The in-order traversal of a BST always yields the keys in ascending (sorted) order.
+
+\item \textbf{Time complexity of insertion in a BST with $n$ nodes:}
+\begin{itemize}
+\item Best case: $O(\log n)$ (tree is balanced, height $\approx \log_2 n$).
+\item Worst case: $O(n)$ (tree is completely skewed, height $= n-1$).
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — A queue built from two stacks]
+\begin{enumerate}
+\item \textbf{Pseudocode:}
+\textbf{Enqueue(x):}
+\begin{enumerate}
+\item \texttt{Push(S1, x)}
+\end{enumerate}
+
+\textbf{Dequeue():}
+\begin{enumerate}
+\item \texttt{If IsEmpty(S2) Then}
+\item \quad \texttt{While Not IsEmpty(S1) Do}
+\item \quad \quad \texttt{Push(S2, Pop(S1))}
+\item \texttt{If IsEmpty(S2) Then}
+\item \quad \texttt{Return ERROR (queue empty)}
+\item \texttt{Else}
+\item \quad \texttt{Return Pop(S2)}
+\end{enumerate}
+
+\item \textbf{Trace:}
+\begin{center}
+\begin{tabular}{|l|c|cc|}\hline
+\rowcolor{popblueL}
+\textbf{Operation} & \textbf{S1 (top at right)} & \textbf{S2 (top at right)} \\ \hline
+Initial & empty & empty \\ \hline
+Enqueue(5) & 5 & empty \\ \hline
+Enqueue(8) & 5, 8 & empty \\ \hline
+Enqueue(3) & 5, 8, 3 & empty \\ \hline
+Dequeue() & empty & 3, 8, 5 $\rightarrow$ Pop 5 & 3, 8 \\ \hline
+Enqueue(7) & 7 & 3, 8 \\ \hline
+Dequeue() & 7 & 3, 8 $\rightarrow$ Pop 8 & 3 \\ \hline
+\end{tabular}
+\end{center}
+(Note: After first Dequeue, S1 is emptied into S2, so S2 becomes [3,8,5] with 5 on top. Pop returns 5. S2 left with [3,8] top=8. Enqueue(7) pushes to S1. Second Dequeue pops 8 from S2.)
+
+\item \textbf{Amortised analysis:} Each element is pushed onto S1 once, popped from S1 once, pushed onto S2 once, and popped from S2 once — at most four stack operations per element. Over a sequence of $n$ operations, the total time is $O(n)$, so the \emph{amortised} cost per operation is $O(1)$. A single \texttt{Dequeue} may take $O(n)$ when S2 is empty and S1 contains $n$ elements, but this expensive transfer happens only once per element.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Exam-style: choosing and justifying an ADT (10 marks)]
+\begin{enumerate}
+\item \textbf{Definition of ADT (3 marks):} An Abstract Data Type is a mathematical specification of a data structure defined by its set of values and the operations that can be performed on them, independently of any concrete implementation. It describes \emph{what} the structure does, not \emph{how} it does it.
+\textbf{Usefulness:} Reasoning with ADTs allows the programmer to focus on the logical requirements of the problem (e.g., "I need to add/remove at both ends") without being distracted by implementation details (arrays vs pointers). It enables modular design: the implementation can be changed (e.g., from array to linked list) without affecting the rest of the program, and it facilitates correctness proofs and complexity analysis at the abstract level.
+
+\item \textbf{Choice and justification (5 marks):} The most suitable ADT is the \textbf{Double-Ended Queue (Deque)}.
+\textbf{Comparison table:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Operation required} & \textbf{Deque} & \textbf{Singly Linked List (with tail pointer)} & \textbf{Array (dynamic)} \\ \hline
+Add at beginning & $O(1)$ & $O(1)$ & $O(n)$ (shift all elements) \\ \hline
+Add at end & $O(1)$ & $O(1)$ & $O(1)$ amortised \\ \hline
+Remove from beginning & $O(1)$ & $O(1)$ & $O(n)$ (shift all elements) \\ \hline
+Insert priority at beginning & $O(1)$ & $O(1)$ & $O(n)$ \\ \hline
+Unknown size & Dynamic & Dynamic & Requires resizing (amortised $O(1)$) \\ \hline
+\end{tabularx}
+\end{center}
+\textbf{Justification:} A Deque supports all four required operations in $O(1)$ worst-case time (if implemented with a doubly linked list or circular buffer). A simple Queue or Stack only allows operations at one end. An Array is inefficient for insertions/removals at the beginning. A Singly Linked List with a tail pointer also achieves $O(1)$ for all operations, but a Deque is the standard ADT that directly models "add/remove at both ends" and is the most precise abstraction for the requirements.
+
+\item \textbf{Pseudocode for insert at beginning (2 marks):}
+\begin{enumerate}
+\item \texttt{Function AddFront(song)}
+\item \quad \texttt{Create new node N with song}
+\item \quad \texttt{If IsEmpty() Then}
+\item \quad \quad \texttt{front = rear = N}
+\item \quad \texttt{Else}
+\item \quad \quad \texttt{N.next = front}
+\item \quad \quad \texttt{front.prev = N} \quad (for doubly linked list)
+\item \quad \quad \texttt{front = N}
+\item \texttt{End Function}
+\end{enumerate}
+(If using a circular array implementation, decrement front index modulo capacity and store song.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Exam-style: binary tree representations and traversals (12 marks)]
+\begin{enumerate}
+\item \textbf{Binary tree vs BST (2 marks):} A \emph{binary tree} is a hierarchical structure where each node has at most two children (left and right), with no ordering constraint on the values. A \emph{binary search tree (BST)} is a binary tree that satisfies the \emph{BST property}: for every node, all keys in its left subtree are strictly less than the node's key, and all keys in its right subtree are strictly greater. This property enables efficient search ($O(h)$).
+
+\item \textbf{Array-based representation (3 marks):} Nodes are stored in an array starting at index $1$ (root). For a node at index $i$:
+\begin{itemize}
+\item Left child at index $2i$ (if $2i \le n$).
+\item Right child at index $2i+1$ (if $2i+1 \le n$).
+\item Parent at index $\lfloor i/2 \rfloor$ (if $i > 1$).
+\end{itemize}
+Empty positions (missing nodes) must be represented by a sentinel value (e.g., $-1$ or a special marker), which wastes space for unbalanced trees.
+
+\item \textbf{Linked representation (2 marks):} Each node is a record (struct/class) containing three fields:
+\begin{itemize}
+\item \texttt{data}: the value stored.
+\item \texttt{left}: pointer/reference to left child (or NULL).
+\item \texttt{right}: pointer/reference to right child (or NULL).
+\end{itemize}
+The tree is accessed via a pointer to the root node.
+
+\item \textbf{Comparison table (3 marks):}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Array-based} & \textbf{Linked} \\ \hline
+Memory usage (unbalanced tree) & Poor: allocates space for all potential nodes up to max index; many gaps waste memory. & Good: allocates exactly one record per actual node; no gaps. \\ \hline
+Ease of insertion & Difficult: inserting a node may require shifting many elements or resizing array; gaps complicate structure. & Easy: create new node, adjust parent's pointer; no shifting needed. \\ \hline
+Speed of access to children & Very fast: direct index calculation $2i$, $2i+1$ (O(1) arithmetic). & Fast: pointer dereference (O(1) but involves memory indirection). \\ \hline
+\end{tabularx}
+\end{center}
+
+\item \textbf{BST construction and traversals (2 marks):}
+Insert 40, 25, 60, 15, 35, 50, 70.
+\begin{popfigure}
+\begin{tikzpicture}[level distance=1.2cm,
+level 1/.style={sibling distance=3.5cm},
+level 2/.style={sibling distance=1.8cm},
+every node/.style={circle,draw=popblue,fill=popblueL,inner sep=2pt,font=\small}]
+\node {40}
+  child { node {25}
+    child { node {15} }
+    child { node {35} } }
+  child { node {60}
+    child { node {50} }
+    child { node {70} } };
+\end{tikzpicture}
+\legende{BST after inserting 40, 25, 60, 15, 35, 50, 70.}
+\end{popfigure}
+\textbf{Pre-order:} $40\ 25\ 15\ 35\ 60\ 50\ 70$
+\textbf{Post-order:} $15\ 35\ 25\ 50\ 70\ 60\ 40$
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Exam-style: expression evaluation and integration of ADTs (14 marks)]
+\begin{enumerate}
+\item \textbf{Why infix is hard, postfix is easy (3 marks):} Infix notation requires the evaluator to handle operator precedence (e.g., $*$ before $+$) and parentheses, which means the next operation to perform is not always the next operator read; one must look ahead or use a stack to delay operations. Postfix (Reverse Polish) notation places each operator \emph{after} its operands, so the expression can be evaluated in a single left-to-right pass using a stack: when an operand is read, push it; when an operator is read, pop the required operands, apply the operator, push the result. No precedence rules or parentheses are needed.
+
+\item \textbf{Infix to Postfix conversion (4 marks):} (Same expression as Exercise 6)
+$(A + B) * (C - D / E) + F$
+Trace table:
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|c|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Token} & \textbf{Action} & \textbf{Stack} & \textbf{Output} \\ \hline
+( & Push & ( &  \\ \hline
+A & Output & ( & A \\ \hline
++ & Push & ( + & A \\ \hline
+B & Output & ( + & A B \\ \hline
+) & Pop to ( & empty & A B + \\ \hline
+* & Push & * & A B + \\ \hline
+( & Push & * ( & A B + \\ \hline
+C & Output & * ( & A B + C \\ \hline
+- & Push & * ( - & A B + C \\ \hline
+D & Output & * ( - & A B + C D \\ \hline
+/ & Push & * ( - / & A B + C D \\ \hline
+E & Output & * ( - / & A B + C D E \\ \hline
+) & Pop to ( & * & A B + C D E / - \\ \hline
++ & Pop *, push + & + & A B + C D E / - * \\ \hline
+F & Output & + & A B + C D E / - * F \\ \hline
+End & Pop + & empty & A B + C D E / - * F + \\ \hline
+\end{tabularx}
+\end{center}
+Postfix: $A\ B\ +\ C\ D\ E\ /\ -\ *\ F\ +$
+
+\item \textbf{Postfix evaluation algorithm (3 marks):}
+\begin{enumerate}
+\item \texttt{Function EvaluatePostfix(expression)}
+\item \quad \texttt{Create empty stack S}
+\item \quad \texttt{For each token in expression Do}
+\item \quad \quad \texttt{If token is an operand Then}
+\item \quad \quad \quad \texttt{Push(S, token)}
+\item \quad \quad \texttt{Else (token is an operator)}
+\item \quad \quad \quad \texttt{op2 = Pop(S)}
+\item \quad \quad \quad \texttt{op1 = Pop(S)}
+\item \quad \quad \quad \texttt{result = op1 token op2}
+\item \quad \quad \quad \texttt{Push(S, result)}
+\item \quad \texttt{Return Pop(S)} \quad (final result)
+\item \texttt{End Function}
+\end{enumerate}
+
+\item \textbf{Trace with values (2 marks):} (Same as Exercise 6)
+$A=2, B=3, C=10, D=8, E=4, F=1$
+Stack trace:
+2 $\rightarrow$ 2,3 $\rightarrow$ + $\rightarrow$ 5 $\rightarrow$ 5,10 $\rightarrow$ 5,10,8 $\rightarrow$ 5,10,8,4 $\rightarrow$ / $\rightarrow$ 5,10,2 $\rightarrow$ - $\rightarrow$ 5,8 $\rightarrow$ * $\rightarrow$ 40 $\rightarrow$ 40,1 $\rightarrow$ + $\rightarrow$ 41.
+Final result: $41$.
+
+\item \textbf{History ADT (2 marks):} The \textbf{Stack} (LIFO) is the most appropriate ADT for the history.
+\textbf{Justification:} The requirement is to "revisit the most recent one first". A stack naturally provides $O(1)$ access to the most recent item (top) and $O(1)$ insertion (push) when a new expression is evaluated. Since the history is limited to 20 items, a bounded stack implemented as a circular buffer can discard the oldest (bottom) item when full, or simply ignore new entries if the specification says "last 20". A queue would give the oldest first, which is the opposite of the requirement.
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    scale=0.85,
+    transform shape,
+    every node/.style={font=\small, align=center},
+    central/.style={circle, draw=popblue, thick, fill=popblueL, text width=3.2cm, minimum height=1.8cm},
+    branch/.style={rectangle, rounded corners, draw=poporange, thick, fill=poporange!20, text width=2.6cm, minimum height=1.2cm},
+    subbranch/.style={rectangle, draw=popgreen, fill=popgreenL, text width=2.2cm, minimum height=1cm},
+    level1/.style={->, thick, poporange},
+    level2/.style={->, popgreen}
+]
+% Central node
+\node[central, align=center] (center){Chapter CSC02:\\Selecting \& Manipulating\\ADTs \& Data Structures};
+
+% First level branches
+\node[branch] (adts) at (-5.5, 3.2) {Abstract Data Types};
+\node[branch] (btree) at (0, 4.5) {Binary Tree Concepts};
+\node[branch] (brepr) at (5.5, 3.2) {Binary Tree Representation};
+\node[branch] (apps) at (5.5, -3.2) {Applications of ADTs};
+\node[branch] (integ) at (0, -4.5) {Integration Activity};
+\node[branch] (exam) at (-5.5, -3.2) {Exam Preparation};
+
+% Connections level 1
+\draw[level1] (center) -- (adts);
+\draw[level1] (center) -- (btree);
+\draw[level1] (center) -- (brepr);
+\draw[level1] (center) -- (apps);
+\draw[level1] (center) -- (integ);
+\draw[level1] (center) -- (exam);
+
+% Sub-branches for ADTs
+\node[subbranch] (adt_def) at (-8.5, 4.5) {Definition \& Interface};
+\node[subbranch] (adt_encap) at (-8.5, 2.5) {Encapsulation};
+\node[subbranch] (adt_ex) at (-8.5, 0.5) {Examples: Stack, Queue, List};
+\draw[level2] (adts) -- (adt_def);
+\draw[level2] (adts) -- (adt_encap);
+\draw[level2] (adts) -- (adt_ex);
+
+% Sub-branches for Binary Tree Concepts
+\node[subbranch] (bt_def) at (-2, 6) {Terminology: root, leaf, depth};
+\node[subbranch] (bt_prop) at (2, 6) {Properties: full, complete, perfect};
+\node[subbranch] (bt_trav) at (6, 6) {Traversals: pre/in/post-order};
+\draw[level2] (btree) -- (bt_def);
+\draw[level2] (btree) -- (bt_prop);
+\draw[level2] (btree) -- (bt_trav);
+
+% Sub-branches for Binary Tree Representation
+\node[subbranch] (arr_rep) at (8.5, 4.5) {Array representation};
+\node[subbranch] (link_rep) at (8.5, 2.5) {Linked representation};
+\node[subbranch] (heap) at (8.5, 0.5) {Heap structure};
+\draw[level2] (brepr) -- (arr_rep);
+\draw[level2] (brepr) -- (link_rep);
+\draw[level2] (brepr) -- (heap);
+
+% Sub-branches for Applications
+\node[subbranch] (expr) at (8.5, -1.5) {Expression trees};
+\node[subbranch] (huff) at (8.5, -3.5) {Huffman coding};
+\node[subbranch] (bst) at (8.5, -5.5) {Binary search trees};
+\draw[level2] (apps) -- (expr);
+\draw[level2] (apps) -- (huff);
+\draw[level2] (apps) -- (bst);
+
+% Sub-branches for Integration
+\node[subbranch] (design) at (2, -6) {Choosing appropriate ADT};
+\node[subbranch] (complex) at (-2, -6) {Complexity analysis};
+\node[subbranch] (code) at (-6, -6) {Pseudocode implementation};
+\draw[level2] (integ) -- (design);
+\draw[level2] (integ) -- (complex);
+\draw[level2] (integ) -- (code);
+
+% Sub-branches for Exam Preparation
+\node[subbranch] (past) at (-8.5, -1.5) {Past paper patterns};
+\node[subbranch] (traps) at (-8.5, -3.5) {Common traps};
+\node[subbranch] (time) at (-8.5, -5.5) {Time management};
+\draw[level2] (exam) -- (past);
+\draw[level2] (exam) -- (traps);
+\draw[level2] (exam) -- (time);
+\end{tikzpicture}
+\legende{Mind map of Chapter CSC02: Selecting and manipulating ADTs and Data Structures}
+\end{popfigure}
+
+\begin{aretenir}[Key Definitions]
+\begin{itemize}
+\item \cle{Abstract Data Type (ADT)}: a mathematical model that defines a set of values and a collection of operations on those values, without specifying how the values are stored or how the operations are implemented.
+\item \cle{Encapsulation}: hiding the internal representation of an ADT; users can only access the data through the defined operations (the \emph{interface}).
+\item \cle{Binary Tree}: a hierarchical structure in which each node has at most two children, referred to as the \emph{left child} and the \emph{right child}.
+\item \cle{Root}: the unique node with no parent. \cle{Leaf}: a node with no children. \cle{Height} of a tree: the number of edges on the longest path from the root to a leaf (a tree with only a root has height $0$).
+\item \cle{Full Binary Tree}: every node has either 0 or 2 children.
+\item \cle{Complete Binary Tree}: all levels are completely filled except possibly the last, which is filled from left to right.
+\item \cle{Perfect Binary Tree}: all internal nodes have two children and all leaves are at the same level.
+\item \cle{Traversal}: a systematic way of visiting every node exactly once: pre-order (root, left, right), in-order (left, root, right), post-order (left, right, root).
+\item \cle{Heap}: a complete binary tree satisfying the heap property: in a \emph{max-heap} every parent is greater than or equal to its children; in a \emph{min-heap} every parent is less than or equal to its children.
+\item \cle{Binary Search Tree (BST)}: a binary tree in which, for every node, all keys in the left subtree are smaller than the node's key and all keys in the right subtree are greater.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Laws, Formulas and Theorems (examinable)]
+\begin{itemize}
+\item Maximum number of nodes in a binary tree of height $h$: $N_{\max}=2^{h+1}-1$ (height of root $=0$).
+\item Minimum number of nodes in a binary tree of height $h$: $N_{\min}=h+1$ (completely skewed tree).
+\item For a complete binary tree with $n$ nodes, the height is $h = \lfloor \log_2 n \rfloor$.
+\item Array representation indices (1-based indexing): the left child of the node at index $i$ is at index $2i$, the right child at index $2i+1$, and the parent of the node at index $i$ is at index $\lfloor i/2 \rfloor$.
+\item Time complexities for a BST (average case, balanced tree): search, insertion and deletion are $O(\log n)$; in the worst case (degenerate tree) they degrade to $O(n)$.
+\item Heap operations: insertion $O(\log n)$, extraction of the maximum/minimum $O(\log n)$, building a heap from $n$ elements $O(n)$.
+\item Any traversal of a tree with $n$ nodes visits each node exactly once, hence runs in $O(n)$ time and uses $O(h)$ auxiliary space (the recursion stack, where $h$ is the height).
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Essential Step-by-Step Methods]
+\begin{enumerate}
+\item \textbf{Choosing an ADT}: list the operations the problem requires (push/pop, enqueue/dequeue, search, insert, delete, priority access) and match them to the appropriate structure: Stack, Queue, List, Tree or Graph.
+\item \textbf{Designing a binary tree}: define the node structure (data field, left pointer, right pointer); then choose the representation — array-based for complete trees, linked for dynamic or sparse trees.
+\item \textbf{Implementing traversals}: write recursive pseudocode with a clear base case (empty tree); for an iterative version, use an explicit stack.
+\item \textbf{Heap operations}: use \texttt{heapify} (sift-down) when building a heap; \texttt{siftUp} after inserting at the last position; \texttt{siftDown} after replacing the root during extraction.
+\item \textbf{BST operations}: search recursively by comparing the key with the current node; insert at the leaf position found by an unsuccessful search; delete by treating three cases — leaf node, node with one child, node with two children (replace with the in-order successor, then delete that successor).
+\item \textbf{Complexity analysis}: count the basic operations as a function of the input size $n$; express the result in Big-O notation; always distinguish best, average and worst cases.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common Mistakes]
+\begin{itemize}
+\item Confusing \emph{height} (number of edges on the longest downward path) with \emph{level} or \emph{depth} counted in nodes; in the GCE convention the height of a tree containing only the root is $0$.
+\item Forgetting that the array representation is only memory-efficient for \emph{complete} trees; using it for sparse or skewed trees wastes a large amount of memory.
+\item Mixing up pre-order, in-order and post-order sequences; always draw a small tree and trace the traversal by hand before answering.
+\item Assuming BST operations are always $O(\log n)$; they degrade to $O(n)$ when the tree becomes unbalanced (for example after inserting already-sorted data).
+\item In heap \texttt{extractMax}, neglecting to call \texttt{heapify} (sift-down) on the new root after swapping it with the last element.
+\item Writing recursive algorithms without a base case, which leads to infinite recursion.
+\item Omitting the space complexity of recursive traversals: the recursion stack can grow as deep as the height $h$ of the tree.
+\item Using 0-based array formulas ($2i+1$, $2i+2$) when the question states 1-based indexing ($2i$, $2i+1$) — read the question carefully.
+\end{itemize}
+\end{attention}
+
+\begin{aretenir}[GCE Examination Tips]
+\begin{itemize}
+\item Past papers frequently ask: \emph{``Draw the binary search tree resulting from inserting the sequence 50, 30, 70, 20, 40, 60, 80 into an initially empty BST.''} Practise drawing such trees step by step, showing each insertion.
+\item Expect a question on converting an infix expression to postfix form using a stack, and then evaluating the postfix expression with a stack.
+\item Be ready to write pseudocode for \texttt{inOrderTraversal(node)} and to state its time complexity $O(n)$ and space complexity $O(h)$.
+\item Know the array index formulas by heart; a typical question is: \emph{``A complete binary tree is stored in an array A[1..n]. Write down the index of the left child of the node stored at index i.''} (Answer: $2i$.)
+\item For the integration activity, you may be given a scenario (for example a school library system) and asked to select appropriate ADTs for cataloguing, the borrowing queue and indexing — justify each choice with the operations needed and their complexity.
+\item Manage your time: allow about 10 minutes for diagram drawing, 15 minutes for pseudocode, and 5 minutes for complexity justification.
+\item Use clear indentation and brief comments in pseudocode; examiners award marks for readability and structure.
+\end{itemize}
+\end{aretenir}
+
+\findecours
+
+\end{document}
