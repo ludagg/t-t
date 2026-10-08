@@ -341,7 +341,7 @@ def ce_fix(body):
         if arrow:
             return re.sub(r"(?<=[A-Z\)])'", lambda _k: "$^\\prime$", s)
         if ("_{" in inner or "'" in inner) and "\\" not in inner and "$" not in inner:
-            return "\\ensuremath{\\mathrm{" + re.sub(r"(?<=[A-Z\)])'", "^{\\prime}", inner) + "}}"
+            return "\\ensuremath{\\mathrm{" + inner + "}}"
         return s
     return re.sub(r"\\ce" + _BR, one, body)
 
