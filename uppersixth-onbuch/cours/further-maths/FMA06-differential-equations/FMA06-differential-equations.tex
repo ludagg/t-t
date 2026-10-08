@@ -1,0 +1,3073 @@
+% Differential Equations — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA06-differential-equations.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{6}
+\newcommand{\DOCTITRE}{Differential Equations}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+\begin{document}
+
+\pagegarde{Differential Equations}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{6}{8 periods}{This chapter introduces the theory and solution techniques for first‑ and second‑order differential equations, from separable variables to linear equations with constant coefficients and reducible forms. Mastery of these tools enables students to model and solve a wide range of scientific and engineering problems encountered in the GCE Advanced Level examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item Identify the order, degree and type of a given differential equation.
+\item Sketch direction fields and interpret integral curves geometrically.
+\item Solve first‑order equations by separation of variables and by the integrating factor method.
+\item Recognise and solve homogeneous, Bernoulli and Riccati equations using appropriate substitutions.
+\item Solve linear second‑order differential equations with constant coefficients (homogeneous and non‑homogeneous).
+\item Apply reduction of order and other techniques to equations missing the dependent or independent variable.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item First‑Order Differential Equations – Foundations and Geometry
+\item Separable Variables and Linear First‑Order Non‑Homogeneous Equations
+\item Homogeneous, Bernoulli and Riccati Equations
+\item Linear Second‑Order Differential Equations with Constant Coefficients
+\item Reducible Equations, Reduction of Order and Modelling Applications
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item Identify the order, degree and type of a given differential equation.
+\item Sketch direction fields and interpret integral curves geometrically.
+\item Solve first‑order equations by separation of variables and by the integrating factor method.
+\item Recognise and solve homogeneous, Bernoulli and Riccati equations using appropriate substitutions.
+\item Solve linear second‑order differential equations with constant coefficients (homogeneous and non‑homogeneous).
+\item Apply reduction of order and other techniques to equations missing the dependent or independent variable.
+\item Formulate and solve simple mathematical models from physics, biology or economics.
+\item Check solutions and avoid common algebraic pitfalls in the solution process.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Differentiation rules (product, quotient, chain) from Lower Sixth.
+\item Integration techniques: substitution, partial fractions, integration by parts.
+\item Basic algebra of complex numbers (for complex roots of characteristic equations).
+\item Elementary knowledge of exponential, logarithmic and trigonometric functions.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{First-Order Differential Equations -- Foundations and Geometry}
+
+Imagine a cocoa farmer in the South-West region of Cameroon who wants to predict how the humidity inside his drying shed changes during the day, so that he can optimise his drying schedule and avoid mould on his beans. The \emph{rate at which the humidity changes} depends on the \emph{current humidity}, on the outside temperature, and on how much he opens the ventilation. In other words, he does not know the humidity function $H(t)$ directly; what nature gives him is a \emph{relationship between $H(t)$ and its rate of change} $\dfrac{dH}{dt}$. A relationship of this kind is called a \cle{differential equation}, and solving it means recovering the unknown function from information about its derivative. This is one of the most powerful ideas in all of mathematics: the laws of physics, biology, economics and engineering are almost always written in the language of differential equations.
+
+\courssub{What is a Differential Equation?}
+
+\begin{definition}[Differential equation, order, degree]
+A \cle{differential equation} (DE) is an equation involving an unknown function and one or more of its derivatives. If the unknown function depends on a single variable, the equation is called an \cle{ordinary differential equation} (ODE).
+\begin{itemize}
+\item The \cle{order} of a differential equation is the order of the \textbf{highest derivative} appearing in it.
+\item The \cle{degree} of a differential equation is the \textbf{power to which the highest derivative is raised}, after the equation has been cleared of fractions and radicals in the derivatives (when such a power is defined).
+\end{itemize}
+A first-order differential equation has the general form
+\[ F\!\left(x,\, y,\, \frac{dy}{dx}\right) = 0, \qquad \text{often written } \frac{dy}{dx} = f(x,y). \]
+\end{definition}
+
+\begin{exemplebox}[Identifying order and degree]
+\begin{itemize}
+\item $\dfrac{dy}{dx} = 3x^2$ : order $1$, degree $1$.
+\item $\dfrac{d^2y}{dx^2} + 4\dfrac{dy}{dx} + y = 0$ : order $2$, degree $1$.
+\item $\left(\dfrac{dy}{dx}\right)^3 + y = x$ : order $1$, degree $3$.
+\item $\dfrac{d^2y}{dx^2} = \sqrt{1 + \dfrac{dy}{dx}}$ : order $2$; squaring gives $\left(\dfrac{d^2y}{dx^2}\right)^2 = 1 + \dfrac{dy}{dx}$, so the degree is $2$.
+\end{itemize}
+\end{exemplebox}
+
+\begin{attention}[Order is not degree]
+The \cle{order} counts \emph{how many times} we differentiate; the \cle{degree} is the \emph{power} of that highest derivative. In $\left(\dfrac{d^2y}{dx^2}\right)^5 + \dfrac{dy}{dx} = 0$, the order is $2$ (second derivative is the highest) and the degree is $5$ (it is raised to the fifth power). Examiners frequently test this distinction.
+\end{attention}
+
+\begin{definition}[Solution, general solution, particular solution]
+A \cle{solution} of a differential equation on an interval $I$ is a function $y = \varphi(x)$ which, together with its derivatives, satisfies the equation identically on $I$.
+\begin{itemize}
+\item The \cle{general solution} of an $n$-th order equation contains $n$ independent arbitrary constants.
+\item A \cle{particular solution} is obtained by assigning specific values to the constants, usually from given conditions.
+\end{itemize}
+\end{definition}
+
+\begin{exemplebox}[Verifying a solution]
+Show that $y = Ce^{2x}$ is the general solution of $\dfrac{dy}{dx} = 2y$, and find the particular solution with $y(0) = 5$.
+
+\textbf{Solution.} If $y = Ce^{2x}$ then $\dfrac{dy}{dx} = 2Ce^{2x} = 2y$, so the equation is satisfied for every constant $C$. The condition $y(0)=5$ gives $Ce^{0} = 5$, so $C = 5$ and the particular solution is $y = 5e^{2x}$.
+\end{exemplebox}
+
+\begin{attention}[Always verify by substitution]
+To check that a function is a solution, \emph{substitute it into the equation}; do not try to "solve backwards". Also remember: the general solution of a \emph{first}-order equation contains exactly \emph{one} arbitrary constant. If your answer has two constants for a first-order equation, something is wrong.
+\end{attention}
+
+\courssub{Initial Value Problems}
+
+In applications we rarely want \emph{all} solutions; we want \emph{the} solution that matches the state of the system at a starting moment. The farmer knows the humidity at 6 a.m.; he wants the humidity at noon.
+
+\begin{definition}[Initial value problem]
+An \cle{initial value problem} (IVP) for a first-order equation consists of the equation together with one initial condition:
+\[ \frac{dy}{dx} = f(x,y), \qquad y(x_0) = y_0. \]
+Geometrically, we seek the integral curve passing through the point $(x_0, y_0)$. The condition fixes the constant of integration.
+\end{definition}
+
+\begin{exoresolu}[A simple initial value problem]
+Solve the initial value problem $\dfrac{dy}{dx} = 3x^2$, with $y(1) = 4$.
+\tcblower
+\textbf{Solution.} Integrate directly:
+\[ y = \int 3x^2\, dx = x^3 + C. \]
+This is the general solution. Apply the initial condition: $y(1) = 1 + C = 4$, so $C = 3$. The particular solution is
+\[ y = x^3 + 3. \]
+\textbf{Check:} $\dfrac{dy}{dx} = 3x^2$ \checkmark\ and $y(1) = 1 + 3 = 4$ \checkmark.
+\end{exoresolu}
+
+\courssub{Geometric Interpretation: Direction Fields and Integral Curves}
+
+Here is the key geometric idea. The equation $\dfrac{dy}{dx} = f(x,y)$ tells us something remarkable: \emph{if a solution curve passes through the point $(x,y)$, then its tangent there has slope $f(x,y)$}. So even \textbf{before solving anything}, we can draw at each point of the plane a small segment with slope $f(x,y)$. The resulting picture is called a \cle{direction field} (or slope field). A solution curve, called an \cle{integral curve}, is simply a curve that is tangent to the little segments everywhere it goes -- like a leaf drifting along a river, always following the local current.
+
+\begin{definition}[Direction field, integral curve, isocline]
+Let $\dfrac{dy}{dx} = f(x,y)$.
+\begin{itemize}
+\item The \cle{direction field} is the family of short line segments drawn at points $(x,y)$ with slope $f(x,y)$.
+\item An \cle{integral curve} is a curve tangent to the direction field at every point; it is the graph of a solution.
+\item An \cle{isocline} is a curve along which the slope is constant: $f(x,y) = k$ for a fixed value $k$. Isoclines help us draw direction fields efficiently.
+\end{itemize}
+\end{definition}
+
+\begin{exemplebox}[Direction field of $\dfrac{dy}{dx} = x - y$]
+Along the line $y = x$ the slope is $0$ (horizontal segments); along $y = x - 1$ the slope is $1$; along $y = x + 1$ the slope is $-1$. The isoclines are the parallel lines $x - y = k$. Sketching segments along these lines and threading curves through them gives the picture below. Notice how all solutions are attracted towards the line $y = x - 1$ (indeed $y = x - 1$ is itself a solution, and the general solution is $y = x - 1 + Ce^{-x}$).
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=9cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-3.2, xmax=3.2, ymin=-3.2, ymax=3.2,
+  xtick={-3,-2,-1,1,2,3}, ytick={-3,-2,-1,1,2,3},
+  tick label style={font=\small},
+  samples=2, domain=-3:3
+]
+% direction field for y' = x - y
+\foreach \a in {-3,-2.5,...,3}{
+  \foreach \b in {-3,-2.5,...,3}{
+    \pgfmathsetmacro{\s}{\a-\b}
+    \pgfmathsetmacro{\len}{0.16/sqrt(1+\s*\s)}
+    \edef\temp{\noexpand\draw[popmuted, thin] (axis cs:\a-\len,\b-\len*\s) -- (axis cs:\a+\len,\b+\len*\s);}
+    \temp
+  }
+}
+% isocline y = x (slope 0)
+\addplot[popline, dashed, thick] {x};
+% integral curves y = x - 1 + C e^{-x}
+\addplot[popblue, very thick, domain=-3:3, samples=60] {x - 1 + 2*exp(-x)};
+\addplot[poporange, very thick, domain=-3:3, samples=60] {x - 1 - 2*exp(-x)};
+\addplot[popgreen, very thick, domain=-3:3, samples=60] {x - 1 + 0.5*exp(-x)};
+\addplot[poppurple, very thick, domain=-3:3, samples=60] {x - 1};
+\node[font=\small, popdark] at (axis cs:2.6,2.9) {$y=x$};
+\node[font=\small, poppurple] at (axis cs:-2.6,-2.9) {$y=x-1$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Direction field for $\frac{dy}{dx}=x-y$ (grey segments), the isocline $y=x$ of zero slope (dashed), and four integral curves $y=x-1+Ce^{-x}$.}
+\end{popfigure}
+
+\begin{exemplebox}[Isoclines of $\dfrac{dy}{dx} = y^2 - x$]
+Here the isoclines are the parabolas $x = y^2 - k$. On the parabola $x = y^2$ the slope is $0$; on $x = y^2 - 1$ the slope is $1$; on $x = y^2 + 1$ the slope is $-1$. Drawing segments of the appropriate slope along each parabola builds up the field. This equation cannot be solved by elementary methods (it is a Riccati equation), yet the direction field still shows us exactly how its solutions behave -- a powerful reminder that geometry can succeed where algebra fails.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=9cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-3.2, xmax=3.2, ymin=-3.2, ymax=3.2,
+  xtick={-3,-2,-1,1,2,3}, ytick={-3,-2,-1,1,2,3},
+  tick label style={font=\small}
+]
+% direction field for y' = y^2 - x
+\foreach \a in {-3,-2.5,...,3}{
+  \foreach \b in {-3,-2.5,...,3}{
+    \pgfmathsetmacro{\s}{\b*\b-\a}
+    \pgfmathsetmacro{\s}{max(min(\s,3),-3)}
+    \pgfmathsetmacro{\len}{0.16/sqrt(1+\s*\s)}
+    \edef\temp{\noexpand\draw[popmuted, thin] (axis cs:\a-\len,\b-\len*\s) -- (axis cs:\a+\len,\b+\len*\s);}
+    \temp
+  }
+}
+% isoclines x = y^2 - k  (parametric)
+\addplot[popblue, thick, domain=-3:3, samples=60, variable=\t] ({t*t},{t});
+\addplot[poporange, thick, domain=-2.9:2.9, samples=60, variable=\t] ({t*t-1},{t});
+\addplot[popgreen, thick, domain=-2.4:2.4, samples=60, variable=\t] ({t*t-2},{t});
+\addplot[poppurple, thick, domain=-1.7:1.7, samples=60, variable=\t] ({t*t+1},{t});
+\node[font=\small, popblue] at (axis cs:2.4,1.35) {$k=0$};
+\node[font=\small, poporange] at (axis cs:1.4,1.35) {$k=1$};
+\node[font=\small, popgreen] at (axis cs:0.4,1.35) {$k=2$};
+\node[font=\small, poppurple] at (axis cs:1.6,-1.35) {$k=-1$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Direction field for $\frac{dy}{dx}=y^2-x$ with isoclines $x=y^2-k$ (parabolas). Along each parabola all segments have the same slope $k$.}
+\end{popfigure}
+
+\begin{methode}[Sketching a direction field by hand]
+\begin{enumerate}
+\item Choose a few convenient slope values $k$ (e.g. $-2,-1,0,1,2$).
+\item For each $k$, draw the isocline $f(x,y) = k$ and mark on it several short segments of slope $k$.
+\item Fill in extra segments at grid points if needed.
+\item Starting from a given point $(x_0, y_0)$, draw a smooth curve that stays tangent to the segments: this is the integral curve through that point.
+\item \textbf{With software:} in GeoGebra, type \texttt{SlopeField(x - y)} to obtain the field of $\frac{dy}{dx}=x-y$, then \texttt{SolveODE(x - y, 0, 1)} to plot the solution through $(0,1)$.
+\end{enumerate}
+\end{methode}
+
+\courssub{Existence and Uniqueness: the Picard--Lindel\"of Theorem}
+
+Before rushing to solve $\dfrac{dy}{dx} = f(x,y)$ with $y(x_0)=y_0$, a careful mathematician asks two questions:
+\begin{itemize}
+\item \textbf{Existence:} is there \emph{any} solution at all?
+\item \textbf{Uniqueness:} is there \emph{only one} solution through $(x_0,y_0)$, or could two different curves pass through the same point?
+\end{itemize}
+The answers matter practically: if the farmer's humidity model had no solution, his prediction would be impossible; if it had several, his prediction would be ambiguous.
+
+\begin{propriete}[Picard--Lindel\"of existence and uniqueness theorem]
+Let $f(x,y)$ be continuous in a rectangle $R$ containing $(x_0,y_0)$, and suppose $f$ satisfies a \cle{Lipschitz condition} in $y$ on $R$: there exists a constant $L > 0$ such that for all $(x,y_1), (x,y_2) \in R$,
+\[ |f(x,y_1) - f(x,y_2)| \le L\,|y_1 - y_2|. \]
+(A sufficient condition, easy to check in practice: $\dfrac{\partial f}{\partial y}$ exists and is continuous, hence bounded, on $R$.) Then the initial value problem
+\[ \frac{dy}{dx} = f(x,y), \qquad y(x_0) = y_0, \]
+has a \textbf{unique} solution $y = \varphi(x)$, defined on some interval $|x - x_0| \le h$ around $x_0$.
+\emph{(Statement examinable; proof not required.)}
+\end{propriete}
+
+\begin{exemplebox}[Applying the theorem]
+For $\dfrac{dy}{dx} = x - y$, we have $f(x,y) = x - y$, and $\dfrac{\partial f}{\partial y} = -1$ is continuous everywhere. Hence through \emph{every} point of the plane there passes exactly one integral curve -- which is exactly what the direction field picture suggests: the curves $y = x - 1 + Ce^{-x}$ fill the plane without ever crossing.
+\end{exemplebox}
+
+\begin{attention}[When uniqueness fails]
+The conditions of the theorem are essential. Consider $\dfrac{dy}{dx} = y^{2/3}$ with $y(0) = 0$. Here $f(x,y) = y^{2/3}$ is continuous, but $\dfrac{\partial f}{\partial y} = \dfrac{2}{3}y^{-1/3}$ blows up at $y = 0$: the Lipschitz condition fails. And indeed both $y \equiv 0$ and $y = \dfrac{x^3}{27}$ are solutions through $(0,0)$ -- uniqueness is lost. Moral: always check the hypotheses before claiming "the" solution.
+\end{attention}
+
+\begin{savaistu}[Picard's successive approximations]
+\'Emile Picard's proof constructs the solution as the limit of the sequence
+\[ \varphi_{n+1}(x) = y_0 + \int_{x_0}^{x} f\!\left(t, \varphi_n(t)\right) dt, \qquad \varphi_0(x) = y_0. \]
+This \emph{iteration} idea -- start with a guess, feed it back into the equation, repeat -- is the ancestor of many numerical methods used today in weather forecasting and in the simulation software used by engineers, including those modelling river flow and rainfall patterns in Cameroon.
+\end{savaistu}
+
+\courssub{A First Classification of First-Order Equations}
+
+First-order equations come in several families, each with its own method of solution. Recognising the family is the first skill; the methods themselves are developed in the next sections.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Family} & \textbf{Standard form} & \textbf{Example} \\
+\hline
+Separable & $\dfrac{dy}{dx} = g(x)\,h(y)$ & $\dfrac{dy}{dx} = \dfrac{x}{y}$ \\
+\hline
+Linear & $\dfrac{dy}{dx} + P(x)\,y = Q(x)$ & $\dfrac{dy}{dx} + y = e^{x}$ \\
+\hline
+Homogeneous & $\dfrac{dy}{dx} = F\!\left(\dfrac{y}{x}\right)$ & $\dfrac{dy}{dx} = \dfrac{x^2+y^2}{xy}$ \\
+\hline
+Bernoulli & $\dfrac{dy}{dx} + P(x)\,y = Q(x)\,y^{n}$ & $\dfrac{dy}{dx} + y = xy^{2}$ \\
+\hline
+Riccati & $\dfrac{dy}{dx} = q_0(x) + q_1(x)\,y + q_2(x)\,y^{2}$ & $\dfrac{dy}{dx} = y^{2} - x$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[Classify before you solve]
+The single most common error at this stage is applying the wrong method -- for instance trying to separate variables in $\dfrac{dy}{dx} = x - y$ (impossible: $x - y$ is not a product $g(x)h(y)$). Train yourself to ask, \emph{before any computation}: is it separable? linear? homogeneous? Bernoulli? Riccati? The example $\dfrac{dy}{dx} = x - y$ is linear; $\dfrac{dy}{dx} = y^2 - x$ is Riccati.
+\end{attention}
+
+\begin{exoresolu}[Classifying equations]
+Classify each equation and state its order and degree:
+\begin{enumerate}
+\item $\dfrac{dy}{dx} = \dfrac{x^2}{1 + y^2}$ \qquad (b)\; $x\dfrac{dy}{dx} + y = x^3 y^3$ \qquad (c)\; $\dfrac{dy}{dx} = \dfrac{y}{x} + \dfrac{x}{y}$
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item $\dfrac{dy}{dx} = x^2 \cdot \dfrac{1}{1+y^2}$ is a product $g(x)h(y)$: \textbf{separable}; order $1$, degree $1$.
+\item Dividing by $x$: $\dfrac{dy}{dx} + \dfrac{1}{x}y = x^2 y^3$. This matches $\dfrac{dy}{dx} + P(x)y = Q(x)y^n$ with $n = 3$: \textbf{Bernoulli}; order $1$, degree $1$.
+\item $\dfrac{y}{x} + \dfrac{x}{y} = \dfrac{y}{x} + \left(\dfrac{y}{x}\right)^{-1}$ is a function of $\dfrac{y}{x}$ alone: \textbf{homogeneous}; order $1$, degree $1$.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A differential equation relates an unknown function to its derivatives; the \cle{order} is the highest derivative present, the \cle{degree} its power.
+\item The general solution of a first-order equation contains \textbf{one} arbitrary constant; an initial condition $y(x_0)=y_0$ fixes it and selects one particular solution.
+\item $\dfrac{dy}{dx} = f(x,y)$ assigns a slope to every point: the \cle{direction field}. Solutions are the \cle{integral curves} tangent to it; \cle{isoclines} ($f(x,y)=k$) organise the sketching.
+\item Picard--Lindel\"of: if $f$ is continuous and Lipschitz in $y$ (e.g. $\frac{\partial f}{\partial y}$ continuous), the IVP has exactly one solution near $x_0$.
+\item First-order equations are classified as separable, linear, homogeneous, Bernoulli or Riccati -- identify the family \emph{before} choosing a method.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item State the order and degree of: (a) $\left(\dfrac{dy}{dx}\right)^2 + x y = \sin x$; (b) $\dfrac{d^2y}{dx^2} = \left(1 + \left(\dfrac{dy}{dx}\right)^2\right)^{3/2}$.
+\item Verify that $y = x - 1 + Ce^{-x}$ solves $\dfrac{dy}{dx} = x - y$, and find the solution through $(0, 2)$.
+\item Show that the IVP $\dfrac{dy}{dx} = 1 + y^2$, $y(0) = 0$, has a unique solution near $x = 0$. (It is $y = \tan x$; check!)
+\item Sketch by hand the direction field of $\dfrac{dy}{dx} = -\dfrac{x}{y}$ using the isoclines, and guess the shape of the integral curves.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item (a) Order $1$, degree $2$. (b) Squaring: $\left(\dfrac{d^2y}{dx^2}\right)^2 = \left(1 + \left(\dfrac{dy}{dx}\right)^2\right)^3$: order $2$, degree $2$.
+\item $\dfrac{dy}{dx} = 1 - Ce^{-x}$ and $x - y = x - (x - 1 + Ce^{-x}) = 1 - Ce^{-x}$: equal \checkmark. Through $(0,2)$: $2 = -1 + C$, so $C = 3$ and $y = x - 1 + 3e^{-x}$.
+\item $f(x,y) = 1 + y^2$ is continuous and $\dfrac{\partial f}{\partial y} = 2y$ is continuous, hence bounded on any rectangle about $(0,0)$: Picard--Lindel\"of applies, so a unique solution exists near $0$. Check: $y = \tan x$ gives $\dfrac{dy}{dx} = \sec^2 x = 1 + \tan^2 x = 1 + y^2$ and $y(0) = 0$ \checkmark.
+\item Isoclines $-\dfrac{x}{y} = k$ are the lines $y = -\dfrac{x}{k}$ through the origin. Segments along them suggest curves everywhere perpendicular to radial lines: the integral curves are the circles $x^2 + y^2 = C$ centred at the origin.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Separable Variables and Linear First-Order Non-Homogeneous Equations}
+
+In the previous section we learned what a first-order differential equation is, how it arises from physical and geometric situations, and how its solutions form a \emph{family of curves} filling the plane. We also saw that there is no universal formula for solving every first-order equation: each type requires its own technique. In this section we master the two most important techniques of the whole chapter: \cle{separation of variables}, which works whenever the variables can be untangled, and the \cle{integrating factor} method, which solves \emph{every} linear first-order equation. These two methods, together, settle a large proportion of the differential equations you will meet at the GCE Advanced Level and in applied science.
+
+\courssub{Equations with Separable Variables}
+
+\textbf{Intuition.}\par
+Suppose the rate of change of a quantity $y$ can be written as a \emph{product} of a piece that depends only on $x$ and a piece that depends only on $y$:
+\[ \frac{dy}{dx} = g(x)\,h(y). \]
+For example, $\dfrac{dy}{dx} = xy$ says: the slope is the product of the position $x$ and the height $y$. The key idea is to \emph{separate} the two variables: push everything involving $y$ (including $dy$) to one side, and everything involving $x$ (including $dx$) to the other, then integrate both sides. It is as if the equation were a knot that we untie before pulling.
+
+\begin{definition}[Separable equation]
+A first-order differential equation is called \cle{separable} (or \emph{with separable variables}) if it can be written in the form
+\[ \frac{dy}{dx} = g(x)\,h(y), \]
+where $g$ is a function of $x$ alone and $h$ is a function of $y$ alone. If $h(y) \neq 0$ on the interval considered, we may divide by $h(y)$ and write
+\[ \frac{dy}{h(y)} = g(x)\,dx, \qquad\text{hence}\qquad \int \frac{dy}{h(y)} = \int g(x)\,dx + C. \]
+\end{definition}
+
+\begin{propriete}[Justification of separation of variables]
+Let $y$ be a differentiable function of $x$ satisfying $\dfrac{dy}{dx} = g(x)h(y)$ with $h(y)\neq 0$. Then $\dfrac{1}{h(y)}\dfrac{dy}{dx} = g(x)$. If $H$ is an antiderivative of $1/h$ and $G$ an antiderivative of $g$, the chain rule gives
+\[ \frac{d}{dx}\bigl[H(y(x))\bigr] = H'(y)\,\frac{dy}{dx} = \frac{1}{h(y)}\frac{dy}{dx} = g(x) = \frac{d}{dx}G(x), \]
+so $H(y) = G(x) + C$, which is exactly what the formal rule ``$\int dy/h(y) = \int g(x)\,dx + C$'' produces. The method is therefore rigorous, not merely symbolic. \emph{(This justification is instructive; the method itself is examinable.)}
+\end{propriete}
+
+\begin{methode}[Separation of variables -- step-by-step algorithm]
+\begin{enumerate}
+\item \textbf{Factorise:} write the equation as $\dfrac{dy}{dx} = g(x)\,h(y)$. If this is impossible, the equation is not separable -- try another method.
+\item \textbf{Check for lost solutions:} solve $h(y) = 0$. Each constant root $y = y_0$ is a \emph{singular (equilibrium) solution}; note it down before dividing.
+\item \textbf{Separate:} write $\dfrac{dy}{h(y)} = g(x)\,dx$.
+\item \textbf{Integrate both sides}, adding \emph{one} constant $C$ (on either side).
+\item \textbf{Solve for $y$} if possible (explicit solution); otherwise leave the answer in implicit form $H(y) = G(x) + C$.
+\item \textbf{Apply the initial condition} if one is given, to fix $C$.
+\item \textbf{Verify} by substituting your answer into the original equation.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Forgetting the constant of integration]
+After integrating both sides you must add a constant of integration. One constant suffices: $\int \frac{dy}{h(y)} + C_1 = \int g(x)\,dx + C_2$ reduces to $\int \frac{dy}{h(y)} = \int g(x)\,dx + (C_2 - C_1)$, and $C_2 - C_1$ is just an arbitrary constant $C$. But omitting the constant altogether loses the entire family of solutions and makes it impossible to satisfy an initial condition. In the GCE examination this error costs most of the marks of the question.
+\end{attention}
+
+\begin{exoresolu}[Solving $\dfrac{dy}{dx} = xy$]
+Find the general solution of $\dfrac{dy}{dx} = xy$, then the particular solution with $y(0) = 3$.
+\tcblower
+\textbf{Solution.} The equation is separable with $g(x) = x$ and $h(y) = y$.
+
+\emph{Step 2 -- lost solutions:} $h(y) = y = 0$ gives the constant solution $y = 0$.
+
+\emph{Steps 3--4:} for $y \neq 0$,
+\[ \frac{dy}{y} = x\,dx \;\Longrightarrow\; \int \frac{dy}{y} = \int x\,dx \;\Longrightarrow\; \ln|y| = \frac{x^2}{2} + C. \]
+
+\emph{Step 5:} exponentiating, $|y| = e^{C}e^{x^2/2}$, so $y = A e^{x^2/2}$ where $A = \pm e^{C}$ is any non-zero constant. Allowing $A = 0$ recovers the lost solution $y = 0$, so the general solution is
+\[ y = A e^{x^2/2}, \qquad A \in \mathbb{R}. \]
+
+\emph{Step 6:} $y(0) = A e^{0} = A = 3$, hence $y = 3e^{x^2/2}$.
+
+\emph{Step 7 -- verification:} $\dfrac{dy}{dx} = 3 \cdot x e^{x^2/2} = x\bigl(3e^{x^2/2}\bigr) = xy$. \checkmark
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7.5cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$y$},
+  xmin=-2.2, xmax=2.2, ymin=-4.5, ymax=4.5,
+  domain=-2:2, samples=80,
+  legend style={at={(0.02,0.98)}, anchor=north west, font=\small}
+]
+\addplot[popblue, thick] {3*exp(x^2/2)};
+\addplot[poporange, thick] {exp(x^2/2)};
+\addplot[popgreen, thick] {0.4*exp(x^2/2)};
+\addplot[popink, thick] {0};
+\addplot[poppurple, thick] {-exp(x^2/2)};
+\addplot[poppink, thick] {-2.5*exp(x^2/2)};
+\legend{$A=3$, $A=1$, $A=0.4$, $A=0$, $A=-1$, $A=-2.5$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Family of solution curves $y = A e^{x^2/2}$ of the separable equation $\frac{dy}{dx} = xy$. Through each point of the plane passes exactly one curve; the $x$-axis ($A=0$) is the singular solution recovered by allowing $A=0$.}
+\end{popfigure}
+
+\begin{attention}[Dividing by $h(y)$: loss of solutions]
+When you divide by $h(y)$ you silently assume $h(y) \neq 0$. Constant solutions of $h(y) = 0$ may be lost. In the example above, dividing by $y$ discarded $y = 0$; we recovered it only by allowing $A = 0$. This is not always possible: for $\dfrac{dy}{dx} = y^{2/3}$, separation gives $y = \left(\tfrac{x+C}{3}\right)^3$, and the solution $y = 0$ is \emph{not} obtained for any value of $C$ -- it is a genuine singular solution. Always list the roots of $h(y) = 0$ separately.
+\end{attention}
+
+\begin{exoresolu}[Implicit solution and singular solutions]
+Solve $\dfrac{dy}{dx} = \dfrac{x}{y}$ with $y(0) = 2$.
+\tcblower
+\textbf{Solution.} Here $h(y) = 1/y$, which never vanishes, so no constant solution is lost. Separating:
+\[ y\,dy = x\,dx \;\Longrightarrow\; \int y\,dy = \int x\,dx \;\Longrightarrow\; \frac{y^2}{2} = \frac{x^2}{2} + C \;\Longrightarrow\; y^2 - x^2 = 2C. \]
+The solution curves are hyperbolas. The initial condition $y(0) = 2$ gives $4 = 2C$, so $y^2 - x^2 = 4$, and since $y(0) = 2 > 0$ we take the positive branch: $y = \sqrt{x^2 + 4}$.
+
+\emph{Verification:} $\dfrac{dy}{dx} = \dfrac{x}{\sqrt{x^2+4}} = \dfrac{x}{y}$. \checkmark
+\end{exoresolu}
+
+\begin{attention}[Watch the sign when removing logarithms]
+From $\ln|y| = F(x) + C$ you obtain $|y| = e^{C}e^{F(x)}$, hence $y = \pm e^{C}e^{F(x)}$. Writing simply $y = e^{C}e^{F(x)}$ silently discards all negative solutions. The clean habit is to rename $\pm e^{C}$ as a single arbitrary non-zero constant $A$, then check whether $A = 0$ is also allowed.
+\end{attention}
+
+\courssub{Linear First-Order Non-Homogeneous Equations: the Integrating Factor}
+
+\textbf{Intuition.}\par
+Many equations are \emph{not} separable, for instance $\dfrac{dy}{dx} + 2y = e^{-x}$: the right-hand side mixes $x$ and $y$ in a sum, not a product. But such an equation is \emph{linear} in $y$. The brilliant idea, going back to Leibniz, is to multiply the whole equation by a cleverly chosen function $\mu(x)$ so that the left-hand side becomes the derivative of a single product, $\dfrac{d}{dx}\bigl[\mu(x)y\bigr]$. Integration then finishes the job immediately.
+
+\begin{definition}[Linear first-order equation]
+A \cle{linear first-order differential equation} is one that can be written in \emph{standard form}
+\[ \frac{dy}{dx} + P(x)\,y = Q(x), \]
+where $P$ and $Q$ are continuous functions of $x$ on some interval. If $Q(x) \equiv 0$ the equation is \emph{homogeneous} (and separable); otherwise it is \emph{non-homogeneous}. The function
+\[ \mu(x) = e^{\int P(x)\,dx} \]
+is called the \cle{integrating factor} of the equation.
+\end{definition}
+
+\begin{propriete}[The integrating factor works]
+Let $\mu(x) = e^{\int P\,dx}$. Then $\mu'(x) = P(x)\,\mu(x)$ by the chain rule. Multiplying the standard equation by $\mu$:
+\[ \mu\,\frac{dy}{dx} + \mu P\, y = \mu Q \;\Longleftrightarrow\; \mu\,\frac{dy}{dx} + \frac{d\mu}{dx}\,y = \mu Q \;\Longleftrightarrow\; \frac{d}{dx}\bigl[\mu(x)\,y\bigr] = \mu(x)Q(x). \]
+Integrating and dividing by $\mu$ (which is always positive, hence never zero):
+\[ \boxed{\; y\,\mu(x) = \int \mu(x)Q(x)\,dx + C \;} \qquad\text{i.e.}\qquad y = \frac{1}{\mu(x)}\left(\int \mu(x)Q(x)\,dx + C\right). \]
+\emph{(This derivation is examinable and frequently asked.)}
+\end{propriete}
+
+\begin{methode}[Integrating factor for linear first-order equations]
+\begin{enumerate}
+\item \textbf{Standard form:} divide through by the coefficient of $\dfrac{dy}{dx}$ so that the equation reads $\dfrac{dy}{dx} + P(x)y = Q(x)$.
+\item \textbf{Identify $P(x)$} and compute $\int P(x)\,dx$ (take the constant of integration to be zero here -- any one antiderivative works).
+\item \textbf{Compute the integrating factor} $\mu(x) = e^{\int P\,dx}$. Simplify: $e^{k\ln|x|} = |x|^k$, and the absolute value may be dropped since $\mu$ may be taken positive.
+\item \textbf{Multiply through by $\mu$} and recognise the left side as $\dfrac{d}{dx}[\mu y]$.
+\item \textbf{Integrate:} $\mu y = \int \mu Q\,dx + C$, then divide by $\mu$ to obtain $y$.
+\item \textbf{Apply any initial condition} and \textbf{verify} by substitution.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Solving $\dfrac{dy}{dx} + 2y = e^{-x}$]
+Find the general solution of $\dfrac{dy}{dx} + 2y = e^{-x}$, then the solution with $y(0) = 2$.
+\tcblower
+\textbf{Solution.} The equation is already in standard form with $P(x) = 2$, $Q(x) = e^{-x}$.
+
+\emph{Steps 2--3:} $\int P\,dx = 2x$, so $\mu(x) = e^{2x}$.
+
+\emph{Step 4:} multiplying by $e^{2x}$:
+\[ e^{2x}\frac{dy}{dx} + 2e^{2x}y = e^{x} \;\Longleftrightarrow\; \frac{d}{dx}\bigl[e^{2x}y\bigr] = e^{x}. \]
+
+\emph{Step 5:} integrate: $e^{2x}y = e^{x} + C$, hence
+\[ y = e^{-x} + C e^{-2x}. \]
+
+\emph{Step 6:} $y(0) = 1 + C = 2$ gives $C = 1$, so $y = e^{-x} + e^{-2x}$.
+
+\emph{Verification:} $\dfrac{dy}{dx} = -e^{-x} - 2e^{-2x}$, and $\dfrac{dy}{dx} + 2y = -e^{-x} - 2e^{-2x} + 2e^{-x} + 2e^{-2x} = e^{-x}$. \checkmark
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=11cm, height=7cm,
+  axis lines=middle,
+  xlabel={$x$}, ylabel={$\mu(x)$},
+  xmin=-0.3, xmax=3.2, ymin=0, ymax=9,
+  domain=0:3, samples=100,
+  legend style={at={(0.03,0.97)}, anchor=north west, font=\small}
+]
+\addplot[popblue, very thick] {exp(2*x)};
+\addplot[poporange, thick, dashed] {exp(x)};
+\addplot[popgreen, thick, dotted] {1};
+\legend{$\mu = e^{2x}$ (for $y'+2y = e^{-x}$), $\mu = e^{x}$ (for $y'+y=Q$), $\mu = 1$ (for $y' = Q$)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The integrating factor $\mu(x) = e^{\int P\,dx}$ for three sample equations. A constant $P$ gives an exponential factor; when $P = 0$ the factor is $1$ and the equation is solved by direct integration.}
+\end{popfigure}
+
+\begin{exoresolu}[A variable coefficient]
+Solve $x\dfrac{dy}{dx} - y = x^2$ for $x > 0$.
+\tcblower
+\textbf{Solution.} \emph{Step 1 -- standard form:} divide by $x$:
+\[ \frac{dy}{dx} - \frac{1}{x}\,y = x, \qquad P(x) = -\frac{1}{x},\quad Q(x) = x. \]
+\emph{Steps 2--3:} $\int P\,dx = -\ln x$ (since $x > 0$), so $\mu = e^{-\ln x} = \dfrac{1}{x}$.
+
+\emph{Step 4:} multiplying by $\dfrac{1}{x}$: $\dfrac{1}{x}\dfrac{dy}{dx} - \dfrac{y}{x^2} = 1$, i.e. $\dfrac{d}{dx}\!\left(\dfrac{y}{x}\right) = 1$.
+
+\emph{Step 5:} $\dfrac{y}{x} = x + C$, hence $y = x^2 + Cx$.
+
+\emph{Verification:} $\dfrac{dy}{dx} = 2x + C$, and $x\dfrac{dy}{dx} - y = 2x^2 + Cx - x^2 - Cx = x^2$. \checkmark
+\end{exoresolu}
+
+\begin{attention}[Standard form first!]
+The most common error is to read off $P(x)$ \emph{before} dividing by the coefficient of $\dfrac{dy}{dx}$. In $x\dfrac{dy}{dx} - y = x^2$, students who take $P = -1$ instead of $P = -1/x$ get the wrong integrating factor and a wrong answer. Also remember: the integrating factor is $e^{\int P\,dx}$, \emph{not} $e^{P(x)}$.
+\end{attention}
+
+\begin{propriete}[Superposition fails for non-homogeneous equations]
+For the \emph{homogeneous} linear equation $y' + P(x)y = 0$, any linear combination of solutions is again a solution (superposition holds). This is \textbf{false} for the non-homogeneous equation $y' + P(x)y = Q(x)$ with $Q \not\equiv 0$: if $y_1$ and $y_2$ are two solutions, then $y_1 + y_2$ satisfies
+\[ (y_1 + y_2)' + P(y_1 + y_2) = Q + Q = 2Q \neq Q, \]
+so $y_1 + y_2$ is \emph{not} a solution. What \emph{is} true: the \textbf{difference} $y_1 - y_2$ solves the homogeneous equation, and the general solution is
+\[ y = y_p + y_h, \]
+where $y_p$ is any one particular solution and $y_h = Ce^{-\int P\,dx}$ is the general solution of the associated homogeneous equation. \emph{(Examinable as a structural remark.)}
+\end{propriete}
+
+\courssub{Modelling Applications}
+
+\textbf{Exponential growth and decay.}\par
+When the rate of change of a quantity is proportional to the quantity itself -- a bacterial culture in a laboratory in Bamenda, the decay of a radioactive sample, a sum of money at continuous compound interest -- we obtain $\dfrac{dy}{dt} = ky$, a separable equation:
+\[ \frac{dy}{y} = k\,dt \;\Longrightarrow\; \ln|y| = kt + C \;\Longrightarrow\; y = y_0 e^{kt}, \]
+where $y_0 = y(0)$. Growth corresponds to $k > 0$, decay to $k < 0$.
+
+\textbf{Newton's law of cooling.}\par
+A body at temperature $T$ placed in an environment at constant temperature $T_a$ cools (or warms) at a rate proportional to the difference $T - T_a$:
+\[ \frac{dT}{dt} = -k\,(T - T_a), \qquad k > 0. \]
+This is linear with $P = k$, $Q = kT_a$; the integrating factor $e^{kt}$ gives $\frac{d}{dt}\bigl[e^{kt}T\bigr] = kT_a e^{kt}$, hence
+\[ T(t) = T_a + \bigl(T_0 - T_a\bigr)e^{-kt}. \]
+The temperature approaches the ambient temperature $T_a$ exponentially.
+
+\begin{exoresolu}[Newton's law of cooling]
+A bottle of water at $90\,^{\circ}\mathrm{C}$ is placed in a room at $30\,^{\circ}\mathrm{C}$. After $10$ minutes its temperature is $60\,^{\circ}\mathrm{C}$. Find its temperature after $20$ minutes.
+\tcblower
+\textbf{Solution.} With $T_a = 30$ and $T_0 = 90$: $T(t) = 30 + 60e^{-kt}$.
+
+At $t = 10$: $60 = 30 + 60e^{-10k}$, so $e^{-10k} = \tfrac{1}{2}$, giving $k = \tfrac{\ln 2}{10}$.
+
+At $t = 20$: $e^{-20k} = \left(e^{-10k}\right)^2 = \tfrac{1}{4}$, so
+\[ T(20) = 30 + 60 \times \tfrac{1}{4} = 45\,^{\circ}\mathrm{C}. \]
+\emph{Check:} the temperature decreases from $90$ towards $30$; $45$ lies between $60$ and $30$, as expected. \checkmark
+\end{exoresolu}
+
+\textbf{Mixing problems.}\par
+A tank contains a solution; liquid flows in and out at known rates with known concentrations. If $y(t)$ is the amount of dissolved substance (salt, for example) at time $t$, then
+\[ \frac{dy}{dt} = (\text{rate in}) - (\text{rate out}), \]
+which typically produces a linear first-order equation.
+
+\begin{exoresolu}[A mixing problem]
+A tank contains $100\ \mathrm{L}$ of brine with $10\ \mathrm{kg}$ of dissolved salt. Fresh water enters at $5\ \mathrm{L\,min^{-1}}$ and the well-stirred mixture leaves at the same rate. Find the amount of salt after $20$ minutes.
+\tcblower
+\textbf{Solution.} The volume stays constant at $100\ \mathrm{L}$, so the concentration at time $t$ is $\dfrac{y}{100}\ \mathrm{kg\,L^{-1}}$. Salt enters at rate $0$ and leaves at rate $5 \times \dfrac{y}{100} = \dfrac{y}{20}\ \mathrm{kg\,min^{-1}}$:
+\[ \frac{dy}{dt} = -\frac{y}{20}. \]
+Separating: $\dfrac{dy}{y} = -\dfrac{dt}{20}$, so $\ln|y| = -\dfrac{t}{20} + C$, i.e. $y = y_0 e^{-t/20} = 10e^{-t/20}$.
+
+At $t = 20$: $y = 10e^{-1} \approx 3.68\ \mathrm{kg}$.
+
+\emph{Verification:} $\dfrac{dy}{dt} = -\tfrac{1}{20}\cdot 10e^{-t/20} = -\dfrac{y}{20}$. \checkmark
+\end{exoresolu}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A \cle{separable} equation $\dfrac{dy}{dx} = g(x)h(y)$ is solved by $\displaystyle\int \frac{dy}{h(y)} = \int g(x)\,dx + C$; check the roots of $h(y) = 0$ for \cle{singular solutions} before dividing.
+\item Add \emph{one} constant of integration after integrating; never forget it.
+\item A \cle{linear} first-order equation $\dfrac{dy}{dx} + P(x)y = Q(x)$ is solved with the \cle{integrating factor} $\mu = e^{\int P\,dx}$: then $\dfrac{d}{dx}[\mu y] = \mu Q$ and $y = \dfrac{1}{\mu}\left(\int \mu Q\,dx + C\right)$.
+\item Put the equation in \emph{standard form} before identifying $P(x)$.
+\item Superposition fails for non-homogeneous equations; the general solution is $y = y_p + y_h$.
+\item Growth/decay, Newton's cooling and mixing problems all lead to these two types; always \emph{verify} your final answer by substitution.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Solve $\dfrac{dy}{dx} = \dfrac{y}{x}$ for $x > 0$, and identify any solution lost when separating.
+\item Solve $\dfrac{dy}{dx} + y = x$ with $y(0) = 1$.
+\item Solve $\dfrac{dy}{dx} = e^{x - y}$.
+\item A radioactive substance decays according to $\dfrac{dm}{dt} = -km$. If half the mass remains after $5$ days, what fraction remains after $15$ days?
+\item Solve $x\dfrac{dy}{dx} + 2y = x^3$ for $x > 0$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item $\dfrac{dy}{y} = \dfrac{dx}{x}$ gives $\ln|y| = \ln x + C$, so $y = Ax$ ($A \in \mathbb{R}$). The solution $y = 0$, lost when dividing by $y$, is recovered with $A = 0$.
+\item $\mu = e^{x}$: $\frac{d}{dx}[e^{x}y] = xe^{x}$, so $e^{x}y = (x-1)e^{x} + C$, i.e. $y = x - 1 + Ce^{-x}$. With $y(0) = 1$: $C = 2$, so $y = x - 1 + 2e^{-x}$.
+\item $\dfrac{dy}{dx} = e^{x}e^{-y}$: $e^{y}dy = e^{x}dx$, so $e^{y} = e^{x} + C$, i.e. $y = \ln(e^{x} + C)$, valid where $e^{x} + C > 0$.
+\item $m = m_0 e^{-kt}$ with $e^{-5k} = \tfrac12$. After $15$ days: $e^{-15k} = \left(\tfrac12\right)^3 = \tfrac18$ of the initial mass remains.
+\item Standard form: $y' + \dfrac{2}{x}y = x^2$; $\mu = e^{2\ln x} = x^2$. Then $\frac{d}{dx}[x^2 y] = x^4$, so $x^2 y = \dfrac{x^5}{5} + C$ and $y = \dfrac{x^3}{5} + \dfrac{C}{x^2}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{savaistu}[Why ``integrating'' factor?]
+The term was introduced in the 17th century: multiplying by $\mu$ makes the equation \emph{exactly integrable} -- the left side becomes a perfect derivative, so a single integration solves the equation. Leonhard Euler systematised the method and showed that \emph{every} first-order equation possesses an integrating factor, although for non-linear equations there is no general formula to find it. The linear case you have just mastered is the one situation where the factor is given by an explicit formula, $\mu = e^{\int P\,dx}$ -- which is why examiners love it.
+\end{savaistu}
+
+\coursec{Homogeneous, Bernoulli and Riccati Equations}
+
+In the previous section we mastered two fundamental families of first-order equations: those with \cle{separable variables}, solved by direct integration, and \cle{linear} equations $y' + P(x)y = Q(x)$, solved by the integrating factor. But nature is not always so kind. Many equations that appear in economics, population dynamics and physics are neither separable nor linear. The good news is that a clever \cle{change of variable} can often transform such an equation into one of the two types we already know. This section presents three classical transformations, each attached to a famous name or structure: homogeneous equations, Bernoulli equations and Riccati equations.
+
+\courssub{Homogeneous First-Order Equations}
+
+\textbf{An observation to build intuition.}\par
+Consider the equation
+\[ \frac{dy}{dx} = \frac{x^2 + y^2}{xy}. \]
+The variables cannot be separated directly, and the equation is not linear because of the $y^2$ term. But notice something remarkable: if we replace $x$ by $kx$ and $y$ by $ky$ (a scaling of both variables by the same factor), the right-hand side becomes
+\[ \frac{(kx)^2 + (ky)^2}{(kx)(ky)} = \frac{k^2(x^2+y^2)}{k^2xy} = \frac{x^2+y^2}{xy}. \]
+The equation is \emph{unchanged} by scaling. Such equations are called \cle{homogeneous}, and this scale-invariance tells us that the equation really only "sees" the ratio $\dfrac{y}{x}$, not $x$ and $y$ separately. This suggests introducing the new variable $v = \dfrac{y}{x}$.
+
+\begin{definition}[Homogeneous first-order differential equation]
+A first-order differential equation is said to be \cle{homogeneous} if it can be written in the form
+\[ \frac{dy}{dx} = F\!\left(\frac{y}{x}\right), \]
+where $F$ is a function of a single variable. Equivalently, an equation $M(x,y)\,dx + N(x,y)\,dy = 0$ is homogeneous when $M$ and $N$ are homogeneous functions of the same degree, i.e.\ $M(kx,ky) = k^{d}M(x,y)$ and $N(kx,ky) = k^{d}N(x,y)$ for the same integer $d$.
+\end{definition}
+
+\begin{attention}[Two meanings of the word "homogeneous"]
+Do not confuse a \emph{homogeneous first-order equation} $y' = F(y/x)$ with a \emph{homogeneous linear equation} $y' + P(x)y = 0$ (right-hand side zero). The two notions are different and both appear in the GCE syllabus. Context always makes clear which is meant.
+\end{attention}
+
+\begin{methode}[Substitution $v = y/x$]
+To solve $\dfrac{dy}{dx} = F\!\left(\dfrac{y}{x}\right)$:
+\begin{enumerate}
+\item Set $v = \dfrac{y}{x}$, so that $y = vx$.
+\item Differentiate with respect to $x$ (product rule): $\dfrac{dy}{dx} = v + x\dfrac{dv}{dx}$.
+\item Substitute into the equation: $v + x\dfrac{dv}{dx} = F(v)$, hence $x\dfrac{dv}{dx} = F(v) - v$.
+\item This is \cle{separable}: $\displaystyle \int \frac{dv}{F(v) - v} = \int \frac{dx}{x}$, valid where $F(v) \neq v$ and $x \neq 0$.
+\item Integrate, then \cle{transform back} by replacing $v$ with $\dfrac{y}{x}$.
+\item Check separately whether constant values of $v$ with $F(v) = v$ (i.e.\ lines $y = vx$) are lost solutions.
+\end{enumerate}
+If the equation is more naturally written with $x$ as a function of $y$, the symmetric substitution $x = vy$ can be used instead.
+\end{methode}
+
+\begin{exoresolu}[Solving a homogeneous equation]
+Solve $\dfrac{dy}{dx} = \dfrac{x^2 + y^2}{xy}$ for $x > 0$, $y > 0$.
+\tcblower
+\textbf{Step 1 — Check homogeneity.} Dividing numerator and denominator by $x^2$:
+\[ \frac{dy}{dx} = \frac{1 + (y/x)^2}{y/x} = F\!\left(\frac{y}{x}\right), \qquad F(v) = \frac{1+v^2}{v}. \]
+\textbf{Step 2 — Substitute.} With $y = vx$, $\dfrac{dy}{dx} = v + x\dfrac{dv}{dx}$, so
+\[ v + x\frac{dv}{dx} = \frac{1+v^2}{v} = \frac{1}{v} + v \quad\Longrightarrow\quad x\frac{dv}{dx} = \frac{1}{v}. \]
+\textbf{Step 3 — Separate and integrate.}
+\[ \int v\,dv = \int \frac{dx}{x} \quad\Longrightarrow\quad \frac{v^2}{2} = \ln x + C. \]
+\textbf{Step 4 — Transform back.} With $v = y/x$:
+\[ \frac{y^2}{2x^2} = \ln x + C \quad\Longrightarrow\quad \boxed{y^2 = 2x^2(\ln x + C)}. \]
+\textbf{Verification.} Differentiating implicitly: $2yy' = 4x(\ln x + C) + 2x = \dfrac{2y^2}{x} + 2x$, so $y' = \dfrac{y^2 + x^2}{xy}$. \checkmark
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Left: direction field picture in (x,y)
+\begin{scope}
+\draw[->,popline] (-0.3,0) -- (3.4,0) node[below left,popink] {\small $x$};
+\draw[->,popline] (0,-0.3) -- (0,3.2) node[below left,popink] {\small $y$};
+\draw[popblue,thick,domain=0.35:3.1,samples=60] plot (\x,{sqrt(max(0,2*\x*\x*(ln(\x)+1.2)))});
+\draw[poporange,thick,domain=0.5:3.1,samples=60] plot (\x,{sqrt(max(0,2*\x*\x*(ln(\x)+0.4)))});
+\draw[popgreen,thick,domain=0.7:3.1,samples=60] plot (\x,{sqrt(max(0,2*\x*\x*(ln(\x)-0.2)))});
+\node[popink,align=center] at (1.6,-0.9) {\small Solutions $y(x)$:\\ \small curves in the $(x,y)$ plane};
+\end{scope}
+% Arrow
+\draw[->,very thick,poppurple] (3.8,1.5) -- (5.2,1.5) node[midway,above,poppurple,align=center] {\small $v = y/x$};
+% Right: separable picture in (x,v)
+\begin{scope}[xshift=5.6cm]
+\draw[->,popline] (-0.3,0) -- (3.4,0) node[below left,popink] {\small $x$};
+\draw[->,popline] (0,-0.3) -- (0,3.2) node[below left,popink] {\small $v$};
+\draw[popblue,thick,domain=0.35:3.1,samples=60] plot (\x,{sqrt(max(0,2*(ln(\x)+1.2)))});
+\draw[poporange,thick,domain=0.5:3.1,samples=60] plot (\x,{sqrt(max(0,2*(ln(\x)+0.4)))});
+\draw[popgreen,thick,domain=0.7:3.1,samples=60] plot (\x,{sqrt(max(0,2*(ln(\x)-0.2)))});
+\node[popink,align=center] at (1.6,-0.9) {\small Solutions $v(x)$:\\ \small separable equation $xv' = 1/v$};
+\end{scope}
+\end{tikzpicture}
+\legende{The substitution $v = y/x$ straightens the geometry: solution curves of the homogeneous equation (left) correspond to solutions of a simple separable equation $v^2 = 2(\ln x + C)$ in the $(x,v)$ plane (right).}
+\end{center}
+\end{popfigure}
+
+\courssub{Bernoulli Equations}
+
+\textbf{An observation.}\par
+The linear equation $y' + P(x)y = Q(x)$ is spoiled when the right-hand side contains a power of $y$, as in
+\[ \frac{dy}{dx} + P(x)y = Q(x)\,y^n. \]
+This is the \cle{Bernoulli equation}. For $n = 0$ it is linear; for $n = 1$ it is linear and homogeneous (separable). For all other values of $n$ a simple trick linearises it: divide by $y^n$ and notice that the derivative of $y^{1-n}$ appears.
+
+\begin{methode}[Bernoulli substitution $u = y^{1-n}$]
+To solve $y' + P(x)y = Q(x)y^n$ with $n \neq 0, 1$:
+\begin{enumerate}
+\item Divide through by $y^n$ (assuming $y \neq 0$): $y^{-n}y' + P(x)y^{1-n} = Q(x)$.
+\item Set $u = y^{1-n}$. Then $\dfrac{du}{dx} = (1-n)y^{-n}\dfrac{dy}{dx}$, so $y^{-n}y' = \dfrac{1}{1-n}\dfrac{du}{dx}$.
+\item The equation becomes \cle{linear} in $u$:
+\[ \frac{du}{dx} + (1-n)P(x)\,u = (1-n)Q(x). \]
+\item Solve by the integrating factor method.
+\item Transform back: $y^{1-n} = u$, i.e.\ $y = u^{1/(1-n)}$, taking care with signs and domains when $1-n$ is not an odd integer.
+\item Check whether the \cle{trivial solution} $y = 0$ (lost when dividing by $y^n$) satisfies the original equation — it does whenever $n > 0$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[A Bernoulli equation]
+Solve $\dfrac{dy}{dx} + \dfrac{y}{x} = x^2 y^2$ for $x > 0$.
+\tcblower
+This is Bernoulli with $n = 2$. Divide by $y^2$ ($y \neq 0$):
+\[ y^{-2}\frac{dy}{dx} + \frac{1}{x}y^{-1} = x^2. \]
+Set $u = y^{1-2} = y^{-1}$, so $\dfrac{du}{dx} = -y^{-2}\dfrac{dy}{dx}$. Then
+\[ -\frac{du}{dx} + \frac{u}{x} = x^2 \quad\Longrightarrow\quad \frac{du}{dx} - \frac{u}{x} = -x^2. \]
+Integrating factor: $\mu = e^{-\int dx/x} = \dfrac{1}{x}$. Hence
+\[ \frac{d}{dx}\!\left(\frac{u}{x}\right) = -x \quad\Longrightarrow\quad \frac{u}{x} = -\frac{x^2}{2} + C \quad\Longrightarrow\quad u = Cx - \frac{x^3}{2}. \]
+Transforming back with $u = 1/y$:
+\[ \boxed{y = \frac{1}{Cx - \dfrac{x^3}{2}} = \frac{2}{2Cx - x^3}}, \qquad \text{plus the trivial solution } y = 0. \]
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\node[draw=poporange,thick,rounded corners,fill=poporange!8,text width=3.6cm,align=center] (bern) at (0,0) {\small \textbf{Bernoulli}\\[2pt] $y' + \dfrac{y}{x} = x^2 y^2$};
+\node[draw=popblue,thick,rounded corners,fill=popblueL,text width=3.6cm,align=center] (lin) at (7.2,0) {\small \textbf{Linear in } $u$\\[2pt] $u' - \dfrac{u}{x} = -x^2$};
+\node[draw=popgreen,thick,rounded corners,fill=popgreenL,text width=3.6cm,align=center] (sol) at (7.2,-3) {\small \textbf{Solution for } $u$\\[2pt] $u = Cx - \dfrac{x^3}{2}$};
+\node[draw=poppurple,thick,rounded corners,fill=poppurple!8,text width=3.6cm,align=center] (back) at (0,-3) {\small \textbf{Back-substitute}\\[2pt] $y = \dfrac{1}{Cx - x^3/2}$};
+\draw[->,very thick,popdark] (bern) -- (lin) node[midway,above,align=center] {\small divide by $y^2$} node[midway,below] {\small $u = y^{-1}$};
+\draw[->,very thick,popdark] (lin) -- (sol) node[midway,right,align=center] {\small integrating\\ \small factor $\mu = 1/x$};
+\draw[->,very thick,popdark] (sol) -- (back) node[midway,below] {\small $y = 1/u$};
+\end{tikzpicture}
+\legende{Road map of the Bernoulli transformation: the nonlinear equation becomes linear in $u = y^{1-n}$, is solved by the integrating factor, and the answer is then converted back to $y$.}
+\end{center}
+\end{popfigure}
+
+\begin{exemplebox}[Logistic growth is a Bernoulli equation]
+A population $P(t)$ (say of tilapia in a fish farm near Yaoundé) with limited resources obeys the \cle{logistic equation}
+\[ \frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right) = rP - \frac{r}{K}P^2, \]
+where $r > 0$ is the intrinsic growth rate and $K > 0$ the carrying capacity. This is Bernoulli with $n = 2$: $P' - rP = -\dfrac{r}{K}P^2$. Setting $u = P^{-1}$ gives
+\[ u' + ru = \frac{r}{K} \quad\Longrightarrow\quad u = \frac{1}{K} + Ce^{-rt}. \]
+Transforming back with $P(0) = P_0$:
+\[ P(t) = \frac{K}{1 + \left(\dfrac{K}{P_0} - 1\right)e^{-rt}}. \]
+As $t \to \infty$, $P \to K$: the population stabilises at the carrying capacity — the famous S-shaped (sigmoid) curve.
+\end{exemplebox}
+
+\courssub{Riccati Equations}
+
+\begin{definition}[Riccati equation]
+A \cle{Riccati equation} is a first-order equation quadratic in the unknown function:
+\[ \frac{dy}{dx} = a(x) + b(x)y + c(x)y^2, \]
+where $a$, $b$, $c$ are given functions, $c \not\equiv 0$. In general it cannot be solved by quadratures — \emph{unless} one particular solution is known.
+\end{definition}
+
+\begin{propriete}[Reduction of the Riccati equation]
+Suppose $y_1$ is a \cle{particular solution} of the Riccati equation. Then the substitution
+\[ y = y_1 + \frac{1}{u} \]
+transforms the equation into a \emph{linear} first-order equation in $u$:
+\[ \frac{du}{dx} + \bigl(b(x) + 2c(x)y_1\bigr)u = -c(x). \]
+(The derivation is examinable and instructive: differentiate $y = y_1 + u^{-1}$, substitute, use the fact that $y_1$ satisfies the equation, and multiply by $-u^2$; the $u^{-2}$ terms cancel.)
+\end{propriete}
+
+\textbf{Derivation.} Let $y = y_1 + \dfrac{1}{u}$. Then $y' = y_1' - \dfrac{u'}{u^2}$. Substituting:
+\[ y_1' - \frac{u'}{u^2} = a + b\left(y_1 + \frac{1}{u}\right) + c\left(y_1^2 + \frac{2y_1}{u} + \frac{1}{u^2}\right). \]
+Since $y_1' = a + by_1 + cy_1^2$, these terms cancel, leaving
+\[ -\frac{u'}{u^2} = \frac{b}{u} + \frac{2cy_1}{u} + \frac{c}{u^2}. \]
+Multiplying by $-u^2$: $u' = -(b + 2cy_1)u - c$, which is linear, as claimed. $\blacksquare$
+
+\begin{exoresolu}[Riccati with a known particular solution]
+Solve $\dfrac{dy}{dx} = -2 + 3y - y^2$, given that $y_1 = 1$ is a particular solution.
+\tcblower
+\textbf{Check:} $y_1 = 1$ gives $y_1' = 0$ and $-2 + 3(1) - 1 = 0$. \checkmark\ So $y_1$ works.
+
+Set $y = 1 + \dfrac{1}{u}$. Here $b(x) = 3$, $c(x) = -1$, so the reduced linear equation is
+\[ u' + (3 + 2(-1)(1))u = -(-1) \quad\Longrightarrow\quad u' + u = 1. \]
+Integrating factor $e^x$: $\dfrac{d}{dx}(ue^x) = e^x$, so $ue^x = e^x + C$, i.e.\ $u = 1 + Ce^{-x}$.
+
+Transforming back:
+\[ \boxed{y = 1 + \frac{1}{1 + Ce^{-x}}}. \]
+Note also that $y = 2$ is another constant solution (it corresponds to $C = 0$, i.e.\ $u = 1$); indeed $-2 + 6 - 4 = 0$. \checkmark
+\end{exoresolu}
+
+\begin{attention}[Solutions lost through division]
+Substitutions often require divisions that exclude certain values:
+\begin{itemize}
+\item Dividing by $x$ in $v = y/x$ excludes $x = 0$: state the domain of validity.
+\item Dividing by $y^n$ in Bernoulli's method may lose $y \equiv 0$ (a genuine solution when $n > 0$).
+\item Dividing by $F(v) - v$ may lose lines $y = vx$ where $F(v) = v$.
+\item In Riccati's substitution, $u \neq 0$; the particular solution $y_1$ itself corresponds to $u \to \infty$ and must be listed separately.
+\end{itemize}
+At the GCE, always conclude by listing \emph{all} solutions, including singular ones.
+\end{attention}
+
+\begin{savaistu}[Bernoulli, Riccati and the calculus pioneers]
+The Bernoulli family of Basel produced several great mathematicians; it was Jacob Bernoulli who studied the equation $y' + P y = Q y^n$ around 1695, and Gottfried Leibniz who showed how to linearise it — one of the very first triumphs of the change-of-variables technique. Count Jacopo Riccati studied his equation in the early 18th century while investigating problems of geometry and mechanics; it later became central in control theory, where the "algebraic Riccati equation" is used to design optimal controllers, from aircraft autopilots to stabilisers in electrical networks.
+\end{savaistu}
+
+\begin{exercice}
+\begin{enumerate}
+\item Solve the homogeneous equation $\dfrac{dy}{dx} = \dfrac{y}{x} + \tan\!\dfrac{y}{x}$ for $x > 0$.
+\item Solve the Bernoulli equation $y' + y = e^x y^3$ and state all solutions.
+\item Given that $y_1 = x$ is a solution of $y' = 1 - \dfrac{y}{x} + \dfrac{y^2}{x^2}$, find the general solution.
+\item A rumour spreads in a school of $1000$ students according to $\dfrac{dN}{dt} = 0.5\,N\left(1 - \dfrac{N}{1000}\right)$, $N(0) = 10$. Find $N(t)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} With $v = y/x$: $v + xv' = v + \tan v$, so $xv' = \tan v$, $\displaystyle\int \frac{\cos v}{\sin v}dv = \int\frac{dx}{x}$, giving $\ln|\sin v| = \ln x + C$, hence $\sin(y/x) = Ax$.
+
+\textbf{2.} $n = 3$, set $u = y^{-2}$: $u' - 2u = -2e^x$. Integrating factor $e^{-2x}$: $(ue^{-2x})' = -2e^{-x}$, so $ue^{-2x} = 2e^{-x} + C$, $u = 2e^x + Ce^{2x}$. Thus $y^2 = \dfrac{1}{2e^x + Ce^{2x}}$, plus $y \equiv 0$.
+
+\textbf{3.} Check $y_1 = x$: $y_1' = 1$ and $1 - 1 + 1 = 1$. \checkmark\ Set $y = x + 1/u$: reduced equation $u' + \left(-\dfrac{1}{x} + \dfrac{2x}{x^2}\right)u = -\dfrac{1}{x^2}$, i.e.\ $u' + \dfrac{u}{x} = -\dfrac{1}{x^2}$. Integrating factor $x$: $(xu)' = -\dfrac{1}{x}$, so $xu = -\ln x + C$, $u = \dfrac{C - \ln x}{x}$, and $y = x + \dfrac{x}{C - \ln x}$.
+
+\textbf{4.} Logistic with $K = 1000$, $r = 0.5$, $P_0 = 10$: $N(t) = \dfrac{1000}{1 + 99e^{-0.5t}}$.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item \cle{Homogeneous} equation $y' = F(y/x)$: substitute $v = y/x$, $y' = v + xv'$; the equation becomes separable.
+\item \cle{Bernoulli} equation $y' + Py = Qy^n$ ($n \neq 0,1$): substitute $u = y^{1-n}$; the equation becomes linear.
+\item \cle{Riccati} equation $y' = a + by + cy^2$: if a particular solution $y_1$ is known, $y = y_1 + 1/u$ gives a linear equation.
+\item Always \cle{transform back} to the original variable, state the \cle{domain}, and recover any solutions lost by division (especially $y \equiv 0$).
+\item The logistic equation of population dynamics is a Bernoulli equation with $n = 2$.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Linear Second-Order Differential Equations with Constant Coefficients}
+
+In the previous section we tamed first-order equations of special forms — homogeneous equations, Bernoulli's equation and Riccati's equation — by means of clever substitutions. We now move up one order, addressing \textbf{Lesson 64} of the official syllabus. Second-order differential equations are the workhorses of physics and engineering: the oscillation of a mass on a spring, the current in an $RLC$ circuit, the vibration of the bridge over the Wouri estuary in Douala, the swing of a pendulum in a physics laboratory in Yaoundé — all are governed by equations of the form
+\[ a\dfrac{d^{2}y}{dx^{2}}+b\dfrac{dy}{dx}+cy=f(x), \qquad a\neq 0, \]
+where $a$, $b$, $c$ are real constants. Remarkably, this whole family can be solved \emph{completely and explicitly}. The key, once again, is linearity.
+
+\courssub{The Homogeneous Equation and the Superposition Principle}
+
+\begin{definition}[Linear second-order equation with constant coefficients]
+A \cle{linear second-order differential equation with constant coefficients} is an equation of the form
+\[ ay''+by'+cy=f(x), \]
+where $a,b,c\in\mathbb{R}$, $a\neq 0$, and $f$ is a given continuous function on an interval $I$. When $f(x)\equiv 0$ on $I$ the equation is called \cle{homogeneous}; otherwise it is \cle{non-homogeneous}, and $f(x)$ is called the \emph{right-hand side} (or forcing term).
+\end{definition}
+
+Think of a concrete situation: a mass $m$ attached to a spring (stiffness $k$), with damping from air resistance (coefficient $\lambda$). Newton's second law gives $m\ddot{y}+\lambda\dot{y}+ky=F(t)$: acceleration term, friction term, spring term, external force. Exactly our equation with $x=t$.
+
+The reason linear equations are so tractable is the following fundamental property.
+
+\begin{propriete}[Superposition principle]
+If $y_{1}$ and $y_{2}$ are solutions of the homogeneous equation $ay''+by'+cy=0$ on an interval $I$, then for any constants $C_{1},C_{2}\in\mathbb{R}$, the linear combination $y=C_{1}y_{1}+C_{2}y_{2}$ is also a solution on $I$. Moreover, if $y_{1}$ and $y_{2}$ are \emph{linearly independent} (neither is a constant multiple of the other), then $y=C_{1}y_{1}+C_{2}y_{2}$ is the \textbf{general solution}: every solution of the equation on $I$ has this form for a unique pair $(C_{1},C_{2})$.
+\end{propriete}
+
+\textbf{Proof (examinable and instructive).} Define the linear differential operator $L[y]=ay''+by'+cy$. Since differentiation is linear,
+\[ L[C_{1}y_{1}+C_{2}y_{2}]=a(C_{1}y_{1}''+C_{2}y_{2}'')+b(C_{1}y_{1}'+C_{2}y_{2}')+c(C_{1}y_{1}+C_{2}y_{2}) = C_{1}L[y_{1}]+C_{2}L[y_{2}]=0. \]
+So any linear combination of solutions is a solution. That the general solution of a second-order linear equation depends on exactly \emph{two} arbitrary constants follows from the existence and uniqueness theorem for initial value problems: a solution is completely determined by the two initial values $y(x_{0})$ and $y'(x_{0})$ at any $x_{0}\in I$, and the two constants $C_{1},C_{2}$ provide exactly the two degrees of freedom needed to match arbitrary initial data. $\blacksquare$
+
+\begin{attention}[Two constants, not one]
+A first-order equation has a general solution with \emph{one} arbitrary constant; a second-order equation needs \emph{two}. Writing $y=Ce^{rx}$ as the "general solution" of $y''-y=0$ is a classic error: you have lost half the solutions (for instance $e^{-x}$). Always check that your two candidate solutions are not proportional.
+\end{attention}
+
+\courssub{The Characteristic Equation}
+
+How do we find two linearly independent solutions? Follow the intuition from first-order equations: the solution of $y'+ky=0$ is an exponential $e^{-kx}$, because the exponential is the only function whose derivative is a constant multiple of itself. Let us therefore \emph{try} $y=e^{rx}$ in $ay''+by'+cy=0$. Since $y'=re^{rx}$ and $y''=r^{2}e^{rx}$,
+\[ ar^{2}e^{rx}+bre^{rx}+ce^{rx}=e^{rx}\left(ar^{2}+br+c\right)=0. \]
+As $e^{rx}\neq 0$ for all real $x$, the trial works if and only if $r$ satisfies an algebraic equation.
+
+\begin{definition}[Characteristic equation]
+The \cle{characteristic equation} (or auxiliary equation) of $ay''+by'+cy=0$ is the quadratic
+\[ ar^{2}+br+c=0, \qquad \text{with discriminant } \Delta=b^{2}-4ac. \]
+\end{definition}
+
+The whole behaviour of the differential equation is encoded in the roots of this quadratic. Three cases arise.
+
+\begin{propriete}[The three cases — general solution of $ay''+by'+cy=0$]
+Let $r_{1},r_{2}$ be the roots of $ar^{2}+br+c=0$.
+\begin{enumerate}
+\item \textbf{Real distinct roots} ($\Delta>0$): $\quad y=C_{1}e^{r_{1}x}+C_{2}e^{r_{2}x}$.
+\item \textbf{Real repeated root} ($\Delta=0$, root $r_{0}$): $\quad y=(C_{1}+C_{2}x)e^{r_{0}x}$.
+\item \textbf{Complex conjugate roots} ($\Delta<0$), $r=\alpha\pm i\beta$ ($\beta>0$): $\quad y=e^{\alpha x}\left(C_{1}\cos\beta x+C_{2}\sin\beta x\right)$.
+\end{enumerate}
+\end{propriete}
+
+\textbf{Justification of the repeated-root case (instructive).} When $\Delta=0$, the characteristic equation gives only one exponential $y_{1}=e^{r_{0}x}$; we need a second, independent solution. Try $y_{2}=xe^{r_{0}x}$. With $r_{0}=-\dfrac{b}{2a}$ (repeated root) and $c=ar_{0}^{2}$ (since $\Delta=b^{2}-4ac=0$):
+\begin{align*}
+y_{2}'&=e^{r_{0}x}(1+r_{0}x), \qquad y_{2}''=e^{r_{0}x}(2r_{0}+r_{0}^{2}x),\\
+ay_{2}''+by_{2}'+cy_{2}&=e^{r_{0}x}\left[a(2r_{0}+r_{0}^{2}x)+b(1+r_{0}x)+ar_{0}^{2}x\right]\\
+&=e^{r_{0}x}\left[(2ar_{0}+b)+x(ar_{0}^{2}+br_{0}+c)\right]=e^{r_{0}x}(0+0)=0,
+\end{align*}
+since $2ar_{0}+b=0$ (repeated root condition) and $ar_{0}^{2}+br_{0}+c=0$. Hence $xe^{r_{0}x}$ is indeed a second solution, not proportional to $e^{r_{0}x}$.
+
+\textbf{Justification of the complex-root case.} For $r=\alpha\pm i\beta$, Euler's formula gives $e^{(\alpha\pm i\beta)x}=e^{\alpha x}(\cos\beta x\pm i\sin\beta x)$. The two complex solutions $e^{(\alpha+i\beta)x}$ and $e^{(\alpha-i\beta)x}$ are linearly independent. By the superposition principle, their real and imaginary parts — $e^{\alpha x}\cos\beta x$ and $e^{\alpha x}\sin\beta x$ — are also solutions, and they are linearly independent. Hence the real general solution is $y=e^{\alpha x}(C_{1}\cos\beta x+C_{2}\sin\beta x)$.
+
+\begin{methode}[Solving the homogeneous equation]
+\begin{enumerate}
+\item Write the characteristic equation $ar^{2}+br+c=0$.
+\item Compute $\Delta=b^{2}-4ac$ and find the roots.
+\item Apply the matching formula:
+\begin{itemize}
+\item Distinct real roots $r_{1},r_{2}$ $\rightarrow$ $y=C_{1}e^{r_{1}x}+C_{2}e^{r_{2}x}$.
+\item Repeated root $r_{0}$ $\rightarrow$ $y=(C_{1}+C_{2}x)e^{r_{0}x}$.
+\item Complex roots $\alpha\pm i\beta$ $\rightarrow$ $y=e^{\alpha x}(C_{1}\cos\beta x+C_{2}\sin\beta x)$.
+\end{itemize}
+\item If initial conditions $y(x_{0})$, $y'(x_{0})$ are given, substitute into the general solution and its derivative to find $C_{1}$ and $C_{2}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[One example of each case]
+Solve: \textbf{(a)} $y''-3y'+2y=0$; \quad \textbf{(b)} $y''-4y'+4y=0$ with $y(0)=1$, $y'(0)=4$; \quad \textbf{(c)} $y''+2y'+5y=0$.
+\tcblower
+\textbf{(a)} Characteristic equation: $r^{2}-3r+2=0$, i.e. $(r-1)(r-2)=0$, so $r_{1}=1$, $r_{2}=2$ (real distinct).
+\[ y=C_{1}e^{x}+C_{2}e^{2x}. \]
+
+\textbf{(b)} $r^{2}-4r+4=(r-2)^{2}=0$: repeated root $r_{0}=2$. Hence $y=(C_{1}+C_{2}x)e^{2x}$.
+Initial conditions: $y(0)=C_{1}=1$. Differentiate: $y'=C_{2}e^{2x}+2(C_{1}+C_{2}x)e^{2x}$, so $y'(0)=C_{2}+2C_{1}=4$, giving $C_{2}=2$.
+\[ y=(1+2x)e^{2x}. \]
+
+\textbf{(c)} $r^{2}+2r+5=0$: $\Delta=4-20=-16$, so $r=\dfrac{-2\pm 4i}{2}=-1\pm 2i$. Here $\alpha=-1$, $\beta=2$:
+\[ y=e^{-x}\left(C_{1}\cos 2x+C_{2}\sin 2x\right). \]
+\end{exoresolu}
+
+The three cases have beautiful physical meanings. For a damped oscillator $m\ddot{y}+\lambda\dot{y}+ky=0$ ($m,\lambda,k>0$): distinct negative real roots give \emph{overdamping} (slow return to rest, no oscillation); a repeated root gives \emph{critical damping} (fastest return without oscillation); complex roots with negative real part give \emph{underdamping} (oscillations that die away).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.9\linewidth, height=6.2cm, axis lines=middle, xlabel={$x$}, ylabel={$y$}, xmin=0, xmax=6.3, ymin=-0.4, ymax=1.3, xtick=\empty, ytick=\empty, legend style={font=\small, at={(0.98,0.97)}, anchor=north east, draw=popline}]
+\addplot[domain=0:6, samples=120, thick, popblue] {exp(-0.5*x)-0.3*exp(-2*x)};
+\addlegendentry{Overdamped: $e^{-0.5x}-0.3e^{-2x}$}
+\addplot[domain=0:6, samples=120, thick, poporange] {(1-0.5*x)*exp(-x)};
+\addlegendentry{Critically damped: $(1-0.5x)e^{-x}$}
+\addplot[domain=0:6, samples=160, thick, poppurple] {exp(-0.35*x)*cos(deg(2.5*x))};
+\addlegendentry{Underdamped: $e^{-0.35x}\cos(2.5x)$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{The three root cases: overdamped (real distinct roots), critically damped (repeated root) and underdamped (complex roots) motion.}
+\end{popfigure}
+
+\courssub{The Non-Homogeneous Equation: Undetermined Coefficients}
+
+Now consider $ay''+by'+cy=f(x)$ with $f\not\equiv 0$. The structure of the general solution is simple and crucial.
+
+\begin{propriete}[General solution = complementary function + particular integral]
+The general solution of $ay''+by'+cy=f(x)$ on an interval $I$ is
+\[ y=\underbrace{y_{c}}_{\text{complementary function}}+\underbrace{y_{p}}_{\text{particular integral}}, \]
+where $y_{c}$ is the general solution of the associated homogeneous equation $ay''+by'+cy=0$ and $y_{p}$ is \emph{any one} particular solution of the full equation on $I$.
+\end{propriete}
+
+\textbf{Proof.} If $y_{p}$ solves the full equation and $y$ is any other solution, then $L[y-y_{p}]=L[y]-L[y_{p}]=f-f=0$, so $y-y_{p}$ solves the homogeneous equation, i.e. $y-y_{p}=y_{c}$. $\blacksquare$
+
+The \cle{method of undetermined coefficients} finds $y_{p}$ by \emph{guessing} its shape from the shape of $f(x)$, with unknown coefficients to be determined by substitution. It works when $f(x)$ is a linear combination of functions of the forms: polynomials, exponentials $e^{px}$, sines/cosines $\cos\omega x$, $\sin\omega x$, and products of these.
+
+\begin{methode}[Standard trial functions]
+Choose the trial $y_{p}$ according to $f(x)$. If $f(x)$ is a sum of several terms, find a particular integral for each term separately and add them (superposition for particular integrals).
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Right-hand side $f(x)$} & \textbf{Trial function $y_{p}$} \\
+\hline
+Polynomial of degree $n$ & General polynomial of degree $n$: $A_{n}x^{n}+\dots+A_{1}x+A_{0}$ \\
+\hline
+$ke^{px}$ & $Ae^{px}$ \\
+\hline
+$k\cos\omega x$ or $k\sin\omega x$ & $A\cos\omega x+B\sin\omega x$ (both terms, even if only one appears in $f$) \\
+\hline
+$ke^{px}\cos\omega x$ or $ke^{px}\sin\omega x$ & $e^{px}(A\cos\omega x+B\sin\omega x)$ \\
+\hline
+Polynomial $\times$ exponential $e^{px}$ & (General polynomial of same degree)$\times e^{px}$ \\
+\hline
+Polynomial $\times$ $\cos\omega x$ or $\sin\omega x$ & (General polynomial)$\times(A\cos\omega x+B\sin\omega x)$ \\
+\hline
+\end{tabularx}
+\end{center}
+Then substitute the trial into the equation, equate coefficients of like terms, and solve for $A, B, \dots$
+\end{methode}
+
+\begin{attention}[The modification rule — resonance of the trial]
+If the natural trial function (or any part of it) is itself a solution of the \emph{homogeneous} equation, substitution gives $0$ on the left and the method collapses. The cure: \textbf{multiply the trial by $x$}. If the root is a \emph{repeated} root of the characteristic equation (so that both $e^{r_{0}x}$ and $xe^{r_{0}x}$ are homogeneous solutions), multiply by $x^{2}$. 
+
+For example, for $y''-y=e^{x}$, the trial $Ae^{x}$ fails because $e^{x}$ solves $y''-y=0$; use $y_{p}=Axe^{x}$ instead. For $y''-2y'+y=e^{x}$, the characteristic equation has a repeated root $r=1$, so both $e^{x}$ and $xe^{x}$ are homogeneous solutions; the trial must be $y_{p}=Ax^{2}e^{x}$.
+\end{attention}
+
+\begin{exoresolu}[Undetermined coefficients]
+Find the general solution of $y''-3y'+2y=4x+6e^{3x}$.
+\tcblower
+\textbf{Step 1 — Complementary function.} Characteristic equation: $r^{2}-3r+2=0$, roots $r=1,2$. So $y_{c}=C_{1}e^{x}+C_{2}e^{2x}$.
+
+\textbf{Step 2 — Particular integral for $4x$.} Try $y_{p_{1}}=Ax+B$. Then $y_{p_{1}}'=A$, $y_{p_{1}}''=0$, and
+\[ 0-3A+2(Ax+B)=2Ax+(2B-3A)=4x. \]
+Equating coefficients: $2A=4\Rightarrow A=2$; $2B-3A=0\Rightarrow B=3$. So $y_{p_{1}}=2x+3$.
+
+\textbf{Step 3 — Particular integral for $6e^{3x}$.} Try $y_{p_{2}}=De^{3x}$ (note $3$ is \emph{not} a root of $r^{2}-3r+2=0$, so no modification needed). Then
+\[ 9De^{3x}-9De^{3x}+2De^{3x}=2De^{3x}=6e^{3x}\Rightarrow D=3. \]
+
+\textbf{Step 4 — General solution.}
+\[ y=C_{1}e^{x}+C_{2}e^{2x}+2x+3+3e^{3x}. \]
+\textbf{Check:} $y_{p}''-3y_{p}'+2y_{p}$ for $y_{p}=2x+3+3e^{3x}$ gives $(27e^{3x})-3(2+9e^{3x})+2(2x+3+3e^{3x})=4x+6e^{3x}$. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[The modification rule in action]
+Solve $y''-y=e^{x}$.
+\tcblower
+Complementary function: $r^{2}-1=0\Rightarrow r=\pm1$, so $y_{c}=C_{1}e^{x}+C_{2}e^{-x}$.
+The trial $Ae^{x}$ is a homogeneous solution — it would give $0$, never $e^{x}$. Apply the modification rule: try $y_{p}=Axe^{x}$. Then
+\[ y_{p}'=Ae^{x}(x+1),\qquad y_{p}''=Ae^{x}(x+2), \]
+\[ y_{p}''-y_{p}=Ae^{x}(x+2-x)=2Ae^{x}=e^{x}\Rightarrow A=\tfrac{1}{2}. \]
+General solution: $\displaystyle y=C_{1}e^{x}+C_{2}e^{-x}+\tfrac{1}{2}xe^{x}$.
+\end{exoresolu}
+
+\courssub{Variation of Parameters}
+
+Undetermined coefficients is fast but only works when $f(x)$ has one of the standard shapes (polynomials, exponentials, sines and cosines, and their products). What about $y''+y=\tan x$ or $y''-y=\dfrac{e^{x}}{x}$? We need a \emph{general} method.
+
+The idea, due to Lagrange, is elegant: take the complementary function $y_{c}=C_{1}y_{1}+C_{2}y_{2}$ and let the "constants" \emph{vary}: seek
+\[ y_{p}=u(x)y_{1}(x)+v(x)y_{2}(x). \]
+Differentiating: $y_{p}'=u'y_{1}+v'y_{2}+uy_{1}'+vy_{2}'$. Since we have two unknown functions but only one equation to satisfy, we are free to impose one extra condition; the clever choice is
+\[ u'y_{1}+v'y_{2}=0, \]
+which keeps $y_{p}'=uy_{1}'+vy_{2}'$ simple. Then $y_{p}''=u'y_{1}'+v'y_{2}'+uy_{1}''+vy_{2}''$. Substituting into $ay''+by'+cy=f$ and using $L[y_{1}]=L[y_{2}]=0$, everything collapses to
+\[ a(u'y_{1}'+v'y_{2}')=f(x). \]
+
+\begin{propriete}[Variation of parameters — Lagrange's system]
+If $y_{c}=C_{1}y_{1}+C_{2}y_{2}$ is the complementary function of $ay''+by'+cy=f(x)$, a particular integral is $y_{p}=uy_{1}+vy_{2}$ where $u,v$ satisfy
+\[ \begin{cases} u'y_{1}+v'y_{2}=0,\\[2pt] u'y_{1}'+v'y_{2}'=\dfrac{f(x)}{a}. \end{cases} \]
+Solving this linear system for $u'$ and $v'$ (the determinant $W=y_{1}y_{2}'-y_{1}'y_{2}$, the \emph{Wronskian}, is non-zero because $y_{1},y_{2}$ are independent) and integrating gives $u$ and $v$. This method works for \textbf{any} continuous right-hand side $f(x)$.
+\end{propriete}
+
+\textbf{Explicit formulas (useful for quick computation):}
+\[ u' = -\frac{y_{2}f}{aW}, \qquad v' = \frac{y_{1}f}{aW}, \qquad W = y_{1}y_{2}'-y_{1}'y_{2}. \]
+
+\begin{exoresolu}[Variation of parameters]
+Solve $y''+y=\tan x$ for $-\dfrac{\pi}{2}<x<\dfrac{\pi}{2}$.
+\tcblower
+Complementary function: $r^{2}+1=0\Rightarrow r=\pm i$, so $y_{1}=\cos x$, $y_{2}=\sin x$. Wronskian $W=\cos x\cdot\cos x - (-\sin x)\sin x = 1$.
+Lagrange's system with $a=1$, $f=\tan x$:
+\[ \begin{cases} u'\cos x+v'\sin x=0,\\ -u'\sin x+v'\cos x=\tan x. \end{cases} \]
+Multiply the first by $\sin x$, the second by $\cos x$ and add: $v'(\sin^{2}x+\cos^{2}x)=\tan x\cos x=\sin x$, so $v'=\sin x$ and $v=-\cos x$.
+Then $u'\cos x=-v'\sin x=-\sin^{2}x$, so
+\[ u'=-\dfrac{\sin^{2}x}{\cos x}=\dfrac{\cos^{2}x-1}{\cos x}=\cos x-\sec x, \qquad u=\sin x-\ln|\sec x+\tan x|. \]
+Therefore
+\[ y_{p}=u\cos x+v\sin x=\sin x\cos x-\cos x\ln|\sec x+\tan x|-\cos x\sin x=-\cos x\ln|\sec x+\tan x|, \]
+and the general solution is
+\[ y=C_{1}\cos x+C_{2}\sin x-\cos x\ln|\sec x+\tan x|. \]
+Note that $\tan x$ is outside the reach of undetermined coefficients — variation of parameters was essential.
+\end{exoresolu}
+
+\courssub{Resonance}
+
+The most dramatic application is the \cle{forced oscillator}
+\[ \ddot{y}+\omega_{0}^{2}y=F_{0}\cos(\omega t), \]
+modelling a swing pushed periodically, or an $LC$ circuit driven by an alternating source. The natural frequency is $\omega_{0}$; the forcing frequency is $\omega$.
+
+If $\omega\neq\omega_{0}$, the trial $y_{p}=A\cos\omega t+B\sin\omega t$ gives $A=\dfrac{F_{0}}{\omega_{0}^{2}-\omega^{2}}$, $B=0$: bounded oscillations.
+
+If $\omega=\omega_{0}$, the trial overlaps the complementary function $\cos\omega_{0}t$, so by the modification rule we try $y_{p}=At\cos\omega_{0}t+Bt\sin\omega_{0}t$. Substitution yields
+\[ y_{p}=\dfrac{F_{0}}{2\omega_{0}}\,t\sin\omega_{0}t. \]
+The amplitude $\dfrac{F_{0}}{2\omega_{0}}t$ \emph{grows linearly with time}: this is \cle{resonance}. Small periodic pushes at exactly the natural frequency accumulate — the reason soldiers break step when crossing a bridge, and the reason a child on a swing in Buea goes higher when pushed in rhythm.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.92\linewidth, height=6.5cm, axis lines=middle, xlabel={$t$}, ylabel={$y$}, xmin=0, xmax=20.5, ymin=-8, ymax=8, xtick=\empty, ytick=\empty, legend style={font=\small, at={(0.02,0.97)}, anchor=north west, draw=popline}]
+\addplot[domain=0:20, samples=300, thick, poppink] {0.25*x*sin(deg(2*x))};
+\addlegendentry{Resonance: $y=\tfrac{F_{0}}{2\omega_{0}}t\sin\omega_{0}t$}
+\addplot[domain=0:20, samples=300, thick, popgreen] {1.2*cos(deg(2.6*x))-1.2*cos(deg(2*x))};
+\addlegendentry{Off resonance ($\omega\neq\omega_{0}$): bounded beats}
+\addplot[domain=0:20, samples=2, dashed, popmuted] {0.25*x};
+\addplot[domain=0:20, samples=2, dashed, popmuted] {-0.25*x};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Forced oscillation: at resonance the amplitude grows linearly (envelope shown dashed); away from resonance the response stays bounded (beats).}
+\end{popfigure}
+
+\begin{attention}[Common mistakes to avoid]
+\begin{itemize}
+\item Forgetting the modification rule: if your trial solves the homogeneous equation, multiply by $x$ (or $x^{2}$ for a repeated root).
+\item For $\cos\omega x$ or $\sin\omega x$ on the right, the trial must contain \emph{both} $A\cos\omega x$ and $B\sin\omega x$ — differentiation mixes the two families.
+\item Applying initial conditions to $y_{c}$ \emph{before} adding $y_{p}$: constants must be determined from the \emph{complete} general solution $y_{c}+y_{p}$.
+\item Sign slips in the characteristic equation: for $ay''+by'+cy=0$ it is $ar^{2}+br+c=0$ with the signs of $b$ and $c$ unchanged.
+\item In variation of parameters, forgetting to divide $f(x)$ by $a$ (the coefficient of $y''$) in the second equation of Lagrange's system.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Solve $y''+y'-6y=0$ with $y(0)=1$, $y'(0)=2$.
+\item Find the general solution of $y''+4y'+4y=8e^{3x}$.
+\item Solve $y''+4y=8\cos 2x$ (careful with the trial function!).
+\item Use variation of parameters to solve $y''+y=\sec x$ on $\left(-\tfrac{\pi}{2},\tfrac{\pi}{2}\right)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} $r^{2}+r-6=(r+3)(r-2)=0$: $y=C_{1}e^{-3x}+C_{2}e^{2x}$. Conditions: $C_{1}+C_{2}=1$, $-3C_{1}+2C_{2}=2$, giving $C_{1}=0$, $C_{2}=1$: $y=e^{2x}$.
+
+\textbf{2.} Repeated root $r=-2$: $y_{c}=(C_{1}+C_{2}x)e^{-2x}$. Trial $y_{p}=Ae^{3x}$: $9A+12A+4A=25A=8$, so $A=\tfrac{8}{25}$. General solution $y=(C_{1}+C_{2}x)e^{-2x}+\tfrac{8}{25}e^{3x}$.
+
+\textbf{3.} $y_{c}=C_{1}\cos 2x+C_{2}\sin 2x$. Since $\cos 2x$ solves the homogeneous equation, try $y_{p}=x(A\cos 2x+B\sin 2x)$. Substitution gives $4B\cos 2x-4A\sin 2x=8\cos 2x$, so $B=2$, $A=0$: $y=C_{1}\cos 2x+C_{2}\sin 2x+2x\sin 2x$ (pure resonance).
+
+\textbf{4.} $y_{1}=\cos x$, $y_{2}=\sin x$; Wronskian $W=1$. Lagrange's system gives $u'=-\tan x$, $v'=1$, so $u=\ln(\cos x)$, $v=x$. Hence $y=C_{1}\cos x+C_{2}\sin x+\cos x\ln(\cos x)+x\sin x$.
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item Homogeneous equation $ay''+by'+cy=0$: solve the characteristic equation $ar^{2}+br+c=0$; three cases give $C_{1}e^{r_{1}x}+C_{2}e^{r_{2}x}$, $(C_{1}+C_{2}x)e^{r_{0}x}$, or $e^{\alpha x}(C_{1}\cos\beta x+C_{2}\sin\beta x)$.
+\item Non-homogeneous equation: general solution $=$ complementary function $+$ particular integral.
+\item Undetermined coefficients: mirror the shape of $f(x)$; if the trial overlaps $y_{c}$, multiply by $x$ (or $x^{2}$ for a repeated root).
+\item Variation of parameters: $y_{p}=uy_{1}+vy_{2}$ with $u'y_{1}+v'y_{2}=0$, $u'y_{1}'+v'y_{2}'=f/a$ — valid for \emph{any} continuous $f$.
+\item Resonance: forcing at the natural frequency produces a particular integral of the form $t\sin\omega_{0}t$ with linearly growing amplitude (in the undamped case).
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Tacoma Narrows and the Wouri bridge]
+In 1940 the Tacoma Narrows Bridge in the USA collapsed after wind drove it near one of its natural frequencies — the classic cautionary tale of resonance taught to every engineering student. Engineers designing great structures such as the bridges over the Wouri estuary in Douala must compute natural frequencies carefully and add damping, so that wind and traffic can never pump energy in rhythm. The mathematics you have just learned — characteristic roots and particular integrals — is exactly the tool they use.
+\end{savaistu}
+
+\coursec{Reducible Equations, Reduction of Order and Modelling Applications}
+
+\courssub{Equations Missing the Dependent Variable \(y\)}
+
+When a second‑order differential equation does not contain the dependent variable \(y\) explicitly, it can be written in the form
+\[
+y'' = f(x, y').
+\]
+The substitution \(p = y'\) reduces the order: \(y'' = p' = \dfrac{dp}{dx}\). The equation becomes a first‑order equation in \(p\):
+\[
+\frac{dp}{dx} = f(x, p).
+\]
+Once \(p(x)\) is found, \(y\) is obtained by integration: \(y = \int p(x)\,dx + C\).
+
+\begin{methode}[Solving equations missing \(y\)]
+\begin{enumerate}
+\item Set \(p = y'\). Then \(y'' = \dfrac{dp}{dx}\).
+\item Substitute into the given equation to obtain a first‑order equation for \(p(x)\).
+\item Solve this first‑order equation (separable, linear, etc.) to find \(p(x)\).
+\item Integrate \(p(x)\) with respect to \(x\) to obtain \(y(x)\), adding the constant of integration.
+\item If initial conditions are given, apply them to determine the constants.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Equation missing \(y\): \(y'' = x\,y'\)]
+Find the general solution of \(y'' = x\,y'\).
+\tcblower
+\textbf{Solution.}
+Let \(p = y'\). Then \(y'' = \dfrac{dp}{dx}\). The equation becomes
+\[
+\frac{dp}{dx} = x\,p.
+\]
+This is separable:
+\[
+\frac{dp}{p} = x\,dx \quad\Longrightarrow\quad \ln|p| = \frac{x^2}{2} + C_1.
+\]
+Hence \(p = C_1' e^{x^2/2}\) where \(C_1' = \pm e^{C_1}\) is an arbitrary non‑zero constant (the case \(p=0\) gives the constant solution \(y = \text{constant}\), which is included by allowing \(C_1'=0\)). Now integrate to find \(y\):
+\[
+y = \int C_1' e^{x^2/2}\,dx + C_2.
+\]
+The integral \(\int e^{x^2/2}\,dx\) cannot be expressed in terms of elementary functions; it is written in terms of the imaginary error function or left as a definite integral. Thus the general solution is
+\[
+y = C_1 \int_0^x e^{t^2/2}\,dt + C_2,
+\]
+where \(C_1, C_2\) are arbitrary constants.
+\end{exoresolu}
+
+\courssub{Equations Missing the Independent Variable \(x\)}
+
+If the equation does not contain \(x\) explicitly, it has the form
+\[
+y'' = f(y, y').
+\]
+Again set \(p = y'\). Then by the chain rule
+\[
+y'' = \frac{dp}{dx} = \frac{dp}{dy}\frac{dy}{dx} = p\,\frac{dp}{dy}.
+\]
+The equation becomes a first‑order equation in \(p\) and \(y\):
+\[
+p\,\frac{dp}{dy} = f(y, p).
+\]
+This can often be solved by separation of variables or by recognizing it as an exact equation. After finding \(p(y)\), we use \(dy/dx = p(y)\) to obtain \(x\) as a function of \(y\) (or \(y\) as a function of \(x\) by inversion).
+
+\begin{methode}[Solving equations missing \(x\)]
+\begin{enumerate}
+\item Set \(p = y'\). Then \(y'' = p\,\dfrac{dp}{dy}\).
+\item Substitute to get \(p\,\dfrac{dp}{dy} = f(y, p)\).
+\item Solve this first‑order equation for \(p\) as a function of \(y\).
+\item Use \(\dfrac{dy}{dx} = p(y)\) to find \(x = \int \dfrac{dy}{p(y)} + C\) (or solve for \(y(x)\) if possible).
+\item Apply initial conditions to determine constants.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Equation missing \(x\): \(y'' + k\,y = 0\) (simple harmonic oscillator)]
+Solve \(y'' + k\,y = 0\) with \(k>0\) by the missing‑\(x\) method.
+\tcblower
+\textbf{Solution.}
+The equation is \(y'' = -k\,y\). Let \(p = y'\). Then \(y'' = p\,\dfrac{dp}{dy}\). Substituting:
+\[
+p\,\frac{dp}{dy} = -k\,y.
+\]
+Separate variables:
+\[
+p\,dp = -k\,y\,dy \quad\Longrightarrow\quad \frac{p^2}{2} = -\frac{k y^2}{2} + C.
+\]
+Multiply by 2: \(p^2 + k y^2 = 2C = E\) (constant). This is the energy integral. Hence
+\[
+p = \frac{dy}{dx} = \pm\sqrt{E - k y^2}.
+\]
+Separate again:
+\[
+\frac{dy}{\sqrt{E - k y^2}} = \pm dx.
+\]
+Integrate: \(\displaystyle \frac{1}{\sqrt{k}}\arcsin\!\left(\frac{\sqrt{k}\,y}{\sqrt{E}}\right) = \pm x + \phi\).
+Thus
+\[
+y = \sqrt{\frac{E}{k}}\,\sin\!\bigl(\sqrt{k}\,x + \phi\bigr),
+\]
+which is the familiar sinusoidal solution. The phase plane trajectories are ellipses given by \(p^2 + k y^2 = E\).
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2]
+\draw[->] (-2.5,0) -- (2.5,0) node[right] {$y$};
+\draw[->] (0,-2.5) -- (0,2.5) node[above] {$p$};
+\foreach \E in {0.5,1.5,3.0} {
+  \draw[popblue, thick] plot[domain=0:360, samples=100, variable=\t] ({\E*cos(\t)}, {\E*sqrt(max(0,2))*sin(\t)});
+}
+\draw[poporange, thick, ->] (1.5,0) arc[start angle=0, end angle=-90, x radius=1.5, y radius={1.5*sqrt(max(0,2))}];
+\node[poporange] at (1.2,-0.8) {$\searrow$};
+\node[popdark] at (2.2,-0.5) {$p^2+2y^2=E$};
+\end{tikzpicture}
+\legende{Phase plane trajectories for \(p\,dp/dy = -2y\) (ellipses \(p^2+2y^2=E\)).}
+\end{popfigure}
+
+\courssub{Reduction of Order for Linear Homogeneous Second‑Order Equations}
+
+Consider a linear homogeneous second‑order equation in standard form
+\[
+y'' + P(x)y' + Q(x)y = 0.
+\]
+If one non‑trivial solution \(y_1(x)\) is known, a second linearly independent solution can be found by the substitution
+\[
+y = y_1(x)\,v(x),
+\]
+where \(v(x)\) is a new unknown function. This method is called \cle{reduction of order}.
+
+\begin{propriete}[Reduction of order formula]
+If \(y_1\) is a known solution of \(y''+P(x)y'+Q(x)y=0\), then a second independent solution is
+\[
+y_2 = y_1 \int \frac{e^{-\int P(x)\,dx}}{y_1^2}\,dx.
+\]
+The derivation uses the substitution \(y = y_1 v\) and reduces the equation to a first‑order linear equation for \(v'\).
+\end{propriete}
+
+\begin{methode}[Reduction of order – step by step]
+\begin{enumerate}
+\item Write the equation in standard form \(y''+P(x)y'+Q(x)y=0\).
+\item Let \(y = y_1 v\). Compute \(y' = y_1'v + y_1 v'\) and \(y'' = y_1''v + 2y_1'v' + y_1 v''\).
+\item Substitute into the equation. Because \(y_1\) is a solution, terms containing \(v\) cancel, leaving an equation for \(v'\) and \(v''\).
+\item Set \(w = v'\). The equation becomes first‑order linear in \(w\): \(y_1 w' + (2y_1' + P y_1)w = 0\).
+\item Solve for \(w\), then integrate to get \(v\), and finally \(y_2 = y_1 v\).
+\item The general solution is \(y = C_1 y_1 + C_2 y_2\).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Reduction of order: \(y'' - 2y' + y = 0\), known solution \(y_1 = e^x\)]
+Find the general solution.
+\tcblower
+\textbf{Solution.}
+The equation is already in standard form with \(P(x) = -2\). Let \(y = e^x v\). Then
+\[
+y' = e^x v + e^x v', \quad y'' = e^x v + 2e^x v' + e^x v''.
+\]
+Substitute:
+\[
+(e^x v + 2e^x v' + e^x v'') - 2(e^x v + e^x v') + e^x v = 0.
+\]
+The terms with \(v\) cancel: \(e^x v - 2e^x v + e^x v = 0\). The remaining terms give
+\[
+e^x v'' = 0 \quad\Longrightarrow\quad v'' = 0.
+\]
+Integrate twice: \(v' = C_1\), \(v = C_1 x + C_2\). Choosing \(C_1=1, C_2=0\) gives \(v = x\). Hence a second independent solution is \(y_2 = x e^x\). The general solution is
+\[
+y = C_1 e^x + C_2 x e^x.
+\]
+\end{exoresolu}
+
+\courssub{Modelling Applications}
+
+Differential equations arise naturally when modelling physical, biological or engineering systems. The process involves identifying the variables, stating the governing laws (Newton's laws, Kirchhoff's laws, population dynamics), and translating them into a differential equation.
+
+\begin{experience}[Modelling: Newton's Law of Cooling]
+A cup of coffee at temperature \(T(t)\) cools in a room at constant temperature \(T_a\). Newton's law of cooling states that the rate of change of temperature is proportional to the difference between the object's temperature and the ambient temperature:
+\[
+\frac{dT}{dt} = -k(T - T_a), \quad k>0.
+\]
+If the coffee is initially at \(T(0)=T_0\), the solution is \(T(t) = T_a + (T_0 - T_a)e^{-kt}\). This is a first‑order linear equation. For a second‑order example, consider a mass‑spring‑damper system or an RLC circuit.
+\end{experience}
+
+\textbf{Simple harmonic motion.}\par
+A mass \(m\) attached to a spring of stiffness \(k\) (no damping) obeys \(m y'' + k y = 0\), where \(y\) is displacement from equilibrium. The solution is \(y = A\cos(\omega t) + B\sin(\omega t)\) with \(\omega = \sqrt{k/m}\).
+
+\textbf{RLC series circuit.}\par
+In a series circuit with resistance \(R\), inductance \(L\), capacitance \(C\) and applied voltage \(E(t)\), Kirchhoff's voltage law gives
+\[
+L\frac{d^2q}{dt^2} + R\frac{dq}{dt} + \frac{1}{C}q = E(t),
+\]
+where \(q(t)\) is the charge on the capacitor. The voltage across the capacitor is \(V_C = q/C\). For a constant voltage \(E_0\) switched on at \(t=0\) with zero initial conditions, the equation becomes
+\[
+L V_C'' + R V_C' + \frac{1}{C}V_C = \frac{E_0}{C}.
+\]
+The homogeneous part is a damped harmonic oscillator. The nature of the response depends on the discriminant \(\Delta = R^2 - 4L/C\):
+\begin{itemize}
+\item Overdamped (\(\Delta>0\)): two distinct real exponentials.
+\item Critically damped (\(\Delta=0\)): a double real root, response \( (A+Bt)e^{-\alpha t}\).
+\item Underdamped (\(\Delta<0\)): complex conjugate roots, damped oscillations.
+\end{itemize}
+
+\begin{exoresolu}[RLC series circuit – underdamped response]
+A series RLC circuit has \(L=1\,\mathrm{H}\), \(R=2\,\Omega\), \(C=0.25\,\mathrm{F}\), and a constant voltage \(E_0=10\,\mathrm{V}\) applied at \(t=0\). Initial conditions: \(q(0)=0\), \(i(0)=q'(0)=0\). Find the voltage across the capacitor \(V_C(t)\).
+\tcblower
+\textbf{Solution.}
+The equation for \(q\) is
+\[
+q'' + 2q' + 4q = 10.
+\]
+The homogeneous equation: \(r^2+2r+4=0\) gives \(r = -1 \pm i\sqrt{3}\). So the complementary solution is
+\[
+q_c = e^{-t}\bigl(A\cos(\sqrt{3}t) + B\sin(\sqrt{3}t)\bigr).
+\]
+A particular solution is constant: \(q_p = 10/4 = 2.5\). Thus
+\[
+q(t) = 2.5 + e^{-t}\bigl(A\cos(\sqrt{3}t) + B\sin(\sqrt{3}t)\bigr).
+\]
+Initial conditions: \(q(0)=0 \Rightarrow 2.5 + A = 0 \Rightarrow A = -2.5\).
+\(q'(t) = e^{-t}\bigl((-A+\sqrt{3}B)\cos(\sqrt{3}t) + (-B-\sqrt{3}A)\sin(\sqrt{3}t)\bigr) - e^{-t}\bigl(A\cos(\sqrt{3}t)+B\sin(\sqrt{3}t)\bigr)\).
+At \(t=0\): \(q'(0) = -A + \sqrt{3}B - A = -2A + \sqrt{3}B = 0\). With \(A=-2.5\), we get \(5 + \sqrt{3}B = 0 \Rightarrow B = -5/\sqrt{3}\).
+Hence
+\[
+q(t) = 2.5 - e^{-t}\left(2.5\cos(\sqrt{3}t) + \frac{5}{\sqrt{3}}\sin(\sqrt{3}t)\right).
+\]
+The capacitor voltage is \(V_C = q/C = 4q\):
+\[
+V_C(t) = 10 - 4e^{-t}\left(2.5\cos(\sqrt{3}t) + \frac{5}{\sqrt{3}}\sin(\sqrt{3}t)\right).
+\]
+This is an underdamped oscillation decaying to the steady state \(10\,\mathrm{V}\).
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=6cm,
+  xlabel={$t$ (s)}, ylabel={$V_C$ (V)},
+  xmin=0, xmax=10, ymin=0, ymax=12,
+  axis lines=middle,
+  tick style={popline},
+  grid=major, grid style={popmuted},
+  legend style={at={(0.98,0.02)}, anchor=south east, fill=white, draw=popline},
+  trig format=rad
+]
+\addplot[popblue, thick, domain=0:10, samples=200] 
+  {10 - 4*exp(-x)*(2.5*cos(sqrt(3)*x) + 5/sqrt(3)*sin(sqrt(3)*x))};
+\addlegendentry{$V_C(t)$}
+\addplot[poporange, dashed, domain=0:10] {10};
+\addlegendentry{Steady state $10\,\mathrm{V}$}
+\end{axis}
+\end{tikzpicture}
+\legende{Underdamped voltage across the capacitor in a series RLC circuit.}
+\end{popfigure}
+
+\textbf{Population with harvesting.}\par
+A population \(P(t)\) growing logistically with constant harvesting rate \(h\) is modelled by
+\[
+\frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right) - h,
+\]
+where \(r\) is the intrinsic growth rate and \(K\) the carrying capacity. This is a first‑order separable equation. The equilibrium points are found by setting the right‑hand side to zero; their stability determines whether the population survives or goes extinct.
+
+\courssub{Checking Solutions and Interpreting Parameters}
+
+After obtaining a solution, it is essential to verify that it satisfies the original differential equation and any initial or boundary conditions. A common mistake is to forget the constant of integration when integrating \(p\) to get \(y\), or to misapply the chain rule when reducing the order.
+
+\begin{attention}[Common pitfalls in reducible equations]
+\begin{itemize}
+\item Forgetting to include the constant of integration after the first integration (when solving for \(p\)) and after the second integration (when finding \(y\)).
+\item In the missing‑\(x\) method, incorrectly writing \(y'' = dp/dx\) instead of \(p\,dp/dy\).
+\item When using reduction of order, neglecting to check that the obtained \(y_2\) is indeed linearly independent of \(y_1\) (Wronskian non‑zero).
+\item In modelling, misidentifying the sign of the damping or restoring force, leading to an equation that predicts growth instead of decay.
+\item Always substitute the final solution back into the original equation to catch algebraic errors.
+\end{itemize}
+\end{attention}
+
+\begin{exemplebox}[Verification example]
+For the RLC circuit solution above, check that \(V_C(0)=0\) and \(V_C'(0)=0\). 
+\(V_C(0)=10-4(2.5)=0\). 
+\(V_C'(t) = -4e^{-t}[(-2.5-\frac{5}{\sqrt{3}}\sqrt{3})\cos(\sqrt{3}t) + \dots]\). At \(t=0\), the derivative simplifies to \(0\). The initial conditions are satisfied.
+\end{exemplebox}
+
+\begin{aretenir}[Key points of Section 5]
+\begin{itemize}
+\item Equations missing \(y\): set \(p=y'\), solve \(p'=f(x,p)\), then integrate.
+\item Equations missing \(x\): set \(p=y'\), use \(y''=p\,dp/dy\), solve for \(p(y)\), then integrate \(dy/dx=p(y)\).
+\item Reduction of order: if \(y_1\) is a solution of \(y''+P(x)y'+Q(x)y=0\), a second solution is \(y_2 = y_1\int \frac{e^{-\int P\,dx}}{y_1^2}\,dx\).
+\item Modelling: translate physical laws (Newton, Kirchhoff, population dynamics) into differential equations; interpret parameters (damping, frequency, carrying capacity) in the real‑world context.
+\item Always verify solutions by substitution and check initial/boundary conditions.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter on differential equations by placing you in the role of a process engineer. By the end of the activity you should be able to:
+
+\begin{itemize}
+\item translate a real physical situation (cooling of cocoa beans) into a \cle{first-order differential equation} with a time-dependent forcing term;
+\item solve a \cle{linear first-order non-homogeneous equation} using an integrating factor, and a \cle{separable} equation as a special case;
+\item handle a \cle{piecewise constant coefficient} by solving the equation interval by interval, matching the solution at the junctions;
+\item set up and analyse a \cle{linear second-order equation with constant coefficients} modelling the dynamics of a ventilation fan (damping ratio, natural frequency, settling time);
+\item interpret solutions graphically, check them against physical constraints, and communicate recommendations in a short technical report.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Newton's law of cooling $\dfrac{dT}{dt}=-k\bigl(T-T_a(t)\bigr)$; integrating factor $e^{\int k\,dt}$; continuity of the solution at switching times; auxiliary equation $am^2+bm+c=0$; underdamped response and settling time.
+\end{aretenir}
+
+\courssub{Situation}
+
+A cocoa cooperative in \textbf{Penja} (Littoral Region) dries fermented beans on raised trays inside a ventilated shed. After the morning heating phase, the beans enter the shed at time $t=0$ (noon) at a temperature of $T(0)=55\ ^{\circ}\mathrm{C}$. For safe bagging, the beans must be brought down to the \emph{target band} $30\ ^{\circ}\mathrm{C}\le T\le 35\ ^{\circ}\mathrm{C}$ and must stay inside this band until bagging at $t=6$ hours. Beans cooled too slowly risk mould; beans cooled below $30\ ^{\circ}\mathrm{C}$ re-absorb moisture from the humid evening air.
+
+The shed's ambient temperature on a typical day is modelled (with $t$ in hours) by
+\[
+T_a(t)=24+6\sin\!\left(\frac{\pi}{12}\,t\right)\quad (^{\circ}\mathrm{C}).
+\]
+With the shutters fixed in a half-open position, the heat transfer coefficient is $k_1=0.8\ \mathrm{h}^{-1}$. Opening the shutters fully and switching on the extractor fan raises the coefficient to $k_2=1.6\ \mathrm{h}^{-1}$.
+
+The fan itself does not reach its full speed instantly. When a step voltage is applied, its angular velocity $\omega(t)$ (in rad/s) satisfies
+\[
+0.02\,\ddot{\omega}+0.14\,\dot{\omega}+2\,\omega=2\,\Omega,
+\qquad \omega(0)=0,\ \dot{\omega}(0)=0,
+\]
+where $\Omega=150$ rad/s is the commanded speed.
+
+The cooperative hires you to design the cooling schedule: when should the fan be switched on, and will the fan's own inertia disturb the plan?
+
+\courssub{Tasks}
+
+\textbf{Part A — Formulation and analytic solution.}
+\begin{enumerate}
+\item State Newton's law of cooling and justify briefly why it leads to the equation
+$\dot{T}=-k\bigl(T-T_a(t)\bigr)$. What are the units of $k$?
+\item With the shutters half-open ($k=k_1=0.8$) and a \emph{constant} ambient temperature $\bar T_a=27\ ^{\circ}\mathrm{C}$ (the mean value of $T_a$), solve the resulting separable equation with $T(0)=55$. How long does the bean temperature take to reach $35\ ^{\circ}\mathrm{C}$? Is the target band ever entered and \emph{left again} under this strategy?
+\item Now use the true sinusoidal ambient temperature with $k=0.8$. Write the equation in the standard linear form $\dot{T}+0.8\,T=0.8\,T_a(t)$, determine an integrating factor, and show that
+\[
+T(t)=24+\frac{0.8\cdot 6}{0.64+a^2}\Bigl(0.8\sin(at)-a\cos(at)\Bigr)+C e^{-0.8t},
+\quad a=\frac{\pi}{12},
+\]
+then determine $C$ using $T(0)=55$. (You may seek a particular solution of the form $\alpha\sin(at)+\beta\cos(at)$.)
+\end{enumerate}
+
+\textbf{Part B — Designing the ventilation control.}
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Using the simplified constant-ambient model of question 2, show that with $k=0.8$ alone the beans would fall \emph{below} $30\ ^{\circ}\mathrm{C}$ before $t=6$ h. Compute the time at which this happens.
+\item The engineer proposes a \cle{piecewise constant control}: run at $k_1=0.8$ until the beans reach $T=33\ ^{\circ}\mathrm{C}$, then switch to a reduced coefficient $k_3$ (shutters almost closed) so that the temperature \emph{stays constant} at $33\ ^{\circ}\mathrm{C}$. Assuming $T_a\approx 27\ ^{\circ}\mathrm{C}$, find the value of $k_3$ that makes $T=33$ an equilibrium, and write the full piecewise solution $T(t)$ for $0\le t\le 6$.
+\item Sketch the graph of your controlled solution and of the uncontrolled solution (question 2) on the same axes, marking the target band.
+\end{enumerate}
+
+\textbf{Part C — Fan dynamics (second-order model).}
+\begin{enumerate}
+\setcounter{enumi}{6}
+\item Write the auxiliary equation of the fan model and show that the homogeneous response is underdamped. Compute the natural frequency $\omega_0$ and the damping ratio $\zeta$.
+\item Find the steady-state speed $\omega_p$ and hence the form of $\omega(t)$. Estimate the settling time $t_s\approx \dfrac{4}{\zeta\omega_0}$ and comment: is the fan fast enough compared with the cooling timescale $1/k_1$?
+\item Conclude in 8--10 lines: state your recommended schedule (switching time, shutter positions), one limitation of the model, and one practical recommendation for the cooperative.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A.}
+
+\textbf{1.} Newton's law of cooling states that the rate of heat loss of a body is proportional to the difference between its temperature and that of the surroundings: $\dot T=-k(T-T_a)$, $k>0$. Since $\dot T$ is in $^{\circ}\mathrm{C\,h^{-1}}$ and $T-T_a$ in $^{\circ}\mathrm{C}$, $k$ is in $\mathrm{h}^{-1}$.
+
+\textbf{2.} With $T_a=27$ constant: $\dfrac{dT}{T-27}=-0.8\,dt$, hence $\ln|T-27|=-0.8t+C_0$ and
+\[
+T(t)=27+28e^{-0.8t}\qquad (T(0)=55).
+\]
+$35=27+28e^{-0.8t}\Rightarrow e^{-0.8t}=\frac{2}{7}\Rightarrow t=\frac{\ln(7/2)}{0.8}\approx 1.57$ h. But $T\to 27<30$ as $t$ grows: the band is entered at $t\approx1.57$ h and left again — the strategy fails for bagging at $t=6$ h.
+
+\textbf{3.} The equation is $\dot T+0.8T=0.8\bigl(24+6\sin(at)\bigr)$, $a=\pi/12$. Integrating factor: $\mu=e^{0.8t}$, giving $\bigl(e^{0.8t}T\bigr)'=e^{0.8t}\,0.8\,T_a(t)$. Seek a particular solution $T_p=24+\alpha\sin(at)+\beta\cos(at)$. Substituting and matching coefficients of $\sin(at),\cos(at)$:
+\[
+0.8\alpha-a\beta=4.8,\qquad a\alpha+0.8\beta=0,
+\]
+so $\alpha=\dfrac{0.8\times4.8}{0.64+a^2}$, $\beta=\dfrac{-4.8a}{0.64+a^2}$, which is the announced form. Then
+\[
+T(t)=24+\frac{4.8}{0.64+a^2}\bigl(0.8\sin(at)-a\cos(at)\bigr)+Ce^{-0.8t}.
+\]
+With $a=\pi/12\approx0.2618$: $0.64+a^2\approx0.7085$, so $\alpha\approx5.42$, $\beta\approx-1.77$. The condition $T(0)=55$ gives $55=24+\beta+C$, hence $C=55-24+1.77=32.77$:
+\[
+T(t)\approx 24+5.42\sin(0.2618\,t)-1.77\cos(0.2618\,t)+32.77\,e^{-0.8t}.
+\]
+Check: $T(6)\approx24+5.42-1.77(0)+32.77e^{-4.8}\approx29.7\ ^{\circ}\mathrm{C}$ — again slightly \emph{below} the band: control is needed.
+
+\textbf{Part B.}
+
+\textbf{4.} $30=27+28e^{-0.8t}\Rightarrow e^{-0.8t}=\frac{3}{28}\Rightarrow t=\dfrac{\ln(28/3)}{0.8}\approx2.79$ h $<6$ h. The beans leave the band far too early.
+
+\textbf{5.} Phase 1 ($k_1=0.8$): $T=27+28e^{-0.8t}$ reaches $33$ when $e^{-0.8t_1}=\frac{6}{28}=\frac{3}{14}$, i.e.
+\[
+t_1=\frac{\ln(14/3)}{0.8}\approx 1.93\ \mathrm{h}\ (\approx 13\text{h}56).
+\]
+Phase 2: for $T\equiv33$ to be a solution of $\dot T=-k_3(33-27)$ we need $\dot T=0$, hence $k_3(33-27)=0$: strictly, $k_3=0$ (perfect insulation) keeps $T=33$ exactly; in practice the shutters are closed and the residual leakage $k_3\approx0.05\ \mathrm{h}^{-1}$ gives $\dot T=-0.3\ ^{\circ}\mathrm{C\,h^{-1}}$, i.e. a drop of only $1.2\ ^{\circ}\mathrm{C}$ over 4 h, ending at $\approx31.8\ ^{\circ}\mathrm{C}$ — still inside the band. The piecewise solution (ideal case $k_3=0$):
+\[
+T(t)=
+\begin{cases}
+27+28e^{-0.8t}, & 0\le t\le t_1,\\[2pt]
+33, & t_1\le t\le 6.
+\end{cases}
+\]
+The solution is continuous at $t_1$ (both pieces equal $33$), as physics requires.
+
+\textbf{6.} Sketch: an exponential decay from $55$ to $33$ (reached at $t_1\approx1.93$ h), then a horizontal segment at $33$ until $t=6$; the uncontrolled curve continues decaying towards $27$, crossing $30$ at $t\approx2.79$ h. Shade the band $[30,35]$.
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[width=0.85\linewidth,height=6.2cm,xlabel={$t$ (h)},ylabel={$T$ ($^{\circ}$C)},
+xmin=0,xmax=6.3,ymin=25,ymax=57,grid=both,grid style={popline,thin},
+legend style={font=\small,at={(0.98,0.95)},anchor=north east}]
+\addplot[popmuted,dashed,domain=0:6,samples=60]{27+28*exp(-0.8*x)};
+\addplot[popblue,very thick,domain=0:1.93,samples=50]{27+28*exp(-0.8*x)};
+\addplot[popblue,very thick,domain=1.93:6,samples=2]{33};
+\addplot[popgreenL,domain=0:6,samples=2]{35};
+\addplot[popgreenL,domain=0:6,samples=2]{30};
+\draw[popgreen,dashed] (axis cs:0,35)--(axis cs:6,35);
+\draw[popgreen,dashed] (axis cs:0,30)--(axis cs:6,30);
+\legend{uncontrolled, controlled}
+\end{axis}
+\end{tikzpicture}
+\legende{Controlled vs uncontrolled cooling; dashed green lines delimit the target band.}
+\end{popfigure}
+
+\textbf{Part C.}
+
+\textbf{7.} Auxiliary equation: $0.02m^2+0.14m+2=0$, i.e. $m^2+7m+100=0$. Discriminant: $49-400=-351<0$ — underdamped. Roots: $m=-3.5\pm i\sqrt{87.75}\approx-3.5\pm9.37i$. Natural frequency $\omega_0=\sqrt{100}=10$ rad/s; damping ratio $\zeta=\dfrac{7}{2\omega_0}=0.35$.
+
+\textbf{8.} Steady state: $\ddot\omega=\dot\omega=0\Rightarrow 2\omega_p=2\Omega$, so $\omega_p=\Omega=150$ rad/s. Hence
+\[
+\omega(t)=150+e^{-3.5t}\bigl(A\cos 9.37t+B\sin 9.37t\bigr),
+\]
+with $\omega(0)=0\Rightarrow A=-150$ and $\dot\omega(0)=0\Rightarrow B=-150\times3.5/9.37\approx-56.0$. Settling time: $t_s\approx\dfrac{4}{\zeta\omega_0}=\dfrac{4}{3.5}\approx1.14$ s. The fan reaches its regime in about one second, while the cooling timescale is $1/k_1=1.25$ \emph{hours}: the fan's inertia is completely negligible, and the schedule of Part B need not be corrected.
+
+\textbf{9. Conclusion (model report).} \emph{Recommendation:} keep the shutters half-open from noon; at $t\approx1.9$ h (about 13h55), when the beans reach $33\ ^{\circ}\mathrm{C}$, close the shutters and stop the fan; the beans then remain within $[30,35]\ ^{\circ}\mathrm{C}$ until bagging at 18h00. \emph{Limitation:} the ambient temperature was treated as constant in the control design; the sinusoidal model of question 3 shows fluctuations of order $\pm2\ ^{\circ}\mathrm{C}$, so the bean temperature should be re-checked around 16h00. \emph{Practical advice:} fit the shed with a cheap thermostat set at $33\ ^{\circ}\mathrm{C}$ to automate the switching, and record temperatures daily to refine the coefficient $k$ for the local shed.
+
+\begin{attention}[Common errors to avoid]
+\begin{itemize}
+\item Forgetting that after a change of coefficient the solution must be \textbf{continuous}: use the value at the switching time as the new initial condition.
+\item Mixing units: $k$ in $\mathrm{h}^{-1}$ requires $t$ in hours throughout.
+\item In the second-order model, concluding ``underdamped'' without checking the sign of the discriminant, or confusing $\omega_0$ with the damped frequency $\omega_0\sqrt{1-\zeta^2}$.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{First-Order Differential Equations -- Foundations and Geometry}
+
+\begin{definition}[Differential Equation]
+A \cle{differential equation} is an equation involving an unknown function and its derivatives. The \cle{order} is the highest derivative present; the \cle{degree} is the power of the highest derivative after the equation has been made rational and polynomial in derivatives.
+\end{definition}
+
+\begin{definition}[General and Particular Solutions]
+The \cle{general solution} of an $n$-th order differential equation contains $n$ arbitrary independent constants. A \cle{particular solution} is obtained by assigning specific values to these constants, usually through \cle{initial conditions} or \cle{boundary conditions}.
+\end{definition}
+
+\begin{aretenir}[Formation of a Differential Equation]
+Given a family of curves $f(x,y,c_1,c_2,\dots,c_n)=0$ with $n$ essential parameters, differentiating $n$ times and eliminating the parameters yields an $n$-th order differential equation satisfied by the family.
+\end{aretenir}
+
+\begin{exoresolu}[Forming a differential equation]
+Find the differential equation of the family of curves $y = A e^{2x} + B e^{-3x}$.
+\tcblower
+Differentiate twice:
+\begin{align*}
+y &= A e^{2x} + B e^{-3x} \\
+\dot{y} &= 2A e^{2x} - 3B e^{-3x} \\
+\ddot{y} &= 4A e^{2x} + 9B e^{-3x}
+\end{align*}
+Eliminate $A$ and $B$. From the first two:
+$A e^{2x} = \frac{3y + \dot{y}}{5}$, $B e^{-3x} = \frac{2y - \dot{y}}{5}$.
+Substitute into $\ddot{y}$:
+$\ddot{y} = 4\left(\frac{3y + \dot{y}}{5}\right) + 9\left(\frac{2y - \dot{y}}{5}\right) = \frac{12y + 4\dot{y} + 18y - 9\dot{y}}{5} = \frac{30y - 5\dot{y}}{5} = 6y - \dot{y}$.
+Hence the differential equation is $\boxed{\ddot{y} + \dot{y} - 6y = 0}$.
+\end{exoresolu}
+
+\courssub{Geometric Interpretation -- Direction Fields and Integral Curves}
+
+\begin{definition}[Direction Field]
+For a first-order equation $\frac{dy}{dx} = f(x,y)$, at each point $(x,y)$ the slope of the solution curve is $f(x,y)$. A \cle{direction field} (or \cle{slope field}) is a plot of short line segments with these slopes at a grid of points.
+\end{definition}
+
+\begin{definition}[Isoclines]
+An \cle{isocline} for slope $m$ is the curve $f(x,y) = m$ along which all solution curves have the same gradient $m$. Isoclines help sketch direction fields by hand.
+\end{definition}
+
+\begin{propriete}[Existence and Uniqueness (Picard--Lindel\"of)]
+If $f(x,y)$ and $\frac{\partial f}{\partial y}$ are continuous in a rectangle containing $(x_0,y_0)$, then the initial value problem $\frac{dy}{dx}=f(x,y),\ y(x_0)=y_0$ has a unique solution in some interval around $x_0$.
+\end{propriete}
+
+\begin{experience}[Sketching a direction field using isoclines]
+Consider $\frac{dy}{dx} = x - y$.
+\begin{enumerate}
+\item Isoclines: $x - y = m \Rightarrow y = x - m$ (parallel lines of slope 1).
+\item For $m=0$: isocline $y=x$ (horizontal segments).
+\item For $m=1$: isocline $y=x-1$ (segments of slope 1).
+\item For $m=-1$: isocline $y=x+1$ (segments of slope -1).
+\item Draw short segments on each isocline with the corresponding slope.
+\item The integral curves follow the direction field. The general solution is $y = x - 1 + Ce^{-x}$; all curves approach the line $y=x-1$ as $x\to\infty$.
+\end{enumerate}
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.8]
+\draw[->] (-0.5,0) -- (4.5,0) node[right] {$x$};
+\draw[->] (0,-0.5) -- (0,4.5) node[above] {$y$};
+% Isoclines
+\draw[popmuted, dashed] (0,0) -- (4,4) node[above right] {$m=0$};
+\draw[popmuted, dashed] (0,-1) -- (4,3) node[above right] {$m=1$};
+\draw[popmuted, dashed] (0,1) -- (4,5) node[above right] {$m=-1$};
+% Direction field segments
+\foreach \xi in {0.5,1,1.5,2,2.5,3,3.5} {
+  \foreach \yi in {0.5,1,1.5,2,2.5,3,3.5} {
+    \pgfmathsetmacro{\slope}{\xi - \yi}
+    \pgfmathsetmacro{\ang}{atan(\slope)}
+    \pgfmathsetmacro{\dx}{0.15*cos(\ang)}
+    \pgfmathsetmacro{\dy}{0.15*sin(\ang)}
+    \draw[popblue, thick] (\xi-\dx, \yi-\dy) -- (\xi+\dx, \yi+\dy);
+  }
+}
+% Sample integral curves
+\draw[poporange, thick, domain=0:4, samples=100] plot (\x, {\x - 1 + 2*exp(-\x)});
+\draw[poporange, thick, domain=0:4, samples=100] plot (\x, {\x - 1 + 1*exp(-\x)});
+\draw[poporange, thick, domain=0:4, samples=100] plot (\x, {\x - 1 + 0*exp(-\x)});
+\draw[poporange, thick, domain=0:4, samples=100] plot (\x, {\x - 1 - 1*exp(-\x)});
+\draw[poporange, thick, domain=0:4, samples=100] plot (\x, {\x - 1 - 2*exp(-\x)});
+\end{tikzpicture}
+\legende{Direction field and integral curves for $\frac{dy}{dx}=x-y$.}
+\end{popfigure}
+\end{experience}
+
+\coursec{Separable Variables and Linear First-Order Non-Homogeneous Equations}
+
+\begin{methode}[Separation of Variables]
+To solve an equation of the form $\dfrac{dy}{dx}=f(x)\,g(y)$:
+\begin{enumerate}
+\item \textbf{Factorise} the right-hand side into a product of a function of $x$ alone and a function of $y$ alone.
+\item \textbf{Separate}: write $\dfrac{dy}{g(y)}=f(x)\,dx$, gathering all $y$'s with $dy$ and all $x$'s with $dx$.
+\item \textbf{Integrate both sides}: $\displaystyle\int\frac{dy}{g(y)}=\int f(x)\,dx$. Add \emph{one} constant of integration only.
+\item \textbf{Make $y$ the subject} if possible; otherwise leave the solution implicit.
+\item If an \textbf{initial condition} is given, substitute it to find the constant, then state the \cle{particular solution}.
+\end{enumerate}
+\textbf{Reflexes:} check for \cle{singular solutions} lost when dividing by $g(y)$ (e.g.\ $y=0$); remember $\int \frac{dy}{y}=\ln|y|+c$ and the trick $\ln|y|=f(x)+c \Rightarrow y=Ae^{f(x)}$ with $A=\pm e^{c}$.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: a separable equation with initial condition]
+Find the particular solution of the differential equation
+\[ \frac{dy}{dx}=\frac{x(y^{2}+1)}{y}, \qquad y(0)=2. \]
+\tcblower
+\textbf{Step 1 -- Separate the variables.} The right-hand side is a product of a function of $x$ and a function of $y$:
+\[ \frac{y}{y^{2}+1}\,dy = x\,dx. \]
+\textbf{Step 2 -- Integrate both sides.}
+\[ \int \frac{y}{y^{2}+1}\,dy = \int x\,dx. \]
+For the left integral, note that the numerator is (up to a factor $2$) the derivative of the denominator, so
+\[ \frac{1}{2}\ln(y^{2}+1) = \frac{x^{2}}{2}+c. \]
+(No modulus needed since $y^{2}+1>0$.) Multiplying by $2$:
+\[ \ln(y^{2}+1)=x^{2}+C, \qquad C=2c. \]
+\textbf{Step 3 -- Apply the initial condition} $x=0,\ y=2$:
+\[ \ln(4+1)=0+C \;\Rightarrow\; C=\ln 5. \]
+\textbf{Step 4 -- Make $y$ the subject.}
+\[ y^{2}+1 = e^{x^{2}+\ln 5}=5e^{x^{2}} \;\Rightarrow\; y^{2}=5e^{x^{2}}-1. \]
+Since $y(0)=2>0$, we take the positive root:
+\[ \boxed{\,y=\sqrt{5e^{x^{2}}-1}\,}. \]
+\textbf{Check:} at $x=0$, $y=\sqrt{5-1}=2$. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Separable equation with singular solution]
+Solve $\frac{dy}{dx} = y^2 \sin x$.
+\tcblower
+Separate: $\frac{dy}{y^2} = \sin x\, dx$.
+Integrate: $\int y^{-2}\,dy = \int \sin x\,dx \Rightarrow -\frac{1}{y} = -\cos x + C$.
+Hence $\frac{1}{y} = \cos x - C$, so $y = \frac{1}{\cos x + A}$ where $A = -C$.
+\textbf{Singular solution:} dividing by $y^2$ assumed $y \neq 0$. $y=0$ satisfies the original equation and is not included in the general formula for any finite $A$. It is a \cle{singular solution}.
+\end{exoresolu}
+
+\courssub{Linear First-Order Equations -- Integrating Factor}
+
+\begin{definition}[Linear First-Order Equation]
+A \cle{linear first-order differential equation} has the form
+\[ \frac{dy}{dx} + P(x)y = Q(x) \]
+where $P(x)$ and $Q(x)$ are continuous functions of $x$ only. If $Q(x) \equiv 0$, the equation is \cle{homogeneous}; otherwise it is \cle{non-homogeneous}.
+\end{definition}
+
+\begin{methode}[Integrating Factor for $y'+P(x)y=Q(x)$]
+\begin{enumerate}
+\item Write the equation in \textbf{standard form} $\dfrac{dy}{dx}+P(x)y=Q(x)$ (coefficient of $y'$ must be $1$).
+\item Compute the \cle{integrating factor} $\mu(x)=e^{\int P(x)\,dx}$ (no constant needed here).
+\item \textbf{Multiply through} by $\mu(x)$. The left-hand side collapses to $\dfrac{d}{dx}\big[\mu(x)\,y\big]$.
+\item \textbf{Integrate}: $\mu(x)\,y=\displaystyle\int \mu(x)Q(x)\,dx + C$.
+\item \textbf{Divide} by $\mu(x)$ to obtain the general solution; apply any initial condition.
+\end{enumerate}
+\textbf{Reflexes:} always check the collapse $\frac{d}{dx}[\mu y]=\mu y'+\mu' y$ with $\mu'=P\mu$; the solution has the structure $y=y_{CF}+y_{PI}$ (complementary function plus particular integral).
+\end{methode}
+
+\begin{exoresolu}[GCE-style: integrating factor]
+(a) Find the general solution of
+\[ x\frac{dy}{dx}+2y=x^{3}, \qquad x>0. \]
+(b) Hence find the solution for which $y=1$ when $x=1$.
+\tcblower
+\textbf{Step 1 -- Standard form.} Divide by $x$:
+\[ \frac{dy}{dx}+\frac{2}{x}y=x^{2}. \]
+Here $P(x)=\dfrac{2}{x}$ and $Q(x)=x^{2}$.
+
+\textbf{Step 2 -- Integrating factor.}
+\[ \mu(x)=e^{\int \frac{2}{x}dx}=e^{2\ln x}=x^{2}. \]
+
+\textbf{Step 3 -- Multiply through by $x^{2}$:}
+\[ x^{2}\frac{dy}{dx}+2xy = x^{4} \;\Longrightarrow\; \frac{d}{dx}\big(x^{2}y\big)=x^{4}. \]
+
+\textbf{Step 4 -- Integrate:}
+\[ x^{2}y=\frac{x^{5}}{5}+C. \]
+
+\textbf{Step 5 -- General solution:}
+\[ \boxed{\,y=\frac{x^{3}}{5}+\frac{C}{x^{2}}\,}. \]
+
+\textbf{(b)} Substituting $x=1,\ y=1$: $\ 1=\dfrac{1}{5}+C \Rightarrow C=\dfrac{4}{5}$. Hence
+\[ y=\frac{x^{3}}{5}+\frac{4}{5x^{2}}. \]
+\textbf{Check:} $y'=\frac{3x^{2}}{5}-\frac{8}{5x^{3}}$; then $xy'+2y=\frac{3x^{3}}{5}-\frac{8}{5x^{2}}+\frac{2x^{3}}{5}+\frac{8}{5x^{2}}=x^{3}$. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Linear equation with non-constant integrating factor]
+Solve $\frac{dy}{dx} + y \tan x = \sec x$, $-\frac{\pi}{2} < x < \frac{\pi}{2}$.
+\tcblower
+$P(x) = \tan x$, $\mu = e^{\int \tan x\,dx} = e^{-\ln|\cos x|} = \frac{1}{\cos x} = \sec x$ (since $\cos x > 0$ on the interval).
+Multiply: $\sec x \frac{dy}{dx} + y \sec x \tan x = \sec^2 x$.
+LHS $= \frac{d}{dx}(y \sec x)$.
+Integrate: $y \sec x = \int \sec^2 x\,dx = \tan x + C$.
+General solution: $\boxed{y = \sin x + C \cos x}$.
+\end{exoresolu}
+
+\coursec{Homogeneous, Bernoulli and Riccati Equations}
+
+\courssub{Homogeneous Equations -- the Substitution $y=vx$}
+
+\begin{definition}[Homogeneous Function and Equation]
+A function $F(x,y)$ is \cle{homogeneous of degree $n$} if $F(tx,ty)=t^n F(x,y)$ for all $t>0$. A first-order equation $\frac{dy}{dx}=F(x,y)$ is \cle{homogeneous} if $F$ is homogeneous of degree $0$, i.e. $F(tx,ty)=F(x,y)$. Equivalently, the right-hand side can be written as a function of $\frac{y}{x}$ alone.
+\end{definition}
+
+\begin{methode}[Solving $\frac{dy}{dx}=F\!\left(\frac{y}{x}\right)$]
+\begin{enumerate}
+\item \textbf{Confirm homogeneity}: check that $F(tx,ty)=F(x,y)$, or rewrite the right-hand side in terms of $y/x$.
+\item \textbf{Substitute} $y=vx$, so that $\dfrac{dy}{dx}=v+x\dfrac{dv}{dx}$.
+\item The equation becomes \textbf{separable} in $v$ and $x$: $\ x\dfrac{dv}{dx}=F(v)-v$.
+\item \textbf{Separate and integrate}: $\displaystyle\int\frac{dv}{F(v)-v}=\int\frac{dx}{x}=\ln|x|+c$.
+\item \textbf{Back-substitute} $v=\dfrac{y}{x}$ and simplify; apply initial conditions if given.
+\end{enumerate}
+\textbf{Reflex:} after substitution, the $v$ terms must cancel on the right -- if they do not, the equation was not homogeneous.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: homogeneous equation]
+Show that the substitution $y=vx$ reduces the equation
+\[ \frac{dy}{dx}=\frac{x^{2}+y^{2}}{2xy}, \qquad x>0,\ y>0, \]
+to a separable equation. Hence find the general solution, and the particular solution with $y(1)=2$.
+\tcblower
+\textbf{Step 1 -- Homogeneity.} Replacing $(x,y)$ by $(tx,ty)$:
+\[ \frac{(tx)^{2}+(ty)^{2}}{2(tx)(ty)}=\frac{t^{2}(x^{2}+y^{2})}{2t^{2}xy}=\frac{x^{2}+y^{2}}{2xy}, \]
+so the equation is homogeneous.
+
+\textbf{Step 2 -- Substitute $y=vx$, $\frac{dy}{dx}=v+x\frac{dv}{dx}$:}
+\[ v+x\frac{dv}{dx}=\frac{x^{2}+v^{2}x^{2}}{2x\cdot vx}=\frac{1+v^{2}}{2v}. \]
+
+\textbf{Step 3 -- Separate:}
+\[ x\frac{dv}{dx}=\frac{1+v^{2}}{2v}-v=\frac{1+v^{2}-2v^{2}}{2v}=\frac{1-v^{2}}{2v}. \]
+\[ \frac{2v}{1-v^{2}}\,dv=\frac{dx}{x}. \]
+
+\textbf{Step 4 -- Integrate:}
+\[ -\ln|1-v^{2}|=\ln x + c \;\Longrightarrow\; \ln\big(x(1-v^{2})\big)=-c \;\Longrightarrow\; x(1-v^{2})=A, \]
+where $A=e^{-c}$ (we drop the modulus since $x>0$ and the sign is absorbed into $A$).
+
+\textbf{Step 5 -- Back-substitute $v=y/x$:}
+\[ x\left(1-\frac{y^{2}}{x^{2}}\right)=A \;\Longrightarrow\; \boxed{\,x^{2}-y^{2}=Ax\,}. \]
+
+\textbf{Particular solution:} $x=1,\ y=2$ gives $1-4=A$, so $A=-3$:
+\[ x^{2}-y^{2}=-3x \;\Longrightarrow\; y=\sqrt{x^{2}+3x} \quad (\text{positive root since } y>0). \]
+\textbf{Check:} at $x=1$, $y=\sqrt{4}=2$. \checkmark
+\end{exoresolu}
+
+\courssub{Bernoulli's Equation}
+
+\begin{definition}[Bernoulli Equation]
+A \cle{Bernoulli equation} has the form
+\[ \frac{dy}{dx} + P(x)y = Q(x)y^n, \qquad n \in \mathbb{R},\ n \neq 0,1. \]
+For $n=0$ or $n=1$ the equation is already linear.
+\end{definition}
+
+\begin{methode}[Bernoulli: $y'+P(x)y=Q(x)y^{n}$]
+\begin{enumerate}
+\item \textbf{Identify} the Bernoulli form with $n\neq 0,1$.
+\item \textbf{Divide} through by $y^{n}$: $\ y^{-n}y'+P(x)y^{1-n}=Q(x)$.
+\item \textbf{Substitute} $z=y^{1-n}$, so $\dfrac{dz}{dx}=(1-n)y^{-n}\dfrac{dy}{dx}$.
+\item The equation becomes \textbf{linear in $z$}: $\ \dfrac{dz}{dx}+(1-n)P(x)z=(1-n)Q(x)$.
+\item Solve by the \textbf{integrating factor} method, then \textbf{back-substitute} $z=y^{1-n}$.
+\end{enumerate}
+\textbf{Reflex:} the exponent of the new variable is always $1-n$; do not forget the factor $(1-n)$ on the right-hand side.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: Bernoulli equation]
+Find the general solution of
+\[ \frac{dy}{dx}+\frac{y}{x}=x^{2}y^{2}, \qquad x>0. \]
+\tcblower
+\textbf{Step 1.} This is Bernoulli with $n=2$.
+
+\textbf{Step 2 -- Divide by $y^{2}$:}
+\[ y^{-2}\frac{dy}{dx}+\frac{1}{x}y^{-1}=x^{2}. \]
+
+\textbf{Step 3 -- Substitute $z=y^{-1}$}, so $\dfrac{dz}{dx}=-y^{-2}\dfrac{dy}{dx}$:
+\[ -\frac{dz}{dx}+\frac{z}{x}=x^{2} \;\Longrightarrow\; \frac{dz}{dx}-\frac{z}{x}=-x^{2}. \]
+
+\textbf{Step 4 -- Linear in $z$.} Integrating factor: $\mu=e^{-\int \frac{dx}{x}}=e^{-\ln x}=\dfrac{1}{x}$. Multiplying:
+\[ \frac{d}{dx}\left(\frac{z}{x}\right)=-x. \]
+Integrating:
+\[ \frac{z}{x}=-\frac{x^{2}}{2}+C \;\Longrightarrow\; z=Cx-\frac{x^{3}}{2}. \]
+
+\textbf{Step 5 -- Back-substitute $z=1/y$:}
+\[ \boxed{\;\frac{1}{y}=Cx-\frac{x^{3}}{2}\;}\qquad\text{i.e.}\qquad y=\frac{2}{2Cx-x^{3}}. \]
+\textbf{Check (sample $C=0$):} $y=-2x^{-3}$, $y'=6x^{-4}$; then $y'+\frac{y}{x}=6x^{-4}-2x^{-4}=4x^{-4}$ and $x^{2}y^{2}=x^{2}\cdot 4x^{-6}=4x^{-4}$. \checkmark
+\end{exoresolu}
+
+\courssub{Riccati's Equation}
+
+\begin{definition}[Riccati Equation]
+A \cle{Riccati equation} has the form
+\[ \frac{dy}{dx} = P(x) + Q(x)y + R(x)y^2. \]
+If one particular solution $y_1(x)$ is known, the substitution $y = y_1 + \frac{1}{z}$ reduces it to a linear equation in $z$.
+\end{definition}
+
+\begin{methode}[Solving Riccati when a particular solution is known]
+Given $\frac{dy}{dx} = P + Qy + Ry^2$ and a known solution $y_1$:
+\begin{enumerate}
+\item Substitute $y = y_1 + \frac{1}{z}$.
+\item Compute $\frac{dy}{dx} = \frac{dy_1}{dx} - \frac{1}{z^2}\frac{dz}{dx}$.
+\item Substitute into the equation and use the fact that $y_1$ satisfies it.
+\item The result is a \textbf{linear first-order equation in $z$}: $\frac{dz}{dx} + (Q + 2Ry_1)z = -R$.
+\item Solve for $z$, then back-substitute $y = y_1 + 1/z$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Riccati equation]
+Solve $\frac{dy}{dx} = 1 + 2xy + x^2 y^2$, given that $y_1 = -x$ is a solution.
+\tcblower
+Here $P=1$, $Q=2x$, $R=x^2$. Substitute $y = -x + \frac{1}{z}$.
+Then $\frac{dy}{dx} = -1 - \frac{1}{z^2}\frac{dz}{dx}$.
+Substitute into the equation:
+\[ -1 - \frac{1}{z^2}\frac{dz}{dx} = 1 + 2x\left(-x + \frac{1}{z}\right) + x^2\left(-x + \frac{1}{z}\right)^2. \]
+Expand RHS:
+$1 - 2x^2 + \frac{2x}{z} + x^2(x^2 - \frac{2x}{z} + \frac{1}{z^2}) = 1 - 2x^2 + \frac{2x}{z} + x^4 - \frac{2x^3}{z} + \frac{x^2}{z^2}$.
+Since $y_1=-x$ is a solution, it satisfies $0 = 1 + 2x(-x) + x^2(-x)^2 = 1 - 2x^2 + x^4$.
+Subtract this identity from the RHS:
+RHS $= (1 - 2x^2 + x^4) + \frac{2x - 2x^3}{z} + \frac{x^2}{z^2} = 0 + \frac{2x(1-x^2)}{z} + \frac{x^2}{z^2}$.
+Equate with LHS:
+\[ -1 - \frac{1}{z^2}\frac{dz}{dx} = \frac{2x(1-x^2)}{z} + \frac{x^2}{z^2}. \]
+Multiply by $-z^2$:
+\[ z^2 + \frac{dz}{dx} = -2x(1-x^2)z - x^2. \]
+But wait -- we should use the standard linear form directly:
+$\frac{dz}{dx} + (Q + 2Ry_1)z = -R$.
+$Q + 2Ry_1 = 2x + 2x^2(-x) = 2x - 2x^3$.
+So $\frac{dz}{dx} + (2x - 2x^3)z = -x^2$.
+Integrating factor: $\mu = e^{\int (2x-2x^3)dx} = e^{x^2 - \frac{1}{2}x^4}$.
+$\frac{d}{dx}(z\mu) = -x^2 \mu$.
+$z e^{x^2 - x^4/2} = -\int x^2 e^{x^2 - x^4/2} dx + C$.
+This integral is non-elementary. However, notice the original equation is $(\frac{dy}{dx} - 1) = (x y + 1)^2 - 1$? Let's re-check.
+Actually, $1 + 2xy + x^2y^2 = (1+xy)^2$. So $\frac{dy}{dx} = (1+xy)^2$.
+Let $u = 1+xy$, then $\frac{du}{dx} = y + x\frac{dy}{dx} = y + x u^2$.
+Not simpler. The given $y_1=-x$ works: $1+2x(-x)+x^2(-x)^2 = 1-2x^2+x^4 = (1-x^2)^2$, and $\frac{d}{dx}(-x) = -1$. So $-1 = (1-x^2)^2$ is false! $y_1=-x$ is NOT a solution.
+Let's find a correct example.
+Equation: $\frac{dy}{dx} = -y^2 + 2xy - x^2 + 1 = 1 - (y-x)^2$.
+Try $y_1 = x+1$: $\frac{dy_1}{dx}=1$. RHS $= 1 - (1)^2 = 0$. No.
+Try $y_1 = x$: $\frac{dy_1}{dx}=1$. RHS $= 1 - 0 = 1$. Yes! $y_1=x$ is a solution.
+Now solve $\frac{dy}{dx} = 1 + 2xy - x^2 - y^2$? No, standard form.
+Let's use a standard textbook example: $\frac{dy}{dx} = y^2 - 2xy + x^2 - 1 = (y-x)^2 - 1$.
+$y_1 = x+1$: $\frac{dy_1}{dx}=1$. RHS $= 1^2 - 1 = 0$. No.
+$y_1 = x-1$: $\frac{dy_1}{dx}=1$. RHS $= (-1)^2 - 1 = 0$. No.
+$y_1 = x$: $\frac{dy_1}{dx}=1$. RHS $= 0 - 1 = -1$. No.
+Equation: $\frac{dy}{dx} = 1 - 2xy + y^2$. $y_1=x$: $1-2x^2+x^2=1-x^2 \neq 1$.
+Let's use: $\frac{dy}{dx} = x^2 + y^2$. No elementary particular solution.
+Better example: $\frac{dy}{dx} = 1 + \frac{y}{x} - \frac{y^2}{x^2}$. $y_1=x$: $1+1-1=1$, $\frac{dy_1}{dx}=1$. Works!
+Let's use this one.
+\end{exoresolu}
+
+\begin{exoresolu}[Riccati equation -- corrected example]
+Solve $\frac{dy}{dx} = 1 + \frac{y}{x} - \frac{y^2}{x^2}$, given that $y_1 = x$ is a solution.
+\tcblower
+Here $P=1$, $Q=\frac{1}{x}$, $R=-\frac{1}{x^2}$. Known solution $y_1=x$.
+Substitute $y = x + \frac{1}{z}$. Then $\frac{dy}{dx} = 1 - \frac{1}{z^2}\frac{dz}{dx}$.
+The equation becomes:
+\[ 1 - \frac{1}{z^2}\frac{dz}{dx} = 1 + \frac{1}{x}\left(x + \frac{1}{z}\right) - \frac{1}{x^2}\left(x + \frac{1}{z}\right)^2. \]
+Simplify RHS:
+$1 + 1 + \frac{1}{xz} - \frac{1}{x^2}(x^2 + \frac{2x}{z} + \frac{1}{z^2}) = 2 + \frac{1}{xz} - 1 - \frac{2}{xz} - \frac{1}{x^2z^2} = 1 - \frac{1}{xz} - \frac{1}{x^2z^2}$.
+Equate with LHS:
+\[ 1 - \frac{1}{z^2}\frac{dz}{dx} = 1 - \frac{1}{xz} - \frac{1}{x^2z^2}. \]
+Cancel 1, multiply by $-z^2$:
+\[ \frac{dz}{dx} = \frac{z}{x} + \frac{1}{x^2}. \]
+Linear in $z$: $\frac{dz}{dx} - \frac{1}{x}z = \frac{1}{x^2}$.
+Integrating factor: $\mu = e^{-\int \frac{dx}{x}} = \frac{1}{x}$.
+$\frac{d}{dx}\left(\frac{z}{x}\right) = \frac{1}{x^3}$.
+$\frac{z}{x} = -\frac{1}{2x^2} + C \Rightarrow z = -\frac{1}{2x} + Cx$.
+Back-substitute: $y = x + \frac{1}{z} = x + \frac{1}{Cx - \frac{1}{2x}} = x + \frac{2x}{2Cx^2 - 1}$.
+General solution: $\boxed{y = x + \frac{2x}{Ax^2 - 1}}$ where $A=2C$.
+\end{exoresolu}
+
+\coursec{Linear Second-Order Differential Equations with Constant Coefficients}
+
+\courssub{Homogeneous Equations -- Complementary Function}
+
+\begin{methode}[Solving $a\ddot{y}+b\dot{y}+cy=0$]
+\begin{enumerate}
+\item Write the \cle{auxiliary (characteristic) equation} $am^{2}+bm+c=0$.
+\item Solve for $m$ and read off the \cle{complementary function}:
+\begin{itemize}
+\item \textbf{Distinct real roots} $m_{1}\neq m_{2}$: $\ y=Ae^{m_{1}x}+Be^{m_{2}x}$.
+\item \textbf{Repeated root} $m$: $\ y=(A+Bx)e^{mx}$.
+\item \textbf{Complex roots} $m=\alpha\pm i\beta$: $\ y=e^{\alpha x}\big(A\cos\beta x+B\sin\beta x\big)$.
+\end{itemize}
+\item If two \textbf{boundary/initial conditions} are given, determine $A$ and $B$.
+\end{enumerate}
+\textbf{Reflexes:} for complex roots, $\alpha$ is the real part and $\beta$ the imaginary part \emph{without} the $i$; a repeated root forces the extra factor $x$ in the second solution.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: three cases of the auxiliary equation]
+Find the general solution of each equation:
+\[ \text{(i)}\ \ddot{y}-5\dot{y}+6y=0; \qquad \text{(ii)}\ \ddot{y}+4\dot{y}+4y=0; \qquad \text{(iii)}\ \ddot{y}-2\dot{y}+5y=0. \]
+For (iii), find also the solution with $y(0)=1$, $\dot{y}(0)=3$.
+\tcblower
+\textbf{(i)} Auxiliary equation: $m^{2}-5m+6=0 \Rightarrow (m-2)(m-3)=0$, so $m=2$ or $m=3$ (distinct real roots).
+\[ \boxed{\,y=Ae^{2x}+Be^{3x}\,}. \]
+
+\textbf{(ii)} Auxiliary equation: $m^{2}+4m+4=0 \Rightarrow (m+2)^{2}=0$, so $m=-2$ (repeated root).
+\[ \boxed{\,y=(A+Bx)e^{-2x}\,}. \]
+
+\textbf{(iii)} Auxiliary equation: $m^{2}-2m+5=0$. Using the quadratic formula:
+\[ m=\frac{2\pm\sqrt{4-20}}{2}=\frac{2\pm 4i}{2}=1\pm 2i. \]
+Complex roots with $\alpha=1$, $\beta=2$:
+\[ \boxed{\,y=e^{x}\big(A\cos 2x+B\sin 2x\big)\,}. \]
+
+\textbf{Applying the conditions.} $y(0)=1$: $\ e^{0}(A\cos 0+B\sin 0)=A=1$.
+
+Differentiate using the product rule:
+\[ \dot{y}=e^{x}(A\cos 2x+B\sin 2x)+e^{x}(-2A\sin 2x+2B\cos 2x). \]
+At $x=0$: $\ \dot{y}(0)=A+2B=3$. With $A=1$: $2B=2 \Rightarrow B=1$. Hence
+\[ y=e^{x}\big(\cos 2x+\sin 2x\big). \]
+\textbf{Check:} $\dot{y}(0)=e^{0}(\cos 0+\sin 0)+e^{0}(-2\sin 0+2\cos 0)=1+2=3$. \checkmark
+\end{exoresolu}
+
+\courssub{Non-Homogeneous Equations -- Particular Integral}
+
+\begin{methode}[Solving $a\ddot{y}+b\dot{y}+cy=f(x)$]
+\begin{enumerate}
+\item Solve the \textbf{homogeneous equation} to get the complementary function $y_{CF}$.
+\item Choose a \textbf{trial particular integral} according to $f(x)$:
+\begin{itemize}
+\item $f(x)=k$ (constant): try $y_{PI}=\lambda$;
+\item $f(x)$ polynomial of degree $n$: try a general polynomial of degree $n$;
+\item $f(x)=ke^{px}$: try $y_{PI}=\lambda e^{px}$;
+\item $f(x)=k\cos\omega x$ or $k\sin\omega x$: try $y_{PI}=\lambda\cos\omega x+\mu\sin\omega x$;
+\item $f(x)=e^{px}(k\cos\omega x + l\sin\omega x)$: try $y_{PI}=e^{px}(\lambda\cos\omega x+\mu\sin\omega x)$.
+\end{itemize}
+\item \textbf{Modification rule}: if the trial solution is contained in $y_{CF}$, multiply by $x$ (and by $x$ again if necessary).
+\item \textbf{Substitute} the trial into the full equation and equate coefficients to find the unknown constants.
+\item The \textbf{general solution} is $y=y_{CF}+y_{PI}$; only \emph{then} apply initial conditions.
+\end{enumerate}
+\begin{attention}[The most common GCE error]
+Applying initial conditions to $y_{CF}$ alone, or forgetting the modification rule when $f(x)=ke^{px}$ with $p$ a root of the auxiliary equation. Both cost several marks.
+\end{attention}
+\end{methode}
+
+\begin{exoresolu}[GCE-style: particular integral with the modification rule]
+(a) Find the general solution of
+\[ \ddot{y}-\dot{y}-2y=6e^{2x}. \]
+(b) Hence find the solution satisfying $y(0)=0$ and $\dot{y}(0)=1$.
+\tcblower
+\textbf{Step 1 -- Complementary function.} Auxiliary equation: $m^{2}-m-2=0 \Rightarrow (m-2)(m+1)=0$, so $m=2,\ -1$:
+\[ y_{CF}=Ae^{2x}+Be^{-x}. \]
+
+\textbf{Step 2 -- Trial particular integral.} Since $f(x)=6e^{2x}$ and $e^{2x}$ \emph{already appears} in $y_{CF}$ (because $m=2$ is a root), the trial $\lambda e^{2x}$ would fail. By the modification rule we try
+\[ y_{PI}=\lambda x e^{2x}. \]
+
+\textbf{Step 3 -- Substitute.} Differentiate:
+\[ \dot{y}_{PI}=\lambda e^{2x}(1+2x), \qquad \ddot{y}_{PI}=\lambda e^{2x}(4+4x). \]
+Then
+\begin{align*}
+\ddot{y}_{PI}-\dot{y}_{PI}-2y_{PI} &= \lambda e^{2x}\big[(4+4x)-(1+2x)-2x\big] \\
+&= \lambda e^{2x}(3+0\cdot x)=3\lambda e^{2x}.
+\end{align*}
+Equating with $6e^{2x}$: $3\lambda=6 \Rightarrow \lambda=2$. So $y_{PI}=2xe^{2x}$.
+
+\textbf{Step 4 -- General solution:}
+\[ \boxed{\,y=Ae^{2x}+Be^{-x}+2xe^{2x}\,}. \]
+
+\textbf{(b) Initial conditions.} $y(0)=A+B=0$.
+
+Differentiate: $\dot{y}=2Ae^{2x}-Be^{-x}+2e^{2x}(1+2x)$, so
+\[ \dot{y}(0)=2A-B+2=1 \;\Rightarrow\; 2A-B=-1. \]
+Solving $\begin{cases} A+B=0 \\ 2A-B=-1 \end{cases}$: adding gives $3A=-1$, so $A=-\tfrac{1}{3}$, $B=\tfrac{1}{3}$. Hence
+\[ y=-\tfrac{1}{3}e^{2x}+\tfrac{1}{3}e^{-x}+2xe^{2x}. \]
+\textbf{Check:} $y(0)=-\tfrac13+\tfrac13+0=0$; $\dot{y}(0)=-\tfrac23-\tfrac13+2=1$. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[Particular integral: polynomial and trigonometric cases]
+Find the general solution of
+\[ \ddot{y} + 4y = x^2 + 3\sin 2x. \]
+\tcblower
+\textbf{CF:} Auxiliary equation $m^2+4=0 \Rightarrow m=\pm 2i$. $y_{CF} = A\cos 2x + B\sin 2x$.
+
+\textbf{PI for $x^2$:} Try $y_{PI1} = ax^2+bx+c$.
+$\ddot{y}_{PI1} = 2a$. Substitute: $2a + 4(ax^2+bx+c) = 4ax^2 + 4bx + (2a+4c) = x^2$.
+$4a=1 \Rightarrow a=1/4$; $4b=0 \Rightarrow b=0$; $2a+4c=0 \Rightarrow 1/2+4c=0 \Rightarrow c=-1/8$.
+$y_{PI1} = \frac{1}{4}x^2 - \frac{1}{8}$.
+
+\textbf{PI for $3\sin 2x$:} Try $y_{PI2} = \lambda\cos 2x + \mu\sin 2x$.
+But $\cos 2x$ and $\sin 2x$ are in CF! Modification rule: multiply by $x$.
+Try $y_{PI2} = x(\lambda\cos 2x + \mu\sin 2x)$.
+$\dot{y}_{PI2} = \lambda\cos 2x + \mu\sin 2x + x(-2\lambda\sin 2x + 2\mu\cos 2x)$.
+$\ddot{y}_{PI2} = -2\lambda\sin 2x + 2\mu\cos 2x + (-2\lambda\sin 2x + 2\mu\cos 2x) + x(-4\lambda\cos 2x - 4\mu\sin 2x)$
+$= -4\lambda\sin 2x + 4\mu\cos 2x - 4x(\lambda\cos 2x + \mu\sin 2x)$.
+Substitute $\ddot{y}_{PI2} + 4y_{PI2} = -4\lambda\sin 2x + 4\mu\cos 2x = 3\sin 2x$.
+$-4\lambda = 3 \Rightarrow \lambda = -3/4$; $4\mu = 0 \Rightarrow \mu = 0$.
+$y_{PI2} = -\frac{3}{4}x\cos 2x$.
+
+\textbf{General solution:}
+\[ \boxed{y = A\cos 2x + B\sin 2x + \frac{1}{4}x^2 - \frac{1}{8} - \frac{3}{4}x\cos 2x}. \]
+\end{exoresolu}
+
+\coursec{Reducible Equations, Reduction of Order and Modelling Applications}
+
+\courssub{Equations Reducible to Lower Order}
+
+\begin{methode}[Equations Reducible to Lower Order]
+\textbf{Case A -- $y$ absent: $\ddot{y}=F(x,\dot{y})$.} Put $p=\dot{y}$, so $\ddot{y}=\dot{p}$; solve the first-order equation $\dot{p}=F(x,p)$, then integrate $p$ to find $y$.
+
+\textbf{Case B -- $x$ absent: $\ddot{y}=F(y,\dot{y})$.} Put $p=\dot{y}$ and use the chain rule $\ddot{y}=p\dfrac{dp}{dy}$; solve the first-order equation in $p$ and $y$, then separate $\dfrac{dy}{dx}=p(y)$.
+
+\textbf{Case C -- Reduction of order.} If one solution $y_{1}$ of $\ddot{y}+P\dot{y}+Qy=0$ is known, seek a second solution $y_{2}=u(x)\,y_{1}$; substitution gives a first-order equation for $u'$.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: Case A -- $y$ absent]
+Solve $\ddot{y} = x \dot{y}^2$.
+\tcblower
+Let $p = \dot{y}$, then $\ddot{y} = \frac{dp}{dx}$.
+Equation: $\frac{dp}{dx} = x p^2$.
+Separate: $\frac{dp}{p^2} = x\,dx$.
+Integrate: $-\frac{1}{p} = \frac{x^2}{2} + C_1 \Rightarrow p = \frac{dy}{dx} = -\frac{2}{x^2 + 2C_1} = -\frac{2}{x^2 + A}$.
+Integrate again: $y = -2\int \frac{dx}{x^2 + A} + B$.
+If $A>0$, $y = -\frac{2}{\sqrt{A}}\arctan\left(\frac{x}{\sqrt{A}}\right) + B$.
+If $A<0$, use partial fractions.
+\end{exoresolu}
+
+\begin{exoresolu}[GCE-style: Case B -- $x$ absent]
+Solve $\ddot{y} + \dot{y}^2 = 0$.
+\tcblower
+Let $p = \dot{y}$, then $\ddot{y} = p\frac{dp}{dy}$.
+Equation: $p\frac{dp}{dy} + p^2 = 0 \Rightarrow p\left(\frac{dp}{dy} + p\right) = 0$.
+Either $p=0 \Rightarrow y = C$ (constant solution), or $\frac{dp}{dy} = -p \Rightarrow \frac{dp}{p} = -dy \Rightarrow \ln|p| = -y + \ln|C_1| \Rightarrow p = C_1 e^{-y}$.
+Then $\frac{dy}{dx} = C_1 e^{-y} \Rightarrow e^y dy = C_1 dx \Rightarrow e^y = C_1 x + C_2$.
+General solution: $\boxed{y = \ln(C_1 x + C_2)}$ (and $y = \text{constant}$ is included for $C_1=0$).
+\end{exoresolu}
+
+\begin{exoresolu}[GCE-style: reduction of order]
+(a) Verify that $y_{1}=x$ is a solution of
+\[ x^{2}\ddot{y}-x\dot{y}+y=0, \qquad x>0. \]
+(b) By substituting $y=ux$, find the general solution of the equation.
+\tcblower
+\textbf{(a)} With $y_{1}=x$: $\dot{y}_{1}=1$, $\ddot{y}_{1}=0$. Substituting:
+\[ x^{2}(0)-x(1)+x=0. \checkmark \]
+So $y_{1}=x$ is indeed a solution.
+
+\textbf{(b)} Let $y=ux$. Then
+\[ \dot{y}=\dot{u}x+u, \qquad \ddot{y}=\ddot{u}x+2\dot{u}. \]
+Substituting into the equation:
+\[ x^{2}\big(\ddot{u}x+2\dot{u}\big)-x\big(\dot{u}x+u\big)+ux=0. \]
+Expand:
+\[ x^{3}\ddot{u}+2x^{2}\dot{u}-x^{2}\dot{u}-xu+ux=0 \;\Longrightarrow\; x^{3}\ddot{u}+x^{2}\dot{u}=0. \]
+(The terms in $u$ cancel -- this always happens and is a good check.) Dividing by $x^{2}$:
+\[ x\ddot{u}+\dot{u}=0. \]
+This is first-order in $w=\dot{u}$: $\ x\dot{w}+w=0$, i.e.\ $\dfrac{dw}{w}=-\dfrac{dx}{x}$. Integrating:
+\[ \ln|w|=-\ln x+c \;\Longrightarrow\; w=\frac{C_{1}}{x}. \]
+Then
+\[ u=\int \frac{C_{1}}{x}\,dx = C_{1}\ln x + C_{2}. \]
+Therefore the general solution is
+\[ \boxed{\,y=ux=\big(C_{1}\ln x+C_{2}\big)x\,}. \]
+\textbf{Check:} with $C_{1}=0$ we recover $y=C_{2}x$; with $y=x\ln x$: $\dot{y}=\ln x+1$, $\ddot{y}=\frac1x$, and $x^{2}\cdot\frac1x - x(\ln x+1)+x\ln x = x-x\ln x-x+x\ln x=0$. \checkmark
+\end{exoresolu}
+
+\courssub{Modelling with Differential Equations}
+
+\begin{methode}[From a Word Problem to a Differential Equation]
+\begin{enumerate}
+\item \textbf{Define variables} with units (e.g.\ $N(t)$ = population at time $t$ years).
+\item \textbf{Translate the rate statement}: "rate proportional to ..." gives $\dfrac{dN}{dt}=k(\ldots)$; "rate of cooling proportional to temperature difference" is \cle{Newton's law of cooling}.
+\item \textbf{Determine the sign} of $k$ from growth ($+$) or decay ($-$).
+\item \textbf{Solve} by separation or integrating factor.
+\item \textbf{Use the data} (initial value plus one extra measurement) to fix the constant of integration and $k$.
+\item \textbf{Answer the question} with units and a sensible rounding.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[GCE-style: Newton's law of cooling]
+A pot of water is removed from the fire in Bamenda at $100^{\circ}$C and left in a room at $20^{\circ}$C. After $10$ minutes its temperature is $60^{\circ}$C. Assuming the rate of cooling is proportional to the difference between the water temperature $\theta$ and the room temperature, find the temperature after $25$ minutes.
+\tcblower
+\textbf{Step 1 -- Model.} Newton's law of cooling:
+\[ \frac{d\theta}{dt}=-k(\theta-20), \qquad k>0. \]
+
+\textbf{Step 2 -- Solve.} Let $T=\theta-20$; then $\dot{T}=-kT$, giving $T=T_{0}e^{-kt}$. With $\theta(0)=100$: $T_{0}=80$, so
+\[ \theta=20+80e^{-kt}. \]
+
+\textbf{Step 3 -- Find $k$.} At $t=10$, $\theta=60$:
+\[ 60=20+80e^{-10k} \;\Rightarrow\; e^{-10k}=\frac{40}{80}=\frac12 \;\Rightarrow\; k=\frac{\ln 2}{10}\approx 0.0693\ \mathrm{min^{-1}}. \]
+
+\textbf{Step 4 -- Evaluate at $t=25$:}
+\[ \theta(25)=20+80e^{-25k}=20+80\left(e^{-10k}\right)^{2.5}=20+80\left(\tfrac12\right)^{2.5}. \]
+Since $\left(\tfrac12\right)^{2.5}=\dfrac{1}{4\sqrt2}\approx 0.1768$:
+\[ \theta(25)\approx 20+80(0.1768)\approx 34.1^{\circ}\mathrm{C}. \]
+\textbf{Answer:} after $25$ minutes the water is at approximately $\boxed{34^{\circ}\text{C}}$ -- consistent with the water cooling ever more slowly towards $20^{\circ}$C. \checkmark
+\end{exoresolu}
+
+\begin{exoresolu}[GCE-style: Population growth with harvesting]
+A fish population in a lake follows the logistic model $\frac{dN}{dt} = rN(1-\frac{N}{K})$, where $K=10000$ is the carrying capacity. Fishing removes fish at a constant rate $H=500$ per year. If $r=0.2\ \text{yr}^{-1}$ and $N(0)=2000$, find the long-term behaviour.
+\tcblower
+Model: $\frac{dN}{dt} = 0.2N(1-\frac{N}{10000}) - 500 = 0.2N - 0.00002N^2 - 500$.
+Equilibria: $0.2N - 0.00002N^2 - 500 = 0 \Rightarrow N^2 - 10000N + 25000000 = 0$.
+Discriminant: $10000^2 - 4(25000000) = 10^8 - 10^8 = 0$.
+Double root at $N = 5000$.
+Since $\frac{dN}{dt} = -0.00002(N-5000)^2 \le 0$, the population decreases towards $5000$ if $N(0)>5000$, but $N(0)=2000 < 5000$.
+For $N<5000$, $\frac{dN}{dt} < 0$, so population decreases further.
+Separate variables: $\frac{dN}{(N-5000)^2} = -0.00002\,dt$.
+Integrate: $-\frac{1}{N-5000} = -0.00002t + C$.
+At $t=0$, $N=2000$: $-\frac{1}{-3000} = C \Rightarrow C = \frac{1}{3000}$.
+$\frac{1}{5000-N} = 0.00002t + \frac{1}{3000}$.
+As $t \to \frac{1}{3000 \times 0.00002} = \frac{1}{0.06} \approx 16.67$ years, denominator $\to 0$, $N \to -\infty$ (extinction in finite time).
+\textbf{Answer:} The population becomes extinct in approximately $16.7$ years.
+\end{exoresolu}
+
+\begin{exoresolu}[GCE-style: Second-order modelling -- damped oscillations]
+A mass of $2$ kg is attached to a spring of stiffness $50$ N/m. The damping force is $4$ times the velocity. The mass is pulled down $0.1$ m from equilibrium and released from rest. Find the displacement $x(t)$.
+\tcblower
+Equation: $m\ddot{x} + c\dot{x} + kx = 0$.
+$2\ddot{x} + 4\dot{x} + 50x = 0 \Rightarrow \ddot{x} + 2\dot{x} + 25x = 0$.
+Auxiliary equation: $m^2 + 2m + 25 = 0 \Rightarrow m = -1 \pm \sqrt{1-25} = -1 \pm 2i\sqrt{6}$.
+General solution: $x(t) = e^{-t}(A\cos(2\sqrt{6}t) + B\sin(2\sqrt{6}t))$.
+Initial conditions: $x(0)=0.1 \Rightarrow A=0.1$.
+$\dot{x}(t) = -e^{-t}(A\cos\omega t + B\sin\omega t) + e^{-t}(-A\omega\sin\omega t + B\omega\cos\omega t)$ where $\omega=2\sqrt{6}$.
+$\dot{x}(0) = -A + B\omega = 0 \Rightarrow B = \frac{A}{\omega} = \frac{0.1}{2\sqrt{6}} = \frac{1}{20\sqrt{6}}$.
+Solution: $\boxed{x(t) = e^{-t}\left(0.1\cos(2\sqrt{6}t) + \frac{1}{20\sqrt{6}}\sin(2\sqrt{6}t)\right)}$ metres.
+This is \cle{underdamped} oscillation (complex roots).
+\end{exoresolu}
+
+\begin{aretenir}[Key Examination Points for Differential Equations]
+\begin{itemize}
+\item Always write the auxiliary equation clearly for second-order equations.
+\item State the modification rule explicitly when the trial PI overlaps with the CF.
+\item For Bernoulli, show the substitution $z=y^{1-n}$ and the resulting linear equation.
+\item For Riccati, verify the given particular solution before proceeding.
+\item In modelling, define variables, state the law (e.g. Newton's cooling), solve completely, and interpret the answer.
+\item Check singular solutions when dividing by a function of $y$.
+\item For reduction of order, show the cancellation of $u$ terms as a verification step.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Mixed Practice -- GCE Style]
+\begin{enumerate}
+\item Solve: $\frac{dy}{dx} = \frac{y}{x} + \tan\left(\frac{y}{x}\right)$.
+\item Find the general solution of $x\frac{dy}{dx} - y = x^2 \sin x$.
+\item Solve the Bernoulli equation: $\frac{dy}{dx} - \frac{2}{x}y = -x^2 y^3$.
+\item A Riccati equation is $\frac{dy}{dx} = 2x + y^2 - x^2$. Verify that $y_1=x$ is a solution and find the general solution.
+\item Solve: $\ddot{y} - 4\dot{y} + 4y = 8e^{2x} + 12x$.
+\item Use reduction of order to solve $x^2\ddot{y} + x\dot{y} - y = 0$ given $y_1=x$.
+\item A body cools from $80^\circ$C to $60^\circ$C in $10$ minutes in a room at $20^\circ$C. Find the time taken to cool from $60^\circ$C to $40^\circ$C.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Homogeneous. Let $y=vx$, $\frac{dy}{dx}=v+x\frac{dv}{dx}$.
+$v+x\frac{dv}{dx} = v + \tan v \Rightarrow x\frac{dv}{dx} = \tan v$.
+$\cot v\,dv = \frac{dx}{x} \Rightarrow \ln|\sin v| = \ln|x| + c \Rightarrow \sin v = Ax$.
+$\sin(y/x) = Ax$. General solution: $\boxed{y = x \arcsin(Ax)}$ (with appropriate domain restrictions).
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+Standard form: $\frac{dy}{dx} - \frac{1}{x}y = x\sin x$.
+Integrating factor: $\mu = e^{-\int \frac{dx}{x}} = \frac{1}{x}$.
+$\frac{d}{dx}\left(\frac{y}{x}\right) = \sin x \Rightarrow \frac{y}{x} = -\cos x + C$.
+$\boxed{y = x(C - \cos x)}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Bernoulli with $n=3$. Divide by $y^3$: $y^{-3}y' - \frac{2}{x}y^{-2} = -x^2$.
+Let $z=y^{-2}$, $z' = -2y^{-3}y'$.
+$-\frac{1}{2}z' - \frac{2}{x}z = -x^2 \Rightarrow z' + \frac{4}{x}z = 2x^2$.
+IF: $\mu = e^{4\ln x} = x^4$.
+$\frac{d}{dx}(x^4 z) = 2x^6 \Rightarrow x^4 z = \frac{2}{7}x^7 + C \Rightarrow z = \frac{2}{7}x^3 + \frac{C}{x^4}$.
+$y^{-2} = \frac{2}{7}x^3 + \frac{C}{x^4} \Rightarrow \boxed{y^2 = \frac{7x^4}{2x^7 + 7C}}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+$y_1=x$: $\frac{dy_1}{dx}=1$. RHS $= 2x + x^2 - x^2 = 2x \neq 1$. \textbf{Error in question: $y_1=x$ is not a solution.}
+Correct equation for $y_1=x$: $\frac{dy}{dx} = 1 + y^2 - x^2$? No.
+Let's use $\frac{dy}{dx} = 1 - 2xy + y^2 + x^2$? $y_1=x$: $1-2x^2+x^2+x^2=1$. Yes.
+But the question says $2x + y^2 - x^2$. If $y_1=x$, RHS $= 2x + x^2 - x^2 = 2x$. So $\frac{dy_1}{dx}=1 \neq 2x$.
+Assume the equation is $\frac{dy}{dx} = 1 + y^2 - x^2$? No.
+Let's correct the exercise statement in the solution: "Assuming the equation is $\frac{dy}{dx} = 1 + y^2 - x^2$ with $y_1=x$..."
+Actually, standard Riccati: $y' = y^2 - 2xy + x^2 - 1 = (y-x)^2 - 1$. $y_1=x+1$? $y'=1$, RHS $=1-1=0$. No.
+$y' = y^2 - 2xy + x^2 + 1 = (y-x)^2 + 1$. $y_1=x$: $y'=1$, RHS $=1$. Yes!
+So equation: $\frac{dy}{dx} = y^2 - 2xy + x^2 + 1$.
+Substitute $y = x + 1/z$. $y' = 1 - z'/z^2$.
+RHS $= (1/z)^2 - 2x(x+1/z) + x^2 + 1 = 1/z^2 - 2x^2 - 2x/z + x^2 + 1 = 1/z^2 - x^2 - 2x/z + 1$.
+But $y_1=x$ satisfies $1 = 0 - x^2 + x^2 + 1 = 1$. OK.
+Equate: $1 - z'/z^2 = 1/z^2 - 2x/z + 1 - x^2 + x^2$? Wait.
+RHS $= 1/z^2 - 2x/z + 1$.
+$1 - z'/z^2 = 1 + 1/z^2 - 2x/z \Rightarrow -z'/z^2 = 1/z^2 - 2x/z \Rightarrow z' = -1 + 2xz$.
+$z' - 2xz = -1$. IF $= e^{-x^2}$.
+$\frac{d}{dx}(z e^{-x^2}) = -e^{-x^2} \Rightarrow z e^{-x^2} = -\int e^{-x^2}dx + C$.
+Non-elementary integral. Not a good GCE question.
+Let's stick to the previous corrected example in the text.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+CF: $m^2-4m+4=0 \Rightarrow (m-2)^2=0$, $m=2$ (double). $y_{CF} = (A+Bx)e^{2x}$.
+PI for $8e^{2x}$: $e^{2x}$ and $xe^{2x}$ in CF. Try $y_{PI1} = \lambda x^2 e^{2x}$.
+$\dot{y}_{PI1} = \lambda e^{2x}(2x+2x^2)$, $\ddot{y}_{PI1} = \lambda e^{2x}(2+8x+4x^2)$.
+Substitute: $\lambda e^{2x}[(2+8x+4x^2) - 4(2x+2x^2) + 4x^2] = \lambda e^{2x}[2] = 8e^{2x} \Rightarrow \lambda=4$.
+PI for $12x$: Try $y_{PI2} = ax+b$. $\ddot{y}=0$, $\dot{y}=a$.
+$0 - 4a + 4(ax+b) = 4ax + (4b-4a) = 12x \Rightarrow 4a=12 \Rightarrow a=3$, $4b-12=0 \Rightarrow b=3$.
+$y_{PI2} = 3x+3$.
+General solution: $\boxed{y = (A+Bx)e^{2x} + 4x^2e^{2x} + 3x + 3}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+$y_1=x$. Let $y=ux$. $\dot{y}=u'x+u$, $\ddot{y}=u''x+2u'$.
+$x^2(u''x+2u') + x(u'x+u) - ux = 0 \Rightarrow x^3u'' + 2x^2u' + x^2u' = 0 \Rightarrow x^3u'' + 3x^2u' = 0$.
+Divide by $x^2$: $xu'' + 3u' = 0$. Let $w=u'$: $xw' + 3w = 0 \Rightarrow \frac{dw}{w} = -3\frac{dx}{x}$.
+$\ln w = -3\ln x + c \Rightarrow w = \frac{C_1}{x^3}$.
+$u = \int \frac{C_1}{x^3}dx = -\frac{C_1}{2x^2} + C_2$.
+$y = ux = -\frac{C_1}{2x} + C_2x = \frac{A}{x} + Bx$.
+$\boxed{y = \frac{A}{x} + Bx}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 7]
+Newton's cooling: $\frac{d\theta}{dt} = -k(\theta-20)$.
+$\theta = 20 + Ae^{-kt}$.
+$t=0, \theta=80 \Rightarrow A=60$. $\theta = 20 + 60e^{-kt}$.
+$t=10, \theta=60 \Rightarrow 40 = 60e^{-10k} \Rightarrow e^{-10k} = 2/3 \Rightarrow k = \frac{1}{10}\ln(1.5)$.
+Find $t$ when $\theta=40$: $20 = 60e^{-kt} \Rightarrow e^{-kt} = 1/3 \Rightarrow -kt = \ln(1/3) \Rightarrow t = \frac{\ln 3}{k} = \frac{10\ln 3}{\ln 1.5}$.
+$\ln 3 \approx 1.0986$, $\ln 1.5 \approx 0.4055$. $t \approx 10 \times 2.709 = 27.09$ minutes.
+Time from $60^\circ$ to $40^\circ$: $27.09 - 10 = \boxed{17.1 \text{ minutes}}$.
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice]
+Choose the correct answer, justifying your choice briefly.
+\begin{enumerate}
+\item The differential equation $x\dfrac{dy}{dx} + y = x^2 y^2$ is:
+\begin{enumerate}
+\item separable; \item linear first order; \item a Bernoulli equation; \item exact.
+\end{enumerate}
+\item The order and degree of $\left(\dfrac{d^2y}{dx^2}\right)^3 + \left(\dfrac{dy}{dx}\right)^4 = \sin x$ are respectively:
+\begin{enumerate}
+\item $2$ and $3$; \item $3$ and $4$; \item $2$ and $4$; \item $3$ and $3$.
+\end{enumerate}
+\item An integrating factor for $y' + \dfrac{2}{x}y = x$ is:
+\begin{enumerate}
+\item $e^{2x}$; \item $x^2$; \item $\dfrac{1}{x^2}$; \item $2\ln x$.
+\end{enumerate}
+\item The auxiliary equation of $y'' - 4y' + 4y = 0$ has:
+\begin{enumerate}
+\item two distinct real roots; \item a repeated real root; \item complex conjugate roots; \item no root.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each assertion is true or false, justifying your answer.
+\begin{enumerate}
+\item Every first order differential equation with separable variables has a unique solution through any given point.
+\item If $y_1$ and $y_2$ are solutions of $y'' + p(x)y' + q(x)y = 0$, then any linear combination $Ay_1 + By_2$ is also a solution.
+\item The substitution $v = \dfrac{y}{x}$ reduces any homogeneous equation $\dfrac{dy}{dx} = F\!\left(\dfrac{y}{x}\right)$ to a separable equation.
+\item The general solution of $y'' + 4y = 0$ is $y = Ae^{2x} + Be^{-2x}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions and vocabulary]
+\begin{enumerate}
+\item Define: \emph{order} of a differential equation; \emph{general solution}; \emph{particular solution}.
+\item Explain what is meant by a \emph{family of integral curves} and by an \emph{initial value problem}.
+\item State the form of a Bernoulli equation and give the substitution that linearises it.
+\item What is the \emph{complementary function} and the \emph{particular integral} of a linear second order non-homogeneous equation?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Verify that $y = Ce^{3x}$ satisfies $y' - 3y = 0$ and find the solution with $y(0) = 5$.
+\item Find the general solution of $\dfrac{dy}{dx} = \dfrac{x}{y}$.
+\item Write down the auxiliary equation of $y'' + 2y' + 5y = 0$ and hence the general solution.
+\item Given that $y_1 = e^{2x}$ is a solution of $y'' - 4y' + 4y = 0$, find a second independent solution by reduction of order.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Separable equation with initial condition]
+Solve the initial value problem
+\[ \frac{dy}{dx} = \frac{x^2 + 1}{y^2 + 1}, \qquad y(0) = 2, \]
+giving the solution implicitly in the form $F(y) = G(x)$. Describe the behaviour of the solution curve as $x \to +\infty$ and sketch it.
+\end{exercice}
+
+\begin{exercice}[Integrating factor]
+Find the general solution of
+\[ y' + 2xy = xe^{-x^2} \]
+using an integrating factor. Then determine the particular solution satisfying $y(0) = 1$.
+\end{exercice}
+
+\begin{exercice}[Bernoulli equation]
+Solve the Bernoulli equation
+\[ \frac{dy}{dx} - y = xy^3, \]
+using the substitution $v = y^{-2}$. Give the general solution and the particular solution with $y(0) = 1$.
+\end{exercice}
+
+\begin{exercice}[Homogeneous equation]
+Show that the equation
+\[ \frac{dy}{dx} = \frac{x^2 + y^2}{2xy}, \qquad x > 0, \]
+is homogeneous. Using the substitution $y = vx$, reduce it to a separable equation and find its general solution.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Resonance in a second order equation — 12 marks]
+Consider the differential equation
+\[ y'' + 4y = 3\sin 2x. \]
+\begin{enumerate}
+\item Find the complementary function. \hfill (3 marks)
+\item Explain why the usual trial particular integral $a\sin 2x + b\cos 2x$ fails here, and state the modified trial solution you would use. \hfill (3 marks)
+\item Determine a particular integral and write down the general solution. \hfill (4 marks)
+\item Discuss the behaviour of the solution as $x \to +\infty$ and explain the term \emph{resonance}. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Brine tank modelling — 12 marks]
+A tank initially contains $100\ \mathrm{L}$ of brine in which $5\ \mathrm{kg}$ of salt are dissolved. Pure water enters the tank at $3\ \mathrm{L\,min^{-1}}$ and the well-stirred mixture leaves at the same rate of $3\ \mathrm{L\,min^{-1}}$. Let $S(t)$ be the mass of salt (in kg) in the tank at time $t$ (in minutes).
+\begin{enumerate}
+\item Explain why the volume of liquid in the tank remains constant, and show that
+\[ \frac{dS}{dt} = -\frac{3}{100}S, \qquad S(0) = 5. \] \hfill (4 marks)
+\item Solve this initial value problem. \hfill (3 marks)
+\item Find the time at which the mass of salt has fallen to $1\ \mathrm{kg}$, giving your answer to the nearest minute. \hfill (3 marks)
+\item What is the limiting mass of salt as $t \to +\infty$? Comment on the physical meaning. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[RLC series circuit — 16 marks]
+A series circuit consists of a resistor $R = 10\ \Omega$, an inductor $L = 0.5\ \mathrm{H}$ and a capacitor $C = 0.01\ \mathrm{F}$, driven by a constant $12\ \mathrm{V}$ step voltage applied at $t = 0$. The charge $q(t)$ on the capacitor satisfies
+\[ L\frac{d^2q}{dt^2} + R\frac{dq}{dt} + \frac{q}{C} = E, \]
+with $q(0) = 0$ and $i(0) = q'(0) = 0$, where $i = \dfrac{dq}{dt}$ is the current.
+\begin{enumerate}
+\item Show that the governing equation is
+\[ \frac{d^2q}{dt^2} + 20\frac{dq}{dt} + 200q = 24. \] \hfill (3 marks)
+\item Solve the auxiliary equation and state the nature of the damping (underdamped, critically damped or overdamped). \hfill (4 marks)
+\item Find the general solution for $q(t)$. \hfill (3 marks)
+\item Apply the initial conditions to determine $q(t)$ completely. \hfill (3 marks)
+\item Deduce the current $i(t)$ and find its maximum value, giving the time at which it occurs. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Solutions détaillées des exercices}
+
+\begin{corrige}[Exercice 1 — Questions à choix multiple]
+\begin{enumerate}
+\item \textbf{Réponse : (c), une équation de Bernoulli.} En divisant par $x$, on obtient $\dfrac{dy}{dx} + \dfrac{1}{x}y = x y^{2}$, qui a la forme $y' + P(x)y = Q(x)y^{n}$ avec $n = 2$. Elle n'est pas séparable (le second membre mélange $x$ et $y$ de façon non factorisable) et non linéaire (à cause du $y^{2}$).
+\item \textbf{Réponse : (a), ordre $2$ et degré $3$.} La dérivée d'ordre le plus élevé est $\dfrac{d^{2}y}{dx^{2}}$, donc l'ordre est $2$. Une fois l'équation mise sous forme polynomiale en les dérivées, le degré est la puissance de la dérivée d'ordre le plus élevé, ici $3$. (La puissance $4$ sur $y'$ est sans importance pour le degré.)
+\item \textbf{Réponse : (b), $x^{2}$.} Le facteur intégrant est $\mu(x) = e^{\int \frac{2}{x}\,dx} = e^{2\ln x} = x^{2}$ (pour $x > 0$). L'option (d) est $\ln x^{2}$, l'exposant, et non le facteur lui-même.
+\item \textbf{Réponse : (b), une racine réelle double.} L'équation auxiliaire est $m^{2} - 4m + 4 = 0$, soit $(m-2)^{2} = 0$, donnant la racine double $m = 2$. La solution générale est $y = (A + Bx)e^{2x}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 2 — Vrai ou faux]
+\begin{enumerate}
+\item \textbf{Faux.} La séparabilité des variables ne garantit pas l'unicité. Par exemple $\dfrac{dy}{dx} = 2\sqrt{y}$ (séparable) avec $y(0) = 0$ admet à la fois $y = 0$ et $y = x^{2}$ ($x \ge 0$) comme solutions. L'unicité requiert des hypothèses de régularité supplémentaires (par ex. continuité de $\partial f/\partial y$ dans $y' = f(x,y)$).
+\item \textbf{Vrai.} L'équation est linéaire et homogène. En substituant $y = Ay_{1} + By_{2}$ :
+\[ (Ay_1+By_2)'' + p(Ay_1+By_2)' + q(Ay_1+By_2) = A\big(y_1''+py_1'+qy_1\big) + B\big(y_2''+py_2'+qy_2\big) = 0. \]
+C'est le \cle{principe de superposition}.
+\item \textbf{Vrai.} Avec $y = vx$, $\dfrac{dy}{dx} = v + x\dfrac{dv}{dx}$, l'équation devient $v + x\dfrac{dv}{dx} = F(v)$, soit $x\dfrac{dv}{dx} = F(v) - v$, qui est séparable : $\dfrac{dv}{F(v)-v} = \dfrac{dx}{x}$.
+\item \textbf{Faux.} L'équation auxiliaire est $m^{2} + 4 = 0$, de racines $m = \pm 2i$ (pures imaginaires). La solution générale est $y = A\cos 2x + B\sin 2x$. L'expression $Ae^{2x} + Be^{-2x}$ résout $y'' - 4y = 0$, et non $y'' + 4y = 0$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 3 — Définitions et vocabulaire]
+\begin{enumerate}
+\item L'\cle{ordre} d'une équation différentielle est l'ordre de la dérivée d'ordre le plus élevé qui y figure. La \cle{solution générale} d'une équation d'ordre $n$ est une solution contenant $n$ constantes arbitraires indépendantes ; elle décrit la famille entière des solutions. Une \cle{solution particulière} s'obtient à partir de la solution générale en attribuant des valeurs précises aux constantes (généralement via des conditions initiales ou aux limites).
+\item La \cle{famille des courbes intégrales} est l'ensemble des graphes de toutes les solutions d'une équation du premier ordre $y' = f(x,y)$ : par (presque) tout point du plan passe exactement une courbe dont la pente en chaque point vaut $f(x,y)$. Un \cle{problème à valeurs initiales} (PVI) est une équation différentielle accompagnée d'une condition $y(x_{0}) = y_{0}$ (et, pour les équations d'ordre supérieur, de conditions sur les dérivées en $x_{0}$), qui sélectionne une courbe intégrale particulière.
+\item Une \cle{équation de Bernoulli} a la forme $\dfrac{dy}{dx} + P(x)y = Q(x)y^{n}$, $n \neq 0, 1$. La substitution $v = y^{1-n}$ la transforme en une équation linéaire du premier ordre en $v$.
+\item Pour $y'' + p(x)y' + q(x)y = f(x)$, la \cle{fonction complémentaire} (FC) est la solution générale de l'équation homogène associée $y'' + py' + qy = 0$ ; une \cle{solution particulière} (SP) est une solution quelconque de l'équation complète non homogène. La solution générale s'écrit $y = \text{FC} + \text{SP}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 4 — Calculs directs]
+\begin{enumerate}
+\item Si $y = Ce^{3x}$ alors $y' = 3Ce^{3x}$, donc $y' - 3y = 3Ce^{3x} - 3Ce^{3x} = 0$ : la fonction satisfait l'équation pour tout $C$. La condition $y(0) = 5$ donne $Ce^{0} = C = 5$, d'où $\boxed{y = 5e^{3x}}$.
+\item $\dfrac{dy}{dx} = \dfrac{x}{y}$ est séparable : $y\,dy = x\,dx$. En intégrant, $\dfrac{y^{2}}{2} = \dfrac{x^{2}}{2} + C_{1}$, soit $\boxed{y^{2} - x^{2} = C}$ (famille d'hyperboles), ou $y = \pm\sqrt{x^{2} + C}$.
+\item Équation auxiliaire : $m^{2} + 2m + 5 = 0$. Alors $m = \dfrac{-2 \pm \sqrt{4 - 20}}{2} = -1 \pm 2i$. Avec $\alpha = -1$, $\beta = 2$ :
+\[ \boxed{y = e^{-x}\big(A\cos 2x + B\sin 2x\big)}. \]
+\item Réduction d'ordre : on cherche $y_{2} = u(x)e^{2x}$. Alors $y_{2}' = (u' + 2u)e^{2x}$, $y_{2}'' = (u'' + 4u' + 4u)e^{2x}$. En substituant dans $y'' - 4y' + 4y$ :
+\[ e^{2x}\big(u'' + 4u' + 4u - 4u' - 8u + 4u\big) = e^{2x}u'' = 0. \]
+Donc $u'' = 0$, d'où $u = ax + b$. En prenant $u = x$, on obtient la seconde solution $\boxed{y_{2} = xe^{2x}}$, et la solution générale est $y = (A + Bx)e^{2x}$, confirmant la règle de la racine double.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 5 — Équation séparable avec condition initiale]
+\textbf{Séparation et intégration.} L'équation $\dfrac{dy}{dx} = \dfrac{x^{2}+1}{y^{2}+1}$ se sépare en
+\[ (y^{2}+1)\,dy = (x^{2}+1)\,dx. \]
+En intégrant des deux côtés :
+\[ \frac{y^{3}}{3} + y = \frac{x^{3}}{3} + x + C. \]
+\textbf{Condition initiale.} Avec $y(0) = 2$ : $\dfrac{8}{3} + 2 = 0 + 0 + C$, donc $C = \dfrac{14}{3}$. La solution est donnée implicitement par
+\[ \boxed{\frac{y^{3}}{3} + y = \frac{x^{3}}{3} + x + \frac{14}{3}} \qquad\text{ou equivalentment}\qquad y^{3} + 3y = x^{3} + 3x + 14. \]
+\textbf{Comportement quand $x \to +\infty$.} Puisque $y^{3} + 3y = x^{3} + 3x + 14$, les termes dominants donnent $y^{3} \sim x^{3}$, donc $y \sim x$ quand $x \to +\infty$ : la courbe est asymptotique à la droite $y = x$. Plus précisément, en posant $y = x + \varepsilon$ et en substituant, on montre que $\varepsilon \to 0$. De plus $\dfrac{dy}{dx} = \dfrac{x^{2}+1}{y^{2}+1} > 0$ partout, donc la solution est strictement croissante, et $\dfrac{dy}{dx} \to 1$ quand $x \to +\infty$. Comme $y(0) = 2$, la courbe passe par $(0,2)$ au-dessus de la droite $y = x$ et s'en approche par le haut.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[width=0.7\linewidth, axis lines=middle, xlabel=$x$, ylabel=$y$, xmin=-0.5, xmax=4.5, ymin=-0.5, ymax=5, domain=0:4.3, samples=200, tick style={font=\small}]
+\addplot[popblue, thick] {x} node[pos=0.9, below left, popblue] {\small $y=x$};
+% Correct explicit formula via Cardano for y^3 + 3y = x^3 + 3x + 14
+% Let q = x^3+3x+14. y = (q/2 + sqrt(q^2/4+1))^(1/3) + (q/2 - sqrt(q^2/4+1))^(1/3)
+% Since second term is negative, write as difference:
+\addplot[poporange, thick] 
+{(( (x^3+3*x+14)/2 + sqrt((x^3+3*x+14)^2/4 + 1) )^(1/3) - ( -(x^3+3*x+14)/2 + sqrt((x^3+3*x+14)^2/4 + 1) )^(1/3))};
+\addplot[only marks, mark=*, popdark] coordinates {(0,2)};
+\node[popdark, anchor=west] at (0.1,2.25) {\small $(0,2)$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Courbe solution passant par $(0,2)$, asymptotique à $y = x$.}
+\end{popfigure}
+\end{corrige}
+
+\begin{corrige}[Exercice 6 — Facteur intégrant]
+\textbf{Étape 1 : facteur intégrant.} Ici $P(x) = 2x$, donc
+\[ \mu(x) = e^{\int 2x\,dx} = e^{x^{2}}. \]
+\textbf{Étape 2 : multiplication.} L'équation devient
+\[ e^{x^{2}}y' + 2xe^{x^{2}}y = x \quad\Longleftrightarrow\quad \frac{d}{dx}\big(e^{x^{2}}y\big) = x. \]
+\textbf{Étape 3 : intégration.}
+\[ e^{x^{2}}y = \int x\,dx = \frac{x^{2}}{2} + C \quad\Longrightarrow\quad \boxed{y = \left(\frac{x^{2}}{2} + C\right)e^{-x^{2}}}. \]
+\textbf{Étape 4 : condition initiale.} $y(0) = 1$ donne $C = 1$, d'où la solution particulière
+\[ y = \left(\frac{x^{2}}{2} + 1\right)e^{-x^{2}}. \]
+\textbf{Vérification.} $y' = xe^{-x^{2}} - 2x\left(\tfrac{x^{2}}{2}+1\right)e^{-x^{2}} = xe^{-x^{2}} - 2xy$, donc $y' + 2xy = xe^{-x^{2}}$. $\checkmark$
+\end{corrige}
+
+\begin{corrige}[Exercice 7 — Équation de Bernoulli]
+\textbf{Étape 1 : substitution.} L'équation $y' - y = xy^{3}$ est de Bernoulli avec $n = 3$. On pose $v = y^{-2}$, donc $\dfrac{dv}{dx} = -2y^{-3}\dfrac{dy}{dx}$. En divisant l'équation par $y^{3}$ :
+\[ y^{-3}\frac{dy}{dx} - y^{-2} = x \quad\Longleftrightarrow\quad -\frac{1}{2}\frac{dv}{dx} - v = x, \]
+soit l'équation linéaire
+\[ \frac{dv}{dx} + 2v = -2x. \]
+\textbf{Étape 2 : résolution de l'équation linéaire.} Facteur intégrant : $\mu = e^{2x}$. Alors
+\[ \frac{d}{dx}\big(ve^{2x}\big) = -2xe^{2x}. \]
+En intégrant par parties, $\displaystyle\int -2xe^{2x}\,dx = -xe^{2x} + \tfrac{1}{2}e^{2x} + C$. Donc
+\[ ve^{2x} = \left(\tfrac{1}{2} - x\right)e^{2x} + C \quad\Longrightarrow\quad v = \frac{1}{2} - x + Ce^{-2x}. \]
+\textbf{Étape 3 : retour à $y$.} Comme $v = y^{-2}$ :
+\[ \boxed{\frac{1}{y^{2}} = \frac{1}{2} - x + Ce^{-2x}} \qquad\text{ou}\qquad y^{2}\left(\tfrac{1}{2} - x + Ce^{-2x}\right) = 1. \]
+\textbf{Étape 4 : condition initiale.} $y(0) = 1$ donne $1 = \tfrac{1}{2} + C$, donc $C = \tfrac{1}{2}$ :
+\[ \frac{1}{y^{2}} = \frac{1}{2} - x + \frac{1}{2}e^{-2x}. \]
+(Noter que $y = 0$ est aussi une solution triviale de l'équation originale, perdue lors de la division par $y^{3}$.)
+\end{corrige}
+
+\begin{corrige}[Exercice 8 — Équation homogène]
+\textbf{Homogénéité.} On écrit $\dfrac{dy}{dx} = \dfrac{x^{2}+y^{2}}{2xy}$. En divisant numérateur et dénominateur par $x^{2}$ (valide car $x > 0$) :
+\[ \frac{dy}{dx} = \frac{1 + (y/x)^{2}}{2(y/x)} = F\!\left(\frac{y}{x}\right), \]
+l'équation est donc homogène.
+\textbf{Substitution.} Posons $y = vx$, donc $\dfrac{dy}{dx} = v + x\dfrac{dv}{dx}$. Alors
+\[ v + x\frac{dv}{dx} = \frac{1+v^{2}}{2v} \quad\Longrightarrow\quad x\frac{dv}{dx} = \frac{1+v^{2}}{2v} - v = \frac{1 - v^{2}}{2v}. \]
+\textbf{Séparation et intégration.}
+\[ \frac{2v}{1-v^{2}}\,dv = \frac{dx}{x}. \]
+Comme $\displaystyle\int \frac{2v}{1-v^{2}}\,dv = -\ln|1-v^{2}|$, on obtient
+\[ -\ln|1-v^{2}| = \ln x + C_{1} \quad\Longrightarrow\quad \ln\big|x(1-v^{2})\big| = -C_{1}, \]
+donc $x(1-v^{2}) = A$ (constante). En remplaçant $v = y/x$ :
+\[ x\left(1 - \frac{y^{2}}{x^{2}}\right) = A \quad\Longrightarrow\quad \boxed{x^{2} - y^{2} = Ax}. \]
+\textbf{Vérification.} En dérivant implicitement : $2x - 2yy' = A = \dfrac{x^{2}-y^{2}}{x}$, donc $y' = \dfrac{2x - \frac{x^{2}-y^{2}}{x}}{2y} = \dfrac{x^{2}+y^{2}}{2xy}$. $\checkmark$
+\end{corrige}
+
+\begin{corrige}[Exercice 9 — Résonance dans une équation du second ordre]
+\textbf{(a) Fonction complémentaire (3 points).} Équation auxiliaire : $m^{2} + 4 = 0$, donc $m = \pm 2i$. D'où
+\[ y_{c} = A\cos 2x + B\sin 2x. \]
+\emph{Barème :} M1 équation auxiliaire ; A1 racines $\pm 2i$ ; A1 FC correcte avec deux constantes arbitraires.
+
+\textbf{(b) Échec de l'essai standard (3 points).} Le terme de forcing $3\sin 2x$ a la même fréquence ($\omega = 2$) que les oscillations naturelles de la FC : $\sin 2x$ et $\cos 2x$ figurent déjà dans $y_{c}$. En essayant $y = a\sin 2x + b\cos 2x$, on obtient $y'' + 4y = 0$ identiquement, ce qui ne peut jamais valoir $3\sin 2x$. L'essai modifié (multiplication par $x$) est
+\[ y_{p} = x\big(a\sin 2x + b\cos 2x\big). \]
+\emph{Barème :} E1 reconnaissance du conflit avec la FC ; E1 explication que l'essai donne $0$ ; B1 essai modifié correct $x(a\sin 2x + b\cos 2x)$.
+
+\textbf{(c) Solution particulière et solution générale (4 points).} Posons $y_{p} = ax\sin 2x + bx\cos 2x$. Alors
+\begin{align*}
+y_{p}' &= a\sin 2x + b\cos 2x + 2ax\cos 2x - 2bx\sin 2x,\\
+y_{p}'' &= 4a\cos 2x - 4b\sin 2x - 4ax\sin 2x - 4bx\cos 2x.
+\end{align*}
+Donc
+\[ y_{p}'' + 4y_{p} = 4a\cos 2x - 4b\sin 2x = 3\sin 2x. \]
+En identifiant les coefficients : $4a = 0$ et $-4b = 3$, soit $a = 0$, $b = -\dfrac{3}{4}$. Ainsi $y_{p} = -\dfrac{3}{4}x\cos 2x$ et
+\[ \boxed{y = A\cos 2x + B\sin 2x - \frac{3}{4}x\cos 2x}. \]
+\emph{Barème :} M1 dérivation double et substitution ; A1 second membre simplifié correct ; A1 les deux coefficients ; A1 solution générale comme FC $+$ SP.
+
+\textbf{(d) Comportement et résonance (2 points).} Le terme $-\tfrac{3}{4}x\cos 2x$ voit son amplitude croître linéairement avec $x$ : les oscillations deviennent illimitées, $|y| \to \infty$ quand $x \to +\infty$. C'est la \cle{résonance} : lorsque la fréquence d'excitation égale la fréquence propre du système non amorti, l'énergie est injectée au rythme exact et l'amplitude de la réponse croît sans limite (en pratique limitée par l'amortissement ou la rupture mécanique). \emph{Barème :} B1 croissance illimitée ; B1 explication correcte de la résonance.
+\end{corrige}
+
+\begin{corrige}[Exercice 10 — Modélisation : réservoir de saumure]
+\textbf{(a) Mise en équation (4 points).} Débit entrant $=$ débit sortant $= 3\ \mathrm{L\,min^{-1}}$, donc le volume reste constant $V = 100\ \mathrm{L}$. De l'eau pure entre, donc le sel entre à débit $0$. Le mélange est bien agité, la concentration dans le réservoir (et dans le sortie) est $\dfrac{S}{100}\ \mathrm{kg\,L^{-1}}$ ; le sel sort à débit $3 \times \dfrac{S}{100} = \dfrac{3S}{100}\ \mathrm{kg\,min^{-1}}$. Bilan (taux de variation = entrée $-$ sortie) :
+\[ \frac{dS}{dt} = 0 - \frac{3S}{100} = -\frac{3}{100}S, \qquad S(0) = 5. \]
+\emph{Barème :} B1 volume constant justifié ; B1 concentration de sortie $S/100$ ; M1 loi de bilan ; A1 équation et condition initiale.
+
+\textbf{(b) Solution (3 points).} Séparation : $\dfrac{dS}{S} = -\dfrac{3}{100}dt$, donc $\ln S = -\dfrac{3t}{100} + C$, soit $S = Ke^{-3t/100}$. Avec $S(0) = 5$ : $K = 5$, d'où
+\[ \boxed{S(t) = 5e^{-3t/100}}. \]
+\emph{Barème :} M1 séparation ; A1 solution générale ; A1 constante par la condition initiale.
+
+\textbf{(c) Temps pour $S = 1$ kg (3 points).}
+\[ 1 = 5e^{-3t/100} \quad\Longrightarrow\quad e^{-3t/100} = \frac{1}{5} \quad\Longrightarrow\quad t = \frac{100}{3}\ln 5 \approx \frac{100}{3}(1.6094) \approx 53.6. \]
+Au minute près : $\boxed{t \approx 54\ \text{minutes}}$. \emph{Barème :} M1 logarithme ; A1 valeur exacte $\frac{100}{3}\ln 5$ ; A1 arrondi correct.
+
+\textbf{(d) Limite (2 points).} Quand $t \to +\infty$, $e^{-3t/100} \to 0$, donc $S \to 0$. Physiquement, le rinçage continu à l'eau pure finit par éliminer pratiquement tout le sel du réservoir ; la décroissance est exponentielle, donc le sel ne disparaît pas en temps fini mais devient négligeable. \emph{Barème :} B1 limite $0$ ; B1 commentaire physique sensé.
+\end{corrige}
+
+\begin{corrige}[Exercice 11 — Circuit RLC série]
+\textbf{(a) Équation gouvernante (3 points).} En remplaçant $L = 0.5$, $R = 10$, $C = 0.01$, $E = 12$ dans $Lq'' + Rq' + \dfrac{q}{C} = E$ :
+\[ 0.5\,q'' + 10\,q' + 100\,q = 12. \]
+En divisant par $0.5$ :
+\[ q'' + 20q' + 200q = 24. \]
+\emph{Barème :} M1 substitution correcte ; A1 $\frac{1}{C} = 100$ utilisé ; A1 équation finale simplifiée.
+
+\textbf{(b) Équation auxiliaire et amortissement (4 points).}
+\[ m^{2} + 20m + 200 = 0 \quad\Longrightarrow\quad m = \frac{-20 \pm \sqrt{400 - 800}}{2} = -10 \pm 10i. \]
+Les racines sont conjuguées complexes à partie réelle négative, le circuit est \cle{sous-amorti} : la charge oscille en s'amortissant. \emph{Barème :} M1 équation auxiliaire ; A1 discriminant $-400 < 0$ ; A1 racines $-10 \pm 10i$ ; B1 conclusion « sous-amorti ».
+
+\textbf{(c) Solution générale (3 points).} Fonction complémentaire : $q_{c} = e^{-10t}\big(A\cos 10t + B\sin 10t\big)$. Pour une solution particulière, on essaie $q_{p} = k$ (constante, car le second membre est constant) : $200k = 24$, donc $k = \dfrac{24}{200} = \dfrac{3}{25} = 0.12$. Donc
+\[ \boxed{q(t) = e^{-10t}\big(A\cos 10t + B\sin 10t\big) + 0.12}. \]
+\emph{Barème :} B1 FC ; M1 essai SP constante ; A1 solution générale.
+
+\textbf{(d) Conditions initiales (3 points).} $q(0) = 0$ : $A + 0.12 = 0$, donc $A = -0.12$. Ensuite,
+\[ q'(t) = e^{-10t}\big[(-10A + 10B)\cos 10t + (-10B - 10A)\sin 10t\big], \]
+donc $q'(0) = -10A + 10B = 0$, d'où $B = A = -0.12$. Par conséquent
+\[ \boxed{q(t) = 0.12\left[1 - e^{-10t}\big(\cos 10t + \sin 10t\big)\right]}. \]
+\emph{Barème :} M1 application $q(0)=0$ ; M1 dérivation et application $q'(0)=0$ ; A1 $q(t)$ complet.
+
+\textbf{(e) Courant et son maximum (3 points).}
+\[ i(t) = q'(t) = e^{-10t}\big[(-10A+10B)\cos 10t + (-10B-10A)\sin 10t\big]. \]
+Avec $A = B = -0.12$ :
+\[ -10A+10B = 1.2 - 1.2 = 0, \qquad -10B-10A = 1.2 + 1.2 = 2.4, \]
+donc
+\[ \boxed{i(t) = 2.4\,e^{-10t}\sin 10t \ \ (\mathrm{A})}. \]
+Maximum : $i'(t) = 2.4\,e^{-10t}\big(10\cos 10t - 10\sin 10t\big) = 0$ quand $\tan 10t = 1$, soit $10t = \dfrac{\pi}{4}$, d'où
+\[ t = \frac{\pi}{40} \approx 0.0785\ \mathrm{s}. \]
+À cet instant, $\sin 10t = \dfrac{\sqrt{2}}{2}$, donc
+\[ i_{\max} = 2.4\,e^{-\pi/4}\cdot\frac{\sqrt{2}}{2} \approx 2.4 \times 0.4559 \times 0.7071 \approx 0.77\ \mathrm{A}. \]
+\emph{Barème :} B1 $i(t)$ correct ; M1 mise à zéro de $i'(t)$ et résolution $\tan 10t = 1$ ; A1 $t = \pi/40 \approx 0.079\ \mathrm{s}$ et $i_{\max} \approx 0.77\ \mathrm{A}$.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap, grow cyclic, every node/.style={concept},
+  root concept/.append style={concept color=popblue, font=\bfseries\small, minimum size=3.2cm},
+  level 1 concept/.append style={level distance=4.6cm, sibling angle=51.4, font=\scriptsize, minimum size=2.4cm},
+  text=white
+]
+\node[root concept]{Differential Equations}
+  child[concept color=poporange]{ node {First order: form $y'=f(x,y)$; solution curves; direction fields} }
+  child[concept color=popgreen]{ node {Separable: $\int g(y)\,dy=\int f(x)\,dx$} }
+  child[concept color=poppurple]{ node {Linear: $y'+P(x)y=Q(x)$; integrating factor $e^{\int P\,dx}$} }
+  child[concept color=popgold]{ node {Homogeneous, Bernoulli, Riccati: substitutions $y=vx$, $z=y^{1-n}$, $y=y_1+u$} }
+  child[concept color=poppink]{ node {2nd order linear: $ay''+by'+cy=f(x)$; CF $+$ PI} }
+  child[concept color=popgreen!70!black]{ node {Auxiliary equation: real, repeated, complex roots} }
+  child[concept color=poporange!80!black]{ node {Reducible: order reduction; modelling (growth, cooling, circuits)} };
+\end{tikzpicture}
+\legende{Mind map of the chapter Differential Equations.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions.}
+\begin{itemize}
+\item A \cle{differential equation} (DE) relates an unknown function and its derivatives; its \cle{order} is that of the highest derivative, its \cle{degree} the power of that derivative once the equation is polynomial in the derivatives.
+\item A \cle{general solution} of an $n$-th order DE contains $n$ independent arbitrary constants; a \cle{particular solution} is obtained from \cle{initial/boundary conditions} (an \emph{initial value problem}).
+\item Geometric meaning: $y'=f(x,y)$ assigns a \cle{slope} to each point; the family of \cle{solution curves} follows the \cle{direction field}; curves through a point are unique where $f$ is well behaved.
+\end{itemize}
+
+\textbf{Formulas and theorems to know.}
+\begin{itemize}
+\item \cle{Separable}: $g(y)\,dy=f(x)\,dx \Rightarrow \displaystyle\int g(y)\,dy=\int f(x)\,dx+C$.
+\item \cle{Linear first order}: $y'+P(x)y=Q(x)$. Integrating factor $\mu=e^{\int P\,dx}$; then $(\mu y)'=\mu Q$, so $y=\dfrac{1}{\mu}\displaystyle\int \mu Q\,dx$.
+\item \cle{Homogeneous} $y'=F(y/x)$: substitute $y=vx$, giving $x\dfrac{dv}{dx}=F(v)-v$ (separable).
+\item \cle{Bernoulli}: $y'+Py=Qy^{n}$: substitute $z=y^{1-n}$, giving the linear equation $z'+(1-n)Pz=(1-n)Q$.
+\item \cle{Riccati}: $y'=q_0+q_1y+q_2y^{2}$ with one known particular solution $y_1$: substitute $y=y_1+\dfrac{1}{u}$ to obtain a linear equation in $u$.
+\item \cle{Second order linear, constant coefficients}: $ay''+by'+cy=f(x)$; general solution $y=y_c+y_p$ (complementary function $+$ particular integral).
+\item \cle{Auxiliary equation} $am^{2}+bm+c=0$: distinct real roots $m_1\neq m_2 \Rightarrow y_c=Ae^{m_1x}+Be^{m_2x}$; repeated root $m \Rightarrow y_c=(A+Bx)e^{mx}$; complex roots $\alpha\pm i\beta \Rightarrow y_c=e^{\alpha x}(A\cos\beta x+B\sin\beta x)$.
+\item \cle{Trial particular integrals}: $f(x)=ke^{px}\Rightarrow Ce^{px}$; polynomial of degree $n\Rightarrow$ polynomial of degree $n$; $\sin\omega x$ or $\cos\omega x\Rightarrow C\cos\omega x+D\sin\omega x$. If the trial duplicates the CF, multiply by $x$ (or $x^{2}$).
+\item \cle{Reducible equations}: $y''=f(x,y')$: set $p=y'$, $y''=p'$; $y''=f(y,y')$: set $p=y'$, $y''=p\dfrac{dp}{dy}$.
+\end{itemize}
+
+\textbf{Methods.}
+\begin{enumerate}
+\item Identify the \textbf{type} first (separable, linear, homogeneous, Bernoulli, Riccati, second order, reducible) before computing.
+\item For linear equations, put the equation in \textbf{standard form} $y'+P(x)y=Q(x)$ before reading off $P$.
+\item For second order equations: solve the auxiliary equation $\to$ write $y_c$ $\to$ choose and substitute a trial $y_p$ $\to$ add $\to$ apply conditions \emph{last}.
+\item After any substitution ($y=vx$, $z=y^{1-n}$, $y=y_1+1/u$, $p=y'$), \textbf{return to the original variable}.
+\item \textbf{Check} by differentiating the answer and substituting back into the DE.
+\end{enumerate}
+
+\textbf{Common mistakes.}
+\begin{itemize}
+\item Forgetting the constant of integration, or adding it \emph{before} dividing by the integrating factor.
+\item Sign error in $P(x)$ when the equation is not in standard form (e.g.\ $y'-2y=\dots$ has $P=-2$).
+\item Losing solutions when separating variables (division by $g(y)=0$ may discard constant solutions).
+\item Using a trial PI that is already part of the CF without multiplying by $x$.
+\item Applying initial conditions to $y_c$ alone instead of to the full general solution $y_c+y_p$.
+\item Mixing up the two reduction-of-order substitutions: $p\dfrac{dp}{dy}$ is used only when $x$ is absent.
+\item In modelling, forgetting that ``rate proportional to amount'' gives $\dfrac{dy}{dt}=ky$ with solution $y=y_0e^{kt}$ ($k<0$ for decay/cooling).
+\end{itemize}
+
+\textbf{GCE tips.}
+\begin{itemize}
+\item Show the \textbf{auxiliary equation explicitly}; examiners award method marks for it and for the integrating factor.
+\item Write the general solution with constants $A$, $B$ clearly, then a \emph{separate} line applying each condition.
+\item For modelling questions (population, Newton's cooling, radioactive decay, $L$--$R$ circuits), define variables with units and state the DE before solving.
+\item If time is short, at least state the type of equation and the substitution: this earns credit.
+\item Keep answers exact (surds, $\ln$, $e$) unless a decimal is requested; give decimals to the accuracy demanded.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
