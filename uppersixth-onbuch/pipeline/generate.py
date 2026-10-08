@@ -965,6 +965,8 @@ def degenerate(t):
         return "caractères d'un autre alphabet"
     if re.search(r"(?:\.[a-z]){6}", t):
         return "charabia"
+    if "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
+        return "marqueurs parasites"
     lines = [l.strip() for l in t.splitlines() if len(l.strip()) > 3]
     if len(lines) > 30 and len(set(lines)) < 0.6 * len(lines):
         return "répétitions"
