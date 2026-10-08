@@ -1,0 +1,2573 @@
+% Hypothesis Testing — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA21-hypothesis-testing.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{21}
+\newcommand{\DOCTITRE}{Hypothesis Testing}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Hypothesis Testing}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{21}{4 periods}{This chapter introduces significance (hypothesis) testing: how to set up null and alternative hypotheses, choose significance levels, compute test statistics and p-values, and draw conclusions. Tests are developed for a probability (proportion), the mean of a Poisson distribution, a population mean, and the difference between two means using the Central Limit Theorem.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can state a null hypothesis H0 and an alternative hypothesis H1 appropriate to a given situation.
+\item By the end of this chapter I can distinguish one-tailed from two-tailed tests and choose the correct form of H1.
+\item By the end of this chapter I can define the significance level, the critical region, Type I and Type II errors.
+\item By the end of this chapter I can test a hypothetical value of a probability p using the binomial distribution.
+\item By the end of this chapter I can test a hypothetical value of the mean of a Poisson distribution.
+\item By the end of this chapter I can test a population mean using a normal or z-test (known variance or large sample).
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Foundations of Significance Testing: Hypotheses, Errors and Critical Regions
+\item Testing a Probability and the Mean of a Poisson Distribution
+\item Testing a Population Mean
+\item Testing the Difference Between Two Means (Large Samples)
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can state a null hypothesis H0 and an alternative hypothesis H1 appropriate to a given situation.
+\item By the end of this chapter I can distinguish one-tailed from two-tailed tests and choose the correct form of H1.
+\item By the end of this chapter I can define the significance level, the critical region, Type I and Type II errors.
+\item By the end of this chapter I can test a hypothetical value of a probability p using the binomial distribution.
+\item By the end of this chapter I can test a hypothetical value of the mean of a Poisson distribution.
+\item By the end of this chapter I can test a population mean using a normal or z-test (known variance or large sample).
+\item By the end of this chapter I can compute and interpret a p-value and compare it with the significance level.
+\item By the end of this chapter I can test the difference between two population means for large samples using the Central Limit Theorem.
+\item By the end of this chapter I can write a clear conclusion in context, linking the statistical decision to the original claim.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Binomial, Poisson and Normal distributions and their means and variances (Lower Sixth and Upper Sixth probability chapters).
+\item The Central Limit Theorem and the sampling distribution of the sample mean.
+\item Standardisation of a normal variable and use of standard normal tables.
+\item Confidence intervals for a mean (useful link with two-tailed tests).
+\item Basic probability computations: cumulative probabilities P(X ≤ k) and P(X ≥ k).
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Foundations of Significance Testing: Hypotheses, Errors and Critical Regions}
+
+\courssub{The Logic of Significance Testing}
+
+A Yaoundé bottling company claims its sachets of ``pure water'' contain \SI{500}{ml} on average, but a consumer association suspects under-filling. A mobile money agent in Douala claims that only \SI{2}{\%} of transactions fail, yet customers complain of frequent failures. A health officer in Bamenda wants to know whether the mean number of malaria cases per week at a clinic has really increased after a flood. In each case, a \cle{claim} is made about a \cle{population}, a \cle{sample} is taken, and a \cle{decision} must be reached under \cle{uncertainty}. \cle{Hypothesis testing} gives us the rigorous statistical machinery to decide whether the sample evidence is strong enough to reject the claim.
+
+The core logic is the same as a courtroom trial. The accused is presumed innocent; the prosecution must produce evidence so strong that ``innocence'' becomes untenable. In statistics, the claim (the \emph{status quo}) plays the role of ``innocent'':
+
+\begin{enumerate}
+\item \textbf{Assume the claim is true.} We take the claim about the population as a working assumption.
+\item \textbf{Collect sample evidence.} We observe data from a random sample.
+\item \textbf{Ask: how likely is this evidence if the claim were true?} We compute the probability of obtaining a result at least as extreme as the one observed, \emph{under the assumption that the claim holds}.
+\item \textbf{Decide.} If that probability is very small, the claim and the data do not sit well together, so we \emph{reject} the claim. Otherwise we say the evidence is \emph{insufficient} to reject it.
+\end{enumerate}
+
+\begin{savaistu}[Why ``too unlikely'' matters]
+Suppose a coin is claimed to be fair. You toss it \num{20} times and get \num{19} heads. A fair coin \emph{could} do this --- the probability is about \num{0.00002} --- but it is so unlikely that the reasonable conclusion is that the coin is not fair. Significance testing formalises exactly this reasoning, replacing ``so unlikely'' by a precise threshold.
+\end{savaistu}
+
+\courssub{The Null and Alternative Hypotheses}
+
+\begin{definition}[Null and alternative hypotheses]
+The \cle{null hypothesis}, written $H_0$, is the claim or status quo about a population parameter. It is the statement we \emph{assume true} while carrying out the test. The \cle{alternative hypothesis}, written $H_1$, is what we suspect is true instead; it is accepted only if the sample evidence against $H_0$ is strong enough.
+\end{definition}
+
+\begin{attention}[$H_0$ always contains equality]
+The null hypothesis always specifies a single value with an equality sign:
+\[ H_0 : p = p_0, \qquad H_0 : \mu = \mu_0, \qquad H_0 : \lambda = \lambda_0. \]
+Never write $H_0 : p > p_0$ or $H_0 : \mu \neq \mu_0$. The equality is essential because the whole calculation of probabilities is performed \emph{assuming} the parameter equals the claimed value.
+\end{attention}
+
+\textbf{One-tailed versus two-tailed tests.}\par
+The form of $H_1$ determines the \emph{tail} of the test:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Type of test} & \textbf{Form of $H_1$} & \textbf{Typical wording} \\
+\hline
+Lower one-tailed & $H_1 : p < p_0$ & ``decreased'', ``less than'', ``under-filled'' \\
+\hline
+\rowcolor{popblueL} Upper one-tailed & $H_1 : p > p_0$ & ``increased'', ``more than'', ``improved'' \\
+\hline
+Two-tailed & $H_1 : p \neq p_0$ & ``changed'', ``different from'', ``not equal to'' \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[The tail is fixed by $H_1$, not by the data]
+A frequent and serious error is to look at the sample first and then choose the tail that makes the result significant. This is dishonest statistics: the hypotheses must be stated \emph{before} examining the data, and the tail is dictated by the wording of the suspicion in the problem. If the consumer association suspects \emph{under}-filling, the test is lower-tailed even if the sample mean happens to exceed \SI{500}{ml}.
+\end{attention}
+
+\begin{exemplebox}[Stating hypotheses in context]
+For the three opening situations:
+\begin{itemize}
+\item Bottling company: $H_0 : \mu = 500$ against $H_1 : \mu < 500$ (lower one-tailed, since under-filling is suspected).
+\item Mobile money agent: $H_0 : p = 0.02$ against $H_1 : p > 0.02$ (upper one-tailed, since customers suspect \emph{more} failures).
+\item Health officer: $H_0 : \lambda = \lambda_0$ against $H_1 : \lambda > \lambda_0$ (upper one-tailed, since an increase is suspected).
+\end{itemize}
+\end{exemplebox}
+
+\courssub{The Test Statistic and its Sampling Distribution}
+
+\begin{definition}[Test statistic]
+A \cle{test statistic} is a quantity computed from the sample whose value measures how compatible the data are with $H_0$. Its \cle{sampling distribution under $H_0$} is the distribution it would have if $H_0$ were true; this distribution is what allows us to compute probabilities.
+\end{definition}
+
+For example, if a coin is claimed fair ($H_0 : p = 0.5$) and we toss it $n = 20$ times, the natural test statistic is $X$, the number of heads, and under $H_0$ we know exactly that $X \sim \mathrm{B}(20, 0.5)$. If a population mean is claimed to be $\mu_0$ and the population variance $\sigma^2$ is known, then under $H_0$ the sample mean satisfies $\bar{X} \sim \mathrm{N}\!\left(\mu_0, \dfrac{\sigma^2}{n}\right)$. Choosing the right test statistic and its distribution under $H_0$ is the technical heart of every test in this chapter.
+
+\courssub{Significance Level, Critical Region and Critical Values}
+
+\begin{definition}[Significance level and critical region]
+The \cle{significance level} $\alpha$ of a test is the probability, fixed in advance, of rejecting $H_0$ when $H_0$ is actually true. Common choices are $\alpha = 5\%$ and $\alpha = 1\%$. The \cle{critical region} (or \emph{rejection region}) is the set of values of the test statistic that lead to rejection of $H_0$; its total probability under $H_0$ is (at most) $\alpha$. The complementary set is the \cle{acceptance region}. The boundary values are the \cle{critical values}.
+\end{definition}
+
+For a two-tailed test on a standard normal statistic at the $5\%$ level, the critical values are $\pm 1.96$: we reject $H_0$ when $|z| > 1.96$. For one-tailed tests at $5\%$, the single critical value is $-1.645$ (lower tail) or $+1.645$ (upper tail).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=12cm, height=6cm,
+  domain=-4:4, samples=200,
+  axis lines=middle,
+  xlabel={$z$}, ylabel={},
+  xtick={-1.96,0,1.96},
+  xticklabels={$-1.96$,$0$,$1.96$},
+  ytick=\empty,
+  enlargelimits=false,
+  clip=false
+]
+\addplot[popblue, thick] {exp(-x^2/2)/sqrt(max(0,2*pi))};
+\addplot[fill=poporange, draw=none, domain=-4:-1.96, samples=60] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\addplot[fill=poporange, draw=none, domain=1.96:4, samples=60] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+\draw[popdark, dashed] (axis cs:-1.96,0) -- (axis cs:-1.96,0.058);
+\draw[popdark, dashed] (axis cs:1.96,0) -- (axis cs:1.96,0.058);
+\node[popdark] at (axis cs:-2.9,0.07) {$2.5\%$};
+\node[popdark] at (axis cs:2.9,0.07) {$2.5\%$};
+\node[popblue] at (axis cs:0,0.2) {acceptance region};
+\end{axis}
+\end{tikzpicture}
+\legende{Two-tailed critical region for a standard normal test statistic at $\alpha = 5\%$: reject $H_0$ when $|z| > 1.96$.}
+\end{center}
+\end{popfigure}
+
+\courssub{The $p$-value Approach}
+
+\begin{definition}[$p$-value]
+The \cle{$p$-value} is the probability, computed \emph{under $H_0$}, of obtaining a result at least as extreme (in the direction of $H_1$) as the one actually observed. The decision rule is:
+\[ \text{reject } H_0 \quad\Longleftrightarrow\quad p\text{-value} < \alpha. \]
+\end{definition}
+
+``At least as extreme'' means: for an upper-tailed test, $P(X \geq x_{\text{obs}})$; for a lower-tailed test, $P(X \leq x_{\text{obs}})$; for a two-tailed test, the probability in \emph{both} tails at least as far from the centre. The $p$-value quantifies the strength of the evidence: the smaller it is, the stronger the case against $H_0$.
+
+\begin{exoresolu}[A first complete test: the mobile money agent]
+A mobile money agent in Douala claims that the proportion of failed transactions is \SI{2}{\%}. A customer watchdog records $n = 100$ transactions and observes $6$ failures. Test at the $5\%$ level whether the failure rate exceeds \SI{2}{\%}.
+\tcblower
+\textbf{Solution.} Let $p$ be the true proportion of failed transactions.
+
+\textbf{Step 1 --- Hypotheses.}
+\[ H_0 : p = 0.02 \qquad H_1 : p > 0.02 \quad\text{(upper one-tailed)}. \]
+
+\textbf{Step 2 --- Level.} $\alpha = 5\%$.
+
+\textbf{Step 3 --- Test statistic and distribution under $H_0$.} Let $X$ be the number of failures in $100$ transactions. Under $H_0$, $X \sim \mathrm{B}(100, 0.02)$. Since $np = 2$ is small, we use the Poisson approximation $X \approx \mathrm{Po}(2)$.
+
+\textbf{Step 4 --- $p$-value.} The observed value is $x = 6$:
+\[ p\text{-value} = P(X \geq 6) = 1 - P(X \leq 5) = 1 - e^{-2}\sum_{k=0}^{5}\frac{2^k}{k!}. \]
+Computing the sum: $e^{-2}\left(1 + 2 + 2 + \tfrac{4}{3} + \tfrac{2}{3} + \tfrac{4}{15}\right) = e^{-2}(7.2667) \approx 0.9834$.
+\[ p\text{-value} \approx 1 - 0.9834 = 0.0166. \]
+
+\textbf{Step 5 --- Conclusion.} Since $0.0166 < 0.05$, we \textbf{reject $H_0$} at the $5\%$ level. There is sufficient evidence that the proportion of failed transactions exceeds \SI{2}{\%}.
+\end{exoresolu}
+
+\courssub{Type I and Type II Errors}
+
+Because our decision is based on a sample, it can be wrong in two distinct ways.
+
+\begin{definition}[Type I and Type II errors]
+A \cle{Type I error} occurs when we \emph{reject $H_0$ although $H_0$ is true}. By construction,
+\[ P(\text{Type I error}) = \alpha. \]
+A \cle{Type II error} occurs when we \emph{fail to reject $H_0$ although $H_0$ is false}. Its probability is usually denoted $\beta$ and depends on the true value of the parameter.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\begin{scope}
+\draw[thick] (0,0) rectangle (9,4.5);
+\draw[thick] (0,2.25) -- (9,2.25);
+\draw[thick] (3,0) -- (3,4.5);
+\node[align=center] at (1.5,3.375) {\textbf{Decision} $\backslash$ \textbf{Truth}};
+\node[align=center] at (6,3.375) {$H_0$ true};
+\node[align=center] at (7.5,3.375) {$H_0$ false};
+\node[align=center] at (1.5,1.125) {Reject $H_0$};
+\node[align=center, text=popink] at (6,1.125) {\textbf{Type I error}\\ $P = \alpha$};
+\node[align=center, text=popgreen] at (7.5,1.125) {Correct decision\\ (power $1-\beta$)};
+\node[align=center] at (1.5,-0.1) {Fail to reject $H_0$};
+\node[align=center, text=popgreen] at (6,-0.1) {Correct decision};
+\node[align=center, text=popink] at (7.5,-0.1) {\textbf{Type II error}\\ $P = \beta$};
+\end{scope}
+\end{tikzpicture}
+\legende{The two possible errors: rejecting a true $H_0$ (Type I, probability $\alpha$) or failing to reject a false $H_0$ (Type II, probability $\beta$).}
+\end{center}
+\end{popfigure}
+
+\textbf{Consequences in context.}\par
+For the bottling company, a Type I error means wrongly accusing an honest company of under-filling (damaging its reputation); a Type II error means letting a dishonest company continue cheating consumers. Decreasing $\alpha$ (say from $5\%$ to $1\%$) makes Type I errors rarer but, for a fixed sample size, makes Type II errors \emph{more} likely --- there is a trade-off, which is why $\alpha$ must be chosen before the test.
+
+\courssub{The Five-Step Procedure and the Conclusion Template}
+
+\begin{methode}[The five steps of a significance test]
+\begin{enumerate}
+\item \textbf{State the hypotheses} $H_0$ and $H_1$, defining the parameter in context and choosing the tail from the wording.
+\item \textbf{State the significance level} $\alpha$ (e.g.\ $5\%$).
+\item \textbf{Identify the test statistic} and its sampling distribution \emph{under $H_0$}.
+\item \textbf{Compute the critical region or the $p$-value} and compare with $\alpha$ (or with the observed value).
+\item \textbf{Conclude in context}: reject or fail to reject $H_0$, and interpret the decision in the language of the problem.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, node distance=0.45cm,
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=8.6cm, align=center, inner sep=5pt},
+  arr/.style={->, thick, popdark}]
+\node[box] (s1) {\textbf{1. Hypotheses}: state $H_0$ and $H_1$ (tail from wording)};
+\node[box, below=of s1] (s2) {\textbf{2. Level}: fix $\alpha$ (e.g.\ $5\%$)};
+\node[box, below=of s2] (s3) {\textbf{3. Test statistic}: distribution under $H_0$};
+\node[box, below=of s3] (s4) {\textbf{4. Critical region / $p$-value}: compare with $\alpha$};
+\node[box, below=of s4] (s5) {\textbf{5. Conclusion}: reject or fail to reject $H_0$, in context};
+\draw[arr] (s1) -- (s2);
+\draw[arr] (s2) -- (s3);
+\draw[arr] (s3) -- (s4);
+\draw[arr] (s4) -- (s5);
+\end{tikzpicture}
+\legende{The five-step significance testing procedure used throughout this chapter.}
+\end{center}
+\end{popfigure}
+
+\begin{aretenir}[Standard conclusion template]
+Every conclusion must contain three ingredients: the comparison, the decision, and the context.
+\begin{quote}
+``Since $p\text{-value} = \ldots < \alpha = \ldots$, we \textbf{reject} $H_0$ at the $\ldots\%$ level. There is \textbf{sufficient evidence} that \emph{[claim of $H_1$ in context]}.''
+\end{quote}
+or
+\begin{quote}
+``Since $p\text{-value} = \ldots > \alpha = \ldots$, we \textbf{do not reject} $H_0$ at the $\ldots\%$ level. There is \textbf{insufficient evidence} that \emph{[claim of $H_1$ in context]}.''
+\end{quote}
+\end{aretenir}
+
+\begin{attention}[Never ``prove'' $H_0$]
+A significance test can never prove that $H_0$ is true. When the evidence is weak, the correct statement is ``we \emph{fail to reject} $H_0$'' or ``there is insufficient evidence against $H_0$'' --- never ``we accept that $H_0$ is true''. Absence of evidence is not evidence of absence: a small sample may simply lack the power to detect a real difference. In the courtroom analogy, ``not guilty'' does not mean ``proven innocent''.
+\end{attention}
+
+\begin{exercice}[Stating hypotheses and errors]
+A clinic in Bamenda records a long-run mean of $12$ malaria cases per week. After a flood, the health officer suspects the mean has increased. In a sample of weeks she will test the claim.
+\begin{enumerate}
+\item State $H_0$ and $H_1$, justifying the tail.
+\item Describe, in context, what a Type I error and a Type II error would mean.
+\item The officer computes a $p$-value of $0.032$. State her conclusion at the $5\%$ level, using the standard template.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Let $\lambda$ be the true mean number of cases per week. Since an \emph{increase} is suspected, the test is upper one-tailed: $H_0 : \lambda = 12$ against $H_1 : \lambda > 12$.
+\item Type I error: concluding that malaria cases have increased when in fact the mean is still $12$ --- this might trigger unnecessary emergency spending. Type II error: failing to detect a genuine increase --- the clinic remains under-prepared while cases rise.
+\item Since $p\text{-value} = 0.032 < 0.05$, we reject $H_0$ at the $5\%$ level. There is sufficient evidence that the mean number of malaria cases per week has increased above $12$.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Testing a Probability and the Mean of a Poisson Distribution}
+
+\courssub{Testing a Binomial Proportion $p$}
+
+When the claim concerns a population proportion $p$, the natural test statistic is the number of successes $X$ in a random sample of size $n$. Under $H_0 : p = p_0$, we have exactly $X \sim \mathrm{B}(n, p_0)$.
+
+\begin{propriete}[Exact binomial test]
+For $H_0 : p = p_0$ against $H_1 : p < p_0$, $p > p_0$ or $p \neq p_0$:
+\begin{itemize}
+\item Test statistic: $X \sim \mathrm{B}(n, p_0)$ under $H_0$.
+\item $p$-value: computed directly from the binomial distribution.
+\item Critical region: values of $X$ with cumulative probability $\le \alpha$ in the relevant tail(s).
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Discreteness of the binomial]
+Because the binomial distribution is discrete, the actual significance level (the probability of the critical region) is usually \emph{less than} the nominal $\alpha$. We always choose the largest critical region whose probability does not exceed $\alpha$.
+\end{attention}
+
+\begin{exemplebox}[Exact binomial test: lower tail]
+A seed merchant claims that $80\%$ of his maize seeds germinate. A farmer tests $n = 20$ seeds and only $12$ germinate. Test at the $5\%$ level whether the germination rate is less than $80\%$.
+\begin{itemize}
+\item $H_0 : p = 0.8$, $H_1 : p < 0.8$ (lower one-tailed), $\alpha = 0.05$.
+\item Under $H_0$, $X \sim \mathrm{B}(20, 0.8)$. Observed $x = 12$.
+\item $p\text{-value} = P(X \leq 12) = \sum_{k=0}^{12} \binom{20}{k} 0.8^k 0.2^{20-k}$.
+\item Using tables or calculator: $P(X \leq 12) \approx 0.0321$.
+\item Since $0.0321 < 0.05$, reject $H_0$. There is sufficient evidence that the germination rate is below $80\%$.
+\end{itemize}
+\end{exemplebox}
+
+\begin{propriete}[Normal approximation to the binomial]
+If $n$ is large enough that $np_0 > 5$ and $n(1-p_0) > 5$, we may approximate $X \sim \mathrm{B}(n, p_0)$ by $X \approx \mathrm{N}(np_0, np_0(1-p_0))$. The test statistic becomes
+\[ Z = \frac{X - np_0}{\sqrt{np_0(1-p_0)}} \sim \mathrm{N}(0,1) \quad\text{under } H_0. \]
+A continuity correction is recommended: for $P(X \geq x)$ use $P(X > x - 0.5)$; for $P(X \leq x)$ use $P(X < x + 0.5)$.
+\end{propriete}
+
+\begin{exoresolu}[Normal approximation: two-tailed test]
+A political party claims it has the support of $50\%$ of voters. In a random sample of $400$ voters, $220$ support the party. Test at the $5\%$ level whether the support differs from $50\%$.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item $H_0 : p = 0.5$, $H_1 : p \neq 0.5$ (two-tailed), $\alpha = 0.05$.
+\item $n = 400$, $np_0 = 200 > 5$, $n(1-p_0) = 200 > 5$ $\Rightarrow$ normal approximation valid.
+\item Under $H_0$: $X \approx \mathrm{N}(200, 100)$. Observed $x = 220$.
+\item With continuity correction: $P(X \geq 220) \approx P\left(Z > \frac{219.5 - 200}{10}\right) = P(Z > 1.95)$.
+\item Two-tailed $p$-value $= 2 \times P(Z > 1.95) = 2 \times 0.0256 = 0.0512$.
+\item Since $0.0512 > 0.05$, do not reject $H_0$. Insufficient evidence that support differs from $50\%$.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Testing the Mean $\lambda$ of a Poisson Distribution}
+
+When the claim concerns the mean $\lambda$ of a Poisson distribution, the test statistic is the total number of events $X$ observed over a given interval (time, area, volume). Under $H_0 : \lambda = \lambda_0$, if we observe over $t$ units, then $X \sim \mathrm{Po}(t\lambda_0)$.
+
+\begin{propriete}[Exact Poisson test]
+For $H_0 : \lambda = \lambda_0$ against $H_1 : \lambda < \lambda_0$, $\lambda > \lambda_0$ or $\lambda \neq \lambda_0$:
+\begin{itemize}
+\item Test statistic: $X \sim \mathrm{Po}(t\lambda_0)$ under $H_0$, where $t$ is the number of units observed.
+\item $p$-value: computed directly from the Poisson distribution.
+\item Critical region: values of $X$ with cumulative probability $\le \alpha$ in the relevant tail(s).
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Exact Poisson test: upper tail]
+A call centre receives a mean of $8$ calls per hour. After an advertising campaign, the manager suspects the rate has increased. In a $2$-hour period, $22$ calls are received. Test at the $5\%$ level.
+\begin{itemize}
+\item $H_0 : \lambda = 8$, $H_1 : \lambda > 8$ (upper one-tailed), $\alpha = 0.05$.
+\item Over $t = 2$ hours, under $H_0$: $X \sim \mathrm{Po}(16)$. Observed $x = 22$.
+\item $p\text{-value} = P(X \geq 22) = 1 - P(X \leq 21)$.
+\item From Poisson tables or calculator: $P(X \leq 21) \approx 0.9170$, so $p\text{-value} \approx 0.0830$.
+\item Since $0.0830 > 0.05$, do not reject $H_0$. Insufficient evidence that the call rate has increased.
+\end{itemize}
+\end{exemplebox}
+
+\begin{propriete}[Normal approximation to the Poisson]
+If $\lambda_0 t > 15$ (some texts use $> 10$), we may approximate $X \sim \mathrm{Po}(\lambda_0 t)$ by $X \approx \mathrm{N}(\lambda_0 t, \lambda_0 t)$. The test statistic becomes
+\[ Z = \frac{X - \lambda_0 t}{\sqrt{\lambda_0 t}} \sim \mathrm{N}(0,1) \quad\text{under } H_0. \]
+A continuity correction is recommended.
+\end{propriete}
+
+\begin{exoresolu}[Normal approximation to Poisson: two-tailed]
+A factory produces defects at a mean rate of $25$ per day. After a new machine is installed, a sample of $10$ days yields a total of $280$ defects. Test at the $1\%$ level whether the defect rate has changed.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item $H_0 : \lambda = 25$, $H_1 : \lambda \neq 25$ (two-tailed), $\alpha = 0.01$.
+\item Over $t = 10$ days, under $H_0$: $X \sim \mathrm{Po}(250)$. Since $250 > 15$, use normal approximation: $X \approx \mathrm{N}(250, 250)$.
+\item Observed $x = 280$. With continuity correction: $P(X \geq 280) \approx P\left(Z > \frac{279.5 - 250}{\sqrt{250}}\right) = P(Z > 1.864)$.
+\item $P(Z > 1.864) \approx 0.0311$. Two-tailed $p$-value $= 2 \times 0.0311 = 0.0622$.
+\item Since $0.0622 > 0.01$, do not reject $H_0$. Insufficient evidence that the defect rate has changed.
+\end{itemize}
+\end{exoresolu}
+
+\begin{exercice}[Binomial and Poisson tests]
+\begin{enumerate}
+\item A dice is rolled $60$ times and shows a six on $15$ occasions. Test at the $5\%$ level whether the dice is biased towards six.
+\item A website receives hits at a mean rate of $12$ per minute. In a $5$-minute period, $75$ hits are recorded. Test at the $5\%$ level whether the rate has increased.
+\item A manufacturer claims that $95\%$ of his light bulbs last more than $1000$ hours. A sample of $200$ bulbs is tested and $185$ last more than $1000$ hours. Test at the $1\%$ level whether the claim is exaggerated.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+\begin{enumerate}
+\item $H_0 : p = 1/6$, $H_1 : p > 1/6$. $X \sim \mathrm{B}(60, 1/6)$. $np_0 = 10 > 5$, normal approximation: $X \approx \mathrm{N}(10, 8.333)$. $x=15$, continuity correction: $z = \frac{14.5-10}{\sqrt{8.333}} = 1.559$. $p\text{-value} = P(Z > 1.559) = 0.0594 > 0.05$. Do not reject $H_0$. Insufficient evidence of bias.
+\item $H_0 : \lambda = 12$, $H_1 : \lambda > 12$. Over $5$ min: $X \sim \mathrm{Po}(60)$. $x=75$. Normal approximation: $X \approx \mathrm{N}(60, 60)$. $z = \frac{74.5-60}{\sqrt{60}} = 1.873$. $p\text{-value} = P(Z > 1.873) = 0.0305 < 0.05$. Reject $H_0$. Sufficient evidence that rate has increased.
+\item $H_0 : p = 0.95$, $H_1 : p < 0.95$. $X \sim \mathrm{B}(200, 0.95)$. $np_0 = 190 > 5$. Normal approximation: $X \approx \mathrm{N}(190, 9.5)$. $x=185$, continuity correction: $z = \frac{185.5-190}{\sqrt{9.5}} = -1.461$. $p\text{-value} = P(Z < -1.461) = 0.0720 > 0.01$. Do not reject $H_0$. Insufficient evidence that claim is exaggerated.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Testing a Population Mean}
+
+\courssub{Case 1: Normal Population, Known Variance $\sigma^2$}
+
+When the population is normally distributed with known variance $\sigma^2$, the sample mean $\bar{X}$ is exactly normally distributed.
+
+\begin{propriete}[Z-test for a population mean ($\sigma^2$ known)]
+For a random sample $X_1,\dots,X_n$ from $\mathrm{N}(\mu, \sigma^2)$ with $\sigma^2$ known, testing $H_0 : \mu = \mu_0$:
+\begin{itemize}
+\item Test statistic: $Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim \mathrm{N}(0,1)$ under $H_0$.
+\item Critical values: $\pm z_{\alpha/2}$ (two-tailed), $-z_\alpha$ (lower), $+z_\alpha$ (upper).
+\item $p$-value: from standard normal distribution.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Z-test: known variance, two-tailed]
+A machine fills bags with cement. The weight is normally distributed with standard deviation $\sigma = 0.5$ kg. The target mean is $50$ kg. A sample of $25$ bags has mean $\bar{x} = 49.7$ kg. Test at the $5\%$ level whether the mean differs from $50$ kg.
+\begin{itemize}
+\item $H_0 : \mu = 50$, $H_1 : \mu \neq 50$, $\alpha = 0.05$.
+\item $Z = \frac{49.7 - 50}{0.5/\sqrt{25}} = \frac{-0.3}{0.1} = -3.0$.
+\item Two-tailed critical values: $\pm 1.96$. Since $-3.0 < -1.96$, reject $H_0$.
+\item $p\text{-value} = 2 \times P(Z < -3.0) = 2 \times 0.00135 = 0.0027 < 0.05$.
+\item Conclusion: Reject $H_0$ at $5\%$ level. Sufficient evidence that the mean weight differs from $50$ kg.
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Case 2: Normal Population, Unknown Variance (Small Sample)}
+
+When the population is normal but $\sigma^2$ is unknown, we use the sample variance $S^2$ and the $t$-distribution.
+
+\begin{propriete}[t-test for a population mean ($\sigma^2$ unknown, normal population)]
+For a random sample from $\mathrm{N}(\mu, \sigma^2)$ with $\sigma^2$ unknown, testing $H_0 : \mu = \mu_0$:
+\begin{itemize}
+\item Test statistic: $T = \dfrac{\bar{X} - \mu_0}{S/\sqrt{n}} \sim t_{n-1}$ under $H_0$, where $S^2 = \frac{1}{n-1}\sum(X_i - \bar{X})^2$.
+\item Critical values: from $t$-tables with $n-1$ degrees of freedom.
+\item This test is \emph{exact} for any sample size $n$ when the population is normal.
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Assumption of normality]
+The $t$-test requires the population to be normally distributed. For non-normal populations, it is only approximate unless $n$ is large (see Case 3).
+\end{attention}
+
+\begin{exoresolu}[t-test: small sample, unknown variance]
+The breaking strength of a new rope is normally distributed. A sample of $10$ ropes has mean $\bar{x} = 1850$ N and standard deviation $s = 120$ N. Test at the $5\%$ level whether the mean breaking strength exceeds $1800$ N.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item $H_0 : \mu = 1800$, $H_1 : \mu > 1800$ (upper one-tailed), $\alpha = 0.05$.
+\item $T = \frac{1850 - 1800}{120/\sqrt{10}} = \frac{50}{37.95} = 1.317$.
+\item Degrees of freedom $= 9$. Upper $5\%$ critical value $t_{9,0.05} = 1.833$.
+\item Since $1.317 < 1.833$, do not reject $H_0$.
+\item $p\text{-value} = P(T_9 > 1.317) \approx 0.107 > 0.05$.
+\item Conclusion: Insufficient evidence that the mean breaking strength exceeds $1800$ N.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Case 3: Large Sample, Any Population (Central Limit Theorem)}
+
+When $n$ is large ($n \ge 30$ is the usual rule), the Central Limit Theorem guarantees that $\bar{X}$ is approximately normal regardless of the population distribution. If $\sigma^2$ is unknown, we estimate it by $S^2$.
+
+\begin{propriete}[Large-sample Z-test for a population mean]
+For a random sample of size $n \ge 30$ from any population with mean $\mu$ and variance $\sigma^2$, testing $H_0 : \mu = \mu_0$:
+\begin{itemize}
+\item Test statistic: $Z = \dfrac{\bar{X} - \mu_0}{S/\sqrt{n}} \approx \mathrm{N}(0,1)$ under $H_0$.
+\item This is an \emph{approximate} test; the approximation improves as $n$ increases.
+\item Critical values and $p$-values from standard normal distribution.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Large-sample test: non-normal population]
+The time (in minutes) customers spend in a bank is highly skewed. A sample of $50$ customers has mean $\bar{x} = 12.4$ and standard deviation $s = 4.2$. Test at the $5\%$ level whether the mean time exceeds $11$ minutes.
+\begin{itemize}
+\item $H_0 : \mu = 11$, $H_1 : \mu > 11$, $\alpha = 0.05$.
+\item $n = 50 \ge 30$ $\Rightarrow$ CLT applies. $Z = \frac{12.4 - 11}{4.2/\sqrt{50}} = \frac{1.4}{0.594} = 2.357$.
+\item Upper $5\%$ critical value $= 1.645$. Since $2.357 > 1.645$, reject $H_0$.
+\item $p\text{-value} = P(Z > 2.357) \approx 0.0092 < 0.05$.
+\item Conclusion: Reject $H_0$ at $5\%$ level. Sufficient evidence that the mean time exceeds $11$ minutes.
+\end{itemize}
+\end{exemplebox}
+
+\begin{aretenir}[Choosing the correct test for a single mean]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Situation} & \textbf{Test statistic} & \textbf{Distribution under $H_0$} \\
+\hline
+Normal population, $\sigma^2$ known & $Z = \frac{\bar{X}-\mu_0}{\sigma/\sqrt{n}}$ & $\mathrm{N}(0,1)$ (exact) \\
+\hline
+\rowcolor{popblueL} Normal population, $\sigma^2$ unknown, any $n$ & $T = \frac{\bar{X}-\mu_0}{S/\sqrt{n}}$ & $t_{n-1}$ (exact) \\
+\hline
+Non-normal population, $n \ge 30$ & $Z = \frac{\bar{X}-\mu_0}{S/\sqrt{n}}$ & $\mathrm{N}(0,1)$ (approx., by CLT) \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{exercice}[Tests for a population mean]
+\begin{enumerate}
+\item The lifetime of a battery is normally distributed with $\sigma = 2.5$ hours. A sample of $16$ batteries has mean $48.2$ hours. Test at the $5\%$ level whether the mean lifetime is less than $50$ hours.
+\item A random sample of $12$ students from a large university yields a mean height of $168.5$ cm with standard deviation $6.2$ cm. Assuming heights are normal, test at the $1\%$ level whether the mean height differs from $165$ cm.
+\item The waiting time at a clinic is not normally distributed. A sample of $40$ patients has mean $22.3$ min and standard deviation $8.1$ min. Test at the $5\%$ level whether the mean waiting time is different from $20$ min.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 3]
+\begin{enumerate}
+\item $H_0 : \mu = 50$, $H_1 : \mu < 50$. $Z = \frac{48.2-50}{2.5/\sqrt{16}} = -2.88$. Critical value $-1.645$. $-2.88 < -1.645$ $\Rightarrow$ reject $H_0$. $p\text{-value} = 0.0020$. Sufficient evidence mean $< 50$ hours.
+\item $H_0 : \mu = 165$, $H_1 : \mu \neq 165$. $T = \frac{168.5-165}{6.2/\sqrt{12}} = 1.952$. $df=11$, two-tailed $1\%$ critical values $\pm 3.106$. $1.952$ not in critical region. $p\text{-value} \approx 0.076 > 0.01$. Do not reject $H_0$. Insufficient evidence mean $\neq 165$ cm.
+\item $H_0 : \mu = 20$, $H_1 : \mu \neq 20$. $n=40 \ge 30$, CLT. $Z = \frac{22.3-20}{8.1/\sqrt{40}} = 1.795$. Two-tailed $5\%$ critical $\pm 1.96$. $1.795 < 1.96$ $\Rightarrow$ do not reject. $p\text{-value} = 2 \times 0.0363 = 0.0726 > 0.05$. Insufficient evidence mean $\neq 20$ min.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Testing the Difference Between Two Means (Large Samples)}
+
+\courssub{Two Independent Samples}
+
+We now compare the means of two independent populations. Let population 1 have mean $\mu_1$ and variance $\sigma_1^2$, population 2 have mean $\mu_2$ and variance $\sigma_2^2$. We take independent random samples of sizes $n_1$ and $n_2$, obtaining sample means $\bar{X}_1$, $\bar{X}_2$ and sample variances $S_1^2$, $S_2^2$.
+
+\begin{propriete}[Sampling distribution of $\bar{X}_1 - \bar{X}_2$]
+If the samples are independent and either (a) both populations are normal, or (b) both sample sizes are large ($n_1, n_2 \ge 30$), then
+\[ \bar{X}_1 - \bar{X}_2 \sim \mathrm{N}\!\left(\mu_1 - \mu_2,\; \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}\right) \quad\text{(exactly or approximately)}. \]
+\end{propriete}
+
+\begin{propriete}[Two-sample Z-test for difference of means (large samples)]
+For independent large samples ($n_1, n_2 \ge 30$) from any populations, testing $H_0 : \mu_1 - \mu_2 = \delta_0$ (usually $\delta_0 = 0$):
+\begin{itemize}
+\item Test statistic: $Z = \dfrac{(\bar{X}_1 - \bar{X}_2) - \delta_0}{\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}} \approx \mathrm{N}(0,1)$ under $H_0$.
+\item If population variances $\sigma_1^2, \sigma_2^2$ are known, use them instead of $S_1^2, S_2^2$.
+\item Critical values and $p$-values from standard normal distribution.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Two-sample test: known variances]
+Two brands of fertilizer are tested. Brand A: $\sigma_A = 1.2$ kg, $n_A = 40$, $\bar{x}_A = 25.4$ kg. Brand B: $\sigma_B = 1.5$ kg, $n_B = 35$, $\bar{x}_B = 23.8$ kg. Test at $5\%$ whether Brand A gives a higher mean yield.
+\begin{itemize}
+\item $H_0 : \mu_A - \mu_B = 0$, $H_1 : \mu_A - \mu_B > 0$, $\alpha = 0.05$.
+\item $Z = \frac{(25.4 - 23.8) - 0}{\sqrt{1.2^2/40 + 1.5^2/35}} = \frac{1.6}{\sqrt{0.036 + 0.0643}} = \frac{1.6}{0.3167} = 5.05$.
+\item Critical value $1.645$. $5.05 > 1.645$ $\Rightarrow$ reject $H_0$.
+\item $p\text{-value} \approx 2.2 \times 10^{-7}$. Very strong evidence Brand A is better.
+\end{itemize}
+\end{exemplebox}
+
+\begin{exoresolu}[Two-sample test: unknown variances, large samples]
+A study compares the mean monthly expenditure on mobile data in two cities. Douala: $n_1 = 60$, $\bar{x}_1 = 4500$ FCFA, $s_1 = 1200$ FCFA. Yaoundé: $n_2 = 55$, $\bar{x}_2 = 4200$ FCFA, $s_2 = 1100$ FCFA. Test at the $5\%$ level whether the mean expenditures differ.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item $H_0 : \mu_1 - \mu_2 = 0$, $H_1 : \mu_1 - \mu_2 \neq 0$ (two-tailed), $\alpha = 0.05$.
+\item Both $n_1, n_2 \ge 30$ $\Rightarrow$ CLT applies. Use sample variances.
+\item Standard error: $\sqrt{\frac{1200^2}{60} + \frac{1100^2}{55}} = \sqrt{24000 + 22000} = \sqrt{46000} = 214.48$.
+\item $Z = \frac{(4500 - 4200) - 0}{214.48} = \frac{300}{214.48} = 1.399$.
+\item Two-tailed critical values $\pm 1.96$. Since $|1.399| < 1.96$, do not reject $H_0$.
+\item $p\text{-value} = 2 \times P(Z > 1.399) = 2 \times 0.081 = 0.162 > 0.05$.
+\item Conclusion: Insufficient evidence that the mean monthly expenditures differ between the two cities.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Two-Sample t-Test (Small Samples, Normal Populations, Equal Variances)}
+
+\textbf{Note:} The official syllabus specifies ``large scale (Using Central Limit theorem)'' for the difference of two means. The $t$-test for small samples with equal variances is included here for completeness but the examinable focus is the large-sample Z-test.
+
+\begin{propriete}[Two-sample t-test (equal variances, normal populations)]
+If both populations are normal with \emph{equal} variances $\sigma_1^2 = \sigma_2^2 = \sigma^2$, and samples are small, we pool the variances:
+\[ S_p^2 = \frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1 + n_2 - 2}, \quad T = \frac{(\bar{X}_1 - \bar{X}_2) - \delta_0}{S_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}} \sim t_{n_1+n_2-2} \text{ under } H_0. \]
+\end{propriete}
+
+\begin{attention}[Equal variance assumption]
+The pooled $t$-test assumes $\sigma_1^2 = \sigma_2^2$. If this is doubtful and samples are small, use Welch's approximate $t$-test (not in syllabus). For large samples, the Z-test with separate variances is robust and preferred.
+\end{attention}
+
+\courssub{Paired Samples (Matched Pairs)}
+
+When observations come in natural pairs (before/after, twins, matched subjects), we analyse the \emph{differences} $D_i = X_{1i} - X_{2i}$. This reduces to a one-sample test on the mean difference $\mu_D$.
+
+\begin{propriete}[Paired t-test]
+For $n$ paired differences $D_1,\dots,D_n$ from a normal distribution, testing $H_0 : \mu_D = 0$:
+\begin{itemize}
+\item Test statistic: $T = \dfrac{\bar{D}}{S_D/\sqrt{n}} \sim t_{n-1}$ under $H_0$.
+\item For large $n$, use $Z = \dfrac{\bar{D}}{S_D/\sqrt{n}} \approx \mathrm{N}(0,1)$.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Paired test: before and after]
+A new teaching method is tried on $15$ students. Their test scores before and after are recorded. The mean difference (after $-$ before) is $\bar{d} = 4.2$ with $s_d = 5.8$. Test at $5\%$ whether the method improves scores.
+\begin{itemize}
+\item $H_0 : \mu_D = 0$, $H_1 : \mu_D > 0$, $\alpha = 0.05$.
+\item $T = \frac{4.2}{5.8/\sqrt{15}} = \frac{4.2}{1.497} = 2.806$.
+\item $df = 14$, upper $5\%$ critical value $= 1.761$. $2.806 > 1.761$ $\Rightarrow$ reject $H_0$.
+\item $p\text{-value} = P(T_{14} > 2.806) \approx 0.007 < 0.05$.
+\item Conclusion: Sufficient evidence that the teaching method improves scores.
+\end{itemize}
+\end{exemplebox}
+
+\begin{aretenir}[Summary: Tests for difference of two means]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Situation} & \textbf{Test statistic} & \textbf{Distribution} \\
+\hline
+Independent, large samples ($n_1,n_2 \ge 30$) & $Z = \frac{(\bar{X}_1-\bar{X}_2)-\delta_0}{\sqrt{S_1^2/n_1 + S_2^2/n_2}}$ & $\mathrm{N}(0,1)$ (approx.) \\
+\hline
+\rowcolor{popblueL} Independent, normal, $\sigma_1^2,\sigma_2^2$ known & $Z = \frac{(\bar{X}_1-\bar{X}_2)-\delta_0}{\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}}$ & $\mathrm{N}(0,1)$ (exact) \\
+\hline
+Independent, normal, equal variances, small $n$ & $T = \frac{(\bar{X}_1-\bar{X}_2)-\delta_0}{S_p\sqrt{1/n_1+1/n_2}}$ & $t_{n_1+n_2-2}$ (exact) \\
+\hline
+Paired, normal differences & $T = \frac{\bar{D}}{S_D/\sqrt{n}}$ & $t_{n-1}$ (exact) \\
+\hline
+Paired, large $n$ & $Z = \frac{\bar{D}}{S_D/\sqrt{n}}$ & $\mathrm{N}(0,1)$ (approx.) \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{exercice}[Tests for difference of two means]
+\begin{enumerate}
+\item Two types of tyres are tested for wear. Type A: $n_1 = 50$, $\bar{x}_1 = 42000$ km, $s_1 = 3500$ km. Type B: $n_2 = 45$, $\bar{x}_2 = 40500$ km, $s_2 = 3200$ km. Test at $5\%$ whether Type A lasts longer.
+\item A drug is tested on $20$ patients. Systolic blood pressure is measured before and after. Mean reduction $\bar{d} = 8.5$ mmHg, $s_d = 6.2$ mmHg. Test at $1\%$ whether the drug reduces blood pressure.
+\item Two machines fill jars of jam. Machine 1: $\sigma_1 = 2.0$ g, $n_1 = 30$, $\bar{x}_1 = 502$ g. Machine 2: $\sigma_2 = 2.5$ g, $n_2 = 30$, $\bar{x}_2 = 498$ g. Test at $5\%$ whether the machines have different mean fills.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 4]
+\begin{enumerate}
+\item $H_0 : \mu_A - \mu_B = 0$, $H_1 : \mu_A - \mu_B > 0$. $Z = \frac{42000-40500}{\sqrt{3500^2/50 + 3200^2/45}} = \frac{1500}{\sqrt{245000 + 227556}} = \frac{1500}{687.5} = 2.182$. Critical $1.645$. Reject $H_0$. $p\text{-value} = 0.0146$. Sufficient evidence Type A lasts longer.
+\item $H_0 : \mu_D = 0$, $H_1 : \mu_D > 0$. $T = \frac{8.5}{6.2/\sqrt{20}} = 6.13$. $df=19$, upper $1\%$ critical $= 2.539$. Reject $H_0$. $p\text{-value} < 0.001$. Sufficient evidence drug reduces blood pressure.
+\item $H_0 : \mu_1 - \mu_2 = 0$, $H_1 : \mu_1 - \mu_2 \neq 0$. $Z = \frac{502-498}{\sqrt{2^2/30 + 2.5^2/30}} = \frac{4}{\sqrt{0.1333 + 0.2083}} = \frac{4}{0.5846} = 6.84$. Critical $\pm 1.96$. Reject $H_0$. $p\text{-value} \approx 0$. Very strong evidence mean fills differ.
+\end{enumerate}
+\end{corrige}
+
+\begin{exercice}[Mixed revision exercises]
+\begin{enumerate}
+\item A coin is tossed $100$ times and lands heads $58$ times. Test at the $5\%$ level whether the coin is biased.
+\item The number of accidents per month at a factory follows a Poisson distribution with mean $3$. After a safety campaign, the next $6$ months have totals: $2, 1, 0, 3, 1, 2$. Test at $5\%$ whether the accident rate has decreased.
+\item A sample of $25$ observations from a normal population with $\sigma = 4$ gives $\bar{x} = 52.3$. Test $H_0 : \mu = 50$ vs $H_1 : \mu > 50$ at $5\%$.
+\item Two large samples give: $n_1 = 80$, $\bar{x}_1 = 15.2$, $s_1 = 3.1$; $n_2 = 75$, $\bar{x}_2 = 14.5$, $s_2 = 2.8$. Test $H_0 : \mu_1 = \mu_2$ vs $H_1 : \mu_1 \neq \mu_2$ at $5\%$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 5]
+\begin{enumerate}
+\item $H_0 : p = 0.5$, $H_1 : p \neq 0.5$. $X \sim \mathrm{B}(100, 0.5) \approx \mathrm{N}(50, 25)$. $z = \frac{57.5-50}{5} = 1.5$ (with continuity correction). Two-tailed $p\text{-value} = 2 \times 0.0668 = 0.1336 > 0.05$. Do not reject $H_0$. Insufficient evidence of bias.
+\item $H_0 : \lambda = 3$, $H_1 : \lambda < 3$. Total over $6$ months: $X = 9$. Under $H_0$, $X \sim \mathrm{Po}(18)$. $p\text{-value} = P(X \leq 9) \approx 0.0154 < 0.05$. Reject $H_0$. Sufficient evidence accident rate has decreased.
+\item $Z = \frac{52.3-50}{4/\sqrt{25}} = \frac{2.3}{0.8} = 2.875$. Critical $1.645$. Reject $H_0$. $p\text{-value} = 0.0020$. Sufficient evidence $\mu > 50$.
+\item $Z = \frac{15.2-14.5}{\sqrt{3.1^2/80 + 2.8^2/75}} = \frac{0.7}{\sqrt{0.1201 + 0.1045}} = \frac{0.7}{0.4738} = 1.477$. Critical $\pm 1.96$. Do not reject $H_0$. $p\text{-value} = 0.140$. Insufficient evidence means differ.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Testing a Probability and the Mean of a Poisson Distribution}
+
+In the previous section we built the machinery of significance testing: the null hypothesis $H_0$, the alternative hypothesis $H_1$, the significance level $\alpha$, the critical region, and the two types of error. We now put that machinery to work in the two simplest and most elegant situations of the syllabus: testing a claim about a \cle{probability} $p$ (using the \cle{binomial distribution}) and testing a claim about the \cle{mean of a Poisson distribution}. In both cases the test statistic has a \emph{known discrete distribution} under $H_0$, so we can compute \emph{exact} tail probabilities --- no approximation is needed.
+
+\courssub{Testing a Probability: the Binomial Test}
+
+\textbf{A concrete situation.}\par
+A factory in Douala claims that only $3\%$ of the sachets it produces are defective. A consumer-protection inspector suspects the true proportion is higher. She takes a random sample of $n$ sachets and counts $X$, the number of defective ones. If the claim is true, $X$ should behave like a binomial random variable with parameters $n$ and $p_0 = 0.03$. If the observed value of $X$ is \emph{suspiciously large} for such a distribution, the claim becomes untenable.
+
+\begin{propriete}[Distribution of the test statistic under $H_0$]
+Let $X$ be the number of ``successes'' in $n$ independent trials. To test
+\[ H_0 : p = p_0 \qquad \text{against} \qquad H_1 : p > p_0 \ \ (\text{or } p < p_0,\ \text{or } p \neq p_0), \]
+we use the fact that, \textbf{under $H_0$},
+\[ X \sim B(n, p_0). \]
+The \cle{p-value} of an observed value $x$ is a \emph{tail probability} of this distribution:
+\begin{itemize}
+\item upper-tailed test ($H_1 : p > p_0$): $\;p\text{-value} = P(X \geq x)$;
+\item lower-tailed test ($H_1 : p < p_0$): $\;p\text{-value} = P(X \leq x)$;
+\item two-tailed test ($H_1 : p \neq p_0$): the p-value is $2 \times \min\bigl(P(X \geq x),\, P(X \leq x)\bigr)$ (equivalently, compare each tail with $\alpha/2$).
+\end{itemize}
+We reject $H_0$ at level $\alpha$ when the p-value is less than $\alpha$. (The proof is simply the definition of the binomial model: independent trials, constant probability $p_0$.)
+\end{propriete}
+
+\begin{attention}[The p-value is a tail probability, not a single probability]
+A very common error is to compute $P(X = x)$ and compare it with $\alpha$. This is wrong: even under $H_0$, any \emph{single} value of a discrete variable can have a small probability. The correct question is: ``\emph{If $H_0$ is true, how likely is a result \textbf{as extreme or more extreme} than the one observed?}'' That is exactly $P(X \geq x)$ (upper tail) or $P(X \leq x)$ (lower tail).
+\end{attention}
+
+\textbf{Finding the critical region.}\par
+Because $X$ is discrete, we cannot usually hit $\alpha$ exactly. For an upper-tailed test at level $\alpha$, the \cle{critical value} is the \textbf{smallest integer $k$ such that}
+\[ P(X \geq k) \leq \alpha, \qquad \text{i.e.} \qquad P(X \leq k-1) \geq 1 - \alpha. \]
+For a lower-tailed test, it is the \textbf{largest integer $k$ such that} $P(X \leq k) \leq \alpha$. For a two-tailed test, place $\alpha/2$ in each tail. These cumulative probabilities are read from binomial tables or computed from $P(X = r) = \binom{n}{r} p_0^{r} (1-p_0)^{n-r}$.
+
+\begin{methode}[Binomial test of a probability]
+\begin{enumerate}
+\item \textbf{State the hypotheses}: $H_0 : p = p_0$ and $H_1$ (one- or two-tailed, from the wording of the question). Define $p$ clearly in context.
+\item \textbf{State the distribution under $H_0$}: $X \sim B(n, p_0)$, and the significance level $\alpha$.
+\item \textbf{Compute the p-value}: the cumulative tail probability $P(X \geq x)$ or $P(X \leq x)$ for the observed $x$ (double the smaller tail for a two-tailed test). \emph{Or} determine the critical region and check whether $x$ lies in it.
+\item \textbf{Decide}: if p-value $< \alpha$ (or $x$ in the critical region), reject $H_0$; otherwise do not reject $H_0$.
+\item \textbf{Conclude in context}: one sentence, in the language of the problem, mentioning the strength of the evidence.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Critical region for $B(20, 0.3)$ at the $5\%$ level]
+A coin-like device is suspected of giving ``success'' with probability greater than $0.3$. We test $H_0 : p = 0.3$ against $H_1 : p > 0.3$ using $n = 20$ trials at the $5\%$ level. Under $H_0$, $X \sim B(20, 0.3)$. From cumulative binomial tables:
+\[ P(X \geq 9) = 0.1133 > 0.05, \qquad P(X \geq 10) = 0.0480 \leq 0.05. \]
+The smallest $k$ with $P(X \geq k) \leq 0.05$ is $k = 10$. The critical region is therefore $X \geq 10$, and the \emph{actual} significance level of the test is $0.0480$, not exactly $0.05$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, bar width=6pt,
+    width=13cm, height=6.5cm,
+    xlabel={$x$}, ylabel={$P(X=x)$},
+    xlabel style={popink}, ylabel style={popink},
+    xmin=-0.5, xmax=20.5, ymin=0, ymax=0.21,
+    xtick={0,2,4,6,8,10,12,14,16,18,20},
+    tick label style={font=\small},
+    axis lines=left,
+    every axis plot/.append style={ybar, fill=popblue, draw=popdark}
+]
+\addplot coordinates {(0,0.0008) (1,0.0068) (2,0.0278) (3,0.0716) (4,0.1304) (5,0.1789) (6,0.1916) (7,0.1643) (8,0.1144) (9,0.0654)};
+\addplot+[ybar, fill=poporange, draw=popdark] coordinates {(10,0.0308) (11,0.0120) (12,0.0039) (13,0.0010) (14,0.0002) (15,0.0) (16,0.0) (17,0.0) (18,0.0) (19,0.0) (20,0.0)};
+\node[poporange, font=\small, align=center] at (axis cs:13.5,0.06) {Critical region\\ $X \geq 10$};
+\draw[->, poporange] (axis cs:12.2,0.05) -- (axis cs:10.4,0.035);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Distribution $B(20, 0.3)$ under $H_0$. The orange bars form the upper-tail critical region $X \geq 10$ for a test at the $5\%$ level (actual level $0.0480$).}
+\end{popfigure}
+
+\begin{exoresolu}[Defective sachets in a Douala factory]
+A factory in Douala claims that $3\%$ of its sachets are defective. An inspector believes the true proportion is \emph{higher}. In a random sample of $50$ sachets, $4$ are defective. Test at the $5\%$ level of significance whether the claim should be rejected.
+\tcblower
+\textbf{Solution.}\par
+\textbf{Step 1 --- Hypotheses.} Let $p$ be the true proportion of defective sachets.
+\[ H_0 : p = 0.03 \qquad H_1 : p > 0.03. \]
+\textbf{Step 2 --- Distribution under $H_0$.} If $X$ is the number of defective sachets in the sample, then under $H_0$, $X \sim B(50, 0.03)$; $\alpha = 0.05$.\par
+\textbf{Step 3 --- p-value.} The observed value is $x = 4$:
+\begin{align*}
+P(X \geq 4) &= 1 - P(X \leq 3)\\
+&= 1 - \big[0.97^{50} + 50(0.03)(0.97^{49}) + \tbinom{50}{2}(0.03)^2(0.97^{48}) + \tbinom{50}{3}(0.03)^3(0.97^{47})\big]\\
+&\approx 1 - (0.2181 + 0.3372 + 0.2555 + 0.1264) = 1 - 0.9372 = 0.0628.
+\end{align*}
+\textbf{Step 4 --- Decision.} Since $0.0628 > 0.05$, we do \textbf{not} reject $H_0$.\par
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level, there is insufficient evidence that the proportion of defective sachets exceeds $3\%$; the inspector's suspicion is not confirmed by this sample.
+\end{exoresolu}
+
+\begin{attention}[Two-tailed discrete tests: the actual level is rarely $\alpha$]
+Because the binomial distribution is discrete, tail probabilities jump in steps. The critical region ``$P(X \geq k) \leq \alpha$'' usually gives an \emph{actual} significance level strictly smaller than $\alpha$ (e.g. $0.0480$ instead of $0.05$). In a two-tailed test, the two tails generally have \emph{different} actual probabilities. When a GCE question asks for the significance level of a test whose critical region is given, compute the \textbf{actual} level by summing the tail probabilities --- do not simply quote the nominal $\alpha$.
+\end{attention}
+
+\courssub{Testing the Mean of a Poisson Distribution}
+
+\textbf{A concrete situation.}\par
+The emergency unit of a hospital in Buea has, for years, received an average of $4$ patients per day of a certain category. Staff now feel the rate has increased. Arrivals of this kind are well modelled by a Poisson distribution: they occur randomly, independently, and at a constant average rate. If $X$ is the number of arrivals on a randomly chosen day, then under the ``old'' regime $X \sim Po(4)$. A day (or a period) with an unusually large count casts doubt on $\lambda = 4$.
+
+\begin{propriete}[Poisson test of a mean]
+Let $X$ count events in a fixed interval, modelled by a Poisson distribution. To test
+\[ H_0 : \lambda = \lambda_0 \qquad \text{against} \qquad H_1 : \lambda > \lambda_0 \ \ (\text{or } \lambda < \lambda_0,\ \text{or } \lambda \neq \lambda_0), \]
+we use the fact that, \textbf{under $H_0$}, $X \sim Po(\lambda_0)$, and the p-value of an observed count $x$ is a tail probability:
+\begin{itemize}
+\item upper tail ($H_1 : \lambda > \lambda_0$): $\;p\text{-value} = P(X \geq x)$;
+\item lower tail ($H_1 : \lambda < \lambda_0$): $\;p\text{-value} = P(X \leq x)$;
+\item two-tailed: the p-value is $2 \times \min\bigl(P(X \geq x),\, P(X \leq x)\bigr)$ (or compare each tail with $\alpha/2$).
+\end{itemize}
+If the observation covers $t$ times the basic interval, use $X \sim Po(t\lambda_0)$ under $H_0$ (additive property of the Poisson distribution).
+\end{propriete}
+
+\begin{methode}[Poisson test of a mean]
+\begin{enumerate}
+\item \textbf{State the hypotheses} $H_0 : \lambda = \lambda_0$, $H_1$ as appropriate, defining $\lambda$ with its unit interval (``mean number of arrivals per day'').
+\item \textbf{State the model under $H_0$}: $X \sim Po(\lambda_0)$ (adjusting for the length of the observation period if necessary), and give $\alpha$.
+\item \textbf{Compute the p-value} using $P(X = r) = e^{-\lambda_0}\dfrac{\lambda_0^{r}}{r!}$ and cumulative Poisson tables; \emph{or} find the critical region: smallest $k$ with $P(X \geq k) \leq \alpha$ (upper tail) or largest $k$ with $P(X \leq k) \leq \alpha$ (lower tail).
+\item \textbf{Decide} by comparing the p-value with $\alpha$.
+\item \textbf{Conclude in context.}
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, bar width=7pt,
+    width=13cm, height=6.5cm,
+    xlabel={$x$}, ylabel={$P(X=x)$},
+    xlabel style={popink}, ylabel style={popink},
+    xmin=-0.5, xmax=12.5, ymin=0, ymax=0.21,
+    xtick={0,1,2,3,4,5,6,7,8,9,10,11,12},
+    tick label style={font=\small},
+    axis lines=left,
+    every axis plot/.append style={ybar, fill=poppurple, draw=popdark}
+]
+\addplot+[ybar, fill=poporange, draw=popdark] coordinates {(0,0.0183)};
+\addplot coordinates {(1,0.0733) (2,0.1465) (3,0.1954) (4,0.1954) (5,0.1563) (6,0.1042) (7,0.0595) (8,0.0298) (9,0.0132) (10,0.0053) (11,0.0019) (12,0.0006)};
+\node[poporange, font=\small, align=center] at (axis cs:2.6,0.055) {Rejection region\\ $X = 0$ (lower tail, $5\%$)};
+\draw[->, poporange] (axis cs:1.9,0.045) -- (axis cs:0.3,0.025);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Distribution $Po(4)$ under $H_0$. Since $P(X \leq 0) = 0.0183 \leq 0.05$ but $P(X \leq 1) = 0.0916 > 0.05$, the lower-tail critical region at the $5\%$ level is just $X = 0$.}
+\end{popfigure}
+
+\begin{exoresolu}[Arrivals at a Buea emergency unit]
+The emergency unit of a hospital in Buea used to receive a mean of $4$ cases per day of a certain category, modelled by a Poisson distribution. Management suspects the mean has \emph{increased}. On a randomly chosen day, $9$ such cases arrive. Test at the $5\%$ level whether the mean has risen above $4$.
+\tcblower
+\textbf{Solution.}\par
+\textbf{Step 1 --- Hypotheses.} Let $\lambda$ be the mean number of such cases per day.
+\[ H_0 : \lambda = 4 \qquad H_1 : \lambda > 4. \]
+\textbf{Step 2 --- Model under $H_0$.} $X \sim Po(4)$, $\alpha = 0.05$.\par
+\textbf{Step 3 --- p-value.} From cumulative Poisson tables with $\lambda_0 = 4$:
+\[ P(X \geq 9) = 1 - P(X \leq 8) = 1 - 0.9786 = 0.0214. \]
+\textbf{Step 4 --- Decision.} Since $0.0214 < 0.05$, we \textbf{reject} $H_0$.\par
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level, there is significant evidence that the mean daily number of arrivals has increased above $4$; the hospital should review its staffing accordingly.\par
+\emph{Remark.} Note that $P(X \geq 8) = 0.0511 > 0.05$: had only $8$ cases arrived, the evidence would \emph{not} have been significant. The critical region for this test is $X \geq 9$, with actual level $0.0214$.
+\end{exoresolu}
+
+\begin{exercice}[A two-tailed Poisson test]
+Calls arrive at a call centre in Yaound\'e at a mean rate of $3$ per minute, modelled by a Poisson distribution. After a system change, the manager wants to test, at the $10\%$ level, whether the rate has \emph{changed} (in either direction). In a given minute, $7$ calls arrive. Given $P(X \leq 6) = 0.9665$ and $P(X \leq 7) = 0.9881$ for $Po(3)$, carry out the test.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$H_0 : \lambda = 3$; $H_1 : \lambda \neq 3$ (two-tailed, $5\%$ in each tail). Upper tail: $P(X \geq 7) = 1 - P(X \leq 6) = 1 - 0.9665 = 0.0335$. Since $0.0335 < 0.05$, the observed value falls in the upper rejection region (equivalently, doubled p-value $0.067 < 0.10$). We reject $H_0$: at the $10\%$ level there is evidence that the call rate has changed --- indeed increased.
+\end{corrige}
+
+\courssub{Large Samples: the Normal Approximation (Extension)}
+
+Exact binomial and Poisson computations become heavy when $n$ or $\lambda$ is large. The following approximations, already met in the distribution chapters, are exam-useful:
+
+\begin{aretenir}[Normal approximations with continuity correction]
+\begin{itemize}
+\item If $X \sim B(n, p)$ with $n$ large ($np > 5$ and $n(1-p) > 5$), then $X \approx N(np,\, np(1-p))$.
+\item If $X \sim Po(\lambda)$ with $\lambda$ large (say $\lambda > 10$), then $X \approx N(\lambda,\, \lambda)$.
+\end{itemize}
+Because we approximate a \emph{discrete} variable by a \emph{continuous} one, apply a \cle{continuity correction}:
+\[ P(X \geq x) \approx P\!\left(Z \geq \frac{x - 0.5 - \mu}{\sigma}\right), \qquad
+P(X \leq x) \approx P\!\left(Z \leq \frac{x + 0.5 - \mu}{\sigma}\right). \]
+\end{aretenir}
+
+For instance, in the Douala example with $n = 500$ instead of $50$, the exact binomial sum would be unbearable by hand, but $B(500, 0.03) \approx N(15,\, 14.55)$ gives the p-value in a few lines. Unless the question says otherwise at this level, however, prefer the \emph{exact} cumulative probabilities whenever they are computable or given in tables.
+
+\begin{savaistu}[Why the GCE loves discrete tests]
+Binomial and Poisson tests are favourites of examiners precisely because everything is exact: no estimated variance, no approximation. The whole logic of hypothesis testing --- hypotheses, tail probabilities, critical regions, actual versus nominal significance levels --- is visible in its purest form. Master these two tests and the tests on means in the next sections will feel like old friends wearing new clothes.
+\end{savaistu}
+
+\coursec{Testing a Population Mean}
+
+In the previous section we tested hypotheses about a probability $p$ and about the mean of a Poisson distribution, using exact discrete distributions (binomial and Poisson) to locate critical regions. We now turn to the most common situation in practice: testing a claim about the \cle{mean} $\mu$ of a population. A water company in Douala claims its sachets contain on average $500$ ml; a miller claims its bags of flour average $50$ kg; a school claims its candidates' mean mark is $12/20$. In each case the natural evidence is the \emph{sample mean} $\bar{X}$, and the question is whether the observed $\bar{x}$ is compatible with the claimed value $\mu_0$, or so far from it that the claim should be rejected.
+
+\courssub{Setting Up the Hypotheses}
+
+As before, the \cle{null hypothesis} $H_0$ states the status quo — the claimed or standard value — while the \cle{alternative hypothesis} $H_1$ expresses the suspicion we wish to test:
+\begin{itemize}
+\item two-tailed: $H_0 : \mu = \mu_0$ against $H_1 : \mu \neq \mu_0$ (the mean may have changed in either direction);
+\item one-tailed (right): $H_0 : \mu = \mu_0$ against $H_1 : \mu > \mu_0$ (suspected increase);
+\item one-tailed (left): $H_0 : \mu = \mu_0$ against $H_1 : \mu < \mu_0$ (suspected decrease).
+\end{itemize}
+The test statistic is the sample mean $\bar{X}$ of a random sample $X_1, \dots, X_n$. Small values of $|\bar{x} - \mu_0|$ support $H_0$; large values support $H_1$. To judge ``large'' we need the distribution of $\bar{X}$ when $H_0$ is true.
+
+\begin{attention}[Choosing the tail before seeing the data]
+The direction of $H_1$ must be decided \emph{from the wording of the problem}, \textbf{before} (or independently of) looking at the sample result. ``Suspects the mean has decreased'' gives a left-tailed test; ``suspects the mean has changed'' gives a two-tailed test. Choosing the tail \emph{after} seeing that $\bar{x} < \mu_0$ in order to force a rejection is a serious methodological error — it roughly doubles the true significance level.
+\end{attention}
+
+\courssub{The Sampling Distribution of the Sample Mean}
+
+\begin{propriete}[Distribution of the sample mean]
+If $X \sim N(\mu, \sigma^2)$ and $X_1, \dots, X_n$ is a random sample, then
+\[ \bar{X} \sim N\!\left(\mu, \frac{\sigma^2}{n}\right), \qquad\text{so}\qquad Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1). \]
+If the population is \emph{not} normal but $n$ is large (in practice $n \geq 30$), the Central Limit Theorem gives the same result \emph{approximately}: $\bar{X} \overset{\text{approx}}{\sim} N(\mu, \sigma^2/n)$.
+\end{propriete}
+
+The proof of the exact case uses the fact that a linear combination of independent normal variables is normal, with $E(\bar{X}) = \mu$ and $\operatorname{Var}(\bar{X}) = \sigma^2/n$; the approximate case is precisely the Central Limit Theorem studied earlier. The key message is that \textbf{averaging reduces spread}: the standard deviation of $\bar{X}$, called the \cle{standard error}, is $\sigma/\sqrt{n}$, so a large sample pins down $\mu$ much more sharply.
+
+\begin{aretenir}[Which case am I in?]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} Situation & Distribution of $\bar{X}$ under $H_0$ & Standard error to use \\
+\hline
+Normal population, $\sigma$ known & Exactly $N(\mu_0, \sigma^2/n)$ & $\sigma/\sqrt{n}$ \\
+\hline
+Any population, $n \geq 30$, $\sigma$ known & Approximately $N(\mu_0, \sigma^2/n)$ (CLT) & $\sigma/\sqrt{n}$ \\
+\hline
+Any population, $n \geq 30$, $\sigma$ unknown & Approximately $N(\mu_0, \sigma^2/n)$ (CLT) & $s/\sqrt{n}$ \\
+\hline
+\end{tabularx}
+\end{center}
+In every case the test statistic is $z = \dfrac{\bar{x} - \mu_0}{\text{standard error}}$, compared with $N(0,1)$.
+\end{aretenir}
+
+\courssub{Case 1: Normal Population, Known Variance — the z-Test}
+
+Suppose $X \sim N(\mu, \sigma^2)$ with $\sigma^2$ \textbf{known}, and we test $H_0 : \mu = \mu_0$. Under $H_0$,
+\[ Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1). \]
+We compute the observed value $z = \dfrac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}$ and compare it with critical values from standard normal tables, or compute the p-value.
+
+\begin{aretenir}[Usual critical values of $N(0,1)$]
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Significance level & $10\%$ & $5\%$ & $2\%$ & $1\%$ \\
+\hline
+One-tailed critical value & $1.282$ & $1.645$ & $2.054$ & $2.326$ \\
+\hline
+Two-tailed critical value & $1.645$ & $1.960$ & $2.326$ & $2.576$ \\
+\hline
+\end{tabular}
+\end{center}
+Reject $H_0$ when the observed $z$ falls beyond the critical value in the direction(s) of $H_1$.
+\end{aretenir}
+
+\begin{definition}[p-value for a test on a mean]
+The \cle{p-value} is the probability, computed \emph{assuming $H_0$ true}, of obtaining a value of the test statistic at least as extreme (in the direction of $H_1$) as the one observed. For a z-test with observed value $z$:
+\begin{itemize}
+\item right-tailed: $p = P(Z \geq z) = 1 - \Phi(z)$;
+\item left-tailed: $p = P(Z \leq z) = \Phi(z)$;
+\item two-tailed: $p = 2\,P(Z \geq |z|) = 2\bigl(1 - \Phi(|z|)\bigr)$.
+\end{itemize}
+We reject $H_0$ at level $\alpha$ exactly when $p \leq \alpha$.
+\end{definition}
+
+\begin{attention}[$\sigma$ is not $s$]
+Do not confuse the \textbf{population} standard deviation $\sigma$ with the \textbf{sample} standard deviation $s$. Use $\sigma$ only when it is genuinely known (given by the problem, or from long production experience). If $\sigma$ is unknown and must be estimated from the sample, you are in Case 2 below — which is only justified for large $n$. Always state explicitly which quantity you are using and why.
+\end{attention}
+
+\begin{exoresolu}[Known variance, two-tailed test]
+The masses of bags of cement produced by a factory are normally distributed with standard deviation $\sigma = 0.9$ kg. The bags are labelled ``$50$ kg''. A random sample of $25$ bags has mean mass $49.62$ kg. Test, at the $5\%$ level of significance, whether the mean mass differs from $50$ kg.
+\tcblower
+\textbf{Solution.}
+\textbf{Step 1 — Hypotheses.} ``Differs from'' means either direction, so the test is two-tailed:
+\[ H_0 : \mu = 50 \qquad \text{against} \qquad H_1 : \mu \neq 50, \qquad \alpha = 0.05. \]
+\textbf{Step 2 — Standard error.} The population is normal and $\sigma = 0.9$ is known, so the standard error is $\sigma/\sqrt{n} = 0.9/\sqrt{25} = 0.18$ kg.
+\textbf{Step 3 — Test statistic.}
+\[ z = \frac{49.62 - 50}{0.18} = \frac{-0.38}{0.18} \approx -2.11. \]
+\textbf{Step 4 — Decision.} The two-tailed critical values at $5\%$ are $\pm 1.96$. Since $|-2.11| = 2.11 > 1.96$, the observed value lies in the critical region. (The p-value is $2\bigl(1 - \Phi(2.11)\bigr) \approx 2(1 - 0.9826) = 0.0348 < 0.05$.)
+\textbf{Step 5 — Conclusion.} At the $5\%$ level of significance, there is sufficient evidence that the mean mass of the bags differs from the labelled $50$ kg; the machine should be checked and adjusted.
+\end{exoresolu}
+
+\courssub{Case 2: Large Sample, Unknown Variance}
+
+In real life $\sigma$ is rarely known. If the sample is large ($n \geq 30$), two facts save us:
+\begin{enumerate}
+\item by the Central Limit Theorem, $\bar{X}$ is approximately normal whatever the population shape;
+\item for large $n$, the sample standard deviation $s$ is a reliable estimate of $\sigma$, so replacing $\sigma$ by $s$ introduces negligible extra error.
+\end{enumerate}
+The test statistic becomes
+\[ Z = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} \overset{\text{approx}}{\sim} N(0,1) \quad \text{under } H_0, \]
+and the test proceeds exactly as in Case 1.
+
+\begin{methode}[The z-test for a population mean]
+\begin{enumerate}
+\item \textbf{State the hypotheses}: $H_0 : \mu = \mu_0$ and the appropriate $H_1$ (one- or two-tailed), and the significance level $\alpha$.
+\item \textbf{Choose the standard error}: $\sigma/\sqrt{n}$ if $\sigma$ is known; $s/\sqrt{n}$ if $\sigma$ is unknown and $n \geq 30$.
+\item \textbf{Compute} $z = \dfrac{\bar{x} - \mu_0}{\text{standard error}}$.
+\item \textbf{Decide}: either compare $|z|$ (or $z$, one-tailed) with the critical value, or compute the p-value and compare with $\alpha$.
+\item \textbf{Conclude in context}: state whether $H_0$ is rejected or not, at the stated level, in the language of the original problem.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[The sachet-water claim]
+A water company in Bonabéri claims that its sachets contain on average $500$ ml. A consumers' association suspects the true mean is \emph{less} than $500$ ml. A random sample of $50$ sachets gives $\bar{x} = 496.4$ ml with sample standard deviation $s = 9.8$ ml. Test the company's claim at the $5\%$ level of significance.
+\tcblower
+\textbf{Solution.}
+\textbf{Step 1 — Hypotheses.} The suspicion is a decrease, so the test is left-tailed:
+\[ H_0 : \mu = 500 \qquad \text{against} \qquad H_1 : \mu < 500, \qquad \alpha = 0.05. \]
+\textbf{Step 2 — Standard error.} $\sigma$ is unknown but $n = 50 \geq 30$, so by the CLT we use $s/\sqrt{n} = 9.8/\sqrt{50} \approx 1.386$ ml.
+\textbf{Step 3 — Test statistic.}
+\[ z = \frac{496.4 - 500}{9.8/\sqrt{50}} = \frac{-3.6}{1.386} \approx -2.60. \]
+\textbf{Step 4 — Decision.} The left-tailed critical value at $5\%$ is $-1.645$. Since $-2.60 < -1.645$, the observed value lies in the critical region. Equivalently, the p-value is
+\[ p = P(Z \leq -2.60) = \Phi(-2.60) = 1 - \Phi(2.60) \approx 1 - 0.9953 = 0.0047 < 0.05. \]
+\textbf{Step 5 — Conclusion.} We reject $H_0$ at the $5\%$ level: there is significant evidence that the mean content of the sachets is \emph{less} than the advertised $500$ ml. The consumers' suspicion is supported.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.05]
+\fill[poporange!40, opacity=0.85] plot[domain=-3.4:-2.6, samples=40] (\x, {3.2*exp(-(\x)^2/2)}) -- (-2.6,0) -- (-3.4,0) -- cycle;
+\draw[popink, thick, domain=-3.6:3.6, samples=80] plot (\x, {3.2*exp(-(\x)^2/2)});
+\draw[->, popdark] (-4,0) -- (4.2,0) node[below left] {\small $\bar{x}$};
+\draw[popdark] (0,0) -- (0,3.35);
+\node[below, popdark] at (0,0) {\small $\mu_0 = 500$};
+\draw[popblue, thick] (-2.6,0) -- (-2.6,{3.2*exp(-2.6^2/2)});
+\node[below, popblue] at (-2.6,0) {\small $\bar{x}=496.4$};
+\node[poporange, align=center] at (-3.15,0.55) {\small p-value\\ \small $0.0047$};
+\draw[popgreen, thick, dashed] (-1.645,0) -- (-1.645,{3.2*exp(-1.645^2/2)});
+\node[above, popgreen, align=center] at (-1.645,0.6) {\small critical\\ \small $-1.645$};
+\node[popmuted, align=center] at (2.1,2.2) {\small $\bar{X} \sim N\!\left(500,\ \tfrac{9.8^2}{50}\right)$\\ \small under $H_0$};
+\end{tikzpicture}
+\end{center}
+\legende{Sampling distribution of $\bar{X}$ under $H_0$ for the sachet-water test. The observed $\bar{x} = 496.4$ lies beyond the critical value; the shaded area is the one-tailed p-value.}
+\end{popfigure}
+
+\begin{exoresolu}[A case where $H_0$ is not rejected]
+A school states that the mean mark of its candidates in a mock examination is $12$ out of $20$. A random sample of $40$ scripts gives $\bar{x} = 11.5$ with sample standard deviation $s = 3.2$. Test, at the $5\%$ level, whether the mean mark differs from $12$.
+\tcblower
+\textbf{Solution.}
+\textbf{Step 1 — Hypotheses.} Two-tailed test:
+\[ H_0 : \mu = 12 \qquad \text{against} \qquad H_1 : \mu \neq 12, \qquad \alpha = 0.05. \]
+\textbf{Step 2 — Standard error.} $\sigma$ unknown, $n = 40 \geq 30$: standard error $= s/\sqrt{n} = 3.2/\sqrt{40} \approx 0.506$.
+\textbf{Step 3 — Test statistic.}
+\[ z = \frac{11.5 - 12}{0.506} \approx -0.99. \]
+\textbf{Step 4 — Decision.} Two-tailed critical values at $5\%$: $\pm 1.96$. Since $|-0.99| = 0.99 < 1.96$, the observed value does \emph{not} lie in the critical region. (The p-value is $2\bigl(1 - \Phi(0.99)\bigr) \approx 2(1 - 0.8389) = 0.322 > 0.05$.)
+\textbf{Step 5 — Conclusion.} At the $5\%$ level of significance, there is \emph{insufficient} evidence against the school's claim: the sample is consistent with a mean mark of $12$ out of $20$. Note carefully: we have \emph{not proved} that $\mu = 12$; the data simply do not contradict it.
+\end{exoresolu}
+
+\courssub{The Link with Confidence Intervals}
+
+There is a beautiful and examinable connection between two-tailed tests and confidence intervals. A $95\%$ confidence interval for $\mu$ (large sample) is
+\[ \bar{x} \pm 1.96\,\frac{\sigma}{\sqrt{n}}. \]
+Now, the two-tailed test of $H_0 : \mu = \mu_0$ at the $5\%$ level \emph{accepts} $H_0$ exactly when
+\[ \left| \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} \right| < 1.96 \iff \mu_0 \in \left( \bar{x} - 1.96\frac{\sigma}{\sqrt{n}},\ \bar{x} + 1.96\frac{\sigma}{\sqrt{n}} \right). \]
+
+\begin{propriete}[Duality between tests and confidence intervals]
+A two-tailed test of $H_0 : \mu = \mu_0$ at level $\alpha$ rejects $H_0$ \textbf{exactly when} $\mu_0$ lies \emph{outside} the $(1 - \alpha)$ confidence interval for $\mu$. Equivalently, the confidence interval is precisely the set of values of $\mu_0$ that would \emph{not} be rejected.
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0]
+\draw[->, popdark] (0,0) -- (10.5,0) node[below left] {\small $\mu$};
+\foreach \x/\lab in {1.5/492, 5/500, 8.5/508} { \draw[popdark] (\x,0.08) -- (\x,-0.08); \node[below, popdark] at (\x,-0.1) {\small \lab}; }
+\draw[popblue, very thick] (2.6,0.9) -- (7.4,0.9);
+\fill[popblue] (2.6,0.9) circle (2pt); \fill[popblue] (7.4,0.9) circle (2pt);
+\fill[popink] (5,0.9) circle (2.4pt);
+\node[above, popink] at (5,1.0) {\small $\bar{x}$};
+\node[above, popblue, align=center] at (5,1.75) {\small $95\%$ confidence interval: $\bar{x} \pm 1.96\,\sigma/\sqrt{n}$};
+\draw[popgreen, very thick] (2.6,-1.6) -- (7.4,-1.6);
+\draw[popgreen, thick] (2.6,-1.75) -- (2.6,-1.45); \draw[popgreen, thick] (7.4,-1.75) -- (7.4,-1.45);
+\node[below, popgreen, align=center] at (5,-1.8) {\small acceptance region for $\mu_0$ (two-tailed test, $\alpha = 5\%$)};
+\draw[poporange, thick] (0.9,-1.6) -- (2.6,-1.6); \draw[poporange, thick] (7.4,-1.6) -- (9.3,-1.6);
+\node[poporange, align=center] at (1.7,-2.6) {\small reject $H_0$};
+\node[poporange, align=center] at (8.4,-2.6) {\small reject $H_0$};
+\draw[popmuted, dashed] (2.6,0.9) -- (2.6,-1.6); \draw[popmuted, dashed] (7.4,0.9) -- (7.4,-1.6);
+\end{tikzpicture}
+\end{center}
+\legende{The $95\%$ confidence interval for $\mu$ and the acceptance region of the two-tailed $5\%$ test have exactly the same endpoints: $H_0 : \mu = \mu_0$ is rejected precisely when $\mu_0$ falls outside the interval.}
+\end{popfigure}
+
+For the sachet-water data, a $95\%$ confidence interval for $\mu$ is $496.4 \pm 1.96 \times 1.386$, i.e.\ approximately $(493.7, 499.1)$ ml. The claimed value $500$ lies \emph{outside} this interval, so a two-tailed test at $5\%$ would also reject $H_0$ — consistent with our one-tailed conclusion.
+
+\begin{attention}[Concluding properly]
+A conclusion such as ``reject $H_0$'' alone earns little credit. The examiner expects three ingredients: (i) the \textbf{decision} (reject / do not reject $H_0$), (ii) the \textbf{significance level} used, and (iii) the \textbf{context}. Write, for example: ``At the $5\%$ level of significance, there is sufficient evidence to reject the company's claim that the mean content is $500$ ml.'' Also remember: failing to reject $H_0$ is \emph{not} proof that $H_0$ is true — the data are merely consistent with it.
+\end{attention}
+
+\begin{savaistu}[Small samples: the t-test]
+When the population is normal but $\sigma$ is unknown \emph{and} the sample is small ($n < 30$), replacing $\sigma$ by $s$ adds too much uncertainty for the normal approximation. The correct statistic then follows \emph{Student's t-distribution} with $n - 1$ degrees of freedom, introduced by W. S. Gosset (writing as ``Student'') while working for the Guinness brewery. The t-test is \textbf{beyond this syllabus}, but you may meet it at university — its logic (hypotheses, critical values, p-values, conclusion in context) is exactly the one you have mastered here.
+\end{savaistu}
+
+\begin{exercice}
+A factory produces rods whose lengths are normally distributed with standard deviation $\sigma = 1.2$ cm. The target mean length is $75$ cm. A random sample of $36$ rods has mean length $74.5$ cm.
+\begin{enumerate}
+\item Test, at the $5\%$ level, whether the mean length differs from $75$ cm.
+\item Compute the p-value of the test.
+\item Give a $95\%$ confidence interval for the mean length and verify the duality with part 1.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+1. $H_0 : \mu = 75$, $H_1 : \mu \neq 75$ (two-tailed). $\sigma$ is known, so $z = \dfrac{74.5 - 75}{1.2/\sqrt{36}} = \dfrac{-0.5}{0.2} = -2.5$. Since $|-2.5| = 2.5 > 1.96$, reject $H_0$ at the $5\%$ level: the mean length differs significantly from $75$ cm.
+2. $p = 2\bigl(1 - \Phi(2.5)\bigr) = 2(1 - 0.9938) = 0.0124 < 0.05$, confirming rejection.
+3. CI: $74.5 \pm 1.96 \times 0.2 = (74.108,\ 74.892)$ cm. Since $75 \notin (74.108, 74.892)$, the two-tailed test rejects $H_0$ — exactly as found in part 1.
+\end{corrige}
+
+\begin{exercice}
+A bakery claims that the mean mass of its loaves is $800$ g. An inspector suspects the loaves are underweight. A random sample of $64$ loaves gives a mean mass of $795$ g with sample standard deviation $24$ g.
+\begin{enumerate}
+\item State suitable null and alternative hypotheses.
+\item Carry out the test at the $1\%$ level of significance.
+\item Would the conclusion change at the $5\%$ level? Justify your answer.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+1. $H_0 : \mu = 800$ against $H_1 : \mu < 800$ (left-tailed, since underweight loaves are suspected).
+2. $\sigma$ unknown, $n = 64 \geq 30$: standard error $= 24/\sqrt{64} = 3$ g. Then $z = \dfrac{795 - 800}{3} \approx -1.67$. The left-tailed critical value at $1\%$ is $-2.326$. Since $-1.67 > -2.326$, we do \emph{not} reject $H_0$ at the $1\%$ level: the evidence of underweight loaves is not strong enough at this level.
+3. At $5\%$ the critical value is $-1.645$, and $-1.67 < -1.645$, so $H_0$ \emph{would} be rejected at the $5\%$ level. The conclusion depends on the level chosen: the evidence is significant at $5\%$ but not at the stricter $1\%$ level. (The p-value is $\Phi(-1.67) \approx 0.0475$, which lies between $0.01$ and $0.05$, confirming both conclusions.)
+\end{corrige}
+
+\coursec{Testing the Difference Between Two Means (Large Samples)}
+
+In the previous section we learnt how to test a claim about \emph{one} population mean: is the mean mass of a bag of cement really $\SI{50}{kg}$? But in real life — and very often at the GCE — the interesting question is not about one population but about \emph{comparing two} populations. Is the mean maize yield per hectare the same in Mezam Division as in Bui Division? Do customers at Bank A wait longer on average than customers at Bank B in Yaoundé? Is a new teaching method more effective than the old one?
+
+In each case we take a sample from \emph{each} population, compute the two sample means $\bar{x}_1$ and $\bar{x}_2$, and ask: \emph{is the observed difference $\bar{x}_1-\bar{x}_2$ large enough to conclude that the population means $\mu_1$ and $\mu_2$ really differ, or could it be due to sampling fluctuation alone?} This section answers that question rigorously, using the Central Limit Theorem.
+
+\courssub{Setting Up the Hypotheses}
+
+\begin{experience}[Two regions, one question]
+An agricultural officer wants to know whether the mean maize yield per hectare is the same in two regions of the North-West. She cannot measure \emph{every} farm, so she samples $n_1 = 60$ farms in Region 1 and $n_2 = 80$ farms in Region 2, obtaining sample means $\bar{x}_1$ and $\bar{x}_2$ tonnes per hectare. Even if the two regions were identical, $\bar{x}_1$ and $\bar{x}_2$ would almost never be exactly equal, because each sample is only a fragment of its population. The whole art of the test is to decide whether the gap $\bar{x}_1-\bar{x}_2$ is \emph{surprisingly large} under the assumption that $\mu_1=\mu_2$.
+\end{experience}
+
+\begin{definition}[Hypotheses for comparing two means]
+Let $\mu_1$ and $\mu_2$ be the means of two populations. The null hypothesis is usually
+\[ H_0 : \mu_1 - \mu_2 = d_0 \qquad\text{(most often } d_0 = 0\text{, i.e. } \mu_1 = \mu_2\text{)} \]
+against one of the alternatives:
+\begin{itemize}
+\item $H_1 : \mu_1 - \mu_2 \neq d_0$ (two-tailed test);
+\item $H_1 : \mu_1 - \mu_2 > d_0$ (one-tailed test, right tail);
+\item $H_1 : \mu_1 - \mu_2 < d_0$ (one-tailed test, left tail).
+\end{itemize}
+The \cle{test statistic} is the difference of the sample means, $\bar{X}_1 - \bar{X}_2$.
+\end{definition}
+
+\begin{attention}[Choosing the tail from the wording]
+As for every significance test, the alternative hypothesis reflects the \emph{claim being investigated}, decided \emph{before} looking at the data:
+\begin{itemize}
+\item ``differ'', ``is there a difference'', ``changed'' $\Rightarrow$ two-tailed;
+\item ``greater than'', ``longer'', ``higher'', ``better'' $\Rightarrow$ right tail;
+\item ``less than'', ``shorter'', ``lower'' $\Rightarrow$ left tail.
+\end{itemize}
+Never let the sign of the observed difference $\bar{x}_1-\bar{x}_2$ dictate the choice of tail after the fact.
+\end{attention}
+
+\courssub{The Sampling Distribution of $\bar{X}_1 - \bar{X}_2$}
+
+To build a test we need the distribution of $\bar{X}_1 - \bar{X}_2$ when $H_0$ is true. Two facts from earlier chapters do all the work.
+
+\textbf{Expectation.} By linearity of expectation (no independence needed):
+\[ E(\bar{X}_1 - \bar{X}_2) = E(\bar{X}_1) - E(\bar{X}_2) = \mu_1 - \mu_2. \]
+
+\textbf{Variance.} Since $\operatorname{Var}(\bar{X}_i)=\sigma_i^2/n_i$, and since the two samples are drawn \emph{independently}, $\bar{X}_1$ and $\bar{X}_2$ are independent random variables. For independent variables, the variance of a difference is the \emph{sum} of the variances:
+\[ \operatorname{Var}(\bar{X}_1 - \bar{X}_2) = \operatorname{Var}(\bar{X}_1) + \operatorname{Var}(\bar{X}_2) = \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}. \]
+
+\begin{propriete}[Sampling distribution of the difference of two means]
+Let $\bar{X}_1$ and $\bar{X}_2$ be the means of \textbf{independent} samples of sizes $n_1$ and $n_2$ taken from populations with means $\mu_1,\mu_2$ and variances $\sigma_1^2,\sigma_2^2$. Then
+\[ E(\bar{X}_1-\bar{X}_2)=\mu_1-\mu_2, \qquad \operatorname{Var}(\bar{X}_1-\bar{X}_2)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}. \]
+Moreover, by the \cle{Central Limit Theorem}, when $n_1$ and $n_2$ are both large (in practice $n_1, n_2 \geq 30$),
+\[ \bar{X}_1 - \bar{X}_2 \approx N\!\left(\mu_1-\mu_2,\; \frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}\right). \]
+(The derivation of the expectation and variance formulae above is instructive and may be asked; the Central Limit Theorem itself is quoted.)
+\end{propriete}
+
+\begin{attention}[The standard error of a difference]
+The standard error of $\bar{X}_1-\bar{X}_2$ is
+\[ \sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}, \qquad \textbf{not} \qquad \frac{\sigma_1}{\sqrt{n_1}}+\frac{\sigma_2}{\sqrt{n_2}}. \]
+Variances add; standard deviations do not. A very common GCE error is to add the two standard errors of the means. Always add the \emph{variances} first, then take the square root of the sum.
+\end{attention}
+
+\begin{attention}[Independence is essential]
+The formula $\operatorname{Var}(\bar{X}_1-\bar{X}_2)=\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}$ requires the two samples to be \cle{independent}: different, unrelated individuals in each sample. If the same subjects are measured twice (for example the same students before and after a training programme), the data are \emph{paired}, the two samples are dependent, and a different approach is required — this lies beyond the present syllabus.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.95]
+% Top: two overlapping distributions
+\begin{scope}
+\draw[->] (-1,0) -- (8,0) node[below left, font=\small] {$\bar{x}$};
+\draw[domain=-0.5:5.5, smooth, thick, popblue] plot (\x, {1.6*exp(-((\x-2)^2)/1.2)});
+\draw[domain=1.5:7.5, smooth, thick, poporange] plot (\x, {1.6*exp(-((\x-5)^2)/1.8)});
+\node[popblue, font=\small] at (1.2,1.9) {$\bar{X}_1\sim N\!\left(\mu_1,\tfrac{\sigma_1^2}{n_1}\right)$};
+\node[poporange, font=\small] at (6.6,1.9) {$\bar{X}_2\sim N\!\left(\mu_2,\tfrac{\sigma_2^2}{n_2}\right)$};
+\draw[dashed, popblue] (2,0) -- (2,1.62);
+\draw[dashed, poporange] (5,0) -- (5,1.62);
+\node[below, font=\small, popblue] at (2,0) {$\mu_1$};
+\node[below, font=\small, poporange] at (5,0) {$\mu_2$};
+\end{scope}
+% Arrow
+\draw[->, thick, popdark] (3.5,-0.9) -- (3.5,-1.7) node[midway, right, font=\small] {subtract (independent samples)};
+% Bottom: distribution of the difference
+\begin{scope}[yshift=-4.2cm]
+\draw[->] (-1,0) -- (8,0) node[below left, font=\small] {$\bar{x}_1-\bar{x}_2$};
+\draw[domain=-0.5:7.5, smooth, very thick, poppurple] plot (\x, {1.6*exp(-((\x-3.5)^2)/2.4)});
+\draw[dashed, poppurple] (3.5,0) -- (3.5,1.62);
+\node[below, font=\small, poppurple] at (3.5,0) {$\mu_1-\mu_2$};
+\node[poppurple, font=\small, align=center] at (3.5,2.3) {$\bar{X}_1-\bar{X}_2\approx N\!\left(\mu_1-\mu_2,\ \tfrac{\sigma_1^2}{n_1}+\tfrac{\sigma_2^2}{n_2}\right)$};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Two independent sample means (top) and the sampling distribution of their difference (bottom): the difference is centred on $\mu_1-\mu_2$ and its variance is the sum of the two variances.}
+\end{popfigure}
+
+\courssub{The Two-Sample $z$-Test (Large Samples)}
+
+Under $H_0:\mu_1-\mu_2=d_0$, the standardised statistic
+\[ Z=\frac{(\bar{X}_1-\bar{X}_2)-d_0}{\sqrt{\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}}} \]
+follows approximately the standard normal distribution $N(0,1)$ when both samples are large. An observed value of $Z$ falling in the critical region leads us to reject $H_0$.
+
+\begin{methode}[Two-sample $z$-test for the difference of means (large samples)]
+\begin{enumerate}
+\item \textbf{State the hypotheses.} $H_0:\mu_1-\mu_2=d_0$ against the appropriate $H_1$ (one- or two-tailed). State the significance level $\alpha$ (usually $5\%$ or $1\%$).
+\item \textbf{Check the conditions.} The two samples are independent; $n_1$ and $n_2$ are both large ($\geq 30$).
+\item \textbf{Compute the test statistic.}
+\[ z = \frac{\bar{x}_1-\bar{x}_2-d_0}{\sqrt{\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}}}. \]
+If $\sigma_1^2,\sigma_2^2$ are unknown (the usual situation), replace them by the sample variances $s_1^2, s_2^2$; this is justified because the samples are large.
+\item \textbf{Find the critical region or the $p$-value.} For a two-tailed test: reject $H_0$ if $|z|>1.960$ at the $5\%$ level, or $|z|>2.576$ at the $1\%$ level. For a one-tailed test: compare $z$ with $1.645$ (right tail) or $-1.645$ (left tail) at $5\%$, and with $2.326$ or $-2.326$ at $1\%$.
+\item \textbf{Conclude in context.} ``Since $|z| = \ldots > 1.960$, we reject $H_0$ at the $5\%$ level: there is significant evidence that the mean \ldots differs between \ldots and \ldots.''
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Comparing maize yields in two regions]
+An agricultural officer samples $60$ farms in Region 1 and $80$ farms in Region 2 of the North-West. The maize yields (tonnes per hectare) give
+\[ \bar{x}_1 = 2.85,\quad s_1 = 0.60 \qquad\text{and}\qquad \bar{x}_2 = 2.62,\quad s_2 = 0.72. \]
+Test at the $5\%$ level whether the mean yields of the two regions differ.
+\tcblower
+\textbf{Solution.}
+\textbf{1. Hypotheses.} $H_0:\mu_1-\mu_2=0$ against $H_1:\mu_1-\mu_2\neq 0$ (two-tailed), at $\alpha=5\%$.
+
+\textbf{2. Conditions.} Independent samples, $n_1=60\geq 30$, $n_2=80\geq 30$: the Central Limit Theorem applies. The population variances are unknown, so we use $s_1^2$ and $s_2^2$.
+
+\textbf{3. Test statistic.}
+\[ z=\frac{2.85-2.62-0}{\sqrt{\dfrac{0.60^2}{60}+\dfrac{0.72^2}{80}}}
+=\frac{0.23}{\sqrt{0.006+0.00648}}
+=\frac{0.23}{\sqrt{0.01248}}
+=\frac{0.23}{0.1117}\approx 2.06. \]
+
+\textbf{4. Decision.} Two-tailed at $5\%$: critical values $\pm 1.960$. Since $|z|=2.06>1.960$, we \textbf{reject} $H_0$. (Equivalently, the $p$-value is $2\,P(Z>2.06)\approx 2(0.0197)=0.039<0.05$.)
+
+\textbf{5. Conclusion.} At the $5\%$ level there is significant evidence that the mean maize yields per hectare differ between the two regions, Region 1 appearing higher. Note that at the $1\%$ level ($2.06<2.576$) we would \emph{not} reject $H_0$ — the evidence is significant at $5\%$ but not at $1\%$.
+\end{exoresolu}
+
+\begin{exoresolu}[Waiting times at two banks in Yaoundé]
+A consumer association measures the waiting time (in minutes) of customers at two banks. For Bank A: $n_1=50$ customers, $\bar{x}_1=18.4$, $s_1=5.2$. For Bank B: $n_2=40$ customers, $\bar{x}_2=15.9$, $s_2=4.6$. Test at the $1\%$ level the claim that customers wait longer on average at Bank A.
+\tcblower
+\textbf{Solution.}
+\textbf{1. Hypotheses.} The claim ``longer at A'' is one-sided: $H_0:\mu_1-\mu_2=0$ against $H_1:\mu_1-\mu_2>0$, at $\alpha=1\%$.
+
+\textbf{2. Conditions.} Independent samples, both sizes large: the Central Limit Theorem is valid.
+
+\textbf{3. Test statistic.}
+\[ z=\frac{18.4-15.9}{\sqrt{\dfrac{5.2^2}{50}+\dfrac{4.6^2}{40}}}
+=\frac{2.5}{\sqrt{0.5408+0.529}}
+=\frac{2.5}{\sqrt{1.0698}}
+=\frac{2.5}{1.0343}\approx 2.42. \]
+
+\textbf{4. Decision.} One-tailed at $1\%$: critical value $2.326$. Since $z=2.42>2.326$, we \textbf{reject} $H_0$. ($p$-value $=P(Z>2.42)\approx 0.0078<0.01$.)
+
+\textbf{5. Conclusion.} At the $1\%$ level there is significant evidence that the mean waiting time at Bank A exceeds that at Bank B.
+\end{exoresolu}
+
+\begin{exoresolu}[Testing a claimed difference $d_0 \neq 0$]
+A distributor claims that the mean lifetime of Brand P batteries exceeds that of Brand Q batteries by \emph{at least} $10$ hours. Tests on independent random samples give: Brand P, $n_1=64$, $\bar{x}_1=118$ hours, $s_1=16$ hours; Brand Q, $n_2=49$, $\bar{x}_2=104$ hours, $s_2=14$ hours. Test the distributor's claim at the $5\%$ level.
+\tcblower
+\textbf{Solution.}
+\textbf{1. Hypotheses.} The claim is $\mu_1-\mu_2\geq 10$; we place it in $H_0$ and test whether the data contradict it: $H_0:\mu_1-\mu_2=10$ against $H_1:\mu_1-\mu_2<10$ (left tail), at $\alpha=5\%$.
+
+\textbf{2. Conditions.} Independent samples, $n_1=64$ and $n_2=49$ both large.
+
+\textbf{3. Test statistic.} Here $d_0=10$:
+\[ z=\frac{118-104-10}{\sqrt{\dfrac{16^2}{64}+\dfrac{14^2}{49}}}
+=\frac{4}{\sqrt{4+4}}
+=\frac{4}{2.828}\approx 1.41. \]
+
+\textbf{4. Decision.} Left tail at $5\%$: reject $H_0$ if $z<-1.645$. Here $z=1.41>-1.645$, so we do \textbf{not} reject $H_0$.
+
+\textbf{5. Conclusion.} At the $5\%$ level the data are consistent with the distributor's claim: there is no significant evidence that the mean lifetime advantage of Brand P over Brand Q is less than $10$ hours. Note carefully the role of $d_0=10$ in the numerator: forgetting it would give $z=\frac{14}{2.828}\approx 4.95$ and a completely different analysis.
+\end{exoresolu}
+
+\begin{attention}[What if the samples are small?]
+The $z$-test above rests on the Central Limit Theorem, so it needs \emph{both} $n_1$ and $n_2$ large. If the samples are small and the populations are normal with a common unknown variance, the correct tool is the two-sample $t$-test with a pooled variance — this is \emph{beyond the present syllabus}, but you should be able to \emph{recognise} from the wording that a small-sample situation calls for a different method.
+\end{attention}
+
+\begin{attention}[``Not rejecting'' is not ``proving'']
+When $|z|$ falls below the critical value, the correct conclusion is: \emph{there is insufficient evidence, at the stated level, against $H_0$}. We have not \emph{proved} that $\mu_1=\mu_2$; the observed difference is simply small enough to be explained by sampling fluctuation. Avoid writing ``$H_0$ is true'' in your GCE script.
+\end{attention}
+
+\courssub{Chapter Synthesis: Choosing the Correct Test}
+
+A GCE hypothesis-testing question is half solved the moment you identify \emph{which} parameter is being tested and \emph{which} distribution models the situation. Read the wording and ask yourself: \emph{What is the parameter? What is the model? Are the samples large?}
+
+\begin{methode}[Choosing the correct test from the wording]
+\begin{enumerate}
+\item \textbf{Proportion / probability $p$:} the variable counts ``successes'' out of $n$ trials (defective items, voters in favour). Test $H_0:p=p_0$ using $X\sim B(n,p_0)$ exactly (small $n$) or the normal approximation $\dfrac{\hat{p}-p_0}{\sqrt{p_0(1-p_0)/n}}$ (large $n$).
+\item \textbf{Mean of a Poisson distribution:} the variable counts events in a fixed interval of time or space (calls per hour, accidents per week). Test $H_0:\lambda=\lambda_0$ using $X\sim\mathrm{Po}(\lambda_0)$, with the normal approximation when $\lambda_0$ is large.
+\item \textbf{Population mean $\mu$ (one sample):} the variable is a measurement (mass, length, time). Test $H_0:\mu=\mu_0$ with $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$ ($\sigma$ known, or $n$ large using $s$ for $\sigma$).
+\item \textbf{Difference of two means $\mu_1-\mu_2$ (two independent samples):} the question \emph{compares} two groups, regions, machines or periods. Use
+\[ z=\frac{\bar{x}_1-\bar{x}_2-d_0}{\sqrt{\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}}}. \]
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  grow=right,
+  level 1/.style={sibling distance=3.4cm, level distance=4.6cm},
+  level 2/.style={sibling distance=1.7cm, level distance=4.9cm},
+  every node/.style={font=\small, align=center},
+  box/.style={draw=popdark, rounded corners, fill=popblueL, text width=3.1cm, inner sep=3pt},
+  leaf/.style={draw=popdark, rounded corners, fill=popgreenL, text width=3.4cm, inner sep=3pt},
+  edge from parent/.style={draw=popmuted, thick, ->}]
+\node[box] {What parameter is tested?}
+  child { node[box, align=center]{Two means $\mu_1-\mu_2$\\ (comparing two groups)}
+    child { node[leaf, align=center]{Small samples: $t$-test\\ (beyond syllabus)} }
+    child { node[leaf] {Large $n_1,n_2$: two-sample $z$-test} } }
+  child { node[box, align=center]{One mean $\mu$\\ (a measurement)}
+    child { node[leaf] {Poisson mean $\lambda$: Poisson test} }
+    child { node[leaf] {General mean: one-sample $z$-test} } }
+  child { node[leaf] {Proportion $p$: binomial test (exact or normal approx.)} };
+\end{tikzpicture}
+\end{center}
+\legende{Decision tree for selecting the appropriate significance test from the wording of an exam question.}
+\end{popfigure}
+
+\begin{exoresolu}[Full exam-style walkthrough]
+A factory manager suspects that Machine 1 produces rods whose mean length differs from that of Machine 2. Independent random samples give: Machine 1, $n_1=45$ rods, $\bar{x}_1=\SI{25.14}{cm}$, $s_1=\SI{0.42}{cm}$; Machine 2, $n_2=55$ rods, $\bar{x}_2=\SI{25.02}{cm}$, $s_2=\SI{0.38}{cm}$. Stating your hypotheses clearly, test the manager's suspicion at the $5\%$ level of significance.
+\tcblower
+\textbf{Solution.}
+\textbf{Choice of test.} Two independent samples, measured variable (length), both samples large: two-sample $z$-test for $\mu_1-\mu_2$.
+
+\textbf{Hypotheses.} ``Differs'' is two-sided: $H_0:\mu_1-\mu_2=0$; $H_1:\mu_1-\mu_2\neq 0$; $\alpha=5\%$.
+
+\textbf{Test statistic.}
+\[ z=\frac{25.14-25.02}{\sqrt{\dfrac{0.42^2}{45}+\dfrac{0.38^2}{55}}}
+=\frac{0.12}{\sqrt{0.00392+0.002625}}
+=\frac{0.12}{\sqrt{0.006545}}
+=\frac{0.12}{0.0809}\approx 1.48. \]
+
+\textbf{Decision and conclusion.} Since $|z|=1.48<1.960$, we do \textbf{not} reject $H_0$ at the $5\%$ level ($p$-value $\approx 2(0.0694)=0.139>0.05$). There is insufficient evidence, at the $5\%$ level, that the two machines produce rods of different mean lengths: the observed difference of $\SI{0.12}{cm}$ can reasonably be attributed to sampling fluctuation.
+\end{exoresolu}
+
+\begin{exercice}
+A school inspector compares the mean scores of candidates in two divisions. Division 1: $n_1=70$ candidates, $\bar{x}_1=58.3$, $s_1=11.2$. Division 2: $n_2=65$ candidates, $\bar{x}_2=54.9$, $s_2=10.4$. Test at the $5\%$ level whether the mean scores differ, and state whether your conclusion would change at the $1\%$ level.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$H_0:\mu_1-\mu_2=0$; $H_1:\mu_1-\mu_2\neq 0$. Samples independent and large.
+\[ z=\frac{58.3-54.9}{\sqrt{\dfrac{11.2^2}{70}+\dfrac{10.4^2}{65}}}
+=\frac{3.4}{\sqrt{1.792+1.664}}
+=\frac{3.4}{1.859}\approx 1.83. \]
+Since $1.83<1.960$, do not reject $H_0$ at the $5\%$ level: there is no significant evidence of a difference between the mean scores. \emph{A fortiori}, since $1.83<2.576$, the conclusion is unchanged at the $1\%$ level.
+\end{corrige}
+
+\begin{exercice}
+A nutritionist claims that a fortified flour increases the mean mass of $12$-month-old children by more than $\SI{0.5}{kg}$ compared with the standard flour. Two independent groups of children are followed: fortified flour, $n_1=50$, mean gain $\bar{x}_1=\SI{3.1}{kg}$, $s_1=\SI{0.9}{kg}$; standard flour, $n_2=60$, mean gain $\bar{x}_2=\SI{2.4}{kg}$, $s_2=\SI{1.0}{kg}$. Test at the $5\%$ level whether the \emph{additional} gain exceeds $\SI{0.5}{kg}$.
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+The claim concerns $d_0=0.5$: $H_0:\mu_1-\mu_2=0.5$; $H_1:\mu_1-\mu_2>0.5$ (right tail), $\alpha=5\%$. Samples independent and large.
+\[ z=\frac{3.1-2.4-0.5}{\sqrt{\dfrac{0.9^2}{50}+\dfrac{1.0^2}{60}}}
+=\frac{0.2}{\sqrt{0.0162+0.01667}}
+=\frac{0.2}{0.1814}\approx 1.10. \]
+Since $z=1.10<1.645$, do not reject $H_0$: at the $5\%$ level there is insufficient evidence that the additional mean gain exceeds $\SI{0.5}{kg}$.
+\end{corrige}
+
+\begin{aretenir}[Key points of the chapter]
+\begin{itemize}
+\item For \textbf{independent} samples, $E(\bar{X}_1-\bar{X}_2)=\mu_1-\mu_2$ and $\operatorname{Var}(\bar{X}_1-\bar{X}_2)=\dfrac{\sigma_1^2}{n_1}+\dfrac{\sigma_2^2}{n_2}$: variances add, standard deviations do not.
+\item For large $n_1,n_2$, the Central Limit Theorem gives $z=\dfrac{\bar{x}_1-\bar{x}_2-d_0}{\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}}\sim N(0,1)$ under $H_0$; replace $\sigma_i^2$ by $s_i^2$ when unknown.
+\item Critical values: two-tailed $1.960$ ($5\%$), $2.576$ ($1\%$); one-tailed $1.645$ ($5\%$), $2.326$ ($1\%$).
+\item Choose the test from the wording: proportion $\to$ binomial; Poisson mean $\to$ Poisson; one mean $\to$ one-sample $z$; comparing two means $\to$ two-sample $z$.
+\item Always conclude in the language of the problem, naming the level of significance, and never claim that $H_0$ has been \emph{proved}.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Integration Activity: Maize Yield Field Trial — Hypothesis Testing in Action}
+
+This activity consolidates Lessons 145–148 of the official syllabus. By the end, you should be able to:
+
+\begin{itemize}
+\item formulate a \cle{null hypothesis} $H_0$ and an \cle{alternative hypothesis} $H_1$ matched to a practical question, and choose between a \cle{one-tailed} and a \cle{two-tailed} test (Lesson 145);
+\item carry out a one-sample $z$-test for a \cle{population mean} when $\sigma$ is known, using the standardised statistic $Z=\dfrac{\bar{X}-\mu_0}{\sigma/\sqrt{n}}$ (Lesson 147);
+\item carry out a \cle{two-sample $z$-test} for the difference between two means with large samples, justified by the Central Limit Theorem (Lesson 148);
+\item compute and interpret a \cle{$p$-value}, and compare it with the significance level $\alpha$;
+\item state a conclusion in \emph{plain language} for a non-specialist audience, and explain the risk of a \cle{Type I error};
+\item discuss how the choice of $\alpha$ (here $5\%$ versus $1\%$) affects the recommendation.
+\end{itemize}
+
+Work in groups of three or four. You will need statistical tables (or a calculator) giving $\Phi(z)$, the cumulative distribution function of $N(0,1)$.
+
+\courssub{Context}
+
+The \emph{Mbog Liaa} farmers' cooperative, on the high plateau near Bafoussam (West Region), grows maize on family plots of roughly one hectare. Historical records using the traditional fertiliser show a stable mean yield $\mu_0 = 2.4$ tonnes per hectare, with a known plot-to-plot standard deviation $\sigma = 0.6$ tonnes per hectare.
+
+An agro-dealer in Bafoussam promotes a new, more expensive fertiliser, claiming it ``significantly increases maize yield''. Before committing members' money, the cooperative ran a field trial last rainy season:
+
+\begin{itemize}
+\item $n_1 = 40$ plots received the \textbf{new fertiliser}: sample mean yield $\bar{x}_1 = 2.62$ tonnes/ha;
+\item $n_2 = 50$ plots remained with the \textbf{old fertiliser} (control group): sample mean yield $\bar{x}_2 = 2.45$ tonnes/ha, sample standard deviation $s_2 = 0.65$ tonnes/ha.
+\end{itemize}
+
+The committee asks two questions:
+\begin{enumerate}
+\item Does the new fertiliser give a mean yield \emph{above the historical mean} of $2.4$ tonnes/ha?
+\item Is the new fertiliser \emph{better than the old one}, i.e.\ is the difference of means significantly positive?
+\end{enumerate}
+
+The cooperative fears wasting money on a costly fertiliser that may not truly be better — your advisory note must mention the risk of concluding ``it works'' when it does not.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Standard normal curve
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$z$, ylabel=$\phi(z)$,
+    xmin=-3.5, xmax=3.5, ymin=0, ymax=0.45,
+    xtick={-3,-2,-1,0,1,1.645,2,2.326,3},
+    xticklabels={$-3$,$-2$,$-1$,$0$,$1$,$1.645$,$2$,$2.326$,$3$},
+    ytick=\empty,
+    width=12cm, height=5cm,
+    domain=-3.5:3.5, samples=100,
+    clip=false
+]
+\addplot [popblue, thick] {exp(-x^2/2)/sqrt(max(0,2*pi))};
+% Critical region 5%
+\addplot [poporange, fill=poporange!30, draw=poporange, domain=1.645:3.5] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+% Critical region 1%
+\addplot [popred, fill=popred!20, draw=popred, domain=2.326:3.5] {exp(-x^2/2)/sqrt(max(0,2*pi))} \closedcycle;
+% Observed z = 2.32
+\draw [popgreen, thick, dashed] (2.32,0) -- (2.32,0.026);
+\node [popgreen, anchor=south] at (2.32,0.03) {$z_{\text{obs}}\approx2.32$};
+% Labels
+\node [poporange, anchor=south west] at (1.7,0.15) {$\alpha=5\%$};
+\node [popred, anchor=south west] at (2.4,0.1) {$\alpha=1\%$};
+\end{axis}
+\end{tikzpicture}
+\legende{Standard normal density showing critical regions for one-tailed tests at $5\%$ ($z>1.645$) and $1\%$ ($z>2.326$), and the observed statistic $z_{\text{obs}}\approx2.32$ for Test 1.}
+\end{popfigure}
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Setting up the first test.} Let $\mu$ be the true mean yield of plots using the new fertiliser. Write down $H_0$ and $H_1$ for a one-tailed test at the $5\%$ level of the claim ``the new fertiliser exceeds the historical mean''. Justify the choice of a one-tailed test.
+
+\item \textbf{Carrying out the first test.} Assuming $\sigma = 0.6$ is known, compute the test statistic $z = \dfrac{\bar{x}_1 - \mu_0}{\sigma/\sqrt{n_1}}$. State the critical value at the $5\%$ level (one-tailed) and conclude.
+
+\item \textbf{$p$-value of the first test.} Compute the $p$-value $p = P(Z \geq z_{\text{obs}})$ where $Z \sim N(0,1)$. Interpret this number in one sentence for the committee.
+
+\item \textbf{Setting up the second test.} Let $\mu_1$ and $\mu_2$ be the true mean yields under the new and old fertilisers. Write $H_0$ and $H_1$ for testing, at the $5\%$ level, whether the new fertiliser outperforms the old one.
+
+\item \textbf{Carrying out the second test.} Explain why, with $n_1 = 40$ and $n_2 = 50$, the Central Limit Theorem justifies a $z$-test, and why $s_2$ may be used in place of the unknown $\sigma_2$. Using $\sigma_1 = 0.6$ (known) and $s_2 = 0.65$, compute
+\[ z = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{\sigma_1^2}{n_1} + \dfrac{s_2^2}{n_2}}}, \]
+state the critical region, and conclude.
+
+\item \textbf{$p$-value of the second test.} Compute the $p$-value and compare it with $\alpha = 0.05$.
+
+\item \textbf{Advisory note.} In at most ten lines, write a note to the cooperative's president summarising both conclusions in plain language, and explaining in one or two sentences what a Type I error would mean here and its probability under $H_0$.
+
+\item \textbf{Sensitivity to $\alpha$.} Repeat the decision step of both tests at the $1\%$ level (critical value $2.326$). Does the recommendation change? Discuss in your group: what are the consequences, for the farmers, of choosing a smaller $\alpha$?
+\end{enumerate}
+
+\courssub{Model Answers and Explanations}
+
+\textbf{1. Hypotheses for the first test (Lesson 145, 147).} We test the historical mean against an increase:
+\[ H_0 : \mu = 2.4 \qquad \text{against} \qquad H_1 : \mu > 2.4 \quad (\text{one-tailed, } \alpha = 0.05). \]
+A one-tailed test is appropriate because the cooperative only wants to switch if the new fertiliser is \emph{better}; a decrease would be of no practical interest. The alternative hypothesis reflects the dealer's claim of an increase.
+
+\textbf{2. First test statistic (Lesson 147).} Under $H_0$, the sample mean $\bar{X}_1$ follows a normal distribution (exactly, since the population is normal or approximately by CLT with $n_1=40$):
+\[ \bar{X}_1 \sim N\!\left(2.4,\ \frac{0.6^2}{40}\right). \]
+The standardised test statistic is
+\[ z = \frac{2.62 - 2.4}{0.6/\sqrt{40}} = \frac{0.22}{0.094868\ldots} \approx 2.319. \]
+The critical value for a one-tailed test at $5\%$ is $z_{0.05} = 1.645$. Since $2.319 > 1.645$, the observed value lies in the critical region. We \textbf{reject $H_0$} at the $5\%$ level: there is significant evidence that the new fertiliser exceeds the historical mean.
+
+\textbf{3. $p$-value of the first test.}
+\[ p = P(Z \geq 2.319) = 1 - \Phi(2.319) \approx 1 - 0.9898 = 0.0102. \]
+Since $p \approx 0.0102 < 0.05$, $H_0$ is rejected. \emph{Interpretation:} If the new fertiliser were truly no better than the historical mean ($2.4$ t/ha), a sample mean as high as $2.62$ t/ha (or higher) would occur in only about $1\%$ of similar trials of 40 plots.
+
+\textbf{4. Hypotheses for the second test (Lesson 145, 148).}
+\[ H_0 : \mu_1 - \mu_2 = 0 \qquad \text{against} \qquad H_1 : \mu_1 - \mu_2 > 0 \quad (\alpha = 0.05). \]
+This is a one-tailed test because the cooperative only cares whether the new fertiliser is \emph{superior} to the old one.
+
+\textbf{5. Second test statistic (Lesson 148).} Both sample sizes are large ($n_1=40$, $n_2=50$, both $>30$). By the Central Limit Theorem, the sampling distribution of $\bar{X}_1 - \bar{X}_2$ is approximately normal regardless of the underlying yield distributions, provided the plots are independent and randomly assigned. The population standard deviation for the new fertiliser is known ($\sigma_1 = 0.6$); for the old fertiliser it is unknown, but with $n_2=50$ the sample standard deviation $s_2 = 0.65$ is a reliable estimate of $\sigma_2$. Under $H_0$:
+\[ z = \frac{2.62 - 2.45}{\sqrt{\dfrac{0.6^2}{40} + \dfrac{0.65^2}{50}}}
+= \frac{0.17}{\sqrt{0.009 + 0.00845}}
+= \frac{0.17}{\sqrt{0.01745}}
+\approx \frac{0.17}{0.1321}
+\approx 1.287. \]
+The critical value at $5\%$ (one-tailed) is $1.645$. Since $1.287 < 1.645$, the observed value does \emph{not} lie in the critical region. We \textbf{do not reject $H_0$} at the $5\%$ level: the trial does not provide significant evidence that the new fertiliser beats the old one.
+
+\textbf{6. $p$-value of the second test.}
+\[ p = P(Z \geq 1.287) = 1 - \Phi(1.287) \approx 1 - 0.9015 = 0.0985. \]
+Since $p \approx 0.0985 > 0.05$, this confirms the non-rejection of $H_0$.
+
+\begin{attention}[Apparent disagreement between the two tests]
+The first test compares the new fertiliser with the \emph{historical} mean ($2.4$ t/ha); the second compares it with \emph{this season's control group} ($2.45$ t/ha). The control group's mean happens to be slightly above the historical figure, possibly due to favourable weather or soil conditions this season. The two questions are different, so different conclusions are \emph{not} contradictory. This illustrates why the choice of the null hypothesis must match the practical question.
+\end{attention}
+
+\textbf{7. Advisory note (model).}
+
+\begin{aretenir}[Note to the President of Mbog Liaa Cooperative]
+Our statistical analysis of the field trial yields the following conclusions. (i) Compared with the cooperative's historical average of $2.4$ tonnes/ha, the 40 plots using the new fertiliser performed significantly better ($p \approx 0.01$). (ii) However, compared directly with the 50 control plots using the old fertiliser \emph{this same season}, the advantage of the new fertiliser is \emph{not} statistically significant ($p \approx 0.10$): the observed gap of $0.17$ tonne/ha could plausibly be due to random variation between plots. There is a small risk (at most $5\%$, the significance level) of a ``false alarm'' — declaring the new fertiliser better when it is not (Type I error). Recommendation: before adopting the more expensive fertiliser for all members, repeat the trial next season on a larger number of plots to confirm the advantage.
+\end{aretenir}
+
+\textbf{8. Sensitivity to $\alpha$ (Lesson 145).} At the $1\%$ level the critical value is $z_{0.01} = 2.326$.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Test} & \textbf{Statistic} & \textbf{Decision at 5\%} & \textbf{Decision at 1\%} \\
+\hline
+New vs.\ historical mean & $z \approx 2.32$ & Reject $H_0$ & Do not reject ($2.32 < 2.326$) \\
+\hline
+New vs.\ old (two-sample) & $z \approx 1.29$ & Do not reject & Do not reject \\
+\hline
+\end{tabularx}
+\end{center}
+
+At the $1\%$ level, \emph{neither} test rejects $H_0$, so the cautious recommendation would be ``no proven improvement''. Lowering $\alpha$ reduces the risk of a Type I error (wasting members' money on an ineffective product) but increases the risk of a \cle{Type II error} (missing a genuinely better fertiliser). Choosing $\alpha$ is therefore a real economic decision for the cooperative, not merely a mathematical one — and increasing the sample size (larger $n$) is the only way to reduce \emph{both} risks simultaneously.
+
+\begin{savaistu}[Type I and Type II errors in agricultural trials]
+In Cameroonian agricultural extension, a Type I error means recommending an input (fertiliser, seed variety) that does not actually improve yields — farmers spend scarce cash for no gain. A Type II error means failing to recommend a truly better input — farmers miss out on higher income. The GCE syllabus expects you to articulate this trade-off in context. The standard $5\%$ level is a convention; in high-stakes decisions (e.g. new vaccine, structural safety) $\alpha = 1\%$ or even $0.1\%$ may be used.
+\end{savaistu}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Hypothesis Testing}
+
+\courssub{Setting up hypotheses and identifying the test}
+
+\begin{methode}[Choosing $H_0$, $H_1$ and the type of test]
+\begin{enumerate}
+\item Read the question and identify the \cle{claim} to be tested. The \cle{null hypothesis} $H_0$ always contains an equality: $H_0 : \theta = \theta_0$ (the status quo, ``no change'', ``no difference'').
+\item The \cle{alternative hypothesis} $H_1$ expresses what the investigator suspects:
+\begin{itemize}
+\item $H_1 : \theta \neq \theta_0$ \quad (\cle{two-tailed} test: ``has changed'', ``differs from'');
+\item $H_1 : \theta > \theta_0$ \quad (one-tailed, right: ``has increased'', ``is greater'');
+\item $H_1 : \theta < \theta_0$ \quad (one-tailed, left: ``has decreased'', ``is less'').
+\end{itemize}
+\item Choose the \cle{test statistic} $X$ and state its distribution \emph{under $H_0$}: binomial $B(n,p_0)$ for a probability, Poisson $\mathrm{Po}(\lambda_0)$ for a Poisson mean, $N\!\left(\mu_0, \sigma^2/n\right)$ for a sample mean.
+\item Fix the \cle{significance level} $\alpha$ (e.g. $5\%$). For a two-tailed test, split it: $\alpha/2$ in each tail.
+\item Conclude in context: ``reject $H_0$'' (evidence against the claim) or ``do not reject $H_0$'' (insufficient evidence) --- never ``prove''.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Identifying hypotheses and tails]
+A Yaound\'e bottling company claims that the mean volume of its ``Top'' soda bottles is $\SI{35}{cL}$. (a) The quality controller suspects the machine under-fills the bottles. (b) A consumer association suspects the mean volume differs from $\SI{35}{cL}$. In each case, state $H_0$ and $H_1$ and the type of test.
+\tcblower
+Let $\mu$ be the true mean volume (in cL) of bottles from the machine.
+
+\textbf{(a)} The controller suspects \emph{under-filling}, i.e. $\mu < 35$. Hence
+\[ H_0 : \mu = 35 \qquad \text{against} \qquad H_1 : \mu < 35. \]
+This is a \textbf{one-tailed (left-tail) test}: only small values of the sample mean count as evidence against $H_0$.
+
+\textbf{(b)} The association suspects the volume \emph{differs} from $35$ cL, in either direction:
+\[ H_0 : \mu = 35 \qquad \text{against} \qquad H_1 : \mu \neq 35. \]
+This is a \textbf{two-tailed test}: both unusually small and unusually large sample means count as evidence, and the significance level must be shared between the two tails.
+\end{exoresolu}
+
+\courssub{Testing a probability (binomial model)}
+
+\begin{methode}[Significance test for a probability $p$]
+\begin{enumerate}
+\item State $H_0 : p = p_0$ and $H_1$ (one- or two-tailed). Under $H_0$, the count of successes is $X \sim B(n, p_0)$.
+\item The \cle{$p$-value} reflex: compute the probability, \emph{under $H_0$}, of a result at least as extreme as the observed value $x$:
+\begin{itemize}
+\item left tail: $P(X \le x)$; \quad right tail: $P(X \ge x)$;
+\item two-tailed: double the appropriate tail probability (or compare each tail with $\alpha/2$).
+\end{itemize}
+\item Decision rule: reject $H_0$ if the $p$-value $< \alpha$ (for two-tailed, compare with $\alpha/2$ per tail).
+\item Alternatively, find the \cle{critical region}: the set of values of $X$ with total probability $\le \alpha$ under $H_0$; reject $H_0$ if $x$ lies in it.
+\item Conclude in the language of the question, quoting the level of significance.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Testing a probability --- one tail]
+A seed merchant in Bafoussam claims that $80\%$ of his cabbage seeds germinate. A farmer plants $20$ seeds and only $12$ germinate. Test, at the $5\%$ level of significance, whether the merchant's claim is too optimistic.
+\tcblower
+\textbf{Step 1 --- Hypotheses.} Let $p$ be the germination probability. The farmer suspects $p$ is \emph{smaller} than claimed:
+\[ H_0 : p = 0.8 \qquad H_1 : p < 0.8 \quad \text{(one-tailed, left)}. \]
+
+\textbf{Step 2 --- Model under $H_0$.} If $X$ is the number of seeds that germinate out of $20$, then under $H_0$,
+\[ X \sim B(20,\ 0.8). \]
+Observed value: $x = 12$.
+
+\textbf{Step 3 --- $p$-value.} We compute the probability of $12$ or fewer germinations under $H_0$. It is easier to count failures: let $Y = 20 - X \sim B(20, 0.2)$; then $X \le 12 \iff Y \ge 8$.
+\begin{align*}
+P(Y \ge 8) &= 1 - P(Y \le 7) \\
+&= 1 - \sum_{k=0}^{7} \binom{20}{k}(0.2)^k(0.8)^{20-k} \\
+&= 1 - 0.9679 = 0.0321.
+\end{align*}
+
+\textbf{Step 4 --- Decision.} Since $0.0321 < 0.05$, the observed result is in the lower $5\%$ tail: we \textbf{reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level of significance there is sufficient evidence that the germination rate is less than $80\%$: the merchant's claim appears too optimistic.
+\end{exoresolu}
+
+\begin{exoresolu}[Finding a critical region]
+A coin is suspected of being biased towards heads. It is tossed $15$ times. Find the critical region for a test of $H_0 : p = \tfrac12$ against $H_1 : p > \tfrac12$ at the $5\%$ level, and state the actual significance level of the test.
+\tcblower
+Under $H_0$, $X \sim B(15, 0.5)$, where $X$ counts heads. We seek the smallest $c$ with $P(X \ge c) \le 0.05$. Using symmetry of $B(15, 0.5)$ and cumulative tables:
+\begin{align*}
+P(X \ge 11) &= P(X \le 4) = \sum_{k=0}^{4}\binom{15}{k}(0.5)^{15} \\
+&= \frac{1 + 15 + 105 + 455 + 1365}{32768} = \frac{1941}{32768} \approx 0.0592, \\
+P(X \ge 12) &= P(X \le 3) = \frac{1 + 15 + 105 + 455}{32768} = \frac{576}{32768} \approx 0.0176.
+\end{align*}
+Since $0.0592 > 0.05$ but $0.0176 \le 0.05$, the critical region is
+\[ X \ge 12, \qquad \text{i.e. } X \in \{12, 13, 14, 15\}. \]
+The \textbf{actual significance level} is $P(X \ge 12 \mid p = 0.5) \approx 0.0176$, i.e. about $1.76\%$ --- necessarily below $5\%$ because the binomial distribution is discrete.
+\end{exoresolu}
+
+\courssub{Testing the mean of a Poisson distribution}
+
+\begin{methode}[Significance test for a Poisson mean $\lambda$]
+\begin{enumerate}
+\item State $H_0 : \lambda = \lambda_0$ and $H_1$. Under $H_0$ the count over the observed period is $X \sim \mathrm{Po}(\lambda_0)$.
+\item \cle{Reflex --- adjust the rate}: if the observation covers a different period/area from the one defining $\lambda_0$, scale $\lambda$ proportionally (e.g. rate per hour, observe for 3 hours: $\lambda = 3\lambda_0$).
+\item Compute the tail probability under $H_0$: left tail $P(X \le x)$, right tail $P(X \ge x) = 1 - P(X \le x-1)$, using $P(X = k) = e^{-\lambda_0}\lambda_0^k / k!$.
+\item Compare with $\alpha$ (or $\alpha/2$ for two tails), decide, and conclude in context.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Testing a Poisson mean]
+Calls arrive at the call centre of a Douala telephone company at an average rate of $4$ per hour. After a publicity campaign, the centre receives $11$ calls in one hour. Test at the $5\%$ level whether the mean rate has increased.
+\tcblower
+\textbf{Step 1 --- Hypotheses.} Let $\lambda$ be the mean number of calls per hour.
+\[ H_0 : \lambda = 4 \qquad H_1 : \lambda > 4 \quad \text{(one-tailed, right)}. \]
+
+\textbf{Step 2 --- Model.} Under $H_0$, the number of calls in one hour is $X \sim \mathrm{Po}(4)$. Observed: $x = 11$.
+
+\textbf{Step 3 --- $p$-value.} We need $P(X \ge 11) = 1 - P(X \le 10)$ under $\mathrm{Po}(4)$. Summing $e^{-4}4^k/k!$:
+\[ P(X \le 10) = e^{-4}\sum_{k=0}^{10}\frac{4^k}{k!} \approx 0.9972, \]
+so
+\[ P(X \ge 11) \approx 1 - 0.9972 = 0.0028. \]
+
+\textbf{Step 4 --- Decision.} $0.0028 < 0.05$: \textbf{reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level there is strong evidence that the mean rate of calls has increased above $4$ per hour; the campaign appears to have had an effect.
+
+\medskip
+\emph{Remark.} If instead we had observed $9$ calls, then $P(X \ge 9) = 1 - P(X \le 8) \approx 1 - 0.9786 = 0.0214 < 0.05$, still significant; but $8$ calls gives $P(X \ge 8) \approx 0.0511 > 0.05$, not significant. The critical region at $5\%$ is $X \ge 9$.
+\end{exoresolu}
+
+\courssub{Testing a population mean}
+
+\begin{methode}[Test for a mean $\mu$ --- $\sigma$ known or large sample]
+\begin{enumerate}
+\item State $H_0 : \mu = \mu_0$ and $H_1$. Identify $\sigma$ (known) or estimate it by $s$ if $n$ is large ($n \ge 30$), invoking the \cle{Central Limit Theorem}.
+\item The test statistic is the standardised sample mean:
+\[ z = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} \quad \sim \quad N(0,1) \text{ under } H_0. \]
+\item Find the \cle{critical value(s)}: $\pm 1.645$ (one tail, $5\%$), $\pm 1.96$ (two tails, $5\%$), $\pm 2.326$ (one tail, $1\%$), $\pm 2.576$ (two tails, $1\%$).
+\item Reject $H_0$ if $z$ falls beyond the critical value in the direction of $H_1$; otherwise do not reject.
+\item Conclude in context, mentioning the significance level.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Testing a mean, $\sigma$ known --- two tails]
+A machine fills packets of sugar; the masses are normally distributed with standard deviation $\SI{5}{g}$. The machine is set to deliver a mean of $\SI{500}{g}$. A random sample of $25$ packets has mean mass $\SI{502.8}{g}$. Test at the $5\%$ level whether the mean mass differs from $\SI{500}{g}$.
+\tcblower
+\textbf{Step 1 --- Hypotheses.}
+\[ H_0 : \mu = 500 \qquad H_1 : \mu \neq 500 \quad \text{(two-tailed)}. \]
+
+\textbf{Step 2 --- Statistic.} Under $H_0$, $\bar{X} \sim N\!\left(500, \dfrac{5^2}{25}\right) = N(500, 1)$, so $\sigma/\sqrt{n} = 1$ g.
+\[ z = \frac{502.8 - 500}{5/\sqrt{25}} = \frac{2.8}{1} = 2.8. \]
+
+\textbf{Step 3 --- Critical values.} Two-tailed at $5\%$: $\pm 1.96$.
+
+\textbf{Step 4 --- Decision.} Since $|z| = 2.8 > 1.96$, we \textbf{reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level there is significant evidence that the mean mass is no longer $\SI{500}{g}$; the machine needs readjustment (indeed the evidence points to over-filling).
+\end{exoresolu}
+
+\begin{exoresolu}[Testing a mean, $\sigma$ unknown, large sample]
+The mean score of candidates in a national mock examination has historically been $52$ marks. A random sample of $60$ candidates this year gives a mean of $54.3$ marks with standard deviation $11.5$ marks. Test at the $1\%$ level whether the mean has increased.
+\tcblower
+\textbf{Step 1 --- Hypotheses.}
+\[ H_0 : \mu = 52 \qquad H_1 : \mu > 52 \quad \text{(one-tailed, right)}. \]
+
+\textbf{Step 2 --- Statistic.} Here $\sigma$ is unknown, but $n = 60$ is large, so by the Central Limit Theorem we may use $s = 11.5$ in place of $\sigma$:
+\[ z = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{54.3 - 52}{11.5/\sqrt{60}} = \frac{2.3}{1.4846} \approx 1.549. \]
+
+\textbf{Step 3 --- Critical value.} One-tailed at $1\%$: $z_{\text{crit}} = 2.326$.
+
+\textbf{Step 4 --- Decision.} Since $1.549 < 2.326$, we \textbf{do not reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion.} At the $1\%$ level there is insufficient evidence that the mean mark has increased; the observed improvement can reasonably be attributed to sampling fluctuation.
+\end{exoresolu}
+
+\courssub{Testing the difference between two means (large samples)}
+
+\begin{methode}[Two-sample $z$-test for $\mu_1 - \mu_2$]
+\begin{enumerate}
+\item State $H_0 : \mu_1 - \mu_2 = 0$ (i.e. $\mu_1 = \mu_2$) and $H_1$ (usually $\mu_1 \neq \mu_2$ or $\mu_1 > \mu_2$).
+\item For large independent samples ($n_1, n_2 \ge 30$), the CLT gives, under $H_0$:
+\[ z = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}} \quad \sim \quad N(0,1). \]
+\item \cle{Reflex}: the standard error of a \emph{difference} adds the two variances $\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}$ --- never subtract them.
+\item Compare $|z|$ (or $z$, one tail) with the critical value, decide, and conclude in context.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Difference of two means --- two tails]
+An inspector compares the yields of two maize varieties. Variety A: $50$ farms, mean yield $2.45$ tonnes/ha, standard deviation $0.60$. Variety B: $60$ farms, mean yield $2.28$ tonnes/ha, standard deviation $0.55$. Test at the $5\%$ level whether the two varieties differ in mean yield.
+\tcblower
+\textbf{Step 1 --- Hypotheses.} Let $\mu_A, \mu_B$ be the true mean yields.
+\[ H_0 : \mu_A = \mu_B \qquad H_1 : \mu_A \neq \mu_B \quad \text{(two-tailed)}. \]
+
+\textbf{Step 2 --- Standard error.}
+\[ \mathrm{SE} = \sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}} = \sqrt{\frac{0.60^2}{50} + \frac{0.55^2}{60}} = \sqrt{0.0072 + 0.00504} = \sqrt{0.01224} \approx 0.1106. \]
+
+\textbf{Step 3 --- Test statistic.}
+\[ z = \frac{\bar{x}_A - \bar{x}_B}{\mathrm{SE}} = \frac{2.45 - 2.28}{0.1106} = \frac{0.17}{0.1106} \approx 1.537. \]
+
+\textbf{Step 4 --- Decision.} Two-tailed at $5\%$: critical values $\pm 1.96$. Since $|z| = 1.537 < 1.96$, we \textbf{do not reject $H_0$}.
+
+\textbf{Step 5 --- Conclusion.} At the $5\%$ level the data do not provide sufficient evidence of a difference in mean yield between the two varieties; the observed gap of $0.17$ tonnes/ha is compatible with ordinary sampling variability.
+\end{exoresolu}
+
+\begin{exoresolu}[Difference of two means --- one tail, with $p$-value]
+A new teaching method is tried in the West Region. Group 1 (new method): $80$ students, mean $61.2$, standard deviation $9.8$. Group 2 (traditional method): $100$ students, mean $58.5$, standard deviation $10.4$. Test at the $1\%$ level whether the new method produces a higher mean score, and give the $p$-value.
+\tcblower
+\textbf{Step 1 --- Hypotheses.}
+\[ H_0 : \mu_1 = \mu_2 \qquad H_1 : \mu_1 > \mu_2 \quad \text{(one-tailed, right)}. \]
+
+\textbf{Step 2 --- Standard error.}
+\[ \mathrm{SE} = \sqrt{\frac{9.8^2}{80} + \frac{10.4^2}{100}} = \sqrt{\frac{96.04}{80} + \frac{108.16}{100}} = \sqrt{1.2005 + 1.0816} = \sqrt{2.2821} \approx 1.5107. \]
+
+\textbf{Step 3 --- Test statistic.}
+\[ z = \frac{61.2 - 58.5}{1.5107} = \frac{2.7}{1.5107} \approx 1.787. \]
+
+\textbf{Step 4 --- Decision.} One-tailed at $1\%$: $z_{\text{crit}} = 2.326$. Since $1.787 < 2.326$, we \textbf{do not reject $H_0$}.
+
+\textbf{Step 5 --- $p$-value.} $p = P(Z \ge 1.787) = 1 - \Phi(1.787) \approx 1 - 0.9630 = 0.0370$, i.e. about $3.7\%$. The result would have been significant at the $5\%$ level, but not at the stricter $1\%$ level.
+
+\textbf{Conclusion.} At the $1\%$ level there is insufficient evidence that the new method raises the mean score, although the data are suggestive ($p \approx 3.7\%$): a larger study would be worthwhile.
+\end{exoresolu}
+
+\courssub{Errors and interpretation}
+
+\begin{methode}[Type I and Type II errors]
+\begin{enumerate}
+\item A \cle{Type I error}: rejecting $H_0$ when it is true. Its probability is the significance level $\alpha$ (for discrete tests, the actual size of the critical region).
+\item A \cle{Type II error}: failing to reject $H_0$ when $H_1$ is true. Its probability $\beta$ is computed at a \emph{specified} alternative value: find the acceptance region under $H_0$, then evaluate the probability of that region under the alternative distribution.
+\item The \cle{power} of the test is $1 - \beta$.
+\item Increasing $n$ (or widening the critical region) reduces $\beta$; reducing $\alpha$ increases $\beta$. There is always a trade-off.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Computing error probabilities]
+A test of $H_0 : \mu = 50$ against $H_1 : \mu < 50$ uses a sample of $n = 36$ from $N(\mu, 12^2)$, rejecting $H_0$ when $\bar{X} < 46.71$. (a) Find the significance level. (b) Find the probability of a Type II error and the power when the true mean is $\mu = 45$.
+\tcblower
+Under $H_0$, $\bar{X} \sim N\!\left(50, \dfrac{12^2}{36}\right) = N(50, 4)$, so the standard error is $2$.
+
+\textbf{(a) Significance level (Type I error).}
+\[ \alpha = P(\bar{X} < 46.71 \mid \mu = 50) = P\!\left(Z < \frac{46.71 - 50}{2}\right) = P(Z < -1.645) = 0.05. \]
+The test is at the $5\%$ level (the critical value $46.71$ was chosen exactly for this).
+
+\textbf{(b) Type II error at $\mu = 45$.} Now $\bar{X} \sim N(45, 4)$. A Type II error occurs when we \emph{accept} $H_0$, i.e. $\bar{X} \ge 46.71$:
+\[ \beta = P(\bar{X} \ge 46.71 \mid \mu = 45) = P\!\left(Z \ge \frac{46.71 - 45}{2}\right) = P(Z \ge 0.855). \]
+From tables, $\Phi(0.855) \approx 0.8037$, so $\beta \approx 0.196$.
+
+The \textbf{power} of the test at $\mu = 45$ is
+\[ 1 - \beta \approx 0.804. \]
+Interpretation: if the true mean is really $45$, this test detects it about $80\%$ of the time; in about $20\%$ of samples we would wrongly fail to reject $H_0$.
+\end{exoresolu}
+
+\begin{attention}[Frequent traps at the GCE]
+\begin{itemize}
+\item Writing $H_1$ with an equality sign, or putting the sample value ($\bar{x}$) into the hypotheses instead of the population parameter $\mu$ or $p$.
+\item For a two-tailed test, comparing the one-sided $p$-value with $\alpha$ instead of $\alpha/2$.
+\item Forgetting to scale the Poisson rate to the observed time interval.
+\item Subtracting instead of adding the variances in the standard error of $\bar{X}_1 - \bar{X}_2$.
+\item Saying ``$H_0$ is true'' instead of ``there is insufficient evidence to reject $H_0$''.
+\item Forgetting that for discrete distributions (binomial, Poisson) the actual significance level is the exact probability of the critical region, usually smaller than the nominal $\alpha$.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: the language of testing]
+For each question, choose the single correct answer and justify briefly.
+\begin{enumerate}
+\item In a significance test, the null hypothesis $H_0$ is:
+\begin{enumerate}
+\item the hypothesis we suspect to be true and wish to prove;
+\item the hypothesis of ``no change / no effect'', rejected only if the data provide strong evidence against it;
+\item the hypothesis that is always accepted at the end of the test;
+\item the hypothesis that the sample mean equals the population mean.
+\end{enumerate}
+\item The significance level $\alpha$ of a test is:
+\begin{enumerate}
+\item the probability of accepting $H_0$ when $H_0$ is true;
+\item the probability of rejecting $H_0$ when $H_0$ is true;
+\item the probability of rejecting $H_0$ when $H_1$ is true;
+\item always equal to $5\%$.
+\end{enumerate}
+\item A Type II error consists in:
+\begin{enumerate}
+\item rejecting $H_0$ when $H_0$ is true;
+\item accepting $H_0$ when $H_0$ is false;
+\item choosing a one-tailed test instead of a two-tailed test;
+\item using the wrong significance level.
+\end{enumerate}
+\item For a two-tailed $z$-test at the $5\%$ level, the critical values are:
+\begin{enumerate}
+\item $\pm 1.645$;
+\item $\pm 1.960$;
+\item $\pm 2.326$;
+\item $\pm 2.576$.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false?]
+State whether each assertion is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item If the test statistic falls in the critical region, we have \emph{proved} that $H_0$ is false.
+\item Decreasing the significance level from $5\%$ to $1\%$ makes it harder to reject $H_0$.
+\item For a large sample, the Central Limit Theorem allows us to use a normal approximation for the sample mean even when the population is not normal.
+\item The $p$-value is the probability that $H_0$ is true given the observed data.
+\item A $95\%$ confidence interval that does not contain the value claimed by $H_0$ leads to rejection of $H_0$ in a two-tailed test at the $5\%$ level.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Key definitions]
+\begin{enumerate}
+\item Define, in your own words, the terms: \cle{null hypothesis}, \cle{alternative hypothesis}, \cle{test statistic}, \cle{critical region} and \cle{significance level}.
+\item Explain the difference between a \cle{one-tailed} test and a \cle{two-tailed} test, and give one concrete situation (from everyday life in Cameroon) appropriate to each.
+\item Distinguish carefully between a Type I error and a Type II error, illustrating each with the situation: ``testing whether a new malaria treatment is more effective than the standard one''.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item Let $X \sim B(10, p)$. We test $H_0: p = 0.5$ against $H_1: p > 0.5$. Compute $P(X \geq 8 \mid p = 0.5)$ and $P(X \geq 9 \mid p = 0.5)$. Which of the regions $\{X \geq 8\}$ and $\{X \geq 9\}$ gives a significance level closest to $5\%$?
+\item Let $Y \sim \mathcal{P}(\lambda)$ with $\lambda = 4$. Compute $P(Y \geq 8)$ (you may use $P(Y \geq 8) = 1 - P(Y \leq 7)$ and the cumulative Poisson table). Would observing $Y = 8$ lead to rejection of $H_0: \lambda = 4$ against $H_1: \lambda > 4$ at the $5\%$ level?
+\item A sample of $n = 64$ observations gives $\bar{x} = 52$ and $s = 8$. Compute the value of the test statistic $z = \dfrac{\bar{x} - \mu_0}{s/\sqrt{n}}$ for testing $H_0: \mu = 50$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[The lottery claim]
+A lottery company claims that $1$ ticket in $10$ wins a prize. A students' association of a school in Bamenda buys $50$ tickets and only $2$ of them win a prize. Let $X$ be the number of winning tickets, and assume $X \sim B(50, p)$.
+\begin{enumerate}
+\item State the null hypothesis $H_0$ and the alternative hypothesis $H_1$ for testing whether the claimed probability is \emph{overstated}.
+\item Using a suitable normal approximation (checking its validity), test the claim at the $5\%$ level of significance.
+\item State your conclusion clearly in the context of the problem.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[The call centre]
+Calls arrive at a call centre in Douala at a claimed mean rate of $6$ per hour, and the number of calls per hour is modelled by a Poisson distribution. In one observed hour, $12$ calls arrive.
+\begin{enumerate}
+\item Write down $H_0$ and $H_1$ for testing whether the mean rate has \emph{increased}.
+\item Using the cumulative Poisson tables, compute $P(X \geq 12)$ when $\lambda = 6$.
+\item Carry out the test at the $1\%$ level of significance and interpret the result in context.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Sachet water]
+A sachet-water factory in Yaoundé claims that the mean content of its sachets is $500$ ml. A random sample of $36$ sachets gives a sample mean $\bar{x} = 496$ ml and a sample standard deviation $s = 9$ ml.
+\begin{enumerate}
+\item State $H_0$ and $H_1$ for testing whether the true mean is \emph{below} $500$ ml.
+\item Compute the test statistic and carry out the test at the $5\%$ level.
+\item Compute the $p$-value of the observed sample mean and compare it with $\alpha = 0.05$.
+\item What practical advice would you give to the factory's quality-control manager?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Bags of cement]
+The mean mass of bags of cement produced by a factory is claimed to be $50$ kg, with a known standard deviation $\sigma = 1.2$ kg. A random sample of $25$ bags gives a sample mean $\bar{x} = 50.7$ kg.
+\begin{enumerate}
+\item Test, at the $5\%$ level of significance, the two-tailed hypotheses $H_0: \mu = 50$ against $H_1: \mu \neq 50$.
+\item Construct a $95\%$ confidence interval for $\mu$ and verify that it leads to the same conclusion as the test.
+\item Explain in one sentence why the confidence interval and the two-tailed test must agree.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Two schools at the mock GCE \hfill (12 marks)]
+In a mock GCE Advanced Level examination, $60$ candidates from school A obtain a mean mark of $58.4$ with sample standard deviation $11.2$, while $80$ candidates from school B obtain a mean mark of $55.1$ with sample standard deviation $12.5$. The marks in each school may be assumed independent.
+\begin{enumerate}
+\item State suitable null and alternative hypotheses for testing whether the mean mark of school A is significantly higher than that of school B. \hfill (2)
+\item Justify the use of a normal distribution for the difference of the two sample means, quoting the relevant theorem. \hfill (2)
+\item Compute the standard error of $\bar{x}_A - \bar{x}_B$ and the value of the test statistic. \hfill (4)
+\item Carry out the test at the $5\%$ level of significance and state your conclusion in context. \hfill (3)
+\item State one assumption underlying your analysis. \hfill (1)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Finding a critical region \hfill (10 marks)]
+A seed merchant claims that the proportion $p$ of germinating seeds in a batch is $0.4$. A buyer suspects that the germination rate is in fact lower. Let $X \sim B(20, p)$ be the number of germinating seeds in a random sample of $20$ seeds. We test $H_0: p = 0.4$ against $H_1: p < 0.4$.
+\begin{enumerate}
+\item Explain why the critical region has the form $X \leq c$ for some integer $c$. \hfill (2)
+\item Using the binomial cumulative distribution, compute $P(X \leq 4 \mid p = 0.4)$ and $P(X \leq 3 \mid p = 0.4)$. \hfill (4)
+\item Hence determine the critical region whose significance level is as close as possible to $5\%$, and state the \emph{actual} significance level of the test. \hfill (3)
+\item The buyer observes $4$ germinating seeds. What is his conclusion? \hfill (1)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Malaria cases after a flood \hfill (14 marks)]
+A clinic in the Far North Region records malaria cases daily; the number of cases per day is modelled by a Poisson distribution with mean $3$. After a flood, $9$ cases are recorded on a single day. The medical officer wishes to know whether the mean daily number of cases has increased.
+\begin{enumerate}
+\item State, with justification, the null and alternative hypotheses. \hfill (3)
+\item Using cumulative Poisson probabilities, compute the $p$-value $P(X \geq 9 \mid \lambda = 3)$. \hfill (4)
+\item Carry out the test at the $1\%$ level of significance. \hfill (3)
+\item Write a clear conclusion addressed to the medical officer, in the context of the problem. \hfill (2)
+\item Identify which type of error (Type I or Type II) could have been committed in your conclusion, and describe in one sentence what that error would mean for the clinic. \hfill (2)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: the language of testing]
+\begin{enumerate}
+\item \textbf{Answer (b).} $H_0$ is the hypothesis of ``no change / no effect''; it is given the benefit of the doubt and is rejected only when the data provide strong evidence against it. Answer (a) is wrong because we never \emph{prove} $H_0$; (c) is wrong because $H_0$ may be rejected; (d) confuses a sample result with a population claim.
+\item \textbf{Answer (b).} By definition $\alpha = P(\text{reject } H_0 \mid H_0 \text{ true}) = P(\text{Type I error})$. Answer (a) is $1-\alpha$; (c) is the \emph{power} of the test; (d) is false since $\alpha$ is chosen by the experimenter ($1\%$, $5\%$, $10\%$, \dots).
+\item \textbf{Answer (b).} A Type II error is accepting $H_0$ when $H_0$ is in fact false. Answer (a) describes a Type I error; (c) and (d) are methodological choices, not errors of conclusion.
+\item \textbf{Answer (b).} For a two-tailed test at the $5\%$ level we need $P(|Z| > z) = 0.05$, i.e.\ $P(Z > z) = 0.025$ in each tail, giving $z = 1.960$. The value $1.645$ is for a \emph{one-tailed} $5\%$ test; $2.326$ and $2.576$ correspond to $1\%$ one-tailed and two-tailed tests respectively.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false?]
+\begin{enumerate}
+\item \textbf{False.} Rejecting $H_0$ means the data are \emph{unlikely} under $H_0$ (probability at most $\alpha$), not impossible. There is always a probability $\alpha$ of a Type I error, so nothing is ``proved'' in the mathematical sense.
+\item \textbf{True.} Lowering $\alpha$ shrinks the critical region (e.g.\ critical value $1.645$ becomes $2.326$ for a one-tailed test), so stronger evidence is required before $H_0$ is rejected.
+\item \textbf{True.} The Central Limit Theorem states that for large $n$, $\bar{X} \approx N\!\left(\mu, \dfrac{\sigma^2}{n}\right)$ whatever the shape of the parent population, which justifies the normal-based test.
+\item \textbf{False.} The $p$-value is $P(\text{result at least as extreme as observed} \mid H_0 \text{ true})$: it is computed \emph{assuming} $H_0$ true, and says nothing about the probability of $H_0$ itself.
+\item \textbf{True.} A $95\%$ confidence interval contains exactly those values $\mu_0$ that would \emph{not} be rejected by a two-tailed test at the $5\%$ level; hence a value outside the interval is rejected. The two procedures are mathematically equivalent.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Key definitions]
+\begin{enumerate}
+\item \begin{itemize}
+\item \cle{Null hypothesis} $H_0$: the default statement of ``no change / no effect'' about a population parameter, assumed true unless the data strongly contradict it.
+\item \cle{Alternative hypothesis} $H_1$: the statement we suspect to be true; it is accepted only if the evidence against $H_0$ is strong enough.
+\item \cle{Test statistic}: a quantity computed from the sample (e.g.\ $z = \dfrac{\bar{x}-\mu_0}{s/\sqrt{n}}$) whose distribution under $H_0$ is known and which measures how far the data are from $H_0$.
+\item \cle{Critical region}: the set of values of the test statistic which are so unlikely under $H_0$ that their occurrence leads to rejection of $H_0$.
+\item \cle{Significance level} $\alpha$: the probability, fixed in advance, of rejecting $H_0$ when it is actually true (probability of a Type I error).
+\end{itemize}
+\item In a \cle{one-tailed} test $H_1$ specifies a direction ($\mu > \mu_0$ or $\mu < \mu_0$) and the critical region lies in a single tail; in a \cle{two-tailed} test $H_1: \mu \neq \mu_0$ and the critical region is split between both tails. \emph{One-tailed example}: a trader in Douala suspects a supplier's bags of rice weigh \emph{less} than the claimed $50\ \mathrm{kg}$. \emph{Two-tailed example}: a machine filling sachet water must deliver exactly $500\ \mathrm{ml}$; any deviation, above or below, requires adjustment.
+\item \begin{itemize}
+\item \textbf{Type I error}: rejecting $H_0$ when it is true. Here: concluding the new malaria treatment is more effective when in reality it is not — a useless (possibly expensive) drug is adopted.
+\item \textbf{Type II error}: accepting $H_0$ when it is false. Here: concluding the new treatment is no better when in reality it \emph{is} more effective — patients are denied a better treatment.
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item Under $H_0$, $X \sim B(10, 0.5)$, so $P(X = k) = \dbinom{10}{k}\dfrac{1}{2^{10}} = \dfrac{\binom{10}{k}}{1024}$.
+\[ P(X \geq 8) = \frac{\binom{10}{8} + \binom{10}{9} + \binom{10}{10}}{1024} = \frac{45 + 10 + 1}{1024} = \frac{56}{1024} \approx 0.0547. \]
+\[ P(X \geq 9) = \frac{\binom{10}{9} + \binom{10}{10}}{1024} = \frac{11}{1024} \approx 0.0107. \]
+The region $\{X \geq 8\}$ has level $5.47\%$, the region $\{X \geq 9\}$ has level $1.07\%$. Hence $\{X \geq 8\}$ gives the significance level closest to $5\%$.
+\item From cumulative Poisson tables with $\lambda = 4$: $P(Y \leq 7) = 0.9489$, so
+\[ P(Y \geq 8) = 1 - 0.9489 = 0.0511. \]
+Since $0.0511 > 0.05$, observing $Y = 8$ does \textbf{not} fall in the $5\%$ critical region: we do not reject $H_0: \lambda = 4$ at the $5\%$ level. (Note how close the decision is!)
+\item With $n = 64$, $\bar{x} = 52$, $s = 8$, $\mu_0 = 50$:
+\[ z = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{52 - 50}{8/\sqrt{64}} = \frac{2}{8/8} = \frac{2}{1} = 2. \]
+The test statistic takes the value $z = 2.00$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — The lottery claim]
+\begin{enumerate}
+\item The company claims $p = 0.1$; the association suspects the probability is \emph{smaller}. Hence
+\[ H_0: p = 0.1 \qquad \text{against} \qquad H_1: p < 0.1 \quad \text{(one-tailed test).} \]
+\item Under $H_0$, $X \sim B(50, 0.1)$ with $np = 5$ and $np(1-p) = 4.5$. Since $np = 5 \geq 5$ and $n(1-p) = 45 \geq 5$, the normal approximation is acceptable (borderline for $np=5$, but standard in GCE context):
+\[ X \approx N(5,\ 4.5), \qquad \sigma = \sqrt{4.5} \approx 2.121. \]
+Applying the continuity correction, the observed value $x = 2$ is replaced by $2.5$:
+\[ z = \frac{2.5 - 5}{2.121} = \frac{-2.5}{2.121} \approx -1.18. \]
+(Without continuity correction, $z = \dfrac{2-5}{2.121} \approx -1.41$; the conclusion is the same.)
+The critical value for a one-tailed test at the $5\%$ level is $-1.645$. Since $-1.18 > -1.645$, the test statistic does \textbf{not} lie in the critical region.
+\item \textbf{Conclusion:} at the $5\%$ level of significance there is insufficient evidence to reject the company's claim. Although only $2$ of the $50$ tickets won, such an outcome is not unlikely enough (probability about $0.12$ under $H_0$) to accuse the lottery company of overstating the winning probability. The association should collect a larger sample before complaining.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — The call centre]
+\begin{enumerate}
+\item The claimed rate is $\lambda = 6$ calls per hour; we suspect an \emph{increase}:
+\[ H_0: \lambda = 6 \qquad \text{against} \qquad H_1: \lambda > 6 \quad \text{(one-tailed test).} \]
+\item Under $H_0$, $X \sim \mathcal{P}(6)$. From cumulative Poisson tables, $P(X \leq 11) = 0.9799$, hence
+\[ P(X \geq 12) = 1 - P(X \leq 11) = 1 - 0.9799 = 0.0201. \]
+\item At the $1\%$ level, we reject $H_0$ only if the $p$-value is below $0.01$. Here
+\[ p\text{-value} = 0.0201 > 0.01, \]
+so we do \textbf{not} reject $H_0$. \textbf{Interpretation:} observing $12$ calls in an hour is unusual (probability about $2\%$ when $\lambda = 6$), but not unlikely enough at the demanding $1\%$ level to conclude that the mean rate has increased. The centre should monitor more hours before hiring extra staff. (Note: at the $5\%$ level the same data \emph{would} lead to rejection — the choice of $\alpha$ matters.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Sachet water]
+\begin{enumerate}
+\item We test whether the mean is \emph{below} the claimed $500\ \mathrm{ml}$:
+\[ H_0: \mu = 500 \qquad \text{against} \qquad H_1: \mu < 500 \quad \text{(one-tailed test).} \]
+\item With $n = 36$ (large), $\bar{x} = 496$, $s = 9$, the sample mean is approximately normal by the Central Limit Theorem:
+\[ z = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} = \frac{496 - 500}{9/\sqrt{36}} = \frac{-4}{9/6} = \frac{-4}{1.5} \approx -2.67. \]
+The critical value for a one-tailed test at the $5\%$ level is $-1.645$. Since $-2.67 < -1.645$, the statistic lies in the critical region: we \textbf{reject} $H_0$.
+\item The $p$-value is
+\[ p = P(\bar{X} \leq 496 \mid \mu = 500) = P(Z \leq -2.67) = 1 - \Phi(2.67) \approx 1 - 0.9962 = 0.0038. \]
+Since $0.0038 < 0.05 = \alpha$, the $p$-value approach confirms the rejection of $H_0$ (indeed the result is even significant at the $1\%$ level).
+\item \textbf{Advice:} there is strong evidence that the sachets are underfilled. The manager should stop the production line, recalibrate the filling machine, and check whether the underfilling is systematic, both to respect consumers and to avoid sanctions from the standards authorities.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Bags of cement]
+\begin{enumerate}
+\item $H_0: \mu = 50$ against $H_1: \mu \neq 50$ (two-tailed). Here $\sigma = 1.2\ \mathrm{kg}$ is known and $n = 25$:
+\[ z = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}} = \frac{50.7 - 50}{1.2/\sqrt{25}} = \frac{0.7}{0.24} \approx 2.92. \]
+The critical values for a two-tailed test at the $5\%$ level are $\pm 1.960$. Since $2.92 > 1.960$, we \textbf{reject} $H_0$: there is significant evidence that the mean mass differs from $50\ \mathrm{kg}$ (in fact it appears to be \emph{higher}).
+\item The $95\%$ confidence interval is
+\[ \bar{x} \pm 1.96\,\frac{\sigma}{\sqrt{n}} = 50.7 \pm 1.96 \times 0.24 = 50.7 \pm 0.47, \]
+i.e.\ $[50.23\,;\ 51.17]\ \mathrm{kg}$. The claimed value $50$ does \textbf{not} belong to this interval, so the confidence interval also leads to rejecting $H_0: \mu = 50$ — the same conclusion as the test.
+\item A $95\%$ confidence interval consists precisely of all values $\mu_0$ that would \emph{not} be rejected by a two-tailed test at the $5\%$ level, so the two procedures must always agree.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Two schools at the mock GCE]
+\textbf{Indicative mark scheme:} (a) 2 marks: $H_0$, $H_1$ with correct direction; (b) 2 marks: CLT quoted and applied to the difference; (c) 4 marks: variance formula (1), substitution (1), SE (1), $z$ (1); (d) 3 marks: critical value, comparison, conclusion in context; (e) 1 mark: any valid assumption.
+\begin{enumerate}
+\item Let $\mu_A, \mu_B$ be the true mean marks. School A is suspected to be higher:
+\[ H_0: \mu_A = \mu_B \quad (\text{i.e. } \mu_A - \mu_B = 0) \qquad H_1: \mu_A > \mu_B \quad \text{(one-tailed).} \]
+\item The sample sizes $n_A = 60$ and $n_B = 80$ are both large. By the \textbf{Central Limit Theorem}, each sample mean is approximately normal, and the difference of two independent normal variables is normal:
+\[ \bar{X}_A - \bar{X}_B \approx N\!\left(\mu_A - \mu_B,\ \frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}\right). \]
+\item Standard error:
+\[ \text{SE} = \sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}} = \sqrt{\frac{11.2^2}{60} + \frac{12.5^2}{80}} = \sqrt{\frac{125.44}{60} + \frac{156.25}{80}} = \sqrt{2.091 + 1.953} = \sqrt{4.044} \approx 2.01. \]
+Test statistic:
+\[ z = \frac{\bar{x}_A - \bar{x}_B - 0}{\text{SE}} = \frac{58.4 - 55.1}{2.01} = \frac{3.3}{2.01} \approx 1.64. \]
+\item For a one-tailed test at the $5\%$ level the critical value is $1.645$. Since $1.64 < 1.645$, the statistic does \textbf{not} fall in the critical region (the $p$-value is about $0.051$). We do not reject $H_0$: at the $5\%$ level there is insufficient evidence that school A's mean mark is significantly higher than school B's — the observed gap of $3.3$ marks can plausibly be due to sampling variation.
+\item Assumptions (any one): the two samples are \emph{independent} random samples; the sample standard deviations are reliable estimates of the population standard deviations (justified by the large samples); marks within each school are independent of one another.
+\end{enumerate}
+\textbf{Examiner's expectations:} candidates must write hypotheses in terms of population means, quote the CLT by name, use the \emph{unpooled} standard error $\sqrt{s_A^2/n_A + s_B^2/n_B}$, and end with a conclusion \emph{in context} (mentioning the schools), not a bare ``accept $H_0$''.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Finding a critical region]
+\textbf{Indicative mark scheme:} (a) 2 marks; (b) 4 marks (method 1, each probability 1.5); (c) 3 marks (choice 2, actual level 1); (d) 1 mark.
+\begin{enumerate}
+\item Under $H_1: p < 0.4$, the number of germinating seeds will tend to be \emph{smaller} than expected under $H_0$ (where $E(X) = 20 \times 0.4 = 8$). Small values of $X$ are therefore the evidence against $H_0$, so the critical region consists of the smallest values of $X$, i.e.\ has the form $X \leq c$.
+\item With $X \sim B(20, 0.4)$, $P(X = k) = \dbinom{20}{k}(0.4)^k(0.6)^{20-k}$:
+\begin{align*}
+P(X \leq 4) &= \sum_{k=0}^{4}\binom{20}{k}(0.4)^k(0.6)^{20-k} \\
+&= 0.00004 + 0.00049 + 0.00309 + 0.01235 + 0.03499 \approx 0.0510, \\
+P(X \leq 3) &= 0.00004 + 0.00049 + 0.00309 + 0.01235 \approx 0.0160.
+\end{align*}
+\item We want the level as close as possible to $5\%$: $|0.0510 - 0.05| = 0.001$ while $|0.0160 - 0.05| = 0.034$. Hence the critical region is
+\[ X \leq 4, \qquad \text{with \emph{actual} significance level } \alpha = P(X \leq 4 \mid p = 0.4) \approx 5.1\%. \]
+(Because $X$ is discrete, an exact $5\%$ level is unattainable — this is a classic GCE point.)
+\item The buyer observes $X = 4$, which lies in the critical region $X \leq 4$. He therefore \textbf{rejects} $H_0$ at (approximately) the $5\%$ level: the data support his suspicion that the germination rate is below $0.4$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Malaria cases after a flood]
+\textbf{Indicative mark scheme:} (a) 3 marks (hypotheses 2, justification 1); (b) 4 marks; (c) 3 marks; (d) 2 marks; (e) 2 marks.
+\begin{enumerate}
+\item The historical mean is $\lambda = 3$ cases per day; the officer suspects an \emph{increase} after the flood. Since only larger counts would indicate a worsening situation, a one-tailed test is appropriate:
+\[ H_0: \lambda = 3 \qquad \text{against} \qquad H_1: \lambda > 3. \]
+\item Under $H_0$, $X \sim \mathcal{P}(3)$. From cumulative Poisson tables, $P(X \leq 8) = 0.9962$, so the $p$-value is
+\[ P(X \geq 9 \mid \lambda = 3) = 1 - P(X \leq 8) = 1 - 0.9962 = 0.0038. \]
+\item At the $1\%$ level of significance we reject $H_0$ if the $p$-value is below $0.01$. Since
+\[ 0.0038 < 0.01, \]
+we \textbf{reject} $H_0$ at the $1\%$ level.
+\item \textbf{Conclusion to the medical officer:} if the mean rate were still $3$ cases per day, a day with $9$ or more cases would occur with probability less than $0.4\%$ — an extremely rare event. There is therefore strong evidence (significant even at the $1\%$ level) that the mean daily number of malaria cases has increased after the flood. Preventive measures (distribution of treated nets, drainage of stagnant water, extra stock of antimalarials) should be reinforced immediately.
+\item Since we \emph{rejected} $H_0$, the only possible error is a \textbf{Type I error}: it would mean that the mean rate has in fact \emph{not} increased, and the clinic would be mobilising resources and alarm unnecessarily for a surge that was purely due to chance.
+\end{enumerate}
+\textbf{Examiner's expectations:} hypotheses stated in terms of $\lambda$ with the context named; the $p$-value computed as a \emph{tail} probability $P(X \geq 9)$ and not $P(X = 9)$ (a very common mistake); an explicit comparison with $0.01$; a contextual conclusion; correct identification of the error type consistent with the decision taken.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap,
+  concept color=popblue,
+  level 1 concept/.append style={sibling angle=90, level distance=4.5cm},
+  level 2 concept/.append style={sibling angle=45, level distance=3.5cm},
+  every node/.style={font=\small, text width=2.8cm, align=center},
+  grow cyclic
+]
+\node[concept, text=white, align=center]{Hypothesis\\Testing}
+  child[concept color=poporange] {node[concept, text=white, align=center]{Foundations\\H$_0$, H$_1$, Errors,\\Critical Region}}
+  child[concept color=popgreen] {node[concept, text=white, align=center]{Testing a\\Probability\\Binomial}}
+  child[concept color=poppurple] {node[concept, text=white, align=center]{Testing Poisson\\Mean}}
+  child[concept color=poppink] {node[concept, text=white, align=center]{Testing\\Population Mean\\Normal / CLT}}
+  child[concept color=popgold] {node[concept, text=white, align=center]{Difference of\\Two Means\\Large Samples}}
+  child[concept color=popdark] {node[concept, text=white, align=center]{Procedure\\Steps, p-value,\\Critical Region}};
+\end{tikzpicture}
+\legende{Mind map of Chapter FMA21: Hypothesis Testing}
+\end{popfigure}
+
+\begin{bilan}
+
+\courssub{Key Definitions}
+\begin{itemize}
+\item \cle{Null hypothesis ($H_0$)}: Statement assumed true unless evidence contradicts it (e.g. $p = p_0$, $\mu = \mu_0$, $\lambda = \lambda_0$, $\mu_1 - \mu_2 = 0$).
+\item \cle{Alternative hypothesis ($H_1$)}: Statement accepted if $H_0$ is rejected; can be one-tailed ($<$, $>$) or two-tailed ($\neq$).
+\item \cle{Significance level ($\alpha$)}: Probability of Type I error (rejecting $H_0$ when true); common values $0.05$, $0.01$, $0.10$.
+\item \cle{Critical region}: Set of test statistic values leading to rejection of $H_0$.
+\item \cle{p-value}: Probability, assuming $H_0$ true, of obtaining a result at least as extreme as the observed one.
+\item \cle{Type I error}: Reject $H_0$ when $H_0$ is true ($\alpha$).
+\item \cle{Type II error}: Fail to reject $H_0$ when $H_0$ is false ($\beta$).
+\item \cle{Power of test}: $1 - \beta$ = probability of correctly rejecting a false $H_0$.
+\end{itemize}
+
+\courssub{Laws, Formulas \& Theorems to Know}
+\begin{itemize}
+\item \textbf{Test statistic for a probability (Binomial)}: $X \sim B(n, p_0)$. For large $n$, use normal approximation $Z = \dfrac{X - np_0}{\sqrt{np_0(1-p_0)}} \sim N(0,1)$ (with continuity correction).
+\item \textbf{Test statistic for Poisson mean}: $X \sim Po(\lambda_0)$. For large $\lambda_0$, $Z = \dfrac{X - \lambda_0}{\sqrt{\lambda_0}} \sim N(0,1)$ (continuity correction). Exact test uses Poisson tables.
+\item \textbf{Test statistic for population mean ($\sigma$ known)}: $Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$.
+\item \textbf{Test statistic for population mean ($\sigma$ unknown, large $n$)}: $Z = \dfrac{\bar{X} - \mu_0}{S/\sqrt{n}} \sim N(0,1)$ by CLT ($n \ge 30$).
+\item \textbf{Test statistic for difference of two means (large samples)}:
+\[
+Z = \dfrac{(\bar{X}_1 - \bar{X}_2) - (\mu_1 - \mu_2)_0}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}}
+\]
+If $\sigma_i$ unknown, replace by sample standard deviations $S_i$ ($n_i \ge 30$).
+\item \textbf{Critical values}: $z_{\alpha}$ (one-tailed), $z_{\alpha/2}$ (two-tailed) from standard normal tables.
+\end{itemize}
+
+\courssub{Standard Method (Steps for Every Test)}
+\begin{enumerate}
+\item State $H_0$ and $H_1$ clearly, defining parameters.
+\item Choose significance level $\alpha$ (given or $5\%$ default).
+\item Identify the appropriate test statistic and its distribution under $H_0$.
+\item Determine critical region or compute p-value.
+\item Calculate the test statistic value from sample data.
+\item Make decision: reject $H_0$ if test statistic falls in critical region or p-value $< \alpha$; otherwise do not reject.
+\item Write a conclusion in context of the problem.
+\end{enumerate}
+
+\courssub{Common Mistakes \& Traps}
+\begin{itemize}
+\item Confusing one-tailed and two-tailed critical regions (e.g. using $z_{0.05}=1.645$ instead of $z_{0.025}=1.96$ for two-tailed $5\%$).
+\item Forgetting continuity correction when approximating discrete distributions (Binomial, Poisson) by Normal.
+\item Using $t$-test instead of $Z$-test for large samples ($n \ge 30$); syllabus requires Normal/CLT.
+\item Stating ``accept $H_0$'' instead of ``do not reject $H_0$''.
+\item Misidentifying the parameter: testing $p$ vs $\lambda$ vs $\mu$ vs $\mu_1-\mu_2$.
+\item Using sample standard deviation $S$ in denominator without checking $n \ge 30$ (or population normal with known $\sigma$).
+\item Not checking conditions: $np_0>5$, $n(1-p_0)>5$ for Binomial approximation; $\lambda_0>10$ for Poisson approximation.
+\end{itemize}
+
+\courssub{GCE Examination Tips}
+\begin{itemize}
+\item Always define the random variable and its distribution under $H_0$ before computing.
+\item Show the formula for the test statistic before substituting numbers.
+\item For two-tailed tests, halve $\alpha$ for critical values; double the one-tail probability for p-value.
+\item When using normal approximation, write the continuity correction explicitly (e.g. $P(X \ge 12) \approx P(Z \ge \frac{11.5 - np}{\sqrt{npq}})$).
+\item If the question asks ``test at the $5\%$ level'', state the critical value(s) from tables ($z_{0.05}=1.645$, $z_{0.025}=1.96$).
+\item For difference of two means, ensure samples are independent and large enough ($n_1, n_2 \ge 30$).
+\item Final conclusion must be non-assertive: ``There is sufficient evidence at the $5\%$ level to suggest that...'' or ``There is insufficient evidence...''.
+\item Manage time: a full hypothesis test carries 6--8 marks; do not skip steps.
+\end{itemize}
+
+\end{bilan}
+
+\findecours
+
+\end{document}

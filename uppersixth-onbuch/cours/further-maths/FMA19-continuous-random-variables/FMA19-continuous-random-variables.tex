@@ -1,0 +1,2697 @@
+% Continuous Random Variables — Further Mathematics Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic FMA19-continuous-random-variables.tex
+\newcommand{\DOCMATIERE}{Further Mathematics}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Further mathematics}
+\newcommand{\DOCLECON}{19}
+\newcommand{\DOCTITRE}{Continuous Random Variables}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Continuous Random Variables}{Further Mathematics}{Upper Sixth}{Upper Sixth — Further mathematics}{19}{4 periods}{Ce chapitre introduit les variables aléatoires continues à travers leur fonction de densité, leur fonction de répartition, et les mesures de position et de dispersion associées. Il prépare l'élève à résoudre des problèmes concrets d'ingénierie et de sciences sociales.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item Définir et identifier une fonction de densité de probabilité (PDF) et vérifier ses propriétés.
+\item Calculer l'espérance, la variance et le mode d'une variable aléatoire continue.
+\item Déterminer la fonction de répartition (CDF) à partir de la PDF et réciproquement.
+\item Utiliser la CDF pour calculer des probabilités d'intervalles.
+\item Trouver la médiane, les quartiles et tout quantile d'une distribution continue.
+\item Résoudre des problèmes d'application mettant en jeu plusieurs notions du chapitre.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item 1. Fonction de densité de probabilité (PDF)
+\item 2. Espérance, variance et mode
+\item 3. Fonction de répartition (CDF)
+\item 4. Médiane, quartiles et quantiles – Applications
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item Définir et identifier une fonction de densité de probabilité (PDF) et vérifier ses propriétés.
+\item Calculer l'espérance, la variance et le mode d'une variable aléatoire continue.
+\item Déterminer la fonction de répartition (CDF) à partir de la PDF et réciproquement.
+\item Utiliser la CDF pour calculer des probabilités d'intervalles.
+\item Trouver la médiane, les quartiles et tout quantile d'une distribution continue.
+\item Résoudre des problèmes d'application mettant en jeu plusieurs notions du chapitre.
+\item Interpréter graphiquement la PDF, la CDF et les mesures de position.
+\item Éviter les erreurs classiques : confusion PDF/CDF, omission de la normalisation, mauvaises bornes d'intégration.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Intégration définie et indéfinie (calcul d'aires, primitives).
+\item Notions de probabilités discrètes : espace probabilisé, espérance, variance.
+\item Fonctions usuelles : exponentielle, polynômes, fonctions par morceaux.
+\item Résolution d'équations et d'inéquations simples.
+\item Lecture et tracé de graphiques de fonctions.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Fonction de densité de probabilité (PDF)}
+
+Dans les rues de Douala, le temps d'attente d'un taxi suit une loi continue : un passager peut attendre $2$ minutes, $7.3$ minutes, $12.87$ minutes\ldots{} n'importe quelle valeur réelle dans un intervalle. Un ingénieur veut modéliser cette attente pour optimiser le dispatching des véhicules. Comment décrire mathématiquement cette variable aléatoire continue ?
+
+Le problème est le suivant : pour une variable aléatoire \emph{discrète} (nombre de passagers, résultat d'un dé), on attribue une probabilité à chaque valeur possible. Mais le temps d'attente peut prendre une infinité non dénombrable de valeurs : la probabilité d'attendre \emph{exactement} $5.000\ldots$ minutes est nulle ! Il faut donc un nouvel outil : au lieu de probabilités attachées à des points, on utilise une \cle{densité de probabilité}, et les probabilités deviennent des \emph{aires} sous une courbe. C'est l'objet de cette section.
+
+\courssub{De l'intuition à la définition}
+
+\textbf{Observation.} Imaginons que l'on mesure le temps d'attente de $10\,000$ passagers et que l'on trace un histogramme des fréquences avec des classes de plus en plus fines. À la limite, l'histogramme se lisse en une courbe $y = f(x)$, et la proportion d'attentes comprises entre $a$ et $b$ devient l'aire sous la courbe entre $a$ et $b$. Cette courbe limite est la \cle{fonction de densité de probabilité}.
+
+\begin{definition}[Variable aléatoire continue et fonction de densité]
+Une variable aléatoire $X$ est dite \cle{continue} s'il existe une fonction $f : \mathbb{R} \to \mathbb{R}$, appelée \cle{fonction de densité de probabilité} (PDF, \emph{probability density function}), telle que pour tous réels $a \leq b$ :
+\[ P(a \leq X \leq b) = \int_a^b f(x)\, dx. \]
+On dit que $X$ \emph{suit} la loi de densité $f$, et l'on note parfois $X \sim f$. L'ensemble des $x$ où $f(x) > 0$ s'appelle le \cle{support} de $X$.
+\end{definition}
+
+\begin{propriete}[Propriétés fondamentales d'une PDF]
+Une fonction $f$ est une fonction de densité de probabilité si et seulement si :
+\begin{enumerate}
+\item \textbf{Positivité :} $f(x) \geq 0$ pour tout $x \in \mathbb{R}$ ;
+\item \textbf{Normalisation :} $\displaystyle \int_{-\infty}^{+\infty} f(x)\, dx = 1$.
+\end{enumerate}
+En conséquence, pour tout réel $c$ : $P(X = c) = \displaystyle\int_c^c f(x)\,dx = 0$. Ainsi $P(a \leq X \leq b) = P(a < X < b)$ : inclure ou exclure les bornes ne change rien pour une variable continue. (Propriété à connaître ; sa justification découle directement de la définition de l'intégrale.)
+\end{propriete}
+
+\begin{attention}[La densité n'est pas une probabilité]
+$f(x)$ n'est \textbf{pas} la probabilité que $X$ vaille $x$. Une densité peut dépasser $1$ ! Par exemple la loi uniforme sur $[0 ; 0.5]$ a pour densité $f(x) = 2$ sur cet intervalle. Seules les \emph{aires} (intégrales) sont des probabilités, donc comprises entre $0$ et $1$. Dire « $f(3) = 0.7$ donc $P(X = 3) = 0.7$ » est une erreur classique et grave à l'examen.
+\end{attention}
+
+\courssub{Exemples classiques de lois continues}
+
+\textbf{La loi uniforme.} C'est le modèle le plus simple : la densité est constante sur un intervalle $[a ; b]$ et nulle ailleurs. Pour que l'aire totale (un rectangle de base $b - a$) vaille $1$, la hauteur doit être $\dfrac{1}{b-a}$ :
+\[ f(x) = \begin{cases} \dfrac{1}{b-a} & \text{si } a \leq x \leq b, \\[4pt] 0 & \text{sinon.} \end{cases} \]
+On note $X \sim \mathcal{U}[a ; b]$. La probabilité $P(c \leq X \leq d)$ est simplement la longueur relative $\dfrac{d-c}{b-a}$ (pour $[c;d] \subset [a;b]$).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.6]
+\fill[popblueL] (0.5,0) rectangle (1.5,0.5);
+\draw[->, thick] (-0.4,0) -- (2.7,0) node[below left]{$x$};
+\draw[->, thick] (0,-0.15) -- (0,1.0) node[left]{$f(x)$};
+\draw[very thick, popblue] (0,0.5) -- (2,0.5);
+\draw[very thick, popblue] (-0.3,0) -- (0,0);
+\draw[very thick, popblue] (2,0) -- (2.6,0);
+\draw[dashed, popblue] (0,0) -- (0,0.5);
+\draw[dashed, popblue] (2,0) -- (2,0.5);
+\draw[dashed, gray] (0.5,0) -- (0.5,0.5);
+\draw[dashed, gray] (1.5,0) -- (1.5,0.5);
+\node[below] at (0,0) {$0$};
+\node[below] at (2,0) {$2$};
+\node[below] at (0.5,0) {$0.5$};
+\node[below] at (1.5,0) {$1.5$};
+\node[left] at (0,0.5) {$\tfrac{1}{2}$};
+\node[popdark] at (1.0,0.25) {\small $P(0.5<X<1.5)$};
+\end{tikzpicture}
+\end{center}
+\legende{Densité de la loi uniforme sur $[0 ; 2]$ ; l'aire hachurée vaut $P(0.5 < X < 1.5) = 0.5$.}
+\end{popfigure}
+
+\textbf{La loi exponentielle.} Elle modélise les temps d'attente (durée de vie d'un composant, attente d'un taxi !). Pour un paramètre $\lambda > 0$ :
+\[ f(x) = \begin{cases} \lambda e^{-\lambda x} & \text{si } x \geq 0, \\ 0 & \text{si } x < 0. \end{cases} \]
+Vérifions la normalisation : $\displaystyle\int_0^{+\infty} \lambda e^{-\lambda x}\,dx = \left[-e^{-\lambda x}\right]_0^{+\infty} = 0 - (-1) = 1$. La positivité est immédiate. C'est donc bien une PDF.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  width=10cm, height=6cm,
+  axis lines=left,
+  xlabel={$x$}, ylabel={$f(x)$},
+  xmin=0, xmax=4.5, ymin=0, ymax=1.2,
+  xtick={0,1,2,3,4}, ytick={0,0.5,1},
+  domain=0:4.4, samples=100,
+]
+\addplot[very thick, poporange] {exp(-x)};
+\addplot[draw=none, fill=poporange, opacity=0.15] {exp(-x)} \closedcycle;
+\node[popdark, align=center] at (axis cs:2.6,0.55) {Aire totale\\ $= 1$};
+\node[popdark] at (axis cs:0.35,0.9) {$f(x) = e^{-x}$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Densité exponentielle $f(x) = e^{-x}$ ($\lambda = 1$) : l'aire totale sous la courbe vaut $1$.}
+\end{popfigure}
+
+\textbf{La loi triangulaire.} La densité a la forme d'un triangle sur $[a ; b]$, nulle ailleurs, avec un sommet en $c \in [a,b]$. L'aire d'un triangle étant $\frac{1}{2}\times\text{base}\times\text{hauteur}$, la hauteur au sommet doit être $h = \frac{2}{b-a}$ pour que l'aire totale vaille $1$. La densité s'écrit alors par morceaux :
+\[ f(x) = \begin{cases}
+\dfrac{2(x-a)}{(b-a)(c-a)} & \text{si } a \leq x \leq c, \\[6pt]
+\dfrac{2(b-x)}{(b-a)(b-c)} & \text{si } c \leq x \leq b, \\[6pt]
+0 & \text{sinon.}
+\end{cases} \]
+Cas particulier : triangle rectangle en $a$ ($c=b$) : $f(x) = \frac{2(x-a)}{(b-a)^2}$ sur $[a,b]$ ; triangle rectangle en $b$ ($c=a$) : $f(x) = \frac{2(b-x)}{(b-a)^2}$ sur $[a,b]$ ; triangle isocèle ($c=\frac{a+b}{2}$) : $f(x) = \frac{4}{b-a}\left(1-\frac{2|x-c|}{b-a}\right)$.
+
+\begin{exemplebox}[{Loi triangulaire sur $[0;2]$ avec sommet en $2$}]
+Ici $a=0$, $b=2$, $c=2$ (triangle rectangle en $b$). La formule donne $f(x) = \frac{2(2-x)}{(2-0)(2-2)}$ ? Attention : le dénominateur $(b-c)$ s'annule. On utilise le cas particulier : $f(x) = \frac{2(b-x)}{(b-a)^2} = \frac{2(2-x)}{4} = 1 - \frac{x}{2}$ sur $[0,2]$. Vérification : $\int_0^2 (1-\frac{x}{2})dx = [x-\frac{x^2}{4}]_0^2 = 2-1=1$. C'est correct.
+\end{exemplebox}
+
+\courssub{Détermination de la constante de normalisation}
+
+À l'examen, on donne souvent une densité dépendant d'une constante $k$ et l'on demande de la déterminer.
+
+\begin{methode}[Trouver $k$ pour que $f(x) = k\,g(x)$ soit une PDF]
+\begin{enumerate}
+\item Identifier le domaine $D$ où $g(x) \neq 0$ (le support pressenti). Vérifier que $g(x) \geq 0$ sur $D$ (sinon aucun $k$ ne convient).
+\item Calculer l'intégrale $I = \displaystyle\int_{D} g(x)\,dx$ (souvent une intégrale sur un intervalle borné ou une intégrale impropre convergente).
+\item Imposer la normalisation : $k \cdot I = 1$, d'où $k = \dfrac{1}{I}$ (nécessairement $k>0$ car $I>0$).
+\item Conclure en écrivant la densité complète, avec ses deux morceaux ($f(x)=k\,g(x)$ sur $D$ et $0$ ailleurs).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Détermination d'une constante]
+Soit $X$ une variable aléatoire continue de densité $f(x) = \begin{cases} kx(4 - x^2) & \text{si } 0 \leq x \leq 2, \\ 0 & \text{sinon.} \end{cases}$
+
+Déterminer la valeur de $k$.
+\tcblower
+\textbf{Solution.} Sur $[0 ; 2]$, $x \geq 0$ et $4 - x^2 \geq 0$, donc $g(x)=x(4-x^2) \geq 0$. La positivité de $f$ impose $k > 0$.
+
+Calculons l'intégrale de $g(x) = x(4 - x^2) = 4x - x^3$ sur $[0,2]$ :
+\[ \int_0^2 (4x - x^3)\,dx = \left[ 2x^2 - \frac{x^4}{4} \right]_0^2 = \left( 2(4) - \frac{16}{4} \right) - 0 = 8 - 4 = 4. \]
+La condition de normalisation $k \times 4 = 1$ donne $\boxed{k = \dfrac{1}{4}}$.
+
+La densité est donc $f(x) = \dfrac{x(4-x^2)}{4}$ sur $[0 ; 2]$, et $0$ ailleurs.
+\end{exoresolu}
+
+\courssub{Calcul de probabilités par intégration}
+
+Une fois la densité connue, toute probabilité s'obtient par intégration : c'est l'aire sous la courbe entre les bornes.
+
+\begin{aretenir}[Formule fondamentale]
+Pour une variable continue $X$ de densité $f$ :
+\[ P(a \leq X \leq b) = \int_a^b f(x)\,dx, \qquad P(X \geq a) = \int_a^{+\infty} f(x)\,dx, \qquad P(X \leq b) = \int_{-\infty}^b f(x)\,dx. \]
+Si $f$ est nulle en dehors d'un intervalle $[m ; M]$ (support borné), on restreint l'intégration à $[m ; M] \cap [a ; b]$.
+\end{aretenir}
+
+\begin{exemplebox}[{Loi uniforme sur $[0 ; 2]$}]
+Soit $X \sim \mathcal{U}[0 ; 2]$, de densité $f(x) = \tfrac{1}{2}$ sur $[0 ; 2]$. Alors
+\[ P(0.5 < X < 1.5) = \int_{0.5}^{1.5} \frac{1}{2}\,dx = \frac{1}{2}(1.5 - 0.5) = 0.5. \]
+C'est exactement l'aire du rectangle hachuré sur la première figure.
+\end{exemplebox}
+
+\begin{exoresolu}[Temps d'attente d'un taxi à Douala]
+Le temps d'attente $X$ (en minutes) d'un taxi est modélisé par une loi exponentielle de paramètre $\lambda = 0.2$ : $f(x) = 0.2\,e^{-0.2x}$ pour $x \geq 0$.
+
+Calculer la probabilité qu'un passager attende entre $5$ et $10$ minutes, puis plus de $15$ minutes.
+\tcblower
+\textbf{Solution.}
+\begin{align*}
+P(5 \leq X \leq 10) &= \int_5^{10} 0.2\,e^{-0.2x}\,dx = \left[ -e^{-0.2x} \right]_5^{10} \\
+&= -e^{-2} + e^{-1} = e^{-1} - e^{-2} \approx 0.3679 - 0.1353 \approx 0.233.
+\end{align*}
+Pour l'attente supérieure à $15$ minutes :
+\[ P(X \geq 15) = \int_{15}^{+\infty} 0.2\,e^{-0.2x}\,dx = \left[ -e^{-0.2x} \right]_{15}^{+\infty} = 0 - (-e^{-3}) = e^{-3} \approx 0.0498. \]
+Il y a donc environ $23.3\%$ de chances d'attendre entre $5$ et $10$ minutes, et seulement $5\%$ de chances d'attendre plus d'un quart d'heure.
+\end{exoresolu}
+
+\begin{attention}[Erreurs fréquentes]
+\begin{itemize}
+\item \textbf{Oublier le domaine :} si $f$ est définie sur $[0 ; 2]$ seulement, alors $P(X \leq 5) = 1$ (et non $\int_0^5 f$ qui n'a pas de sens au-delà de $2$).
+\item \textbf{Intégrer sur les mauvaises bornes :} $P(X \geq a)$ s'intègre de $a$ à $+\infty$, pas de $0$ à $a$.
+\item \textbf{Confondre densité et probabilité :} $f(x)$ peut valoir $2$ ou $10$ ; seule l'aire totale est contrainte à $1$.
+\item \textbf{Croire que $P(X = a) > 0$ :} pour toute variable continue, $P(X = a) = 0$.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Pourquoi « densité » ?]
+Le vocabulaire vient de la physique : comme la masse d'une tige non homogène est l'intégrale de sa densité linéique, la probabilité d'un intervalle est l'intégrale de la densité de probabilité. La probabilité totale, comme la masse totale, vaut $1$. Les lois exponentielles sont utilisées chaque jour par les ingénieurs télécoms camerounais pour modéliser les durées entre appels dans un réseau !
+\end{savaistu}
+
+\begin{exercice}[À vous de jouer]
+Soit $f(x) = \begin{cases} \dfrac{k}{x^2} & \text{si } x \geq 1, \\ 0 & \text{sinon.} \end{cases}$
+\begin{enumerate}
+\item Déterminer $k$ pour que $f$ soit une densité de probabilité.
+\item Calculer $P(1 \leq X \leq 3)$ et $P(X \geq 2)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercice 1]
+\begin{enumerate}
+\item $\displaystyle\int_1^{+\infty} \frac{k}{x^2}\,dx = k\left[ -\frac{1}{x} \right]_1^{+\infty} = k(0 + 1) = k$. La normalisation impose $k = 1$.
+\item $P(1 \leq X \leq 3) = \displaystyle\int_1^3 \frac{dx}{x^2} = \left[-\frac{1}{x}\right]_1^3 = 1 - \frac{1}{3} = \frac{2}{3}$ ; \quad $P(X \geq 2) = \displaystyle\int_2^{+\infty} \frac{dx}{x^2} = \frac{1}{2}$.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[L'essentiel de la section]
+\begin{itemize}
+\item Une variable aléatoire continue est décrite par une \cle{densité} $f \geq 0$ dont l'intégrale totale vaut $1$.
+\item Les probabilités sont des \cle{aires} : $P(a \leq X \leq b) = \displaystyle\int_a^b f(x)\,dx$, et $P(X = c) = 0$.
+\item La constante de normalisation $k$ s'obtient en résolvant $k\displaystyle\int g(x)\,dx = 1$.
+\item Lois de référence : uniforme ($f$ constante), exponentielle ($f(x) = \lambda e^{-\lambda x}$, $x \geq 0$), triangulaire.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Espérance, variance et mode}
+
+Dans la section précédente, nous avons appris qu'une variable aléatoire continue $X$ est complètement décrite par sa \cle{fonction de densité de probabilité} (PDF) $f$ : les probabilités sont des \emph{aires} sous la courbe, $\Pr(a\le X\le b)=\displaystyle\int_a^b f(x)\,dx$, et l'aire totale vaut $1$. Mais une courbe entière représente beaucoup d'information. En pratique, on cherche souvent quelques nombres qui \emph{résument} la distribution : où est-elle centrée ? Quelle est sa dispersion ? Où se situe le pic ? Ces trois questions mènent à l'\cle{espérance}, à la \cle{variance} et au \cle{mode} de $X$.
+
+\courssub{L'espérance $E(X)$}
+
+\textbf{Du cas discret au cas continu.}\par
+Pour une variable aléatoire discrète prenant les valeurs $x_1,x_2,\dots$ avec les probabilités $p_1,p_2,\dots$, l'espérance est la moyenne pondérée
+\[ E(X)=\sum_i x_i\,p_i . \]
+Pour une variable continue, la probabilité de tomber dans un minuscule intervalle $[x,x+dx]$ est approximativement $f(x)\,dx$. En remplaçant la somme par une intégrale (l'analogue continu de la sommation), on obtient la définition naturelle.
+
+\begin{definition}[Espérance d'une variable aléatoire continue]
+Soit $X$ une variable aléatoire continue de fonction de densité $f$ définie sur son support $S$. L'\cle{espérance} (ou \cle{moyenne}) de $X$ est
+\[ E(X)=\mu=\int_{S} x\,f(x)\,dx , \]
+pourvu que l'intégrale converge. Si le support est $\mathbb{R}$ tout entier, $E(X)=\displaystyle\int_{-\infty}^{+\infty} x f(x)\,dx$.
+\end{definition}
+
+\textbf{Interprétation physique : le centre de gravité.}\par
+Imaginez la région sous la courbe de densité découpée dans une plaque mince d'épaisseur uniforme. Comme l'aire totale est $1$, la plaque a une masse $1$. L'espérance $\mu$ est exactement l'abscisse du \cle{centre de gravité} de cette plaque : si vous placez un couteau sous la droite $x=\mu$, la plaque reste en équilibre. Une densité symétrique est donc centrée sur son axe de symétrie — un raccourci très utile.
+
+\begin{propriete}[Linéarité de l'espérance]
+Pour toutes constantes $a,b\in\mathbb{R}$ et toutes variables aléatoires continues $X,Y$ :
+\[ E(aX+b)=aE(X)+b, \qquad E(X+Y)=E(X)+E(Y). \]
+\end{propriete}
+
+\textbf{Justification.} Par linéarité de l'intégrale,
+\[ E(aX+b)=\int_S (ax+b)f(x)\,dx = a\int_S x f(x)\,dx + b\int_S f(x)\,dx = aE(X)+b, \]
+puisque $\int_S f(x)\,dx=1$. $\blacksquare$
+
+\begin{exemplebox}[Moyenne d'une loi uniforme]
+Soit $X\sim U(a,b)$, donc $f(x)=\dfrac{1}{b-a}$ pour $a\le x\le b$. Alors
+\[ E(X)=\int_a^b \frac{x}{b-a}\,dx=\frac{1}{b-a}\left[\frac{x^2}{2}\right]_a^b=\frac{b^2-a^2}{2(b-a)}=\frac{a+b}{2}. \]
+La moyenne est le milieu du support — exactement ce que la symétrie prévoit.
+\end{exemplebox}
+
+\begin{exemplebox}[Moyenne d'une loi exponentielle]
+Soit $X$ de densité $f(x)=\lambda e^{-\lambda x}$ pour $x\ge 0$ ($\lambda>0$). En intégrant par parties avec $u=x$, $dv=\lambda e^{-\lambda x}dx$ :
+\[ E(X)=\int_0^{+\infty} x\lambda e^{-\lambda x}\,dx=\Big[-x e^{-\lambda x}\Big]_0^{+\infty}+\int_0^{+\infty} e^{-\lambda x}\,dx=0+\frac{1}{\lambda}=\frac{1}{\lambda}. \]
+Ainsi, si un composant tombe en panne avec un taux $\lambda=0,5$ par an, sa durée de vie moyenne est $1/0,5=2$ ans.
+\end{exemplebox}
+
+\courssub{La variance $\mathrm{Var}(X)$}
+
+\textbf{Pourquoi la moyenne ne suffit pas.}\par
+Deux distributions de temps d'attente peuvent avoir toutes deux une moyenne de $10$ minutes, l'une étant concentrée entre $9$ et $11$ minutes, l'autre s'étalant de $0$ à $40$ minutes. Il nous faut une mesure de la \cle{dispersion} autour de la moyenne. Faire la moyenne de l'écart $X-\mu$ est inutile car les écarts positifs et négatifs s'annulent : $E(X-\mu)=E(X)-\mu=0$. Faire la moyenne de l'\emph{écart au carré} résout le problème.
+
+\begin{definition}[Variance et écart type]
+La \cle{variance} d'une variable aléatoire continue $X$ de moyenne $\mu$ est
+\[ \mathrm{Var}(X)=E\!\left[(X-\mu)^2\right]=\int_S (x-\mu)^2 f(x)\,dx . \]
+L'\cle{écart type} est $\sigma=\sqrt{\mathrm{Var}(X)}$ ; il a la même unité que $X$.
+\end{definition}
+
+\begin{propriete}[Formule de calcul de la variance]
+\[ \mathrm{Var}(X)=E(X^2)-\big[E(X)\big]^2=E(X^2)-\mu^2, \qquad\text{où } E(X^2)=\int_S x^2 f(x)\,dx . \]
+\emph{La démonstration est exigible à l'examen et très instructive.}
+\end{propriete}
+
+\textbf{Preuve.} On développe le carré et on utilise la linéarité de l'espérance :
+\begin{align*}
+\mathrm{Var}(X)&=E\!\left[(X-\mu)^2\right]=E\!\left[X^2-2\mu X+\mu^2\right]\\
+&=E(X^2)-2\mu E(X)+\mu^2 = E(X^2)-2\mu^2+\mu^2 = E(X^2)-\mu^2. \quad\blacksquare
+\end{align*}
+
+\begin{attention}[Une erreur très fréquente]
+$E(X^2)$ n'est \textbf{pas} $\big[E(X)\big]^2$. Comme $\mathrm{Var}(X)\ge 0$, on a toujours $E(X^2)\ge \mu^2$, avec égalité seulement pour une variable constante. Calculez toujours $E(X^2)$ par sa propre intégrale $\int x^2 f(x)\,dx$.
+\end{attention}
+
+\begin{propriete}[Effet d'une transformation affine sur la variance]
+Pour des constantes $a,b\in\mathbb{R}$ :
+\[ \mathrm{Var}(aX+b)=a^2\,\mathrm{Var}(X). \]
+L'ajout d'une constante $b$ décale la distribution sans changer sa dispersion ; la multiplication par $a$ multiplie la variance par $a^2$ (et l'écart type par $|a|$).
+\end{propriete}
+
+\textbf{Preuve.} La moyenne de $aX+b$ est $a\mu+b$, donc
+\[ \mathrm{Var}(aX+b)=E\!\left[\big((aX+b)-(a\mu+b)\big)^2\right]=E\!\left[a^2(X-\mu)^2\right]=a^2\mathrm{Var}(X). \quad\blacksquare \]
+
+\begin{exoresolu}[Variance de la loi uniforme]
+Soit $X\sim U(a,b)$. Montrer que $\mathrm{Var}(X)=\dfrac{(b-a)^2}{12}$.
+\tcblower
+On sait que $\mu=\dfrac{a+b}{2}$. On calcule $E(X^2)$ :
+\[ E(X^2)=\int_a^b \frac{x^2}{b-a}\,dx=\frac{b^3-a^3}{3(b-a)}=\frac{a^2+ab+b^2}{3}. \]
+Alors
+\begin{align*}
+\mathrm{Var}(X)&=\frac{a^2+ab+b^2}{3}-\frac{(a+b)^2}{4}=\frac{4(a^2+ab+b^2)-3(a^2+2ab+b^2)}{12}\\
+&=\frac{a^2-2ab+b^2}{12}=\frac{(b-a)^2}{12}. \quad\blacksquare
+\end{align*}
+Vérification numérique : pour $U(0,12)$, $\mathrm{Var}(X)=12$, $\sigma=2\sqrt{3}\approx 3,46$.
+\end{exoresolu}
+
+\begin{exoresolu}[Moyenne et variance d'une loi exponentielle]
+Soit $f(x)=\lambda e^{-\lambda x}$ pour $x\ge 0$. Trouver $\mathrm{Var}(X)$.
+\tcblower
+On a déjà $\mu=1/\lambda$. Pour $E(X^2)$, on intègre par parties deux fois (ou on utilise la formule de récurrence $I_n=\frac{n}{\lambda}I_{n-1}$ avec $I_n=\int_0^{+\infty}x^n\lambda e^{-\lambda x}dx$) :
+\[ E(X^2)=\int_0^{+\infty} x^2\lambda e^{-\lambda x}\,dx=\Big[-x^2e^{-\lambda x}\Big]_0^{+\infty}+\frac{2}{\lambda}\int_0^{+\infty} x\lambda e^{-\lambda x}\,dx=0+\frac{2}{\lambda}\cdot\frac{1}{\lambda}=\frac{2}{\lambda^2}. \]
+Donc
+\[ \mathrm{Var}(X)=\frac{2}{\lambda^2}-\frac{1}{\lambda^2}=\frac{1}{\lambda^2}, \qquad \sigma=\frac{1}{\lambda}. \]
+Remarque remarquable : pour la loi exponentielle, l'écart type \emph{égale} la moyenne.
+\end{exoresolu}
+
+\courssub{Le mode}
+
+\begin{definition}[Mode d'une variable aléatoire continue]
+Le \cle{mode} de $X$ est la valeur de $x$ en laquelle la densité $f$ atteint son \textbf{maximum}. C'est la « région la plus probable » des valeurs — le sommet de la courbe de densité.
+\end{definition}
+
+\begin{attention}[Le mode n'est pas nécessairement unique]
+Pour une distribution \textbf{uniforme} $U(a,b)$, la densité est constante sur $[a,b]$, donc \emph{chaque} point de $[a,b]$ maximise $f$ : le mode n'est pas unique. Plus généralement, une distribution peut avoir plusieurs modes (bimodale, \dots). Attention aussi : le mode n'est \textbf{pas} la valeur de $f$ au sommet — c'est la \emph{valeur de $x$} où le sommet se produit.
+\end{attention}
+
+\begin{methode}[Recherche du mode]
+\begin{enumerate}
+\item Identifier le support $S$ de $f$.
+\item Calculer $f'(x)$ et résoudre $f'(x)=0$ à l'intérieur de $S$.
+\item Étudier la nature de chaque point stationnaire (signe de $f'$ ou dérivée seconde) et \textbf{comparer avec les valeurs de $f$ aux bornes} de $S$ : le maximum peut se trouver en un bord (ex. loi exponentielle, maximale en $x=0$).
+\item Conclure : le mode est la valeur de $x$ donnant la plus grande valeur de $f$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Mode, moyenne et variance d'une loi triangulaire]
+Un commerçant de Bamenda modélise la demande journalière $X$ (en sacs de gari) par
+\[ f(x)=\begin{cases} \dfrac{x}{16} & 0\le x\le 4,\\[6pt] \dfrac{8-x}{16} & 4\le x\le 8,\\[6pt] 0 & \text{sinon.}\end{cases} \]
+Trouver le mode, la moyenne et la variance de $X$.
+\tcblower
+\textbf{Vérification que $f$ est une densité.}
+\[ \int_0^4 \frac{x}{16}\,dx + \int_4^8 \frac{8-x}{16}\,dx = \left[\frac{x^2}{32}\right]_0^4 + \left[\frac{8x-x^2/2}{16}\right]_4^8 = \frac{16}{32} + \frac{(64-32)-(32-8)}{16} = \frac12 + \frac12 = 1. \]
+
+\textbf{Mode.} Sur $[0,4]$, $f'(x)=\tfrac1{16}>0$ (croissante) ; sur $[4,8]$, $f'(x)=-\tfrac1{16}<0$ (décroissante). Le maximum est à la jonction : \textbf{mode $=4$}, avec $f(4)=\tfrac14$.
+
+\textbf{Moyenne.} La densité est symétrique par rapport à $x=4$, donc $\mu=4$. Vérification par intégration :
+\[ E(X)=\int_0^4 \frac{x^2}{16}\,dx+\int_4^8 \frac{x(8-x)}{16}\,dx = \frac{64}{48} + \frac{1}{16}\left[4x^2-\frac{x^3}{3}\right]_4^8 = \frac43 + \frac{1}{16}\left(\frac{256}{3}-\frac{128}{3}\right) = \frac43 + \frac{128}{48} = \frac43 + \frac83 = 4. \]
+
+\textbf{Variance.}
+\[ E(X^2)=\int_0^4 \frac{x^3}{16}\,dx+\int_4^8 \frac{x^2(8-x)}{16}\,dx = \frac{256}{64} + \frac{1}{16}\left[\frac{8x^3}{3}-\frac{x^4}{4}\right]_4^8 = 4 + \frac{1}{16}\left(\frac{4096}{3}-1024 - \frac{512}{3}+64\right) \]
+\[ = 4 + \frac{1}{16}\left(\frac{3584}{3}-960\right) = 4 + \frac{1}{16}\cdot\frac{704}{3} = 4 + \frac{44}{3} = \frac{56}{3}. \]
+\[ \mathrm{Var}(X)=\frac{56}{3}-16=\frac{8}{3}, \qquad \sigma=\sqrt{\tfrac83}\approx 1,63 \text{ sacs.} \]
+\end{exoresolu}
+
+\courssub{Interprétation graphique des trois mesures}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\draw[->,thick] (-0.4,0) -- (7.4,0) node[below left]{$x$};
+\draw[->,thick] (0,-0.3) -- (0,2.2) node[below left]{$f(x)$};
+\fill[popblueL] (1,0) rectangle (6,1.2);
+\draw[very thick,popblue] (0,0) -- (1,0) -- (1,1.2) -- (6,1.2) -- (6,0) -- (7,0);
+\draw[dashed,very thick,poporange] (3.5,0) -- (3.5,1.55) node[above,black]{$E(X)=\dfrac{a+b}{2}$};
+\node[below,popdark] at (1,0) {$a$};
+\node[below,popdark] at (6,0) {$b$};
+\node[below,poporange] at (3.5,0) {$\mu$};
+\node[align=center,text width=4.2cm,popdark] at (3.5,-1.3) {Loi uniforme : la moyenne est le milieu ;\\ \emph{tout} point de $[a,b]$ est un mode.};
+\end{tikzpicture}
+\end{center}
+\legende{PDF de la loi uniforme $U(a,b)$ : l'espérance (trait pointillé) est le centre de gravité ; le mode n'est pas unique.}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.1]
+\draw[->,thick] (-0.4,0) -- (7,0) node[below left]{$x$};
+\draw[->,thick] (0,-0.3) -- (0,2.6) node[below left]{$f(x)$};
+\draw[very thick,popblue,domain=0:6.6,samples=80] plot (\x,{exp(-\x)});
+\fill[popink] (0,1) circle (2pt) node[above right,black]{mode en $x=0$};
+\draw[dashed,very thick,poporange] (1,0) -- (1,0.37);
+\draw[->,thick,poporange] (2.6,1.5) -- (1.15,0.5);
+\node[poporange,align=center,text width=3.4cm] at (3.4,1.7) {$E(X)=\dfrac{1}{\lambda}$\\ (point d'équilibre)};
+\node[below,popdark] at (1,0) {$\tfrac{1}{\lambda}$};
+\end{tikzpicture}
+\end{center}
+\legende{PDF de la loi exponentielle $f(x)=\lambda e^{-\lambda x}$ (ici $\lambda=1$) : mode à la borne $x=0$, moyenne en $x=1/\lambda$.}
+\end{popfigure}
+
+\begin{savaistu}[Origine du terme « espérance »]
+Le concept d'espérance mathématique est né au XVII\textsuperscript{e} siècle avec le « problème des partis » : deux joueurs doivent interrompre une partie ; comment partager la mise équitablement ? Christiaan Huygens (1657) a formalisé l'idée de « valeur attendue » comme somme des gains pondérés par leurs probabilités. En français, on a gardé le mot « espérance » (au sens d'« espoir mathématique »), tandis que l'anglais utilise \emph{expectation}. Au Cameroun, les compagnies d'assurance utilisent l'espérance pour calculer les primes : la prime « pure » est l'espérance du sinistre à indemniser.
+\end{savaistu}
+
+\begin{experience}[Simulation de la loi des grands nombres]
+Si vous avez accès à un tableur (Excel, LibreOffice Calc) ou à Python :
+\begin{enumerate}
+\item Générez $N=1000$ nombres aléatoires uniformes sur $[0,1]$ (\texttt{ALEA()} ou \texttt{random.random()}).
+\item Calculez la moyenne empirique $\bar{x}_N = \frac{1}{N}\sum x_i$.
+\item Augmentez $N$ progressivement (10, 100, 1000, 10000) et observez $\bar{x}_N$ converger vers la moyenne théorique $\mu=0,5$.
+\item Répétez avec une loi exponentielle (transformez $U$ par $X=-\frac{1}{\lambda}\ln U$) et vérifiez la convergence vers $1/\lambda$.
+\end{enumerate}
+Cette expérience illustre le théorème de la loi des grands nombres : la moyenne d'échantillon converge vers l'espérance.
+\end{experience}
+
+\begin{aretenir}[Formules clés de cette section]
+\begin{itemize}
+\item Espérance : $E(X)=\displaystyle\int_S x f(x)\,dx$ — centre de gravité de la courbe de densité.
+\item Variance : $\mathrm{Var}(X)=E(X^2)-\mu^2$ avec $E(X^2)=\displaystyle\int_S x^2 f(x)\,dx$ ; $\sigma=\sqrt{\mathrm{Var}(X)}$.
+\item Linéarité : $E(aX+b)=aE(X)+b$ ; \quad $\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)$.
+\item Mode : valeur(s) de $x$ maximisant $f$ ; résoudre $f'(x)=0$ \emph{et} vérifier les bornes.
+\item Résultats standards :
+      \begin{itemize}
+      \item $U(a,b)$ : $\mu=\tfrac{a+b}{2}$, $\mathrm{Var}=\tfrac{(b-a)^2}{12}$, mode non unique.
+      \item Exponentielle($\lambda$) : $\mu=\sigma=\tfrac{1}{\lambda}$, $\mathrm{Var}=\tfrac{1}{\lambda^2}$, mode $=0$.
+      \end{itemize}
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Entraînement]
+\begin{enumerate}
+\item Soit $f(x)=\dfrac{3x^2}{8}$ pour $0\le x\le 2$ (et $0$ ailleurs). Calculer $E(X)$, $\mathrm{Var}(X)$ et le mode de $X$.
+\item Pour $X\sim U(2,10)$, donner $E(X)$ et $\mathrm{Var}(X)$ sans intégrer, puis trouver $E(3X-1)$ et $\mathrm{Var}(3X-1)$.
+\item Une durée de vie $T$ suit une loi exponentielle de moyenne $4$ ans. Donner $\lambda$, $\mathrm{Var}(T)$ et le mode.
+\item \textbf{Approfondissement.} Soit $X$ de densité $f(x)=kx(4-x)$ sur $[0,4]$.
+      \begin{enumerate}
+      \item Déterminer $k$.
+      \item Calculer $E(X)$ et $\mathrm{Var}(X)$.
+      \item Trouver le mode de $X$.
+      \end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercice 1]
+\textbf{1.} $E(X)=\displaystyle\int_0^2 \frac{3x^3}{8}dx=\frac{3}{8}\cdot\frac{16}{4}=\frac{3}{2}$.
+$E(X^2)=\displaystyle\int_0^2\frac{3x^4}{8}dx=\frac{3}{8}\cdot\frac{32}{5}=\frac{12}{5}$.
+$\mathrm{Var}(X)=\frac{12}{5}-\frac{9}{4}=\frac{48-45}{20}=\frac{3}{20}$.
+Comme $f$ est strictement croissante sur $[0,2]$, le mode est à la borne : $x=2$.
+
+\textbf{2.} $\mu=\frac{2+10}{2}=6$, $\mathrm{Var}(X)=\frac{64}{12}=\frac{16}{3}$.
+$E(3X-1)=3(6)-1=17$ ; $\mathrm{Var}(3X-1)=9\cdot\frac{16}{3}=48$.
+
+\textbf{3.} $\mu=\frac{1}{\lambda}=4\Rightarrow\lambda=\frac14$ ; $\mathrm{Var}(T)=\frac{1}{\lambda^2}=16\ \mathrm{ans}^2$ ; mode $=0$.
+
+\textbf{4.} \textbf{a)} $\int_0^4 kx(4-x)dx = k\left[2x^2-\frac{x^3}{3}\right]_0^4 = k\left(32-\frac{64}{3}\right) = k\frac{32}{3} = 1 \Rightarrow k=\frac{3}{32}$.
+\textbf{b)} $E(X)=\frac{3}{32}\int_0^4 x^2(4-x)dx = \frac{3}{32}\left[\frac{4x^3}{3}-\frac{x^4}{4}\right]_0^4 = \frac{3}{32}\left(\frac{256}{3}-64\right) = \frac{3}{32}\cdot\frac{64}{3}=2$.
+$E(X^2)=\frac{3}{32}\int_0^4 x^3(4-x)dx = \frac{3}{32}\left[x^4-\frac{x^5}{5}\right]_0^4 = \frac{3}{32}\left(256-\frac{1024}{5}\right) = \frac{3}{32}\cdot\frac{256}{5}=\frac{24}{5}=4,8$.
+$\mathrm{Var}(X)=4,8-4=0,8=\frac{4}{5}$.
+\textbf{c)} $f(x)=\frac{3}{32}(4x-x^2)$, $f'(x)=\frac{3}{32}(4-2x)=0 \Rightarrow x=2$. $f''(2)<0$, c'est un maximum. Mode $=2$ (au centre par symétrie).
+\end{corrige}
+
+\coursec{Fonction de répartition (CDF)}
+
+In the previous section we learned how to summarise a continuous distribution by its expectation, variance and mode. These are single numbers that capture the centre, spread and peak of the distribution. However, there are many situations where we need the probability that the random variable falls below a certain threshold, or between two values. For example, an engineer designing a bridge in Douala might need the probability that the maximum daily load exceeds a safety limit, or a quality control manager at a cocoa processing plant in Kribi might want the probability that the moisture content of a batch lies between 6\% and 8\%. The tool that answers all such questions in one unified way is the \textbf{cumulative distribution function} (CDF).
+
+\courssub{Definition and Intuition}
+
+For a discrete random variable, the cumulative distribution function is a step function that jumps at each possible value. For a continuous random variable, the CDF is a smooth (or at least continuous) curve obtained by accumulating the area under the probability density function (PDF) from left to right.
+
+\begin{definition}[Cumulative Distribution Function (CDF)]
+Let \(X\) be a continuous random variable with probability density function \(f(x)\). The \textbf{cumulative distribution function} (CDF), denoted by \(F(x)\), is defined for every real number \(x\) by
+\[
+F(x) = P(X \le x) = \int_{-\infty}^{x} f(t)\, dt.
+\]
+\end{definition}
+
+\begin{itemize}
+\item The variable of integration is a dummy variable; we use \(t\) to avoid confusion with the upper limit \(x\).
+\item \(F(x)\) represents the total area under the curve \(y = f(t)\) from \(-\infty\) up to \(x\).
+\item Because \(f(t) \ge 0\) everywhere, \(F(x)\) is a \textbf{non-decreasing} function of \(x\).
+\item The CDF is defined for \textbf{all} real \(x\), not only on the support of \(X\).
+\end{itemize}
+
+\begin{exemplebox}[CDF of a Simple Triangular Distribution]
+Let \(X\) have the triangular PDF
+\[
+f(x) = \begin{cases}
+2x, & 0 \le x \le 1,\\
+0, & \text{otherwise}.
+\end{cases}
+\]
+Find \(F(x)\) for all real \(x\).
+
+\textbf{Solution:}
+We consider three regions.
+\begin{itemize}
+\item \textbf{For \(x < 0\):} \(f(t)=0\) on \((-\infty, x]\), so \(F(x)=0\).
+\item \textbf{For \(0 \le x \le 1\):}
+\[
+F(x) = \int_{-\infty}^{x} f(t)\, dt = \int_{0}^{x} 2t\, dt = \bigl[t^2\bigr]_{0}^{x} = x^2.
+\]
+\item \textbf{For \(x > 1\):} The total area under the PDF is 1, so \(F(x)=1\).
+\end{itemize}
+Hence
+\[
+F(x) = \begin{cases}
+0, & x < 0,\\
+x^2, & 0 \le x \le 1,\\
+1, & x > 1.
+\end{cases}
+\]
+\end{exemplebox}
+
+\courssub{Properties of the CDF}
+
+The CDF of any continuous random variable satisfies the following fundamental properties.
+
+\begin{propriete}[Properties of the CDF]
+Let \(X\) be a continuous random variable with CDF \(F(x)\). Then:
+\begin{enumerate}
+\item \textbf{Limits:} \(\displaystyle \lim_{x\to -\infty} F(x) = 0\) and \(\displaystyle \lim_{x\to +\infty} F(x) = 1\).
+\item \textbf{Monotonicity:} \(F(x)\) is non-decreasing: if \(x_1 < x_2\) then \(F(x_1) \le F(x_2)\).
+\item \textbf{Continuity:} \(F(x)\) is continuous for all real \(x\) (in fact, it is absolutely continuous).
+\item \textbf{Range:} \(0 \le F(x) \le 1\) for all \(x\).
+\item \textbf{Probability of an interval:} For any \(a < b\),
+\[
+P(a < X \le b) = F(b) - F(a).
+\]
+Because \(P(X = a) = 0\) for a continuous variable, this also equals \(P(a \le X \le b) = P(a \le X < b) = P(a < X < b)\).
+\end{enumerate}
+\end{propriete}
+
+\begin{attention}[Common Mistake: Confusing PDF and CDF]
+Never write \(P(X = x) = f(x)\). For a continuous random variable, the probability of taking any exact value is \textbf{zero}: \(P(X = x) = 0\). The PDF \(f(x)\) is a \textbf{density}, not a probability. The CDF \(F(x)\) gives actual probabilities: \(F(x) = P(X \le x)\).
+\end{attention}
+
+\courssub{Relationship between PDF and CDF}
+
+The PDF and CDF are two sides of the same coin. The Fundamental Theorem of Calculus gives the precise link.
+
+\begin{propriete}[Fundamental Relation: \(f(x) = F'(x)\)]
+If \(F\) is differentiable at \(x\), then
+\[
+f(x) = \frac{d}{dx} F(x) = F'(x).
+\]
+Conversely,
+\[
+F(x) = \int_{-\infty}^{x} f(t)\, dt.
+\]
+This holds at every point where \(f\) is continuous. At points where \(f\) has a jump discontinuity (e.g. at the boundaries of a uniform distribution), \(F\) is still continuous but not differentiable; the relation \(f(x)=F'(x)\) holds \textbf{almost everywhere}.
+\end{propriete}
+
+\begin{methode}[Moving between PDF and CDF]
+\begin{enumerate}
+\item \textbf{Given \(f(x)\), find \(F(x)\):} Integrate \(f(t)\) from the lower bound of the support up to \(x\). Treat the cases \(x\) below the support, inside the support, and above the support separately. Check that \(F(x) \to 0\) as \(x\to -\infty\) and \(F(x) \to 1\) as \(x\to +\infty\).
+\item \textbf{Given \(F(x)\), find \(f(x)\):} Differentiate \(F(x)\) on each interval where it is differentiable. The support of \(f\) is where \(F\) is strictly increasing.
+\item \textbf{Check:} The area under \(f\) must be 1, and \(F\) must be continuous, non-decreasing, with limits 0 and 1.
+\end{enumerate}
+\end{methode}
+
+\courssub{Computing the CDF for Common Distributions}
+
+We now derive the CDF for the three standard continuous distributions in the syllabus.
+
+\begin{exemplebox}[CDF of the Uniform Distribution]
+Let \(X \sim U(a,b)\) with PDF \(f(x) = \frac{1}{b-a}\) for \(a \le x \le b\), zero elsewhere.
+\[
+F(x) = \begin{cases}
+0, & x < a,\\[4pt]
+\dfrac{x-a}{b-a}, & a \le x \le b,\\[8pt]
+1, & x > b.
+\end{cases}
+\]
+\textbf{Derivation:} For \(x < a\), \(F(x)=0\). For \(a \le x \le b\),
+\[
+F(x) = \int_{a}^{x} \frac{1}{b-a}\, dt = \frac{x-a}{b-a}.
+\]
+For \(x > b\), \(F(x)=1\). The graph is a straight line segment from \((a,0)\) to \((b,1)\).
+\end{exemplebox}
+
+\begin{exemplebox}[CDF of the Exponential Distribution]
+Let \(X \sim \text{Exp}(\lambda)\) with PDF \(f(x) = \lambda e^{-\lambda x}\) for \(x \ge 0\), zero elsewhere (\(\lambda > 0\)).
+\[
+F(x) = \begin{cases}
+0, & x < 0,\\[4pt]
+1 - e^{-\lambda x}, & x \ge 0.
+\end{cases}
+\]
+\textbf{Derivation:} For \(x < 0\), \(F(x)=0\). For \(x \ge 0\),
+\[
+F(x) = \int_{0}^{x} \lambda e^{-\lambda t}\, dt = \bigl[-e^{-\lambda t}\bigr]_{0}^{x} = 1 - e^{-\lambda x}.
+\]
+As \(x\to\infty\), \(e^{-\lambda x}\to 0\) so \(F(x)\to 1\).
+\end{exemplebox}
+
+\begin{exemplebox}[CDF of a Triangular Distribution]
+Let \(X\) have the symmetric triangular PDF on \([0,2]\):
+\[
+f(x) = \begin{cases}
+x, & 0 \le x \le 1,\\
+2-x, & 1 < x \le 2,\\
+0, & \text{otherwise}.
+\end{cases}
+\]
+Find \(F(x)\).
+
+\textbf{Solution:}
+\begin{itemize}
+\item \(x < 0\): \(F(x)=0\).
+\item \(0 \le x \le 1\): \(F(x) = \int_{0}^{x} t\, dt = \frac{x^2}{2}\).
+\item \(1 < x \le 2\):
+\[
+F(x) = \int_{0}^{1} t\, dt + \int_{1}^{x} (2-t)\, dt = \frac{1}{2} + \bigl[2t - \tfrac{t^2}{2}\bigr]_{1}^{x}
+= \frac{1}{2} + \left(2x - \frac{x^2}{2}\right) - \left(2 - \frac{1}{2}\right)
+= 2x - \frac{x^2}{2} - 1.
+\]
+\item \(x > 2\): \(F(x)=1\).
+\end{itemize}
+Thus
+\[
+F(x) = \begin{cases}
+0, & x < 0,\\[4pt]
+\frac{x^2}{2}, & 0 \le x \le 1,\\[4pt]
+2x - \frac{x^2}{2} - 1, & 1 < x \le 2,\\[4pt]
+1, & x > 2.
+\end{cases}
+\]
+\end{exemplebox}
+
+\courssub{Using the CDF to Calculate Probabilities}
+
+The main practical use of the CDF is to compute probabilities of intervals without integrating every time.
+
+\begin{propriete}[Probability via CDF]
+For any continuous random variable \(X\) with CDF \(F\), and any \(a < b\),
+\[
+P(a < X \le b) = F(b) - F(a).
+\]
+In particular,
+\begin{itemize}
+\item \(P(X \le x) = F(x)\),
+\item \(P(X > x) = 1 - F(x)\),
+\item \(P(a < X < b) = F(b) - F(a)\) (since \(P(X=a)=P(X=b)=0\)).
+\end{itemize}
+\end{propriete}
+
+\begin{exoresolu}[Using the Exponential CDF]
+The lifetime \(X\) (in years) of a certain brand of solar panel installed in a village near Buea follows an exponential distribution with mean 5 years. Find:
+\begin{enumerate}
+\item The probability that a panel lasts more than 7 years.
+\item The probability that it lasts between 3 and 8 years.
+\item The median lifetime.
+\end{enumerate}
+
+\textbf{Solution:}
+Mean \(= 1/\lambda = 5 \Rightarrow \lambda = 0.2\). The CDF is \(F(x) = 1 - e^{-0.2x}\) for \(x \ge 0\).
+
+\begin{enumerate}
+\item \(P(X > 7) = 1 - F(7) = e^{-0.2 \times 7} = e^{-1.4} \approx 0.2466\).
+\item \(P(3 < X < 8) = F(8) - F(3) = (1 - e^{-1.6}) - (1 - e^{-0.6}) = e^{-0.6} - e^{-1.6} \approx 0.5488 - 0.2019 = 0.3469\).
+\item The median \(m\) satisfies \(F(m) = 0.5 \Rightarrow 1 - e^{-0.2m} = 0.5 \Rightarrow e^{-0.2m} = 0.5 \Rightarrow -0.2m = \ln 0.5 \Rightarrow m = \frac{\ln 2}{0.2} = 5\ln 2 \approx 3.466\) years.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Median, Quartiles and Quantiles}
+
+The CDF allows us to find the values that split the distribution into equal probability regions. These are called \textbf{quantiles}.
+
+\begin{definition}[Quantiles, Median, Quartiles]
+Let \(X\) be a continuous random variable with CDF \(F\). For any \(p \in (0,1)\), the \textbf{\(p\)-quantile} (or \textbf{100\(p\)th percentile}) is the value \(q_p\) such that
+\[
+F(q_p) = p \quad \Longleftrightarrow \quad P(X \le q_p) = p.
+\]
+Special cases:
+\begin{itemize}
+\item The \textbf{median} is the 0.5-quantile: \(F(m) = 0.5\).
+\item The \textbf{lower quartile} \(Q_1\) is the 0.25-quantile: \(F(Q_1) = 0.25\).
+\item The \textbf{upper quartile} \(Q_3\) is the 0.75-quantile: \(F(Q_3) = 0.75\).
+\item The \textbf{interquartile range} (IQR) is \(Q_3 - Q_1\).
+\end{itemize}
+Because \(F\) is continuous and strictly increasing on the support, the quantile is unique.
+\end{definition}
+
+\begin{methode}[Finding Quantiles from the CDF]
+\begin{enumerate}
+\item Write down the expression for \(F(x)\) on the relevant interval.
+\item Set \(F(x) = p\) and solve for \(x\).
+\item Verify that the solution lies within the support of \(X\).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Median and Quartiles of the Uniform Distribution]
+Let \(X \sim U(a,b)\). Find the median, \(Q_1\), \(Q_3\) and the IQR.
+
+\textbf{Solution:}
+\(F(x) = \frac{x-a}{b-a}\) for \(a \le x \le b\).
+\begin{itemize}
+\item Median \(m\): \(\frac{m-a}{b-a} = 0.5 \Rightarrow m = a + 0.5(b-a) = \frac{a+b}{2}\).
+\item \(Q_1\): \(\frac{Q_1-a}{b-a} = 0.25 \Rightarrow Q_1 = a + 0.25(b-a)\).
+\item \(Q_3\): \(\frac{Q_3-a}{b-a} = 0.75 \Rightarrow Q_3 = a + 0.75(b-a)\).
+\item IQR \(= Q_3 - Q_1 = 0.5(b-a)\).
+\end{itemize}
+For the uniform distribution, the median is the midpoint, and the IQR is exactly half the range.
+\end{exemplebox}
+
+\begin{exemplebox}[Median and Quartiles of the Exponential Distribution]
+Let \(X \sim \text{Exp}(\lambda)\). Find the median and the IQR.
+
+\textbf{Solution:}
+\(F(x) = 1 - e^{-\lambda x}\) for \(x \ge 0\).
+\begin{itemize}
+\item Median \(m\): \(1 - e^{-\lambda m} = 0.5 \Rightarrow e^{-\lambda m} = 0.5 \Rightarrow m = \frac{\ln 2}{\lambda}\).
+\item \(Q_1\): \(1 - e^{-\lambda Q_1} = 0.25 \Rightarrow e^{-\lambda Q_1} = 0.75 \Rightarrow Q_1 = \frac{\ln(4/3)}{\lambda}\).
+\item \(Q_3\): \(1 - e^{-\lambda Q_3} = 0.75 \Rightarrow e^{-\lambda Q_3} = 0.25 \Rightarrow Q_3 = \frac{\ln 4}{\lambda}\).
+\item IQR \(= Q_3 - Q_1 = \frac{\ln 4 - \ln(4/3)}{\lambda} = \frac{\ln 3}{\lambda}\).
+\end{itemize}
+Note that for the exponential distribution, the median \(\frac{\ln 2}{\lambda}\) is less than the mean \(\frac{1}{\lambda}\), reflecting the positive skew.
+\end{exemplebox}
+
+\begin{exemplebox}[Median and Quartiles of a Triangular Distribution]
+Let \(X\) have the triangular PDF on \([0,2]\) from the earlier example:
+\(f(x) = x\) on \([0,1]\), \(f(x) = 2-x\) on \((1,2]\), with CDF
+\(F(x) = \frac{x^2}{2}\) on \([0,1]\) and \(F(x) = 2x - \frac{x^2}{2} - 1\) on \((1,2]\).
+Find the median and the quartiles.
+
+\textbf{Solution:}
+Since \(F(1) = 0.5\), the median is exactly \(m = 1\) (the mode, by symmetry).
+For \(Q_1\): we need \(F(Q_1) = 0.25\). Since \(0.25 < 0.5\), \(Q_1\) lies in \([0,1]\).
+\(\frac{Q_1^2}{2} = 0.25 \Rightarrow Q_1^2 = 0.5 \Rightarrow Q_1 = \frac{1}{\sqrt{2}} \approx 0.707\).
+For \(Q_3\): we need \(F(Q_3) = 0.75\). Since \(0.75 > 0.5\), \(Q_3\) lies in \((1,2]\).
+\(2Q_3 - \frac{Q_3^2}{2} - 1 = 0.75 \Rightarrow 4Q_3 - Q_3^2 - 2 = 1.5 \Rightarrow Q_3^2 - 4Q_3 + 3.5 = 0\).
+\(Q_3 = \frac{4 \pm \sqrt{16 - 14}}{2} = 2 \pm \frac{\sqrt{2}}{2}\). The root in \((1,2]\) is \(Q_3 = 2 - \frac{\sqrt{2}}{2} \approx 1.293\).
+IQR \(= Q_3 - Q_1 = 2 - \sqrt{2} \approx 0.586\).
+\end{exemplebox}
+
+\courssub{Graphical Interpretation}
+
+The CDF \(F(x)\) is the area under the PDF curve to the left of \(x\). Graphically, as \(x\) increases, the shaded area grows from 0 to 1. The slope of the CDF at any point is exactly the value of the PDF at that point: \(F'(x) = f(x)\). Where the PDF is high, the CDF rises steeply; where the PDF is zero, the CDF is flat. The median is the \(x\)-coordinate where the CDF curve crosses the horizontal line \(y=0.5\); quartiles correspond to \(y=0.25\) and \(y=0.75\).
+
+\begin{popfigure}
+\legende{Exponential PDF \(f(x)=0.5e^{-0.5x}\) (blue) and its CDF \(F(x)=1-e^{-0.5x}\) (orange) on the same axes. The slope of the orange curve at any \(x\) equals the height of the blue curve.}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel={},
+    xmin=0, xmax=6,
+    ymin=0, ymax=1.1,
+    xtick={0,1,2,3,4,5,6},
+    ytick={0,0.2,0.4,0.6,0.8,1.0},
+    tick label style={font=\small},
+    legend pos=north east,
+    legend style={font=\small},
+    clip=false,
+    domain=0:6,
+    samples=100,
+]
+\addplot[popblue, thick] {0.5*exp(-0.5*x)};
+\addlegendentry{$f(x)=0.5e^{-0.5x}$}
+\addplot[poporange, thick] {1-exp(-0.5*x)};
+\addlegendentry{$F(x)=1-e^{-0.5x}$}
+% Dashed lines for illustration at x=2
+\draw[popmuted, dashed] (axis cs:2,0) -- (axis cs:2,{0.5*exp(-1)});
+\draw[popmuted, dashed] (axis cs:2,0) -- (axis cs:2,{1-exp(-1)});
+\node[popmuted, font=\tiny, anchor=north] at (axis cs:2,0) {$x=2$};
+\end{axis}
+\end{tikzpicture}
+\end{popfigure}
+
+\begin{popfigure}
+\legende{CDF of the uniform distribution on \([0,2]\): \(F(x)=\frac{x}{2}\) for \(0\le x\le 2\). The points \(F(0.5)=0.25\) and \(F(1.5)=0.75\) are marked.}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel={$F(x)$},
+    xmin=-0.5, xmax=2.5,
+    ymin=-0.1, ymax=1.1,
+    xtick={0,0.5,1,1.5,2},
+    ytick={0,0.25,0.5,0.75,1},
+    tick label style={font=\small},
+    clip=false,
+    domain=-0.5:2.5,
+    samples=2,
+]
+% Flat at 0 for x<0
+\addplot[popblue, thick] coordinates {(-0.5,0) (0,0)};
+% Rising line
+\addplot[popblue, thick] coordinates {(0,0) (2,1)};
+% Flat at 1 for x>2
+\addplot[popblue, thick] coordinates {(2,1) (2.5,1)};
+% Mark points
+\addplot[only marks, mark=*, mark size=2.5, popred] coordinates {(0.5,0.25) (1.5,0.75)};
+\node[popred, font=\small, anchor=south west] at (axis cs:0.5,0.25) {$F(0.5)=0.25$};
+\node[popred, font=\small, anchor=south west] at (axis cs:1.5,0.75) {$F(1.5)=0.75$};
+% Dashed lines to axes
+\draw[popmuted, dashed] (axis cs:0.5,0) -- (axis cs:0.5,0.25) -- (axis cs:0,0.25);
+\draw[popmuted, dashed] (axis cs:1.5,0) -- (axis cs:1.5,0.75) -- (axis cs:0,0.75);
+\end{axis}
+\end{tikzpicture}
+\end{popfigure}
+
+\begin{popfigure}
+\legende{CDF of the symmetric triangular distribution on \([0,2]\). The median is at \(x=1\) where \(F=0.5\); \(Q_1\) and \(Q_3\) are symmetric about the median.}
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel={$F(x)$},
+    xmin=-0.2, xmax=2.2,
+    ymin=-0.1, ymax=1.1,
+    xtick={0,0.707,1,1.293,2},
+    xticklabels={$0$,$Q_1$,$m$,$Q_3$,$2$},
+    ytick={0,0.25,0.5,0.75,1},
+    tick label style={font=\small},
+    clip=false,
+    samples=100,
+]
+\addplot[popblue, thick, domain=0:1] {x^2/2};
+\addplot[popblue, thick, domain=1:2] {2*x - x^2/2 - 1};
+% Horizontal lines for quartiles
+\draw[popmuted, dashed] (axis cs:0,0.25) -- (axis cs:0.707,0.25);
+\draw[popmuted, dashed] (axis cs:0,0.5) -- (axis cs:1,0.5);
+\draw[popmuted, dashed] (axis cs:0,0.75) -- (axis cs:1.293,0.75);
+% Vertical lines
+\draw[popmuted, dashed] (axis cs:0.707,0) -- (axis cs:0.707,0.25);
+\draw[popmuted, dashed] (axis cs:1,0) -- (axis cs:1,0.5);
+\draw[popmuted, dashed] (axis cs:1.293,0) -- (axis cs:1.293,0.75);
+% Points
+\addplot[only marks, mark=*, mark size=2.5, popred] coordinates {(0.707,0.25) (1,0.5) (1.293,0.75)};
+\end{axis}
+\end{tikzpicture}
+\end{popfigure}
+
+\begin{savaistu}[Quantiles in Practice]
+In Cameroon's meteorological services, quantiles of rainfall distributions are used to define "normal", "below normal" and "above normal" seasons. The lower quartile (25th percentile) often marks the threshold for drought warnings, while the upper quartile (75th percentile) may trigger flood preparedness. The median rainfall is a more robust measure of "typical" rainfall than the mean, especially in regions with highly skewed distributions like the Far North.
+\end{savaistu}
+
+\begin{aretenir}[Key Points about the CDF]
+\begin{itemize}
+\item The CDF \(F(x) = P(X \le x) = \int_{-\infty}^{x} f(t)\, dt\) gives the cumulative probability up to \(x\).
+\item \(F(x)\) is continuous, non-decreasing, with \(F(-\infty)=0\) and \(F(+\infty)=1\).
+\item The PDF is the derivative of the CDF: \(f(x) = F'(x)\) wherever \(F\) is differentiable.
+\item Probabilities of intervals are obtained by subtraction: \(P(a < X \le b) = F(b) - F(a)\).
+\item For the uniform distribution on \([a,b]\): \(F(x) = \frac{x-a}{b-a}\) on \([a,b]\).
+\item For the exponential distribution with rate \(\lambda\): \(F(x) = 1 - e^{-\lambda x}\) for \(x \ge 0\).
+\item Quantiles are found by solving \(F(q_p) = p\). Median: \(p=0.5\); \(Q_1\): \(p=0.25\); \(Q_3\): \(p=0.75\).
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice Exercises]
+\begin{itemize}
+\item A random variable \(X\) has PDF \(f(x) = \frac{3}{8}x^2\) for \(0 \le x \le 2\), zero elsewhere. Find \(F(x)\) and use it to compute \(P(0.5 < X < 1.5)\).
+\item The CDF of a continuous random variable \(Y\) is given by
+\[
+F(y) = \begin{cases}
+0, & y < 0,\\
+\frac{y^2}{4}, & 0 \le y \le 2,\\
+1, & y > 2.
+\end{cases}
+\]
+Find the PDF \(f(y)\), the mode, and \(P(Y > 1)\).
+\item The time (in minutes) a student spends on a Further Mathematics problem follows an exponential distribution with mean 10 minutes. Find the probability that the student spends (a) less than 5 minutes, (b) between 5 and 15 minutes, (c) more than 20 minutes. Find also the median time and the interquartile range.
+\item A random variable \(Z\) has a triangular PDF on \([0,4]\) with mode at 2: \(f(z) = \frac{z}{4}\) for \(0\le z\le 2\) and \(f(z) = \frac{4-z}{4}\) for \(2<z\le 4\). Derive the CDF \(F(z)\) and sketch both \(f(z)\) and \(F(z)\) on the same axes. Find the median and the quartiles of \(Z\).
+\item A component's lifetime \(T\) (in hours) has CDF \(F(t) = 1 - \frac{1}{(t+1)^2}\) for \(t \ge 0\). Find the PDF, the mean lifetime, and the probability that the component lasts between 1 and 3 hours.
+\end{itemize}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\(F(x) = 0\) for \(x<0\); for \(0\le x\le 2\), \(F(x) = \int_0^x \frac{3}{8}t^2\,dt = \frac{x^3}{8}\); for \(x>2\), \(F(x)=1\). Then \(P(0.5<X<1.5) = F(1.5)-F(0.5) = \frac{1.5^3}{8} - \frac{0.5^3}{8} = \frac{3.375 - 0.125}{8} = \frac{3.25}{8} = 0.40625\).
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+\(f(y) = F'(y) = \frac{y}{2}\) for \(0<y<2\), zero elsewhere. Mode is at \(y=2\) (endpoint, PDF increasing). \(P(Y>1) = 1 - F(1) = 1 - \frac{1}{4} = 0.75\).
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+\(\lambda = 1/10 = 0.1\). \(F(t) = 1 - e^{-0.1t}\).
+(a) \(P(T<5) = F(5) = 1 - e^{-0.5} \approx 0.3935\).
+(b) \(P(5<T<15) = F(15)-F(5) = e^{-0.5} - e^{-1.5} \approx 0.6065 - 0.2231 = 0.3834\).
+(c) \(P(T>20) = 1 - F(20) = e^{-2} \approx 0.1353\).
+Median \(m = \frac{\ln 2}{0.1} = 10\ln 2 \approx 6.93\) minutes.
+\(Q_1 = \frac{\ln(4/3)}{0.1} \approx 2.88\) minutes, \(Q_3 = \frac{\ln 4}{0.1} \approx 13.86\) minutes.
+IQR \(= Q_3 - Q_1 = \frac{\ln 3}{0.1} \approx 10.99\) minutes.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+For \(0\le z\le 2\): \(F(z) = \int_0^z \frac{t}{4}\,dt = \frac{z^2}{8}\).
+For \(2<z\le 4\): \(F(z) = F(2) + \int_2^z \frac{4-t}{4}\,dt = \frac{1}{2} + \left[t - \frac{t^2}{8}\right]_2^z = \frac{1}{2} + \left(z - \frac{z^2}{8}\right) - \left(2 - \frac{1}{2}\right) = z - \frac{z^2}{8} - 1\).
+Check: \(F(4) = 4 - 2 - 1 = 1\).
+Median: \(F(2)=0.5 \Rightarrow m=2\).
+\(Q_1\): \(\frac{Q_1^2}{8}=0.25 \Rightarrow Q_1^2=2 \Rightarrow Q_1=\sqrt{2}\approx 1.414\).
+\(Q_3\): \(Q_3 - \frac{Q_3^2}{8} - 1 = 0.75 \Rightarrow Q_3^2 - 8Q_3 + 14 = 0 \Rightarrow Q_3 = 4 - \sqrt{2} \approx 2.586\).
+IQR \(= 4 - 2\sqrt{2} \approx 1.172\).
+The graph of \(f\) is a triangle peaking at \((2,0.5)\); the graph of \(F\) is a smooth S-shaped curve (quadratic pieces) from \((0,0)\) to \((4,1)\) with inflection at the mode \(z=2\).
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+\(f(t) = F'(t) = \frac{2}{(t+1)^3}\) for \(t \ge 0\).
+Mean: \(E(T) = \int_0^\infty t \cdot \frac{2}{(t+1)^3}\,dt\). Let \(u=t+1\), then \(t=u-1\), \(dt=du\):
+\(E(T) = \int_1^\infty \frac{2(u-1)}{u^3}\,du = 2\int_1^\infty (u^{-2} - u^{-3})\,du = 2\left[ -u^{-1} + \frac{1}{2}u^{-2} \right]_1^\infty = 2(0 - (-1 + 0.5)) = 1\) hour.
+\(P(1 < T < 3) = F(3) - F(1) = \left(1 - \frac{1}{16}\right) - \left(1 - \frac{1}{4}\right) = \frac{1}{4} - \frac{1}{16} = \frac{3}{16} = 0.1875\).
+\end{corrige}
+
+\coursec{Median, Quartiles and Quantiles -- Applications}
+
+In the previous section, we introduced the cumulative distribution function $F(x) = \mathbb{P}(X \le x)$, a central tool for calculating interval probabilities. We will now exploit this function to locate characteristic values of the distribution: the median, quartiles, and more generally, quantiles. These position indicators are essential for summarising a continuous distribution, comparing samples, or making decisions (warranty thresholds, alert thresholds, etc.).
+
+\courssub{Median, Quartiles and Quantiles of Order $p$: Definitions and Interpretation}
+
+Recall that for a continuous random variable $X$ with cumulative distribution function $F$, strictly increasing on its support, the equation $F(x) = p$ has a unique solution for every $p \in (0,1)$.
+
+\begin{definition}[Median, Quartiles and Quantiles]
+Let $X$ be a continuous random variable with cumulative distribution function $F$.
+\begin{itemize}
+    \item The \textbf{median} $m$ (or $Q_2$) is the value such that $\mathbb{P}(X \le m) = \mathbb{P}(X \ge m) = 0.5$, i.e. $F(m) = 0.5$.
+    \item The \textbf{first quartile} $Q_1$ satisfies $F(Q_1) = 0.25$; the \textbf{third quartile} $Q_3$ satisfies $F(Q_3) = 0.75$.
+    \item More generally, for any $p \in (0,1)$, the \textbf{quantile of order $p$} (or $p$-quantile), denoted $q_p$ or $Q(p)$, is the unique solution of $F(q_p) = p$.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Interpretation]
+\begin{itemize}
+    \item The median splits the area under the density curve $f$ into two equal parts.
+    \item $Q_1$ leaves $25\%$ of the probability to its left, $Q_3$ leaves $75\%$.
+    \item The interquartile range $IQR = Q_3 - Q_1$ measures the central dispersion (robust to extreme values).
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Common Pitfalls]
+\begin{itemize}
+    \item Do not confuse the median (quantile of order $0.5$) with the expectation (mean). They coincide only for symmetric distributions.
+    \item Solving $F(x)=p$ may yield several algebraic roots; \textbf{keep only the one belonging to the support of $X$}.
+    \item Verify that $F$ is indeed continuous and strictly increasing on the interval considered; otherwise, the quantile may not be unique (case of piecewise constant distributions).
+\end{itemize}
+\end{attention}
+
+\courssub{Useful Properties and the Case of Symmetric Distributions}
+
+\begin{propriete}[Symmetric Distribution]
+If the density $f$ is symmetric about the axis $x = a$ (i.e. $f(a+x)=f(a-x)$ for all $x$), then:
+\[
+\mathbb{E}(X) = a,\quad \text{mode} = a,\quad \text{median} = a.
+\]
+In particular, for a uniform distribution on $[a,b]$, a normal distribution, or a symmetric triangular distribution, mean = median = mode = centre of symmetry.
+\end{propriete}
+
+\begin{propriete}[Quantiles under Affine Transformation]
+If $Y = aX + b$ with $a>0$, then for any $p\in(0,1)$:
+\[
+q_p(Y) = a\,q_p(X) + b.
+\]
+If $a<0$, the order is reversed: $q_p(Y) = a\,q_{1-p}(X) + b$.
+\end{propriete}
+
+\courssub{Resolution Method: Finding the Quantile of Order $p$}
+
+\begin{methode}[Calculating a Quantile $q_p$]
+\begin{enumerate}
+    \item Write the cumulative distribution function $F(x)$ for all $x$ in the support (by integrating $f$).
+    \item Solve the equation $F(x) = p$ for $x$.
+    \item Verify that the solution found belongs to the support of $X$.
+    \item (Optional) Graphical check: plot $y=F(x)$ and the horizontal line $y=p$; the abscissa of the intersection is $q_p$.
+\end{enumerate}
+\end{methode}
+
+\courssub{Explicit Calculations for Classical Distributions}
+
+\textbf{Uniform Distribution on $[a,b]$.}
+$f(x) = \frac{1}{b-a}\mathbf{1}_{[a,b]}(x)$, $F(x) = \frac{x-a}{b-a}$ for $x\in[a,b]$.
+\[
+q_p = a + p(b-a),\quad
+m = \frac{a+b}{2},\quad
+Q_1 = a + \tfrac{1}{4}(b-a),\quad
+Q_3 = a + \tfrac{3}{4}(b-a).
+\]
+
+\textbf{Exponential Distribution with Parameter $\lambda>0$.}
+$f(x) = \lambda e^{-\lambda x}\mathbf{1}_{[0,+\infty[}(x)$, $F(x) = 1 - e^{-\lambda x}$ for $x\ge 0$.
+\[
+1 - e^{-\lambda q_p} = p \;\Longrightarrow\; q_p = -\frac{\ln(1-p)}{\lambda}.
+\]
+Median: $m = \frac{\ln 2}{\lambda} \approx \frac{0.693}{\lambda}$.
+$Q_1 = -\frac{\ln 0.75}{\lambda} \approx \frac{0.288}{\lambda}$,
+$Q_3 = -\frac{\ln 0.25}{\lambda} \approx \frac{1.386}{\lambda}$.
+Remark: $m < \mathbb{E}(X) = 1/\lambda$ (right-skewed asymmetry).
+
+\textbf{Symmetric Triangular Distribution on $[0,2]$ with Mode at $1$.}
+$f(x) = \begin{cases} x & 0\le x\le 1 \\ 2-x & 1\le x\le 2 \end{cases}$.
+$F(x) = \begin{cases} \frac{x^2}{2} & 0\le x\le 1 \\ 1 - \frac{(2-x)^2}{2} & 1\le x\le 2 \end{cases}$.
+By symmetry: $m = 1 = \mathbb{E}(X)$.
+$Q_1$: solve $\frac{x^2}{2}=0.25 \Rightarrow x = \frac{1}{\sqrt{2}} \approx 0.707$.
+$Q_3$: by symmetry $Q_3 = 2 - Q_1 = 2 - \frac{1}{\sqrt{2}} \approx 1.293$.
+
+\begin{exemplebox}[Quantiles of an Asymmetric Triangular Distribution]
+Let $X$ have density $f(x) = 2x\ \mathbf{1}_{[0,1]}(x)$ (triangular on $[0,1]$ with mode at $1$).
+$F(x) = x^2$ for $x\in[0,1]$.
+Median: $m^2 = 0.5 \Rightarrow m = \sqrt{0.5} = \frac{\sqrt{2}}{2} \approx 0.707$.
+$Q_1$: $x^2 = 0.25 \Rightarrow x = 0.5$.
+$Q_3$: $x^2 = 0.75 \Rightarrow x = \sqrt{0.75} = \frac{\sqrt{3}}{2} \approx 0.866$.
+Expectation: $\mathbb{E}(X) = \int_0^1 2x^2\,dx = \frac{2}{3} \approx 0.667$.
+We observe $Q_1 < \mathbb{E}(X) < m < Q_3$, typical of a right-skewed asymmetry.
+\end{exemplebox}
+
+\courssub{Graphical Interpretation: CDF and Horizontal Lines}
+
+The figure below illustrates the graphical search for quantiles for the symmetric triangular distribution on $[0,2]$. The intersections of the curve $y=F(x)$ with the horizontal lines $y=0.25$, $y=0.5$, $y=0.75$ give $Q_1$, $m$, $Q_3$.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.2, >=stealth]
+% Axes
+\draw[->] (-0.3,0) -- (2.3,0) node[right] {$x$};
+\draw[->] (0,-0.15) -- (0,1.15) node[above] {$F(x)$};
+% Ticks
+\foreach \x/\lbl in {0/0, 0.707/0.707, 1/1, 1.293/1.293, 2/2}
+    \draw (\x,0.02) -- (\x,-0.02) node[below, font=\tiny] {$\lbl$};
+\foreach \y/\lbl in {0.25/0.25, 0.5/0.5, 0.75/0.75, 1/1}
+    \draw (0.02,\y) -- (-0.02,\y) node[left, font=\tiny] {$\lbl$};
+% CDF curve: piecewise
+% 0 to 1: x^2/2
+\draw[popblue, thick, domain=0:1, smooth, variable=\x] plot ({\x}, {\x*\x/2});
+% 1 to 2: 1 - (2-x)^2/2
+\draw[popblue, thick, domain=1:2, smooth, variable=\x] plot ({\x}, {1 - (2-\x)*(2-\x)/2});
+% Horizontal lines
+\draw[popmuted, dashed] (0,0.25) -- (2,0.25);
+\draw[popmuted, dashed] (0,0.5) -- (2,0.5);
+\draw[popmuted, dashed] (0,0.75) -- (2,0.75);
+% Intersection points and vertical projections
+\foreach \y/\x/\lab in {0.25/0.7071/Q_1, 0.5/1/m, 0.75/1.2929/Q_3} {
+    \fill[poporange] (\x,\y) circle (2pt);
+    \draw[popmuted, dotted] (\x,0) -- (\x,\y);
+    \node[below, font=\small] at (\x,0) {$\lab$};
+}
+% Labels for horizontal lines
+\node[left, font=\scriptsize, popmuted] at (-0.1,0.25) {$y=0.25$};
+\node[left, font=\scriptsize, popmuted] at (-0.1,0.5) {$y=0.5$};
+\node[left, font=\scriptsize, popmuted] at (-0.1,0.75) {$y=0.75$};
+% Title
+\node[above, font=\small\bfseries] at (1,1.1) {CDF $F(x)$ -- Symmetric Triangular Distribution on $[0,2]$};
+\end{tikzpicture}
+\legende{Graphical search for the median and quartiles by intersection of $F(x)$ with horizontal lines.}
+\end{popfigure}
+
+\courssub{Complete Application Problem: Modelling Taxi Waiting Time}
+
+Consider a concrete situation: in Douala, the waiting time (in minutes) for a taxi at a given junction is modelled by a continuous random variable $X$ with density:
+\[
+f(x) = \begin{cases}
+k\,x\,(10-x) & \text{if } 0 \le x \le 10,\\
+0 & \text{otherwise}.
+\end{cases}
+\]
+
+\begin{exoresolu}[Complete Analysis of Waiting Time]
+\textbf{1. Determine the constant $k$ (normalisation).}
+\[
+\int_0^{10} k\,x(10-x)\,dx = k\int_0^{10} (10x - x^2)\,dx = k\left[5x^2 - \frac{x^3}{3}\right]_0^{10}
+= k\left(500 - \frac{1000}{3}\right) = k\cdot\frac{500}{3} = 1
+\]
+Hence $k = \frac{3}{500} = 0.006$.
+
+\textbf{2. Cumulative Distribution Function $F(x)$ for $0\le x\le 10$.}
+\[
+F(x) = \int_0^x \frac{3}{500}\,t(10-t)\,dt = \frac{3}{500}\left[5t^2 - \frac{t^3}{3}\right]_0^x
+= \frac{3}{500}\left(5x^2 - \frac{x^3}{3}\right) = \frac{15x^2 - x^3}{500}.
+\]
+Check: $F(10) = \frac{1500-1000}{500}=1$.
+
+\textbf{3. Expectation and Variance.}
+\[
+\mathbb{E}(X) = \int_0^{10} x f(x)\,dx = \frac{3}{500}\int_0^{10} (10x^2 - x^3)\,dx
+= \frac{3}{500}\left[\frac{10x^3}{3} - \frac{x^4}{4}\right]_0^{10}
+= \frac{3}{500}\left(\frac{10000}{3} - 2500\right) = \frac{3}{500}\cdot\frac{2500}{3} = 5\ \mathrm{min}.
+\]
+\[
+\mathbb{E}(X^2) = \frac{3}{500}\int_0^{10} (10x^3 - x^4)\,dx
+= \frac{3}{500}\left[\frac{10x^4}{4} - \frac{x^5}{5}\right]_0^{10}
+= \frac{3}{500}(25000 - 20000) = 30.
+\]
+\[
+\operatorname{Var}(X) = 30 - 5^2 = 5\ \mathrm{min}^2,\quad \sigma = \sqrt{5} \approx 2.236\ \mathrm{min}.
+\]
+
+\textbf{4. Mode.}
+$f(x) = \frac{3}{500}(10x - x^2)$ is a concave quadratic, maximum at $f'(x)=0 \Rightarrow 10-2x=0 \Rightarrow x=5$.
+Mode $= 5$ min. The distribution is symmetric (parabolic density centred at 5), so mean = median = mode = 5.
+
+\textbf{5. Median and Quartiles.}
+By symmetry: $m = 5$.
+$Q_1$: solve $F(x)=0.25 \Rightarrow 15x^2 - x^3 = 125 \Rightarrow x^3 - 15x^2 + 125 = 0$.
+Seek a root in $[0,5]$. Trial: $x=2.5 \Rightarrow 15.625 - 93.75 + 125 = 46.875$; $x=3 \Rightarrow 27 - 135 + 125 = 17$; $x=3.5 \Rightarrow 42.875 - 183.75 + 125 = -15.875$.
+The root lies between 3 and 3.5. Using a calculator (or numerical method): $Q_1 \approx 3.23$ min.
+By symmetry: $Q_3 = 10 - Q_1 \approx 6.77$ min.
+Interquartile range $IQR = Q_3 - Q_1 \approx 3.54$ min.
+
+\textbf{6. Probability of Waiting More Than 10 Minutes.}
+The support is $[0,10]$, so $\mathbb{P}(X > 10) = 0$.
+(Common trap question: check the support!)
+
+\textbf{7. Probability of Waiting Between 3 and 7 Minutes.}
+$\mathbb{P}(3 \le X \le 7) = F(7) - F(3)$.
+$F(7) = \frac{15\cdot49 - 343}{500} = \frac{735-343}{500} = \frac{392}{500} = 0.784$.
+$F(3) = \frac{15\cdot9 - 27}{500} = \frac{135-27}{500} = \frac{108}{500} = 0.216$.
+Probability $= 0.784 - 0.216 = 0.568$ (i.e. $56.8\%$).
+\tcblower
+\textbf{Pedagogical Analysis:}
+\begin{itemize}
+    \item Normalisation ($k$) is the mandatory first step.
+    \item The symmetry of $f$ (parabola centred at 5) greatly simplifies calculations: $\mathbb{E}(X)=m=\text{mode}=5$.
+    \item For $Q_1$, the cubic equation does not factorise simply; using a calculator (numerical solver) is expected at GCE. Give the approximate value to 2 or 3 decimal places.
+    \item Always verify that the quantiles found belong to the support $[0,10]$.
+    \item The question $\mathbb{P}(X>10)$ tests understanding of the support.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{GCE-Type Exercise Resolution Strategies}
+
+\begin{methode}[Checklist for a Continuous Random Variable Exercise]
+\begin{enumerate}
+    \item \textbf{Identify the distribution}: uniform, exponential, triangular, or explicitly given density (piecewise or not).
+    \item \textbf{Check normalisation}: $\int_{-\infty}^{+\infty} f(x)\,dx = 1$. If an unknown constant ($k$, $\lambda$, etc.) is present, determine it first.
+    \item \textbf{Establish the CDF $F(x)$} by integration, distinguishing intervals if $f$ is piecewise. Check continuity of $F$ at junctions.
+    \item \textbf{Calculate requested characteristics}:
+    \begin{itemize}
+        \item Expectation: $\int x f(x)\,dx$.
+        \item Variance: $\mathbb{E}(X^2) - [\mathbb{E}(X)]^2$.
+        \item Mode: maximum of $f(x)$ (derivative or graphical observation).
+        \item Median/quartiles/quantiles: solve $F(x)=p$.
+    \end{itemize}
+    \item \textbf{Calculate requested probabilities}: $\mathbb{P}(a<X<b)=F(b)-F(a)$.
+    \item \textbf{Check consistency}: support respected, probabilities in $[0,1]$, median between $Q_1$ and $Q_3$, positive variance.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Classic Errors to Avoid at GCE]
+\begin{itemize}
+    \item Forgetting to multiply by the normalisation constant $k$ in expectation/variance integrals.
+    \item Confusing $f(x)$ (density) and $F(x)$ (CDF): the median is found with $F$, the mode with $f$.
+    \item Solving $f(x)=p$ instead of $F(x)=p$ for a quantile.
+    \item Not verifying that the solution of $F(x)=p$ belongs to the support (e.g., negative root for an exponential distribution).
+    \item For a piecewise density, integrate each piece separately and sum; do not integrate the global expression over $\mathbb{R}$.
+    \item Writing $\mathbb{P}(X=x)$ for a continuous variable (it is always 0).
+\end{itemize}
+\end{attention}
+
+\courssub{Practice Exercises}
+
+\begin{exercice}[Exponential Distribution and Warranty Thresholds]
+The lifetime $X$ (in years) of an electronic component follows an exponential distribution with parameter $\lambda = 0.2$.
+\begin{enumerate}
+    \item Determine the expectation, variance, and median of $X$.
+    \item Calculate $Q_1$ and $Q_3$. Interpret the interquartile range.
+    \item The manufacturer wants to offer a warranty such that $90\%$ of components are still functional at the end of the period. What warranty duration should be proposed?
+    \item What is the probability that a component lasts more than 10 years given that it has already lasted 5 years? (Memoryless property).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Piecewise Density -- Flow Rate Model]
+The flow rate $X$ (in $\mathrm{L\,min^{-1}}$) of a water pump follows the density:
+\[
+f(x) = \begin{cases}
+c\,x & 0 \le x \le 2,\\
+c\,(4-x) & 2 < x \le 4,\\
+0 & \text{otherwise}.
+\end{cases}
+\]
+\begin{enumerate}
+    \item Find $c$ and sketch $f(x)$.
+    \item Calculate $\mathbb{E}(X)$, $\operatorname{Var}(X)$, and the mode.
+    \item Determine the median and quartiles.
+    \item Calculate $\mathbb{P}(X > 3)$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Quantiles and Affine Transformation]
+Let $X \sim \mathcal{U}[0,1]$ (uniform on $[0,1]$). Define $Y = 5X + 2$.
+\begin{enumerate}
+    \item Give the density of $Y$ and its support.
+    \item Express the quantiles of $Y$ in terms of those of $X$.
+    \item Calculate directly the median, $Q_1$, and $Q_3$ of $Y$ without using $X$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{Visual Summary: From PDF to Quantiles}
+
+The diagram below summarises the links between all concepts covered in this chapter (sections 1 to 4). It shows how the density $f$ generates the CDF $F$, and how we extract numerical characteristics (expectation, variance, mode) and position indicators (median, quartiles, quantiles).
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}, >=stealth]
+% Nodes
+\node[draw, rounded corners, fill=popblueL, thick, align=center] (pdf) at (0,0){Density $f(x)$\\(PDF)};
+\node[draw, rounded corners, fill=popgreenL, thick, align=center] (cdf) at (5,0){CDF $F(x)$\\(CDF)};
+\node[draw, rounded corners, fill=poporange, thick] (exp) at (-3,-2.5) {Expectation $\mathbb{E}(X)$};
+\node[draw, rounded corners, fill=poporange, thick] (var) at (0,-2.5) {Variance $\operatorname{Var}(X)$};
+\node[draw, rounded corners, fill=poporange, thick] (mode) at (3,-2.5) {Mode (max of $f$)};
+\node[draw, rounded corners, fill=poppink, thick] (med) at (-3,-5) {Median $m$ : $F(m)=0.5$};
+\node[draw, rounded corners, fill=poppink, thick] (q1) at (0,-5) {$Q_1$ : $F(Q_1)=0.25$};
+\node[draw, rounded corners, fill=poppink, thick] (q3) at (3,-5) {$Q_3$ : $F(Q_3)=0.75$};
+\node[draw, rounded corners, fill=poppurple, thick] (quant) at (6,-5) {Quantile $q_p$ : $F(q_p)=p$};
+\node[draw, rounded corners, fill=popgold, thick, align=center] (prob) at (6,-2.5){Probabilities\\$\mathbb{P}(a<X<b)=F(b)-F(a)$};
+
+% Arrows
+\draw[->, thick, popblue] (pdf) -- node[above] {Integration} (cdf);
+\draw[->, thick, popdark] (pdf) -- node[left] {$\int x f(x)dx$} (exp);
+\draw[->, thick, popdark] (pdf) -- node[above] {$\int x^2 f(x)dx$} (var);
+\draw[->, thick, popdark] (pdf) -- node[right] {Max of $f$} (mode);
+\draw[->, thick, popgreen] (cdf) -- node[left] {$F(x)=0.5$} (med);
+\draw[->, thick, popgreen] (cdf) -- node[above] {$F(x)=0.25$} (q1);
+\draw[->, thick, popgreen] (cdf) -- node[above] {$F(x)=0.75$} (q3);
+\draw[->, thick, popgreen] (cdf) -- node[right] {$F(x)=p$} (quant);
+\draw[->, thick, popgreen] (cdf) -- node[right] {$F(b)-F(a)$} (prob);
+
+% Cross links
+\draw[<->, dashed, popmuted] (exp) -- node[above] {= median if symmetric} (med);
+\draw[<->, dashed, popmuted] (mode) -- node[above] {= median if symmetric} (med);
+\end{tikzpicture}
+\legende{Mind map linking density, CDF, moments, and quantiles.}
+\end{popfigure}
+
+\begin{savaistu}[Applications in Cameroon and Beyond]
+\begin{itemize}
+    \item \textbf{Public Health}: Quartiles of waiting time distributions in emergency departments (Laquintinie Hospital, Central Hospital) allow setting quality targets (e.g., ``75\% of patients seen in under 30 min'' $\Leftrightarrow Q_3 \le 30$).
+    \item \textbf{Agriculture}: The distribution of yields per hectare (maize, cocoa) is often skewed; the median is more representative than the mean for the average farmer.
+    \item \textbf{Telecoms}: Operators (MTN, Orange) monitor latency quantiles (e.g., $Q_{0.95}$) to guarantee QoS (Quality of Service).
+    \item \textbf{Finance}: Value-at-Risk (VaR) at $99\%$ is exactly the quantile of order $0.01$ of the loss distribution (left tail).
+\end{itemize}
+\end{savaistu}
+
+\begin{aretenir}[Key Points for the GCE Exam]
+\begin{itemize}
+    \item Median $m$: solve $F(m)=0.5$.
+    \item Quartiles $Q_1, Q_3$: solve $F(x)=0.25$ and $F(x)=0.75$.
+    \item Quantile of order $p$: solve $F(q_p)=p$.
+    \item Always verify that the solution belongs to the support.
+    \item For symmetric distributions: mean = median = mode = centre of symmetry.
+    \item Uniform distribution: $q_p = a + p(b-a)$.
+    \item Exponential distribution: $q_p = -\frac{\ln(1-p)}{\lambda}$.
+    \item Triangular distribution: integrate piecewise, solve the polynomial equation (often 2nd or 3rd degree).
+    \item The interquartile range $IQR = Q_3 - Q_1$ is a robust measure of dispersion.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: Waiting for a Taxi in Yaoundé}
+
+\courssub{Aims of the Activity}
+
+This integration activity closes the chapter on \cle{continuous random variables}. Working in groups, you will mobilise, in a single realistic situation, all the notions studied:
+
+\begin{itemize}
+\item verify and normalise a \cle{probability density function} (PDF) by computing the constant $k$ from the condition $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$;
+\item derive the \cle{cumulative distribution function} (CDF) $F$ from $f$ by integration, and use it to compute probabilities of intervals;
+\item compute the \cle{expectation} $E(X)$ and the \cle{variance} $\operatorname{Var}(X)$ of a continuous random variable, using integration by parts;
+\item determine the \cle{mode} (maximum of $f$), the \cle{median} and the \cle{quartiles} (solutions of $F(x)=q$);
+\item interpret every numerical result concretely in terms of waiting time, and criticise a mathematical model by comparing it with real survey data.
+\end{itemize}
+
+Beyond the calculations, the activity trains you in the complete modelling cycle: \emph{situation $\rightarrow$ model $\rightarrow$ computation $\rightarrow$ interpretation $\rightarrow$ validation}. This is exactly the spirit of the GCE Advanced Level problem-solving questions.
+
+\courssub{Situation}
+
+\textbf{Waiting for a taxi in Yaoundé.}\par
+
+The Students' Association of a large secondary school in Yaoundé carries out a study on the daily journey of its members. Every morning, hundreds of students wait at the taxi rank near the Mokolo market to board a shared taxi (\emph{clando} or yellow taxi) towards their school. The association suspects that the waiting time is highly variable: some passengers board almost immediately, others wait a very long time, and this irregularity causes lateness.
+
+A statistics teacher suggests modelling the situation. Let $X$ be the continuous random variable equal to the \textbf{waiting time, in minutes}, of a passenger chosen at random at the rank. Based on the shape of the histogram drawn from a preliminary observation (a curve starting at $0$, rising to a peak, then decreasing with a long tail), the teacher proposes the family of density functions:
+
+\[
+f(x) = \begin{cases} k\,x\,e^{-x/5} & \text{if } x \geq 0,\\[2pt] 0 & \text{if } x < 0, \end{cases}
+\]
+
+where $k$ is a positive real constant to be determined.
+
+The association also conducted a small survey of $200$ passengers during one week. The observed data are summarised below:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|}
+\hline
+\rowcolor{popblueL} Waiting time (min) & $[0;5[$ & $[5;10[$ & $[10;15[$ & $[15;20[$ & $[20;+\infty[$ \\
+\hline Number of passengers & $54$ & $62$ & $44$ & $24$ & $16$ \\
+\hline
+\end{tabularx}
+\end{center}
+
+The mean waiting time observed in the survey is about $9.9$ minutes, and $40$ passengers out of $200$ waited more than $12$ minutes.
+
+\textbf{Your mission:} as members of the mathematics club, use the model $f$ to describe the waiting time completely (typical value, average value, spread, probabilities), then discuss whether the model fits the survey data. You will present your findings orally to the association.
+
+\begin{attention}[Data reminder]
+All the data needed are inside the statement above. The integrals you will need are standard at Upper Sixth level: integration by parts for $\int x e^{-x/5}dx$ and $\int x^2 e^{-x/5}dx$, and the limit $\lim_{x\to+\infty} x^n e^{-x/5} = 0$ for any fixed $n$ (exponential dominates polynomial).
+\end{attention}
+
+\courssub{Tasks}
+
+Work in groups of three or four. Answer the questions in order; each one uses a different tool of the chapter.
+
+\begin{enumerate}
+\item \textbf{Normalising the density.} Show that $f$ is a probability density function if and only if $\displaystyle k\int_0^{+\infty} x e^{-x/5}\,dx = 1$. Using integration by parts, compute this integral and deduce the value of $k$.
+\item \textbf{The cumulative distribution function.} Show that, for $x \geq 0$,
+\[
+F(x) = 1 - \left(1 + \frac{x}{5}\right)e^{-x/5}.
+\]
+State $F(x)$ for $x<0$. Verify that $\lim_{x\to+\infty}F(x)=1$.
+\item \textbf{Graphs.} On the same page, sketch the curves of $f$ and $F$ (two separate axes systems, same scale in $x$). Indicate on the graph of $f$ the region whose area equals $P(X>12)$.
+\item \textbf{Expectation and variance.} Compute $E(X)$ and $E(X^2)$. Deduce $\operatorname{Var}(X)$ and the standard deviation $\sigma(X)$, rounded to two decimal places. Interpret $E(X)$ in the context.
+\item \textbf{Mode.} Determine the mode of $X$ (the value of $x$ where $f$ is maximal). Why is the mode smaller than the mean here?
+\item \textbf{Median and quartiles.} Using the equation $F(x)=q$ with a calculator (trial or solver), determine the median $m$, the first quartile $Q_1$ and the third quartile $Q_3$, rounded to one decimal place. Deduce the interquartile range.
+\item \textbf{A probability of interest.} Compute $P(X > 12)$, the probability that a passenger waits more than $12$ minutes. Give the result to three decimal places.
+\item \textbf{Model versus reality.} Compare with the survey: (a) the model mean with the observed mean $9.9$ min; (b) $P(X>12)$ with the observed proportion $40/200$; (c) the model's probabilities of the five classes of the table with the observed frequencies. Conclude: is the model acceptable? Suggest one improvement.
+\end{enumerate}
+
+\begin{methode}[Oral Restitution]
+Each group prepares a five-minute presentation: one member presents the model and the graphs, one presents the numerical characteristics (mean, variance, mode, median, quartiles), one presents the comparison with the survey and the conclusion. Every numerical result must be \emph{interpreted in a sentence} about waiting times, not merely stated.
+\end{methode}
+
+\courssub{Model Answer}
+
+\textbf{1. Determination of $k$.}\par
+$f$ is continuous on $\mathbb{R}$ and non-negative since $k>0$ and $xe^{-x/5}\geq 0$ for $x\geq 0$. It is a density if and only if its total integral equals $1$. Integrating by parts with $u=x$, $dv = e^{-x/5}dx$:
+\[
+\int_0^{+\infty} x e^{-x/5}\,dx = \left[-5x e^{-x/5}\right]_0^{+\infty} + 5\int_0^{+\infty} e^{-x/5}\,dx = 0 + 5\left[-5e^{-x/5}\right]_0^{+\infty} = 25.
+\]
+Hence $25k = 1$, so $\boxed{k = \dfrac{1}{25} = 0.04}$ and $f(x) = \dfrac{x}{25}e^{-x/5}$ for $x\geq 0$.
+
+\textbf{2. The CDF.}\par
+For $x<0$, $F(x)=0$. For $x\geq 0$, integrating by parts again:
+\[
+F(x) = \frac{1}{25}\int_0^x t e^{-t/5}\,dt = \frac{1}{25}\left(\left[-5t e^{-t/5}\right]_0^x + 25\left(1 - e^{-x/5}\right)\right) = 1 - \left(1+\frac{x}{5}\right)e^{-x/5}.
+\]
+Check: $F(0) = 1 - 1 = 0$ and, since $e^{-x/5}$ dominates, $\lim_{x\to+\infty}F(x) = 1$. $F$ is continuous and increasing: it is a valid CDF.
+
+\textbf{3. Graphs.}\par
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=6cm,
+    domain=0:30,
+    samples=200,
+    xlabel={$x$ (min)},
+    ylabel={$f(x)$},
+    xmin=0, xmax=30,
+    ymin=0, ymax=0.08,
+    axis lines=middle,
+    tick style={thick},
+    xtick={0,5,10,12,15,20,25,30},
+    ytick={0,0.02,0.04,0.06,0.08},
+    clip=false,
+]
+\addplot [popblue, thick] {x/25*exp(-x/5)};
+% Shaded area for P(X>12)
+\addplot [poporange, fill=poporange, fill opacity=0.2, draw=none, domain=12:30, samples=50] {x/25*exp(-x/5)} -- (axis cs:30,0) -- (axis cs:12,0) -- cycle;
+% Vertical dashed line at x=12
+\draw [dashed, popmuted] (axis cs:12,0) -- (axis cs:12,0.0435);
+\node [poporange, anchor=south] at (axis cs:12,0.04) {$P(X>12)$};
+\node [popblue, anchor=south west] at (axis cs:5,0.074) {Mode $(5,0.074)$};
+\end{axis}
+\end{tikzpicture}
+\legende{Probability density function $f(x)=\frac{x}{25}e^{-x/5}$. The shaded area represents $P(X>12)$.}
+\end{popfigure}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=6cm,
+    domain=0:30,
+    samples=200,
+    xlabel={$x$ (min)},
+    ylabel={$F(x)$},
+    xmin=0, xmax=30,
+    ymin=0, ymax=1.05,
+    axis lines=middle,
+    tick style={thick},
+    xtick={0,5,10,12,15,20,25,30},
+    ytick={0,0.25,0.5,0.75,1},
+    clip=false,
+]
+\addplot [popgreen, thick] {1-(1+x/5)*exp(-x/5)};
+\draw [dashed, popmuted] (12,0) -- (12,{1-(1+12/5)*exp(-12/5)}) -- (0,{1-(1+12/5)*exp(-12/5)});
+\node [popgreen, anchor=south west] at (12,{1-(1+12/5)*exp(-12/5)}) {$F(12)\approx0.692$};
+\draw [dashed, popmuted] (8.4,0) -- (8.4,0.5) -- (0,0.5);
+\node [popgreen, anchor=south east] at (8.4,0.5) {Median $\approx8.4$};
+\end{axis}
+\end{tikzpicture}
+\legende{Cumulative distribution function $F(x)=1-(1+\frac{x}{5})e^{-x/5}$.}
+\end{popfigure}
+
+\textbf{4. Expectation and variance.}\par
+\[
+E(X) = \frac{1}{25}\int_0^{+\infty} x^2 e^{-x/5}\,dx.
+\]
+Two successive integrations by parts (or the standard result $\int_0^{+\infty}x^2 e^{-x/a}dx = 2a^3$ with $a=5$) give $\int_0^{+\infty}x^2 e^{-x/5}dx = 250$, hence
+\[
+E(X) = \frac{250}{25} = \boxed{10\ \mathrm{min}}.
+\]
+Similarly, $\int_0^{+\infty}x^3 e^{-x/5}dx = 6\times 5^4 = 3750$, so
+\[
+E(X^2) = \frac{3750}{25} = 150, \qquad \operatorname{Var}(X) = E(X^2) - [E(X)]^2 = 150 - 100 = \boxed{50\ \mathrm{min}^2},
+\]
+and $\sigma(X) = \sqrt{50} \approx \boxed{7.07\ \mathrm{min}}$. On average a passenger waits $10$ minutes, with a typical fluctuation of about $7$ minutes: the waiting time is indeed very irregular, confirming the association's concern.
+
+\textbf{5. Mode.}\par
+For $x>0$, $f'(x) = \dfrac{1}{25}e^{-x/5}\left(1 - \dfrac{x}{5}\right)$, which vanishes at $x=5$ and changes sign from $+$ to $-$. The \cle{mode} is $\boxed{5\ \mathrm{min}}$. The mode is smaller than the mean because the distribution is right-skewed: a minority of very long waits pulls the mean upwards without affecting the peak.
+
+\textbf{6. Median and quartiles.}\par
+We solve $F(x) = q$, i.e. $\left(1+\frac{x}{5}\right)e^{-x/5} = 1-q$, numerically:
+\begin{itemize}
+\item $F(Q_1) = 0.25$ gives $Q_1 \approx 4.8$ min;
+\item $F(m) = 0.5$ gives $m \approx 8.4$ min;
+\item $F(Q_3) = 0.75$ gives $Q_3 \approx 13.5$ min.
+\end{itemize}
+Interquartile range: $Q_3 - Q_1 \approx 8.7$ min. Half of the passengers wait less than about $8.4$ minutes, and half of all waits lie between about $4.8$ and $13.5$ minutes. Note the ordering mode ($5$) $<$ median ($8.4$) $<$ mean ($10$), characteristic of a right-skewed distribution.
+
+\textbf{7. Probability of waiting more than 12 minutes.}\par
+\[
+P(X>12) = 1 - F(12) = \left(1 + \frac{12}{5}\right)e^{-12/5} = 3.4\,e^{-2.4} \approx 3.4 \times 0.090718 \approx \boxed{0.308}.
+\]
+According to the model, about $30.8\%$ of passengers wait more than $12$ minutes.
+
+\textbf{8. Model versus reality.}\par
+\begin{itemize}
+\item \textbf{Mean:} model $10.0$ min versus observed $9.9$ min — excellent agreement.
+\item \textbf{$P(X>12)$:} model $0.308$ versus observed $40/200 = 0.200$ — the model overestimates long waits.
+\item \textbf{Classes:} the model gives
+\begin{align*}
+P(0\leq X<5) &= F(5) = 1-2e^{-1} \approx 0.264 \quad (\text{observed } 54/200 = 0.270),\\
+P(5\leq X<10) &= F(10)-F(5) = 2e^{-1}-3e^{-2} \approx 0.330 \quad (\text{observed } 0.310),\\
+P(10\leq X<15) &= F(15)-F(10) = 3e^{-2}-4e^{-3} \approx 0.207 \quad (\text{observed } 0.220),\\
+P(15\leq X<20) &= F(20)-F(15) = 4e^{-3}-5e^{-4} \approx 0.108 \quad (\text{observed } 0.120),\\
+P(X\geq 20) &= 1-F(20) = 5e^{-4} \approx 0.092 \quad (\text{observed } 0.080).
+\end{align*}
+\end{itemize}
+The first class matches very well; the model puts slightly more weight on the $[5,10[$ class and slightly less on the $[10,15[$ and $[15,20[$ classes, while the tail $[20,+\infty[$ is also slightly overestimated. \textbf{Conclusion:} the model $f(x) = \frac{x}{25}e^{-x/5}$ (a Gamma-type density with shape $2$, scale $5$) is acceptable for planning purposes — for instance, the school can tell students that leaving a margin of about $15$ minutes covers roughly $F(15) \approx 80.1\%$ of cases. A possible improvement is to fit a general Gamma density $f(x) = kx^{\alpha-1}e^{-x/\beta}$ with two parameters, or to collect a larger sample over several weeks and different times of day.
+
+\begin{aretenir}[What this activity consolidates]
+\begin{itemize}
+\item A density must satisfy $f\geq 0$ and total area $1$ — this fixes any unknown constant.
+\item The CDF is obtained by integration: $F(x) = \int_{-\infty}^{x} f(t)\,dt$, and $P(X>a) = 1 - F(a)$.
+\item $E(X) = \int x f(x)\,dx$, $\operatorname{Var}(X) = E(X^2) - [E(X)]^2$: integration by parts is the key technique.
+\item Mode $=$ maximum of $f$; median and quartiles $=$ solutions of $F(x) = q$, often found numerically.
+\item A model is only useful once confronted with real data: agreement on the mean and the classes, and honest discussion of discrepancies.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Skill 1 — Verifying that a function is a probability density function}
+
+\begin{methode}[Testing whether $f$ is a PDF]
+To show that a function $f$ is a \cle{probability density function} on an interval $[a,b]$ (or on $\mathbb{R}$), proceed as follows.
+\begin{enumerate}
+\item \textbf{Check non-negativity.} Show that $f(x)\geq 0$ for every $x$ in the interval (and $f(x)=0$ outside it).
+\item \textbf{Check the total area.} Compute $\displaystyle\int_a^b f(x)\,dx$ and show that it equals $1$.
+\item If the density contains an unknown constant $k$, use the condition $\displaystyle\int_a^b f(x)\,dx=1$ to \textbf{find $k$ first}, then check positivity.
+\end{enumerate}
+\textbf{Reflexes:} probabilities are \emph{areas} under the curve; for a continuous variable $P(X=c)=0$ for any single value $c$, so $P(X\leq c)=P(X<c)$.
+\end{methode}
+
+\begin{exoresolu}[Finding the constant in a density]
+The continuous random variable $X$ has probability density function
+\[
+f(x)=\begin{cases} kx(4-x^2), & 0\leq x\leq 2,\\ 0, & \text{otherwise.}\end{cases}
+\]
+\begin{enumerate}
+\item Find the value of the constant $k$.
+\item Find $P(0.5\leq X\leq 1.5)$.
+\item Find $P(X>1)$.
+\end{enumerate}
+\tcblower
+\textbf{1. Value of $k$.} Since $f$ is a density, $\displaystyle\int_0^2 kx(4-x^2)\,dx=1$.
+\[
+\int_0^2 k(4x-x^3)\,dx = k\left[2x^2-\frac{x^4}{4}\right]_0^2 = k\left(8-4\right)=4k.
+\]
+Hence $4k=1$, so $\boxed{k=\tfrac14}$. On $[0,2]$, $x\geq 0$ and $4-x^2\geq 0$, so $f(x)\geq 0$: $f$ is a genuine density.
+
+\textbf{2. $P(0.5\leq X\leq 1.5)$.} Probabilities are integrals of $f$:
+\begin{align*}
+P(0.5\leq X\leq 1.5) &= \frac14\int_{0.5}^{1.5}(4x-x^3)\,dx = \frac14\left[2x^2-\frac{x^4}{4}\right]_{0.5}^{1.5}\\
+&=\frac14\left[\left(2(2.25)-\frac{5.0625}{4}\right)-\left(2(0.25)-\frac{0.0625}{4}\right)\right]\\
+&=\frac14\left[(4.5-1.265625)-(0.5-0.015625)\right]=\frac14(2.75)=0.6875.
+\end{align*}
+
+\textbf{3. $P(X>1)$.}
+\[
+P(X>1)=\frac14\int_1^2(4x-x^3)\,dx=\frac14\left[2x^2-\frac{x^4}{4}\right]_1^2=\frac14\left[4-\left(2-\tfrac14\right)\right]=\frac14\cdot\frac94=\frac{9}{16}=0.5625.
+\]
+\end{exoresolu}
+
+\courssub{Skill 2 — Computing probabilities from a PDF}
+
+\begin{methode}[Probabilities as areas]
+Given a density $f$ of a continuous random variable $X$:
+\begin{enumerate}
+\item Identify the interval on which $f$ is non-zero; split the integral if $f$ is defined piecewise.
+\item Use $P(a\leq X\leq b)=\displaystyle\int_a^b f(x)\,dx$.
+\item Use complementation when easier: $P(X>a)=1-P(X\leq a)$.
+\item Remember $P(X=a)=0$: strict or non-strict inequalities give the same answer.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Piecewise density]
+The lifetime $X$ (in years) of a phone battery sold in Douala has density
+\[
+f(x)=\begin{cases} \dfrac{3}{64}x^2, & 0\leq x<2,\\[2mm] \dfrac{3}{64}(8x-x^2-12), & 2\leq x\leq 4,\\ 0, & \text{otherwise.}\end{cases}
+\]
+Given that $\int_2^4 \frac{3}{64}(8x-x^2-12)\,dx=\frac12$, find $P(X>3)$ and $P(X>3\mid X>2)$.
+\tcblower
+\textbf{Step 1: $P(X>3)$.} Only the second piece is needed on $[3,4]$:
+\begin{align*}
+P(X>3)&=\frac{3}{64}\int_3^4(8x-x^2-12)\,dx=\frac{3}{64}\left[4x^2-\frac{x^3}{3}-12x\right]_3^4\\
+&=\frac{3}{64}\left[\left(64-\frac{64}{3}-48\right)-\left(36-9-36\right)\right]\\
+&=\frac{3}{64}\left[\left(16-\frac{64}{3}\right)-(-9)\right]=\frac{3}{64}\left(-\frac{16}{3}+9\right)=\frac{3}{64}\left(\frac{11}{3}\right)=\frac{11}{64}.
+\end{align*}
+
+\textbf{Step 2: conditional probability.} First,
+\[
+P(X>2)=\int_2^4 f(x)\,dx=\frac12 \quad\text{(given)}.
+\]
+Since $\{X>3\}\subset\{X>2\}$,
+\[
+P(X>3\mid X>2)=\frac{P(X>3)}{P(X>2)}=\frac{11/64}{1/2}=\frac{11}{32}=0.34375.
+\]
+\end{exoresolu}
+
+\courssub{Skill 3 — Expectation and variance of a continuous random variable}
+
+\begin{methode}[Computing $E(X)$, $\operatorname{Var}(X)$ and functions of $X$]
+\begin{enumerate}
+\item \textbf{Mean:} $E(X)=\displaystyle\int_a^b x\,f(x)\,dx$ over the support of $f$.
+\item \textbf{Second moment:} $E(X^2)=\displaystyle\int_a^b x^2 f(x)\,dx$.
+\item \textbf{Variance:} $\operatorname{Var}(X)=E(X^2)-[E(X)]^2$. Never forget to subtract the square of the mean.
+\item \textbf{Linear rules:} $E(aX+b)=aE(X)+b$ and $\operatorname{Var}(aX+b)=a^2\operatorname{Var}(X)$ (the shift $b$ does not affect variance).
+\item For a function $g$: $E[g(X)]=\displaystyle\int_a^b g(x)f(x)\,dx$.
+\end{enumerate}
+\textbf{Reflex:} keep fractions as long as possible; convert to decimals only at the end.
+\end{methode}
+
+\begin{exoresolu}[Mean and variance from a density]
+The continuous random variable $X$ has density
+\[
+f(x)=\begin{cases} \dfrac{3}{4}x(2-x), & 0\leq x\leq 2,\\ 0, & \text{otherwise.}\end{cases}
+\]
+\begin{enumerate}
+\item Show that $E(X)=1$.
+\item Find $\operatorname{Var}(X)$.
+\item Deduce $E(3X-2)$ and $\operatorname{Var}(3X-2)$.
+\end{enumerate}
+\tcblower
+\textbf{1. Mean.}
+\begin{align*}
+E(X)&=\int_0^2 x\cdot\frac34 x(2-x)\,dx=\frac34\int_0^2(2x^2-x^3)\,dx\\
+&=\frac34\left[\frac{2x^3}{3}-\frac{x^4}{4}\right]_0^2=\frac34\left(\frac{16}{3}-4\right)=\frac34\cdot\frac{4}{3}=1.
+\end{align*}
+
+\textbf{2. Variance.} First the second moment:
+\begin{align*}
+E(X^2)&=\frac34\int_0^2 x^2(2x-x^2)\,dx=\frac34\int_0^2(2x^3-x^4)\,dx\\
+&=\frac34\left[\frac{x^4}{2}-\frac{x^5}{5}\right]_0^2=\frac34\left(8-\frac{32}{5}\right)=\frac34\cdot\frac{8}{5}=\frac{6}{5}.
+\end{align*}
+Hence
+\[
+\operatorname{Var}(X)=E(X^2)-[E(X)]^2=\frac65-1^2=\frac15=0.2.
+\]
+
+\textbf{3. Linear transformation.}
+\[
+E(3X-2)=3E(X)-2=3-2=1,\qquad \operatorname{Var}(3X-2)=9\operatorname{Var}(X)=\frac95=1.8.
+\]
+\end{exoresolu}
+
+\courssub{Skill 4 — Finding the mode}
+
+\begin{methode}[Locating the mode]
+The \cle{mode} of a continuous random variable is the value $x$ where the density $f$ attains its \textbf{maximum}.
+\begin{enumerate}
+\item Differentiate $f$ on its support and solve $f'(x)=0$.
+\item Justify that the stationary point is a maximum (sign of $f'$, or $f''(x)<0$, or comparison with endpoint values).
+\item State the mode clearly; if the maximum occurs at an endpoint, the mode is that endpoint.
+\end{enumerate}
+\textbf{Trap:} the mode is \emph{not} the maximum value of $f$; it is the \emph{value of $x$} at which the maximum occurs.
+\end{methode}
+
+\begin{exoresolu}[Mode of a quadratic density]
+Let $X$ have density $f(x)=\dfrac{3}{4}x(2-x)$ for $0\leq x\leq 2$, $0$ otherwise. Find the mode of $X$.
+\tcblower
+On $[0,2]$, $f(x)=\dfrac32 x-\dfrac34 x^2$, so
+\[
+f'(x)=\frac32-\frac32 x=\frac32(1-x).
+\]
+$f'(x)=0$ gives $x=1$. Moreover $f'(x)>0$ for $x<1$ and $f'(x)<0$ for $x>1$, so $f$ increases then decreases: $x=1$ is a maximum. Since $f(0)=f(2)=0<f(1)=\tfrac34$, the global maximum on the support is at $x=1$.
+\[
+\boxed{\text{Mode}=1.}
+\]
+(Here the density is symmetric about $x=1$, so mode $=$ mean $=$ median $=1$.)
+\end{exoresolu}
+
+\courssub{Skill 5 — Obtaining and using the cumulative distribution function}
+
+\begin{methode}[From PDF to CDF and back]
+\begin{enumerate}
+\item \textbf{Definition:} $F(x)=P(X\leq x)=\displaystyle\int_{-\infty}^{x}f(t)\,dt$.
+\item Build $F$ \textbf{piece by piece}: $F(x)=0$ below the support, $F(x)=1$ above it; on the support, integrate $f$ from the left endpoint.
+\item \textbf{Check:} $F$ is continuous, non-decreasing, with $F(-\infty)=0$ and $F(+\infty)=1$.
+\item \textbf{Probabilities from $F$:} $P(a\leq X\leq b)=F(b)-F(a)$; $P(X>a)=1-F(a)$.
+\item \textbf{PDF from CDF:} $f(x)=F'(x)$ wherever $F$ is differentiable.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Building the CDF]
+The random variable $X$ has density
+\[
+f(x)=\begin{cases}\dfrac{3x^2}{8}, & 0\leq x\leq 2,\\ 0, & \text{otherwise.}\end{cases}
+\]
+\begin{enumerate}
+\item Find the cumulative distribution function $F(x)$, specifying it for all real $x$.
+\item Use $F$ to compute $P(1\leq X\leq 1.5)$.
+\item The random variable $Y$ has CDF $G(y)=\begin{cases}0,&y<0\\ y^3,&0\leq y\leq 1\\ 1,&y>1\end{cases}$. Find the density of $Y$.
+\end{enumerate}
+\tcblower
+\textbf{1. The CDF.} For $x<0$: $F(x)=0$. For $0\leq x\leq 2$:
+\[
+F(x)=\int_0^x \frac{3t^2}{8}\,dt=\left[\frac{t^3}{8}\right]_0^x=\frac{x^3}{8}.
+\]
+For $x>2$: $F(x)=1$. Hence
+\[
+F(x)=\begin{cases}0, & x<0,\\ \dfrac{x^3}{8}, & 0\leq x\leq 2,\\ 1, & x>2.\end{cases}
+\]
+Check: $F(0)=0$, $F(2)=1$, $F$ continuous and increasing. \checkmark
+
+\textbf{2. Probability from $F$.}
+\[
+P(1\leq X\leq 1.5)=F(1.5)-F(1)=\frac{1.5^3}{8}-\frac{1}{8}=\frac{3.375-1}{8}=\frac{2.375}{8}=0.296875.
+\]
+
+\textbf{3. Density of $Y$.} Differentiate $G$:
+\[
+g(y)=G'(y)=\begin{cases}3y^2, & 0\leq y\leq 1,\\ 0, & \text{otherwise.}\end{cases}
+\]
+Check: $\int_0^1 3y^2\,dy=1$ and $g\geq 0$: $g$ is a valid density.
+\end{exoresolu}
+
+\courssub{Skill 6 — Median, quartiles and quantiles}
+
+\begin{methode}[Solving $F(q)=p$]
+\begin{enumerate}
+\item The \cle{median} $m$ satisfies $F(m)=\tfrac12$; the \cle{lower quartile} $Q_1$ satisfies $F(Q_1)=\tfrac14$; the \cle{upper quartile} $Q_3$ satisfies $F(Q_3)=\tfrac34$.
+\item More generally the $p$-quantile $q_p$ solves $F(q_p)=p$.
+\item Set up the equation using the correct piece of $F$, solve it, and \textbf{check that the solution lies in the support} (reject extraneous roots).
+\item The interquartile range is $Q_3-Q_1$.
+\end{enumerate}
+\textbf{Reflex:} if the equation has several roots, only the root inside the support of $X$ is acceptable.
+\end{methode}
+
+\begin{exoresolu}[Median and quartiles]
+The continuous random variable $X$ has density
+\[
+f(x)=\begin{cases}\dfrac{3}{64}x^2(4-x), & 0\leq x\leq 4,\\ 0, & \text{otherwise.}\end{cases}
+\]
+\begin{enumerate}
+\item Show that $F(x)=\dfrac{x^3}{64}\left(3-\dfrac{3x}{4}\right)\cdot\dfrac{4}{3}$ is wrong as stated, and derive the correct CDF: $F(x)=\dfrac{x^3}{16}-\dfrac{3x^4}{256}$ on $[0,4]$.
+\item Verify that the median is $m=2$.
+\item Show that the lower quartile $Q_1$ satisfies $Q_1^4-\dfrac{64}{3}Q_1^3+\dfrac{1024}{3}\cdot\dfrac14\cdot\dfrac{256}{256}=0$, i.e.\ solve $F(Q_1)=\tfrac14$ numerically to 2 d.p.
+\end{enumerate}
+\tcblower
+\textbf{1. The CDF.} For $0\leq x\leq 4$:
+\[
+F(x)=\int_0^x \frac{3}{64}(4t^2-t^3)\,dt=\frac{3}{64}\left[\frac{4t^3}{3}-\frac{t^4}{4}\right]_0^x=\frac{x^3}{16}-\frac{3x^4}{256}.
+\]
+So $F(x)=0$ for $x<0$, $F(x)=\dfrac{x^3}{16}-\dfrac{3x^4}{256}$ for $0\leq x\leq4$, $F(x)=1$ for $x>4$. Check: $F(4)=\frac{64}{16}-\frac{3\cdot256}{256}=4-3=1$. \checkmark
+
+\textbf{2. Median.}
+\[
+F(2)=\frac{8}{16}-\frac{3\cdot16}{256}=\frac12-\frac{3}{16}=\frac{8-3}{16}=\frac{5}{16}.
+\]
+This is not $\tfrac12$, so $m\neq 2$; we solve $F(m)=\tfrac12$:
+\[
+\frac{m^3}{16}-\frac{3m^4}{256}=\frac12 \iff 3m^4-16m^3+128=0.
+\]
+Testing $m=2$: $48-128+128=48\neq0$. Testing $m\approx 2.4$: $3(33.1776)-16(13.824)+128=99.53-221.18+128=6.35$. Testing $m\approx2.5$: $117.19-250+128=-4.81$. Linear interpolation gives $m\approx 2.46$. Hence $m\approx 2.46$ (2 d.p.).
+
+\textbf{3. Lower quartile.} Solve $F(Q_1)=\tfrac14$:
+\[
+\frac{Q_1^3}{16}-\frac{3Q_1^4}{256}=\frac14 \iff 3Q_1^4-16Q_1^3+64=0.
+\]
+Try $Q_1=1.8$: $3(10.4976)-16(5.832)+64=31.49-93.31+64=2.18$. Try $Q_1=1.9$: $3(13.0321)-16(6.859)+64=39.10-109.74+64=-6.65$. Interpolating: $Q_1\approx 1.8+0.1\times\frac{2.18}{2.18+6.65}\approx 1.82$. So $Q_1\approx 1.82$ (2 d.p.).
+\end{exoresolu}
+
+\courssub{Skill 7 — Full GCE-style synthesis problem}
+
+\begin{methode}[Tackling a complete exam question]
+\begin{enumerate}
+\item \textbf{Read fully} and identify what is given (density with unknown constant, CDF, etc.).
+\item Use $\int f =1$ to find unknown constants.
+\item Answer each part with the right tool: probabilities (integrate or use $F$), $E$, $\operatorname{Var}$, mode (maximise $f$), median/quartiles (solve $F(q)=p$).
+\item \textbf{Present} exact values, then decimals to the required accuracy.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[GCE-style synthesis]
+The weekly demand $X$ (in hundreds of litres) for petrol at a fuel station in Yaoundé is modelled by
+\[
+f(x)=\begin{cases} kx(3-x)^2, & 0\leq x\leq 3,\\ 0, & \text{otherwise.}\end{cases}
+\]
+\begin{enumerate}
+\item Show that $k=\dfrac{4}{27}$.
+\item Find $E(X)$ and interpret it.
+\item Find $\operatorname{Var}(X)$.
+\item Find the mode of $X$.
+\item Find the CDF $F(x)$ and deduce the median, given that it satisfies $8m^4-36m^3+... $ — solve $F(m)=\tfrac12$ to 2 d.p.
+\item Find the probability that demand exceeds 200 litres in a week.
+\end{enumerate}
+\tcblower
+\textbf{1. Constant $k$.} Expand: $x(3-x)^2=x(9-6x+x^2)=9x-6x^2+x^3$.
+\[
+\int_0^3 k(9x-6x^2+x^3)\,dx=k\left[\frac{9x^2}{2}-2x^3+\frac{x^4}{4}\right]_0^3=k\left(\frac{81}{2}-54+\frac{81}{4}\right)=k\cdot\frac{162-216+81}{4}=\frac{27k}{4}.
+\]
+Setting $\frac{27k}{4}=1$ gives $k=\dfrac{4}{27}$. Also $f(x)\geq0$ on $[0,3]$, so $f$ is a density.
+
+\textbf{2. Mean.}
+\begin{align*}
+E(X)&=\frac{4}{27}\int_0^3 x(9x-6x^2+x^3)\,dx=\frac{4}{27}\int_0^3(9x^2-6x^3+x^4)\,dx\\
+&=\frac{4}{27}\left[3x^3-\frac{3x^4}{2}+\frac{x^5}{5}\right]_0^3=\frac{4}{27}\left(81-\frac{243}{2}+\frac{243}{5}\right)=\frac{4}{27}\cdot\frac{810-1215+486}{10}=\frac{4}{27}\cdot\frac{81}{10}=\frac{6}{5}=1.2.
+\end{align*}
+Average weekly demand is about $1.2\times100=120$ litres.
+
+\textbf{3. Variance.}
+\begin{align*}
+E(X^2)&=\frac{4}{27}\int_0^3(9x^3-6x^4+x^5)\,dx=\frac{4}{27}\left[\frac{9x^4}{4}-\frac{6x^5}{5}+\frac{x^6}{6}\right]_0^3\\
+&=\frac{4}{27}\left(\frac{729}{4}-\frac{1458}{5}+\frac{729}{6}\right)=\frac{4}{27}\cdot\frac{3645-5832+2430}{20}=\frac{4}{27}\cdot\frac{243}{20}=\frac{9}{5}.
+\end{align*}
+\[
+\operatorname{Var}(X)=\frac95-\left(\frac65\right)^2=\frac95-\frac{36}{25}=\frac{45-36}{25}=\frac{9}{25}=0.36.
+\]
+
+\textbf{4. Mode.} $f(x)=\frac{4}{27}(9x-6x^2+x^3)$, so $f'(x)=\frac{4}{27}(9-12x+3x^2)=\frac{12}{27}(x^2-4x+3)=\frac{4}{9}(x-1)(x-3)$.
+On $[0,3]$: $f'(x)=0$ at $x=1$ and $x=3$. Sign of $f'$: positive on $[0,1)$, negative on $(1,3)$. So $f$ has a maximum at $x=1$. Since $f(0)=f(3)=0$, the mode is $\boxed{1}$ (i.e.\ 100 litres).
+
+\textbf{5. CDF and median.} For $0\leq x\leq 3$:
+\[
+F(x)=\frac{4}{27}\int_0^x(9t-6t^2+t^3)\,dt=\frac{4}{27}\left(\frac{9x^2}{2}-2x^3+\frac{x^4}{4}\right)=\frac{18x^2-8x^3+x^4}{27}\cdot\frac{2}{2}=\frac{2x^2(9)-8x^3+x^4}{27}=\frac{x^4-8x^3+18x^2}{27}.
+\]
+Check: $F(3)=\frac{81-216+162}{27}=\frac{27}{27}=1$. \checkmark
+
+Median: solve $F(m)=\tfrac12$, i.e.\ $m^4-8m^3+18m^2=13.5$. Try $m=1.4$: $3.8416-21.952+35.28=17.17$ (too big). Try $m=1.2$: $2.0736-13.824+25.92=14.17$. Try $m=1.15$: $1.749-12.167+23.805=13.387$. Try $m=1.16$: $1.8106-12.484+24.2208=13.547$. Interpolating between $1.15$ and $1.16$: $m\approx 1.15+0.01\times\frac{13.5-13.387}{13.547-13.387}\approx 1.157$. So $m\approx 1.16$ (2 d.p.), i.e.\ about 116 litres.
+
+\textbf{6. $P(X>2)$.} Using the CDF:
+\[
+P(X>2)=1-F(2)=1-\frac{16-64+72}{27}=1-\frac{24}{27}=\frac{3}{27}=\frac19\approx 0.111.
+\]
+So there is about an $11\%$ chance that weekly demand exceeds 200 litres.
+\end{exoresolu}
+
+\begin{attention}[Common errors to avoid]
+\begin{itemize}
+\item Forgetting that $f$ must be non-negative \emph{and} integrate to $1$ — both conditions are required.
+\item Writing $\operatorname{Var}(X)=E(X^2)-E(X)$ instead of $E(X^2)-[E(X)]^2$.
+\item Confusing the mode (value of $x$) with the maximum value of $f$.
+\item Solving $F(m)=\tfrac12$ and accepting a root outside the support of $X$.
+\item Forgetting the pieces $F(x)=0$ and $F(x)=1$ when asked for the CDF "for all $x$".
+\item Believing $P(X=a)=f(a)$: for continuous variables, $P(X=a)=0$; only \emph{areas} give probabilities.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: properties of a density function]
+Let $X$ be a continuous random variable with probability density function $f$. For each of the following statements, choose the single correct answer and justify briefly.
+\begin{enumerate}
+\item A function $f$ is a probability density function on $\mathbb{R}$ if and only if:
+\begin{enumerate}
+\item $f(x) \geq 0$ for all $x$;
+\item $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$;
+\item $f(x) \geq 0$ for all $x$ \textbf{and} $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$;
+\item $0 \leq f(x) \leq 1$ for all $x$.
+\end{enumerate}
+\item If $X$ has density $f$, then $P(X = 2)$ equals:
+\begin{enumerate}
+\item $f(2)$;
+\item $0$;
+\item $F(2)$;
+\item $1 - F(2)$.
+\end{enumerate}
+\item The cumulative distribution function $F$ of a continuous random variable is always:
+\begin{enumerate}
+\item increasing and continuous;
+\item decreasing and continuous;
+\item increasing with possible jumps;
+\item differentiable everywhere.
+\end{enumerate}
+\item For a continuous random variable, the median $m$ satisfies:
+\begin{enumerate}
+\item $f(m) = \tfrac{1}{2}$;
+\item $F(m) = \tfrac{1}{2}$;
+\item $E(X) = m$;
+\item $P(X > m) = 1$.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false?]
+Answer \textbf{true} or \textbf{false} to each statement, justifying your answer with a proof or a counter-example. $X$ denotes a continuous random variable with density $f$ and cumulative distribution function $F$.
+\begin{enumerate}
+\item If $f(x) > 1$ for some value of $x$, then $f$ cannot be a probability density function.
+\item $P(a \leq X \leq b) = P(a < X < b)$ for all real numbers $a < b$.
+\item $E(X)$ always lies between the first quartile $Q_1$ and the third quartile $Q_3$.
+\item For all $x \in \mathbb{R}$, $f(x) = F'(x)$ wherever $F$ is differentiable.
+\item The mode of $X$ is the value of $x$ at which $F$ attains its maximum.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions and vocabulary]
+\begin{enumerate}
+\item Define precisely: the \cle{probability density function} of a continuous random variable; the \cle{cumulative distribution function}; the \cle{median}; the \cle{mode}.
+\item State the relation linking $P(X \leq x)$, $P(X \geq x)$ and $F(x)$.
+\item Write down the integral formulas giving $E(X)$ and $\mathrm{Var}(X)$ for a continuous random variable with density $f$ on $\mathbb{R}$.
+\item Give the equations that define the quartiles $Q_1$ and $Q_3$ of a continuous random variable.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+Let $X$ be the continuous random variable with density
+\[
+f(x) = \begin{cases} 2x & \text{if } 0 \leq x \leq 1, \\ 0 & \text{otherwise.} \end{cases}
+\]
+\begin{enumerate}
+\item Verify that $f$ is a probability density function.
+\item Compute $P\!\left(\tfrac{1}{2} \leq X \leq \tfrac{3}{4}\right)$.
+\item Determine the cumulative distribution function $F(x)$ for all $x \in \mathbb{R}$.
+\item Compute $E(X)$.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[{A polynomial density on $[0,1]$}]
+Let $X$ be the continuous random variable with density
+\[
+f(x) = \begin{cases} 3x^2 & \text{if } 0 \leq x \leq 1, \\ 0 & \text{otherwise.} \end{cases}
+\]
+\begin{enumerate}
+\item Check that $f$ is a density function and sketch its graph.
+\item Compute $E(X)$ and $\mathrm{Var}(X)$.
+\item Determine the mode of $X$.
+\item Determine the cumulative distribution function $F$.
+\item Compute the median $m$ and the quartiles $Q_1$ and $Q_3$. Compare $m$ with $E(X)$ and comment on the shape of the distribution.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Exponential waiting time]
+The lifetime $Y$ (in years) of an electronic component follows an exponential distribution with parameter $\lambda = 0.2$, that is,
+\[
+f(y) = \begin{cases} 0.2\,e^{-0.2y} & \text{if } y \geq 0, \\ 0 & \text{if } y < 0. \end{cases}
+\]
+\begin{enumerate}
+\item Determine the cumulative distribution function $F$ of $Y$.
+\item Compute the probability that the component lasts more than $5$ years.
+\item Determine the median lifetime $m$.
+\item Show that, for any exponential distribution, the probability that $Y$ exceeds its median is exactly $\tfrac{1}{2}$, and compute this probability directly using the survival function $P(Y > y) = e^{-\lambda y}$.
+\item Given that $E(Y) = \dfrac{1}{\lambda}$, compare the mean lifetime with the median lifetime.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Recovering the density from the CDF]
+A continuous random variable $X$ has cumulative distribution function
+\[
+F(x) = \begin{cases} 0 & \text{if } x < 0, \\[2pt] \dfrac{x^2}{4} & \text{if } 0 \leq x \leq 2, \\[4pt] 1 & \text{if } x > 2. \end{cases}
+\]
+\begin{enumerate}
+\item Verify that $F$ satisfies the properties of a cumulative distribution function.
+\item Deduce the probability density function $f$ of $X$.
+\item Compute $E(X)$ and $\mathrm{Var}(X)$.
+\item Determine the mode and the median of $X$.
+\item Compute $P(1 \leq X \leq 1.5)$ in two different ways: using $F$, then using $f$.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[A triangular distribution: river flow]
+The daily flow $D$ of a river (in $\mathrm{m^3\,s^{-1}}$) during the rainy season is modelled by a triangular distribution on $[10, 30]$ with mode at $20$: the density $f$ is affine on $[10,20]$, affine on $[20,30]$, zero outside $[10,30]$, continuous, and maximal at $d = 20$.
+\begin{enumerate}
+\item Using the fact that the total area under the density curve equals $1$, show that $f(20) = \dfrac{1}{10}$ and write down the expression of $f(d)$ on each interval.
+\item Compute the probability that the flow lies between $15$ and $25\ \mathrm{m^3\,s^{-1}}$.
+\item Determine the cumulative distribution function $F$ of $D$.
+\item Determine the median flow and interpret the result for the management of a small hydroelectric dam on this river.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[GCE style: a full study of a density] \hfill (12 marks)
+
+The continuous random variable $X$ has probability density function
+\[
+f(x) = \begin{cases} c(1 - x)^2 & \text{if } 0 \leq x \leq 1, \\ 0 & \text{otherwise,} \end{cases}
+\]
+where $c$ is a positive constant.
+\begin{enumerate}
+\item Show that $c = 3$. \hfill (2 marks)
+\item Sketch the graph of $f$ and state the mode of $X$. \hfill (2 marks)
+\item Show that $E(X) = \dfrac{1}{4}$ and compute $\mathrm{Var}(X)$. \hfill (3 marks)
+\item Find the cumulative distribution function $F(x)$ for all real $x$. \hfill (2 marks)
+\item Show that the median $m$ satisfies $(1 - m)^3 = \dfrac{1}{2}$, and deduce the exact value of $m$. \hfill (2 marks)
+\item Without further calculation, explain why $m > E(X)$, relating your answer to the shape of the density. \hfill (1 mark)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE style: lifetime of a water pump] \hfill (13 marks)
+
+In a village of the North West Region, the time $T$ (in months) before the first breakdown of a water pump is modelled as a continuous random variable with density
+\[
+f(t) = \begin{cases} \dfrac{k}{t^2} & \text{if } t \geq 1, \\[4pt] 0 & \text{if } t < 1, \end{cases}
+\]
+where $k$ is a constant.
+\begin{enumerate}
+\item Show that $k = 1$. \hfill (2 marks)
+\item Determine the cumulative distribution function $F$ of $T$. \hfill (2 marks)
+\item Compute the probability that the pump works without breakdown for more than $3$ months. \hfill (2 marks)
+\item Determine the median time before the first breakdown and interpret this value. \hfill (2 marks)
+\item Determine the quartiles $Q_1$ and $Q_3$, and the interquartile range. \hfill (3 marks)
+\item Show that $E(T)$ does not exist (the integral diverges). Explain why this model is nevertheless usable to compute probabilities and quantiles. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE style: synthesis problem on a density with parameter] \hfill (15 marks)
+
+A continuous random variable $X$, representing the mass (in kg) of a bag of cement leaving a factory, has density
+\[
+f(x) = \begin{cases} a + bx & \text{if } 49 \leq x \leq 51, \\ 0 & \text{otherwise,} \end{cases}
+\]
+where $a$ and $b$ are real constants. It is given that $E(X) = 50$.
+\begin{enumerate}
+\item Write down the two equations satisfied by $a$ and $b$, and show that $a = \tfrac{1}{2}$ and $b = 0$. \hfill (4 marks)
+\item Hence state the name of the distribution of $X$ and write down its density. \hfill (1 mark)
+\item Compute $\mathrm{Var}(X)$ and the standard deviation $\sigma(X)$. \hfill (3 marks)
+\item Determine the cumulative distribution function $F$ of $X$. \hfill (2 marks)
+\item A bag is accepted if its mass lies between $49.5$ kg and $50.5$ kg. Compute the probability that a randomly chosen bag is accepted. \hfill (2 marks)
+\item Determine the median and the quartiles of $X$. What do you notice? Justify your observation by a symmetry argument. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Exercices corrigés — Variables aléatoires continues}
+
+\begin{corrige}[Exercice 1 — QCM : propriétés d'une fonction de densité]
+\begin{enumerate}
+\item \textbf{Réponse (c).} Une fonction $f$ est une densité de probabilité sur $\mathbb{R}$ si et seulement si \textbf{les deux} conditions suivantes sont satisfaites simultanément~:
+\begin{itemize}
+\item $f(x) \geq 0$ pour tout $x \in \mathbb{R}$ (positivité) ;
+\item $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$ (probabilité totale égale à $1$).
+\end{itemize}
+La proposition (a) est insuffisante~: $f(x)=2$ sur $[0,1]$ (et $0$ ailleurs) est positive mais son intégrale vaut $2 \neq 1$.
+La proposition (b) est insuffisante~: $f(x)=x$ sur $[-1,\sqrt{3}]$ (et $0$ ailleurs) a une intégrale $\frac{(\sqrt{3})^2-(-1)^2}{2}=1$, mais $f(x)<0$ sur $[-1,0)$.
+La proposition (d) est fausse~: une densité n'est pas bornée par $1$ (exemple~: $f(x)=2$ sur $[0,\tfrac12]$).
+\item \textbf{Réponse (b).} Pour une variable aléatoire continue, $P(X = 2) = \displaystyle\int_{2}^{2} f(x)\,dx = 0$~: la surface sous la courbe au-dessus d'un point unique est nulle.
+\item \textbf{Réponse (a).} $F(x) = P(X \leq x) = \displaystyle\int_{-\infty}^{x} f(t)\,dt$. Comme $f \geq 0$, $F$ est croissante~; comme $X$ est continue, $F$ est continue sur $\mathbb{R}$ (pas de sauts). Elle n'est pas nécessairement dérivable partout (exemple~: aux angles d'une densité par morceaux).
+\item \textbf{Réponse (b).} La médiane $m$ est définie par $F(m) = \tfrac{1}{2}$, c'est-à-dire $P(X \leq m) = P(X \geq m) = \tfrac{1}{2}$. L'affirmation (a) confond densité et probabilité~; (c) est fausse en général (moyenne $\neq$ médiane pour les lois asymétriques)~; (d) donnerait $P(X>m)=1$, soit $F(m)=0$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 2 — Vrai ou faux ?]
+\begin{enumerate}
+\item \textbf{Faux.} Une densité n'est \emph{pas} tenue de satisfaire $f(x) \leq 1$~; seules les probabilités sont bornées par $1$, et les probabilités sont des \emph{aires} sous $f$, non des valeurs de $f$. Contre-exemple~: $f(x) = 2$ pour $x \in [0, \tfrac12]$ et $0$ ailleurs. Alors $f \geq 0$ et $\int_0^{1/2} 2\,dx = 1$, donc $f$ est une densité, pourtant $f(x) = 2 > 1$.
+\item \textbf{Vrai.} Comme $X$ est continue, $P(X = a) = P(X = b) = 0$. Donc
+\[ P(a \leq X \leq b) = P(a < X < b) + P(X=a) + P(X=b) = P(a < X < b). \]
+\item \textbf{Faux.} La moyenne n'est pas obligatoirement à l'intérieur de l'intervalle interquartile. Contre-exemple~: soit $X$ de densité
+\[ f(x) = \begin{cases} 0.99 & \text{si } 0 \leq x \leq 1, \\ 0.01 \times \frac{1}{10000} & \text{si } 1 < x \leq 10001, \\ 0 & \text{sinon.} \end{cases} \]
+(L'aire totale est $0.99 \times 1 + 0.01 \times 1 = 1$.)
+Sur $[0,1]$, $F(x) = 0.99x$. Donc $Q_1 \approx 0.253$ et $Q_3 \approx 0.758$.
+La moyenne vaut $E(X) = 0.99 \times 0.5 + 0.01 \times \frac{10001+1}{2} = 0.495 + 50.01 = 50.505$, qui est \emph{strictement supérieure à $Q_3$}. L'affirmation est donc fausse.
+\item \textbf{Vrai.} D'après le théorème fondamental de l'analyse, puisque $F(x) = \displaystyle\int_{-\infty}^{x} f(t)\,dt$, on a $F'(x) = f(x)$ en tout point où $f$ est continue, donc en tout point où $F$ est dérivable.
+\item \textbf{Faux.} Le mode est la valeur de $x$ où la \emph{densité} $f$ atteint son maximum, pas $F$. Comme $F$ est croissante avec $\lim_{x\to+\infty} F(x) = 1$, $F$ n'a pas de maximum atteint en un point fini. Contre-exemple~: pour $f(x) = 2x$ sur $[0,1]$, le mode est $x = 1$ (maximum de $f$), alors que $F(x) = x^2$ croît strictement vers $1$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 3 — Définitions et vocabulaire]
+\begin{enumerate}
+\item \textbf{Fonction de densité de probabilité~:} fonction $f : \mathbb{R} \to \mathbb{R}$ telle que $f(x) \geq 0$ pour tout $x$ et $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$~; les probabilités se calculent par $P(a \leq X \leq b) = \displaystyle\int_a^b f(x)\,dx$.
+\textbf{Fonction de répartition~:} fonction $F : \mathbb{R} \to [0,1]$ définie par $F(x) = P(X \leq x) = \displaystyle\int_{-\infty}^{x} f(t)\,dt$.
+\textbf{Médiane~:} réel $m$ tel que $F(m) = \tfrac{1}{2}$, c'est-à-dire $P(X \leq m) = P(X \geq m) = \tfrac12$.
+\textbf{Mode~:} valeur $x_0$ où la densité $f$ atteint son maximum~: $f(x_0) = \max f$.
+\item $P(X \leq x) = F(x)$ et, comme $P(X = x) = 0$, $P(X \geq x) = 1 - F(x)$. Donc $P(X \leq x) + P(X \geq x) = 1$.
+\item $\displaystyle E(X) = \int_{-\infty}^{+\infty} x f(x)\,dx$ et $\displaystyle \mathrm{Var}(X) = \int_{-\infty}^{+\infty} \big(x - E(X)\big)^2 f(x)\,dx = \int_{-\infty}^{+\infty} x^2 f(x)\,dx - \big(E(X)\big)^2$, pourvu que ces intégrales convergent.
+\item $Q_1$ et $Q_3$ sont définis par $F(Q_1) = \tfrac{1}{4}$ et $F(Q_3) = \tfrac{3}{4}$, c'est-à-dire $\displaystyle\int_{-\infty}^{Q_1} f(x)\,dx = \tfrac14$ et $\displaystyle\int_{-\infty}^{Q_3} f(x)\,dx = \tfrac34$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[{Exercice 4 — Calculs directs : $f(x)=2x$ sur $[0,1]$}]
+\begin{enumerate}
+\item $f(x) = 2x \geq 0$ sur $[0,1]$ et $f = 0$ ailleurs, donc $f \geq 0$ sur $\mathbb{R}$. De plus
+\[ \int_{-\infty}^{+\infty} f(x)\,dx = \int_0^1 2x\,dx = \Big[x^2\Big]_0^1 = 1. \]
+Les deux conditions sont vérifiées, $f$ est bien une densité de probabilité.
+\item $\displaystyle P\!\left(\tfrac12 \leq X \leq \tfrac34\right) = \int_{1/2}^{3/4} 2x\,dx = \Big[x^2\Big]_{1/2}^{3/4} = \frac{9}{16} - \frac{1}{4} = \frac{5}{16} = 0.3125.$
+\item Pour $x < 0$~: $F(x) = 0$. Pour $0 \leq x \leq 1$~: $F(x) = \displaystyle\int_0^x 2t\,dt = x^2$. Pour $x > 1$~: $F(x) = 1$. Donc
+\[ F(x) = \begin{cases} 0 & \text{si } x < 0, \\ x^2 & \text{si } 0 \leq x \leq 1, \\ 1 & \text{si } x > 1. \end{cases} \]
+\item $\displaystyle E(X) = \int_0^1 x \cdot 2x\,dx = \int_0^1 2x^2\,dx = \left[\frac{2x^3}{3}\right]_0^1 = \frac{2}{3}.$
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[{Exercice 5 — Densité polynomiale sur $[0,1]$ : $f(x)=3x^2$}]
+\begin{enumerate}
+\item $f(x) = 3x^2 \geq 0$ sur $[0,1]$, $f = 0$ ailleurs, et
+\[ \int_0^1 3x^2\,dx = \Big[x^3\Big]_0^1 = 1. \]
+$f$ est une densité. Son graphe est l'arc de parabole $y = 3x^2$ sur $[0,1]$, partant de $(0,0)$ pour arriver à $(1,3)$, et l'axe des abscisses hors de $[0,1]$.
+\item $\displaystyle E(X) = \int_0^1 x \cdot 3x^2\,dx = \int_0^1 3x^3\,dx = \frac{3}{4}.$
+$\displaystyle E(X^2) = \int_0^1 x^2 \cdot 3x^2\,dx = \int_0^1 3x^4\,dx = \frac{3}{5}.$
+\[ \mathrm{Var}(X) = E(X^2) - \big(E(X)\big)^2 = \frac{3}{5} - \frac{9}{16} = \frac{48 - 45}{80} = \frac{3}{80} = 0.0375. \]
+\item $f$ est strictement croissante sur $[0,1]$ (car $f'(x) = 6x > 0$ pour $x>0$), son maximum sur le support est atteint en $x = 1$. Le \cle{mode} est $1$.
+\item Pour $x < 0$~: $F(x) = 0$. Pour $0 \leq x \leq 1$~: $F(x) = \displaystyle\int_0^x 3t^2\,dt = x^3$. Pour $x > 1$~: $F(x) = 1$.
+\item Médiane~: $F(m) = m^3 = \tfrac12 \Rightarrow m = \sqrt[3]{\tfrac12} = 2^{-1/3} \approx 0.794$.
+Quartiles~: $Q_1^3 = \tfrac14 \Rightarrow Q_1 = 4^{-1/3} \approx 0.630$~; $Q_3^3 = \tfrac34 \Rightarrow Q_3 = \left(\tfrac34\right)^{1/3} \approx 0.909$.
+Comparaison~: $E(X) = 0.75 < m \approx 0.794$. La densité croît vers $1$ (masse concentrée près de la borne droite, queue étirée à gauche)~: la distribution est \emph{asymétrique à gauche} (asymétrie négative), ce qui tire la moyenne en dessous de la médiane. Ceci est cohérent avec l'ordre mode $1 > m > E(X)$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 6 — Temps d'attente exponentiel ($\lambda=0.2$)]
+\begin{enumerate}
+\item Pour $y < 0$~: $F(y) = 0$. Pour $y \geq 0$~:
+\[ F(y) = \int_0^y 0.2\,e^{-0.2t}\,dt = \Big[-e^{-0.2t}\Big]_0^y = 1 - e^{-0.2y}. \]
+\item $\displaystyle P(Y > 5) = 1 - F(5) = e^{-0.2 \times 5} = e^{-1} \approx 0.368.$
+\item Médiane~: $F(m) = \tfrac12 \Leftrightarrow 1 - e^{-0.2m} = \tfrac12 \Leftrightarrow e^{-0.2m} = \tfrac12 \Leftrightarrow 0.2m = \ln 2$, donc
+\[ m = \frac{\ln 2}{0.2} = 5\ln 2 \approx 3.47\ \mathrm{ans}. \]
+\item Par définition de la médiane, $P(Y > m) = 1 - F(m) = 1 - \tfrac12 = \tfrac12$. Directement avec la fonction de survie~:
+\[ P(Y > m) = e^{-\lambda m} = e^{-\lambda \cdot \frac{\ln 2}{\lambda}} = e^{-\ln 2} = \frac{1}{2}. \]
+\item $E(Y) = \dfrac{1}{\lambda} = \dfrac{1}{0.2} = 5\ \mathrm{ans}$, alors que $m = 5\ln 2 \approx 3.47\ \mathrm{ans}$. Donc $E(Y) > m$~: la loi exponentielle est asymétrique à droite (longue queue de très grandes durées de vie), ce qui tire la moyenne au-dessus de la médiane. Concrètement~: la moitié des composants tombent en panne avant environ $3,5$ ans, mais la durée de vie \emph{moyenne} est de $5$ ans.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 7 — Retrouver la densité à partir de la fonction de répartition]
+\begin{enumerate}
+\item Vérification des trois propriétés d'une fonction de répartition~:
+\begin{itemize}
+\item \textbf{Limites~:} $F(x) = 0$ pour $x<0$ donc $\lim_{-\infty} F = 0$~; $F(x) = 1$ pour $x > 2$ donc $\lim_{+\infty} F = 1$.
+\item \textbf{Croissance~:} sur $[0,2]$, $F(x) = \tfrac{x^2}{4}$ a pour dérivée $\tfrac{x}{2} \geq 0$~; constante ailleurs. Donc $F$ est croissante sur $\mathbb{R}$.
+\item \textbf{Continuité~:} en $x=0$~: $F(0^-) = 0 = F(0)$~; en $x=2$~: $F(2) = \tfrac{4}{4} = 1 = F(2^+)$. $F$ est continue partout.
+\end{itemize}
+$F$ est bien une fonction de répartition.
+\item $f(x) = F'(x)$ là où $F$ est dérivable~: $f(x) = \dfrac{x}{2}$ pour $0 \leq x \leq 2$, et $f(x) = 0$ sinon. (Vérification~: $\int_0^2 \tfrac{x}{2}\,dx = \left[\tfrac{x^2}{4}\right]_0^2 = 1$. \checkmark)
+\item $\displaystyle E(X) = \int_0^2 x\cdot\frac{x}{2}\,dx = \left[\frac{x^3}{6}\right]_0^2 = \frac{8}{6} = \frac{4}{3}.$
+$\displaystyle E(X^2) = \int_0^2 x^2\cdot\frac{x}{2}\,dx = \left[\frac{x^4}{8}\right]_0^2 = \frac{16}{8} = 2.$
+\[ \mathrm{Var}(X) = 2 - \left(\frac{4}{3}\right)^2 = 2 - \frac{16}{9} = \frac{2}{9} \approx 0.222. \]
+\item \textbf{Mode~:} $f(x) = \tfrac{x}{2}$ est croissante sur $[0,2]$, maximale en $x = 2$~: le mode est $2$.
+\textbf{Médiane~:} $F(m) = \tfrac12 \Leftrightarrow \dfrac{m^2}{4} = \dfrac12 \Leftrightarrow m^2 = 2 \Leftrightarrow m = \sqrt{2} \approx 1.414$ (on prend la racine dans $[0,2]$).
+\item \textbf{Par $F$~:} $P(1 \leq X \leq 1.5) = F(1.5) - F(1) = \dfrac{1.5^2}{4} - \dfrac{1}{4} = \dfrac{2.25 - 1}{4} = \dfrac{1.25}{4} = 0.3125.$
+\textbf{Par $f$~:} $\displaystyle P(1 \leq X \leq 1.5) = \int_1^{1.5} \frac{x}{2}\,dx = \left[\frac{x^2}{4}\right]_1^{1.5} = \frac{2.25 - 1}{4} = 0.3125.$ Même résultat, comme attendu.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercice 8 — Distribution triangulaire : débit d'une rivière]
+\begin{enumerate}
+\item Le graphe de $f$ sur $[10,30]$ est un triangle de base $30 - 10 = 20$ et de hauteur $h = f(20)$. L'aire totale vaut $1$~:
+\[ \frac{1}{2} \times 20 \times h = 1 \quad\Longrightarrow\quad h = \frac{1}{10}. \]
+Sur $[10,20]$, la droite passant par $(10,0)$ et $(20, \tfrac{1}{10})$ a pour pente $\dfrac{1/10}{10} = \dfrac{1}{100}$~: $f(d) = \dfrac{d-10}{100}$.
+Sur $[20,30]$, la droite passant par $(20,\tfrac{1}{10})$ et $(30,0)$ a pour pente $-\dfrac{1}{100}$~: $f(d) = \dfrac{30-d}{100}$.
+Ainsi
+\[ f(d) = \begin{cases} \dfrac{d-10}{100} & \text{si } 10 \leq d \leq 20, \\[4pt] \dfrac{30-d}{100} & \text{si } 20 \leq d \leq 30, \\[4pt] 0 & \text{sinon.} \end{cases} \]
+\item Par symétrie du triangle par rapport à $d = 20$, l'intervalle $[15,25]$ est symétrique par rapport au mode. Calcul~:
+\[ P(15 \leq D \leq 25) = 2\int_{15}^{20} \frac{d-10}{100}\,dd = 2\left[\frac{(d-10)^2}{200}\right]_{15}^{20} = 2 \times \frac{100 - 25}{200} = \frac{150}{200} = 0.75. \]
+(Autrement~: aire totale $1$ moins les deux triangles extérieurs d'aire $\tfrac12 \times 5 \times \tfrac{5}{100} = 0.125$ chacun~: $1 - 0.25 = 0.75$.)
+\item Pour $d < 10$~: $F(d) = 0$. Pour $10 \leq d \leq 20$~:
+\[ F(d) = \int_{10}^{d} \frac{t-10}{100}\,dt = \frac{(d-10)^2}{200}. \]
+Pour $20 \leq d \leq 30$~: $F(d) = F(20) + \displaystyle\int_{20}^{d} \frac{30-t}{100}\,dt = \frac{1}{2} + \left[\frac{30t - t^2/2}{100}\right]_{20}^{d}$. En calculant~: $\int_{20}^{d}\tfrac{30-t}{100}dt = \dfrac{1}{100}\left[30(d-20) - \dfrac{d^2 - 400}{2}\right] = \dfrac{-d^2 + 60d - 800}{200}$. Donc
+\[ F(d) = \frac{-d^2 + 60d - 800}{200} + \frac{1}{2} = \frac{-d^2 + 60d - 700}{200} = 1 - \frac{(30-d)^2}{200}. \]
+Pour $d > 30$~: $F(d) = 1$. (Vérification en $d = 20$~: $1 - \tfrac{100}{200} = \tfrac12$ \checkmark~; en $d = 30$~: $1$ \checkmark.)
+\item Médiane~: par symétrie de la densité par rapport à $d = 20$, $F(20) = \tfrac12$, donc $m = 20\ \mathrm{m^3\,s^{-1}}$. (Algébriquement, sur $[10,20]$~: $\tfrac{(m-10)^2}{200} = \tfrac12 \Rightarrow (m-10)^2 = 100 \Rightarrow m = 20$.)
+\textbf{Interprétation~:} la moitié des jours de la saison des pluies, le débit du fleuve est inférieur à $20\ \mathrm{m^3\,s^{-1}}$, et l'autre moitié supérieur. Pour le gestionnaire du barrage, une turbine dimensionnée pour un débit de $20\ \mathrm{m^3\,s^{-1}}$ tournera en dessous de sa capacité un jour sur deux en moyenne~; la médiane — et non le mode seul — est la valeur de référence pour le dimensionnement en capacité garantie.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[{Exercice 9 — Type GCE : étude complète d'une densité $c(1-x)^2$ sur $[0,1]$}]
+\begin{enumerate}
+\item $f$ est une densité, donc $\displaystyle\int_0^1 c(1-x)^2\,dx = 1$. Par le changement de variable $u = 1-x$~:
+\[ \int_0^1 c(1-x)^2\,dx = c\left[-\frac{(1-x)^3}{3}\right]_0^1 = c\left(0 + \frac{1}{3}\right) = \frac{c}{3} = 1 \quad\Longrightarrow\quad c = 3. \]
+\textit{[2 points : 1 pour l'intégrale égale à 1, 1 pour la valeur correcte.]}
+\item $f(x) = 3(1-x)^2$ sur $[0,1]$~: arc de parabole décroissant de $f(0) = 3$ à $f(1) = 0$, nul hors $[0,1]$. Comme $f'(x) = -6(1-x) \leq 0$ sur $[0,1]$, $f$ est décroissante et maximale en $x = 0$~: le \cle{mode} est $0$.
+\textit{[2 points : 1 pour un croquis correct (courbe passant par $(0,3)$ et $(1,0)$), 1 pour le mode.]}
+\item $\displaystyle E(X) = \int_0^1 3x(1-x)^2\,dx = 3\int_0^1 (x - 2x^2 + x^3)\,dx = 3\left[\frac{1}{2} - \frac{2}{3} + \frac{1}{4}\right] = 3 \times \frac{6 - 8 + 3}{12} = 3 \times \frac{1}{12} = \frac{1}{4}.$
+$\displaystyle E(X^2) = \int_0^1 3x^2(1-x)^2\,dx = 3\int_0^1 (x^2 - 2x^3 + x^4)\,dx = 3\left[\frac{1}{3} - \frac{1}{2} + \frac{1}{5}\right] = 3 \times \frac{10 - 15 + 6}{30} = \frac{1}{10}.$
+\[ \mathrm{Var}(X) = \frac{1}{10} - \left(\frac{1}{4}\right)^2 = \frac{1}{10} - \frac{1}{16} = \frac{8 - 5}{80} = \frac{3}{80} = 0.0375. \]
+\textit{[3 points : 1 pour $E(X)=\tfrac14$ montré, 1 pour $E(X^2)$, 1 pour la variance.]}
+\item Pour $x < 0$~: $F(x) = 0$. Pour $0 \leq x \leq 1$~:
+\[ F(x) = \int_0^x 3(1-t)^2\,dt = \Big[-(1-t)^3\Big]_0^x = 1 - (1-x)^3. \]
+Pour $x > 1$~: $F(x) = 1$.
+\textit{[2 points : 1 pour l'expression intégrale, 1 pour l'énoncé complet en trois parties.]}
+\item $F(m) = \tfrac12 \Leftrightarrow 1 - (1-m)^3 = \tfrac12 \Leftrightarrow (1-m)^3 = \tfrac12$. Donc $1 - m = \left(\tfrac12\right)^{1/3} = 2^{-1/3}$, soit
+\[ m = 1 - \frac{1}{\sqrt[3]{2}} = 1 - 2^{-1/3} \approx 0.206. \]
+\textit{[2 points : 1 pour l'équation, 1 pour la valeur exacte.]}
+\item La densité est \emph{décroissante} sur $[0,1]$~: la masse est concentrée près de $0$ (les petites valeurs de $X$ sont les plus probables) avec une queue étirée vers $1$. Cette asymétrie à droite tire la moyenne au-dessus du gros des données, d'où $E(X) = 0.25 > m \approx 0.206$.
+\textit{[1 point pour un commentaire correct liant l'asymétrie à la position de la moyenne par rapport à la médiane.]}
+\end{enumerate}
+\textbf{Attendus de l'examinateur~:} utilisation claire de $\int f = 1$~; développement de $(1-x)^2$ avant intégration~; la fonction de répartition donnée sur tout $\mathbb{R}$~; réponses exactes laissées sous forme de radicaux.
+\end{corrige}
+
+\begin{corrige}[Exercice 10 — Type GCE : durée de vie d'une pompe à eau]
+\begin{enumerate}
+\item $\displaystyle\int_1^{+\infty} \frac{k}{t^2}\,dt = k\left[-\frac{1}{t}\right]_1^{+\infty} = k(0 + 1) = k = 1$, car la probabilité totale doit valoir $1$. Donc $k = 1$.
+\textit{[2 points : 1 pour l'intégrale impropre correctement écrite avec une limite, 1 pour la valeur.]}
+\item Pour $t < 1$~: $F(t) = 0$. Pour $t \geq 1$~:
+\[ F(t) = \int_1^t \frac{du}{u^2} = \left[-\frac{1}{u}\right]_1^t = 1 - \frac{1}{t}. \]
+\textit{[2 points.]}
+\item $\displaystyle P(T > 3) = 1 - F(3) = \frac{1}{3} \approx 0.333.$ La probabilité que la pompe fonctionne plus de $3$ mois sans panne est $\tfrac13$.
+\textit{[2 points.]}
+\item Médiane~: $F(m) = \tfrac12 \Leftrightarrow 1 - \dfrac{1}{m} = \dfrac12 \Leftrightarrow \dfrac{1}{m} = \dfrac12 \Leftrightarrow m = 2$ mois.
+\textbf{Interprétation~:} la moitié des pompes subissent leur première panne avant $2$ mois de service, l'autre moitié après. Une visite de maintenance devrait donc être programmée bien avant $2$ mois si l'on veut prévenir les pannes pour la majorité des pompes.
+\textit{[2 points : 1 pour $m=2$, 1 pour l'interprétation.]}
+\item $Q_1$~: $1 - \dfrac{1}{Q_1} = \dfrac14 \Rightarrow \dfrac{1}{Q_1} = \dfrac34 \Rightarrow Q_1 = \dfrac{4}{3} \approx 1.33$ mois.
+$Q_3$~: $1 - \dfrac{1}{Q_3} = \dfrac34 \Rightarrow \dfrac{1}{Q_3} = \dfrac14 \Rightarrow Q_3 = 4$ mois.
+Écart interquartile~: $Q_3 - Q_1 = 4 - \dfrac43 = \dfrac{8}{3} \approx 2.67$ mois.
+\textit{[3 points : 1 pour chaque valeur.]}
+\item $\displaystyle E(T) = \int_1^{+\infty} t \cdot \frac{1}{t^2}\,dt = \int_1^{+\infty} \frac{dt}{t} = \Big[\ln t\Big]_1^{+\infty} = +\infty$~: l'intégrale diverge, donc $E(T)$ \textbf{n'existe pas} (la loi a une queue trop lourde).
+Cependant, le modèle reste parfaitement utilisable pour les probabilités et les quantiles~: ceux-ci ne requièrent que la fonction de répartition $F(t) = 1 - \tfrac1t$, qui est bien définie, puisque $\int_1^{+\infty} f = 1$ converge et $F$ est une fonction de répartition correcte. L'inexistence de la moyenne signifie simplement que «~durée de vie moyenne~» n'est pas un résumé pertinent pour ce modèle~; il faut utiliser les médianes et les quartiles.
+\textit{[2 points : 1 pour la divergence montrée, 1 pour le commentaire.]}
+\end{enumerate}
+\textbf{Attendus de l'examinateur~:} intégrales impropres gérées avec une limite $A \to +\infty$~; valeurs exactes~; phrase d'interprétation claire dans le contexte (pompe du village) pour la médiane.
+\end{corrige}
+
+\begin{corrige}[Exercice 11 — Type GCE : problème de synthèse sur une densité à paramètre]
+\begin{enumerate}
+\item \textbf{Première équation (probabilité totale)~:}
+\[ \int_{49}^{51} (a + bx)\,dx = \Big[ax + \tfrac{b}{2}x^2\Big]_{49}^{51} = 2a + \frac{b}{2}(51^2 - 49^2) = 2a + \frac{b}{2}(2601 - 2401) = 2a + 100b = 1. \]
+\textbf{Deuxième équation ($E(X) = 50$)~:}
+\[ \int_{49}^{51} x(a + bx)\,dx = \Big[\tfrac{a}{2}x^2 + \tfrac{b}{3}x^3\Big]_{49}^{51} = \frac{a}{2}(200) + \frac{b}{3}(51^3 - 49^3) = 100a + \frac{b}{3}(132651 - 117649) = 100a + \frac{15002}{3}b = 50. \]
+D'après la première équation, $a = \dfrac{1 - 100b}{2}$. En remplaçant dans la seconde~:
+\[ 100 \times \frac{1 - 100b}{2} + \frac{15002}{3}b = 50 \;\Longrightarrow\; 50 - 5000b + \frac{15002}{3}b = 50 \;\Longrightarrow\; b\left(\frac{15002}{3} - 5000\right) = 0 \;\Longrightarrow\; \frac{2}{3}b = 0, \]
+donc $b = 0$ et alors $a = \tfrac12$.
+\textit{[4 points : 1 par équation correctement posée, 1 pour la résolution, 1 pour les valeurs.]}
+(Argument plus rapide accepté~: l'intervalle $[49,51]$ est symétrique par rapport à $50$~; $E(X) = 50$ force le terme linéaire $bx$ à s'annuler, et $\int_{49}^{51} a\,dx = 2a = 1$ donne $a = \tfrac12$.)
+\item Avec $a = \tfrac12$, $b = 0$~: $f(x) = \tfrac12$ sur $[49, 51]$, $0$ ailleurs. C'est la \cle{loi uniforme} sur $[49,51]$, notée $X \sim \mathcal{U}([49,51])$.
+\textit{[1 point.]}
+\item $\displaystyle E(X^2) = \int_{49}^{51} \frac{x^2}{2}\,dx = \frac{51^3 - 49^3}{6} = \frac{15002}{6} = \frac{7501}{3}.$
+\[ \mathrm{Var}(X) = \frac{7501}{3} - 2500 = \frac{7501 - 7500}{3} = \frac{1}{3} \approx 0.333, \qquad \sigma(X) = \sqrt{\frac{1}{3}} = \frac{1}{\sqrt{3}} \approx 0.577\ \mathrm{kg}. \]
+(Ceci coïncide avec la formule standard $\mathrm{Var} = \dfrac{(b-a)^2}{12} = \dfrac{4}{12} = \dfrac13$.)
+\textit{[3 points : 1 pour $E(X^2)$, 1 pour la variance, 1 pour $\sigma$.]}
+\item Pour $x < 49$~: $F(x) = 0$. Pour $49 \leq x \leq 51$~: $F(x) = \displaystyle\int_{49}^{x} \frac{dt}{2} = \frac{x - 49}{2}$. Pour $x > 51$~: $F(x) = 1$.
+\textit{[2 points.]}
+\item $\displaystyle P(49.5 \leq X \leq 50.5) = F(50.5) - F(49.5) = \frac{1.5}{2} - \frac{0.5}{2} = \frac{1}{2}.$ La moitié des sacs sont acceptés.
+\textit{[2 points.]}
+\item Médiane~: $F(m) = \tfrac12 \Rightarrow \dfrac{m - 49}{2} = \dfrac12 \Rightarrow m = 50$ kg.
+Quartiles~: $\dfrac{Q_1 - 49}{2} = \dfrac14 \Rightarrow Q_1 = 49.5$ kg~; $\dfrac{Q_3 - 49}{2} = \dfrac34 \Rightarrow Q_3 = 50.5$ kg.
+\textbf{Observation~:} $E(X) = m = 50$ et les quartiles sont symétriques par rapport à $50$ ($Q_1 = 50 - 0.5$, $Q_3 = 50 + 0.5$). \textbf{Justification~:} la densité est constante, donc symétrique par rapport au centre $x = 50$ de l'intervalle~: $f(50 + h) = f(50 - h)$ pour tout $h$. Pour toute densité symétrique, la moyenne et la médiane coïncident avec le centre de symétrie, et les quartiles sont à distances égales de ce centre.
+\textit{[3 points : 1 pour les trois valeurs, 1 pour l'observation, 1 pour l'argument de symétrie.]}
+\end{enumerate}
+\textbf{Attendus de l'examinateur~:} calculs exacts avec $51^2 - 49^2 = 200$ et $51^3 - 49^3 = 15002$ (les identités remarquables différence de carrés/cubes sont les bienvenues)~; reconnaissance de la loi uniforme~; argument de symétrie correctement articulé à la dernière question.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap,
+  grow cyclic,
+  every node/.style={concept, text=white, align=center, font=\small},
+  root concept/.append style={concept color=popdark, font=\bfseries\small, text width=2.6cm},
+  level 1/.append style={level distance=3.6cm, sibling angle=60},
+  level 1 concept/.append style={text width=2.4cm, font=\scriptsize}
+]
+\node[root concept]{Continuous Random Variables}
+  child[concept color=popblue]{ node {PDF $f(x)$: $f\ge 0$, $\int f=1$} }
+  child[concept color=popgreen]{ node {Probabilities: $P(a\le X\le b)=\int_a^b f$} }
+  child[concept color=poporange]{ node {$E(X)$, $\mathrm{Var}(X)$, mode} }
+  child[concept color=poppurple]{ node {CDF $F(x)=\int_{-\infty}^{x}f$} }
+  child[concept color=poppink]{ node {$F'=f$; $P(a\le X\le b)=F(b)-F(a)$} }
+  child[concept color=popgold]{ node {Median $m$: $F(m)=\tfrac12$; quartiles} };
+\end{tikzpicture}
+\legende{Mind map of Chapter FMA19: Continuous Random Variables.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+  \item A \cle{continuous random variable} $X$ takes any value in an interval of $\mathbb{R}$; probabilities are given by areas under a curve.
+  \item A \cle{probability density function} (PDF) $f$ satisfies: $f(x)\ge 0$ for all $x$, and $\displaystyle\int_{-\infty}^{+\infty} f(x)\,dx = 1$.
+  \item $\displaystyle P(a\le X\le b)=\int_a^b f(x)\,dx$. For a continuous variable, $P(X=c)=0$ for every single value $c$.
+  \item The \cle{cumulative distribution function} (CDF): $\displaystyle F(x)=P(X\le x)=\int_{-\infty}^{x} f(t)\,dt$.
+  \item The \cle{mode} is the value of $x$ where $f$ is maximum; the \cle{median} $m$ satisfies $F(m)=\tfrac12$; \cle{quartiles} $Q_1,Q_3$ satisfy $F(Q_1)=\tfrac14$, $F(Q_3)=\tfrac34$.
+\end{itemize}
+
+\textbf{Formulas and results to know}
+\begin{itemize}
+  \item Expectation: $\displaystyle E(X)=\int_{-\infty}^{+\infty} x\,f(x)\,dx$; \quad $\displaystyle E(g(X))=\int_{-\infty}^{+\infty} g(x)f(x)\,dx$.
+  \item Variance: $\mathrm{Var}(X)=E(X^2)-[E(X)]^2$ with $\displaystyle E(X^2)=\int x^2 f(x)\,dx$.
+  \item Linearity: $E(aX+b)=aE(X)+b$; \quad $\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)$.
+  \item Properties of the CDF: $F$ is increasing and continuous; $\lim_{x\to-\infty}F(x)=0$, $\lim_{x\to+\infty}F(x)=1$; $F'(x)=f(x)$ where $f$ is continuous.
+  \item $P(a\le X\le b)=F(b)-F(a)$; \quad $P(X\ge a)=1-F(a)$.
+  \item Unknown constant $k$ in a PDF: solve $\displaystyle\int f(x)\,dx = 1$.
+\end{itemize}
+
+\textbf{Methods}
+\begin{enumerate}
+  \item \textbf{Find a constant $k$:} write the total-area condition over the support only, integrate, solve.
+  \item \textbf{Build $F$ piecewise:} $F(x)=0$ below the support, $F(x)=1$ above it, and $F(x)=\int_{\text{lower bound}}^{x} f(t)\,dt$ inside; check continuity at the joints.
+  \item \textbf{Median/quartiles:} solve $F(x)=p$ in the correct piece; reject roots outside the interval.
+  \item \textbf{Mode:} differentiate $f$ on its support, solve $f'(x)=0$, confirm a maximum (sign of $f'$ or $f''<0$); check endpoints too.
+\end{enumerate}
+
+\textbf{Common mistakes}
+\begin{itemize}
+  \item Believing $f(x)$ is a probability: $f(x)$ can exceed $1$; only \emph{areas} are probabilities.
+  \item Writing $P(X=c)>0$: for a continuous variable $P(X=c)=0$, so $P(a\le X\le b)=P(a<X<b)$.
+  \item Forgetting the pieces of $F$ outside the support, or getting a discontinuous $F$.
+  \item Mixing up $\mathrm{Var}(X)=E(X^2)-(E(X))^2$ with $(E(X))^2-E(X^2)$ (variance is non-negative).
+  \item Solving $F(x)=\tfrac12$ in the wrong piece of a piecewise CDF.
+  \item Integrating over $\mathbb{R}$ when the support is a bounded interval.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+  \item Always state the support of $X$ first; it fixes all integration bounds.
+  \item Show the condition $\int f = 1$ explicitly when justifying that $f$ is a PDF.
+  \item Check your CDF: it must be continuous, increasing, from $0$ to $1$ — a quick sanity check earns method marks.
+  \item For quartiles, write the equation $F(Q)=p$ before solving; examiners reward the setup.
+  \item Keep exact values (fractions, surds) until the final line, then round to the required accuracy.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
