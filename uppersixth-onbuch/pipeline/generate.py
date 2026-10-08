@@ -338,15 +338,17 @@ def ce_fix(body):
             return _ce_math(inner)
         arrow = "->" in inner or "<=>" in inner or "<-" in inner
         if arrow:
-            return re.sub(r"(?<=[A-Za-z\)])'", lambda _k: "$^\\prime$", s)
+            return re.sub(r"(?<=[A-Z\)])'", lambda _k: "$^\\prime$", s)
         if ("_{" in inner or "'" in inner) and "\\" not in inner and "$" not in inner:
-            return "\\ensuremath{\\mathrm{" + inner.replace("'", "^{\\prime}") + "}}"
+            return "\\ensuremath{\\mathrm{" + re.sub(r"(?<=[A-Z\)])'", "^{\\prime}", inner) + "}}"
         return s
     return re.sub(r"\\ce" + _BR, one, body)
 
 
 def repair_damage(body):
     """Répare les dégâts d'anciennes règles : $^{..}$ à l'intérieur d'un contexte déjà math."""
+    body = re.sub(r"\^\\prime(?=[a-z])", "'", body)
+    body = re.sub(r"\$\^\\prime\$(?=[a-z])", "'", body)
     def strip(m):
         return re.sub(r"\$([\^_]\{[^{}]*\})\$", r"\1", m.group(0))
     return re.sub(r"\\(?:ensuremath|mathrm|SI|si)" + _BR + "(?:" + _BR + ")?", strip, body)
@@ -357,6 +359,14 @@ def us_fix(body):
     body = repair_damage(body)
     body = ce_fix(body)
     body = text_scripts_fix(body)
+    def _fmt(m):  # ^ / _ dans \textbf/\emph/\textit (y compris dans les nœuds TikZ)
+        inner = m.group(2)
+        if "$" in inner or "\\" in inner:
+            return m.group(0)
+        inner = re.sub(r"\^(\{[^{}]*\}|\w)", lambda k: "$^{" + k.group(1).strip("{}") + "}$", inner)
+        inner = re.sub(r"(?<!\\)_(\{[^{}]*\}|\w)", lambda k: "$_{" + k.group(1).strip("{}") + "}$", inner)
+        return m.group(1) + "{" + inner + "}"
+    body = re.sub(r"(\\(?:emph|textbf|textit))\{([^{}]*[\^_][^{}]*)\}", _fmt, body)
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
     body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info)\}",
@@ -907,10 +917,21 @@ Reply ONLY with a valid JSON object (no Markdown):
  "exercices_idees": ["exam-style exercise idea", "..."]
 }}
 Constraints: exactly {ns} sections (the chapter is large: split it sensibly so that each section is a coherent part of at most about 2500 words); each section has 4 to 10 precise content points, at least 1 relevant illustration when natural, and 3 to 6 pedagogical boxes."""
-    txt = llm([{"role": "system", "content": f"You are a MINESEC / GCE Board pedagogical inspector for {MATIERE_LABEL} and a designer of premium courses. You reply only with valid JSON."},
-               {"role": "user", "content": prompt}], WRITER_MODELS, max_tokens=8000, temperature=0.4)
-    m = re.search(r"\{.*\}", strip_fences(txt), re.S)
-    plan = json.loads(m.group(0))
+    plan = None
+    for attempt in range(4):
+        txt = llm([{"role": "system", "content": f"You are a MINESEC / GCE Board pedagogical inspector for {MATIERE_LABEL} and a designer of premium courses. You reply only with valid JSON."},
+                   {"role": "user", "content": prompt}], WRITER_MODELS[attempt % 2:] + WRITER_MODELS[:attempt % 2], max_tokens=8000, temperature=0.4)
+        m = re.search(r"\{.*\}", strip_fences(txt), re.S)
+        try:
+            plan = json.loads(m.group(0))
+            if plan.get("sections") and plan.get("objectifs") and plan.get("prerequis") and plan.get("activite"):
+                break
+        except Exception:  # noqa: BLE001
+            pass
+        log(f"[{L['id']}] plan invalide, nouvel essai {attempt+1}/4")
+        plan = None
+    if plan is None:
+        raise RuntimeError("plan JSON invalide après 4 essais")
     f.write_text(json.dumps(plan, ensure_ascii=False, indent=1))
     return plan
 
