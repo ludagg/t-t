@@ -1,0 +1,2287 @@
+% Categories of software — Computer Science Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic CSC08-categories-of-software.tex
+\newcommand{\DOCMATIERE}{Computer Science}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Computer Science}
+\newcommand{\DOCLECON}{8}
+\newcommand{\DOCTITRE}{Categories of software}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Categories of software}{Computer Science}{Upper Sixth}{Upper Sixth — Computer Science}{8}{1 periods}{This chapter presents the great families of software found on any computer system and the criteria used to classify them. Students learn to distinguish system software from application software, to identify utility and development tools, and to classify software according to usage rights — skills frequently examined at the GCE Advanced Level.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define software and distinguish it from hardware.
+\item By the end of this chapter I can state the main criteria used to classify software.
+\item By the end of this chapter I can describe the role of system software and give examples (operating systems, drivers, firmware).
+\item By the end of this chapter I can describe application software and classify it into general-purpose and special-purpose (bespoke) software.
+\item By the end of this chapter I can identify utility software and programming/development software and explain their roles.
+\item By the end of this chapter I can classify software according to usage rights: proprietary, freeware, shareware, open source and public domain.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Software: concept and classification criteria
+\item System software
+\item Application software
+\item Classification by usage rights and synthesis
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define software and distinguish it from hardware.
+\item By the end of this chapter I can state the main criteria used to classify software.
+\item By the end of this chapter I can describe the role of system software and give examples (operating systems, drivers, firmware).
+\item By the end of this chapter I can describe application software and classify it into general-purpose and special-purpose (bespoke) software.
+\item By the end of this chapter I can identify utility software and programming/development software and explain their roles.
+\item By the end of this chapter I can classify software according to usage rights: proprietary, freeware, shareware, open source and public domain.
+\item By the end of this chapter I can classify any given software into its correct category and justify my choice in an examination context.
+\item By the end of this chapter I can advise a user on the appropriate category of software for a given need.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Definition of a computer system: hardware and software components (Lower Sixth).
+\item Basic notion of an operating system as the program that starts the computer (Lower Sixth).
+\item Vocabulary: program, data, file, user, licence.
+\item Everyday experience of using common applications (word processor, browser, media player).
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Software: concept and classification criteria}
+
+\courssub{From the cybercafé to the classroom: why classify software?}
+
+At a cybercafé in Bamenda, a student pays to type her CV on a computer running Windows 11, Microsoft Word, an antivirus, and a small billing program written by a local developer. Why does the computer need Windows before Word can even start? Why is the antivirus always running in the background, and why did the developer's program cost money while the web browser was free? Behind these everyday questions lies a fundamental idea: \emph{not all software plays the same role on a computer}. This chapter teaches you to recognise, classify and justify the category of any software you meet — a classic GCE Advanced Level question.
+
+The problem we must solve is therefore the following: given any piece of software (Windows, Word, an antivirus, a billing program, a free browser), how can we describe it \textbf{precisely} and \textbf{rigorously}, so that two computer scientists anywhere in the world understand each other without ambiguity? The answer is a \cle{classification}: a small number of clear criteria that sort every software product into well-defined families.
+
+\courssub{Recall: the place of software in a computer system}
+
+From Lower Sixth you already know that a \cle{computer system} is made of three inseparable components:
+
+\begin{itemize}
+\item the \cle{hardware}: the physical, tangible part — the parts you can touch (keyboard, screen, processor, memory, hard disk);
+\item the \cle{software}: the intangible part — the programs and data that make the hardware work;
+\item the \cle{users} (sometimes called \emph{liveware}): the human beings who operate the machine.
+\end{itemize}
+
+Hardware without software is like a generator without fuel and without a driver: powerful, but completely useless. Software is what transforms an inert collection of electronic circuits into a tool that can type a CV, play music, or compute a school's report cards.
+
+\begin{definition}[Software]
+\cle{Software} is the set of \textbf{programs}, \textbf{procedures} and \textbf{data} that instruct the hardware of a computer what to do and how to do it. It is the intangible (non-material) part of a computer system.
+\end{definition}
+
+\begin{definition}[Program]
+A \cle{program} is an ordered sequence of \textbf{instructions}, written in a \textbf{programming language}, which the computer executes in order to perform a precise task.
+\end{definition}
+
+Notice the hierarchy: a single instruction (``add these two numbers'') is the atom; a program is an ordered collection of instructions; software is a collection of programs together with the data and documentation they need. Microsoft Word, for instance, is \emph{software}: it contains many programs (for editing, printing, spell-checking) plus data files (dictionaries, templates).
+
+\begin{attention}[Software $\neq$ a program]
+A very common mistake in the GCE examination is to use ``software'' and ``program'' as synonyms. They are not. A \cle{program} is \emph{one} element; \cle{software} is the \emph{whole set} of programs, procedures and data. Saying ``I installed a software'' to mean one small program is imprecise: you installed \emph{a program}, which is \emph{part of} the software of the machine. In your answers, always ask yourself: am I talking about one element (program) or about the whole collection (software)?
+\end{attention}
+
+\courssub{Why do we classify software?}
+
+Classifying is not a game for examiners. It has concrete, practical purposes:
+
+\begin{enumerate}
+\item \textbf{To understand roles.} Knowing that Windows is \emph{system software} immediately tells you that the machine cannot function without it, whereas deleting a game does not stop the computer from working.
+\item \textbf{To choose the right tool.} A business in Douala that needs payroll must know whether a general-purpose spreadsheet is enough or whether special-purpose payroll software is required.
+\item \textbf{To manage licences and costs.} Before installing anything, a school or company must know whether the software is paid (proprietary) or free/open, because this determines the budget and the legal rights of use, modification and redistribution.
+\end{enumerate}
+
+\begin{methode}[The three questions to ask before classifying any software]
+Faced with any software product, ask these three questions in order:
+\begin{enumerate}
+\item \textbf{What role?} Does it manage the machine itself (system software), or does it serve a user's task (application software)? Is it perhaps a supporting tool (utility, development tool)?
+\item \textbf{What licence?} Must you pay and respect restrictions (proprietary), or is it free to use, study, modify and share (free/open source)?
+\item \textbf{General or specific purpose?} Can it serve many different tasks and users (general-purpose), or was it built for one precise task or one specific client (special-purpose/bespoke)?
+\end{enumerate}
+The three answers together give the complete classification of the product.
+\end{methode}
+
+\courssub{Criterion 1 — Role or function in the system}
+
+The first and most important criterion is the \textbf{role} the software plays inside the computer system. It divides software into two great families, with two supporting families.
+
+\begin{definition}[System software and application software]
+\cle{System software} is software that manages, controls and supports the computer hardware so that other programs can run. Its main representative is the \textbf{operating system} (Windows, Linux, Android). It also includes \textbf{device drivers} and \textbf{language translators} (compilers, interpreters, assemblers).
+\cle{Application software} is software that performs a task directly useful to the \emph{user}: typing a letter, browsing the web, calculating a budget.
+\end{definition}
+
+Between and around these two families stand two supporting families:
+
+\begin{itemize}
+\item \cle{Utilities} (or utility programs): small service programs that maintain, protect and optimise the system (antivirus, disk cleanup, compression tools, backup tools, file managers). They assist the system software.
+\item \cle{Development tools} (or programming tools): programs used to \emph{create} other programs (compilers, interpreters, editors, debuggers, linkers, loaders). They serve the programmer rather than the ordinary end-user.
+\end{itemize}
+
+The relationship between these families and the hardware is best seen as a stack of layers: each layer can only work because the layer below it does its job.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\draw[fill=popmuted, draw=popdark, rounded corners=2pt] (0,0) rectangle (8,1.2);
+\node at (4,0.6) {\textbf{Hardware} (processor, memory, disk, screen)};
+\draw[fill=popblueL, draw=popblue, rounded corners=2pt] (0,1.4) rectangle (8,2.6);
+\node at (4,2.0) {\textbf{System software} (OS, drivers, translators, utilities)};
+\draw[fill=popgreenL, draw=popgreen, rounded corners=2pt] (0,2.8) rectangle (8,4.0);
+\node at (4,3.4) {\textbf{Application software} (Word, browser, billing program)};
+\draw[fill=poppink!25, draw=poppurple, rounded corners=2pt] (0,4.2) rectangle (8,5.4);
+\node at (4,4.8) {\textbf{User} (the student typing her CV)};
+\draw[-{Stealth}, thick, popdark] (8.4,0.6) -- (8.4,4.8);
+\node[rotate=90, anchor=south] at (8.65,2.7) {\footnotesize each layer serves the one above};
+\end{tikzpicture}
+\end{center}
+\legende{The layered view of a computer system: the user interacts with applications, which rely on the system software, which drives the hardware.}
+\end{popfigure}
+
+This layered diagram answers the cybercafé question directly: Word cannot start before Windows because Word is an \emph{application} — it asks the operating system for memory, files and screen space. The antivirus runs permanently in the background because it is a \emph{utility}: its job is precisely to watch over the system at all times.
+
+\courssub{Criterion 2 — Usage rights: the licence}
+
+The second criterion concerns the \textbf{legal rights} attached to the software, defined by its \cle{licence} (the contract between the producer and the user).
+
+\begin{definition}[Proprietary software and free/open source software]
+\cle{Proprietary software} is software whose use is restricted by a licence (usually paid): the user may use it under conditions, but may \emph{not} see the source code, modify it, or redistribute it. Examples: Microsoft Windows, Microsoft Office, Adobe Photoshop.
+\cle{Free software} (often called \emph{open source software}) is software distributed with a licence that grants the freedom to \textbf{use}, \textbf{study} (the source code is available), \textbf{modify} and \textbf{redistribute} it. Examples: GNU/Linux, LibreOffice, Mozilla Firefox, VLC media player.
+\end{definition}
+
+\begin{attention}[``Free'' does not always mean ``free of charge'']
+Do not confuse \emph{free software} (freedom to use, study, modify, share) with \emph{freeware} (distributed at no cost but still closed and restricted). A free browser may cost nothing \emph{and} be open source; another program may cost nothing yet remain proprietary. In the exam, justify your answer by the \textbf{rights granted by the licence}, not only by the price.
+\end{attention}
+
+This criterion explains why the local developer's billing program cost money (proprietary licence — it is his work and his income) while the web browser was free to install (open licence).
+
+\courssub{Criterion 3 — Distribution of purpose: general or specific}
+
+The third criterion looks at \textbf{for whom and for what} the software was built.
+
+\begin{definition}[General-purpose and special-purpose software]
+\cle{General-purpose software} is designed to serve a wide variety of users and tasks: a word processor can type a CV, a letter or a novel; a spreadsheet can handle a budget, marks or stock. It is sold ``off the shelf'' or downloaded for immediate use.
+\cle{Special-purpose software} (also called \emph{bespoke} or \emph{customised} software) is designed for \textbf{one specific task} or \textbf{one specific client}: the billing program of the Bamenda cybercafé, the examination-results system of a school, the software of an ATM machine, the control system of a factory robot.
+\end{definition}
+
+General-purpose software is cheaper per user and immediately available, but may not fit a particular need perfectly. Special-purpose software fits the need exactly, but is expensive to develop and maintain, because the cost is not shared among thousands of buyers.
+
+\courssub{The complete classification tree}
+
+The three criteria are \emph{independent}: they can be combined freely. The mind map below summarises the classification used throughout this chapter.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  centre/.style={circle, draw=popdark, fill=popgold!40, thick, minimum size=1.6cm, align=center},
+  crit/.style={rectangle, draw=popblue, fill=popblueL, rounded corners=3pt, align=center, text width=2.6cm},
+  leaf/.style={rectangle, draw=popgreen, fill=popgreenL, rounded corners=2pt, align=center, text width=2.4cm, font=\footnotesize}]
+\node[centre] (S) at (0,0) {\textbf{Software}};
+\node[crit, align=center] (R) at (-5.2,2.2){\textbf{By role}\\ (function in the system)};
+\node[crit, align=center] (L) at (0,3.4){\textbf{By licence}\\ (usage rights)};
+\node[crit, align=center] (P) at (5.2,2.2){\textbf{By purpose}\\ (general or specific)};
+\draw[thick, popdark] (S) -- (R);
+\draw[thick, popdark] (S) -- (L);
+\draw[thick, popdark] (S) -- (P);
+\node[leaf, align=center] (R1) at (-7.6,0.2){System software\\ (OS, drivers, translators)};
+\node[leaf] (R2) at (-5.2,-0.6) {Application software};
+\node[leaf, align=center] (R3) at (-2.8,0.2){Utilities \&\\ development tools};
+\draw[popblue] (R) -- (R1); \draw[popblue] (R) -- (R2); \draw[popblue] (R) -- (R3);
+\node[leaf] (L1) at (-1.6,5.2) {Proprietary};
+\node[leaf] (L2) at (1.6,5.2) {Free / open source};
+\draw[popblue] (L) -- (L1); \draw[popblue] (L) -- (L2);
+\node[leaf] (P1) at (3.6,0.2) {General-purpose};
+\node[leaf, align=center] (P2) at (6.8,-0.6){Special-purpose\\ (bespoke)};
+\draw[popblue] (P) -- (P1); \draw[popblue] (P) -- (P2);
+\end{tikzpicture}
+\end{center}
+\legende{Mind map of the three classification criteria for software. Any product can be described by one branch of each criterion.}
+\end{popfigure}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A computer system = \textbf{hardware} + \textbf{software} + \textbf{users}; software is the intangible part.
+\item \textbf{Software} = set of programs, procedures and data; a \textbf{program} = one ordered sequence of instructions in a programming language.
+\item Three classification criteria: \textbf{role} (system / application / utilities / development tools), \textbf{licence} (proprietary / free-open source), \textbf{purpose} (general / special).
+\item The criteria combine: one product has one answer on each axis.
+\end{itemize}
+\end{aretenir}
+
+\begin{exemplebox}[Classifying the cybercafé software]
+Apply the three questions to the Bamenda cybercafé:
+\begin{itemize}
+\item \textbf{Windows 11}: system software (role); proprietary (licence); general-purpose (purpose).
+\item \textbf{Microsoft Word}: application software; proprietary; general-purpose.
+\item \textbf{The antivirus}: utility (supporting the system); proprietary or free depending on the product; special-purpose (one precise task: protection).
+\item \textbf{The billing program}: application software; proprietary (paid to the developer); special-purpose (bespoke, written for this cybercafé).
+\item \textbf{The free browser}: application software; free/open source; general-purpose.
+\end{itemize}
+\end{exemplebox}
+
+\begin{propriete}[A product belongs to several classifications at once]
+The three criteria are independent dimensions, not rival boxes. One software product is therefore described by \textbf{one value on each criterion simultaneously}. For example, \textbf{Linux} is \emph{system software} (role) \emph{and} \emph{open source} (licence) \emph{and} \emph{general-purpose} (it runs servers, phones and desktops). Saying ``Linux is open source, so it is not system software'' is a logical error: the two statements concern different criteria. (This remark is directly examinable as a justification question.)
+\end{propriete}
+
+\begin{exoresolu}[Classifying unfamiliar software]
+\textbf{Statement.} A hospital in Yaoundé buys (i) a licence of Microsoft Excel for its accountants, (ii) a patient-records program written on demand by a software company specifically for that hospital, and (iii) installs the Ubuntu operating system on its machines. For each product, give its category according to each of the three criteria, justifying briefly.
+\tcblower
+\textbf{Solution.} We apply the three questions of the method.
+\begin{itemize}
+\item \textbf{(i) Microsoft Excel.} Role: \emph{application software} — it performs a user task (calculations, tables). Licence: \emph{proprietary} — a paid Microsoft licence, source code closed. Purpose: \emph{general-purpose} — the same spreadsheet serves accountants, teachers and traders.
+\item \textbf{(ii) Patient-records program.} Role: \emph{application software} — it serves the hospital staff's task directly. Licence: \emph{proprietary} — developed and sold under contract. Purpose: \emph{special-purpose (bespoke)} — written for one client and one precise task; it cannot be bought off the shelf by another user.
+\item \textbf{(iii) Ubuntu.} Role: \emph{system software} — it is an operating system that manages the hardware and allows the other programs to run. Licence: \emph{free/open source} — it may be used, studied, modified and redistributed. Purpose: \emph{general-purpose} — it can run many kinds of machines and applications.
+\end{itemize}
+\textbf{Remark.} Note that (i) and (ii) are both application software, yet they differ on the purpose criterion: this shows why all three criteria are needed for a complete description.
+\end{exoresolu}
+
+\begin{exercice}[Classify your own environment]
+List five pieces of software you have used this month (on a computer or a smartphone). For each one, answer the three questions of the method (role? licence? general or specific purpose?) and present your answer as a table with three columns, one per criterion. Then identify which of them the machine could \emph{not} function without, and explain why in two sentences.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+A possible answer (yours may differ): WhatsApp — application, proprietary (freeware), general-purpose; Android — system software (operating system), open source at its core, general-purpose; a calculator app — application, free, general-purpose; a school's report-card program — application, proprietary, special-purpose; an antivirus — utility, proprietary, special-purpose. The machine cannot function without the \textbf{operating system} (Android), because as system software it manages the hardware and provides the services (memory, files, screen) that every application needs in order to run. All the other items could be removed and the device would still switch on and work.
+\end{corrige}
+
+\begin{savaistu}[Software in Cameroon]
+Most computers in Cameroonian schools and cybercafés run proprietary system software (Windows), but the open-source alternative Linux is widely used on servers, including in universities and some administrations, because it costs nothing in licence fees and can be studied and adapted freely. The choice between proprietary and open software is not only technical: for a school with a small budget, it can determine whether a computer room of twenty machines is affordable or not. Understanding software categories is therefore also an economic skill.
+\end{savaistu}
+
+\coursec{System software}
+
+In the previous section we saw that software can be classified according to several criteria, the most fundamental being its \emph{role} in the machine: does it run the computer itself, or does it serve a particular user need? We now study the first great family in depth: \cle{system software}, the invisible workforce without which no computer, tablet or smartphone could do anything at all.
+
+\courssub{Definition and role of system software}
+
+Imagine a newly purchased computer in a shop in Douala, straight out of its box, with no software installed. The hardware is perfect: processor, memory, disk, screen. Yet the machine can do nothing useful. It is like a magnificent hotel with no manager, no receptionist and no housekeeping staff: the rooms exist, but nobody can check in. System software is that management staff.
+
+\begin{definition}[System software]
+\cle{System software} is the set of programs that \textbf{manage and control the hardware} of a computer and \textbf{provide a platform} on which application software can run. It does not perform a specific user task (like writing a letter); instead, it makes the machine usable and offers common services to all other programs.
+\end{definition}
+
+The main families of system software are: the \cle{operating system}, \cle{device drivers}, \cle{firmware}, \cle{utility software}, and \cle{translators and development tools}. We study each in turn.
+
+\courssub{The operating system (OS)}
+
+When you switch on a computer, the first large program that takes control is the operating system. Everything you afterwards do — opening a folder, printing a document, connecting to the Internet — passes through it.
+
+\begin{definition}[Operating system]
+An \cle{operating system} (OS) is the master program of a computer: it manages the hardware resources (processor, memory, storage, peripherals), provides a platform and common services for application programs, and offers an interface through which the user communicates with the machine.
+\end{definition}
+
+\textbf{Main functions of an operating system.}\par
+An OS performs five essential management tasks:
+
+\begin{itemize}
+\item \textbf{Managing the processor (CPU):} many programs run ``at the same time''. The OS shares the processor's time between them (this is called \emph{scheduling}), switching so fast that the user has the impression of simultaneity.
+\item \textbf{Managing memory:} the OS decides which part of the RAM each program may use, and protects programs from interfering with one another. If a program crashes, the others survive.
+\item \textbf{Managing files:} the OS organises data on disks into files and folders, and controls who may read, write or delete them.
+\item \textbf{Managing peripherals:} the OS receives input from the keyboard and mouse, sends output to the screen and printer, and coordinates all devices through drivers.
+\item \textbf{Managing users:} the OS identifies users (login and password), keeps their settings separate, and controls their access rights.
+\end{itemize}
+
+\textbf{Examples of operating systems.}\par
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Operating system} & \textbf{Typical platform} & \textbf{Remark} \\
+\hline
+Microsoft Windows & Desktop and laptop PCs & Most widespread on personal computers \\
+\hline
+Ubuntu (a Linux distribution) & Desktops and servers & Free and open-source \\
+\hline
+macOS & Apple Macintosh computers & Supplied with Apple hardware \\
+\hline
+Android & Smartphones and tablets & Mobile OS based on the Linux kernel \\
+\hline
+iOS & iPhone and iPad & Apple's mobile OS \\
+\hline
+\end{tabularx}
+\end{center}
+
+Notice the distinction between \textbf{desktop/server operating systems} (Windows, Ubuntu, macOS), designed for keyboards, large screens and long sessions, and \textbf{mobile operating systems} (Android, iOS), designed for touch screens, batteries and portability. The same fundamental role is adapted to very different machines.
+
+\begin{savaistu}[Did you know? The first operating systems]
+The very first computers (1940s–1950s) had no OS: programmers scheduled machine time on a wall chart and loaded their programs via punched cards. The first true OS, GM-NAA I/O, appeared in 1956 on an IBM 704. In Cameroon, many secondary schools and universities now use Linux distributions (like Ubuntu) because they are free, secure and run well on older hardware — a practical illustration of how system software choices affect real access to computing.
+\end{savaistu}
+
+\courssub{Device drivers}
+
+An operating system is written \emph{before} most peripherals even exist. How can Windows, released years ago, control a printer manufactured last month in China? The answer is the device driver.
+
+\begin{definition}[Device driver]
+A \cle{device driver} is a small program that allows the operating system to communicate with a \textbf{specific peripheral} (printer, graphics card, webcam, mouse). It translates the general orders of the OS (``print this page'') into the exact commands understood by that particular model of device.
+\end{definition}
+
+This is why, when you plug in a new printer, the computer sometimes says ``installing device driver''. Without the correct driver, the peripheral is present physically but mute: the OS simply does not know how to talk to it.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth,
+box/.style={draw=popblue, thick, rounded corners, fill=popblueL, align=center, text width=2.6cm, minimum height=0.9cm},
+drv/.style={draw=poporange, thick, rounded corners, align=center, text width=2.2cm, minimum height=0.8cm}]
+\node[box, text width=3.2cm] (os) at (0,0) {\textbf{Operating system}\\ (e.g. Windows)};
+\node[drv] (d1) at (-4,-2.2) {Printer driver};
+\node[drv] (d2) at (0,-2.2) {Webcam driver};
+\node[drv] (d3) at (4,-2.2) {Graphics driver};
+\node[box, fill=white, draw=popdark] (p1) at (-4,-4.2) {Printer};
+\node[box, fill=white, draw=popdark] (p2) at (0,-4.2) {Webcam};
+\node[box, fill=white, draw=popdark] (p3) at (4,-4.2) {Graphics card};
+\draw[<->, thick, popblue] (os) -- (d1);
+\draw[<->, thick, popblue] (os) -- (d2);
+\draw[<->, thick, popblue] (os) -- (d3);
+\draw[<->, thick, popdark] (d1) -- (p1);
+\draw[<->, thick, popdark] (d2) -- (p2);
+\draw[<->, thick, popdark] (d3) -- (p3);
+\end{tikzpicture}
+\end{center}
+\legende{Each peripheral is matched to its own driver, which acts as interpreter between the device and the operating system.}
+\end{popfigure}
+
+\courssub{Firmware}
+
+Some software does not live on the hard disk at all: it is recorded permanently inside a hardware component itself.
+
+\begin{definition}[Firmware]
+\cle{Firmware} is software stored \textbf{permanently in a hardware component}, typically in a read-only or flash memory chip. It gives the component its basic behaviour. Examples: the \textbf{BIOS/UEFI} that starts the computer and tests the hardware before the OS loads, and the firmware inside a router, a printer or a digital camera.
+\end{definition}
+
+The BIOS (Basic Input/Output System), or its modern successor UEFI, is the very first program that runs when you press the power button. It checks the memory and keyboard, then locates the operating system on the disk and hands control over to it. This start-up process is called \emph{booting}.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth,
+stage/.style={draw=popblue, thick, rounded corners, fill=popblueL, align=center, text width=3.4cm, minimum height=1cm}]
+\node[stage, align=center] (s1) at (0,0){\textbf{Power on}\\ user presses the button};
+\node[stage, align=center] (s2) at (0,-1.8){\textbf{Firmware (BIOS/UEFI)}\\ tests hardware, finds the OS};
+\node[stage, align=center] (s3) at (0,-3.6){\textbf{Operating system}\\ loads and takes control};
+\node[stage, align=center] (s4) at (0,-5.4){\textbf{User applications}\\ Word, browser, games \ldots};
+\draw[->, very thick, poporange] (s1) -- (s2);
+\draw[->, very thick, poporange] (s2) -- (s3);
+\draw[->, very thick, poporange] (s3) -- (s4);
+\end{tikzpicture}
+\end{center}
+\legende{The boot sequence: the firmware wakes the machine, then hands control to the operating system, which in turn hosts the applications.}
+\end{popfigure}
+
+\courssub{Utility software}
+
+A house needs not only a manager but also a maintenance team: cleaners, repairers, security guards. In a computer, this team is the utility software.
+
+\begin{definition}[Utility software]
+\cle{Utility software} is a family of \textbf{support programs that maintain, protect and optimise} the computer system. They do not manage the hardware directly like the OS, but they serve the system rather than a specific user production task. Examples: \textbf{antivirus} programs, \textbf{disk defragmenters}, \textbf{compression tools} (WinZip, WinRAR), and \textbf{backup tools}.
+\end{definition}
+
+\begin{itemize}
+\item An \textbf{antivirus} scans files and memory to detect and remove malicious programs.
+\item A \textbf{disk defragmenter} rearranges scattered pieces of files on a magnetic disk so that reading is faster.
+\item A \textbf{compression tool} reduces the size of files to save space or speed up transfer.
+\item A \textbf{backup tool} copies important data to a safe location so it can be restored after a failure.
+\end{itemize}
+
+\begin{attention}[Common mistake: the antivirus trap]
+Candidates very often classify an \textbf{antivirus} as \emph{application software}, arguing that ``the user launches it like any program''. In the GCE classification scheme, an antivirus is a \textbf{utility}, that is, \textbf{system-support software}: its purpose is to maintain and protect the system, not to produce user work (a letter, an account, a drawing). The same applies to defragmenters, compression and backup tools. Learn this distinction by heart — it is a favourite exam question.
+\end{attention}
+
+\courssub{Translators and development tools}
+
+Finally, some system software is used not to run the machine but to \emph{create other software}. Programs are written by humans in high-level languages (like Pascal, C or Python), but the processor understands only machine code (binary). A bridge is needed.
+
+\begin{itemize}
+\item An \textbf{assembler} translates assembly language (a low-level, symbolic language) into machine code.
+\item A \textbf{compiler} translates a whole high-level program into machine code in one pass, producing an executable file (e.g. the C compiler \texttt{gcc}).
+\item An \textbf{interpreter} translates and executes a high-level program \emph{line by line}, each time it runs (e.g. the Python interpreter).
+\item A \textbf{linker} combines several compiled modules and library files into a single executable program.
+\end{itemize}
+
+These \cle{translators} and development tools are classified as system software because they serve the general activity of computing itself, not an end-user task.
+
+\courssub{System software in the layered architecture}
+
+All these elements fit into the layered view of a computer introduced earlier: the \textbf{hardware} at the bottom; the \textbf{firmware} just above it; then the \textbf{operating system} (with its drivers) and the \textbf{utilities and translators}; and finally the \textbf{application software} used by the \textbf{user} at the top. Each layer can only use the services of the layer directly below it.
+
+\begin{propriete}[The OS as indispensable intermediary]
+Without system software, \textbf{no application software can run}. The operating system is the obligatory intermediary between the user, the applications and the hardware: an application never touches the hardware directly; it always asks the OS, which alone has the right and the knowledge to control the machine. (Statement to know; no proof is examinable.)
+\end{propriete}
+
+\begin{exoresolu}[Classifying software]
+A school computer in Bamenda contains the following programs: (1) Ubuntu, (2) the BIOS, (3) an HP printer driver, (4) Avast antivirus, (5) the \texttt{gcc} compiler, (6) Microsoft Word. State the sub-category of system software to which each of the first five programs belongs, and identify the one that is not system software.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item (1) Ubuntu: an \textbf{operating system} (a Linux distribution).
+\item (2) The BIOS: \textbf{firmware} — software stored permanently in a chip on the motherboard.
+\item (3) HP printer driver: a \textbf{device driver} — it lets the OS communicate with that specific printer.
+\item (4) Avast antivirus: a \textbf{utility} — system-support software that protects the system (not application software!).
+\item (5) The \texttt{gcc} compiler: a \textbf{translator} (development tool) — it transforms source code into machine code.
+\item (6) Microsoft Word is \textbf{not} system software: it is application software, since it performs a user task (word processing).
+\end{itemize}
+\end{exoresolu}
+
+\begin{methode}[Answering a classification question in the GCE]
+\begin{enumerate}
+\item Ask: \emph{does this program serve the machine/system, or a user production task?} If it serves the system, it is system software.
+\item Then refine: does it manage all resources (OS)? Link the OS to one device (driver)? Live inside a component (firmware)? Maintain or protect (utility)? Translate code (translator)?
+\item Always justify your answer with one sentence and give an example when asked.
+\end{enumerate}
+\end{methode}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item System software manages the hardware and provides a platform for applications.
+\item The OS manages the processor, memory, files, peripherals and users (examples: Windows, Ubuntu, macOS, Android, iOS).
+\item A driver connects the OS to one specific peripheral; firmware is software fixed inside a component (BIOS/UEFI).
+\item Utilities (antivirus, defragmenter, compression, backup) maintain the system; translators (assembler, compiler, interpreter, linker) help create software.
+\item Without system software, no application can run.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Know your examples]
+For each sub-category of system software — operating system, device driver, firmware, utility, translator — give \textbf{two} examples different from those used in this lesson, and justify each choice in one sentence.
+\end{exercice}
+
+\begin{exercice}[True or false?]
+Answer true or false and justify: (a) ``Android is application software because it runs on phones.'' (b) ``A program can print a document even if no printer driver is installed.'' (c) ``The BIOS is part of the operating system.''
+\end{exercice}
+
+\coursec{Application software}
+
+In the previous section we studied \cle{system software} --- the operating system, utilities, translators and drivers whose job is to manage the machine itself. None of these programs, however, writes a letter, computes a school report card or plays a song. They prepare the ground; they do not do the user's work. The programs that actually perform the tasks for which people buy computers form the second great family of software: \textbf{application software}. This section defines it, classifies it, and shows how it relates to the operating system beneath it.
+
+\courssub{Definition and intuition}
+
+Think of a restaurant in Douala. The kitchen, the electricity, the water supply and the cash register system are like system software: essential, but invisible to the customer. What the customer actually came for is the meal on the plate. Application software is the meal: it is what the user \emph{directly} uses.
+
+\begin{definition}[Application software]
+\cle{Application software} (or simply an \emph{application} or \emph{app}) is software designed to perform tasks that are \textbf{directly useful to the end user}: producing documents, performing calculations, communicating, learning, playing or managing an activity. Unlike system software, it does not manage the computer itself; it uses the computer --- through the services of the operating system --- to solve a user's problem.
+\end{definition}
+
+The test is simple: ask \emph{``does this program do the user's work, or does it serve the machine?''}. A word processor serves the user (application); the disk driver that saves the document serves the machine (system software).
+
+\courssub{General-purpose (off-the-shelf) application software}
+
+Many human tasks are the same everywhere: writing letters, adding up numbers, browsing the web, watching videos. For such common tasks, software companies produce standardised programs sold to millions of users.
+
+\begin{definition}[General-purpose application software]
+\cle{General-purpose} (or \emph{off-the-shelf}) application software is ready-made software, developed by a vendor and sold or distributed to the general public, that can be used by \textbf{many different users for common, everyday tasks}. Examples: the word processor \emph{Microsoft Word}, the spreadsheet \emph{Microsoft Excel}, the browser \emph{Mozilla Firefox}, the media player \emph{VLC}.
+\end{definition}
+
+\begin{exemplebox}[A spreadsheet serves everyone]
+A trader at Mokolo market uses \emph{Excel} to track daily sales; a bursar in Buea uses the same \emph{Excel} to prepare the school budget; a student uses it to plot a physics graph. The software was not written for any of them in particular, yet all three find it useful because \emph{calculation on tables of numbers} is a general need. This is the essence of general-purpose software.
+\end{exemplebox}
+
+\courssub{Special-purpose (bespoke) application software}
+
+Some needs are so specific that no ready-made product fits them. The software must then be \emph{tailor-made}, like a dress sewn by a tailor to one customer's measurements.
+
+\begin{definition}[Special-purpose (bespoke) software]
+\cle{Special-purpose} (also called \emph{bespoke} or \emph{customised}) application software is software \textbf{developed for one specific organisation or one specific task}, according to that organisation's exact requirements. It is not sold to the general public.
+\end{definition}
+
+\begin{exemplebox}[Bespoke software in Cameroon]
+\begin{itemize}
+\item A \textbf{school fees management system} written for a college in Yaoundé, matching its exact classes, fee instalments and receipt format.
+\item The \textbf{examination processing system} used to process GCE scripts and results.
+\item A bank's \textbf{core banking software} managing its accounts and branches.
+\item The \textbf{MTN Mobile Money platform}, built specifically for MTN's mobile money service.
+\end{itemize}
+None of these can be bought in a shop; each was built for one organisation's precise needs.
+\end{exemplebox}
+
+\courssub{General-purpose versus bespoke software}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\fill[popblue] (0,0) rectangle (7.4,0.8);
+\fill[poppurple] (7.6,0) rectangle (15,0.8);
+\node[white,align=center] at (3.7,0.4) {\textbf{General-purpose (off-the-shelf)}};
+\node[white,align=center] at (11.3,0.4) {\textbf{Special-purpose (bespoke)}};
+\node[draw=popline,fill=popblueL,align=center,text width=6.6cm,minimum height=1.5cm] at (3.7,-1.05) {Ready-made, sold to many users\\ for common tasks};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.5cm] at (11.3,-1.05) {Built to order for one\\ organisation or one task};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.3cm] at (3.7,-2.6) {\textbf{Examples:} MS Word, Excel,\\ Firefox, VLC};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.3cm] at (11.3,-2.6) {\textbf{Examples:} fees system of a\\ college, MTN Mobile Money};
+\node[draw=popline,fill=popgreenL,align=center,text width=6.6cm,minimum height=1.3cm] at (3.7,-4.0) {\textbf{Cost:} low per user\\ (shared by millions)};
+\node[draw=popline,fill=popgreenL,align=center,text width=6.6cm,minimum height=1.3cm] at (11.3,-4.0) {\textbf{Cost:} high (one client pays\\ the whole development)};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.6cm] at (3.7,-5.6) {\textbf{Advantages:} cheap, available\\ immediately, well tested,\\ regular updates, wide support};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.6cm] at (11.3,-5.6) {\textbf{Advantages:} fits the needs\\ exactly, no useless features,\\ competitive advantage};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.6cm] at (3.7,-7.3) {\textbf{Limitations:} may not match\\ every need; user must adapt\\ to the software};
+\node[draw=popline,fill=white,align=center,text width=6.6cm,minimum height=1.6cm] at (11.3,-7.3) {\textbf{Limitations:} expensive, long\\ to develop, maintenance\\ depends on the developer};
+\end{tikzpicture}
+\end{center}
+\legende{Comparison of general-purpose and special-purpose application software.}
+\end{popfigure}
+
+\begin{methode}[Deciding between off-the-shelf and bespoke software]
+When an organisation must choose, proceed as follows:
+\begin{enumerate}
+\item \textbf{Analyse the need.} List exactly what the software must do. If the need is common (letters, accounts, presentations), an off-the-shelf product probably exists.
+\item \textbf{Compare costs.} Off-the-shelf software is cheap per user; bespoke software requires paying analysts and programmers for months.
+\item \textbf{Consider time.} Off-the-shelf software can be installed today; bespoke software may take months or years to design, code and test.
+\item \textbf{Examine maintenance and support.} Who will fix bugs and adapt the software in five years? A vendor offers standard support; bespoke software ties you to its developer.
+\item \textbf{Decide.} Choose bespoke only when no existing product fits the need \emph{and} the organisation can afford the cost and delay.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Bespoke is not always better]
+A frequent mistake is to believe that custom-made software is automatically superior. Bespoke software is \textbf{costly} (one client bears the whole development cost), \textbf{slow to obtain} (analysis, coding, testing), and \textbf{risky to maintain} (if the developer disappears, nobody else knows the code). For common tasks, a well-tested off-the-shelf product is usually the wiser choice.
+\end{attention}
+
+\courssub{Categories of applications by domain}
+
+Application software can also be classified by the \textbf{domain of activity} it serves:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Domain} & \textbf{Purpose} & \textbf{Examples} \\
+\hline
+Office automation & Produce documents, calculations, presentations & Word, Excel, PowerPoint \\
+\hline
+Graphics & Create and edit images, drawings, designs & Photoshop, CorelDRAW, GIMP \\
+\hline
+Multimedia & Play and edit sound and video & VLC, Windows Media Player \\
+\hline
+Communication & Exchange messages and browse the web & Firefox, WhatsApp, Outlook \\
+\hline
+Education & Teach, train and assess learners & Typing tutors, encyclopaedias, e-learning platforms \\
+\hline
+Games & Entertainment & FIFA, chess programs \\
+\hline
+Scientific software & Simulation, modelling, data analysis & MATLAB, statistical packages \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Single applications, integrated packages and software suites}
+
+Applications can be distributed in two ways:
+
+\begin{definition}[Single application, integrated package and suite]
+A \cle{single application} is one program sold on its own to do one type of task (e.g.\ VLC). An \cle{integrated package} is a single program combining several related functions (e.g.\ \emph{Microsoft Works} combined a simple word processor, spreadsheet and database in one). A \cle{software suite} is a collection of separate but compatible applications sold together and sharing data easily, such as \emph{Microsoft Office} (Word, Excel, PowerPoint, Access) or the free suite \emph{LibreOffice} (Writer, Calc, Impress, Base).
+\end{definition}
+
+The great advantage of a suite is \textbf{consistency and integration}: the same menus and shortcuts everywhere, and the possibility to paste an Excel chart into a Word report without losing its link to the data.
+
+\courssub{How applications relate to the operating system}
+
+Applications do not talk to the hardware directly. When Word saves a file or a browser sends data over the network, the application \textbf{calls a service of the operating system} (a \emph{system call}), and the OS performs the operation through its drivers.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\draw[fill=popblueL,draw=popblue] (0,3.4) rectangle (10,4.6);
+\node[align=center] at (5,4.0) {\textbf{User} --- types, clicks, gives commands};
+\draw[fill=poppurple!25,draw=poppurple] (0,2.0) rectangle (10,3.2);
+\node[align=center] at (5,2.6) {\textbf{Application software} --- Word, Excel, browser, fees system};
+\draw[fill=popgreenL,draw=popgreen] (0,0.8) rectangle (10,1.8);
+\node[align=center] at (5,1.3) {\textbf{System software} --- operating system, drivers, utilities};
+\draw[fill=gray!25,draw=gray] (0,-0.4) rectangle (10,0.6);
+\node[align=center] at (5,0.1) {\textbf{Hardware} --- processor, memory, disk, printer, network};
+\draw[-{Stealth},thick,popdark] (4.2,3.4) -- (4.2,3.2);
+\draw[-{Stealth},thick,popdark] (5.8,3.2) -- (5.8,3.4);
+\draw[-{Stealth},thick,popdark] (4.2,2.0) -- (4.2,1.8) node[midway,right,font=\scriptsize]{system calls};
+\draw[-{Stealth},thick,popdark] (5.8,1.8) -- (5.8,2.0) node[midway,right,font=\scriptsize]{results};
+\draw[-{Stealth},thick,popdark] (4.2,0.8) -- (4.2,0.6);
+\draw[-{Stealth},thick,popdark] (5.8,0.6) -- (5.8,0.8);
+\end{tikzpicture}
+\end{center}
+\legende{The software layers revisited: applications sit on top of the operating system and request its services.}
+\end{popfigure}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Application software performs tasks \textbf{directly useful to the user}.
+\item \textbf{General-purpose} software is ready-made for common tasks (Word, Excel); \textbf{bespoke} software is built for one organisation's exact needs (fees system, Mobile Money platform).
+\item Bespoke software fits perfectly but is expensive and slow to develop.
+\item Applications are classified by domain: office, graphics, multimedia, communication, education, games, scientific.
+\item Suites (MS Office, LibreOffice) bundle compatible applications; applications run \textbf{on top of the OS} and call its services.
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Classifying software at the GCE]
+Classify each of the following as \emph{system software}, \emph{general-purpose application software} or \emph{special-purpose application software}, justifying your answer: (a) Microsoft Excel; (b) the result-processing software of the GCE Board; (c) Windows 11; (d) VLC media player.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item (a) \textbf{General-purpose application software}: Excel performs calculations directly useful to any user, and it is a ready-made product sold to the public for the common task of working on tables of numbers.
+\item (b) \textbf{Special-purpose application software}: it serves users (processing examination results) but was developed specifically for the GCE Board's own procedures; it is not sold to the public.
+\item (c) \textbf{System software}: Windows 11 manages the hardware and provides services to other programs; it does not itself produce a user document.
+\item (d) \textbf{General-purpose application software}: VLC plays audio and video --- a common task needed by millions of users --- and is distributed ready-made to everyone.
+\end{itemize}
+\end{exoresolu}
+
+\begin{attention}[Exam tip]
+When a question asks you to \textbf{classify} a software, always give \textbf{one concrete example} and \textbf{justify} your classification with the software's \emph{purpose} (what task it does and for whom it was made). A bare answer such as ``application software'' without justification earns little credit.
+\end{attention}
+
+\begin{exercice}[Choosing software for a school]
+A new secondary school in Bamenda wants to (i) type official letters, and (ii) manage students' fees with instalments specific to its own rules. For each need, say whether you would recommend off-the-shelf or bespoke software, and justify using cost, fit to needs and development time.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(i) Typing letters is a common task: an off-the-shelf word processor (e.g.\ Word or LibreOffice Writer) is cheap, available immediately and fully sufficient. (ii) The fees rules are specific to the school; if no existing product matches them, bespoke software is justified despite its higher cost and longer development time, because it will fit the need exactly. A cheaper alternative is to adopt an existing school-management package if one can be configured to the school's rules.
+\end{corrige}
+
+\coursec{Classification by usage rights and synthesis}
+
+In the previous sections we classified software according to what it \emph{does}: system software keeps the machine running, while application software performs tasks for the user. But there is another question that matters enormously in practice, especially for a school, a business or a government office in Cameroon that must equip its computers: \textbf{what are you legally allowed to do with the software, and what does it cost?} Two programs can do exactly the same job --- think of Microsoft Office and LibreOffice --- yet be governed by completely different rules. This section studies the classification of software \cle{by usage rights} (also called classification \cle{by licence}), and then brings together \emph{all} the classification criteria seen in this chapter into one complete synthesis method.
+
+\courssub{The software licence}
+
+\begin{experience}[Buying a CD vs.\ buying software]
+When you buy a music CD in a shop in Douala, the disc belongs to you, but you are not allowed to copy it and sell the copies: you bought the \emph{object}, not the \emph{rights over the work}. Software works the same way, only more strictly. When you ``buy'' software, you usually do not buy the program itself; you buy the \emph{right to use it} under precise conditions. Those conditions are written in a contract that you accept (often by clicking ``I agree'') during installation.
+\end{experience}
+
+\begin{definition}[Software licence]
+A \cle{software licence} is the \textbf{legal contract} between the author (or owner) of a software and the user. It defines what the user \textbf{may} and \textbf{may not} do with the software: on how many machines it may be installed, whether it may be copied, modified, resold or redistributed, and under what payment conditions.
+\end{definition}
+
+The licence is what makes the classification by usage rights possible. Depending on what the licence allows, software falls into one of five great families: \textbf{proprietary software}, \textbf{freeware}, \textbf{shareware}, \textbf{open source software} and \textbf{public domain software}. The key questions to ask are always the same three:
+\begin{itemize}
+\item \textbf{Must I pay} to use it?
+\item \textbf{Can I see the source code} (the original program text written by the programmers)?
+\item \textbf{Can I modify and redistribute} it?
+\end{itemize}
+
+\courssub{Proprietary software}
+
+\begin{definition}[Proprietary software]
+\cle{Proprietary software} is software whose \textbf{source code is closed} (kept secret by its owner) and whose use is \textbf{restricted by a paid licence}. The user pays for the right to \emph{use} the program, but may not study, modify, copy or redistribute it.
+\end{definition}
+
+This is the traditional commercial model. The company invests money in development and protects its product like any other property. Well-known examples are \textbf{Microsoft Windows} (operating system), \textbf{Microsoft Office} (Word, Excel, PowerPoint) and \textbf{Adobe Photoshop} (image editing). A school in Yaoundé that installs Windows on 30 computers must, in principle, hold 30 valid licences.
+
+\courssub{Freeware}
+
+\begin{definition}[Freeware]
+\cle{Freeware} is software that is \textbf{free of charge} to use (gratis), but whose \textbf{source code remains closed} and whose \textbf{copyright is retained} by the author. The user may use it without paying, but may not study, modify or (usually) redistribute it freely.
+\end{definition}
+
+Typical examples: \textbf{Adobe Acrobat Reader} (reading PDF files) and \textbf{Skype} (Internet calls). You pay nothing, but the program remains the private property of its publisher.
+
+\begin{propriete}[``Free of charge'' does not mean ``open source'']
+Gratuity and openness are \textbf{two independent properties}. Freeware proves it: it costs nothing, yet its source code is closed and its copyright fully retained. Conversely, some open source software is sold commercially (e.g.\ Red Hat Enterprise Linux). \emph{Free of charge} speaks about \textbf{price}; \emph{open source} speaks about \textbf{access to the code and freedom to modify it}.
+\end{propriete}
+
+\courssub{Shareware}
+
+\begin{definition}[Shareware]
+\cle{Shareware} is software distributed \textbf{free of charge for a limited trial period} (or with limited functionality), after which \textbf{payment is required} to continue using it legally or to unlock all features.
+\end{definition}
+
+The idea is ``try before you buy''. Classic examples: \textbf{WinRAR} (file compression, which keeps working after the trial but legally requires payment) and the \textbf{trial versions of antivirus} programs (e.g.\ 30 days free, then a subscription). Shareware is a \emph{marketing model} built on top of proprietary software: the code stays closed, and after the trial it behaves like ordinary proprietary software.
+
+\courssub{Open source software}
+
+\begin{definition}[Open source software]
+\cle{Open source software} is software whose \textbf{source code is available} to everyone and whose licence grants four freedoms: to \textbf{use} the program, to \textbf{study} it, to \textbf{modify} it, and to \textbf{redistribute} it (modified or not).
+\end{definition}
+
+Famous examples: \textbf{Linux} (operating system, e.g.\ the Ubuntu distribution), \textbf{LibreOffice} (office suite), \textbf{Mozilla Firefox} (web browser) and \textbf{VLC} (media player, developed originally by French students and used worldwide, including in practically every Cameroonian computer room). Open source software is usually also free of charge, but its defining feature is the \emph{openness of the code}, not the price.
+
+\begin{savaistu}[Free software vs.\ open source]
+For GCE essay questions, it is enriching to know the nuance. The \textbf{free software} movement (launched by Richard Stallman in the 1980s) defends software freedom as an \emph{ethical} principle: users \emph{deserve} freedom over their tools. The term \textbf{open source} (popularised in 1998) emphasises the \emph{practical} advantages of open code: better quality, security and collaboration. In practice the two labels cover almost the same licences (GNU GPL, Apache, MIT\ldots); the difference is one of \emph{philosophy and vocabulary}, not of software lists. In Cameroon, open source software is precious for schools and administrations because it removes licence costs and allows local adaptation.
+\end{savaistu}
+
+\courssub{Public domain software}
+
+\begin{definition}[Public domain software]
+\cle{Public domain software} is software with \textbf{no copyright at all}: the author has explicitly abandoned all rights (or the rights have expired). Anyone may use, copy, modify, redistribute and even sell it, \textbf{without any restriction}.
+\end{definition}
+
+This is the freest possible status --- freer even than open source, because open source licences still impose \emph{conditions} (for example, the GPL requires that redistributed versions remain open). Public domain software is comparatively rare; it is found mainly among old programs, academic code explicitly released without rights, and small utilities.
+
+\begin{attention}[Confusions that cost marks]
+\begin{itemize}
+\item \textbf{Freeware $\neq$ open source.} Freeware is gratis but \emph{closed}; open source may even be sold but its \emph{code is open}. Acrobat Reader is freeware, \emph{not} open source.
+\item \textbf{Shareware $\neq$ freeware.} Shareware is free only \emph{temporarily} (trial); freeware is free \emph{permanently}. WinRAR is shareware, not freeware.
+\item \textbf{Open source $\neq$ public domain.} Open source still has a copyright holder and a licence with conditions; public domain has \emph{no rights at all}.
+\item \textbf{``Free'' is ambiguous in English.} Always ask: free as in \emph{price} (gratis) or free as in \emph{freedom} (libre)?
+\end{itemize}
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, font=\small]
+\draw[->, thick, popink] (0,0) -- (12.6,0);
+\node[below, popmuted] at (0.2,-0.15) {\textbf{fully proprietary}};
+\node[below, popmuted] at (12.4,-0.15) {\textbf{public domain}};
+\foreach \x/\lab in {0/closed code, 3/trial then pay, 6/gratis closed, 9/open code, 12/no rights}{
+  \draw[popline] (\x,0.08) -- (\x,-0.08);
+}
+\node[below, popmuted, align=center, text width=2.2cm] at (0,-0.7) {closed code, paid licence};
+\node[below, popmuted, align=center, text width=2.2cm] at (3,-0.7) {free trial, then payment};
+\node[below, popmuted, align=center, text width=2.2cm] at (6,-0.7) {gratis but code closed};
+\node[below, popmuted, align=center, text width=2.2cm] at (9,-0.7) {code open, freedoms granted};
+\node[below, popmuted, align=center, text width=2.2cm] at (12,-0.7) {no copyright at all};
+\fill[poppurple] (0.6,0) circle (0.09); \node[above, poppurple] at (0.6,0.12) {Windows};
+\fill[poporange] (2.8,0) circle (0.09); \node[above, poporange] at (2.8,0.12) {WinRAR};
+\fill[popgold] (5.8,0) circle (0.09); \node[above, popgold] at (5.8,0.12) {Acrobat Reader};
+\fill[popgreen] (8.6,0) circle (0.09); \node[above, popgreen] at (8.6,0.12) {Linux};
+\fill[popblue] (9.6,0) circle (0.09); \node[above, popblue] at (9.6,0.12) {VLC};
+\end{tikzpicture}
+\end{center}
+\legende{The spectrum of usage rights, from fully proprietary software to the public domain, with five familiar examples.}
+\end{popfigure}
+
+\courssub{Synthesis: classifying a software completely}
+
+We have now met \emph{three independent classification criteria} in this chapter:
+\begin{enumerate}
+\item \textbf{By role}: system software (operating system, utilities, drivers, translators) vs.\ application software.
+\item \textbf{By purpose} (for application software): general-purpose (word processor, browser\ldots) vs.\ special-purpose / bespoke (school-fee management, hospital records\ldots).
+\item \textbf{By licence} (usage rights): proprietary, freeware, shareware, open source, public domain.
+\end{enumerate}
+
+A complete classification of a software product answers \emph{all three} questions.
+
+\begin{methode}[The 3-step classification of any software]
+\begin{enumerate}
+\item \textbf{Role.} Ask: does it manage the machine or serve the user's task? $\rightarrow$ system or application software. Justify by stating what it does.
+\item \textbf{Purpose.} If it is application software, ask: is it used by everyone for common tasks, or built for one specific activity? $\rightarrow$ general-purpose or special-purpose.
+\item \textbf{Licence.} Ask: must one pay? is the source code open? may it be modified and redistributed? $\rightarrow$ proprietary, freeware, shareware, open source or public domain. Justify with the licence facts.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Complete classification of VLC]
+\textbf{VLC media player} is: \textbf{application software} (it serves the user's task: playing audio and video), \textbf{general-purpose} (used by anyone, for a common task), \textbf{open source} (its code is published and modifiable) and \textbf{free of charge}. Four precise statements --- that is what a full GCE answer looks like.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, grow=down, level distance=1.15cm,
+  every node/.style={draw, rounded corners=2pt, align=center, inner sep=3pt},
+  level 1/.style={sibling distance=4.4cm},
+  level 2/.style={sibling distance=2.2cm},
+  level 3/.style={sibling distance=1.55cm}]
+\node[fill=popblueL] {\textbf{Software}}
+  child { node[fill=popgreenL] {by role}
+    child { node {system} child { node[draw=none, popmuted, text width=2cm, align=center] {Windows\\ Linux} } }
+    child { node {application} child { node[draw=none, popmuted, text width=2cm, align=center] {Word\\ Firefox} } }
+  }
+  child[xshift=0.2cm] { node[fill=popgreenL] {by purpose}
+    child { node {general} child { node[draw=none, popmuted, text width=2cm, align=center] {Excel\\ VLC} } }
+    child { node {special} child { node[draw=none, popmuted, text width=2cm, align=center] {fee manager\\ hospital system} } }
+  }
+  child { node[fill=popgreenL] {by licence}
+    child { node {proprietary} child { node[draw=none, popmuted, text width=2cm, align=center] {Windows\\ Photoshop} } }
+    child { node {freeware} child { node[draw=none, popmuted, text width=2cm, align=center] {Acrobat\\ Skype} } }
+    child { node {shareware} child { node[draw=none, popmuted, text width=2cm, align=center] {WinRAR\\ antivirus trial} } }
+    child { node {open source} child { node[draw=none, popmuted, text width=2cm, align=center] {Linux\\ LibreOffice} } }
+  };
+\end{tikzpicture}
+\end{center}
+\legende{Summary tree of the complete classification of software, with examples hanging from each leaf (public domain, the fifth licence category, has no famous everyday example).}
+\end{popfigure}
+
+\begin{exoresolu}[Classifying software in a scenario]
+\textbf{Statement.} A cybercafé in Bamenda uses the following software: (a) Microsoft Windows 10, paid per machine; (b) WinRAR, past its 40-day trial; (c) Mozilla Firefox; (d) Adobe Acrobat Reader. For each one, give its complete classification (role, purpose, licence), justifying briefly.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{Windows 10}: \emph{system software} (it manages the hardware and runs other programs --- it is an operating system); purpose criterion does not apply to system software; \emph{proprietary} (paid licence, closed source code).
+\item \textbf{WinRAR}: \emph{application software} (compresses files for the user), \emph{general-purpose} (common task for everyone), \emph{shareware} (free trial, payment required afterwards --- using it past the trial without paying is not legal use).
+\item \textbf{Mozilla Firefox}: \emph{application software}, \emph{general-purpose} (web browsing), \emph{open source} (code published, modifiable, redistributable) and free of charge.
+\item \textbf{Acrobat Reader}: \emph{application software}, \emph{general-purpose} (reading PDF documents), \emph{freeware} (gratis, but closed code and copyright retained by Adobe).
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Revision grid and GCE question patterns}
+
+\begin{aretenir}[Revision grid]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Category} & \textbf{Pay?} & \textbf{Source code?} & \textbf{Examples} \\
+\hline
+Proprietary & Yes (licence) & Closed & Windows, MS Office, Photoshop \\
+\hline
+Freeware & No & Closed & Acrobat Reader, Skype \\
+\hline
+Shareware & After trial & Closed & WinRAR, antivirus trials \\
+\hline
+Open source & Usually no & Open (4 freedoms) & Linux, LibreOffice, Firefox, VLC \\
+\hline
+Public domain & No & No copyright at all & rare old/academic programs \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{methode}[Answering GCE scenario questions]
+GCE questions frequently describe a school or a business and ask you to \emph{propose and justify} software. For full marks, always give \textbf{three elements} per proposal:
+\begin{enumerate}
+\item \textbf{Name the category} (e.g.\ ``an open source office suite'');
+\item \textbf{Give a concrete example} (e.g.\ ``LibreOffice'');
+\item \textbf{Justify} with the scenario's needs (e.g.\ ``the school has no budget for licences, and open source software is free of charge and legally installable on all machines'').
+\end{enumerate}
+A category without an example, or an example without justification, loses marks.
+\end{methode}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item A hospital in Buea pays a programmer to write a patient-records program used only by that hospital, and keeps the code secret. Classify this software by role, purpose and licence.
+\item True or false (justify): ``Skype is free, therefore it is open source.''
+\item Explain the difference between shareware and freeware, giving one example of each.
+\item Your school wants to equip 40 computers with an office suite but has almost no budget. Propose a solution, naming the category, an example, and two justifications.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item \textbf{Role}: application software (it serves the users' task, not the machine). \textbf{Purpose}: special-purpose (bespoke), built for one specific activity of one specific hospital. \textbf{Licence}: proprietary (closed code, owned by the hospital/developer, not redistributable).
+\item \textbf{False.} Skype is \emph{free of charge} (freeware), but its source code is closed and its copyright belongs to its owner. Gratuity does not imply open source.
+\item \textbf{Freeware} is free permanently (e.g.\ Acrobat Reader); \textbf{shareware} is free only for a trial period, after which payment is required (e.g.\ WinRAR). Both have closed source code.
+\item Category: \textbf{open source} office suite; example: \textbf{LibreOffice}. Justifications: it is \emph{free of charge}, so the school pays nothing for 40 installations; it is \emph{legally installable on all machines} without counting licences; and its files remain compatible with common formats, so work can be exchanged with outside partners.
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+This activity mobilises the classification criteria to select and justify a complete software set for a real school situation.
+
+\courssub{Situation}
+The principal of GBHS Bamenda has just received 20 new computers for the computer laboratory but no software is installed. In groups, students must: (1) list the software needed (operating system, office suite, antivirus, browser, a typing tutor, and a school management program for results); (2) classify each chosen software by role, by purpose and by licence; (3) propose two budgets — one fully proprietary and one maximising free/open source software — and compare costs; (4) defend their choices in a 5-minute presentation, as in a GCE structured question.
+
+\courssub{Tasks}
+Guided numbered questions mobilising several skills progressively.
+
+\courssub{Model answer}
+A complete worked answer.
+
+\courssub{...}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Methods and worked examples}
+
+This part trains you, step by step, on the skills the GCE Advanced Level examiner expects for this chapter: recognising the category of a given software, justifying a classification, distinguishing system software from application software, classifying by usage rights (freeware, shareware, proprietary, open source), and building complete classification tables or trees. Each method card is followed by a fully solved GCE-style exercise.
+
+\begin{methode}[Classifying a software into the two great families]
+To decide whether a given software is \cle{system software} or \cle{application software}, proceed as follows:
+\begin{enumerate}
+\item \textbf{Ask the key question:} does the software serve the \emph{machine} (manage, control, maintain the computer and its resources) or does it serve the \emph{user's task} (write a letter, compute a payroll, play a game)?
+\item If it manages hardware, runs other programs, or maintains the system $\Rightarrow$ \textbf{system software}.
+\item If it solves a concrete user problem in a specific domain $\Rightarrow$ \textbf{application software}.
+\item \textbf{Refine the classification:} for system software, say whether it is an \emph{operating system}, a \emph{utility}, a \emph{driver}, a \emph{translator} (compiler/interpreter) or \emph{firmware}; for application software, say whether it is \emph{general-purpose} (word processor, spreadsheet) or \emph{special-purpose} (payroll, hospital management).
+\item \textbf{Justify} your answer in one sentence: name the resource managed or the task performed. A classification without justification earns only half the marks.
+\end{enumerate}
+\textbf{Reflex:} ``Who benefits directly --- the machine or the user's work?''
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    decision/.style={diamond, draw=popblue, thick, fill=popblueL, text width=3.5cm, align=center, inner sep=2pt},
+    process/.style={rectangle, draw=popdark, thick, fill=popgreenL, text width=3cm, align=center, inner sep=2pt, rounded corners},
+    startstop/.style={rectangle, draw=poporange, thick, fill=poporange!20, text width=2.5cm, align=center, inner sep=2pt, rounded corners},
+    arrow/.style={thick,->,>=stealth, draw=popdark}
+]
+\node[startstop] (start) {Start: Software to classify};
+\node[decision, below=1.2cm of start, align=center] (q1){Does it manage hardware,\\ run programs or maintain\\ the system?};
+\node[process, left=2.5cm of q1, align=center] (sys){System Software\\ (OS, Utility, Driver,\\ Translator, Firmware)};
+\node[process, right=2.5cm of q1, align=center] (app){Application Software\\ (General-purpose or\\ Special-purpose)};
+\node[startstop, below=1.5cm of q1] (end) {End: Category found};
+
+\draw[arrow] (start) -- (q1);
+\draw[arrow] (q1) -- node[above, sloped, font=\small] {Yes} (sys);
+\draw[arrow] (q1) -- node[above, sloped, font=\small] {No} (app);
+\draw[arrow] (sys) |- (end);
+\draw[arrow] (app) |- (end);
+\end{tikzpicture}
+\legende{Flowchart for the fundamental classification: system vs application software.}
+\end{popfigure}
+
+\begin{exoresolu}[Sorting a list of software]
+\textbf{(GCE style, Paper 2)} The following software are installed on the computers of a secondary school in Bamenda: Windows~10, Microsoft Word, Avast Antivirus, Google Chrome, a printer driver, Microsoft Excel, a C++ compiler, Adobe Photoshop.
+\begin{enumerate}
+\item Copy and complete a table classifying each software as \emph{system software} or \emph{application software}.
+\item For each system software, state its precise sub-category.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item We apply the key question to each item: does it serve the machine or the user's task?
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Software} & \textbf{Category} & \textbf{Justification} \\
+\hline
+Windows 10 & System software & Manages hardware resources and runs other programs \\
+\hline
+Microsoft Word & Application software & Performs the user task of word processing \\
+\hline
+Avast Antivirus & System software & Maintains and protects the system (utility) \\
+\hline
+Google Chrome & Application software & Performs the user task of browsing the web \\
+\hline
+Printer driver & System software & Enables the OS to control a hardware device \\
+\hline
+Microsoft Excel & Application software & Performs the user task of calculations/spreadsheets \\
+\hline
+C++ compiler & System software & Translates source programs into machine code \\
+\hline
+Adobe Photoshop & Application software & Performs the user task of image editing \\
+\hline
+\end{tabularx}
+\end{center}
+\item Sub-categories of the system software:
+\begin{itemize}
+\item Windows 10: \textbf{operating system};
+\item Avast Antivirus: \textbf{utility program};
+\item Printer driver: \textbf{device driver};
+\item C++ compiler: \textbf{translator} (language processor).
+\end{itemize}
+\end{enumerate}
+\textbf{Examiner's remark:} an antivirus is a classic trap --- students often call it ``application software'' because the user clicks on it. It is a \emph{utility}, hence system software, because its role is to maintain and protect the computer itself.
+\end{exoresolu}
+
+\begin{aretenir}[System vs Application --- the litmus test]
+\begin{itemize}
+\item \textbf{System software} = ``backstage crew'': the user rarely interacts with it directly; it creates the environment where applications run.
+\item \textbf{Application software} = ``actors on stage'': the user launches it to achieve a concrete goal (document, calculation, game, browsing).
+\item \textbf{Utility programs} (antivirus, defragmenter, backup) are system software because they maintain the \emph{computer}, not the user's document.
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Distinguishing general-purpose from special-purpose application software]
+\begin{enumerate}
+\item Identify the \textbf{domain of use} of the software.
+\item If the software can be used in \emph{many different domains} by \emph{many kinds of users} (typing text, calculating, drawing, browsing) $\Rightarrow$ \textbf{general-purpose} (also called \emph{off-the-shelf} or productivity software).
+\item If the software was built for \emph{one specific task} in \emph{one specific organisation or profession} (payroll of a company, students' results management in a school, flight booking) $\Rightarrow$ \textbf{special-purpose} (also called \emph{bespoke} or \emph{customised} software).
+\item Give one example of each type to support your answer.
+\end{enumerate}
+\textbf{Key idea to remember:} general-purpose $=$ one product, many possible uses; special-purpose $=$ one product, one precise use.
+\end{methode}
+
+\begin{exoresolu}[General-purpose or special-purpose?]
+\textbf{(GCE style)} A cybercafé in Douala uses: (i) Microsoft Excel to record daily income; (ii) a program written by a local developer specifically to manage customers' browsing time and print their bills; (iii) VLC media player.
+\begin{enumerate}
+\item Classify each software as general-purpose or special-purpose application software.
+\item State one advantage and one disadvantage of special-purpose software for the cybercafé owner.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Classification:
+\begin{itemize}
+\item \textbf{Microsoft Excel: general-purpose.} It is a spreadsheet used in countless domains (accounting, statistics, timetables\ldots); the cybercafé only adapted it to its own records.
+\item \textbf{Browsing-time management program: special-purpose.} It was designed for one precise task (managing sessions and billing) for this particular business; it cannot be used, for example, to manage a pharmacy.
+\item \textbf{VLC media player: general-purpose.} Any user can play audio and video files with it, whatever the context.
+\end{itemize}
+\item \textbf{Advantage:} the software fits the owner's exact needs (it counts browsing minutes and prints bills in the local format), so work is faster and no unnecessary features disturb the user. \textbf{Disadvantage:} it is expensive and slow to obtain, because a developer must be paid to design, write and maintain it; if the developer disappears, maintenance becomes difficult.
+\end{enumerate}
+\textbf{Examiner's remark:} notice that the \emph{same} Excel could be part of a special-purpose solution if a developer built macros around it --- what matters is the \emph{design intention}: built for everyone or built for one specific need.
+\end{exoresolu}
+
+\begin{methode}[Identifying the sub-category of system software]
+When asked to name the \emph{type} of a system software, test the following questions in order:
+\begin{enumerate}
+\item Does it \textbf{manage the whole machine} (memory, processor, files, users, peripherals) and provide the platform for other programs? $\Rightarrow$ \textbf{Operating system} (Windows, Linux, Android, macOS).
+\item Does it let the OS \textbf{communicate with one hardware device}? $\Rightarrow$ \textbf{Device driver}.
+\item Does it \textbf{translate programs} written by humans into machine language? $\Rightarrow$ \textbf{Translator}: \emph{compiler} (translates the whole program at once) or \emph{interpreter} (translates and executes line by line).
+\item Does it \textbf{maintain, protect or optimise} the computer (antivirus, disk defragmenter, backup, compression)? $\Rightarrow$ \textbf{Utility}.
+\item Is it \textbf{stored permanently on a chip} inside a device and starts or controls it? $\Rightarrow$ \textbf{Firmware} (e.g.\ the BIOS/UEFI on a motherboard, the firmware of a router or printer).
+\end{enumerate}
+\textbf{Reflex:} ``Manage $\to$ OS; connect a device $\to$ driver; translate $\to$ compiler/interpreter; maintain $\to$ utility; on a chip $\to$ firmware.''
+\end{methode}
+
+\begin{exoresolu}[Naming sub-categories]
+\textbf{(GCE style)} For each of the following, give the precise sub-category of system software and justify briefly:
+\begin{enumerate}
+\item[a)] The BIOS stored on the motherboard, which starts the computer.
+\item[b)] A disk defragmenter delivered with Windows.
+\item[c)] The Python interpreter used in the computer science laboratory.
+\item[d)] The small program installed so that the new HP scanner works.
+\item[e)] Ubuntu Linux running on the school server.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item[a)] \textbf{Firmware.} It is software permanently recorded on a ROM/flash chip of the motherboard; it initialises and tests the hardware at start-up, then loads the operating system.
+\item[b)] \textbf{Utility.} It maintains the disk by reorganising file fragments so that access is faster; it neither manages the whole machine nor performs a user task like writing.
+\item[c)] \textbf{Translator (interpreter).} It converts each line of a Python source program into machine-executable form and executes it immediately, line by line.
+\item[d)] \textbf{Device driver.} It acts as the interface between the operating system and that precise scanner model; without it the OS cannot send correct commands to the device.
+\item[e)] \textbf{Operating system.} It manages the processor, memory, files, users and peripherals of the server and provides the environment in which all other programs run.
+\end{enumerate}
+\textbf{Examiner's remark:} always give the \emph{precise} word. Writing ``system software'' when the question asks for the sub-category is incomplete and loses marks.
+\end{exoresolu}
+
+\begin{methode}[Classifying software by usage rights (licences)]
+To classify a software according to its \cle{licence} (usage rights), ask three questions:
+\begin{enumerate}
+\item \textbf{Must one pay to use it legally?}
+\begin{itemize}
+\item Yes, and the source code is secret $\Rightarrow$ \textbf{proprietary (commercial) software} (e.g.\ Microsoft Office, Windows, Adobe Photoshop).
+\item No payment at all $\Rightarrow$ go to question 2.
+\item Free for a trial period or with limited functions, payment afterwards $\Rightarrow$ \textbf{shareware} (e.g.\ WinRAR, some games with ``demo'' versions).
+\end{itemize}
+\item \textbf{Is the source code available and modifiable, with the right to redistribute?}
+\begin{itemize}
+\item Yes $\Rightarrow$ \textbf{open source / free software} (e.g.\ Linux, LibreOffice, GIMP, Firefox, Python).
+\item No, only the executable is given free of charge $\Rightarrow$ \textbf{freeware} (e.g.\ Adobe Acrobat Reader, Skype, TeamViewer free version).
+\end{itemize}
+\item \textbf{Is it free of any copyright restriction?} $\Rightarrow$ \textbf{public domain} software (rare, e.g.\ some very old programs or explicit donations).
+\end{enumerate}
+\textbf{Key ideas:} \emph{freeware} $=$ free of charge but closed; \emph{open source} $=$ free \emph{and} modifiable; \emph{shareware} $=$ ``try before you buy''; \emph{proprietary} $=$ pay and no access to the code.
+\end{methode}
+
+\begin{exoresolu}[Licences in real situations]
+\textbf{(GCE style)} For each situation, name the type of licence concerned and justify:
+\begin{enumerate}
+\item[a)] A school downloads LibreOffice; it may study its source code, adapt it and copy it freely for all its computers.
+\item[b)] A student uses WinRAR free of charge; after 40 days a message asks him to buy a licence, though the program keeps working.
+\item[c)] A company buys Microsoft Office 365 and receives only the installed programs, never the source code.
+\item[d)] A teacher installs Adobe Acrobat Reader free of charge to read PDF files, but cannot modify the program.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item[a)] \textbf{Open source (free) software.} The four freedoms are present: use, study (source code available), modify, and redistribute. LibreOffice is a standard example.
+\item[b)] \textbf{Shareware.} The software is distributed free for an evaluation period (here 40 days); continued legal use requires payment. ``Try before you buy'' is the signature of shareware.
+\item[c)] \textbf{Proprietary (commercial) software.} The company pays for a licence of \emph{use} only; the source code remains the secret property of Microsoft and modification or redistribution is forbidden.
+\item[d)] \textbf{Freeware.} The executable is given at no cost, but the source code is closed and the software cannot be modified --- free of charge does not mean free to modify.
+\end{enumerate}
+\textbf{Examiner's remark:} the most frequent confusion is between \emph{freeware} and \emph{open source}. Remember: in freeware only the \emph{price} is zero; in open source the \emph{freedom} (source code, modification, redistribution) is the essential point.
+\end{exoresolu}
+
+\begin{aretenir}[Licence types at a glance]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Type} & \textbf{Cost} & \textbf{Source code} & \textbf{Typical examples} \\
+\hline
+Proprietary & Paid & Closed & Windows, MS Office, Photoshop \\
+\hline
+Shareware & Free trial, then paid & Closed & WinRAR, some utilities \\
+\hline
+Freeware & Free & Closed & Acrobat Reader, Skype \\
+\hline
+Open Source & Free & Open (modifiable) & Linux, LibreOffice, Python, Firefox \\
+\hline
+Public Domain & Free & Open (no copyright) & Rare, very old code \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{methode}[Comparing compiler and interpreter]
+When a question opposes these two translators, structure the answer as a comparison on precise criteria:
+\begin{enumerate}
+\item \textbf{Moment of translation:} compiler $=$ whole source program translated \emph{once}, producing an executable file; interpreter $=$ translation \emph{line by line}, at each execution.
+\item \textbf{Speed of execution:} compiled code runs \emph{faster} (already in machine language); interpreted code is \emph{slower}.
+\item \textbf{Error handling:} the compiler lists \emph{all errors} after scanning the whole program; the interpreter \emph{stops at the first error}, which eases debugging for beginners.
+\item \textbf{Memory / portability:} the interpreter must be present on every machine that runs the program; the compiled executable runs alone but only on the platform for which it was compiled.
+\item \textbf{Examples:} compiler $\to$ C, C++; interpreter $\to$ Python, BASIC (classic).
+\end{enumerate}
+\textbf{Reflex:} present the comparison in a two-column table --- examiners reward the clear layout.
+\end{methode}
+
+\begin{exoresolu}[Compiler versus interpreter]
+\textbf{(GCE style)} The computer science teacher of GBHS Yaoundé explains that the C++ programs of Upper Sixth are \emph{compiled}, while the Python scripts of Lower Sixth are \emph{interpreted}.
+\begin{enumerate}
+\item Construct a table giving four differences between a compiler and an interpreter.
+\item Explain why the interpreter is often preferred when \emph{learning} programming.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Comparison table:
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Compiler} & \textbf{Interpreter} \\
+\hline
+Translation & Whole program translated at once into an executable file & Line by line, at every execution \\
+\hline
+Execution speed & Fast (machine code ready) & Slower (translation each time) \\
+\hline
+Errors & All errors listed after full analysis & Stops at the first error encountered \\
+\hline
+Presence needed & Executable runs without the compiler & Interpreter must be installed on each machine \\
+\hline
+\end{tabularx}
+\end{center}
+\item When learning, the beginner makes many mistakes. The interpreter executes the program immediately and stops exactly at the first faulty line, displaying a message at once: the learner can correct and re-run within seconds, without a separate compilation step. This rapid ``write--test--correct'' cycle makes experimentation easy, which is why Python (interpreted) is chosen for Lower Sixth, while compiled languages are appreciated later for producing fast, stand-alone executables.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Building a complete classification tree or table]
+For ``classify the following software'' questions worth many marks:
+\begin{enumerate}
+\item \textbf{Draw the two main branches first:} \emph{System software} and \emph{Application software}.
+\item \textbf{Subdivide:} system software $\to$ operating systems, utilities, drivers, translators, firmware; application software $\to$ general-purpose and special-purpose.
+\item \textbf{Place each given software} at the deepest possible level (the most precise branch).
+\item \textbf{Add the licence dimension} if requested: proprietary, freeware, shareware, open source --- note that this criterion is \emph{independent} of the system/application criterion (an OS can be proprietary like Windows or open source like Linux).
+\item \textbf{Check:} every software of the list appears exactly once, and each placement is justified by the function of the software.
+\end{enumerate}
+\textbf{Warning:} never mix the two classification criteria on the same branch level (e.g.\ do not put ``open source'' as a sub-branch of ``system software'').
+\end{methode}
+
+\begin{exoresolu}[Full classification of a computer's content]
+\textbf{(GCE style, structured question)} A new laptop offered to the best student of a college in Buea contains: Windows~11 (paid licence), the BIOS, Microsoft Word (paid), a disk cleanup tool, Linux Ubuntu (installed in dual boot, source code available), a payroll program developed for the college bursar, Google Chrome (free, closed code), and an antivirus.
+\begin{enumerate}
+\item Draw a classification tree placing each software in its correct family and sub-category.
+\item Indicate, for each software, its type of licence where the information allows it.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Classification tree (function criterion):
+\begin{popfigure}
+\begin{tikzpicture}[
+    level 1/.style={sibling distance=5cm},
+    level 2/.style={sibling distance=2.5cm},
+    level 3/.style={sibling distance=1.8cm},
+    every node/.style={draw=popdark, thick, rounded corners, fill=popblueL, inner sep=3pt, font=\small},
+    edge from parent/.style={thick, draw=popdark, ->, >=stealth}
+]
+\node {Software}
+    child {node {System Software}
+        child {node {Operating Systems}
+            child {node {Windows 11}}
+            child {node {Ubuntu Linux}}
+        }
+        child {node {Firmware}
+            child {node {BIOS}}
+        }
+        child {node {Utilities}
+            child {node {Disk Cleanup}}
+            child {node {Antivirus}}
+        }
+    }
+    child {node {Application Software}
+        child {node {General-purpose}
+            child {node {MS Word}}
+            child {node {Google Chrome}}
+        }
+        child {node {Special-purpose}
+            child {node {College Payroll}}
+        }
+    };
+\end{tikzpicture}
+\legende{Functional classification tree for the laptop software.}
+\end{popfigure}
+\item Licences (usage-rights criterion, independent of the tree above):
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Software} & \textbf{Licence} \\
+\hline
+Windows 11 & Proprietary (paid, closed code) \\
+\hline
+Microsoft Word & Proprietary (paid) \\
+\hline
+Ubuntu Linux & Open source (free, source code available) \\
+\hline
+Google Chrome & Freeware (free of charge, closed code) \\
+\hline
+BIOS, cleanup tool, antivirus, payroll & Not stated in the text --- cannot be determined \\
+\hline
+\end{tabularx}
+\end{center}
+\end{enumerate}
+\textbf{Examiner's remark:} note the honesty of the last table row: a classification must rest on \emph{given} information. Also observe that Windows and Ubuntu sit in the \emph{same} functional box (operating systems) although their licences differ --- proof that the two criteria are independent.
+\end{exoresolu}
+
+\begin{methode}[Arguing the choice of a software for a given context]
+For open questions of the type ``advise this company / this school'':
+\begin{enumerate}
+\item \textbf{Analyse the needs:} tasks to perform, budget, number of machines, skills of users, need for maintenance.
+\item \textbf{Match needs to categories:} which OS, which utilities, which general-purpose applications, is a special-purpose development justified?
+\item \textbf{Discuss the licence:} open source reduces cost and allows adaptation but may require more technical skill; proprietary software offers commercial support but costs licences per machine.
+\item \textbf{Conclude with a justified recommendation} (at least two arguments). In the GCE, a recommendation without justification scores very little.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Advising a new computer laboratory]
+\textbf{(GCE style, essay-type)} A newly created Government High School in the Far North Region receives 20 computers but has a very small budget for software. The principal asks your advice for equipping the machines so that students can learn word processing, spreadsheets and programming.
+\begin{enumerate}
+\item Propose a complete software equipment (system and application software), naming the category of each element.
+\item Justify your choices with regard to the budget constraint.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item Proposed equipment:
+\begin{itemize}
+\item \textbf{Operating system (system software):} Ubuntu Linux --- open source, so no licence to pay for the 20 machines.
+\item \textbf{Office suite (general-purpose application software):} LibreOffice (Writer for word processing, Calc for spreadsheets) --- open source and free, with functions equivalent to commercial suites.
+\item \textbf{Programming environment (translator, system software):} the Python interpreter --- free and open source, ideal for learning.
+\item \textbf{Utility (system software):} a free antivirus or the built-in security tools of Ubuntu, plus a backup utility.
+\item \textbf{Web browser (general-purpose application software):} Firefox or Chromium --- open source.
+\end{itemize}
+\item \textbf{Justification:} with 20 machines, proprietary licences (e.g.\ an operating system plus an office suite per machine) would multiply the cost twentyfold and exceed the small budget. Open source software costs nothing in licences, can legally be installed on all 20 computers and copied for students, and its source code can even serve as study material in computer science lessons. The functions needed (typing documents, calculations, learning programming) are fully covered. The only trade-off is the need for a teacher or technician able to install and maintain Linux, which is a training investment rather than a financial one.
+\end{enumerate}
+\textbf{Examiner's remark:} this answer scores highly because every proposed element is \emph{placed in a category of the chapter} and every choice is \emph{justified by the context} --- exactly what the marking guide rewards.
+\end{exoresolu}
+
+\begin{attention}[Frequent traps in classification questions]
+\begin{itemize}
+\item Calling an \textbf{antivirus} application software: it is a \emph{utility}, hence system software.
+\item Confusing \textbf{freeware} (free of charge, closed) with \textbf{open source} (source code available and modifiable).
+\item Believing that ``system software'' is an acceptable answer when the \emph{sub-category} (OS, driver, utility, translator, firmware) is requested.
+\item Mixing the two criteria (function and licence) in the same classification tree.
+\item Forgetting that one software can be described on \emph{both} axes: e.g.\ Linux is an operating system \emph{and} open source.
+\item Classifying without a one-line justification: at the GCE, the justification carries marks.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\coursec{Categories of software}
+
+\courssub{Software: concept and classification criteria}
+
+\begin{definition}[Software]
+Software is the set of programs, procedures, rules, documentation and associated data that enable a computer system to perform specific tasks. Unlike hardware (the physical components), software is intangible and stored on storage media.
+\end{definition}
+
+\begin{propriete}[Classification criteria]
+Software can be classified according to three independent criteria:
+\begin{enumerate}
+\item \textbf{Role (function)}: what the software does in the computer system — \emph{system software} vs \emph{application software}.
+\item \textbf{Purpose (specific function)}: the precise task it performs — operating system, utility, device driver, firmware, general-purpose application, bespoke application, etc.
+\item \textbf{Usage rights (licence)}: the legal conditions under which it may be used, copied, modified and distributed — proprietary, freeware, shareware, open source.
+\end{enumerate}
+\end{propriete}
+
+\begin{aretenir}[Independence of classifications]
+The three classifications are \textbf{independent}: a single piece of software belongs to one category in each classification simultaneously. For example, Ubuntu is (role) system software, (purpose) an operating system, and (licence) open source. Windows 11 is (role) system software, (purpose) an operating system, and (licence) proprietary.
+\end{aretenir}
+
+\courssub{System software}
+
+\begin{definition}[System software]
+System software is a collection of programs designed to operate, control, and extend the processing capabilities of the computer hardware itself. It provides the platform on which application software runs and manages hardware resources (CPU, memory, storage, I/O devices).
+\end{definition}
+
+\begin{propriete}[Main sub-categories of system software]
+\begin{enumerate}
+\item \textbf{Operating system (OS)}: the master program that manages all hardware and software resources, provides a user interface, and runs other programs. Examples: Windows 11, Ubuntu Linux, macOS, Android, iOS.
+\item \textbf{Device drivers}: programs that allow the operating system to communicate with a specific hardware device (printer, graphics card, keyboard, etc.). Each device requires its own driver.
+\item \textbf{Utility software (utilities)}: programs that perform maintenance, optimisation, or security tasks on the system. Examples: disk defragmenter, antivirus, backup tool, file compressor (WinRAR, 7-Zip), disk cleaner.
+\item \textbf{Firmware}: low-level software permanently stored in read-only memory (ROM, EEPROM, flash) on a hardware device. It controls the device's basic operation. Examples: BIOS/UEFI on a motherboard, firmware of a router, printer, or SSD controller.
+\item \textbf{Language translators (system tools)}: compilers, interpreters, assemblers, linkers, loaders — used to develop other software but considered system software because they are essential for the software development environment.
+\end{enumerate}
+\end{propriete}
+
+\begin{exemplebox}[BIOS / UEFI]
+The \textbf{BIOS} (Basic Input/Output System) or its modern replacement \textbf{UEFI} (Unified Extensible Firmware Interface) is firmware stored on a chip on the motherboard. It runs immediately when the computer is powered on, performs the Power-On Self-Test (POST), initialises hardware, and loads the operating system bootloader from the storage device.
+\end{exemplebox}
+
+\begin{attention}[Utility vs application]
+A utility program (e.g. an antivirus or a file compressor) is \textbf{system software} because it acts on the system infrastructure (disks, files, security) and is often used by the OS itself. A general-purpose application (e.g. a word processor or a media player) is \textbf{application software} because it serves a user task unrelated to system management.
+\end{attention}
+
+\courssub{Application software}
+
+\begin{definition}[Application software]
+Application software consists of programs designed to help users perform specific tasks unrelated to the management of the computer system itself: writing documents, calculating, drawing, playing media, managing accounts, etc.
+\end{definition}
+
+\begin{propriete}[Main sub-categories of application software]
+\begin{enumerate}
+\item \textbf{General-purpose applications (off-the-shelf)}: mass-produced programs sold or distributed to a wide audience for common tasks. Examples: Microsoft Word, Excel, VLC media player, Adobe Photoshop, web browsers.
+\item \textbf{Bespoke (custom-made) applications}: software developed specifically for one organisation according to its unique requirements. Examples: a payroll program for a specific company, a hospital patient management system tailored to that hospital's workflow.
+\item \textbf{Specialised / vertical-market applications}: off-the-shelf packages targeting a specific industry (e.g. CAD for architects, accounting packages for businesses, library management systems).
+\end{enumerate}
+\end{propriete}
+
+\begin{aretenir}[Off-the-shelf vs bespoke]
+\begin{itemize}
+\item \textbf{Off-the-shelf}: cheaper, immediately available, tested by many users, but may not fit exact needs; support and updates depend on vendor.
+\item \textbf{Bespoke}: fits exact requirements, competitive advantage, full control over features and data, but expensive, time-consuming to develop, requires in-house or contracted expertise, maintenance burden.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Classification by usage rights and synthesis}
+
+\begin{definition}[Proprietary software]
+Software whose source code is \textbf{not} made available to the public. The licence restricts copying, modification, and redistribution. The user buys a \emph{licence to use}, not ownership. Examples: Windows 11, Microsoft Office, Adobe Photoshop, WinRAR (shareware model).
+\end{definition}
+
+\begin{definition}[Freeware]
+Software distributed at \textbf{no cost} for unlimited use, but the source code is \textbf{not} provided and modification/redistribution is usually forbidden. The copyright holder retains all rights. Examples: Adobe Acrobat Reader, VLC media player (note: VLC is actually open source; a better freeware example is Skype (free version) or some proprietary drivers).
+\end{definition}
+
+\begin{definition}[Shareware]
+Software distributed free for a \textbf{trial period} or with \textbf{limited functionality}. After the trial, the user must pay for a licence key to continue using it or unlock full features. Examples: WinRAR (trialware), many commercial utilities.
+\end{definition}
+
+\begin{definition}[Open source software]
+Software whose licence grants users the freedom to \textbf{run, study, modify, and redistribute} the software and its source code. The Open Source Initiative (OSI) defines precise criteria. Examples: Ubuntu Linux, LibreOffice, VLC media player, Firefox, GIMP, Python, MySQL.
+\end{definition}
+
+\begin{propriete}[Common open source licences]
+\begin{itemize}
+\item \textbf{GPL (GNU General Public License)}: copyleft — derivative works must be distributed under the same licence.
+\item \textbf{MIT / BSD / Apache}: permissive — allow proprietary derivatives, only require attribution.
+\end{itemize}
+\end{propriete}
+
+\begin{attention}[Freeware $\neq$ Open source]
+Freeware is \textbf{free of charge} but \textbf{closed source}. Open source is \textbf{free as in freedom} (may be free of charge or sold). Do not confuse the two.
+\end{attention}
+
+\begin{experience}[Classifying a software product]
+Take any software you know (e.g. \texttt{Google Chrome}, \texttt{LibreOffice Writer}, \texttt{Android OS}, \texttt{a printer driver}). Classify it by the three criteria:
+\begin{enumerate}
+\item Role: system or application?
+\item Purpose: OS, utility, driver, firmware, general-purpose app, bespoke app?
+\item Licence: proprietary, freeware, shareware, open source?
+\end{enumerate}
+Justify each classification in one sentence.
+\end{experience}
+
+\begin{savaistu}[Cameroon context]
+The Government of Cameroon has, through various circulars, encouraged the use of free and open source software (FOSS) in public administration and education to reduce licensing costs and promote technological sovereignty. Many schools use Ubuntu or Linux Mint in computer labs. However, proprietary software (Windows, Microsoft Office) remains widespread due to teacher familiarity, curriculum requirements, and compatibility with external examination formats.
+\end{savaistu}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: choosing the right category]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item Which of the following is \emph{system software}?
+\begin{enumerate}
+\item Microsoft Excel
+\item A printer driver
+\item VLC media player
+\item Adobe Photoshop
+\end{enumerate}
+\item Software distributed free of charge for a trial period, after which the user must pay to continue using it, is called:
+\begin{enumerate}
+\item freeware
+\item open source software
+\item shareware
+\item bespoke software
+\end{enumerate}
+\item Software written specially for one particular organisation, according to its own specifications, is:
+\begin{enumerate}
+\item off-the-shelf software
+\item bespoke (custom-made) software
+\item utility software
+\item firmware
+\end{enumerate}
+\item The BIOS of a computer is best classified as:
+\begin{enumerate}
+\item application software
+\item firmware stored on a chip of the motherboard
+\item a general-purpose application
+\item shareware
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false, with justification]
+State whether each of the following statements is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item ``Freeware can be modified and redistributed freely by its users.''
+\item ``An antivirus program is application software.''
+\item ``A device driver is system software.''
+\item ``Ubuntu Linux is proprietary software because it is an operating system.''
+\item ``A compiler belongs to system software.''
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Key definitions]
+Define each of the following terms clearly, and give one example of software for each:
+\begin{enumerate}
+\item system software;
+\item application software;
+\item utility software;
+\item open source software;
+\item off-the-shelf software.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Matching exercise]
+Copy the table below and match each software product in column A to the \textbf{most precise} category in column B. Each category may be used once, more than once, or not at all.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{No} & \textbf{Column A (software)} & \textbf{No} & \textbf{Column B (category)} \\
+\hline
+1 & Windows 11 & a & Operating system \\
+\hline
+2 & A keyboard driver & b & Utility software \\
+\hline
+3 & WinRAR & c & Device driver \\
+\hline
+4 & MS Word & d & General-purpose application \\
+\hline
+5 & Ubuntu & e & Bespoke application \\
+\hline
+6 & A payroll program written for one company & f & Open source operating system \\
+\hline
+7 & A disk defragmenter & g & Shareware \\
+\hline
+8 & The BIOS & h & Proprietary operating system \\
+\hline
+9 & VLC media player & i & Firmware \\
+\hline
+10 & Adobe Acrobat Reader & j & Freeware \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Classifying real software]
+Classify each of the following software products by \textbf{role} (system / application), by \textbf{purpose} (operating system, utility, driver, general-purpose application, bespoke application, firmware) and by \textbf{licence} (proprietary, freeware, shareware, open source), justifying each answer in one sentence:
+\begin{enumerate}
+\item Windows 11;
+\item WinRAR;
+\item Ubuntu;
+\item MS Word;
+\item VLC media player;
+\item a printer driver;
+\item Adobe Acrobat Reader;
+\item the BIOS.
+\end{enumerate}
+Present your answer in a table with four columns: \emph{Software}, \emph{Role}, \emph{Purpose}, \emph{Licence}.
+\end{exercice}
+
+\begin{exercice}[Choosing software for a school]
+The computer laboratory of a Government High School in Bamenda has 30 computers running Ubuntu. For each of the following needs, state whether the school requires \emph{system software} or \emph{application software}, and propose one concrete example, preferably free or open source:
+\begin{enumerate}
+\item protecting the computers against viruses;
+\item typing and printing examination questions;
+\item compressing students' project files to save disk space;
+\item managing the startup of the machines and the user sessions;
+\item drawing diagrams for Computer Science lessons.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Licence analysis]
+A small business in Yaoundé downloads three programs from the Internet:
+\begin{itemize}
+\item Program A: free to download and use forever, but the source code is not available and modification is forbidden.
+\item Program B: free for 30 days; after that, a licence key costing money is required.
+\item Program C: free to download, and the licence explicitly allows users to study, modify and redistribute the source code.
+\end{itemize}
+\begin{enumerate}
+\item Identify the licence type of each program (freeware, shareware or open source), justifying your answer.
+\item For each program, state one advantage and one limitation for the business.
+\item Which program would you recommend for a long-term, budget-limited use? Justify.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Building a classification scheme]
+Draw a tree diagram (hierarchical chart) that classifies software into its main categories studied in this chapter: system software (with its sub-categories) and application software (with its sub-categories). Place at least one concrete software example at each leaf of your tree. Then add a second, independent classification based on \emph{usage rights} (proprietary, freeware, shareware, open source) and explain in three sentences why these two classifications are independent of each other.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question: the cybercafé]
+A cybercafé owner in Douala wants to equip 10 new computers.
+\begin{enumerate}
+\item Distinguish system software from application software, giving one example of each. \textbf{(4 marks)}
+\item Propose one operating system and two application programs suitable for a cybercafé, justifying each choice. \textbf{(6 marks)}
+\item Explain to the owner two advantages of open source software for his business. \textbf{(4 marks)}
+\item The owner also needs a program to clean temporary files and manage the disks. State the category of such a program and justify why it is not classified as a general-purpose application. \textbf{(2 marks)}
+\item State two risks the owner faces if he installs pirated copies of proprietary software. \textbf{(4 marks)}
+\end{enumerate}
+\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\begin{exercice}[Scenario analysis: the hospital]
+A regional hospital in the North-West Region wants software to manage its patient records (registration, consultations, prescriptions, billing).
+\begin{enumerate}
+\item Explain the difference between \emph{off-the-shelf} software and \emph{bespoke} (custom-made) software. \textbf{(4 marks)}
+\item Give two arguments in favour of buying an off-the-shelf hospital management package. \textbf{(4 marks)}
+\item Give two arguments in favour of ordering bespoke software developed specifically for this hospital. \textbf{(4 marks)}
+\item The hospital's computers will also need an operating system and device drivers. Explain why these two types of software are indispensable, whatever management solution is chosen. \textbf{(4 marks)}
+\item Conclude by recommending one of the two options for this hospital, justifying your recommendation with two clear reasons. \textbf{(4 marks)}
+\end{enumerate}
+\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\begin{exercice}[Essay: proprietary versus open source software]
+``For Cameroonian public schools, open source software is always a better choice than proprietary software.''
+
+Discuss this statement. Your essay should:
+\begin{enumerate}
+\item define proprietary software and open source software, with one example of each; \textbf{(4 marks)}
+\item present at least three advantages of open source software for public schools (cost, freedom, adaptation to local needs); \textbf{(6 marks)}
+\item present at least two disadvantages or limitations of open source software in the Cameroonian school context (for example: technical support, training of teachers, compatibility); \textbf{(4 marks)}
+\item present at least two situations in which proprietary software may be preferable; \textbf{(4 marks)}
+\item end with a balanced personal conclusion. \textbf{(2 marks)}
+\end{enumerate}
+\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: choosing the right category]
+\begin{enumerate}
+\item \textbf{Answer: (b) A printer driver.} A device driver allows the operating system to communicate with a hardware device; it is system software. Excel, VLC and Photoshop all serve user tasks and are application software.
+\item \textbf{Answer: (c) shareware.} Shareware is distributed free for a trial period or with limited functionality; continued use requires payment. Freeware is free forever, open source concerns freedom over the source code, and bespoke refers to custom development, not to a licence.
+\item \textbf{Answer: (b) bespoke (custom-made) software.} It is developed specifically for one organisation according to its own specifications, unlike off-the-shelf software which is mass-produced.
+\item \textbf{Answer: (b) firmware stored on a chip of the motherboard.} The BIOS/UEFI is low-level software permanently stored in ROM/flash memory; it runs at power-on, performs the POST and loads the operating system.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false, with justification]
+\begin{enumerate}
+\item \textbf{False.} Freeware is free of charge but closed source: the copyright holder retains all rights, and modification and redistribution are normally forbidden. Only open source licences grant the freedoms to study, modify and redistribute.
+\item \textbf{False.} An antivirus is a \emph{utility}, hence system software: it acts on the system infrastructure (files, disks, security) rather than serving an end-user task such as writing or drawing.
+\item \textbf{True.} A device driver enables the operating system to communicate with a specific hardware device; it operates and extends the capabilities of the hardware, which is precisely the role of system software.
+\item \textbf{False.} The role (operating system) and the licence are independent classifications. Ubuntu is distributed under open source licences (mainly the GPL); its source code can be studied, modified and redistributed.
+\item \textbf{True.} A compiler is a language translator; translators (compilers, interpreters, assemblers, linkers) are classified as system software because they are essential tools of the software development environment.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Key definitions]
+\begin{enumerate}
+\item \textbf{System software}: the set of programs designed to operate, control and extend the processing capabilities of the hardware and to provide the platform on which applications run. \emph{Example:} Windows 11 (operating system).
+\item \textbf{Application software}: programs designed to help users perform specific tasks unrelated to the management of the computer itself. \emph{Example:} Microsoft Word (word processing).
+\item \textbf{Utility software}: a system program that performs maintenance, optimisation or security tasks on the computer system. \emph{Example:} an antivirus, or 7-Zip for file compression.
+\item \textbf{Open source software}: software distributed with a licence granting the freedoms to run, study, modify and redistribute the program and its source code. \emph{Example:} LibreOffice.
+\item \textbf{Off-the-shelf software}: a general-purpose, mass-produced application sold or distributed ready-made to a wide audience. \emph{Example:} Adobe Photoshop.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Matching exercise]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{No} & \textbf{Software} & \textbf{Match} & \textbf{Justification} \\
+\hline
+1 & Windows 11 & h & Proprietary OS: source code closed, licence paid to Microsoft. \\
+\hline
+2 & Keyboard driver & c & Device driver: lets the OS communicate with the keyboard. \\
+\hline
+3 & WinRAR & g & Shareware: free trial, then a paid licence key is required. \\
+\hline
+4 & MS Word & d & General-purpose application: mass-produced word processor. \\
+\hline
+5 & Ubuntu & f & Open source operating system (GPL and other free licences). \\
+\hline
+6 & Payroll program for one company & e & Bespoke application: written to that company's specifications. \\
+\hline
+7 & Disk defragmenter & b & Utility: maintenance task on the system's disks. \\
+\hline
+8 & BIOS & i & Firmware: low-level code stored on a motherboard chip. \\
+\hline
+9 & VLC media player & d (open source) & General-purpose application; also open source (GPL). \\
+\hline
+10 & Adobe Acrobat Reader & j & Freeware: free of charge, closed source, no modification. \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Marking note:} category (a) ``Operating system'' is less precise than (f) or (h) for items 1 and 5; the instruction asks for the \emph{most precise} category, so 1--h and 5--f are the expected answers. VLC (item 9) is best matched to (d) as a general-purpose application, with the remark that it is open source.
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Classifying real software]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Software} & \textbf{Role} & \textbf{Purpose} & \textbf{Licence} \\
+\hline
+Windows 11 & System & Operating system: manages hardware and runs other programs & Proprietary \\
+\hline
+WinRAR & System & Utility: compresses files, a maintenance/storage task & Shareware \\
+\hline
+Ubuntu & System & Operating system: manages resources and user sessions & Open source \\
+\hline
+MS Word & Application & General-purpose application: word processing for end users & Proprietary \\
+\hline
+VLC media player & Application & General-purpose application: plays audio/video for users & Open source \\
+\hline
+Printer driver & System & Device driver: lets the OS control the printer & Proprietary (usually) \\
+\hline
+Acrobat Reader & Application & General-purpose application: reads PDF documents & Freeware \\
+\hline
+BIOS & System & Firmware: boots the machine, POST, loads the OS & Proprietary (usually) \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Justifications (one sentence each):} Windows 11 and Ubuntu control the hardware and provide the platform for other programs, so they are system software; WinRAR acts on files and storage, hence a utility; Word, VLC and Acrobat Reader serve direct user tasks, hence applications; the printer driver translates OS commands for one device; the BIOS is stored on a ROM chip and starts the machine, hence firmware. For licences: Microsoft and Adobe products are closed source (paid for Word/Windows, free of charge for Reader); WinRAR requires payment after the trial; Ubuntu and VLC publish their source code under free licences.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Choosing software for a school]
+\begin{enumerate}
+\item \textbf{Protecting against viruses — system software (utility).} Example: \emph{ClamAV}, a free and open source antivirus available for Ubuntu.
+\item \textbf{Typing and printing examination questions — application software.} Example: \emph{LibreOffice Writer}, a free open source word processor installed by default on Ubuntu.
+\item \textbf{Compressing project files — system software (utility).} Example: \emph{7-Zip} (p7zip) or the built-in Ubuntu archive manager, both free/open source.
+\item \textbf{Managing startup and user sessions — system software (operating system).} This is the role of the OS itself: \emph{Ubuntu} (with its bootloader GRUB and login manager) already fulfils it.
+\item \textbf{Drawing diagrams for lessons — application software.} Example: \emph{LibreOffice Draw} or \emph{GIMP}/\emph{Inkscape}, all free and open source.
+\end{enumerate}
+\textbf{Key idea:} needs 1, 3 and 4 concern the management and maintenance of the computer system itself (system software), while needs 2 and 5 serve direct user tasks (application software).
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Licence analysis]
+\begin{enumerate}
+\item \textbf{Identification.}
+\begin{itemize}
+\item \textbf{Program A = freeware}: free of charge forever, but closed source and modification forbidden — the copyright holder keeps all rights.
+\item \textbf{Program B = shareware}: free only for a 30-day trial, after which a paid licence key is required.
+\item \textbf{Program C = open source}: the licence explicitly grants the freedoms to study, modify and redistribute the source code.
+\end{itemize}
+\item \textbf{Advantage and limitation.}
+\begin{itemize}
+\item \textbf{A (freeware)}: advantage — no cost, immediately usable; limitation — no adaptation possible, and the business depends entirely on the publisher for updates.
+\item \textbf{B (shareware)}: advantage — allows testing before buying, reducing the risk of a bad purchase; limitation — a recurring or one-off cost after 30 days, and work may be blocked if payment is delayed.
+\item \textbf{C (open source)}: advantage — free of charge, adaptable to the exact needs of the business, no dependence on a single vendor; limitation — may require technical skills to install, customise and maintain, and support is often community-based.
+\end{itemize}
+\item \textbf{Recommendation.} For long-term, budget-limited use, \textbf{Program C (open source)} is recommended: it costs nothing, can be legally used forever, and can be adapted as the business grows. Program A is acceptable as a second choice, but the business remains locked to the publisher's decisions, whereas C guarantees independence.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Building a classification scheme]
+\textbf{Classification by role and purpose:}
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+ grow=right, level distance=3.2cm,
+ level 1/.style={sibling distance=4.6cm},
+ level 2/.style={sibling distance=1.5cm},
+ every node/.style={draw=popline, rounded corners=2pt, fill=popblueL, text=popdark, font=\small, align=center},
+ edge from parent/.style={draw=popmuted, thick}]
+\node {Software}
+ child { node[align=center]{Application\\software}
+   child { node[align=center]{Bespoke\\e.g. hospital\\patient system} }
+   child { node[align=center]{General-purpose\\e.g. MS Word, VLC} }
+ }
+ child { node[align=center]{System\\software}
+   child { node[align=center]{Firmware\\e.g. BIOS/UEFI} }
+   child { node[align=center]{Utility\\e.g. antivirus, 7-Zip} }
+   child { node[align=center]{Device driver\\e.g. printer driver} }
+   child { node[align=center]{Operating system\\e.g. Windows 11, Ubuntu} }
+ };
+\end{tikzpicture}
+\end{center}
+\legende{Hierarchical classification of software by role and purpose, with an example at each leaf.}
+\end{popfigure}
+
+\textbf{Independent classification by usage rights:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Licence} & \textbf{Key feature} & \textbf{Example} \\
+\hline
+Proprietary & Closed source, paid licence to use & Windows 11, MS Office \\
+\hline
+Freeware & Free of charge, closed source & Adobe Acrobat Reader \\
+\hline
+Shareware & Free trial, then payment required & WinRAR \\
+\hline
+Open source & Freedom to run, study, modify, redistribute & Ubuntu, LibreOffice \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Independence of the two classifications (three sentences):} The first classification describes \emph{what the software does} in the machine (its role and purpose), while the second describes \emph{the legal conditions} of its use, which is a completely different question. Consequently, the same role can appear under any licence: Ubuntu and Windows 11 are both operating systems, yet one is open source and the other proprietary. Knowing a program's category therefore tells us nothing about its licence, and vice versa — each product must be placed independently in both schemes.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured question: the cybercafé]
+\textbf{Indicative mark scheme (20 marks).}
+\begin{enumerate}
+\item \textbf{(4 marks)} System software operates and controls the hardware and provides the platform for other programs \textbf{(1)}, e.g. Windows 11 or Ubuntu \textbf{(1)}. Application software helps the user perform a specific task unrelated to managing the machine \textbf{(1)}, e.g. a web browser or a word processor \textbf{(1)}.
+\item \textbf{(6 marks)} Operating system: \emph{Ubuntu} — free of charge, no licence cost for 10 machines, resistant to most Windows viruses \textbf{(2)}. Applications (any two, 2 marks each): \emph{Firefox/Chromium} for browsing (essential service of a cybercafé, free) \textbf{(2)}; \emph{LibreOffice} for customers who need to type and print documents (free, opens MS Office files) \textbf{(2)}. \emph{Examiner expectation:} each choice must be justified by the cybercafé context, not merely named.
+\item \textbf{(4 marks)} Any two advantages, 2 marks each: no licence fees, which drastically reduces the start-up cost for 10 computers \textbf{(2)}; freedom to install on unlimited machines and to adapt the software, with no risk of licence violations \textbf{(2)}.
+\item \textbf{(2 marks)} It is a \emph{utility}, i.e. system software \textbf{(1)}, because it acts on the system infrastructure (disks, temporary files) rather than serving an end-user task like writing or drawing \textbf{(1)}.
+\item \textbf{(4 marks)} Any two risks, 2 marks each: legal prosecution and fines for copyright infringement \textbf{(2)}; pirated copies often contain malware/viruses and receive no security updates, endangering customers' data \textbf{(2)}. (Also acceptable: no technical support, unstable software.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Scenario analysis: the hospital]
+\textbf{Indicative mark scheme (20 marks).}
+\begin{enumerate}
+\item \textbf{(4 marks)} Off-the-shelf software is mass-produced, ready-made and sold to many organisations for common needs \textbf{(2)}; bespoke software is developed specifically for one organisation according to its own specifications and workflow \textbf{(2)}.
+\item \textbf{(4 marks)} Any two, 2 marks each: lower cost and immediate availability, so the hospital can start using it quickly \textbf{(2)}; it has been tested by many users, so it is generally reliable and comes with vendor support and updates \textbf{(2)}.
+\item \textbf{(4 marks)} Any two, 2 marks each: it fits exactly the hospital's own procedures (registration, consultations, billing in the local context), avoiding useless or missing features \textbf{(2)}; the hospital fully controls the features, the data and future modifications, which can give better confidentiality of patient records \textbf{(2)}.
+\item \textbf{(4 marks)} The operating system is indispensable because it manages the hardware, the files and the user sessions, and no application can run without it \textbf{(2)}. Device drivers are indispensable because without them the OS cannot communicate with the printers, network cards and other devices the hospital needs daily \textbf{(2)}.
+\item \textbf{(4 marks)} Example recommendation: \emph{bespoke software} \textbf{(1 justified choice)}, because patient-record management must match the hospital's exact workflow and language/billing practices \textbf{(1.5)}, and because control over the code and data guarantees confidentiality and long-term independence from a vendor \textbf{(1.5)}. \emph{Examiner expectation:} either option is accepted provided the two reasons are clear, relevant to a hospital, and consistent with the choice.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Essay: proprietary versus open source software]
+\textbf{Indicative mark scheme and model outline (20 marks).}
+\begin{enumerate}
+\item \textbf{Definitions (4 marks).} Proprietary software: closed source code; the user buys only a licence to use and may not copy, modify or redistribute it — e.g. Microsoft Office \textbf{(2)}. Open source software: licence granting the freedoms to run, study, modify and redistribute the program and its source code — e.g. Ubuntu Linux \textbf{(2)}.
+\item \textbf{Advantages of open source for public schools (6 marks, 2 each).}
+\begin{itemize}
+\item \emph{Cost}: no licence fees, a decisive argument for schools with very limited budgets; one system can be installed on all lab machines legally.
+\item \emph{Freedom and sovereignty}: the school is not tied to a vendor; software can be installed, copied and shared freely with teachers and students.
+\item \emph{Adaptation to local needs}: the source code can be studied (excellent for Computer Science teaching) and adapted or translated to local contexts.
+\end{itemize}
+\item \textbf{Limitations in the Cameroonian context (4 marks, 2 each).}
+\begin{itemize}
+\item \emph{Support and training}: many teachers were trained on Windows/MS Office; switching requires training, and professional technical support for open source is scarce locally.
+\item \emph{Compatibility}: some examination formats, peripherals or commercial documents may require proprietary formats and drivers that work less smoothly under Linux.
+\end{itemize}
+\item \textbf{Situations where proprietary software is preferable (4 marks, 2 each).}
+\begin{itemize}
+\item When a specific professional tool exists only in proprietary form (e.g. certain CAD or accounting packages required by a curriculum or an employer).
+\item When guaranteed vendor support, training materials and compatibility with partners (ministries, examination boards, businesses) are critical.
+\end{itemize}
+\item \textbf{Balanced conclusion (2 marks).} Example: open source software offers major economic and pedagogical advantages and should be the default choice in public schools; however, the transition must be accompanied by teacher training and, where compatibility or support demands it, the measured use of proprietary software. The best policy is therefore not ``always one or the other'', but a reasoned combination guided by cost, needs and sustainability.
+\end{enumerate}
+\emph{Examiner expectation:} a structured essay (introduction, developed arguments with examples, personal but balanced conclusion), correct use of the chapter's vocabulary, and no confusion between freeware and open source.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, font=\small},
+root concept/.append style={concept color=popblue, font=\bfseries\small, minimum size=2.6cm},
+level 1/.append style={level distance=3.4cm, sibling angle=60, font=\scriptsize},
+level 1 concept/.append style={minimum size=2.1cm}]
+\node[root concept]{Categories of Software}
+child[concept color=poporange]{ node{Concept \& criteria}
+  [clockwise from=90, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=poporange!70]{ node{Role: system vs application} }
+  child[concept color=poporange!70]{ node{Rights: licence type} }
+}
+child[concept color=popgreen]{ node{System software}
+  [clockwise from=30, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=popgreen!70]{ node{Operating system} }
+  child[concept color=popgreen!70]{ node{Drivers \& utilities} }
+  child[concept color=popgreen!70]{ node{Translators} }
+}
+child[concept color=poppurple]{ node{Application software}
+  [clockwise from=-30, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=poppurple!70]{ node{General purpose} }
+  child[concept color=poppurple!70]{ node{Specialised / bespoke} }
+}
+child[concept color=poppink]{ node{Usage rights}
+  [clockwise from=-90, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=poppink!70]{ node{Proprietary} }
+  child[concept color=poppink!70]{ node{Free / open source} }
+  child[concept color=poppink!70]{ node{Shareware, freeware} }
+}
+child[concept color=popgold]{ node{Examples}
+  [clockwise from=-150, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=popgold!70]{ node{Windows, Linux, Word} }
+  child[concept color=popgold!70]{ node{Compilers, antivirus} }
+}
+child[concept color=popblue!60]{ node{GCE skills}
+  [clockwise from=150, level 2/.append style={sibling angle=45, level distance=2.6cm, minimum size=1.7cm, font=\tiny}]
+  child[concept color=popblue!40]{ node{Classify a given software} }
+  child[concept color=popblue!40]{ node{Justify the category} }
+};
+\end{tikzpicture}
+\legende{Mind map of the chapter: categories of software.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item \cle{Software}: the set of programs, procedures and data that tell the hardware what to do; the intangible part of a computer system (opposed to \cle{hardware}).
+\item \cle{Program}: an ordered sequence of instructions written in a programming language to perform a task.
+\item \cle{System software}: software that manages and controls the hardware and provides a platform for other software (operating systems, device drivers, utilities, translators).
+\item \cle{Operating system (OS)}: the master system software that manages the processor, memory, files, input/output devices and users (Windows, Linux, macOS, Android).
+\item \cle{Device driver}: small system program allowing the OS to communicate with a specific peripheral (printer, flash disk).
+\item \cle{Utility}: maintenance tool of the system (antivirus, disk defragmenter, backup, compression).
+\item \cle{Translator}: converts source code to machine code: \cle{compiler} (whole program at once), \cle{interpreter} (line by line), \cle{assembler} (assembly language).
+\item \cle{Application software}: software that performs a task for the end user (word processor, browser, school-fees management system).
+\item \cle{General-purpose (off-the-shelf) software}: ready-made, used by many users (MS Word, Excel).
+\item \cle{Specialised / bespoke software}: written for one specific organisation or task (a bank's or a hospital's custom package).
+\end{itemize}
+
+\textbf{Classification by usage rights (licences)}
+\begin{itemize}
+\item \cle{Proprietary software}: paid licence, source code secret, copying forbidden (MS Windows, MS Office).
+\item \cle{Free / open-source software}: source code available; freedom to use, study, modify, redistribute (Linux, LibreOffice, GIMP).
+\item \cle{Freeware}: free of charge but source code closed (Skype, Adobe Reader).
+\item \cle{Shareware}: free trial for a limited time or with limited features, then payment required (WinRAR).
+\item \cle{Public domain}: no copyright restrictions at all.
+\end{itemize}
+
+\textbf{Methods to master}
+\begin{itemize}
+\item To classify a software: (1) ask \emph{who does it serve?} --- the machine/OS $\Rightarrow$ system software; the end user $\Rightarrow$ application software. (2) Then ask \emph{under which licence?} --- proprietary, open source, freeware, shareware.
+\item To justify in an exam: name the category, give the definition, then apply it to the example with one precise argument (role, availability of source code, cost).
+\item Distinguish the two classifications: by \textbf{function} (system/application) and by \textbf{usage rights} (licence). They are independent: Linux is system software \emph{and} open source.
+\end{itemize}
+
+\textbf{Common mistakes to avoid}
+\begin{itemize}
+\item Confusing \emph{freeware} (free of charge) with \emph{free software} (freedom + source code): ``free'' has two meanings.
+\item Saying ``the OS is an application'': the OS is system software; it runs applications.
+\item Believing open source always means zero cost, or that proprietary always means paid: the licence concerns rights, not only price.
+\item Classifying an antivirus as application software: it is a \emph{utility}, hence system software.
+\item Mixing compiler and interpreter: a compiler translates the whole program once; an interpreter translates and executes line by line.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Typical question: ``Classify the following software and justify'': always give \textbf{category + definition + justification} for full marks.
+\item Memorise at least two Cameroon-relevant examples per category (e.g.\ a bespoke school-management package, LibreOffice in computer labs).
+\item Draw a clear two-axis table (function vs licence) in synthesis questions; it earns presentation marks.
+\item Define every key term in one precise sentence before discussing; vague definitions lose marks.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

@@ -1,0 +1,2524 @@
+% Applying Artificial Intelligence to improve on working and living standards — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT01-applying-artificial-intelligence-to-improve-on-working-and-l.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{1}
+\newcommand{\DOCTITRE}{Applying Artificial Intelligence to improve on working and living standards}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+
+\begin{document}
+
+\pagegarde{Applying Artificial Intelligence to improve on working and living standards}{ICT}{Upper Sixth}{Upper Sixth — ICT}{1}{7 periods}{This chapter introduces Artificial Intelligence as a driver of improved working and living standards, covering its concepts, techniques, machine learning, ethics and the development of AI systems. It closes with the fundamentals of computer networks, the infrastructure on which modern AI services run, and prepares learners for the GCE Advanced Level examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define artificial intelligence and distinguish AI from conventional programming.
+\item By the end of this chapter I can describe the main application domains of AI (health, agriculture, finance, education, transport) with Cameroonian examples.
+\item By the end of this chapter I can explain the ethical issues of AI (bias, privacy, jobs, accountability) and apply principles of responsible use.
+\item By the end of this chapter I can identify AI techniques (search, knowledge representation, reasoning, natural language processing, robotics) and the components of intelligent systems.
+\item By the end of this chapter I can explain how machine learning works and distinguish supervised, unsupervised and reinforcement learning.
+\item By the end of this chapter I can outline the stages of developing an AI system, from problem definition to deployment and evaluation.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item The Concept of Artificial Intelligence
+\item AI Ethics and Responsible Use
+\item AI Techniques and Intelligent Systems
+\item Machine Learning and Developing AI Systems
+\item Fundamentals of Computer Networks and Integration
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define artificial intelligence and distinguish AI from conventional programming.
+\item By the end of this chapter I can describe the main application domains of AI (health, agriculture, finance, education, transport) with Cameroonian examples.
+\item By the end of this chapter I can explain the ethical issues of AI (bias, privacy, jobs, accountability) and apply principles of responsible use.
+\item By the end of this chapter I can identify AI techniques (search, knowledge representation, reasoning, natural language processing, robotics) and the components of intelligent systems.
+\item By the end of this chapter I can explain how machine learning works and distinguish supervised, unsupervised and reinforcement learning.
+\item By the end of this chapter I can outline the stages of developing an AI system, from problem definition to deployment and evaluation.
+\item By the end of this chapter I can describe the fundamentals of computer networks (types, topologies, protocols, devices) that support AI applications.
+\item By the end of this chapter I can design, in a team, a small AI-based solution to a local problem and present it.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Basic computer literacy: hardware, software, data and information (Lower Sixth ICT).
+\item Elementary programming notions: algorithms, variables, simple programs (e.g., in Python or pseudocode).
+\item Internet use: browsing, search engines, online services and mobile applications.
+\item Basic mathematics: percentages, averages, simple graphs and tables.
+\item Notions of data collection and databases from Lower Sixth.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{The Concept of Artificial Intelligence}
+
+At the Mfoundi market in Yaoundé, a trader now asks her phone in French which vegetables will sell best next week, and the phone answers. Yet the same phone sometimes wrongly blocks her mobile-money account for ``suspicious activity''. Meanwhile, a student in Bamenda uses a chatbot to prepare for the GCE, but cannot tell whether the answers are correct or simply invented. Machines that seem to \emph{think} are already shaping Cameroonian working and living standards, from crop-price prediction to hospital triage. But who controls these systems, how do they learn, and how can a young Cameroonian build one responsibly? This chapter takes you from curious user to informed designer of artificial intelligence.
+
+The central problem of this first section is simple to state: \textbf{what exactly is artificial intelligence, and how does it differ from an ordinary computer program?} If you cannot answer that question precisely, you cannot evaluate an AI system, choose one for a project, or answer the very first question of a GCE problem paper on this chapter.
+
+\courssub{From a concrete observation to a definition}
+
+\textbf{Observation.} Consider three machines. (a) A calculator computes $457 \times 38$ perfectly every time. (b) A spreadsheet in a cybercafé in Douala adds up a column of sales. (c) A phone application looks at a photograph of a cassava leaf and says ``this leaf shows signs of cassava mosaic disease''. The first two machines follow fixed arithmetic rules written by a programmer. The third does something different: nobody wrote a rule such as ``if pixel 245 is brownish, then mosaic disease''. Instead, the application was \emph{shown} thousands of photographs of healthy and diseased leaves, and it \emph{learned} to tell them apart. It performs a task --- recognising disease from an image --- that normally requires human intelligence.
+
+\begin{definition}[Artificial intelligence --- reference formulation to memorise]
+\cle{Artificial intelligence} (AI) is the branch of computer science that studies and builds machines (computer systems) capable of performing tasks that normally require \cle{human intelligence}, such as \textbf{perception} (seeing, hearing, reading), \textbf{reasoning} (drawing conclusions from facts), \textbf{learning} (improving from experience or data) and \textbf{decision-making} (choosing an action to reach a goal).
+\end{definition}
+
+Notice the four key abilities in the definition. A system that only stores and retrieves data (like a school marks database) is not AI. A system becomes ``intelligent'' when it must perceive, reason, learn or decide in situations that are not completely fixed in advance.
+
+\begin{definition}[Intelligent agent]
+An \cle{intelligent agent} is any entity (machine or program) that \textbf{perceives its environment} through sensors (camera, microphone, keyboard input, network data) and \textbf{acts upon that environment} through actuators (screen, speaker, motors, messages) in order to \textbf{achieve a goal}. A spam filter perceives incoming e-mails and acts by classifying them; a robot vacuum perceives the floor and acts by moving.
+\end{definition}
+
+\begin{savaistu}[Did you know?]
+The word ``robot'' comes from a 1920 theatre play by the Czech writer Karel \v{C}apek, where it meant ``forced labour''. Modern AI, however, is mostly \emph{software}: the fraud-detection system watching MTN Mobile Money transactions in Cameroon is an intelligent agent with no body at all --- its ``sensors'' are transaction records and its ``actuators'' are alerts and account blocks.
+\end{savaistu}
+
+\courssub{AI versus conventional programming}
+
+This is the single most examined distinction of the chapter, so let us build it carefully.
+
+\textbf{Conventional programming.} A programmer analyses a problem, writes \emph{explicit rules} (algorithms), and the computer applies the rules to data to produce answers:
+\[
+\text{Rules} + \text{Data} \longrightarrow \text{Answers}.
+\]
+Example: to compute the school fees balance of a student, the rule is exact: $\text{balance} = \text{fees due} - \text{amount paid}$. Every case is covered by a rule the programmer wrote.
+
+\textbf{AI / machine-learning approach.} For some problems, nobody can write the rules explicitly. What is the ``rule'' for recognising a handwritten digit, a spoken word in Ewondo, or a fraudulent transaction? The rules are too complex and too fuzzy for a human to state. The solution is to reverse the flow: give the machine many examples of \emph{data together with the correct answers}, and let it \emph{discover the rules} by itself:
+\[
+\text{Data} + \text{Answers} \longrightarrow \text{Rules (learned model)}.
+\]
+The learned rules (called a \emph{model}) are then applied to new data to produce answers.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth, node distance=0.6cm]
+% Conventional
+\node[draw=popblue, fill=popblueL, rounded corners, minimum width=2.1cm, minimum height=0.9cm] (rules) at (0,1.1) {Rules};
+\node[draw=popblue, fill=popblueL, rounded corners, minimum width=2.1cm, minimum height=0.9cm] (data) at (0,0) {Data};
+\node[draw=popink, rounded corners, minimum width=2.6cm, minimum height=1.9cm, align=center] (prog) at (3.1,0.55) {Conventional\\program};
+\node[draw=popgreen, fill=popgreenL, rounded corners, minimum width=2.1cm, minimum height=0.9cm] (ans) at (6.2,0.55) {Answers};
+\draw[->, thick, popblue] (rules) -- (prog);
+\draw[->, thick, popblue] (data) -- (prog);
+\draw[->, thick, popink] (prog) -- (ans);
+\node[font=\bfseries, popdark] at (3.1,2.4) {Conventional programming};
+% ML
+\node[draw=poporange, fill=popblueL, rounded corners, minimum width=2.1cm, minimum height=0.9cm] (data2) at (0,-2.6) {Data};
+\node[draw=poporange, fill=popblueL, rounded corners, minimum width=2.1cm, minimum height=0.9cm] (ans2) at (0,-3.7) {Answers};
+\node[draw=popink, rounded corners, minimum width=2.6cm, minimum height=1.9cm, align=center] (ml) at (3.1,-3.15) {Machine\\learning};
+\node[draw=popgreen, fill=popgreenL, rounded corners, minimum width=2.1cm, minimum height=0.9cm, align=center] (model) at (6.2,-3.15) {Rules\\(model)};
+\draw[->, thick, poporange] (data2) -- (ml);
+\draw[->, thick, poporange] (ans2) -- (ml);
+\draw[->, thick, popink] (ml) -- (model);
+\node[font=\bfseries, popdark] at (3.1,-1.3) {Machine learning (AI)};
+\end{tikzpicture}
+\end{center}
+\legende{Conventional programming applies human-written rules to data; machine learning discovers the rules from data and known answers.}
+\end{popfigure}
+
+\begin{exemplebox}[Worked comparison: detecting fraudulent mobile-money transactions]
+\textbf{Conventional approach:} a programmer writes rules such as ``block any transfer above 500\,000 FCFA''. Weaknesses: honest traders making large transfers are blocked, and clever fraudsters simply transfer 499\,000 FCFA. Every new fraud technique requires a programmer to write a new rule.
+
+\textbf{AI approach:} the system is given millions of past transactions labelled ``genuine'' or ``fraudulent'' (data + answers). It learns patterns --- unusual hours, unusual locations, rapid sequences of transfers --- that no programmer thought to write down. It then flags new suspicious transactions by itself and keeps improving as new labelled cases arrive.
+\end{exemplebox}
+
+\begin{attention}[Common mistake: confusing automation with AI]
+\cle{Automation} means a machine executes \textbf{fixed, pre-programmed rules} repeatedly: an automatic school bell, a traffic light on a fixed timer, a payroll macro in a spreadsheet. There is \emph{no learning and no adaptation}. \cle{AI} involves \textbf{learning from data and adapting} to new situations. A traffic light that adjusts its timing by observing real traffic through cameras is AI; the same light on a fixed 60-second cycle is mere automation. In the GCE, do not call every computerised system ``artificial intelligence''.
+\end{attention}
+
+\begin{methode}[Is this system AI? A 3-question checklist]
+To decide whether a given system is AI or a conventional program, ask:
+\begin{enumerate}
+\item \textbf{Learning:} does the system improve or change its behaviour from data or experience, rather than only following rules fixed once by a programmer?
+\item \textbf{Uncertainty:} does it handle situations that were not explicitly foreseen (new images, new sentences, new cases), typically giving a \emph{probable} rather than a guaranteed answer?
+\item \textbf{Intelligent task:} does it perform a task --- perception, reasoning, decision-making, language --- that would require intelligence if done by a human?
+\end{enumerate}
+If the answer to all three is \emph{yes}, the system is AI. If the behaviour is entirely fixed by explicit rules, it is a conventional (automated) program.
+\end{methode}
+
+\courssub{A brief history of AI}
+
+AI did not appear suddenly with smartphones; it has a history of hopes, disappointments and revivals that the GCE expects you to know in outline.
+
+\begin{itemize}
+\item \textbf{1950 --- the Turing test.} The British mathematician Alan Turing proposed an \emph{imitation game}: an interrogator converses by text with an unseen human and an unseen machine; if the interrogator cannot reliably tell which is the machine, the machine is said to exhibit intelligent behaviour.
+\item \textbf{1956 --- birth of the field.} The term ``artificial intelligence'' was coined at the Dartmouth conference (USA), where researchers optimistically predicted machines would soon match humans.
+\item \textbf{1970s--1980s --- expert systems.} Programs that captured the knowledge of human experts as large sets of ``if \dots then \dots'' rules (e.g.\ medical diagnosis systems). They worked in narrow domains but were expensive to build and could not learn.
+\item \textbf{AI winters.} When promises were not met, funding and interest collapsed twice (mid-1970s and late 1980s): these periods are called \cle{AI winters}.
+\item \textbf{1990s--2010s --- the learning turn.} Researchers abandoned hand-written rules in favour of \emph{machine learning}: systems that extract rules from data.
+\item \textbf{2010s to today --- the current boom.} Three ingredients combined: \textbf{big data} (billions of photos, texts and transactions from the internet and mobile phones), \textbf{computing power} (fast graphics processors), and improved algorithms (\emph{deep learning}). This is why AI now powers translation, voice assistants and fraud detection in Cameroon and worldwide.
+\end{itemize}
+
+\begin{aretenir}[The Turing test and its limits]
+The \cle{Turing test} judges a machine intelligent if a human interrogator, exchanging written messages, cannot reliably distinguish it from a human. \textbf{Limits} (often asked at the GCE): (i) it tests the \emph{imitation} of conversation, not genuine understanding; (ii) a machine can pass by tricks (evasive answers) without real intelligence; (iii) it ignores perception and action in the physical world; (iv) passing is neither necessary nor sufficient for useful intelligence --- a medical AI can be highly useful without chatting like a human.
+\end{aretenir}
+
+\courssub{Strong AI versus weak AI}
+
+\begin{definition}[Strong and weak AI]
+\cle{Strong AI} (also called \emph{general AI}) is a hypothetical machine with the full, flexible intelligence of a human being: able to understand, learn \emph{any} intellectual task, transfer knowledge between domains, and reason about the world in general.
+
+\cle{Weak AI} (also called \emph{narrow AI}) is a system designed and trained for \textbf{one specific task}: recognising faces, translating languages, recommending videos, detecting fraud.
+\end{definition}
+
+\begin{propriete}[All existing AI is narrow AI]
+Every AI system in service today --- including the most famous chatbots, translation tools and game-playing programs --- is \emph{narrow AI}: brilliant inside its speciality, helpless outside it. A program that beats the world champion at the game of Go cannot drive a car or diagnose malaria. Strong AI remains a research goal with no agreed date of achievement; no proof of its existence is required at the GCE, but you must be able to \emph{justify} why a given system is narrow (it is trained for one task and cannot transfer its ability to another).
+\end{propriete}
+
+\begin{exemplebox}[Narrow AI in daily Cameroonian life]
+Your phone's keyboard predicts the next word as you type a WhatsApp message in French or English. It does this superbly --- but ask the same program to grade an essay or detect a diseased plantain leaf and it fails completely. One task, one model: that is narrow AI.
+\end{exemplebox}
+
+\courssub{The AI family: AI, machine learning, deep learning}
+
+These three terms are often confused. They are \emph{nested}, not synonyms: \textbf{artificial intelligence} is the whole field of machines performing intelligent tasks; \textbf{machine learning} (ML) is the part of AI where systems learn rules from data instead of receiving them from programmers; \textbf{deep learning} (DL) is a powerful family of ML techniques using \emph{artificial neural networks} with many layers, especially good at images, sound and language. Every deep-learning system is machine learning, and every machine-learning system is AI --- but not the reverse: an expert system with hand-written rules is AI without any machine learning.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\draw[fill=popblueL, draw=popblue, thick] (0,0) ellipse (5.2 and 3.1);
+\draw[fill=popgreenL, draw=popgreen, thick] (0,-0.5) ellipse (3.5 and 2.0);
+\draw[fill=popblue!25, draw=poppurple, thick] (0,-1.0) ellipse (2.0 and 1.1);
+\node[font=\bfseries, popblue] at (0,2.45) {Artificial Intelligence};
+\node[popdark, align=center] at (0,1.7) {machines performing tasks\\requiring human intelligence};
+\node[font=\bfseries, popgreen!60!black] at (0,0.75) {Machine Learning};
+\node[popdark, align=center] at (0,0.25) {systems that learn\\rules from data};
+\node[font=\bfseries, poppurple] at (0,-0.75) {Deep Learning};
+\node[popdark, align=center] at (0,-1.3) {multi-layer neural\\networks};
+\end{tikzpicture}
+\end{center}
+\legende{The AI family tree: deep learning is a subset of machine learning, which is a subset of artificial intelligence.}
+\end{popfigure}
+
+\courssub{Application domains: AI at work in Cameroon}
+
+AI is not science fiction reserved for rich countries; it is already present, or actively being introduced, in the sectors that matter most to Cameroon.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Domain} & \textbf{AI application} & \textbf{Benefit for working / living standards} \\
+\hline
+Agriculture & Phone apps that detect crop diseases (cassava mosaic, maize leaf blight) from a photo; prediction of prices and rainfall & Higher yields, earlier treatment, better income for farmers \\
+\hline
+Health & Diagnosis support: analysing X-rays, prioritising urgent cases (triage) in understaffed hospitals & Faster care, help where specialists are scarce \\
+\hline
+Finance & Fraud detection on mobile-money transactions (MTN MoMo, Orange Money); credit scoring for small traders & Safer transactions, access to loans without collateral \\
+\hline
+Education & Tutoring chatbots, automatic translation between English and French, personalised revision exercises & Support for students in crowded or remote classrooms \\
+\hline
+Transport \& security & Traffic monitoring in Douala and Yaoundé, number-plate recognition, face recognition at borders & Safer roads, faster controls, better public security \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[AI and Cameroonian institutions]
+Cameroon has created structures to secure and promote the digital society, notably \textbf{ANTIC} (the National Agency for Information and Communication Technologies), which works on cybersecurity and the trust framework within which AI systems handling citizens' data must operate. E-government services --- online tax declarations, digital civil-status records --- increasingly rely on intelligent processing of documents.
+\end{savaistu}
+
+\courssub{How AI improves working and living standards --- and its limits}
+
+\textbf{Productivity.} AI automates repetitive intellectual work: sorting documents, reading metres, drafting routine replies. A worker assisted by AI produces more per hour, which can raise incomes and lower prices.
+
+\textbf{Accessibility.} Speech-to-text helps people who cannot type; automatic translation bridges the English--French divide in Cameroon; image description assists the visually impaired.
+
+\textbf{Public services.} AI can detect water-network leaks, predict disease outbreaks from health records, and help administrations plan schools and roads where needs are greatest.
+
+\textbf{Limits and realistic expectations.} AI systems make mistakes (the wrongly blocked MoMo account of our market trader); they inherit \emph{biases} present in their training data; they require electricity, connectivity and data that are not equally available everywhere; and they cannot replace human judgement, empathy or responsibility. A realistic view --- the one expected at the GCE --- is that AI is a \emph{powerful tool that augments} human workers, not a magic replacement for them.
+
+\begin{exoresolu}[Is it AI? Applying the checklist]
+\textbf{Statement.} For each system, state whether it is AI or a conventional (automated) program, justifying with the 3-question checklist: (a) an automatic school bell that rings at fixed times; (b) a system that reads photographs of maize leaves and identifies disease, having been trained on 10\,000 labelled photos; (c) a chatbot that answers students' questions about GCE past papers in natural language.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item (a) \textbf{Conventional automation.} Learning? No --- times are fixed by the programmer. Uncertainty? None --- same behaviour every day. Intelligent task? No. Fails all three questions.
+\item (b) \textbf{AI (machine learning).} Learning? Yes --- rules were extracted from 10\,000 labelled examples. Uncertainty? Yes --- it classifies new, unseen leaves with a probability of error. Intelligent task? Yes --- visual perception, normally requiring an agronomist's expertise.
+\item (c) \textbf{AI.} Learning? Yes --- trained on large amounts of text. Uncertainty? Yes --- it handles questions never seen before (and may answer wrongly). Intelligent task? Yes --- understanding and producing language. (The risk of invented answers illustrates the limits of narrow AI.)
+\end{itemize}
+\end{exoresolu}
+
+\begin{exercice}[Check your understanding]
+\begin{enumerate}
+\item Define \emph{artificial intelligence} and \emph{intelligent agent}, giving one Cameroonian example of an agent and naming its sensors and actuators.
+\item A bank writes the rule ``reject any loan application from a client younger than 18''. Later it trains a system on past loan files to predict which clients will repay. Classify each solution (conventional or AI) and justify.
+\item State the Turing test and give two of its limits.
+\item Explain, with an example, why all current AI systems are described as \emph{narrow} AI.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item AI: machines performing tasks normally requiring human intelligence (perception, reasoning, learning, decision-making). Intelligent agent: perceives its environment and acts to achieve a goal. Example: a MoMo fraud-detection agent --- sensors: transaction records; actuators: alerts and account blocks.
+\item The fixed age rule is conventional programming (explicit rule, no learning). The repayment predictor is AI/machine learning: it learned rules from data and answers, and handles new applicants with some uncertainty.
+\item Turing test: an interrogator exchanging text messages cannot reliably distinguish the machine from a human. Limits: it tests imitation, not understanding; it can be passed by tricks; it ignores perception and action (any two).
+\item Each current system is trained for one specific task and cannot transfer its skill elsewhere: a translation app cannot diagnose disease. General, human-like flexibility (strong AI) does not yet exist.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[GCE extra --- definitions to memorise word for word]
+\begin{itemize}
+\item \textbf{Intelligence:} the ability to perceive, understand, reason, learn from experience and adapt one's behaviour to achieve goals in new situations.
+\item \textbf{Agent:} an entity that perceives its environment through sensors and acts upon it through actuators to achieve a goal.
+\item \textbf{Turing test:} a machine is said to pass if a human interrogator, communicating in writing, cannot reliably distinguish it from a human being.
+\end{itemize}
+These three formulations answer the most frequent opening questions of GCE papers on this chapter.
+\end{aretenir}
+
+\coursec{AI Ethics and Responsible Use}
+\coursec{AI Ethics and Responsible Use}
+\courssub{Why Ethics Matters in AI}
+\courssub{Why ethics matters in AI: real harms from biased, opaque or misused systems}
+
+In the previous section, we discovered that artificial intelligence is a field of computer science that deals with the design and development of intelligent machines. We have seen that AI systems can perceive, reason, learn and act. But like any powerful technology, AI is not only about technical capabilities. The way AI systems are designed, trained and used can have positive or negative impacts on people's lives. AI systems are now used to decide who gets a loan, who gets a job, who gets a loan, who gets a job, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan, who gets a loan
+
+\coursec{AI Techniques and Intelligent Systems}
+
+\courssub{Structure of an Intelligent System}
+
+\begin{definition}[Intelligent System]
+An \cle{intelligent system} is a computer-based system that can perceive its environment, reason about what it perceives, learn from experience, and act in order to achieve specific goals, often in a way that mimics human intelligence.
+\end{definition}
+
+Every intelligent system, from a spam filter to a medical diagnosis assistant used in a hospital in Yaoundé, is built around a small number of fundamental components that work together.
+
+\begin{aretenir}[Main Components of an Intelligent System]
+\begin{itemize}
+\item \textbf{Perception (input):} sensors or data sources that collect information from the environment (keyboard, camera, microphone, network data).
+\item \textbf{Knowledge base:} the stored facts, rules and models the system uses to reason.
+\item \textbf{Inference / reasoning engine:} the mechanism that draws conclusions from the knowledge base and the perceived data.
+\item \textbf{Learning module:} the part that improves performance from experience (training data, feedback).
+\item \textbf{Action (output):} the effectors or interfaces through which the system acts on its environment (screen, robot arm, message, recommendation).
+\end{itemize}
+\end{aretenir}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.1cm,
+box/.style={draw=popblue, fill=popblueL, rounded corners, minimum width=3.2cm, minimum height=0.9cm, align=center, font=\small},
+arr/.style={->, thick, popdark}]
+\node[box] (env) {Environment};
+\node[box, right=of env, align=center] (perc){Perception\\(sensors)};
+\node[box, right=of perc, align=center] (reason){Reasoning\\engine};
+\node[box, below=of reason, align=center] (kb){Knowledge\\base};
+\node[box, below=of perc, align=center] (learn){Learning\\module};
+\node[box, right=of reason, align=center] (act){Action\\(effectors)};
+\draw[arr] (env) -- (perc);
+\draw[arr] (perc) -- (reason);
+\draw[arr] (reason) -- (act);
+\draw[arr] (act.east) -- ++(0.8,0) |- (env.east);
+\draw[arr] (kb) -- (reason);
+\draw[arr] (learn) -- (kb);
+\draw[arr] (perc) -- (learn);
+\end{tikzpicture}
+\legende{General structure of an intelligent system: perceive, reason, learn, act.}
+\end{popfigure}
+
+\begin{exemplebox}[A Mobile Money Fraud Detector]
+Consider a fraud-detection system used by a mobile money operator in Cameroon:
+\begin{itemize}
+\item \emph{Perception:} transaction data (amount, time, location, phone number).
+\item \emph{Knowledge base:} rules such as ``a withdrawal far from the usual location is suspicious'' and patterns learned from past fraud cases.
+\item \emph{Reasoning:} each new transaction is compared with the rules and patterns to compute a risk score.
+\item \emph{Learning:} confirmed fraud cases are fed back to improve future detection.
+\item \emph{Action:} block the transaction or send an alert to the customer.
+\end{itemize}
+\end{exemplebox}
+
+\begin{attention}[Common Mistake]
+Do not confuse the \cle{knowledge base} (what the system knows) with the \cle{inference engine} (how it uses that knowledge). A database alone is not intelligent: intelligence appears when stored knowledge is combined with reasoning and learning.
+\end{attention}
+
+\begin{exercice}[Identifying Components]
+For each of the following systems, identify the perception, knowledge base, reasoning, learning and action components:
+\begin{enumerate}
+\item A voice assistant on a smartphone.
+\item An automatic traffic-light controller at a junction in Douala.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Voice assistant: perception = microphone; knowledge base = language models and user data; reasoning = speech recognition and intent interpretation; learning = adaptation to the user's voice and habits; action = spoken answer or executed command.
+\item Traffic-light controller: perception = vehicle sensors or cameras; knowledge base = timing rules and traffic thresholds; reasoning = deciding which light turns green; learning (if present) = adjusting timings from historical traffic; action = switching the lights.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Machine Learning and Developing AI Systems}
+
+In the previous section we studied AI techniques and intelligent systems: search, knowledge representation, expert systems and reasoning. All those systems share one limitation: a human being had to write down, by hand, every rule the machine follows. If the programmer forgets a rule, the system fails. But how could we ever write rules for recognising a face, translating Ewondo into English, or predicting the price of cassava at Mokolo market? There are simply too many rules, and even humans cannot state them clearly. The modern answer is \cle{machine learning}: instead of programming the rules, we show the machine many examples and let it discover the rules by itself. This section explains what machine learning is, its three great families, how we train and evaluate models honestly, what neural networks are, and finally how a complete AI system is developed from an idea to a deployed product.
+
+\courssub{The Concept of Machine Learning}
+
+\begin{definition}[Machine learning]
+\cle{Machine learning} (ML) is a branch of artificial intelligence in which a computer system \textbf{improves its performance at a task by learning from data (experience)}, without being explicitly programmed with the rules for that task. A \cle{training dataset} is the collection of examples (records, images, texts\ldots) from which the system learns; each example usually contains \emph{features} (the inputs) and, in supervised learning, a \emph{label} (the correct answer).
+\end{definition}
+
+Think of how a child in Bamenda learns to recognise a mango: nobody gives the child a rule such as ``if the fruit is oval, orange-green and weighs about \SI{300}{g}, then it is a mango''. The child simply sees many mangoes, hears the word ``mango'' each time, and gradually builds an internal model. Machine learning works the same way: the algorithm is shown many examples and adjusts its internal parameters until its predictions agree with the examples.
+
+\begin{exemplebox}[Spam filtering without rules]
+An e-mail spam filter is not given a list of forbidden words by a programmer. It is trained on thousands of e-mails already labelled ``spam'' or ``not spam''. It discovers by itself that messages containing ``you have won'', ``transfer'', ``urgent reply'' are very often spam. When a new e-mail arrives, the learned model classifies it.
+\end{exemplebox}
+
+\begin{aretenir}[Traditional programming vs machine learning]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} & \textbf{Traditional programming} & \textbf{Machine learning} \\
+\hline
+Input given & Rules + Data & Data + Answers (examples) \\
+\hline
+Produced by computer & Answers & The Rules (the model) \\
+\hline
+Best when & Rules are known and few & Rules unknown or too many \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\courssub{The Three Types of Machine Learning}
+
+\textbf{1. Supervised learning.}\par
+In \cle{supervised learning}, the training data are \emph{labelled}: each example comes with the correct answer, like a student working through past GCE papers that have a marking guide. The algorithm learns a function that maps inputs to outputs. Two sub-tasks exist:
+\begin{itemize}
+\item \cle{Classification}: the output is a \emph{category}. Example: given a student's attendance, homework marks and mock results, predict whether the student will \emph{pass} or \emph{fail} the GCE.
+\item \cle{Regression}: the output is a \emph{number}. Example: given rainfall, soil type and fertiliser quantity, predict the \emph{yield in tonnes per hectare} of a maize farm in the West Region.
+\end{itemize}
+
+\textbf{2. Unsupervised learning.}\par
+In \cle{unsupervised learning}, the data are \emph{unlabelled}: there is no marking guide. The algorithm must discover structure by itself, typically by \cle{clustering} --- grouping similar examples together. A mobile-money operator such as MTN Mobile Money can feed transaction records (amounts, frequency, time of day, location) into a clustering algorithm and discover groups like ``daily small traders'', ``monthly salary receivers'' and ``occasional rural users'' --- useful for designing adapted services, without anyone having labelled customers in advance.
+
+\textbf{3. Reinforcement learning.}\par
+In \cle{reinforcement learning}, an \cle{agent} learns by \emph{trial and error}: it performs \emph{actions} in an \emph{environment}, and receives \emph{rewards} (positive or negative). Its goal is to learn a behaviour (a \emph{policy}) that maximises the total reward. This is how programs learn to play chess or draughts at superhuman level, and how a robot learns to navigate a room: bumping into a wall gives a negative reward, reaching the goal gives a positive one.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.92, every node/.style={transform shape},
+box/.style={draw=popdark, rounded corners, minimum width=2.6cm, minimum height=0.8cm, font=\small, align=center, text width=2.4cm},
+databox/.style={box, draw=popblue, fill=popblueL},
+modelbox/.style={box, draw=popgreen, fill=popgreenL},
+agentbox/.style={box, draw=poppurple, fill=popblueL, minimum width=2.2cm},
+envbox/.style={box, draw=popdark, fill=popgreenL, minimum width=2.2cm}]
+% Supervised
+\begin{scope}[shift={(0,0)}]
+\node[font=\bfseries, popblue] at (1.6,3.1) {Supervised};
+\node[databox] (d1) at (1.6,2.3) {Labelled data (input + answer)};
+\node[box] (m1) at (1.6,1.1) {Learning algorithm};
+\node[modelbox] (o1) at (1.6,-0.1) {Model predicts labels on new data};
+\draw[->, thick, popdark] (d1) -- (m1);
+\draw[->, thick, popdark] (m1) -- (o1);
+\end{scope}
+% Unsupervised
+\begin{scope}[shift={(5.1,0)}]
+\node[font=\bfseries, poporange] at (1.6,3.1) {Unsupervised};
+\node[databox, draw=poporange] (d2) at (1.6,2.3) {Unlabelled data (inputs only)};
+\node[box] (m2) at (1.6,1.1) {Clustering algorithm};
+\node[modelbox] (o2) at (1.6,-0.1) {Groups (clusters) discovered};
+\draw[->, thick, popdark] (d2) -- (m2);
+\draw[->, thick, popdark] (m2) -- (o2);
+\end{scope}
+% Reinforcement
+\begin{scope}[shift={(10.2,0)}]
+\node[font=\bfseries, poppurple] at (1.6,3.1) {Reinforcement};
+\node[agentbox] (ag) at (0.6,1.6) {Agent};
+\node[envbox] (env) at (3.0,1.6) {Environment};
+\draw[->, thick, popdark] (ag) -- node[above, font=\small]{action} (env);
+\draw[->, thick, popdark] (env.south) .. controls (3.0,0.4) and (0.6,0.4) .. node[below, font=\small, align=center]{reward + state} (ag.south);
+\end{scope}
+\end{tikzpicture}
+\legende{The three families of machine learning.}
+\end{popfigure}
+
+\courssub{Training, Validation and Testing}
+
+A model is only useful if it performs well on \emph{new}, unseen data. To measure this honestly, we split the available dataset into three parts:
+\begin{itemize}
+\item \cle{Training set} (typically about 60--70\,\% of the data): used to adjust the model's parameters.
+\item \cle{Validation set} (about 15--20\,\%): used during development to choose settings (e.g.\ model complexity) and to detect problems.
+\item \cle{Test set} (about 15--20\,\%): used \emph{once, at the very end}, to estimate real-world performance.
+\end{itemize}
+
+\begin{definition}[Overfitting and underfitting]
+\cle{Overfitting} occurs when a model learns the training data \emph{too well}, memorising even its noise and accidental details, so that it performs excellently on the training set but poorly on new data. \cle{Underfitting} occurs when the model is too simple to capture the pattern, performing poorly on both training and new data. \textbf{Detection:} overfitting is revealed when the \emph{training error is very low but the validation error is much higher}; underfitting when both errors are high.
+\end{definition}
+
+The analogy is a candidate who memorises the answers of one past paper word for word (overfitting): he scores 20/20 on that paper but fails the real exam. Another who has not studied at all (underfitting) fails both.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=11cm, height=6.5cm,
+    xlabel={Model complexity},
+    ylabel={Error},
+    xmin=0, xmax=10, ymin=0, ymax=10,
+    xtick=\empty, ytick=\empty,
+    legend style={at={(0.02,0.98)}, anchor=north west, font=\small},
+    axis lines=left]
+\addplot[smooth, thick, popblue, domain=0.4:10, samples=60] {8*exp(-0.55*x)+0.4};
+\addlegendentry{Training error}
+\addplot[smooth, thick, poporange, domain=0.4:10, samples=60] {8*exp(-0.55*x)+0.06*(x-4.5)^2+0.8};
+\addlegendentry{Validation error}
+\draw[dashed, popdark] (axis cs:4.5,0) -- (axis cs:4.5,3.6);
+\node[popdark, font=\small, align=center] at (axis cs:4.5,8.6) {Best\\complexity};
+\node[popblue, font=\small] at (axis cs:1.2,7.5) {Underfitting};
+\node[poporange, font=\small] at (axis cs:8.6,7.5) {Overfitting};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{As complexity grows, training error keeps falling but validation error rises again: the signature of overfitting.}
+\end{popfigure}
+
+To measure performance we use \cle{accuracy} and error measures. For classification:
+\[ \text{accuracy} = \frac{\text{number of correct predictions}}{\text{total number of predictions}}. \]
+For regression, a common measure is the \cle{mean absolute error} (MAE): the average of the absolute differences between predictions and true values.
+
+\begin{attention}[Never test on the training data!]
+The most common beginner's mistake is to evaluate a model on the \emph{same data} used to train it. The model has already seen those examples, so the measured accuracy is artificially high and meaningless --- like marking a student's test when he was given the answers beforehand. Always keep a separate test set, untouched until the final evaluation.
+\end{attention}
+
+\begin{exoresolu}[Computing accuracy of a pass/fail predictor]
+A school in Yaound\'e trains a model to predict GCE success. On a test set of 50 students, the model predicts correctly for 43 students (it predicted ``pass'' for 30 real passers and ``fail'' for 13 real failers) and is wrong for 7. Compute the accuracy and comment.
+\tcblower
+\textbf{Solution.}
+\begin{align*}
+\text{accuracy} &= \frac{\text{correct predictions}}{\text{total predictions}} = \frac{30 + 13}{50} = \frac{43}{50} = 0.86 = 86\,\%.
+\end{align*}
+The model is correct 86\,\% of the time on \emph{unseen} students. Before trusting it, we must check that this test set was never used during training; otherwise the figure is unreliable. We should also check the errors: if most of the 7 mistakes are students wrongly predicted ``pass'', the school might give false confidence --- the \emph{type} of error matters, not only the accuracy.
+\end{exoresolu}
+
+\courssub{Neural Networks and Deep Learning (Introduction)}
+
+An \cle{artificial neural network} is a model loosely inspired by the brain. It is made of simple units called \cle{neurons}, organised in \cle{layers}: an \emph{input layer} (one neuron per feature), one or more \emph{hidden layers}, and an \emph{output layer} (the prediction). Each neuron receives numbers from the previous layer, multiplies each by a \emph{weight}, adds them up, adds a \emph{bias}, applies a simple \emph{activation function} (such as ReLU or sigmoid), and passes the result forward. \emph{Training} means adjusting the weights and biases, example after example, so that the network's outputs approach the correct answers.
+
+\cle{Deep learning} simply means using networks with \emph{many} hidden layers. Depth lets the network build concepts step by step: in face recognition, early layers detect edges, middle layers detect eyes and noses, deep layers detect whole faces. This is why deep learning powers modern AI --- image recognition, speech recognition, machine translation --- wherever large amounts of data and computing power are available.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85, every node/.style={transform shape},
+neuron/.style={circle, draw=popblue, fill=popblueL, minimum size=0.7cm, font=\small},
+arrow/.style={->, thick, popdark}]
+% Input layer
+\foreach \i/\lbl in {1/Feature 1, 2/Feature 2, 3/Feature 3} {
+    \node[neuron] (in\i) at (0, 2.5-\i*1.2) {};
+    \node[left=0.2cm of in\i, font=\small, align=right] {\lbl};
+}
+% Hidden layer 1
+\foreach \i in {1,2,3,4} {
+    \node[neuron] (h1\i) at (3, 3.1-\i*1.0) {};
+}
+% Hidden layer 2
+\foreach \i in {1,2,3} {
+    \node[neuron] (h2\i) at (6, 3.6-\i*1.2) {};
+}
+% Output layer
+\node[neuron] (out1) at (9, 2.5) {};
+\node[right=0.2cm of out1, font=\small] {Prediction};
+% Connections
+\foreach \i in {1,2,3} {
+    \foreach \j in {1,2,3,4} {
+        \draw[arrow, opacity=0.3] (in\i) -- (h1\j);
+    }
+}
+\foreach \i in {1,2,3,4} {
+    \foreach \j in {1,2,3} {
+        \draw[arrow, opacity=0.3] (h1\i) -- (h2\j);
+    }
+}
+\foreach \i in {1,2,3} {
+    \draw[arrow, opacity=0.3] (h2\i) -- (out1);
+}
+% Layer labels
+\node[font=\bfseries\small, popdark] at (0, -1.2) {Input layer};
+\node[font=\bfseries\small, popdark] at (3, -1.2) {Hidden layer 1};
+\node[font=\bfseries\small, popdark] at (6, -1.2) {Hidden layer 2};
+\node[font=\bfseries\small, popdark] at (9, -1.2) {Output layer};
+\end{tikzpicture}
+\legende{A simple feedforward neural network with two hidden layers (deep learning).}
+\end{popfigure}
+
+\courssub{Developing an AI System: the Life Cycle}
+
+Building a real AI system is much more than training a model. It follows a cycle of seven stages:
+
+\begin{methode}[The 7-step AI development life cycle]
+\begin{enumerate}
+\item \textbf{Problem definition}: state precisely what the system must do, for whom, and how success will be measured (e.g.\ ``predict maize yield within 10\,\% error for farmers in Bafoussam'').
+\item \textbf{Data collection and cleaning}: gather relevant data (surveys, sensors, open datasets); remove duplicates, correct errors, handle missing values.
+\item \textbf{Model choice}: select an appropriate technique (classification, regression, clustering\ldots) given the problem and the data.
+\item \textbf{Training}: feed the training set to the algorithm so it learns the parameters.
+\item \textbf{Evaluation}: measure performance on the validation/test set; if unsatisfactory, return to step 2 or 3.
+\item \textbf{Deployment}: integrate the model into a real product (mobile app, website, school system) used by real users.
+\item \textbf{Monitoring}: watch the system in operation, detect performance drops or biased behaviour, and retrain with fresh data --- which loops back to step 2.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=0.55cm,
+stage/.style={draw=popblue, fill=popblueL, rounded corners, minimum width=3.1cm, minimum height=0.75cm, font=\small, align=center}]
+\node[stage] (s1) {1. Problem definition};
+\node[stage, below=of s1] (s2) {2. Data collection \& cleaning};
+\node[stage, below=of s2] (s3) {3. Model choice};
+\node[stage, below=of s3] (s4) {4. Training};
+\node[stage, right=1.6cm of s4] (s5) {5. Evaluation};
+\node[stage, above=of s5] (s6) {6. Deployment};
+\node[stage, above=of s6] (s7) {7. Monitoring};
+\draw[->, thick, popdark] (s1) -- (s2);
+\draw[->, thick, popdark] (s2) -- (s3);
+\draw[->, thick, popdark] (s3) -- (s4);
+\draw[->, thick, popdark] (s4) -- (s5);
+\draw[->, thick, popdark] (s5) -- (s6);
+\draw[->, thick, popdark] (s6) -- (s7);
+\draw[->, thick, poporange] (s7.west) .. controls (-1.2,2.2) and (-1.2,0.4) .. node[left, font=\small, align=center]{retrain with\\new data} (s2.west);
+\draw[->, thick, poporange, dashed] (s5.north) .. controls (5.6,0.2) .. node[right, font=\small]{poor results} (s3.east);
+\end{tikzpicture}
+\legende{The AI system development life cycle: a loop, not a straight line.}
+\end{popfigure}
+
+\begin{aretenir}[Garbage in, garbage out]
+The quality of a model can never exceed the quality of its data. If the training data are wrong, incomplete or biased, the model will faithfully learn those errors: \emph{``garbage in, garbage out''}. Data collection and cleaning (step 2) often take more time than all other stages together --- and they are the most important.
+\end{aretenir}
+
+\courssub{Tools and Data Sources Accessible to Students}
+
+You do not need a supercomputer to experiment with AI:
+\begin{itemize}
+\item \textbf{Teachable Machine} (Google, free, in a browser): train image, sound or pose classifiers with no programming --- ideal for a first project, even on a modest laptop.
+\item \textbf{Scratch with ML extensions}: visual, block-based introduction to using a trained model in a program.
+\item \textbf{Python}: the standard language of AI. With free libraries (scikit-learn, TensorFlow/Keras), a few lines of code train a real model. Python runs on ordinary computers and even on some Android phones.
+\item \textbf{Open datasets}: Kaggle, UCI Machine Learning Repository, and data portals of public institutions offer free datasets for practice.
+\end{itemize}
+
+\begin{savaistu}[AI under low-resource realities in Cameroon]
+In many Cameroonian schools, electricity cuts, limited internet bundles and few computers are daily realities. Good practice: download datasets and tools once (e.g.\ at a cybercaf\'e or during a connected session) and work offline; train small models that run on modest hardware; and use Cameroonian data --- crop prices, rainfall records, mobile-money transactions --- so that projects solve real local problems. Organisations such as ANTIC and local tech hubs in Yaound\'e and Buea increasingly support young developers with training and connectivity.
+\end{savaistu}
+
+\begin{exercice}[Choosing the right type of learning]
+For each situation, state whether it calls for supervised, unsupervised or reinforcement learning, and justify:
+\begin{enumerate}
+\item Grouping listeners of a radio station according to their listening habits, with no predefined categories.
+\item Predicting the selling price of a bag of cocoa from past sales records.
+\item Training a robot arm to pick up bottles on a recycling line.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item \textbf{Unsupervised learning} (clustering): no labelled categories exist; the algorithm must discover groups by itself.
+\item \textbf{Supervised learning} (regression): past records provide labelled examples (features $\to$ actual price), and the output is a number.
+\item \textbf{Reinforcement learning}: the arm learns by trial and error, receiving rewards for successful picks and penalties for drops.
+\end{enumerate}
+\end{corrige}
+
+Machine learning gives computers the power to learn from experience, and the development life cycle turns that power into reliable, useful systems. In the next and final section, we will see how computer networks connect these intelligent systems to the world, and we will integrate all the chapter's ideas in practical activities.
+
+\coursec{Fundamentals of Computer Networks and Integration}
+
+In the previous sections we built and trained machine learning models. But a trained model is only useful if people can \emph{reach} it: a student in Bamenda consulting an AI chatbot, a nurse in a district hospital sending an X-ray to a diagnostic service, a farmer checking prices on a mobile application. All of this happens through \cle{computer networks}. This final section studies the fundamentals of networks and closes the chapter with integration activities that consolidate everything learned about AI.
+
+\courssub{What is a Computer Network?}
+
+\textbf{Intuition first.} Imagine a school with one printer and forty computers. Without a network, the only way to print is to carry files on a USB key to the single computer attached to the printer. The moment we \emph{connect} the computers together, every machine can print, share files and access the Internet. A network turns isolated machines into a cooperating system.
+
+\begin{definition}[Computer network]
+A \cle{computer network} is a set of two or more computers and other devices (printers, servers, smartphones) connected together by transmission media (cables or wireless links) so that they can \textbf{share resources} and \textbf{communicate} with each other.
+\end{definition}
+
+The main purposes of a network are:
+\begin{itemize}
+\item \textbf{Resource sharing:} printers, files, databases, software licences and Internet connections are shared instead of duplicated, which reduces costs.
+\item \textbf{Communication:} e-mail, instant messaging, voice and video calls (WhatsApp, Zoom).
+\item \textbf{Centralised data:} information stored on a server is available to all authorised users (e.g.\ a school's report-card database), so data stays consistent and is easier to back up.
+\item \textbf{Access to cloud AI services:} networks connect users to remote AI platforms (translation, image recognition, chatbots) hosted in data centres.
+\end{itemize}
+
+\courssub{Types of Networks by Scale}
+
+Networks are classified by the geographical area they cover.
+
+\begin{definition}[PAN, LAN, MAN, WAN]
+\begin{itemize}
+\item A \cle{PAN} (Personal Area Network) connects devices around one person over a few metres, e.g.\ a Bluetooth link between a phone and a headset.
+\item A \cle{LAN} (Local Area Network) covers a single building or site: a home, a school computer laboratory, a cybercafé.
+\item A \cle{MAN} (Metropolitan Area Network) covers a town or city, e.g.\ the fibre backbone linking CAMTEL exchanges across Douala.
+\item A \cle{WAN} (Wide Area Network) covers a country, a continent or the whole world, e.g.\ the network of a bank connecting its branches nationwide.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Comparing LAN, MAN and WAN]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{LAN} & \textbf{MAN} & \textbf{WAN} \\
+\hline
+Coverage & One building or site & A town or city & Country to worldwide \\
+\hline
+Typical size & Up to a few km & Tens of km & Hundreds to thousands of km \\
+\hline
+Ownership & One organisation & One operator or consortium & Several operators \\
+\hline
+Speed & High (100 Mb/s -- 1 Gb/s) & Medium to high & Variable, often lower \\
+\hline
+Example & School computer lab & City fibre ring & The Internet, bank network \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+The \cle{Internet} is the largest WAN: it is a \textbf{network of networks}, interconnecting millions of private, academic and commercial networks worldwide using common rules called protocols. Two related terms are worth knowing: an \cle{intranet} is a private network internal to one organisation (e.g.\ a ministry's internal sites), and an \cle{extranet} opens part of that intranet to trusted external partners.
+
+\begin{attention}[Internet $\neq$ Web]
+A very common GCE mistake is to confuse the \textbf{Internet} and the \textbf{Web}. The \cle{Internet} is the \emph{infrastructure}: the physical networks, cables, routers and protocols. The \cle{World Wide Web} is only \emph{one service} running on top of the Internet (websites accessed via HTTP). E-mail, file transfer and mobile money transactions also use the Internet without being the Web.
+\end{attention}
+
+\courssub{Network Topologies}
+
+The \cle{topology} of a network describes how devices are arranged and connected. The four classical topologies are bus, star, ring and mesh.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9,
+  node/.style={circle,draw=popblue,fill=popblueL,thick,minimum size=0.55cm,inner sep=1pt,font=\scriptsize},
+  lab/.style={font=\small\bfseries,text=popdark}]
+% BUS
+\begin{scope}
+\draw[thick,popink] (0,0) -- (4.4,0);
+\node[node] (b1) at (0.4,0.8){}; \draw[thick,popink] (b1) -- (0.4,0);
+\node[node] (b2) at (1.6,0.8){}; \draw[thick,popink] (b2) -- (1.6,0);
+\node[node] (b3) at (2.8,0.8){}; \draw[thick,popink] (b3) -- (2.8,0);
+\node[node] (b4) at (4.0,0.8){}; \draw[thick,popink] (b4) -- (4.0,0);
+\node[lab] at (2.2,-0.8) {Bus};
+\end{scope}
+% STAR
+\begin{scope}[xshift=6cm]
+\node[node,fill=popgreenL,draw=popgreen] (s0) at (1.5,0.4){};
+\node[node] (s1) at (0,1.6){}; \node[node] (s2) at (3,1.6){};
+\node[node] (s3) at (0,-0.8){}; \node[node] (s4) at (3,-0.8){};
+\draw[thick,popink] (s0)--(s1) (s0)--(s2) (s0)--(s3) (s0)--(s4);
+\node[lab] at (1.5,-1.6) {Star};
+\end{scope}
+% RING
+\begin{scope}[xshift=11cm]
+\node[node] (r1) at (1.5,1.8){}; \node[node] (r2) at (3,0.4){};
+\node[node] (r3) at (1.5,-1){}; \node[node] (r4) at (0,0.4){};
+\draw[thick,popink] (r1)--(r2)--(r3)--(r4)--(r1);
+\node[lab] at (1.5,-1.8) {Ring};
+\end{scope}
+% MESH
+\begin{scope}[xshift=15cm]
+\node[node] (m1) at (1.5,1.8){}; \node[node] (m2) at (3,0.4){};
+\node[node] (m3) at (1.5,-1){}; \node[node] (m4) at (0,0.4){};
+\draw[thick,popink] (m1)--(m2) (m1)--(m3) (m1)--(m4) (m2)--(m3) (m2)--(m4) (m3)--(m4);
+\node[lab] at (1.5,-1.8) {Mesh};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{The four classical network topologies: bus, star, ring and mesh.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Topology} & \textbf{Advantages} & \textbf{Disadvantages} \\
+\hline
+Bus & Cheap, little cable, easy to set up & A break in the main cable stops the whole network; collisions; hard to troubleshoot \\
+\hline
+Star & A cable failure affects only one device; easy to add/remove stations & Central switch is a single point of failure; uses more cable \\
+\hline
+Ring & Orderly access, no collisions, predictable performance & One break can stop the ring; adding devices disturbs the network \\
+\hline
+Mesh & Very reliable: many alternative paths & Very expensive in cables and ports; complex to manage \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Choosing a topology]
+To select a topology for a given situation, examine three criteria:
+\begin{enumerate}
+\item \textbf{Cost:} how much cable and how many devices can we afford? (Bus is cheapest; mesh is dearest.)
+\item \textbf{Reliability:} must the network keep working when one link fails? (Mesh and star are robust; bus and ring are fragile.)
+\item \textbf{Scalability:} will new devices be added often? (Star makes adding stations trivial.)
+\end{enumerate}
+Conclusion: for a school laboratory or office, the \textbf{star} topology is almost always chosen because it balances cost, reliability and easy expansion.
+\end{methode}
+
+\courssub{Network Hardware and Transmission Media}
+
+\textbf{Network hardware.} The essential devices are:
+\begin{itemize}
+\item The \cle{NIC} (Network Interface Card): the circuit inside each computer that connects it to the network; each NIC has a unique physical address called the \cle{MAC address}.
+\item The \cle{switch}: connects devices \emph{inside} a LAN and forwards frames only to the intended recipient (the centre of a star topology).
+\item The \cle{router}: interconnects \emph{different} networks (e.g.\ a school LAN and the Internet) and chooses the best path for packets.
+\item The \cle{modem}: converts digital signals for transmission over a telephone line, fibre or mobile network.
+\item The \cle{access point} (AP): provides wireless (Wi-Fi) connection to a wired LAN.
+\item A \cle{server}: a powerful computer providing services (files, web pages, e-mail, AI models) to client machines.
+\end{itemize}
+
+\textbf{Transmission media.} Data travels through \emph{guided} media --- twisted-pair copper cable (Ethernet), coaxial cable and \cle{optical fibre} (very high speed, used for backbones such as the submarine cables landing at Douala) --- or through \emph{unguided} (wireless) media: Wi-Fi, Bluetooth, mobile networks (3G/4G/5G of MTN and Orange), and \cle{VSAT} satellite links, which are precious in rural areas where no cable or fibre reaches.
+
+\begin{attention}[Do not confuse the devices]
+In the GCE, candidates often swap the roles of \textbf{switch} and \textbf{router}. Remember: the \emph{switch} works \emph{inside} one LAN (it links the machines of the same network); the \emph{router} works \emph{between} networks (it links your LAN to other networks such as the Internet). A modem does not create a network either: it only adapts the signal to the transmission line.
+\end{attention}
+
+\courssub{Protocols, TCP/IP and Addressing}
+
+\textbf{Intuition.} Two people can only converse if they share a language and rules of politeness (listen, then reply). Machines need the same thing: agreed rules for exchanging data.
+
+\begin{definition}[Protocol]
+A \cle{protocol} is a set of rules and formats that govern how data is transmitted, received and interpreted between devices on a network. Examples: HTTP (web pages), SMTP (e-mail), FTP (file transfer), TCP/IP (transport and addressing).
+\end{definition}
+
+The \cle{TCP/IP} suite organises communication in layers: \cle{IP} (Internet Protocol) routes packets towards the destination network, while \cle{TCP} (Transmission Control Protocol) ensures reliable, ordered delivery of the data, retransmitting any packet that gets lost.
+
+Every device on an IP network has an \cle{IP address}, e.g.\ \texttt{192.168.1.10} (IPv4: four numbers from 0 to 255 separated by points). Because numbers are hard to remember, the \cle{DNS} (Domain Name System) translates human-readable names such as \texttt{www.minesec.gov.cm} into IP addresses --- it is the phone book of the Internet.
+
+Finally, two architectures organise who does what:
+\begin{itemize}
+\item \textbf{Client--server:} clients request services; a central server provides them (a school database, a website, a cloud AI service). Powerful, centralised and easier to secure, but the server is a critical point of failure.
+\item \textbf{Peer-to-peer (P2P):} all machines are equal and share resources directly (file sharing). Cheap to start, but harder to secure and manage.
+\end{itemize}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.95,
+  pc/.style={rectangle,draw=popblue,fill=popblueL,thick,minimum width=0.9cm,minimum height=0.6cm,font=\scriptsize},
+  srv/.style={rectangle,draw=popgreen,fill=popgreenL,thick,minimum width=1.1cm,minimum height=0.7cm,font=\scriptsize},
+  dev/.style={circle,draw=poporange,fill=white,thick,minimum size=0.75cm,font=\scriptsize},
+  cloud/.style={rectangle,rounded corners=0.35cm,draw=poppurple,fill=popblueL,thick,minimum width=2.6cm,minimum height=1cm,font=\scriptsize,align=center},
+  lab/.style={font=\scriptsize\itshape,text=popmuted}]
+\node[pc] (p1) at (0,2.4){PC 1};
+\node[pc] (p2) at (0,1.2){PC 2};
+\node[pc] (p3) at (0,0){PC 3};
+\node[srv] (sv) at (2.2,3.2){Server};
+\node[dev] (sw) at (2.2,1.2){Switch};
+\node[dev] (ap) at (4.4,2.6){AP};
+\node[pc] (lp) at (6,2.6){Laptop};
+\node[dev] (rt) at (4.6,1.2){Router};
+\node[cloud, align=center] (cl) at (8.6,1.2){Internet /\\ Cloud AI};
+\draw[thick,popink] (p1)--(sw) (p2)--(sw) (p3)--(sw) (sv)--(sw) (sw)--(ap) (sw)--(rt);
+\draw[thick,popink,dashed] (ap)--(lp);
+\draw[thick,popink] (rt)--(cl);
+\node[lab] at (1.1,-0.6){School LAN (star)};
+\node[lab] at (5.2,3.1){Wi-Fi};
+\node[lab] at (6.7,0.6){via ISP};
+\end{tikzpicture}
+\end{center}
+\legende{A school LAN in star topology connected through a router to the Internet and cloud AI services.}
+\end{popfigure}
+
+\courssub{Networks as the Backbone of AI}
+
+Modern AI is inseparable from networks, because training and running large models requires far more computing power than a single PC offers.
+
+\begin{definition}[Cloud computing]
+\cle{Cloud computing} is the delivery of computing resources --- storage, processing power, software and AI services --- over the Internet, on demand, from remote data centres, instead of from the user's own machine.
+\end{definition}
+
+The link with AI is direct: services such as chatbots, translation tools and image recognition run in the cloud; your phone or computer simply sends the request through the network and receives the answer. Two complementary approaches exist:
+\begin{itemize}
+\item \textbf{Cloud AI:} data is sent to distant servers; very powerful, but needs a fast, stable connection.
+\item \textbf{Edge computing:} processing is done \emph{near} the user (on the phone, on a local server), reducing delay and data costs --- useful where connectivity is weak.
+\end{itemize}
+
+In Cameroon, \cle{bandwidth} (the quantity of data transmissible per second, measured in bits per second) and connectivity remain real challenges: fibre is concentrated in large towns, rural areas often depend on VSAT or mobile networks, and costs can be high. Engineers deploying AI solutions in Cameroon must therefore design systems that tolerate slow or intermittent connections (offline modes, edge processing, data compression).
+
+\begin{exoresolu}[Identifying network elements]
+A cybercafé in Buea has 20 computers cabled to a central switch, one server for billing, and a router connected to an ISP's fibre line. (a) What is the topology of the LAN? (b) Classify the network by scale. (c) What happens to the other computers if one computer's cable is cut? (d) Which device allows the LAN to reach a cloud AI translation service?
+\tcblower
+(a) \textbf{Star topology}, because every computer is connected to a central device (the switch). (b) It is a \textbf{LAN}: it covers a single building. (c) \textbf{Only that computer} is disconnected; the rest of the network keeps working --- this is the main advantage of the star over the bus. (d) The \textbf{router}, which interconnects the LAN with the ISP's network and hence with the Internet where the cloud AI service is hosted.
+\end{exoresolu}
+
+\courssub{Integration Activities and Chapter Synthesis}
+
+\begin{experience}[Team project: an AI solution for our community]
+In teams of 4--5, carry out the full cycle studied in this chapter:
+\begin{enumerate}
+\item \textbf{Identify} a local problem (waste collection, crop disease, exam revision, market prices).
+\item \textbf{Propose} an AI solution and state which technique it uses (machine learning, expert system, natural language processing).
+\item \textbf{Discuss ethics:} what data is collected? Is consent obtained? What biases could appear?
+\item \textbf{Design the deployment:} draw the network diagram (LAN, router, cloud or edge), choose a topology and justify it using cost, reliability and scalability.
+\item \textbf{Present} the project to the class in 10 minutes with a poster.
+\end{enumerate}
+\end{experience}
+
+\begin{aretenir}[Revision map of the chapter]
+\begin{itemize}
+\item \textbf{AI concept:} machines performing tasks requiring human-like intelligence (reasoning, learning, perception).
+\item \textbf{Ethics:} privacy, bias, transparency, responsibility, consent.
+\item \textbf{Techniques:} knowledge-based systems, search, robotics, NLP, computer vision.
+\item \textbf{Machine learning:} supervised, unsupervised and reinforcement learning; development life cycle (data $\rightarrow$ training $\rightarrow$ evaluation $\rightarrow$ deployment).
+\item \textbf{Networks:} PAN/LAN/MAN/WAN, topologies, hardware, protocols (TCP/IP, DNS), cloud and edge computing --- the infrastructure that delivers AI to users.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[GCE-style synthesis questions]
+\begin{enumerate}
+\item Define a computer network and state any three of its purposes.
+\item Distinguish between a LAN, a MAN and a WAN, giving one Cameroonian example of each.
+\item A school wants to network 30 computers in two laboratories. Recommend a topology and justify your choice using three criteria.
+\item Explain the difference between the Internet and the World Wide Web.
+\item Explain why cloud computing is important for AI applications, and describe one connectivity challenge faced in Cameroon with a possible solution (edge computing, offline mode, VSAT).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} A computer network is a set of two or more devices connected by transmission media to share resources and communicate. Purposes (any three): resource sharing, communication, centralised data, access to cloud AI services.
+\textbf{2.} LAN: one building/site (school computer lab); MAN: a town (CAMTEL fibre backbone in Yaoundé); WAN: a country or more (the Internet, a national bank's branch network).
+\textbf{3.} Star topology: cost is moderate, a single cable failure affects only one machine (reliability), and new computers are added simply by plugging into the switch (scalability).
+\textbf{4.} The Internet is the physical infrastructure of interconnected networks; the Web is just one service (websites via HTTP) running on it.
+\textbf{5.} Cloud computing gives access to powerful remote servers and AI models that local machines cannot host. Challenge: slow/expensive Internet in rural areas; solution: edge computing or offline-capable applications, or VSAT links where fibre is absent.
+\end{corrige}
+
+\begin{savaistu}[Did you know?]
+Cameroon is connected to the global Internet by submarine fibre-optic cables landing near Douala, and public bodies such as ANTIC work to secure this digital infrastructure. Every time you use a mobile AI application, your request may travel thousands of kilometres through these cables and back in a fraction of a second --- networks truly are the nervous system of artificial intelligence.
+\end{savaistu}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter by asking you to \emph{mobilise everything you have learnt} in a single, realistic project. Working in teams of four, you will design \textbf{AgriSmart}, a mock AI-assisted advisory service that sends farming advice (planting dates, fertiliser doses, pest alerts, market prices) to Cameroonian farmers by SMS or smartphone application.
+
+By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item define a real problem and identify its target users (\cle{problem analysis});
+\item choose and justify an appropriate \cle{AI technique} (expert-system rules and/or supervised machine learning);
+\item apply an \cle{ethics checklist} covering bias, privacy, transparency and accountability;
+\item plan the \cle{development stages} of an AI system and represent them with a flowchart;
+\item specify the \cle{network infrastructure} (mobile network, Internet, cloud server) needed to deliver the service;
+\item present and defend a technical solution orally, and evaluate the work of other teams with a criteria grid.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Concept of AI $\rightarrow$ choice of techniques $\rightarrow$ machine-learning approach $\rightarrow$ ethics and responsible use $\rightarrow$ development life cycle $\rightarrow$ computer networks. The activity therefore integrates \emph{all seven lessons} of the chapter.
+\end{aretenir}
+
+\courssub{Situation}
+
+\begin{experience}[The AgriSmart project — statement of the problem]
+The West Region of Cameroon is one of the country's main producers of maize. Yet many smallholder farmers around Bafoussam, Mbouda and Dschang still lose a large part of their harvest every year. Agricultural extension officers are few (one officer may serve several villages), so most farmers rely on habit rather than on scientific advice. The main difficulties reported are:
+
+\begin{itemize}
+\item planting too early or too late because the onset of the rainy season varies from year to year;
+\item wrong fertiliser doses, which waste money and exhaust the soil;
+\item late detection of pests such as the fall armyworm, which attacks maize leaves;
+\item selling produce immediately after harvest, when prices are lowest, because farmers do not know market prices in advance.
+\end{itemize}
+
+A (fictional) local start-up, \textbf{AgriSmart SARL}, based in Bafoussam, wants to build an AI-assisted advisory service with the following characteristics:
+
+\begin{itemize}
+\item \textbf{Users:} about 5\,000 maize farmers in 20 villages; roughly 7 out of 10 own a mobile phone, but only about 3 out of 10 own a smartphone with Internet access. All can receive SMS. Many are more comfortable in French or in local languages than in English.
+\item \textbf{Available data:} 10 years of local rainfall records from the meteorological station; historical maize prices from the Bafoussam market; field observations collected by two extension officers (soil type, planting dates, pest attacks, yields).
+\item \textbf{Service required:} each farmer registers with his/her village, crop and plot size. The system then sends personalised advice: the recommended planting window, fertiliser quantities per plot size, pest alerts with photographs (for smartphone users), and weekly market price forecasts.
+\item \textbf{Constraints:} the solution must work over the existing GSM networks (MTN and Orange cover all 20 villages, with 2G everywhere and 3G/4G in towns); it must respect Cameroonian law on personal data protection (Law No. 2010/012 on cybersecurity and cybercriminality, and the data-protection framework supervised by ANTIC); the start-up has a small budget and a team of three developers.
+\end{itemize}
+
+Your team is hired as \emph{consultants}. You must produce the design dossier of AgriSmart on an \textbf{A3 poster} and defend it in a 5-minute presentation.
+\end{experience}
+
+\courssub{Tasks}
+
+Work in teams of four. Answer the following tasks progressively; each one corresponds to a lesson of the chapter.
+
+\textbf{Task 1 — Problem definition and target users.}
+\begin{enumerate}
+\item State, in two or three sentences, the problem AgriSmart must solve.
+\item List the target users and describe their constraints (equipment, language, connectivity).
+\item Explain why this problem is a good candidate for an AI solution (repetitive decisions, available data, need for personalisation).
+\end{enumerate}
+
+\textbf{Task 2 — Choice of AI technique.}
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item Choose between (or combine): (a) a rule-based \cle{expert system}, (b) \cle{supervised learning}. Justify your choice for AgriSmart.
+\item If you use rules: write \textbf{five sample IF–THEN rules} (e.g., on planting date, fertiliser dose, pest alert).
+\item If you use supervised learning: describe the \textbf{training data} to collect (input features, expected output/label, approximate number of records) and state whether the main task is \emph{classification} or \emph{regression}.
+\end{enumerate}
+
+\textbf{Task 3 — Ethics checklist.}
+\begin{enumerate}
+\setcounter{enumi}{6}
+\item Complete an ethics checklist for AgriSmart covering at least: \cle{bias} (are all villages and languages fairly represented in the data?), \cle{privacy} (what personal data of farmers is collected, where is it stored, who can see it?), \cle{transparency} (does the farmer know the advice comes from an AI?), and \cle{accountability} (who is responsible if wrong advice causes a lost harvest?).
+\item Propose one concrete safeguard for each risk identified.
+\end{enumerate}
+
+\textbf{Task 4 — Development plan.}
+\begin{enumerate}
+\setcounter{enumi}{8}
+\item Present the \textbf{7-step development plan} of the AI system (problem definition, data collection, data preparation, model choice, training, testing/evaluation, deployment and maintenance) as a simple flowchart.
+\item For each step, write one line saying what the AgriSmart team will concretely do.
+\end{enumerate}
+
+\textbf{Task 5 — Network infrastructure.}
+\begin{enumerate}
+\setcounter{enumi}{10}
+\item Draw a \textbf{network diagram} showing how a farmer's phone connects through the mobile network (base station, operator core network, Internet) to a cloud server hosting the AI model, and how the SMS or app notification comes back.
+\item Label each element (transmitter, transmission medium, server) and indicate which parts use guided media and which use wireless media.
+\item Explain why a \emph{client–server} architecture is appropriate here, and why SMS (2G) must remain available alongside the smartphone app.
+\end{enumerate}
+
+\textbf{Task 6 — Presentation and peer evaluation.}
+\begin{enumerate}
+\setcounter{enumi}{13}
+\item Present your poster in 5 minutes.
+\item Evaluate the other teams with the class grid: correctness of the AI solution (4 pts), quality of the ethics analysis (4 pts), feasibility in the Cameroonian context (4 pts), clarity of the network diagram (4 pts), quality of the oral presentation (4 pts) — total 20.
+\end{enumerate}
+
+\courssub{Model answer}
+
+The following is a complete worked answer, of the standard expected from a very good team.
+
+\textbf{Task 1 — Problem definition.}
+
+\emph{Problem:} Smallholder maize farmers of the West Region lack timely, personalised agronomic advice because extension officers are too few. This leads to badly timed planting, wrong fertiliser doses, undetected pest attacks and poor selling decisions, hence avoidable yield and income losses.
+
+\emph{Target users:} about 5\,000 farmers in 20 villages; most have only a basic phone (SMS), a minority have smartphones; French and local languages preferred; electricity and connectivity are limited in some villages.
+
+\emph{Why AI is appropriate:} the advice is repetitive and rule-like (same decisions every season), historical data exists (rainfall, prices, field records), and each farmer needs a \emph{personalised} answer depending on village, plot size and soil — exactly what an intelligent system can automate at low marginal cost.
+
+\textbf{Task 2 — Choice of AI technique.}
+
+We propose a \textbf{hybrid solution}: an expert system for well-established agronomic knowledge, plus a supervised-learning module for price forecasting.
+
+\emph{Five sample IF–THEN rules (expert system):}
+\begin{enumerate}
+\item IF cumulative rainfall in the village $\geq 30$ mm over 3 consecutive days AND the date is between 15 March and 15 April, THEN advise ``plant maize this week''.
+\item IF plot size $= 0.5$ ha AND soil type $=$ sandy, THEN advise ``apply NPK 20-10-10 at 200 kg/ha in two splits''.
+\item IF a farmer reports holes in young leaves AND the crop is maize aged 2--6 weeks, THEN send a fall-armyworm alert with control advice.
+\item IF no rain is forecast for 7 days AND the crop is at flowering stage, THEN advise ``irrigate if possible; flowering is water-sensitive''.
+\item IF the forecast price for next month is more than 15\% above the current price, THEN advise ``store part of the harvest if storage is available''.
+\end{enumerate}
+
+\emph{Supervised-learning module (price forecasting):} this is a \cle{regression} task. Training data: for each week of the past 10 years, the features are (month, market, quantity supplied, rainfall of the season, fuel price) and the label is the average maize price per 100 kg bag that week — about 500 weekly records. The trained model predicts next month's price, which feeds rule 5 above.
+
+\textbf{Task 3 — Ethics checklist.}
+
+\begin{center}
+\begin{tabular}{|l|p{5.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{popblueL} \textbf{Risk} & \textbf{Question for AgriSmart} & \textbf{Safeguard} \\
+\hline
+Bias & Are all 20 villages and both phone types represented in the data? & Collect data in every village; keep an SMS channel so non-smartphone users are not excluded. \\
+\hline
+Privacy & Farmers' names, phone numbers, plot sizes and yields are personal data. & Store data encrypted on the server; collect only what is needed; obtain written consent at registration; comply with Law No. 2010/012 and ANTIC guidelines. \\
+\hline
+Transparency & Does the farmer know the advice is automated? & Every SMS ends with ``automated advice — confirm with your extension officer''. \\
+\hline
+Accountability & Who answers if wrong advice ruins a harvest? & AgriSmart SARL keeps a human agronomist who validates rules and reviews complaints; decisions are logged for audit. \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 4 — Development plan (7 steps).}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+box/.style={draw=popblue, fill=popblueL, rounded corners=2pt, text width=3.1cm, align=center, minimum height=0.85cm, font=\small},
+arr/.style={->, thick, popdark}]
+\node[box] (s1) at (0,0) {1. Problem definition};
+\node[box] (s2) at (3.8,0) {2. Data collection};
+\node[box] (s3) at (7.6,0) {3. Data preparation};
+\node[box] (s4) at (11.4,0) {4. Model choice};
+\node[box] (s5) at (11.4,-1.7) {5. Training};
+\node[box] (s6) at (7.6,-1.7) {6. Testing \& evaluation};
+\node[box] (s7) at (3.8,-1.7) {7. Deployment \& maintenance};
+\draw[arr] (s1) -- (s2);
+\draw[arr] (s2) -- (s3);
+\draw[arr] (s3) -- (s4);
+\draw[arr] (s4) -- (s5);
+\draw[arr] (s5) -- (s6);
+\draw[arr] (s6) -- (s7);
+\draw[arr, dashed] (s7.north) .. controls (3.8,-0.6) .. (s2.south);
+\end{tikzpicture}
+\legende{The 7-step development plan of AgriSmart; the dashed arrow shows that maintenance feeds new data back into the system.}
+\end{popfigure}
+
+Concretely: (1) interview farmers and officers to fix the advisory scope; (2) gather rainfall, price and field records plus new registrations; (3) clean the data (missing values, units, duplicates); (4) choose a rule engine plus a regression algorithm; (5) train the price model on 8 of the 10 years; (6) test on the remaining 2 years and pilot the rules with one village; (7) deploy on a cloud server, monitor errors each season and retrain.
+
+\textbf{Task 5 — Network infrastructure.}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+dev/.style={draw=popdark, fill=popgreenL, rounded corners=2pt, align=center, font=\small, minimum height=0.8cm},
+srv/.style={draw=poporange, fill=poporange!20, rounded corners=2pt, align=center, font=\small, minimum height=0.8cm},
+lnk/.style={<->, thick, popblue}]
+\node[dev, align=center] (phone) at (0,0){Farmer's phone\\(SMS / app)};
+\node[dev, align=center] (bts) at (3.4,0){Base station\\(2G/3G/4G)};
+\node[dev, align=center] (core) at (6.8,0){Operator core\\network (MTN/Orange)};
+\node[srv] (net) at (10.2,0) {Internet};
+\node[srv, align=center] (cloud) at (13.2,0){Cloud server\\(AI model + database)};
+\draw[lnk] (phone) -- node[above, font=\scriptsize]{wireless} (bts);
+\draw[lnk] (bts) -- node[above, font=\scriptsize]{fibre/microwave} (core);
+\draw[lnk] (core) -- node[above, font=\scriptsize]{guided} (net);
+\draw[lnk] (net) -- (cloud);
+\end{tikzpicture}
+\legende{Network path from the farmer's phone to the AgriSmart cloud server and back.}
+\end{popfigure}
+
+The architecture is \cle{client--server}: the phone (client) sends a request (registration, pest report) which travels wirelessly to the base station, then over the operator's core network and the Internet (guided media: fibre or microwave links) to the cloud server, which runs the AI model and returns the advice as an SMS or app notification. SMS over 2G must be kept because 70\% of farmers have basic phones and some villages have no 3G/4G coverage; the app is an additional channel for smartphone users (photos of pests, price charts).
+
+\textbf{Task 6 — Presentation.} The poster assembles the five deliverables; the 5-minute talk follows the order problem $\rightarrow$ technique $\rightarrow$ ethics $\rightarrow$ plan $\rightarrow$ network, and peer evaluation uses the 20-point grid.
+
+\begin{attention}[Common mistakes to avoid]
+\begin{itemize}
+\item Choosing ``deep learning'' without data or budget justification — a simple rule base plus regression is more realistic here.
+\item Forgetting non-smartphone users: an SMS-only fallback is essential for fairness.
+\item Collecting personal data without consent or without mentioning the legal framework.
+\item Drawing a network diagram with no labelled media or mixing up client and server roles.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Applying Artificial Intelligence to Improve Working and Living Standards}
+
+\courssub{The Concept of Artificial Intelligence}
+
+\begin{definition}[Artificial Intelligence (AI)]
+Artificial Intelligence is the branch of computer science concerned with building systems that can perform tasks normally requiring \cle{human intelligence}: perception (vision, speech), reasoning, learning, planning, natural language understanding, and decision-making in uncertain environments.
+\end{definition}
+
+\begin{aretenir}[Key distinctions]
+\begin{itemize}
+\item \textbf{Automation vs AI:} Automation follows fixed, pre-programmed rules; AI adapts, learns from data, or reasons with knowledge.
+\item \textbf{Narrow (Weak) AI:} Specialised in one task (translation, fraud detection, chess). \emph{All deployed systems today are Narrow AI.}
+\item \textbf{General (Strong) AI:} Human-level intelligence across any intellectual task; remains a research goal.
+\item \textbf{Superintelligence:} Hypothetical AI surpassing human cognitive abilities in all domains.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Historical milestones]
+\begin{itemize}
+\item 1950 — Alan Turing proposes the \emph{Imitation Game} (Turing Test) as a criterion for machine intelligence.
+\item 1956 — Dartmouth Conference coins the term ``Artificial Intelligence'' (McCarthy, Minsky, Rochester, Shannon).
+\item 1997 — IBM Deep Blue beats world chess champion Garry Kasparov.
+\item 2012 — AlexNet wins ImageNet, launching the deep-learning revolution.
+\item 2020s — Large Language Models (LLMs) demonstrate broad language understanding and generation.
+\end{itemize}
+\end{savaistu}
+
+\begin{methode}[Recognising an AI system and classifying it]
+\begin{enumerate}
+\item \textbf{Check the definition:} Does the system perform a task that normally requires human intelligence (perception, reasoning, learning, decision-making, language understanding)? If it only follows fixed rules with no adaptation, it is ordinary automation, not AI.
+\item \textbf{Identify the capability used:} Match the task to a domain of AI: \emph{Machine Learning} (learning from data), \emph{Computer Vision} (images/video), \emph{Natural Language Processing} (text/speech), \emph{Robotics} (physical action), \emph{Expert Systems} (rule-based reasoning from human experts), \emph{Speech Recognition}, \emph{Planning/Scheduling}.
+\item \textbf{Classify the type:} \cle{Narrow (Weak) AI} — specialised in one task — or \cle{General (Strong) AI} — human-level across all domains. All existing systems are Narrow AI.
+\item \textbf{Justify} with one observable behaviour (e.g.\ ``it improves its recommendations as more users interact with it'').
+\end{enumerate}
+\textbf{Reflex:} At the GCE, always give the classification \emph{and} a justification; a bare answer earns only half the marks.
+\end{methode}
+
+\begin{exoresolu}[Classifying everyday systems]
+For each system, state whether it is an AI application; if so, give its domain and type:
+(a) A washing machine that runs a fixed 40-minute cycle.
+(b) A mobile application that translates Lamnso' proverbs into English.
+(c) A fraud-detection system at a mobile money operator (MTN MoMo / Orange Money) that flags unusual transactions.
+(d) A scientific calculator.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) Washing machine:} \emph{Not AI.} It executes a fixed sequence of instructions with no perception, learning, or decision-making. It is simple automation.
+\item \textbf{(b) Translation application:} \emph{AI application.} It understands and produces human language — a task requiring intelligence. Domain: \emph{Natural Language Processing (NLP)}. Type: \emph{Narrow AI} (only translation).
+\item \textbf{(c) Fraud detection:} \emph{AI application.} It learns patterns of normal behaviour from transaction data and detects anomalies, improving as more data is collected. Domain: \emph{Machine Learning} (anomaly detection). Type: \emph{Narrow AI}.
+\item \textbf{(d) Calculator:} \emph{Not AI.} It applies fixed arithmetic rules; there is no learning, reasoning, or adaptation.
+\end{enumerate}
+\textbf{Key idea:} The presence of a computer does not imply AI; the deciding criterion is whether the system exhibits intelligent behaviour (learning, perception, reasoning).
+\end{exoresolu}
+
+\begin{exercice}[Practice classification]
+Classify each system as AI or not; if AI, name the domain and type:
+\begin{enumerate}
+\item A thermostat that turns heating on/off at a fixed temperature.
+\item A smart thermostat (e.g.\ Nest) that learns occupants' schedules and adjusts automatically.
+\item An email spam filter that updates its rules when users mark messages as spam.
+\item A digital alarm clock.
+\item A self-driving car navigating Yaoundé traffic.
+\end{enumerate}
+\end{exercice}
+
+\courssub{AI Ethics and Responsible Use}
+
+\begin{definition}[AI Ethics]
+AI Ethics is the set of moral principles and governance practices that guide the design, development, deployment, and use of AI systems so that they respect human rights, promote fairness, protect privacy, ensure accountability, and minimise harm.
+\end{definition}
+
+\begin{aretenir}[Core ethical principles (aligned with UNESCO, EU AI Act, and Cameroon's ANTIC framework)]
+\begin{itemize}
+\item \textbf{Privacy \& Data Protection:} Personal data must be collected lawfully, minimised, secured, and retained only as long as necessary. In Cameroon, the \cle{Agence Nationale des Technologies de l'Information et de la Communication (ANTIC)} oversees data protection and cybersecurity.
+\item \textbf{Fairness \& Non-discrimination (Bias mitigation):} Systems must not systematically disadvantage groups based on gender, ethnicity, language, disability, religion, or socio-economic status.
+\item \textbf{Transparency \& Explainability:} Decisions affecting individuals should be understandable; ``black-box'' models require explanation interfaces (e.g.\ SHAP, LIME).
+\item \textbf{Accountability \& Responsibility:} Clear ownership of outcomes; human oversight (\emph{human-in-the-loop} or \emph{human-on-the-loop}) for high-stakes decisions.
+\item \textbf{Safety \& Robustness:} Systems must behave reliably under normal and adversarial conditions; fail-safe mechanisms.
+\item \textbf{Societal Impact:} Job displacement, digital divide, environmental footprint (training large models consumes significant energy), misuse (deepfakes, autonomous weapons).
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Evaluating ethical issues in an AI deployment scenario]
+\begin{enumerate}
+\item \textbf{List stakeholders:} Users, workers, community, company, regulators.
+\item \textbf{Screen against each principle:} Privacy? Fairness/Bias? Transparency? Accountability? Job displacement? Security/Misuse? Environmental cost?
+\item \textbf{For each issue found:} Name it $\rightarrow$ Illustrate from scenario $\rightarrow$ State consequence.
+\item \textbf{Propose responsible-use measures:} Informed consent, data anonymisation/pseudonymisation, human oversight, regular bias audits, staff retraining/upskilling, compliance with ANTIC guidelines and Law No. 2010/012 on cybersecurity and cybercrime.
+\item \textbf{Conclude with balanced judgement:} Benefits vs risks; conditions for responsible deployment.
+\end{enumerate}
+\textbf{Reflex:} Structure every answer as ``Issue $\rightarrow$ Example $\rightarrow$ Consequence $\rightarrow$ Remedy''; this is what examiners reward.
+\end{methode}
+
+\begin{exoresolu}[Ethics of a facial-recognition attendance system]
+A company in Douala installs a facial-recognition system to record workers' attendance. Discuss two ethical concerns and suggest one responsible-use measure for each.
+\tcblower
+\textbf{Solution.}
+\textbf{Concern 1 — Privacy.} Facial images are \emph{biometric personal data} (sensitive category). Collecting and storing them without workers' informed consent violates their right to privacy; if the database is hacked or sold, workers can suffer identity theft. \emph{Responsible measure:} Obtain explicit written consent, encrypt and securely store biometric data, define a limited retention period, and comply with ANTIC data-protection guidelines.
+
+\textbf{Concern 2 — Bias and fairness.} Facial-recognition algorithms trained on unrepresentative datasets often have higher error rates for darker skin tones and for women, causing some workers to be wrongly marked absent and possibly sanctioned. \emph{Responsible measure:} Audit the system regularly for accuracy across demographic groups (disaggregated evaluation) and maintain a human supervisor able to correct errors (human oversight).
+
+\textbf{Conclusion:} The system improves efficiency in attendance tracking, but it should only be deployed with consent, data security, bias auditing, and human oversight, so that efficiency does not override fundamental rights.
+\end{exoresolu}
+
+\begin{experience}[Case study: AI in recruitment]
+A Cameroonian bank uses an AI tool to screen CVs. The training data consists of CVs of employees hired over the last 10 years, 85\% of whom are men. The tool learns to downgrade CVs containing words like ``women's association'' or ``girls' school''. 
+\begin{enumerate}
+\item Identify the ethical principle violated.
+\item Explain the origin of the bias.
+\item Propose two technical and one organisational remedy.
+\end{enumerate}
+\end{experience}
+
+\begin{corrige}[Exercise: AI in recruitment]
+\textbf{1.} Fairness / Non-discrimination (gender bias). \textbf{2.} The training data reflects historical hiring bias (predominantly male hires); the model learns spurious correlations between gendered language and success. \textbf{3.} Technical: (a) Re-weight or augment training data to balance gender representation; (b) Remove or mask gender-proxy features (names, gendered words) during training. Organisational: Mandate diverse hiring panels and regular bias audits; keep final hiring decision human.
+\end{corrige}
+
+\courssub{AI Techniques and Intelligent Systems}
+
+\begin{definition}[Intelligent System]
+An intelligent system is a software (or hardware+software) entity that perceives its environment through sensors, reasons about it using knowledge or learned models, and acts upon the environment through effectors to achieve goals.
+\end{definition}
+
+\begin{aretenir}[Main AI techniques and their typical use cases]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Technique} & \textbf{Core idea} & \textbf{Typical use cases} \\
+\hline
+Expert System & Knowledge base (facts + IF--THEN rules) + Inference engine (forward/backward chaining) & Medical diagnosis, fault diagnosis, tax advice, configuration \\
+\hline
+Machine Learning (ML) & Learns patterns from data without explicit programming & Prediction, classification, clustering, recommendation \\
+\hline
+Computer Vision & Interprets images/video (CNNs, object detection, segmentation) & Medical imaging, autonomous vehicles, quality inspection, facial recognition \\
+\hline
+Natural Language Processing (NLP) & Understands/generates human text/speech (tokenisation, embeddings, transformers) & Translation, chatbots, sentiment analysis, voice assistants \\
+\hline
+Robotics / Intelligent Agents & Sense–plan–act loop; sensors + actuators + AI controller & Industrial arms, drones, service robots, warehouse automation \\
+\hline
+Fuzzy Logic & Reasoning with degrees of truth (0–1) instead of Boolean & Control systems (washing machines, HVAC), decision support \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{methode}[Matching a problem to an AI technique]
+\begin{enumerate}
+\item \textbf{Analyse the problem:} What is the input (text, image, numbers, sensor streams)? What is the expected output (decision, prediction, action, text)?
+\item \textbf{Recall each technique's input/output profile:}
+\begin{itemize}
+\item Expert system: Structured knowledge (rules) $\rightarrow$ Advice/diagnosis.
+\item ML: Historical data (labelled or not) $\rightarrow$ Predictive model.
+\item Computer Vision: Images/video $\rightarrow$ Labels, bounding boxes, masks.
+\item NLP: Text/speech $\rightarrow$ Intent, translation, summary, generated text.
+\item Robotics: Sensor data $\rightarrow$ Motor commands.
+\end{itemize}
+\item \textbf{Select the technique} whose profile matches the problem.
+\item \textbf{Justify} why other techniques are less suitable.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Selecting techniques for three hospital projects]
+A regional hospital in Bamenda wants: (a) a program that advises nurses on probable diseases from symptoms, using the knowledge of senior doctors; (b) a system that reads chest X-ray images to detect tuberculosis; (c) a chatbot answering patients' questions in English and French. For each, choose the most appropriate AI technique and justify.
+\tcblower
+\textbf{Solution.}
+\textbf{(a) Expert system.} Senior doctors' knowledge can be encoded as IF--THEN rules in a knowledge base (e.g.\ \texttt{IF fever AND cough AND night\_sweats THEN suspect\_tuberculosis}); the inference engine chains rules to produce advice. ML would be less suitable because the hospital explicitly wants to reuse codified expert knowledge rather than learn from a large dataset.
+
+\textbf{(b) Computer Vision (with Deep Learning).} Input is an image; task is recognising visual patterns (lesions). A Convolutional Neural Network (CNN) trained on labelled X-rays learns to detect TB. An expert system is unsuitable because radiological patterns are extremely difficult to express as hand-written rules.
+
+\textbf{(c) Natural Language Processing.} The chatbot must understand questions in English/French and generate appropriate answers — precisely NLP (language detection, intent classification, entity extraction, response generation).
+
+\textbf{Key idea:} The nature of the \emph{input data} (rules, images, text) is the fastest guide to the right technique.
+\end{exoresolu}
+
+\begin{experience}[Expert system mini-project]
+Design a small expert system for diagnosing common maize diseases in the North-West Region.
+\begin{enumerate}
+\item List 5 symptoms (facts) and 3 diseases (goals).
+\item Write 6 IF--THEN rules linking symptoms to diseases.
+\item Draw the inference process (forward chaining) for a sample case: \texttt{leaf\_spots=yes, yellowing=yes, stunting=no}.
+\end{enumerate}
+\end{experience}
+
+\courssub{Machine Learning}
+
+\begin{definition}[Machine Learning (ML)]
+Machine Learning is the subfield of AI where systems \cle{learn from data} to improve their performance on a task without being explicitly programmed for every rule. The learning process adjusts internal parameters (weights) to minimise a loss function on training data.
+\end{definition}
+
+\begin{aretenir}[Three paradigms of Machine Learning]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Paradigm} & \textbf{Training signal} & \textbf{Typical tasks} & \textbf{Examples} \\
+\hline
+Supervised Learning & Labelled examples $(x_i, y_i)$ & Classification (discrete $y$), Regression (continuous $y$) & Spam detection, house price prediction, medical diagnosis, credit scoring \\
+\hline
+Unsupervised Learning & Unlabelled data $x_i$ (no $y$) & Clustering, Dimensionality reduction, Anomaly detection & Customer segmentation, topic modelling, fraud anomaly detection \\
+\hline
+Reinforcement Learning (RL) & Rewards/penalties $r_t$ from environment & Sequential decision-making, control, game playing & Robot navigation, game AI (AlphaGo), ad placement, inventory control \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{methode}[Identifying the ML paradigm]
+\begin{enumerate}
+\item \textbf{Inspect the training data and feedback:}
+\begin{itemize}
+\item Each example has a known correct answer (label) $\Rightarrow$ \emph{Supervised}. Sub-cases: predicting a category = \emph{classification}; predicting a number = \emph{regression}.
+\item No labels; the system discovers structure (groups, patterns) $\Rightarrow$ \emph{Unsupervised} (e.g.\ clustering, PCA).
+\item An agent acts in an environment, receives rewards/penalties $\Rightarrow$ \emph{Reinforcement Learning}.
+\end{itemize}
+\item \textbf{Name the task} (classification, regression, clustering, policy learning).
+\item \textbf{Give a concrete example} to support your classification.
+\end{enumerate}
+\textbf{Reflex:} The question ``Does the training data contain the correct answers?'' discriminates supervised from unsupervised in one step.
+\end{methode}
+
+\begin{exoresolu}[Classifying ML scenarios]
+Identify the ML type with justification:
+(a) A model trained on 10\,000 past loan records labelled ``repaid'' or ``defaulted'' to predict risk for new applicants at a microfinance institution in Yaoundé.
+(b) A system that groups customers of an online shop into segments with similar buying habits, without being told the segments in advance.
+(c) A program that learns to play draughts by playing millions of games against itself, earning points for victories.
+\tcblower
+\textbf{Solution.}
+\textbf{(a) Supervised learning — Classification.} Each record carries a label (``repaid''/``defaulted''); output is a category.
+\textbf{(b) Unsupervised learning — Clustering.} No labels; algorithm discovers natural groupings from purchasing data alone.
+\textbf{(c) Reinforcement learning.} Agent takes actions (moves) in an environment (board) and receives rewards/penalties; learns a strategy maximising cumulative reward. No labelled dataset of correct moves.
+\end{exoresolu}
+
+\begin{definition}[Key supervised learning algorithms (examinable concepts)]
+\begin{itemize}
+\item \textbf{k-Nearest Neighbours (k-NN):} Instance-based; classifies by majority vote of $k$ closest training points (distance metric: Euclidean). Lazy learner (no explicit training phase).
+\item \textbf{Decision Trees (CART, ID3, C4.5):} Recursive partitioning using information gain / Gini impurity; interpretable, handles mixed data, prone to overfitting (pruning needed).
+\item \textbf{Support Vector Machines (SVM):} Finds maximum-margin hyperplane; kernel trick for non-linear boundaries.
+\item \textbf{Naïve Bayes:} Probabilistic classifier using Bayes' theorem with conditional independence assumption; fast, works well for text (spam filtering).
+\item \textbf{Neural Networks / Deep Learning:} Layers of weighted units with non-linear activations; universal function approximators; require large data and compute.
+\item \textbf{Linear / Logistic Regression:} Linear models for regression / binary classification; baseline, interpretable.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Key unsupervised learning algorithms]
+\begin{itemize}
+\item \textbf{k-Means Clustering:} Partitions data into $k$ clusters by minimising within-cluster sum of squares; requires choosing $k$.
+\item \textbf{Hierarchical Clustering:} Builds dendrogram (agglomerative or divisive); no need to pre-specify $k$.
+\item \textbf{Principal Component Analysis (PCA):} Linear dimensionality reduction; projects data onto orthogonal axes of maximum variance.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Reinforcement Learning core concepts]
+\begin{itemize}
+\item \textbf{Agent:} Learner/decision-maker.
+\item \textbf{Environment:} Everything outside the agent.
+\item \textbf{State $s$:} Current situation.
+\item \textbf{Action $a$:} Decision taken.
+\item \textbf{Reward $r$:} Scalar feedback.
+\item \textbf{Policy $\pi(a|s)$:} Strategy mapping states to actions.
+\item \textbf{Value function $V(s)$ / $Q(s,a)$:} Expected cumulative reward.
+\item \textbf{Exploration vs Exploitation:} Trying new actions vs using known good ones ($\epsilon$-greedy, UCB).
+\end{itemize}
+\end{definition}
+
+\begin{exercice}[ML paradigm identification]
+For each scenario, state the paradigm (supervised/unsupervised/reinforcement), the sub-task (classification/regression/clustering/control), and one suitable algorithm:
+\begin{enumerate}
+\item Predicting the price of a house in Douala from size, location, rooms.
+\item Grouping WhatsApp messages by topic without labels.
+\item A drone learning to avoid obstacles by trial and error in a simulator.
+\item Detecting whether a mobile money transaction is fraudulent (labelled history available).
+\item Reducing 100 sensor readings to 5 principal components for visualisation.
+\end{enumerate}
+\end{exercice}
+
+\courssub{Developing AI Systems}
+
+\begin{methode}[AI Project Life Cycle (CRISP-DM adapted)]
+Present the stages in order, giving for each its purpose and one concrete action:
+\begin{enumerate}
+\item \textbf{Business / Problem Understanding:} Define the task, users, success criteria (KPIs), constraints (latency, privacy, budget), and ethical risk assessment.
+\item \textbf{Data Understanding \& Collection:} Identify sources (internal logs, public datasets, sensors, APIs), assess quality, quantity, representativeness, and legal compliance (ANTIC, consent).
+\item \textbf{Data Preparation (often 60–80\% of effort):} Cleaning (errors, duplicates, outliers, missing values), labelling (if supervised), feature engineering, scaling/normalisation, \textbf{train/validation/test split} (e.g.\ 70/15/15 or 80/10/10), handling class imbalance (oversampling, SMOTE, class weights).
+\item \textbf{Modelling:} Select algorithm(s), train on training set, tune hyperparameters on validation set (grid search, random search, Bayesian optimisation), use cross-validation (k-fold) for robust estimates.
+\item \textbf{Evaluation:} Test on \emph{unseen} test set using appropriate metrics (see 1.6); check fairness across subgroups; error analysis.
+\item \textbf{Deployment:} Package model (API, container, edge device), integrate with application, monitor latency/throughput, set up CI/CD for ML (MLOps), plan rollback.
+\item \textbf{Monitoring \& Maintenance:} Track data drift (input distribution shift) and concept drift ($P(y|x)$ change), retrain periodically, audit fairness, update documentation.
+\end{enumerate}
+\textbf{Reflex:} Never jump from data collection directly to training; examiners penalise answers that omit data preparation, validation, and evaluation.
+\end{methode}
+
+\begin{exoresolu}[Designing a crop-disease advisory app]
+An agro-pastoral NGO in the North-West Region wants an AI mobile app that identifies maize leaf diseases from photos taken by farmers and advises treatment. Describe the development stages.
+\tcblower
+\textbf{Solution.}
+\textbf{1. Problem Understanding.} Task: Classify maize leaf image into \{healthy, leaf blight, common rust, gray leaf spot, ...\} + recommend treatment. Users: Smallholder farmers (low literacy, poor connectivity). Success: $\ge 90\%$ top-1 accuracy in field conditions; inference $< 2$ s on low-end Android.
+
+\textbf{2. Data Collection.} Source: Photos from local farms (IRAD, farmer cooperatives), public datasets (PlantVillage), augmented with synthetic backgrounds. Target: $\ge 2000$ images per class, diverse lighting, angles, growth stages. Legal: Farmer consent for photos; no personal data.
+
+\textbf{3. Data Preparation.} Remove blurred/mislabelled images; resize to $224\times224$; normalise (ImageNet mean/std); balance classes (oversample minority); split 80/10/10 stratified.
+
+\textbf{4. Modelling.} Transfer learning: Fine-tune MobileNetV3 or EfficientNet-B0 (lightweight for mobile) on training set; validation for hyperparameters (learning rate, freeze layers); early stopping.
+
+\textbf{5. Evaluation.} Test set metrics: Accuracy, per-class Recall (critical not to miss diseases), Confusion matrix. Field test on 5 farms with agronomist ground truth.
+
+\textbf{6. Deployment.} Convert to TensorFlow Lite / ONNX; integrate in Flutter/React Native app; offline-first (model on device); UI in English, Pidgin, Lamnso'; low-bandwidth sync for updates.
+
+\textbf{7. Monitoring.} Collect anonymised prediction logs + farmer feedback; quarterly retrain with new labelled data; monitor for new disease strains (concept drift).
+
+\textbf{Key idea:} An AI system is never finished at deployment; continuous monitoring and retraining are part of the life cycle.
+\end{exoresolu}
+
+\begin{savaistu}[Tools commonly used in AI development (Cameroon context)]
+\begin{itemize}
+\item \textbf{Languages:} Python (de facto standard), R (statistics).
+\item \textbf{Libraries:} scikit-learn (classical ML), TensorFlow/Keras, PyTorch (deep learning), OpenCV (vision), Hugging Face Transformers (NLP).
+\item \textbf{Data:} pandas, NumPy, DVC (data versioning).
+\item \textbf{Deployment:} Flask/FastAPI (REST API), Docker, TensorFlow Lite (mobile), ONNX Runtime (cross-platform), Streamlit/Gradio (demos).
+\item \textbf{MLOps:} MLflow (experiment tracking), Kubeflow, GitHub Actions (CI/CD).
+\item \textbf{Cloud/Edge:} AWS/Azure/GCP (if budget allows), local servers, Raspberry Pi / Jetson Nano (edge).
+\end{itemize}
+\end{savaistu}
+
+\courssub{Evaluating Machine Learning Models}
+
+\begin{definition}[Confusion Matrix (Binary Classification)]
+For a binary classifier with classes \texttt{Positive} (1) and \texttt{Negative} (0):
+\begin{center}
+\begin{tabular}{|c|cc|}
+\hline
+\rowcolor{popblueL} & \textbf{Predicted Positive} & \textbf{Predicted Negative} \\
+\hline
+\textbf{Actual Positive} & True Positive (TP) & False Negative (FN) \\
+\textbf{Actual Negative} & False Positive (FP) & True Negative (TN) \\
+\hline
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{aretenir}[Core metrics — formulas and interpretation]
+\begin{align*}
+\text{Accuracy} &= \frac{TP + TN}{TP + TN + FP + FN} && \text{Overall correctness} \\
+\text{Precision} &= \frac{TP}{TP + FP} && \text{Of predicted positives, how many are truly positive? (avoid false alarms)} \\
+\text{Recall (Sensitivity)} &= \frac{TP}{TP + FN} && \text{Of actual positives, how many did we find? (avoid missed cases)} \\
+\text{Specificity} &= \frac{TN}{TN + FP} && \text{Of actual negatives, how many correctly rejected?} \\
+\text{F1-score} &= 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} && \text{Harmonic mean; balances P \& R} \\
+\text{AUC-ROC} &= \text{Area under Receiver Operating Characteristic curve} && \text{Threshold-independent ranking quality}
+\end{align*}
+\textbf{When to prioritise which:} Medical screening $\rightarrow$ maximise \emph{Recall} (missed cases costly). Spam filter $\rightarrow$ maximise \emph{Precision} (false alarms annoying). Balanced need $\rightarrow$ \emph{F1}.
+\end{aretenir}
+
+\begin{methode}[Computing and interpreting metrics, spotting overfitting]
+\begin{enumerate}
+\item Organise results in a confusion matrix (TP, TN, FP, FN).
+\item Apply the formulas above.
+\item Interpret in context: High precision = few false alarms; high recall = few missed cases.
+\item \textbf{Diagnose overfitting:} If performance is excellent on the \emph{training} set but much poorer on the \emph{test/validation} set, the model has memorised training data instead of generalising.
+\item \textbf{Remedies for overfitting:} More diverse data, data augmentation, simpler model (fewer parameters), regularisation (L1/L2, dropout), early stopping, cross-validation.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Evaluating a malaria screening model]
+A model screens patients for malaria. Tested on 200 patients: 80 sick correctly detected (TP), 100 healthy correctly cleared (TN), 10 healthy wrongly flagged (FP), 10 sick missed (FN).
+(a) Compute accuracy, precision, recall.
+(b) The hospital prioritises not missing sick patients: which metric matters most? Is the model satisfactory?
+(c) Training accuracy was 99\%. What problem does this suggest?
+\tcblower
+\textbf{Solution.}
+\textbf{(a)} Total $= 80+100+10+10 = 200$.
+\begin{align*}
+\text{Accuracy} &= \frac{80+100}{200} = 0.90 = 90\%,\\
+\text{Precision} &= \frac{80}{80+10} = \frac{80}{90} \approx 0.889 = 88.9\%,\\
+\text{Recall} &= \frac{80}{80+10} = \frac{80}{90} \approx 0.889 = 88.9\%.
+\end{align*}
+\textbf{(b)} Not missing sick patients $\rightarrow$ \emph{Recall}. Recall $= 88.9\%$ means $\approx 11$ sick patients per 100 are sent home untreated — dangerous for malaria. Model is \emph{not satisfactory}; lower decision threshold to raise recall (accept more FPs, cleared by confirmatory lab test).
+\textbf{(c)} Training $99\%$ vs Test $90\%$ $\Rightarrow$ \cle{Overfitting}. Remedies: More diverse training data, simpler model, regularisation, cross-validation.
+\end{exoresolu}
+
+\begin{exercice}[Metric computation]
+A binary classifier for detecting faulty network packets is tested on 5000 packets. Confusion matrix: TP=450, TN=4400, FP=50, FN=100.
+\begin{enumerate}
+\item Compute Accuracy, Precision, Recall, Specificity, F1-score.
+\item If the cost of a missed faulty packet (FN) is 10$\times$ the cost of a false alarm (FP), which metric should be optimised? Is this model adequate?
+\item The same model achieves 99.5\% accuracy on training data. Comment.
+\end{enumerate}
+\end{exercice}
+
+\courssub{Fundamentals of Computer Networks}
+
+\begin{definition}[Computer Network]
+A computer network is a set of interconnected devices (computers, servers, printers, sensors) that communicate and share resources (files, applications, Internet access) via transmission media and protocols.
+\end{definition}
+
+\begin{aretenir}[Network classification by geographical scope]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Type} & \textbf{Scope} & \textbf{Typical example in Cameroon} \\
+\hline
+PAN (Personal Area Network) & $\le 10$ m (Bluetooth, USB) & Phone $\leftrightarrow$ headset \\
+\hline
+LAN (Local Area Network) & One building / campus & School ICT lab, office LAN \\
+\hline
+MAN (Metropolitan Area Network) & City / large campus & University campus network, city fibre ring \\
+\hline
+WAN (Wide Area Network) & Country / continent / global & Internet (CAMTEL, MTN, Orange backbone), bank inter-branch network \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{aretenir}[Common LAN topologies]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Topology} & \textbf{Description} & \textbf{Advantages} & \textbf{Disadvantages} \\
+\hline
+Star & All devices to central switch/hub & Easy to install/troubleshoot; one cable failure isolates one device & Central switch = single point of failure; more cabling \\
+\hline
+Bus & Single backbone cable (coaxial) & Simple, less cable & Backbone failure kills whole network; difficult to troubleshoot; obsolete \\
+\hline
+Ring & Devices in closed loop (token passing) & Deterministic access; no collisions & One break stops ring (unless dual-ring); adding devices disrupts network \\
+\hline
+Mesh & Multiple interconnections (full/partial) & High redundancy, fault tolerance & Expensive, complex cabling; used in backbone/WAN \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\begin{definition}[Key network equipment]
+\begin{itemize}
+\item \textbf{Switch (Layer 2):} Forwards Ethernet frames between devices \emph{inside the same LAN} using MAC addresses; creates separate collision domains per port.
+\item \textbf{Router (Layer 3):} Interconnects \emph{different networks} (LAN-to-WAN, LAN-to-LAN); forwards IP packets based on IP addresses; performs NAT, firewall, DHCP.
+\item \textbf{Access Point (AP):} Bridges wireless (Wi-Fi 802.11) clients to wired LAN.
+\item \textbf{Modem (Modulator-Demodulator):} Converts digital data to analogue signals for transmission over telephone (DSL), cable (DOCSIS), or fibre (ONT) lines.
+\item \textbf{Server:} Provides services (file, print, web, database, DNS, DHCP, authentication).
+\item \textbf{Transmission media:} Twisted pair (UTP Cat 5e/6/6a — up to 10 Gbps, 100 m), Fibre optic (single-mode/multi-mode — km, Gbps–Tbps), Radio (Wi-Fi, 4G/5G, satellite).
+\end{itemize}
+\end{definition}
+
+\begin{methode}[Analysing a small network description]
+\begin{enumerate}
+\item \textbf{Determine geographical scope} $\rightarrow$ Classify as PAN/LAN/MAN/WAN.
+\item \textbf{Identify topology} from cabling description (star, bus, ring, mesh, hybrid).
+\item \textbf{List equipment} and state each one's role (switch, router, AP, server, modem, firewall).
+\item \textbf{State advantages and limits} of the topology (e.g.\ star: failure isolation vs central switch SPOF).
+\item \textbf{Identify protocols/services} if mentioned: DHCP (auto IP), DNS (name resolution), HTTP/HTTPS (web), FTP/SFTP (file transfer), SSH (remote admin), VPN (secure remote access).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Networking a school computer laboratory]
+A secondary school in Buea connects 30 computers in its ICT laboratory to one central switch; the switch connects to a router giving Internet access through a fibre link from an ISP (CAMTEL/MTN).
+(a) Classify the network (LAN/MAN/WAN).
+(b) Name the topology; give one advantage and one disadvantage.
+(c) Explain the respective roles of the switch and the router.
+(d) Teachers want to access school files from home: what network type is involved?
+\tcblower
+\textbf{Solution.}
+\textbf{(a)} Single site (school) $\Rightarrow$ \cle{LAN} (Local Area Network).
+\textbf{(b)} All computers to central switch $\Rightarrow$ \emph{Star topology}. \emph{Advantage:} Cable/device failure affects only that device; easy fault isolation. \emph{Disadvantage:} Central switch is a single point of failure (SPOF); more cabling than bus.
+\textbf{(c)} \emph{Switch:} Forwards frames between devices \emph{inside the LAN} (MAC-based). \emph{Router:} Connects \emph{different networks} — forwards packets between school LAN and ISP network (gateway to Internet); performs NAT, firewall.
+\textbf{(d)} Accessing files from home over the Internet (secured by VPN) $\Rightarrow$ \cle{WAN} connection.
+\end{exoresolu}
+
+\begin{experience}[Practical: Setting up a small LAN]
+Using Cisco Packet Tracer (or real equipment):
+\begin{enumerate}
+\item Connect 4 PCs to a 2960 switch; assign static IPs 192.168.10.1–4/24.
+\item Verify connectivity with \texttt{ping}.
+\item Add a router (192.168.10.254/24 on LAN side); configure DHCP on router.
+\item Set PCs to DHCP; verify they receive IPs and can ping each other and the router.
+\item Configure a static route on router to simulate ISP connection.
+\end{enumerate}
+\end{experience}
+
+\begin{aretenir}[OSI vs TCP/IP models — key layers for GCE]
+\begin{center}
+\begin{tabularx}{\linewidth}{|c|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{OSI Layer} & \textbf{TCP/IP Layer} & \textbf{Key protocols / devices} \\
+\hline
+7 Application & Application & HTTP, HTTPS, FTP, SMTP, DNS, DHCP, SSH \\
+6 Presentation & Application & SSL/TLS, JPEG, MPEG, ASCII \\
+5 Session & Application & RPC, NetBIOS \\
+\hline
+4 Transport & Transport & TCP (reliable, connection-oriented), UDP (fast, connectionless) \\
+\hline
+3 Network & Internet & IP (v4/v6), ICMP, OSPF, BGP; \textbf{Router} \\
+\hline
+2 Data Link & Network Access & Ethernet (802.3), Wi-Fi (802.11), MAC addressing; \textbf{Switch}, \textbf{AP} \\
+1 Physical & Network Access & Cables (UTP, fibre), radio waves, voltages; \textbf{Modem}, \textbf{Repeater} \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Encapsulation:} Data $\rightarrow$ Segment (TCP/UDP) $\rightarrow$ Packet (IP) $\rightarrow$ Frame (Ethernet) $\rightarrow$ Bits (Physical).
+\end{aretenir}
+
+\begin{exercice}[Network analysis]
+A company in Yaoundé has two buildings 500 m apart, connected by fibre. Each building has a star-wired LAN (switch + 50 PCs). The two switches are linked by fibre. The main building has a router connecting to MTN Business fibre for Internet.
+\begin{enumerate}
+\item Classify each building's network and the inter-building link.
+\item Draw the topology (logical diagram).
+\item If the router fails, what stops working? What still works?
+\item Name the layer-2 and layer-3 devices.
+\item Which protocol assigns IP addresses automatically to the 100 PCs?
+\end{enumerate}
+\end{exercice}
+
+\courssub{Integration Activities: AI + Networks + Ethics}
+
+\begin{experience}[Integrated mini-project: Smart School Network with AI]
+A boarding school in Bamenda wants to deploy an AI-enhanced network:
+\begin{itemize}
+\item \textbf{Network:} Two-building LAN (star topology each) linked by fibre; router to Internet via CAMTEL; Wi-Fi APs in dormitories; DHCP/DNS server; firewall.
+\item \textbf{AI Application 1:} Network traffic anomaly detection (unsupervised ML) to flag malware/bullying traffic.
+\item \textbf{AI Application 2:} Chatbot (NLP) on school intranet for student admin queries (timetable, fees, results).
+\item \textbf{Ethics:} Student data privacy (minors), consent, bias in anomaly detection (e.g.\ flagging legitimate research as anomaly), transparency of chatbot answers.
+\end{itemize}
+\textbf{Tasks:}
+\begin{enumerate}
+\item Sketch the network diagram (label devices, media, IP subnets).
+\item For each AI application, specify: paradigm (supervised/unsupervised/RL), input, output, training data source, evaluation metric.
+\item List 3 ethical risks and a mitigation for each.
+\item Describe the deployment pipeline for the anomaly detector (data collection $\rightarrow$ monitoring).
+\end{enumerate}
+\end{experience}
+
+\begin{corrige}[Integrated mini-project — outline]
+\textbf{1.} Diagram: Building A (192.168.10.0/24) — Switch A — Fibre — Switch B — Building B (192.168.20.0/24); Router (192.168.10.254/192.168.20.254) — CAMTEL fibre (WAN). APs on each switch. Server (DHCP/DNS) on Building A.
+\textbf{2.} Anomaly detection: Unsupervised (clustering/autoencoder); input = NetFlow features (packet size, frequency, ports, bytes); output = anomaly score; training = normal traffic baseline; metric = F1 on labelled attack traces (if available) or precision@k. Chatbot: Supervised (intent classification) + retrieval/generation; input = student question text; output = answer; training = FAQ logs + synthetic paraphrases; metric = accuracy / F1 on intent + human evaluation on answer quality.
+\textbf{3.} Risks: (a) Privacy — network traffic contains student browsing history $\rightarrow$ Mitigation: Anonymise IPs, aggregate flows, strict access control, ANTIC compliance. (b) Bias — anomaly model flags video calls as suspicious $\rightarrow$ Mitigation: Label diverse legitimate traffic, per-group fairness audit. (c) Chatbot hallucination gives wrong fee amount $\rightarrow$ Mitigation: Retrieval-augmented generation (RAG) from official PDF, confidence threshold + human fallback.
+\textbf{4.} Pipeline: Collect NetFlow $\rightarrow$ Preprocess (feature scaling) $\rightarrow$ Train autoencoder on normal week $\rightarrow$ Validate on known attacks $\rightarrow$ Deploy as Docker container on server $\rightarrow$ Alert on high anomaly score $\rightarrow$ Daily retrain with new normal data $\rightarrow$ Monthly fairness audit.
+\end{corrige}
+
+\begin{attention}[Common GCE traps]
+\begin{itemize}
+\item Confusing \textbf{automation} (fixed rules) with \textbf{AI} (learning/adaptation).
+\item Saying ``AI'' without specifying \textbf{Narrow vs General} — always clarify.
+\item Listing ethical principles without \textbf{linking to the scenario}.
+\item Forgetting \textbf{data preparation} and \textbf{validation} in the AI life cycle.
+\item Mixing up \textbf{switch} (LAN, MAC) and \textbf{router} (inter-network, IP).
+\item Confusing \textbf{LAN/MAN/WAN} by scope.
+\item Using \textbf{accuracy alone} for imbalanced problems (fraud, disease) — always discuss precision/recall/F1.
+\item Not escaping \% in LaTeX (\% not \%).
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item Artificial intelligence is best defined as:
+\begin{enumerate}
+\item the ability of a computer to store very large amounts of data;
+\item the ability of a machine to perform tasks that normally require human intelligence, such as learning, reasoning and perception;
+\item the use of robots in factories;
+\item the connection of several computers in a network.
+\end{enumerate}
+\item An expert system is composed essentially of:
+\begin{enumerate}
+\item a monitor, a keyboard and a printer;
+\item a knowledge base, an inference engine and a user interface;
+\item a compiler and an operating system;
+\item a router and a switch.
+\end{enumerate}
+\item In machine learning, \emph{supervised} learning means that:
+\begin{enumerate}
+\item the machine learns without any data;
+\item the machine learns from labelled examples (input with known correct output);
+\item the machine is supervised by a human operator at all times;
+\item the machine learns only by trial and error with rewards.
+\end{enumerate}
+\item In a star topology, all the computers are connected to:
+\begin{enumerate}
+\item a single coaxial cable; \item each other directly; \item a central device (switch or hub); \item a telephone line only.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+State whether each assertion is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item A simple pocket calculator is an example of artificial intelligence.
+\item Strong AI (general AI), a machine with intelligence equal to that of a human being in all domains, already exists today.
+\item An AI system trained on biased data can produce discriminatory decisions.
+\item Overfitting occurs when a model performs very well on the training data but poorly on new data.
+\item In a bus topology, the failure of the main cable does not affect the network.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Give a clear, precise definition of each of the following terms, as expected at the GCE Advanced Level:
+\begin{enumerate}
+\item Artificial intelligence;
+\item Heuristic;
+\item Inference engine;
+\item Machine learning;
+\item Computer network.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item A spam filter is tested on $200$ e-mails. It classifies $184$ of them correctly. Compute its accuracy as a percentage.
+\item A school computer room has $8$ PCs connected in a star topology. How many cables (links) are needed? How many links would be needed to connect the same $8$ PCs in a full mesh topology, where every pair of PCs has its own link? (Recall: a full mesh of $n$ nodes needs $\dfrac{n(n-1)}{2}$ links.)
+\item A dataset of $500$ labelled images of crops is split so that $80\%$ is used for training and $20\%$ for testing. How many images go into each set?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[AI or not AI?]
+Classify each of the following applications as \textbf{AI} or \textbf{not AI}, justifying each answer in one sentence: a spam filter; a four-operation calculator; a chatbot that answers customers of a mobile money service; a fixed-timer traffic light; a face-unlock system on a smartphone.
+\end{exercice}
+
+\begin{exercice}[Matching terms to definitions]
+Match each term (1--5) to its correct definition (a--e).
+\begin{enumerate}
+\item Heuristic \item Inference engine \item Reinforcement learning \item DNS \item Cloud computing
+\end{enumerate}
+\begin{enumerate}[label=\alph*)]
+\item Service that translates domain names into IP addresses.
+\item Component of an expert system that applies rules to facts to deduce new facts.
+\item Learning method in which an agent learns by trial and error, receiving rewards or penalties.
+\item A practical rule of thumb that guides the search for a solution without guaranteeing the optimal one.
+\item Delivery of computing resources (storage, processing, software) over the Internet on demand.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[The seven stages of AI system development]
+Copy and complete the following sentences by filling in the blanks with the correct stage of AI system development.
+\begin{enumerate}
+\item The first stage is \ldots\ldots\ldots\ldots, in which the problem to be solved is clearly identified and stated.
+\item In the \ldots\ldots\ldots\ldots stage, relevant data are gathered from the field.
+\item During data \ldots\ldots\ldots\ldots, errors, duplicates and missing values are removed so that the data can be used.
+\item In the \ldots\ldots\ldots\ldots stage, the algorithm is trained on the training data.
+\item The \ldots\ldots\ldots\ldots stage checks the performance of the model on data it has never seen.
+\item During \ldots\ldots\ldots\ldots, the validated system is installed and put into real use.
+\item The final stage, \ldots\ldots\ldots\ldots, consists of monitoring the system and updating it when necessary.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Forward chaining on a mini expert system]
+An expert system for diagnosing a crop disease contains the following four rules:
+\begin{itemize}
+\item R1: IF the leaves are yellow THEN the plant lacks nitrogen.
+\item R2: IF the plant lacks nitrogen THEN apply urea fertiliser.
+\item R3: IF the leaves have spots THEN the plant has a fungal infection.
+\item R4: IF the plant has a fungal infection THEN apply a fungicide.
+\end{itemize}
+The observed fact is: \emph{``the leaves are yellow''}.
+\begin{enumerate}
+\item Name the components of an expert system and state the role of each.
+\item Trace the forward-chaining inference step by step, showing which rule fires, which new fact is added to the fact base, and the final conclusion (advice) produced.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question — concept of AI \hfill (10 marks)]
+\begin{enumerate}
+\item Define artificial intelligence. \textbf{(2 marks)}
+\item Distinguish between \emph{strong AI} and \emph{weak AI}, giving one example of each. \textbf{(4 marks)}
+\item A student claims: ``Any program that follows instructions is intelligent.'' Discuss this claim using two of the following applications to support your argument: a calculator, a chatbot, a face-unlock system. \textbf{(4 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Scenario question — ethics of a loan algorithm \hfill (12 marks)]
+A Cameroonian bank uses an AI system to grant or refuse micro-loans. After six months, the bank notices that the system rejects almost all applicants coming from one particular region of the country, although many of them are creditworthy.
+\begin{enumerate}
+\item Identify the ethical issue raised by this situation. \textbf{(2 marks)}
+\item Explain the likely cause of this behaviour in the training data used to build the system. \textbf{(3 marks)}
+\item State two risks that such a system creates for the living standards of the population concerned. \textbf{(3 marks)}
+\item Propose three corrective measures the bank should take to make the system fairer and more responsible. \textbf{(4 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Essay and network design \hfill (18 marks)]
+\textbf{Part A — Essay.} ``Artificial intelligence can improve working and living standards in Cameroon, but it must be used responsibly.'' Discuss \textbf{two benefits} and \textbf{two risks} of AI for working and living standards in Cameroon (you may refer to agriculture, health, mobile money services or education), and propose \textbf{two measures} that individuals, companies or the State (for example through ANTIC) can take to ensure responsible use of AI. \textbf{(10 marks)}
+
+\textbf{Part B — Network design.} A secondary school in Yaoundé wants to network the $8$ PCs of its computer room.
+\begin{enumerate}
+\item Draw a labelled diagram of a star topology for this room. \textbf{(3 marks)}
+\item Name the central device used and state its role. \textbf{(2 marks)}
+\item Give two advantages of the star topology over the bus topology, and one reason why a full mesh topology is not chosen here. \textbf{(3 marks)}
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Correct answer: b)} Artificial intelligence is the ability of a machine to perform tasks that normally require human intelligence, such as learning, reasoning, perception and decision-making. Storing data (a) is simple computerisation, factory robots (c) are only one possible application, and networking (d) belongs to computer networks, not AI.
+\item \textbf{Correct answer: b)} An expert system is composed of a \cle{knowledge base} (facts and rules), an \cle{inference engine} (which applies the rules to the facts to deduce conclusions) and a \cle{user interface} (through which the user communicates with the system).
+\item \textbf{Correct answer: b)} In supervised learning, the machine learns from \cle{labelled examples}, i.e.\ inputs associated with their known correct outputs (for example, e-mails labelled ``spam'' or ``not spam''). Answer (d) describes reinforcement learning.
+\item \textbf{Correct answer: c)} In a star topology, every computer is connected by its own cable to a central device, usually a \cle{switch} (or a hub). A single shared cable corresponds to a bus topology (a), and direct connection of every pair corresponds to a mesh topology (b).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false — justify]
+\begin{enumerate}
+\item \textbf{False.} A pocket calculator executes fixed, pre-programmed arithmetic operations; it does not learn, reason or adapt, so it does not exhibit artificial intelligence.
+\item \textbf{False.} Strong AI (general AI) does not exist yet. All current systems are \emph{weak} (narrow) AI: they are intelligent only within one specific domain (translation, face recognition, etc.).
+\item \textbf{True.} An AI system learns from its training data; if these data contain historical biases (against a region, a gender, an ethnic group), the system reproduces and amplifies them in its decisions. This is the problem of \cle{algorithmic bias}.
+\item \textbf{True.} \cle{Overfitting} occurs when a model memorises the training data (including its noise) instead of generalising: it obtains excellent results on the training set but poor results on new, unseen data.
+\item \textbf{False.} The statement ``In a bus topology, if the main cable breaks, the network continues to work'' is false. In reality, all machines share the same main (backbone) cable; if this cable breaks, the whole network stops working. This is precisely the main weakness of the bus topology.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Artificial intelligence:} the branch of computer science that aims at building machines and programs capable of performing tasks that normally require human intelligence, such as learning, reasoning, perception, understanding language and making decisions.
+\item \textbf{Heuristic:} a practical rule of thumb or approximate method that guides the search for a solution quickly, without guaranteeing that the solution found is the optimal one.
+\item \textbf{Inference engine:} the component of an expert system that applies the rules of the knowledge base to the known facts in order to deduce new facts and reach conclusions (by forward or backward chaining).
+\item \textbf{Machine learning:} a branch of AI in which a machine improves its performance on a task by learning from data and experience, instead of being explicitly programmed for every case.
+\item \textbf{Computer network:} a set of computers and other devices connected together by transmission media (cables or wireless links) in order to share resources (files, printers, Internet connection) and communicate.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item The accuracy is the proportion of correctly classified e-mails:
+\[ \text{Accuracy} = \frac{184}{200}\times 100 = 92\%. \]
+The spam filter has an accuracy of $\mathbf{92\%}$.
+\item In a \textbf{star} topology, each PC has one link to the central device, so $8$ PCs need $\mathbf{8}$ \textbf{cables}. In a \textbf{full mesh} topology:
+\[ \frac{n(n-1)}{2} = \frac{8\times 7}{2} = \frac{56}{2} = 28 \text{ links}. \]
+A full mesh would need $\mathbf{28}$ \textbf{links}, which shows why it is expensive and rarely used for a simple computer room.
+\item Training set: $500 \times \dfrac{80}{100} = \mathbf{400}$ \textbf{images}. Testing set: $500 \times \dfrac{20}{100} = \mathbf{100}$ \textbf{images}. (Check: $400 + 100 = 500$.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — AI or not AI?]
+\begin{itemize}
+\item \textbf{Spam filter: AI.} It learns from labelled examples of e-mails to recognise new spam messages it has never seen.
+\item \textbf{Four-operation calculator: not AI.} It executes fixed, pre-programmed operations with no learning, reasoning or adaptation.
+\item \textbf{Chatbot for a mobile money service: AI.} It understands natural language questions and generates appropriate answers, which requires techniques of artificial intelligence (natural language processing).
+\item \textbf{Fixed-timer traffic light: not AI.} It simply follows a fixed, pre-programmed time cycle and does not perceive traffic or adapt its behaviour.
+\item \textbf{Face-unlock system on a smartphone: AI.} It perceives and recognises a face using computer vision and machine learning, even with changes of light or angle.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Matching terms to definitions]
+\begin{center}
+\begin{tabular}{|c|l|}\hline
+\rowcolor{popblueL} \textbf{Term} & \textbf{Definition} \\ \hline
+1. Heuristic & d) A practical rule of thumb that guides the search for a solution without guaranteeing the optimal one. \\ \hline
+2. Inference engine & b) Component of an expert system that applies rules to facts to deduce new facts. \\ \hline
+3. Reinforcement learning & c) Learning method in which an agent learns by trial and error, receiving rewards or penalties. \\ \hline
+4. DNS & a) Service that translates domain names into IP addresses. \\ \hline
+5. Cloud computing & e) Delivery of computing resources (storage, processing, software) over the Internet on demand. \\ \hline
+\end{tabular}
+\end{center}
+Hence the matching: \textbf{1--d, 2--b, 3--c, 4--a, 5--e}.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — The seven stages of AI system development]
+\begin{enumerate}
+\item The first stage is \textbf{problem definition}, in which the problem to be solved is clearly identified and stated.
+\item In the \textbf{data collection} stage, relevant data are gathered from the field.
+\item During data \textbf{preparation (cleaning)}, errors, duplicates and missing values are removed so that the data can be used.
+\item In the \textbf{training} stage, the algorithm is trained on the training data.
+\item The \textbf{evaluation (testing)} stage checks the performance of the model on data it has never seen.
+\item During \textbf{deployment}, the validated system is installed and put into real use.
+\item The final stage, \textbf{monitoring and maintenance}, consists of monitoring the system and updating it when necessary.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Forward chaining on a mini expert system]
+\begin{enumerate}
+\item An expert system has three main components:
+\begin{itemize}
+\item the \textbf{knowledge base}: it stores the facts and the rules provided by human experts (here, rules R1--R4);
+\item the \textbf{inference engine}: it applies the rules to the facts to deduce new facts and reach a conclusion;
+\item the \textbf{user interface}: it allows the user to enter observations and to receive the system's advice and explanations.
+\end{itemize}
+\item \textbf{Forward chaining trace:}
+\begin{itemize}
+\item \textbf{Initial fact base:} \{the leaves are yellow\}.
+\item \textbf{Step 1:} The condition of R1 (``the leaves are yellow'') matches a known fact, so \textbf{R1 fires}. New fact added: \emph{the plant lacks nitrogen}. Fact base: \{leaves yellow; lacks nitrogen\}.
+\item \textbf{Step 2:} The condition of R2 (``the plant lacks nitrogen'') now matches, so \textbf{R2 fires}. New fact added: \emph{apply urea fertiliser}.
+\item \textbf{Step 3:} R3 and R4 cannot fire (no fact ``leaves have spots''). No more rule can fire: the inference stops.
+\item \textbf{Final conclusion (advice):} \textbf{apply urea fertiliser} to the plant.
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured question — concept of AI (10 marks)]
+\textbf{Indicative mark scheme and model answer.}
+\begin{enumerate}
+\item \textbf{(2 marks)} Artificial intelligence is the branch of computer science that aims at building machines or programs capable of performing tasks that normally require human intelligence, such as learning, reasoning, perception and decision-making. \emph{(1 mark for ``machines performing tasks'', 1 mark for ``normally requiring human intelligence'' with at least one example of such a task.)}
+\item \textbf{(4 marks)} \textbf{Strong AI} (general AI) is a hypothetical machine whose intelligence equals that of a human being in \emph{all} domains; it does not exist yet (example: a robot that could converse, cook, do mathematics and learn any new job like a person — still science fiction). \textbf{Weak AI} (narrow AI) is a system that is intelligent in \emph{one specific domain only}; it is the only type that exists today (example: a face-unlock system, a translation program or a spam filter). \emph{(1 mark per correct definition, 1 mark per coherent example.)}
+\item \textbf{(4 marks)} The claim is \textbf{false}. Every program follows instructions, but intelligence requires more: learning, reasoning, perception and adaptation. A \textbf{calculator} follows fixed instructions and never learns: it is not intelligent. A \textbf{chatbot} or a \textbf{face-unlock system}, on the contrary, learns from data and adapts to new situations (new questions, changes in appearance): they exhibit AI. Therefore following instructions is a \emph{necessary} property of any program but not a \emph{sufficient} condition for intelligence. \emph{(1 mark for rejecting the claim, 1 mark for the criterion of learning/adaptation, 1 mark per correctly used application.)}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Scenario question — ethics of a loan algorithm (12 marks)]
+\textbf{Indicative mark scheme and model answer.}
+\begin{enumerate}
+\item \textbf{(2 marks)} The ethical issue is \textbf{algorithmic bias (discrimination)}: the AI system treats applicants unfairly on the basis of their region of origin, violating the principles of fairness, equity and non-discrimination.
+\item \textbf{(3 marks)} The likely cause lies in the \textbf{training data}: the historical loan data used to train the system probably contained very few applicants from that region, or past human decisions that already rejected them (historical bias). The algorithm learned the false rule ``coming from this region $\Rightarrow$ high risk'', reproducing and amplifying the bias present in the data instead of judging each applicant's real creditworthiness.
+\item \textbf{(3 marks)} Two risks for living standards (any two, $1.5$ mark each):
+\begin{itemize}
+\item creditworthy farmers, traders and entrepreneurs of that region cannot obtain loans, so their businesses and incomes cannot grow — this deepens \textbf{poverty and regional inequality};
+\item the population loses \textbf{trust} in banks and in digital services, which slows down financial inclusion and the adoption of useful technologies.
+\end{itemize}
+\item \textbf{(4 marks)} Three corrective measures (any three, about $1.3$ mark each):
+\begin{itemize}
+\item \textbf{audit and rebalance the training data}: collect representative data from all regions and remove discriminatory historical patterns;
+\item \textbf{test the system regularly for fairness} (compare acceptance rates across regions) and keep \textbf{human supervision}: a human officer reviews rejected applications;
+\item \textbf{transparency and accountability}: inform applicants of the reasons for refusal, provide an appeal procedure, and comply with the data-protection and cybersecurity framework promoted in Cameroon by ANTIC.
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Essay and network design (18 marks)]
+\textbf{Part A — Essay (10 marks).} Indicative content and mark scheme:
+\begin{itemize}
+\item \textbf{Two benefits (2 marks each = 4 marks), e.g.:}
+\begin{itemize}
+\item \emph{Agriculture:} AI systems can analyse photos of crops to detect diseases early and advise farmers on treatment, increasing yields and food security.
+\item \emph{Health / mobile money / education:} AI chatbots give 24/7 customer service for mobile money (MTN MoMo, Orange Money); AI helps doctors interpret medical images in regions with few specialists; adaptive learning platforms personalise exercises for students.
+\end{itemize}
+\item \textbf{Two risks (2 marks each = 4 marks), e.g.:}
+\begin{itemize}
+\item \emph{Job displacement:} automation of routine tasks may reduce some jobs if workers are not retrained.
+\item \emph{Bias, privacy and dependence:} biased algorithms can discriminate (loans, recruitment); massive collection of personal data threatens privacy; uncritical dependence on foreign systems threatens digital sovereignty.
+\end{itemize}
+\item \textbf{Two measures (1 mark each = 2 marks), e.g.:} training and sensitisation of users on responsible AI; enforcement of data-protection laws and cybersecurity standards through ANTIC; human supervision and regular auditing of AI systems; transparency towards users.
+\end{itemize}
+\emph{Examiner expectations:} a structured essay (introduction, development, conclusion), benefits and risks clearly linked to working and living standards, Cameroonian examples used correctly, and concrete, realistic measures.
+
+\textbf{Part B — Network design (8 marks).}
+\begin{enumerate}
+\item \textbf{(3 marks)} Labelled star topology diagram (1 mark for the central device, 1 mark for the 8 PCs, 1 mark for correct links and labels):
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0]
+\node[draw, fill=popblueL, rounded corners, minimum width=2.6cm, minimum height=0.9cm] (sw) at (0,0) {\textbf{Switch}};
+\foreach \i/\x/\y in {1/-4/2.2, 2/-2/2.8, 3/0/3.0, 4/2/2.8, 5/4/2.2, 6/-4/-2.2, 7/0/-3.0, 8/4/-2.2}{
+  \node[draw, fill=popgreenL, rounded corners, minimum width=1.3cm, minimum height=0.7cm] (pc\i) at (\x,\y) {PC\i};
+  \draw[thick, popline] (sw) -- (pc\i);
+}
+\end{tikzpicture}
+\legende{Star topology: 8 PCs each connected to a central switch.}
+\end{popfigure}
+\item \textbf{(2 marks)} The central device is a \textbf{switch} (1 mark). Its role: it receives data frames from one PC and forwards them only to the intended destination PC, thus connecting all the machines and managing communication inside the network (1 mark).
+\item \textbf{(3 marks)} Two advantages of the star over the bus topology (1 mark each, any two):
+\begin{itemize}
+\item if one cable or one PC fails, the rest of the network keeps working (in a bus, a break in the main cable stops everything);
+\item better performance and easier troubleshooting, since each PC has its own dedicated link and faults are located at the central point;
+\item easy to extend: a new PC is simply plugged into the switch.
+\end{itemize}
+A full mesh is not chosen because it would require $\dfrac{8\times 7}{2}=28$ cables and many network ports: it is far too \textbf{expensive and complex} for a small computer room (1 mark).
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\courssub{Mind Map of the Chapter}
+\begin{popfigure}
+\begin{tikzpicture}[
+    mindmap,
+    concept color=popblue,
+    level 1 concept/.append style={level distance=4.5cm, sibling angle=60},
+    level 2 concept/.append style={level distance=3cm, sibling angle=45},
+    every node/.style={font=\small, text width=2.8cm, align=center},
+    grow cyclic,
+    popblue/.style={concept color=popblue},
+    popgreen/.style={concept color=popgreen},
+    poporange/.style={concept color=poporange},
+    poppurple/.style={concept color=poppurple},
+    poppink/.style={concept color=poppink},
+    popgold/.style={concept color=popgold}
+]
+\node[concept, text width=3.5cm] {ICT01: AI for Better Living \& Working}
+    child[popblue] { node[concept] {1. Concept of AI}
+        child { node[concept, text width=2.5cm] {Definitions \& History} }
+        child { node[concept, text width=2.5cm] {Narrow vs General AI} }
+        child { node[concept, text width=2.5cm] {Intelligent Agents: PEAS} }
+        child { node[concept, text width=2.5cm] {Turing Test} }
+    }
+    child[popgreen] { node[concept] {2. AI Ethics \& Responsible Use}
+        child { node[concept, text width=2.5cm] {Bias \& Fairness} }
+        child { node[concept, text width=2.5cm] {Privacy \& Data Protection (ANTIC)} }
+        child { node[concept, text width=2.5cm] {Transparency \& Explainability} }
+        child { node[concept, text width=2.5cm] {Accountability \& Law} }
+    }
+    child[poporange] { node[concept] {3. AI Techniques \& Intelligent Systems}
+        child { node[concept, text width=2.5cm] {Search (A*, Minimax)} }
+        child { node[concept, text width=2.5cm] {Knowledge Representation \& Logic} }
+        child { node[concept, text width=2.5cm] {Expert Systems} }
+        child { node[concept, text width=2.5cm] {NLP, Vision, Robotics} }
+    }
+    child[poppurple] { node[concept] {4. Machine Learning \& Development}
+        child { node[concept, text width=2.5cm] {Supervised / Unsupervised / RL} }
+        child { node[concept, text width=2.5cm] {Neural Nets \& Deep Learning} }
+        child { node[concept, text width=2.5cm] {ML Lifecycle: CRISP-DM} }
+        child { node[concept, text width=2.5cm] {Tools: Python, Scikit-learn} }
+    }
+    child[poppink] { node[concept] {5. Computer Networks Fundamentals}
+        child { node[concept, text width=2.5cm] {Topologies \& OSI / TCP-IP} }
+        child { node[concept, text width=2.5cm] {IP Addressing \& Subnetting} }
+        child { node[concept, text width=2.5cm] {Protocols: HTTP, DNS, FTP} }
+        child { node[concept, text width=2.5cm] {Security: Firewall, VPN} }
+    }
+    child[popgold] { node[concept] {6. Integration Activities}
+        child { node[concept, text width=2.5cm] {Smart Agriculture (IoT+AI)} }
+        child { node[concept, text width=2.5cm] {MoMo Fraud Detection} }
+        child { node[concept, text width=2.5cm] {E-Health Diagnostics} }
+        child { node[concept, text width=2.5cm] {Project: Design $\to$ Deploy} }
+    };
+\end{tikzpicture}
+\legende{Chapter ICT01 mind map: the six syllabus areas and their key sub-topics.}
+\end{popfigure}
+
+\courssub{Essential Summary (Bilan)}
+
+\begin{aretenir}[Key Definitions (must know for 2--3 mark questions)]
+\begin{itemize}
+    \item \cle{Artificial Intelligence (AI)}: the simulation of human intelligence processes --- learning, reasoning and self-correction --- by machines, especially computer systems.
+    \item \cle{Intelligent Agent}: an entity that perceives its environment through \emph{sensors} and acts upon it through \emph{actuators} so as to maximise a performance measure; it is fully described by its \cle{PEAS} (Performance measure, Environment, Actuators, Sensors).
+    \item \cle{Machine Learning (ML)}: a subset of AI in which systems improve their performance on a task by learning from data, without being explicitly programmed for every case. \cle{Deep Learning (DL)}: a subset of ML using artificial neural networks with many layers.
+    \item \cle{Supervised Learning}: learning a mapping from labelled data $(x, y)$. Tasks: \emph{classification} (discrete $y$) and \emph{regression} (continuous $y$).
+    \item \cle{Unsupervised Learning}: discovering structure in unlabelled data. Tasks: \emph{clustering} (e.g., K-Means) and \emph{dimensionality reduction} (e.g., PCA).
+    \item \cle{Reinforcement Learning (RL)}: an agent learns a policy $\pi(a|s)$ by trial and error so as to maximise the cumulative discounted reward $G = \sum_{t} \gamma^{t} r_{t}$, with discount factor $\gamma \in [0,1]$.
+    \item \cle{Bias (ethics)}: systematic and unfair discrimination in an AI system's outputs against certain groups. \cle{Variance (ML)}: the sensitivity of a model to small fluctuations in the training set.
+    \item \cle{Overfitting}: low training error but high test error (the model memorises noise). \cle{Underfitting}: high error on both training and test data (the model is too simple).
+    \item \cle{Computer Network}: a set of interconnected devices that share data and resources. \cle{Protocol}: a set of rules governing communication between devices (e.g., TCP/IP, HTTP, FTP, DNS).
+    \item \cle{OSI Model}: 7 layers --- Physical, Data Link, Network, Transport, Session, Presentation, Application. \cle{TCP/IP Model}: 4 layers --- Network Interface (Link), Internet, Transport, Application.
+    \item \cle{IPv4 Address}: a 32-bit logical address with a network part and a host part. \cle{Subnet Mask}: separates the two parts (e.g., /24 corresponds to 255.255.255.0).
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Laws, Formulas and Results to Master]
+\begin{itemize}
+    \item \textbf{Confusion matrix metrics} (calculations are examinable):
+    \[
+    \text{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN},\qquad
+    \text{Precision} = \frac{TP}{TP+FP},
+    \]
+    \[
+    \text{Recall (Sensitivity)} = \frac{TP}{TP+FN},\qquad
+    F_1 = 2\,\frac{\text{Precision}\times\text{Recall}}{\text{Precision}+\text{Recall}} .
+    \]
+    \item \textbf{Bias--variance tradeoff}: $\text{Expected Error} = \text{Bias}^{2} + \text{Variance} + \text{Irreducible Error}$.
+    \item \textbf{Gradient descent update}: $\theta \leftarrow \theta - \alpha \nabla_{\theta} J(\theta)$, where $\alpha$ is the learning rate and $J$ the cost function.
+    \item \textbf{Subnetting (IPv4)}: number of usable host addresses $= 2^{(32-\text{CIDR})} - 2$; number of subnets $= 2^{\text{borrowed bits}}$.
+    \item \textbf{Network performance}: bandwidth = maximum capacity of the link (bits/s); throughput = actual achieved rate; latency = propagation/processing delay.
+    \item \textbf{Asimov's Three Laws of Robotics} (historical context for AI ethics): (1) a robot may not harm a human being; (2) a robot must obey human orders unless they conflict with the first law; (3) a robot must protect its own existence unless this conflicts with the first two laws.
+    \item \textbf{Cameroon legal framework}: Law No. 2010/012 of 21 December 2010 on cybersecurity and cybercriminality, enforced with the support of \cle{ANTIC} (National Agency for Information and Communication Technologies), which also promotes data-protection principles.
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Standard Methods (step-by-step for ``Describe/Explain'' questions)]
+\begin{enumerate}
+    \item \textbf{ML project lifecycle (CRISP-DM)}: Business Understanding $\to$ Data Understanding $\to$ Data Preparation (cleaning, feature engineering, train/validation/test split) $\to$ Modelling (choose algorithm, train, tune hyperparameters) $\to$ Evaluation (metrics, ROC/AUC) $\to$ Deployment (API, monitoring, retraining).
+    \item \textbf{Building an expert system}: Knowledge acquisition $\to$ Knowledge base (facts and rules) $\to$ Inference engine (forward or backward chaining) $\to$ User interface $\to$ Explanation module.
+    \item \textbf{IPv4 network configuration}: (1) determine required hosts/subnets; (2) choose CIDR prefix / subnet mask; (3) compute network address, broadcast address and usable range; (4) assign the default gateway (usually the first usable address); (5) configure DNS.
+    \item \textbf{Responsible AI checklist}: (1) define a fairness metric for each affected group; (2) audit training data for representation bias; (3) document the model (intended use, limitations); (4) keep a human in the loop for high-stakes decisions (health, credit, justice); (5) ensure compliance with Cameroonian law and ANTIC guidelines.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common Mistakes and Traps (from GCE examiner feedback)]
+\begin{itemize}
+    \item \textbf{Confusing the terms}: AI $\neq$ ML $\neq$ DL. ML is a \emph{subset} of AI; DL is a \emph{subset} of ML. Never use them interchangeably.
+    \item \textbf{Metrics}: using accuracy on an imbalanced dataset (e.g., fraud detection with 99\% legitimate transactions: predicting ``legitimate'' for everything already gives 99\% accuracy, which is useless). \emph{Always check class balance; prefer Precision, Recall, $F_1$ and AUC.}
+    \item \textbf{Data leakage}: applying preprocessing (scaling, imputation, feature selection) \emph{before} the train/test split. \emph{Correct approach: split first, fit transformers on the training set only, then apply them to the test set.}
+    \item \textbf{OSI vs TCP/IP}: do not shift protocols between layers. TCP belongs to the \emph{Transport} layer in \emph{both} models; only the layer names and numbering differ.
+    \item \textbf{Subnetting}: forgetting the $-2$ (network address and broadcast address) when counting usable hosts.
+    \item \textbf{Ethics answers}: vague statements such as ``AI must be good'' earn no marks. \emph{Be specific: e.g., ``mitigate dataset bias by re-sampling the minority class; anonymise personal data in line with data-protection principles''.}
+    \item \textbf{Diagrams}: a neural network diagram must label the input, hidden and output layers, the weights, the bias and the activation function (e.g., sigmoid $\sigma$ or ReLU).
+\end{itemize}
+\end{attention}
+
+\begin{aretenir}[GCE Advanced Level Tips (Upper Sixth)]
+\begin{itemize}
+    \item \textbf{Command words}: ``Define'' $\to$ precise, concise, one or two sentences. ``Describe'' $\to$ step-by-step, in logical order. ``Explain'' $\to$ give reasons (why?). ``Compare'' $\to$ use a table with similarities and differences. ``Evaluate'' $\to$ advantages, disadvantages, then a justified judgement.
+    \item \textbf{Contextualise}: for applications, cite \textbf{Cameroonian examples}: MTN Mobile Money / Orange Money fraud detection (anomaly detection), smart irrigation in the North and Far North Regions (IoT sensors + ML), NLP tools for processing bilingual documents, CAMTEL network management, route optimisation for urban transport in Douala and Yaound\'e.
+    \item \textbf{Calculations}: always show \textbf{formula $\to$ substitution $\to$ result with units}. For subnetting, show the binary or CIDR reasoning clearly.
+    \item \textbf{Diagrams}: draw neat, fully labelled diagrams (pencil first). Essential diagrams: perceptron / neural network architecture, decision tree, K-Means clusters, network topologies (star, bus, mesh), OSI vs TCP/IP layer table, $2\times 2$ confusion matrix.
+    \item \textbf{Programming}: know basic Python usage: \emph{train\_test\_split}, \emph{StandardScaler}, \emph{LogisticRegression().fit()}, \emph{confusion\_matrix}, \emph{KMeans(n\_clusters=3)}. Be ready to write pseudocode for gradient descent or K-Means.
+    \item \textbf{Integration}: Lessons 6 and 7 link AI with networks. Understand edge AI (model runs on an IoT gateway), lightweight messaging for sensor data (e.g., MQTT), and cloud APIs for inference; be able to discuss the \emph{latency vs bandwidth} tradeoff between cloud and edge deployment.
+\end{itemize}
+\end{aretenir}
+
+\findecours
+
+\end{document}
