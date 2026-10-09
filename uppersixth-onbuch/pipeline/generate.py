@@ -456,8 +456,8 @@ def us_fix(body):
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
-    body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info)\}",
-                  lambda m: "\\" + m.group(1) + ("{aretenir}" if m.group(2) in ("examtip", "examtips", "tip", "keypoint", "keypoints", "summary") else "{exemplebox}" if m.group(2) in ("example", "worked") else "{attention}"), body)
+    body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info|law|theorem|lemma|corollary|rule|principle|caution|warning|activity|case|casestudy|task|question|problem)\}",
+                  lambda m: "\\" + m.group(1) + ("{aretenir}" if m.group(2) in ("examtip", "examtips", "tip", "keypoint", "keypoints", "summary") else "{propriete}" if m.group(2) in ("law", "theorem", "lemma", "corollary", "rule", "principle") else "{exemplebox}" if m.group(2) in ("example", "worked", "case", "casestudy", "activity", "task", "question", "problem") else "{attention}"), body)
     body = re.sub(r"\\\]\^(\{[^{}]*\}|\d+[+\-]?)", lambda m: "]$^{" + m.group(1).strip("{}") + "}$", body)
     body = re.sub(r"^[ \t]*\\courssubtitle\{[^\n]*\}[ \t]*\n", "", body, flags=re.M)
     body = body.replace("\\courssubtitle", "\\courssub")
