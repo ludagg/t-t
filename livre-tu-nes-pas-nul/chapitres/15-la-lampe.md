@@ -18,8 +18,6 @@ Le travail se fait à cette heure-là, et c’est justement l’heure où person
 
 Je raconte ce carrefour comme je raconte les autres scènes de ce livre : il est composé, et je ne prétends pas m’y être tenu. Mais aucun de ses morceaux n’est rare. Ce qui m’arrête, dans cette image, c’est la place vide à côté d’eux. Ces trois-là font exactement ce que les chapitres précédents demandaient : ils travaillent le soir, ensemble, avec ce qu’ils ont. Personne, en les regardant, ne pourrait soutenir qu’ils sont nuls. Il leur manque une page lisible, un cours qui corresponde à leur classe, une deuxième explication : des manques précis, dont aucun n’est une sentence. C’est à cette scène-là, et à toutes celles qui lui ressemblent, que j’ai voulu répondre, et c’est de là qu’est venue l’idée d’OnBuch, une application que je construis pour les élèves et les étudiants.
 
-⟦À COMPLÉTER PAR LUDOVIC : le moment précis où l'idée de construire OnBuch est née — où tu étais, ce que tu as vu, entendu ou vécu ce jour-là⟧
-
 Une idée de ce genre ne vaut rien tant qu’on ne l’a pas mise au travail. Avant de construire quoi que ce soit, il fallait regarder le manque de près, comme on regarde une copie avant d’y mettre une note : ce qui manque exactement, à qui, à quelle heure. « Il n’y a pas de cours » ne veut presque rien dire. Le manque a plusieurs formes, et chacune appelle une réponse différente.
 
 * * *
@@ -32,7 +30,7 @@ L’explication qui ne passe pas est le manque le plus difficile à voir, parce 
 
 Par-dessus le reste vient la solitude du soir. Les autres manques seraient légers si quelqu’un était là, à 21 h, pour dire « montre-moi où tu bloques ». La journée d’école est pleine de gens ; la soirée de travail est vide. C’est le soir que la marche manquante apparaît, sous un lampadaire ou sous l’ampoule de la cuisine, et c’est le soir qu’on se retrouve seul devant elle, à se demander si le problème vient de la marche ou de soi.
 
-⟦À COMPLÉTER PAR LUDOVIC : ta propre expérience du manque de cours ou d'explications, comme élève ou auprès d'élèves que tu connais — un souvenir concret⟧
+Prends le cahier d’une élève absente trois jours, la semaine d’une leçon décisive : elle recopie celui d’une voisine et trouve, au milieu de la page, une ligne qui s’arrête sur « etc. », à l’endroit exact où il lui aurait fallu la suite. Elle ne se dit pas qu’il manque une ligne. Elle se dit qu’elle ne comprend pas.
 
 Je n’en fais pas un réquisitoire. Les professeurs font leurs cours, souvent très bien, avec ce que la journée leur laisse ; les parents payent des photocopies qu’ils ne sauraient pas expliquer ; les camarades prêtent leurs cahiers sans compter. Le manque n’est la faute de personne en particulier. Il est simplement là, tous les soirs, à la même heure, et il prend le plus souvent la forme d’un élève qui conclut qu’il est nul alors qu’il lui manque une page.
 

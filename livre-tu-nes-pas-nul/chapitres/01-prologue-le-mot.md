@@ -18,7 +18,7 @@ Il pourrait arracher l’étiquette. Elle se décolle mal, mais elle se décolle
 
 Ce mot, tout le monde l’a entendu un jour, ou l’a dit. Dans une classe, dans une cour, à table, dans la bouche d’un parent épuisé ou d’un camarade qui voulait faire rire, et parfois dans la sienne, sur quelqu’un d’autre, sans y penser. Je ne crois pas qu’on y échappe tout à fait, ni d’un côté ni de l’autre.
 
-⟦À COMPLÉTER PAR LUDOVIC : un moment où tu as entendu, reçu ou prononcé un verdict de ce genre — sur toi ou sur un autre — et ce qu'il t'a fait⟧
+En quatrième, j’ai raté une factorisation toute simple. Je n’étais pas un mauvais élève : je n’avais pas compris la leçon, et c’est tout ce que ce raté disait de moi. Il ne parlait pas de moi, il parlait d’une marche que je n’avais pas montée.
 
 Qu’on l’ait reçu ou prononcé, la question reste la même : ce que ce mot fait, une fois dit, à celui qui l’emporte chez lui.
 
