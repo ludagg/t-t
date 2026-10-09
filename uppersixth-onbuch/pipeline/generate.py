@@ -1095,6 +1095,8 @@ def degenerate(t):
     for env in ("exercice", "corrige", "exoresolu", "definition", "propriete", "methode", "exemplebox", "aretenir", "attention"):
         if t.count("\\begin{%s}" % env) != t.count("\\end{%s}" % env):
             return "bloc tronqué (environnement %s non fermé)" % env
+    if re.search(r"((?:[A-Za-z]{2,}[ ]){2,8}?)\1{5,}", t):
+        return "boucle de répétition"
     if "\\begin{}" in t or "\u0308" in t or "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
         return "marqueurs parasites"
     for l in t.splitlines():
