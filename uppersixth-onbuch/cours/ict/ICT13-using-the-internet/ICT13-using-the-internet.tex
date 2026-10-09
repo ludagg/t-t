@@ -1,0 +1,2220 @@
+% Using the internet — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT13-using-the-internet.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{13}
+\newcommand{\DOCTITRE}{Using the internet}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Using the internet}{ICT}{Upper Sixth}{Upper Sixth — ICT}{13}{3 periods}{This chapter explores the services offered by the Internet (web, e-mail, file transfer, search engines) and the communication tools that enable modern teleworking. Learners acquire practical and theoretical skills for retrieving information, communicating online and collaborating remotely — key competencies for the GCE Advanced Level ICT paper.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define the Internet and distinguish it from the World Wide Web
+\item By the end of this chapter I can describe the main Internet services (WWW, e-mail, FTP, chat, VoIP) and their protocols
+\item By the end of this chapter I can use a web browser and a search engine effectively to retrieve reliable information
+\item By the end of this chapter I can evaluate the credibility of online information and cite sources correctly
+\item By the end of this chapter I can send, receive and manage e-mail with attachments using proper netiquette
+\item By the end of this chapter I can explain and use Internet communication tools (instant messaging, forums, social networks, videoconferencing)
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item The Internet and its Services
+\item Information Retrieval and Search Techniques
+\item Internet Communication Tools
+\item Teleworking and Online Collaboration
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define the Internet and distinguish it from the World Wide Web
+\item By the end of this chapter I can describe the main Internet services (WWW, e-mail, FTP, chat, VoIP) and their protocols
+\item By the end of this chapter I can use a web browser and a search engine effectively to retrieve reliable information
+\item By the end of this chapter I can evaluate the credibility of online information and cite sources correctly
+\item By the end of this chapter I can send, receive and manage e-mail with attachments using proper netiquette
+\item By the end of this chapter I can explain and use Internet communication tools (instant messaging, forums, social networks, videoconferencing)
+\item By the end of this chapter I can define teleworking, describe its tools, advantages and limitations in the Cameroonian context
+\item By the end of this chapter I can apply security and ethics rules when communicating and working online
+\item By the end of this chapter I can carry out a complete integration project combining research, communication and online collaboration
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Computer networks: definition, types (LAN, WAN) and topologies (Lower Sixth)
+\item Basic hardware and software components of a computer system
+\item Notion of protocols and IP addressing introduced in Lower Sixth
+\item Basic file management (creating, saving, attaching, downloading files)
+\item Word processing and presentation skills for producing documents
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{The Internet and its Services}
+
+Every morning in Yaoundé, a student at Lycée de Nkol-Eton checks her GCE results online, chats with her cousin in Douala on WhatsApp, and downloads a past paper from a website — all before 7 a.m. Yet when her uncle, a small trader in Bamenda, asks her to help him attend a video job interview and retrieve a document sent ``to the cloud'', she hesitates. What exactly happens when we type an address into a browser? How do emails, video calls and search engines really work, and how can a Cameroonian graduate use them to work for a company without leaving Buea? This chapter turns everyday internet use into solid, examinable knowledge.
+
+The problem we must solve in this first section is the following: \emph{what is the Internet, how do we gain access to it, and what services does it offer?} We begin with the network itself, then study how a user connects, and finally examine the major services — the Web, electronic mail, file transfer and others — together with the \cle{protocols} that make them work.
+
+\courssub{What is the Internet?}
+
+\textbf{Intuition.} Your school computer room contains a small network: a few computers connected to one switch. Your quartier contains thousands of such networks; Cameroon contains millions; the world contains billions. The Internet is simply the result of connecting all these networks together so that any machine can exchange data with any other machine, anywhere on Earth.
+
+\begin{definition}[The Internet]
+The \cle{Internet} (from \emph{interconnected networks}) is a \textbf{global network of interconnected computer networks} that use a common set of communication rules called \cle{protocols} (mainly the TCP/IP family) to exchange data. It is the physical and logical infrastructure: cables, fibre optics, satellites, routers and servers.
+\end{definition}
+
+\textbf{A brief history.}
+\begin{itemize}
+\item \textbf{1969 — ARPANET.} The ancestor of the Internet was ARPANET, a research network funded by the US Department of Defense, which first connected a handful of university computers. Its key idea was \cle{packet switching}: messages are cut into small packets that travel independently and are reassembled at the destination.
+\item \textbf{1970s–1983 — TCP/IP.} The protocols TCP (Transmission Control Protocol) and IP (Internet Protocol) were developed and, in 1983, ARPANET officially adopted them. This date is often taken as the birth of the modern Internet.
+\item \textbf{1989 — the World Wide Web.} Tim Berners-Lee, working at CERN in Switzerland, invented the Web: hypertext pages, URLs and the HTTP protocol. The Web made the Internet usable by ordinary people.
+\item \textbf{1990s to today.} Commercial ISPs appeared, browsers multiplied, and the Internet became a mass medium. In Cameroon, access grew explosively with mobile networks (MTN, Orange) and the fibre-optic backbone operated by CAMTEL.
+\end{itemize}
+
+\begin{savaistu}[Did you know?]
+Cameroon is connected to the rest of the world by submarine fibre-optic cables landing on the Atlantic coast, and by a national fibre backbone managed by CAMTEL. When you load a page hosted in Europe, your request may travel through Douala, under the ocean, and back in a fraction of a second.
+\end{savaistu}
+
+\courssub{The Internet versus the World Wide Web}
+
+This distinction is one of the most frequently tested points at the GCE Advanced Level — and one of the most frequent mistakes.
+
+\begin{definition}[The World Wide Web]
+The \cle{World Wide Web} (WWW or simply ``the Web'') is \textbf{one service among many that run on the Internet}. Invented by \textbf{Tim Berners-Lee in 1989}, it is a system of interlinked hypertext documents (web pages) accessed through a browser using the HTTP/HTTPS protocols.
+\end{definition}
+
+\begin{attention}[Common mistake: Internet $\neq$ Web]
+Candidates often write ``the Internet was invented by Tim Berners-Lee'' or use ``Internet'' and ``Web'' as synonyms. This is wrong. The \textbf{Internet is the network} (the infrastructure); the \textbf{Web is a service} that uses that infrastructure. Electronic mail, file transfer and video calls also use the Internet without being the Web. Analogy: the Internet is the road network of Cameroon; the Web is just one type of traffic (lorries) on those roads — buses and taxis (e-mail, FTP) use the same roads too.
+\end{attention}
+
+\courssub{How Access Works: ISP, Modem, IP Address and DNS}
+
+\textbf{Intuition.} To send a letter you need a post office, an address for the recipient, and a way to find where that address is. On the Internet, the post office is your ISP, the address is the IP address, and the ``address book'' is the DNS.
+
+\begin{definition}[ISP, IP address, DNS]
+\begin{itemize}
+\item An \cle{ISP} (\textbf{Internet Service Provider}) is a company that sells access to the Internet. In Cameroon: \textbf{MTN, Orange, CAMTEL, Nexttel}.
+\item An \cle{IP address} is a unique numerical identifier assigned to each device on a network, e.g. $192.168.1.10$ (IPv4). It allows data to be routed to the correct machine.
+\item The \cle{DNS} (\textbf{Domain Name System}) is a worldwide distributed directory that \textbf{translates human-readable domain names} (such as \texttt{www.minesec.gov.cm}) \textbf{into IP addresses}. Without DNS we would have to memorise numbers for every site.
+\end{itemize}
+\end{definition}
+
+The chain of access is: your device $\rightarrow$ modem/router (provided with your subscription, or your phone's mobile data) $\rightarrow$ ISP $\rightarrow$ the global Internet. The \cle{modem} converts your device's signals into a form suitable for the transmission line (fibre, ADSL, 4G); the \cle{router} directs packets between your home network and the ISP.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=2.6cm, align=center, minimum height=1cm, font=\small},
+  srv/.style={draw=poporange, thick, rounded corners, fill=white, text width=2.6cm, align=center, minimum height=1cm, font=\small},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark},
+  lbl/.style={font=\scriptsize\itshape, popmuted, align=center}]
+\node[box, align=center] (client) at (0,0){\textbf{Client}\\Browser on a PC or phone};
+\node[box, align=center] (isp) at (4.6,0){\textbf{ISP}\\MTN / Orange / CAMTEL};
+\node[srv, align=center] (dns) at (9.2,1.9){\textbf{DNS server}\\name $\rightarrow$ IP};
+\node[srv, align=center] (web) at (9.2,-1.9){\textbf{Web server}\\hosts the site};
+\draw[arr] (client) -- node[lbl, above]{1. request page} (isp);
+\draw[arr] (isp) -- node[lbl, above left]{2. resolve domain} (dns);
+\draw[arr] (dns) -- node[lbl, below left]{3. IP address} (isp);
+\draw[arr] (isp) -- node[lbl, below right]{4. HTTP request} (web);
+\draw[arr] (web) -- node[lbl, above right]{5. web page (HTML)} (isp);
+\draw[arr] (isp.south) to[bend right=15] node[lbl, below]{6. page displayed} (client.south);
+\end{tikzpicture}
+\end{center}
+\legende{The client--server model: a browser requests a web page from a web server, through the ISP and the DNS.}
+\end{popfigure}
+
+\begin{aretenir}[Client--server model]
+In the \cle{client--server model}, the \textbf{client} (your browser) sends a \textbf{request}; the \textbf{server} (a powerful computer that is always on) processes it and sends back a \textbf{response}. Most Internet services (Web, e-mail, FTP) follow this model.
+\end{aretenir}
+
+\courssub{The World Wide Web Service: Pages, Hyperlinks and URLs}
+
+A \cle{website} is a collection of related \cle{web pages} stored on a web server. A web page is a document (written in HTML) that may contain text, images, videos and \textbf{hyperlinks}.
+
+\begin{definition}[Hyperlink and URL]
+\begin{itemize}
+\item A \cle{hyperlink} is a clickable element (text or image) in a web page that points to another page or resource. Hyperlinks are what make the Web a ``web''.
+\item A \cle{URL} (\textbf{Uniform Resource Locator}) is the complete address of a resource on the Internet. Its general structure is:
+\[ \underbrace{\text{https}}_{\text{protocol}} :// \underbrace{\text{www.minesec.gov.cm}}_{\text{domain name}} \underbrace{/results/gce.html}_{\text{path to the resource}} \]
+\end{itemize}
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw=popdark, thick, rounded corners, fill=white, font=\ttfamily\small] (url) at (5.4,0) {https://www.minesec.gov.cm/results/gce};
+\draw[thick, popblue] (1.55,-0.35) -- (1.55,-1.0) node[below, popblue, align=center, font=\scriptsize]{\textbf{protocol}\\(https)};
+\draw[thick, poporange] (4.9,-0.35) -- (4.9,-1.0) node[below, poporange, align=center, font=\scriptsize]{\textbf{domain name}\\(server / host)};
+\draw[thick, popgreen] (9.1,-0.35) -- (9.1,-1.0) node[below, popgreen, align=center, font=\scriptsize]{\textbf{path}\\(file on the server)};
+\end{tikzpicture}
+\end{center}
+\legende{Decomposition of a URL into protocol, domain name and path.}
+\end{popfigure}
+
+\begin{methode}[Identifying the parts of a URL in an exam question]
+\begin{enumerate}
+\item Look for the symbol :// — everything \textbf{before} it is the \textbf{protocol} (http, https, ftp).
+\item The part \textbf{immediately after} :// and \textbf{before the first single slash} / is the \textbf{domain name} (it identifies the server; the DNS translates it into an IP address).
+\item Everything \textbf{from the first single slash onwards} is the \textbf{path}, i.e. the folders and the file requested on that server.
+\item If a port or parameters appear (after : or ?), mention them only if asked; the three parts above are the ones the exam expects.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Analysing a URL]
+A candidate is given the address \texttt{https://www.gceboard.cm/2024/results.php} and asked to identify its parts and explain what happens when it is typed into a browser.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{Protocol:} \texttt{https} — the secure version of HTTP, so the exchange will be encrypted.
+\item \textbf{Domain name:} \texttt{www.gceboard.cm} — identifies the web server; the DNS will translate it into an IP address. The \texttt{.cm} shows a Cameroonian domain.
+\item \textbf{Path:} \texttt{/2024/results.php} — the exact resource (file) requested on that server.
+\end{itemize}
+\textbf{What happens:} the browser asks the DNS for the IP address of \texttt{www.gceboard.cm}, opens a secure connection to that server through the ISP, sends an HTTPS request for \texttt{/2024/results.php}, receives the HTML page and \textbf{renders} (displays) it on the screen.
+\end{exoresolu}
+
+\textbf{Web browsers.} A \cle{browser} (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari) is application software whose role is twofold: (i) \textbf{request} pages from web servers using the \cle{HTTP} protocol (or its encrypted version \cle{HTTPS}), and (ii) \textbf{render} the received HTML code into the formatted page you see.
+
+\courssub{The Electronic Mail Service}
+
+Electronic mail (e-mail) is the asynchronous exchange of messages between users. It was one of the very first Internet services, long before the Web.
+
+\begin{definition}[E-mail address]
+An \cle{e-mail address} has the structure \texttt{user@domain}, where \texttt{user} is the mailbox name and \texttt{domain} identifies the mail server that hosts the mailbox. Example: \texttt{ngon.aline@gmail.com}.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw=popdark, thick, rounded corners, fill=white, font=\ttfamily\small] at (3.6,0) {ngon.aline@gmail.com};
+\draw[thick, popblue] (1.7,-0.35) -- (1.7,-1.0) node[below, popblue, align=center, font=\scriptsize]{\textbf{user name}\\(mailbox)};
+\draw[thick, poporange] (3.55,-0.35) -- (3.55,-1.0) node[below, poporange, align=center, font=\scriptsize]{\textbf{@}\\separator};
+\draw[thick, popgreen] (5.5,-0.35) -- (5.5,-1.0) node[below, popgreen, align=center, font=\scriptsize]{\textbf{domain}\\(mail server)};
+\end{tikzpicture}
+\end{center}
+\legende{Decomposition of an e-mail address into user name, separator and domain.}
+\end{popfigure}
+
+Three protocols govern e-mail, and the exam loves to ask for the difference:
+
+\begin{itemize}
+\item \cle{SMTP} (\textbf{Simple Mail Transfer Protocol}): used to \textbf{send} a message, from your device to your mail server and between mail servers.
+\item \cle{POP3} (\textbf{Post Office Protocol, version 3}): used to \textbf{retrieve} messages; it typically \textbf{downloads} them to one device and removes them from the server.
+\item \cle{IMAP} (\textbf{Internet Message Access Protocol}): used to \textbf{read and manage} messages \textbf{while they remain on the server}, so the same mailbox stays synchronised on your phone, tablet and PC.
+\end{itemize}
+
+\begin{attention}[POP3 versus IMAP]
+Do not confuse the two retrieval protocols. If Aline reads her mail with \textbf{POP3} on her phone, the messages may disappear from the server and be invisible on her laptop. With \textbf{IMAP}, the server remains the master copy: reading or deleting a message on one device is reflected everywhere. Modern services (Gmail, Outlook) use IMAP by default.
+\end{attention}
+
+\courssub{File Transfer and Other Internet Services}
+
+\textbf{FTP.} The \cle{FTP} (\textbf{File Transfer Protocol}) is the classic protocol for \textbf{uploading} (sending) and \textbf{downloading} (receiving) files between a client and a file server. Webmasters use it to publish their sites; schools can use it to share large documents. Today, \cle{cloud storage} services — \textbf{Google Drive, Microsoft OneDrive, Dropbox} — play a similar role through a simple web interface: files are stored on remote servers (``the cloud'') and can be shared by a simple link. This is exactly the service Aline's uncle needs to retrieve his document.
+
+\textbf{Other services.}
+\begin{itemize}
+\item \textbf{Newsgroups and forums:} discussion spaces where users post messages on a topic (e.g. a forum where Upper Sixth students exchange past papers).
+\item \textbf{Mailing lists:} a single message sent to the list address is automatically redistributed to all subscribers — useful for a school administration.
+\item \textbf{Streaming:} playing audio or video \emph{while} it downloads, without storing the whole file first (YouTube, Boomplay).
+\item \textbf{E-commerce:} buying and selling online (Jumia Cameroon, mobile-money payments via MTN MoMo or Orange Money).
+\item \textbf{E-government:} public services delivered online. In Cameroon: consulting GCE results online, online tax declarations, and digital services promoted under the supervision of ANTIC, the agency in charge of securing information systems.
+\end{itemize}
+
+\begin{center}
+\rowcolors{1}{white}{popblueL}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Service} & \textbf{Protocol(s)} & \textbf{Role of the protocol} \\
+\hline
+World Wide Web & HTTP / HTTPS & Transfer of web pages between server and browser (HTTPS encrypts the exchange) \\
+\hline
+E-mail (sending) & SMTP & Carries the message from the sender to and between mail servers \\
+\hline
+E-mail (receiving) & POP3 / IMAP & POP3 downloads mail to one device; IMAP keeps it synchronised on the server \\
+\hline
+File transfer & FTP & Uploading and downloading files between client and file server \\
+\hline
+Domain names & DNS & Translates domain names into IP addresses \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{exercice}[Checking your understanding]
+\begin{enumerate}
+\item Give two differences between the Internet and the World Wide Web.
+\item In the address \texttt{http://www.camtel.cm/offres/fibre.html}, identify the protocol, the domain name and the path.
+\item Aline wants to read the same mailbox on her phone and on the school computer. Should she configure POP3 or IMAP? Justify.
+\item Which protocol is used to \emph{send} an e-mail? To \emph{publish} a website's files on a server?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item The Internet is the global network infrastructure (cables, routers, TCP/IP); the Web is only one service running on it. The Internet dates from ARPANET/TCP-IP (1969--1983); the Web was invented by Tim Berners-Lee in 1989.
+\item Protocol: \texttt{http}; domain name: \texttt{www.camtel.cm}; path: \texttt{/offres/fibre.html}.
+\item IMAP, because messages stay on the server and remain synchronised on both devices; POP3 would download them to one device only.
+\item Sending e-mail: SMTP. Publishing website files: FTP.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+The Internet is a global network of networks using TCP/IP; the Web (Berners-Lee, 1989) is just one of its services. Access goes through an ISP, a modem/router, IP addresses and the DNS. A URL is \texttt{protocol://domain/path}; browsers request and render pages via HTTP/HTTPS. E-mail uses \texttt{user@domain} addresses with SMTP (send), POP3/IMAP (receive). FTP transfers files; cloud storage is its modern alternative. Forums, mailing lists, streaming, e-commerce and e-government complete the family of Internet services.
+\end{aretenir}
+
+\coursec{Information Retrieval and Search Techniques}
+
+In the previous section we discovered the Internet as a vast network offering many services: the World Wide Web, e-mail, file transfer, instant messaging. But a service is only useful if you can \emph{find} what you need inside it. The Web today contains billions of pages. Imagine a library the size of the whole of Cameroon, with no catalogue and no librarian: that is the Web without search tools. This section teaches you how to \cle{retrieve information} efficiently, how to judge whether what you find is trustworthy, and how to use it honestly in your school projects --- a skill the GCE examiner expects every Upper Sixth candidate to master.
+
+\courssub{What is Information Retrieval?}
+
+\begin{definition}[Information retrieval]
+\cle{Information retrieval} (IR) is the process of searching for, locating and extracting relevant information from a large collection of data, usually in response to a user's query expressed in keywords.
+\end{definition}
+
+Why does efficient searching matter? Consider two students preparing an Advanced Level project on ``mobile money in Cameroon''. The first types one vague word and reads the first page that appears, which turns out to be an outdated advertisement. The second builds a precise query, filters the results, checks the date and the author of each page, and downloads two recent PDF reports. Same Internet, same ten minutes --- completely different results. For a student, good searching saves time and earns marks; for a professional (nurse, engineer, journalist, trader), it can mean the difference between a correct decision and a costly error.
+
+\begin{savaistu}[Information retrieval in Cameroon]
+In Cameroon, the \cle{ANTIC} (Agence Nationale des Technologies de l'Information et de la Communication) promotes digital literacy including effective information retrieval. Many government portals (e.g. \texttt{www.minesec.gov.cm}, \texttt{www.spm.gov.cm}) now publish official documents in PDF format, making \texttt{filetype:pdf} and \texttt{site:} operators particularly valuable for students and researchers.
+\end{savaistu}
+
+\courssub{Search Engines: Definition and How They Work}
+
+\begin{definition}[Search engine, keyword, crawling, indexing]
+A \cle{search engine} is a web-based software system that searches the World Wide Web for pages matching a user's query and presents them as an ordered list of results. Examples: \textbf{Google}, \textbf{Bing}, \textbf{DuckDuckGo}, \textbf{Yahoo! Search}, \textbf{Qwant}.
+\begin{itemize}
+\item A \cle{keyword} is a significant word typed by the user to describe the information wanted.
+\item \cle{Crawling} is the automatic exploration of the Web by programs called \textbf{crawlers} (or spiders/robots) that follow links from page to page and copy the content they find.
+\item \cle{Indexing} is the organisation of the collected pages into a huge structured database (the \textbf{index}), so that pages containing a given word can be found almost instantly.
+\end{itemize}
+\end{definition}
+
+A search engine works in three main stages:
+
+\begin{enumerate}
+\item \textbf{Crawling.} Robots continuously travel the Web, following hyperlinks and downloading pages. They respect \texttt{robots.txt} files that indicate which parts of a site may be crawled.
+\item \textbf{Indexing.} Each downloaded page is analysed (words, titles, headings, links, freshness, structured data) and stored in the index --- rather like the catalogue of a library, but on a planetary scale.
+\item \textbf{Ranking.} When you type a query, the engine looks up matching pages in its index and orders them using a \cle{ranking algorithm} that considers hundreds of signals: presence and position of the keywords, quality and authority of the site, number and quality of other sites linking to the page (backlinks), recency, language, mobile usability, page speed, and many more. The most relevant results appear first.
+\end{enumerate}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm and 1.1cm,
+box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=2.8cm, align=center, minimum height=1.2cm, font=\small},
+arr/.style={-{Stealth}, thick, popdark}]
+\node[box, align=center] (crawl){\textbf{1. Crawling}\\ robots explore the Web\\ following links};
+\node[box, right=of crawl, align=center] (index){\textbf{2. Indexing}\\ content analysed and\\ stored in index};
+\node[box, right=of index, align=center] (query){\textbf{3. Query}\\ user enters keywords};
+\node[box, right=of query, align=center] (rank){\textbf{4. Ranking}\\ algorithm orders\\ matching pages};
+\draw[arr] (crawl) -- (index);
+\draw[arr] (index) -- (query);
+\draw[arr] (query) -- (rank);
+\end{tikzpicture}
+\end{center}
+\legende{How a search engine works: crawl, index, answer the query, rank the results.}
+\end{popfigure}
+
+\begin{attention}[Search engine is NOT a browser]
+A very common confusion --- and a classic GCE trap! A \textbf{browser} (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari, Opera) is the \emph{application} installed on your computer or phone that displays web pages. A \textbf{search engine} (Google, Bing, DuckDuckGo) is a \emph{website/service} that you visit \emph{through} the browser to find pages. You use a browser to access a search engine. Google is a search engine; Chrome is a browser --- even though both are made by the same company.
+\end{attention}
+
+\begin{exoresolu}[Distinguishing a browser from a search engine]
+\textbf{Statement (typical GCE question).} A student says: ``I opened Google on my phone to search for past GCE papers.'' Identify (a) the browser and (b) the search engine that could be involved, and explain the difference.
+\tcblower
+\textbf{Solution.} (a) The \textbf{browser} is the application used to open web pages, e.g.\ Chrome, Firefox, or Safari on the phone. (b) The \textbf{search engine} is \textbf{Google}, the service that receives the keywords and returns ranked links. The browser is software that \emph{displays} pages; the search engine is a web service that \emph{finds} pages. The student uses the browser to reach the search engine.
+\end{exoresolu}
+
+\courssub{Formulating Effective Queries}
+
+The quality of your results depends almost entirely on the quality of your query. Here are the essential tools:
+
+\begin{itemize}
+\item \textbf{Keywords:} choose precise nouns, avoid full sentences and unnecessary words. Type \texttt{GCE Advanced Level ICT past papers} rather than \texttt{where can I find papers please}.
+\item \textbf{Phrases in double quotes} \texttt{"..."}: forces the engine to search the \emph{exact} expression, e.g.\ \texttt{"Cameroon GCE Board"}.
+\item \textbf{Boolean operators} (in capitals): \texttt{AND} (both terms must appear --- usually implied by a space), \texttt{OR} (either term), \texttt{NOT} or the \textbf{minus sign} \texttt{-} to exclude a word, e.g.\ \texttt{jaguar -car} searches the animal, not the vehicle.
+\item \textbf{site:} limits results to one website or domain, e.g.\ \texttt{site:camgceb.org syllabus} or \texttt{site:.gov.cm education}.
+\item \textbf{filetype:} limits results to a document type, e.g.\ \texttt{filetype:pdf ICT notes}, \texttt{filetype:ppt presentation}, \texttt{filetype:xls statistics}.
+\item \textbf{intitle:} / \textbf{inurl:} restrict to pages whose title or URL contains the term, e.g.\ \texttt{intitle:"past papers"}.
+\item \textbf{Wildcard *}: stands for unknown word(s) in a phrase, e.g.\ \texttt{"* Level ICT syllabus"}.
+\end{itemize}
+
+\begin{methode}[Building an efficient search query]
+\begin{enumerate}
+\item \textbf{Define} clearly what you are looking for (one sentence in your head).
+\item \textbf{Extract} the 2--4 most important keywords (nouns, specific terms).
+\item \textbf{Add precision}: put exact expressions in quotes; add \texttt{site:} or \texttt{filetype:} if you know where or in what form the answer should be.
+\item \textbf{Exclude} disturbing meanings with \texttt{-word} or \texttt{NOT word}.
+\item \textbf{Examine} the first results; if they are poor, \textbf{reformulate} with synonyms, fewer/more words, or different operators and search again.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[From a vague to an efficient query]
+Task: find the official Upper Sixth ICT syllabus in PDF.
+\begin{itemize}
+\item Vague: \texttt{school programme} $\rightarrow$ millions of useless results.
+\item Better: \texttt{"Upper Sixth" ICT syllabus Cameroon filetype:pdf}
+\item Even better: \texttt{site:minesec.gov.cm ICT "Upper Sixth" filetype:pdf}
+\item Alternative: \texttt{site:camgceb.org "ICT" "Advanced Level" filetype:pdf}
+\end{itemize}
+Each added operator removes noise and brings the target closer.
+\end{exemplebox}
+
+\begin{exemplebox}[Combining operators for a research project]
+Task: find recent statistics on mobile money adoption in Cameroon from official sources.
+\begin{itemize}
+\item Query: \texttt{"mobile money" Cameroon statistics 2023..2024 site:.gov.cm OR site:.org filetype:pdf}
+\item Explanation: quotes for exact phrase, date range \texttt{2023..2024}, official domains \texttt{.gov.cm} or organisations \texttt{.org}, PDF format.
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Navigating and Saving the Results}
+
+A results page shows, for each hit, a \textbf{title}, the \textbf{URL} (address) and a \cle{snippet}: a short extract of the page containing your keywords. Read the snippets \emph{before} clicking --- they often tell you whether the page is relevant, recent and serious.
+
+Good working habits:
+\begin{itemize}
+\item \textbf{Open several promising results in different tabs} (Ctrl+click or middle-click) so you can compare sources without losing the results page.
+\item Use the \textbf{browser history} (Ctrl+H) to find a page you visited earlier.
+\item Save useful addresses as \textbf{bookmarks} (favourites) and organise them in folders (e.g.\ ``GCE Revision'', ``ICT Project'').
+\item \textbf{Download} resources you may need offline: save a web page (Ctrl+S $\rightarrow$ ``Webpage, Complete''), save an image (right-click $\rightarrow$ Save image as), or download PDF documents such as past papers.
+\item Use \textbf{reader mode} (often F9 or an icon in the address bar) to strip ads and formatting for easier reading/printing.
+\end{itemize}
+
+\begin{attention}[Respect copyright]
+Being able to download a file does not mean you may use it freely. Texts, images and videos are protected by \cle{copyright}. For a school project you may generally quote short extracts \emph{with the source cited}, but you must never copy a whole work and present it as your own (that is \textbf{plagiarism}), nor redistribute paid content. Prefer resources with free licences (e.g.\ Creative Commons, public domain). In Cameroon, Law No. 2000/011 of 19 December 2000 on copyright protects digital works.
+\end{attention}
+
+\courssub{Evaluating the Reliability of Online Information}
+
+Anybody can publish anything on the Web. \cle{Fake news}, outdated pages and hidden advertising are everywhere. Before trusting a page, apply the \textbf{CRAAP criteria}:
+
+\begin{propriete}[The CRAAP criteria for judging a source]
+\begin{itemize}
+\item \textbf{C -- Currency:} Is the information recent? When was the page published or updated? Is the date visible? For ICT topics, information older than 2--3 years may be obsolete.
+\item \textbf{R -- Relevance:} Does it really answer your question, at the right level (not too basic, not too advanced)?
+\item \textbf{A -- Authority:} Who is the author or organisation? Are they qualified? Is there contact information, an ``About us'' page, credentials?
+\item \textbf{A -- Accuracy:} Is the content correct, supported by evidence, references, and confirmed by other independent sources? Are there spelling/grammar errors suggesting low quality?
+\item \textbf{P -- Purpose:} Why does the page exist --- to inform, to sell, to persuade, to entertain? Is there bias, advertising, or a hidden agenda?
+\end{itemize}
+\end{propriete}
+
+The \textbf{domain type} in the URL gives a first clue: \texttt{.gov} (government, e.g.\ a ministry site), \texttt{.edu} or \texttt{.ac} (educational institutions) are generally reliable; \texttt{.org} (organisations) is often serious but may defend a cause; \texttt{.com} is commercial and must be checked carefully; \texttt{.cm} is Cameroon's country-code top-level domain. Above all, \textbf{cross-check}: if two or three independent serious sources agree, the information is probably sound.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+grow=right, level distance=3.6cm,
+level 1/.style={sibling distance=3.0cm},
+level 2/.style={sibling distance=1.5cm},
+q/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=2.6cm, align=center, font=\small},
+leaf/.style={draw=popgreen, thick, rounded corners, fill=popgreenL, text width=2.0cm, align=center, font=\small},
+bad/.style={draw=poporange, thick, rounded corners, fill=white, text width=2.0cm, align=center, font=\small},
+edge from parent/.style={draw=popdark, thick}]
+\node[q] {Is the author identified and qualified? (Authority)}
+child { node[bad, align=center]{Doubtful:\\ verify elsewhere} edge from parent node[below, font=\scriptsize] {No} }
+child { node[q, align=center]{Is it recent and\\ cross-checked?\\ (Currency \& Accuracy)}
+child { node[bad, align=center]{Outdated or alone:\\ be careful} edge from parent node[below, font=\scriptsize] {No} }
+child { node[leaf, align=center]{Credible source:\\ use and cite it} edge from parent node[above, font=\scriptsize] {Yes} }
+edge from parent node[above, font=\scriptsize] {Yes} };
+\end{tikzpicture}
+\end{center}
+\legende{Simplified credibility checklist: authority, currency and cross-checking before trusting a website.}
+\end{popfigure}
+
+\begin{attention}[Never trust blindly the first result --- or Wikipedia]
+The first result is not necessarily the best: ranking reflects popularity and optimisation (SEO), not truth, and the very first lines may even be paid advertisements (marked ``Ad'' or ``Sponsored''). Similarly, Wikipedia is an excellent \emph{starting point} to understand a topic, but anyone can edit it: never cite it as your only source. Follow the references at the bottom of the Wikipedia article and verify with official or academic sites.
+\end{attention}
+
+\begin{exoresolu}[Applying CRAAP to a website]
+\textbf{Statement.} You find a page titled ``Best ICT Revision Notes for GCE A Level'' at \texttt{www.ict-revision-tips.com/alevel}. The page has no author name, no date, many ads, and the content looks copied from various sources. Evaluate it using CRAAP.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{Currency:} No date visible $\rightarrow$ fail.
+\item \textbf{Relevance:} Topic matches but depth unknown.
+\item \textbf{Authority:} No author, commercial domain \texttt{.com}, no credentials $\rightarrow$ fail.
+\item \textbf{Accuracy:} No references, content appears copied $\rightarrow$ fail.
+\item \textbf{Purpose:} Likely to generate ad revenue (many ads) $\rightarrow$ biased.
+\end{itemize}
+\textbf{Conclusion:} Do not use this source for academic work. Look for the official syllabus on \texttt{minesec.gov.cm} or past papers on \texttt{camgceb.org}.
+\end{exoresolu}
+
+\courssub{Web Directories and Specialised Databases}
+
+A general search engine is not the only door to information.
+
+\begin{itemize}
+\item A \cle{web directory} is a catalogue of websites \emph{classified by humans} into subject categories (e.g.\ the former Yahoo! Directory, DMOZ, or specialised directories like \texttt{www.africanjournals.online}). It contains fewer sites than a search engine, but they are selected and organised --- useful for exploring a subject area.
+\item A \cle{specialised database} gives access to structured, verified collections: online encyclopaedias (Britannica, Encarta), digital libraries (Project Gutenberg, African Digital Library), academic article bases (Google Scholar, PubMed, JSTOR), government open-data portals (Cameroon Open Data Portal if available). Their content is often invisible to general search engines (the ``deep web'' or ``invisible web'').
+\end{itemize}
+
+Rule of thumb: use a \textbf{search engine} for a quick, broad search; a \textbf{directory} to discover quality sites on a theme; a \textbf{specialised database} when you need reliable, in-depth or official data.
+
+\begin{savaistu}[Deep web vs. Dark web]
+The \cle{deep web} is simply the part of the Web not indexed by standard search engines: private databases, password-protected sites, dynamic pages, etc. It is mostly legitimate (your webmail, banking, school portal). The \cle{dark web} is a tiny, intentionally hidden subset accessed via special software (Tor) and often associated with illegal activities. Do not confuse them.
+\end{savaistu}
+
+\courssub{Citing Online Sources in a School Project}
+
+Whenever you use information found online, you must cite it so the reader can verify it. A correct citation of a web page contains:
+
+\begin{enumerate}
+\item the \textbf{author} (person or organisation); if none, start with the title;
+\item the \textbf{title} of the page or article (in italics or quotes);
+\item the \textbf{URL} (full address);
+\item the \textbf{date you accessed} the page (pages change over time);
+\item optionally, the \textbf{publication/update date} if shown.
+\end{enumerate}
+
+\begin{exemplebox}[Model citations (Harvard style commonly used in Cameroon)]
+\begin{itemize}
+\item \textbf{With author:} Nfor, J. (2023) \emph{``Mobile Money Adoption in Rural Cameroon''}, \texttt{https://www.researchgate.net/publication/...}, accessed 15 October 2024.
+\item \textbf{Organisation as author:} Cameroon GCE Board (2024) \emph{``GCE Advanced Level ICT Syllabus''}, \texttt{https://www.camgceb.org/syllabus/ict.pdf}, accessed 12 October 2024.
+\item \textbf{No author, no date:} \emph{``History of the Internet in Cameroon''}, \texttt{https://www.example.cm/history}, accessed 10 October 2024.
+\end{itemize}
+\end{exemplebox}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Information retrieval = finding relevant information in a huge collection using queries.
+\item A search engine \textbf{crawls}, \textbf{indexes}, then \textbf{ranks} pages; a browser only \emph{displays} pages.
+\item Efficient queries use keywords, \texttt{"exact phrases"}, \texttt{AND/OR/NOT}, \texttt{-}, \texttt{site:}, \texttt{filetype:}, \texttt{intitle:}, \texttt{*}.
+\item Judge every source with the CRAAP criteria and cross-check; beware of fake news, sponsored results, and plagiarism.
+\item Always cite online sources: author, title, URL, date accessed (and publication date if available).
+\item Respect copyright: quote short extracts with citation, prefer Creative Commons / public domain.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Search techniques]
+\begin{enumerate}
+\item Write a query to find PDF past papers of Advanced Level Biology on an official Cameroonian site only.
+\item Explain the difference between a search engine and a web directory.
+\item A classmate copied a whole Wikipedia article into his project without any citation. Identify two mistakes he made.
+\item You need recent statistics on internet penetration in Cameroon for a project. Write a query that targets official or reputable organisational sources in PDF format.
+\item A search returns a page with URL \texttt{http://www.free-ict-notes.com/gce-alevel.html}. The page has no author, no date, many ads, and the content seems generic. Apply the CRAAP criteria and state whether you would use it.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise n$^{\circ}$1]
+\begin{enumerate}
+\item Example: \texttt{"Advanced Level" Biology past paper filetype:pdf site:camgceb.org} --- quotes force the exact level, \texttt{filetype:pdf} selects documents, \texttt{site:} restricts to the official domain. Alternative: \texttt{site:minesec.gov.cm "Advanced Level" Biology filetype:pdf}.
+\item A search engine automatically crawls and indexes billions of pages and answers keyword queries using algorithms; a web directory is a smaller catalogue of sites selected and classified by humans into categories.
+\item (a) He committed \textbf{plagiarism} by presenting copied text as his own without citing the source; (b) he relied on a single, user-editable source without cross-checking its accuracy --- Wikipedia should only be a starting point, not a cited source.
+\item Example: \texttt{"internet penetration" Cameroon statistics 2023..2024 (site:.gov.cm OR site:.org OR site:worldbank.org) filetype:pdf}
+\item \textbf{Currency:} No date $\rightarrow$ fail. \textbf{Relevance:} Topic matches but depth unknown. \textbf{Authority:} No author, commercial domain, no credentials $\rightarrow$ fail. \textbf{Accuracy:} No references, generic content $\rightarrow$ fail. \textbf{Purpose:} Likely ad revenue $\rightarrow$ biased. \textbf{Decision:} Do not use for academic work.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Internet Communication Tools}
+
+In the previous section we learnt how to \emph{find} information on the Internet using search engines and advanced search techniques. But the Internet is not only a giant library: it is also the largest \cle{communication network} humanity has ever built. Every day, a student in Bamenda can send homework to a teacher in Yaoundé, a trader in Douala can negotiate with a supplier in Lagos by video call, and a family in Buea can talk to relatives abroad almost for free. In this section we study the tools that make all this possible: e-mail, instant messaging, videoconferencing, social networks, forums, blogs and wikis --- and, just as importantly, the rules of politeness, safety and law that govern their use.
+
+\courssub{Synchronous and Asynchronous Communication}
+
+\textbf{Observation.} Compare two situations. (a) You phone a friend: he must answer \emph{now}, and you both speak in real time. (b) You send a letter through CAMPOST: your friend reads it days later and replies when he has time. Both are communication, but they differ in one essential point: \emph{whether the participants must be available at the same time}.
+
+\begin{definition}[Synchronous and asynchronous communication]
+A communication is \cle{synchronous} (real-time) when the participants exchange messages \textbf{at the same time}: the sender and the receiver must be connected simultaneously (telephone call, videoconference, live chat).
+
+A communication is \cle{asynchronous} (delayed) when the sender and the receiver do \textbf{not} need to be connected at the same time: the message is stored on a server and read later (e-mail, forum post, SMS, voice note).
+\end{definition}
+
+\begin{exemplebox}[Classifying everyday tools]
+A WhatsApp voice call is synchronous; a WhatsApp text message is asynchronous (your friend reads it when he opens the app). An e-mail is asynchronous; a Zoom lesson is synchronous. Notice that some tools (WhatsApp, Messenger, Telegram) offer \emph{both} modes.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small]
+\draw[fill=popblueL, draw=popblue, rounded corners] (0,0) rectangle (7.4,4.6);
+\node[align=center, text width=6.6cm] at (3.7,4.1) {\textbf{Synchronous (real-time)}};
+\node[align=center, text width=6.6cm] at (3.7,3.3) {Both parties connected\\ at the same time};
+\node[align=left, text width=6.4cm] at (3.7,1.9) {\textbf{Examples:}\\ $\bullet$ Phone / VoIP calls\\ $\bullet$ Zoom, Google Meet\\ $\bullet$ Live chat, video call};
+\draw[fill=popgreenL, draw=popgreen, rounded corners] (8.0,0) rectangle (15.4,4.6);
+\node[align=center, text width=6.6cm] at (11.7,4.1) {\textbf{Asynchronous (delayed)}};
+\node[align=center, text width=6.6cm] at (11.7,3.3) {Message stored,\\ read later};
+\node[align=left, text width=6.4cm] at (11.7,1.9) {\textbf{Examples:}\\ $\bullet$ E-mail, SMS\\ $\bullet$ Forum and blog posts\\ $\bullet$ Voice notes, wiki edits};
+\end{tikzpicture}
+\legende{Synchronous vs asynchronous communication tools.}
+\end{popfigure}
+
+\begin{aretenir}
+Synchronous tools are fast and interactive but require everyone to be available together; asynchronous tools are flexible across time zones and busy schedules but slower for back-and-forth discussion.
+\end{aretenir}
+
+\courssub{Electronic Mail (E-mail)}
+
+The \cle{e-mail} (electronic mail) is the oldest and most formal Internet communication service. Every e-mail address has the form \textbf{username@domain}, for example \emph{ngon.aline@gmail.com}. The part before \texttt{@} identifies the user; the part after identifies the mail server (domain).
+
+\textbf{Composing a message.} A well-formed e-mail contains several fields:
+
+\begin{itemize}
+\item \textbf{To:} the main recipient(s) --- the people expected to act or reply.
+\item \textbf{Cc} (carbon copy): people who receive the message \emph{for information}; everyone sees their addresses.
+\item \textbf{Bcc} (blind carbon copy): hidden recipients --- the other recipients \emph{cannot see} that these people received the message.
+\item \textbf{Subject:} a short, precise summary of the message (never leave it blank).
+\item \textbf{Body:} the message itself, with greeting, content, closing and signature.
+\item \textbf{Attachment:} a file sent with the message (document, photo, PDF). Most providers limit attachments to about $20$--$25\ \mathrm{MB}$; larger files should be shared through a cloud link (Google Drive, OneDrive, Dropbox).
+\end{itemize}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small]
+\draw[fill=white, draw=popline, rounded corners, thick] (0,0) rectangle (14,8.6);
+\draw[fill=popblueL, draw=popblue] (0,7.9) rectangle (14,8.6);
+\node[text=popdark] at (7,8.25) {\textbf{New Message --- Gmail}};
+\node[anchor=west] at (0.3,7.4) {\textbf{To:} mrs.ekane@school.cm};
+\node[anchor=west] at (0.3,6.9) {\textbf{Cc:} class.prefect@school.cm};
+\node[anchor=west] at (0.3,6.4) {\textbf{Bcc:} (hidden recipients)};
+\node[anchor=west] at (0.3,5.9) {\textbf{Subject:} Request for the ICT past questions};
+\draw[popline] (0.2,5.6) -- (13.8,5.6);
+\node[anchor=north west, align=left, text width=13.2cm] at (0.3,5.4) {Dear Mrs Ekane,\\[2pt] I hope this message finds you well. I am writing to ask whether you could kindly send me the past GCE ICT questions you mentioned in class...\\[2pt] Yours sincerely,\\ Aline Ngon, Upper Sixth Science};
+\draw[fill=popgreenL, draw=popgreen, rounded corners] (0.3,0.25) rectangle (5.3,0.95);
+\node at (2.8,0.6) {\textbf{Attachment:} timetable.pdf};
+\draw[-latex, thick, poporange] (10.5,6.4) -- (4.2,6.4);
+\node[anchor=west, text=poporange] at (10.6,6.4) {invisible to others};
+\draw[-latex, thick, poporange] (6.0,0.6) -- (8.6,1.6);
+\node[anchor=west, text=poporange, text width=5cm] at (8.7,1.6) {max $\approx 25\ \mathrm{MB}$ per message};
+\end{tikzpicture}
+\legende{Annotated sketch of an e-mail composition window.}
+\end{popfigure}
+
+\textbf{Organising a mailbox.} Incoming messages can be sorted into \cle{folders} (e.g.\ \emph{School}, \emph{Family}, \emph{Jobs}) and unwanted messages are filtered automatically into the \textbf{Spam} folder. Use filters/labels to automate sorting.
+
+\begin{definition}[Spam and phishing]
+\cle{Spam} is an unsolicited message sent in bulk, usually for advertising. \cle{Phishing} is a fraudulent message that \emph{imitates} a trusted organisation (a bank, MTN Mobile Money, a ministry) in order to steal your passwords, PIN codes or bank details.
+\end{definition}
+
+\begin{attention}[Security: passwords, OTP and attachments]
+Never share your password or an \cle{OTP} (one-time code received by SMS) with anyone --- no genuine bank or mobile money agent will ever ask for it. Before opening an attachment, \textbf{verify the sender's real address} (not just the displayed name) and be suspicious of unexpected files, urgent threats and spelling errors. When in doubt, do not click.
+\end{attention}
+
+\begin{attention}[Common mistake: To, Cc, Bcc and ``Reply all'']
+Do not put fifty classmates in the \textbf{To} or \textbf{Cc} field: everyone then sees everyone's address (a privacy leak) and one careless ``\textbf{Reply all}'' floods fifty mailboxes. Use \textbf{Bcc} for large lists. Conversely, do not use Bcc to secretly spy on a conversation between people who think they are writing privately --- it is unethical.
+\end{attention}
+
+\courssub{Netiquette and the Formal E-mail}
+
+\begin{definition}[Netiquette]
+The \cle{netiquette} (network etiquette) is the set of rules of polite and respectful behaviour in online communication: greet your correspondent, write clearly without SMS abbreviations in formal contexts, do not WRITE IN CAPITALS (it reads as shouting), respect others' opinions and privacy, and never insult or harass anyone.
+\end{definition}
+
+\begin{methode}[Writing a formal e-mail to a teacher or employer]
+\begin{enumerate}
+\item Write a precise \textbf{subject}: ``Application for the post of \dots'', not ``Hello''.
+\item Start with a formal \textbf{greeting}: \emph{Dear Sir, / Dear Mrs Ekane,}.
+\item In the \textbf{body}, introduce yourself, state your request clearly and politely, one idea per paragraph.
+\item End with a formal \textbf{closing}: \emph{Yours sincerely, / Yours faithfully,}.
+\item Add a \textbf{signature}: full name, class or position, and a contact (phone or alternative e-mail).
+\item Re-read for spelling and grammar before clicking \emph{Send}.
+\end{enumerate}
+\end{methode}
+
+\courssub{Instant Messaging, Videoconferencing and VoIP}
+
+\textbf{Instant messaging (IM).} Applications such as \cle{WhatsApp}, \cle{Telegram} and \cle{Messenger} allow the exchange of text, photos, documents and voice notes, one-to-one or in \textbf{group chats}. A class group is excellent for sharing notes and announcements, but it must be used with discipline: stay on topic, avoid flooding the group at midnight, and never forward unverified information.
+
+\textbf{Videoconferencing and VoIP.} \cle{VoIP} (Voice over Internet Protocol) carries voice (and video) as data packets over the Internet instead of the traditional telephone network, which makes calls very cheap. Tools such as \cle{Zoom}, \cle{Google Meet} and \cle{Skype} allow online lessons, meetings and interviews. The requirements are: a device with a \textbf{webcam} and \textbf{microphone}, the application (or a browser), and sufficient \textbf{bandwidth} --- a stable connection of a few megabits per second; when the network is weak, switching off the camera greatly improves audio quality.
+
+\begin{savaistu}[Videoconferencing in Cameroon]
+During the COVID-19 period, many Cameroonian schools, churches and businesses discovered Zoom and Google Meet. Today, videoconferencing remains essential for job interviews with companies abroad and for online university courses --- a good reason to master it before leaving Upper Sixth.
+\end{savaistu}
+
+\courssub{Social Networks, Forums, Blogs and Wikis}
+
+\textbf{Social networks} such as \cle{Facebook}, \cle{X} (formerly Twitter) and \cle{LinkedIn} let users publish content and build networks of contacts. A key distinction must be made: Facebook and X are mainly \emph{personal}, while LinkedIn is \emph{professional} (CV, skills, job offers). Everything you publish contributes to your digital footprint.
+
+\begin{definition}[Digital footprint]
+The \cle{digital footprint} is the whole set of traces a person leaves on the Internet: posts, photos, comments, likes, and even what others publish about them. It is persistent and can be consulted years later by an employer or a university.
+\end{definition}
+
+\textbf{Forums, blogs and wikis} are collaborative knowledge tools. A \cle{forum} is a discussion site organised by topics where members ask and answer questions asynchronously. A \cle{blog} is a personal or organisational site where articles are published regularly, with comments from readers. A \cle{wiki} (e.g.\ Wikipedia) is a site whose pages can be \emph{edited collectively} by many users, with a history of all changes --- a powerful model of collaborative writing.
+
+\courssub{Online Safety, Ethics and the Law}
+
+\begin{methode}[Protecting yourself online]
+\begin{enumerate}
+\item Use a \textbf{strong password}: at least 12 characters mixing letters, digits and symbols; a different password per account.
+\item Enable \textbf{two-factor authentication} (2FA) where available.
+\item Configure the \textbf{privacy settings} of each social network: limit who can see your posts and photos.
+\item Think before publishing: a photo or insult can remain online forever (digital footprint).
+\item Report and block \textbf{cyberbullying} (repeated online harassment); keep screenshots as evidence and inform an adult or the authorities.
+\end{enumerate}
+\end{methode}
+
+\begin{savaistu}[Cameroonian law on cybersecurity]
+In Cameroon, \textbf{Law No.\ 2010/012 of 21 December 2010 relating to cybersecurity and cybercriminality} punishes offences committed through information and communication technologies: illegal access to systems, identity theft, online fraud, and the publication of false information. The national agency \textbf{ANTIC} (National Agency for Information and Communication Technologies) watches over the security of cyberspace. Online behaviour therefore has real legal consequences.
+\end{savaistu}
+
+\begin{exoresolu}[Choosing the right tool and the right field]
+\textbf{Statement.} Aline must (a) send her CV and cover letter to a company, (b) announce to 40 classmates that tomorrow's ICT lesson is cancelled without revealing everyone's addresses, and (c) discuss a group project live with three friends this evening. For each case, state the appropriate tool and justify. For (b), state which field she must use. \tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item (a) \textbf{E-mail}: formal, asynchronous, supports attachments (CV in PDF). She writes a precise subject, a formal greeting and a signature, and checks that the attachments are below the size limit.
+\item (b) \textbf{E-mail with the Bcc field} (or a class mailing group): the 40 addresses are placed in Bcc so that no recipient sees the others' addresses, protecting everyone's privacy.
+\item (c) A \textbf{synchronous} tool: a WhatsApp group call or a Google Meet videoconference, since the discussion must happen live, this evening, with everyone connected at the same time.
+\end{itemize}
+\end{exoresolu}
+
+\begin{exercice}[Netiquette and safety]
+\begin{enumerate}
+\item Classify as synchronous or asynchronous: forum post, Zoom lesson, e-mail, WhatsApp voice call, SMS.
+\item Rewrite this message so that it respects the netiquette for a formal e-mail: ``HI SIR SEND ME THE NOTES ASAP''.
+\item Your ``bank'' sends you an SMS asking for your MoMo PIN to ``verify your account''. What is this attack called, and what should you do?
+\item Give three elements of your digital footprint and explain why an employer might consult them.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercice]
+\begin{enumerate}
+\item Synchronous: Zoom lesson, WhatsApp voice call. Asynchronous: forum post, e-mail, SMS.
+\item ``Dear Sir, Could you kindly send me the course notes when possible? Thank you. Yours sincerely, [Name, class].'' --- greeting, polite request, no capitals, no abbreviations, signature.
+\item It is \textbf{phishing}. Do not reply, never give the PIN or OTP, verify with the bank's official number, and delete/report the message.
+\item Posts and photos on Facebook, comments on forums, information others publish about you. An employer consults them to judge the candidate's seriousness, behaviour and image before hiring.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points]
+Synchronous = same time (calls, videoconference); asynchronous = delayed (e-mail, forums). Master the To/Cc/Bcc fields, attachments and folders. Respect the netiquette and the structure of a formal e-mail. Protect yourself with strong passwords, 2FA and privacy settings, beware of spam and phishing, manage your digital footprint, and remember that Law No.\ 2010/012 punishes cybercrime in Cameroon.
+\end{aretenir}
+
+\coursec{Teleworking and Online Collaboration}
+
+In the previous section we studied the tools that allow people to \emph{communicate} through the Internet: e-mail, instant messaging, VoIP and videoconferencing. We now take one step further and ask a question that matters enormously for your future career: what happens when these tools are used not just to chat, but to \emph{work}? When a graphic designer in Bamenda delivers a logo to a client in London without ever leaving her room, when a team of students in Yaoundé writes a single report together from three different homes, when a call-centre agent in Douala answers customers in Paris — that is \cle{teleworking}. This final section defines teleworking rigorously, presents its tools and collaborative techniques, weighs its advantages against its challenges (especially in the Cameroonian context), and finishes with the related ``e-services'' and the health discipline that online work demands.
+
+\courssub{What is Teleworking?}
+
+\textbf{Observation.} Every morning, thousands of workers in Douala spend one to two hours stuck in traffic between Bonabéri and Akwa, burning fuel and losing energy before the working day even begins. Yet many of their tasks — writing reports, answering e-mails, analysing spreadsheets, attending meetings — require only a computer and an Internet connection. Why travel to the office at all?
+
+\begin{definition}[Teleworking]
+\cle{Teleworking} (also called \emph{telecommuting} or \emph{remote work}) is a way of organising work in which an employee or independent worker performs his or her professional duties \textbf{outside the traditional office}, typically from home or any other location, by using \textbf{information and communication technologies} (computer, Internet connection, e-mail, videoconferencing, cloud services) to communicate with the employer, colleagues and clients.
+\end{definition}
+
+The essential ingredients are three: (i) a \textbf{task} that can be done on a computer, (ii) an \textbf{Internet connection}, and (iii) \textbf{communication and collaboration tools} that replace physical presence. Teleworking is not a profession; it is a \emph{mode} of working that can apply to many professions.
+
+\textbf{Types of teleworking.} Three main arrangements exist:
+
+\begin{itemize}
+\item \textbf{Full remote work:} the worker \emph{never} goes to a company office; the whole activity is performed online (e.g. a freelance translator working for foreign agencies).
+\item \textbf{Hybrid work:} the worker shares the week between home and office (e.g. three days on site, two days at home). This became very common worldwide after 2020.
+\item \textbf{Freelance (independent) teleworking:} the worker has no single employer but sells services to many clients through online platforms, choosing his own schedule and rates.
+\end{itemize}
+
+\begin{attention}[Teleworking is not ``being on the Internet'']
+A very common mistake at the GCE is to confuse \cle{teleworking} with simply browsing the Web, chatting on WhatsApp or watching videos. Teleworking is \textbf{productive, organised, goal-oriented work} performed remotely for an employer or client, with deliverables and deadlines. Scrolling through social media for entertainment is Internet \emph{use}, not telework. In an exam, always link teleworking to a \emph{professional activity} and to \emph{ICT tools}.
+\end{attention}
+
+\courssub{Tools of Teleworking and Cloud Computing}
+
+Teleworking stands on a small family of tools that you already know individually; what is new is their \emph{combination} for professional purposes.
+
+\begin{itemize}
+\item \textbf{Videoconferencing} (Zoom, Google Meet, Microsoft Teams, Skype): replaces physical meetings with live audio and video, screen sharing and chat.
+\item \textbf{E-mail and instant messaging} (Gmail, Outlook, WhatsApp, Slack): asynchronous and synchronous written communication, file attachments.
+\item \textbf{Cloud storage} (Google Drive, OneDrive, Dropbox): files are stored on remote servers and accessible from any connected device, instead of being trapped on one machine.
+\item \textbf{Collaborative suites} (Google Workspace, Microsoft 365): integrated packages combining e-mail, documents, spreadsheets, presentations, storage and video meetings under one account.
+\item \textbf{Virtual Private Network (VPN):} creates an encrypted tunnel between the remote worker's device and the company network, protecting confidential data on public or home Wi-Fi.
+\end{itemize}
+
+\begin{definition}[Cloud computing]
+\cle{Cloud computing} is the delivery of computing services — storage, software, processing power — \textbf{over the Internet} (``the cloud''), so that the user accesses files and applications from any device without installing or storing everything locally. The data physically resides in the provider's \emph{data centres}. The three main service models are \emph{Software as a Service} (SaaS, e.g. Google Docs), \emph{Platform as a Service} (PaaS) and \emph{Infrastructure as a Service} (IaaS).
+\end{definition}
+
+\begin{definition}[Collaborative editing]
+\cle{Collaborative editing} is a technique in which \textbf{several users work simultaneously on the same document} hosted in the cloud. Each user's changes are transmitted to the server and synchronised in real time on everyone else's screen, each contributor being identified by a coloured cursor or name tag.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw=popdark, fill=popblueL, rounded corners, thick, minimum width=3.4cm, minimum height=1.2cm, align=center] (cloud) at (0,0) {\textbf{Cloud server}\\ Google Docs};
+\node[draw=popgreen, fill=popgreenL, rounded corners, thick, minimum width=2.6cm, minimum height=1.1cm, align=center] (a) at (-4.5,2.5) {\textbf{User A (Buea)}\\ types paragraph 1};
+\node[draw=poporange, fill=popblueL!50, rounded corners, thick, minimum width=2.6cm, minimum height=1.1cm, align=center] (b) at (4.5,2.5) {\textbf{User B (Garoua)}\\ edits paragraph 2};
+\draw[->, very thick, popgreen] (a.east) -- node[above, sloped]{sends changes} (cloud.150);
+\draw[->, very thick, popgreen] (cloud.210) -- node[below, sloped]{sees A live} (a.south east);
+\draw[->, very thick, poporange] (b.west) -- node[above, sloped]{sends changes} (cloud.30);
+\draw[->, very thick, poporange] (cloud.330) -- node[below, sloped]{sees B live} (b.south west);
+\node[align=center, text=popmuted] at (0,-1.6) {One single shared document, always up to date};
+\end{tikzpicture}
+\end{center}
+\legende{Two users editing the same cloud document in real time: every change travels to the server and is synchronised back to the other user's screen.}
+\end{popfigure}
+
+\courssub{Collaborative Work in Practice}
+
+Working together online is a \emph{method}, not just a tool. Four techniques appear constantly in collaborative suites:
+
+\begin{itemize}
+\item \textbf{Sharing documents:} instead of attaching a file to an e-mail, you send a \emph{link} with controlled permissions — \emph{view only}, \emph{comment}, or \emph{edit}. Everyone always sees the latest version.
+\item \textbf{Simultaneous editing:} several people write in the same document at the same time (see the figure above), which eliminates the old problem of merging ten different copies named \emph{final\_version2\_REALfinal.docx}.
+\item \textbf{Comments and track changes:} a reviewer can attach a comment to a passage without modifying it, or activate \emph{track changes} so that every insertion and deletion is recorded and can be accepted or rejected by the author.
+\item \textbf{Version control basics:} the suite keeps an automatic \emph{history} of the document; you can see who changed what and when, and restore any earlier version. (Programmers use dedicated tools such as \emph{Git} for the same purpose with source code.)
+\end{itemize}
+
+\begin{methode}[Organising an online team project]
+\begin{enumerate}
+\item \textbf{Plan:} hold a kick-off videoconference; define the objective, split the work into tasks, assign each task to a member, and fix deadlines (a shared calendar helps).
+\item \textbf{Share:} create one cloud folder for the project; share the main document with \emph{edit} rights for members and \emph{view} rights for the supervisor.
+\item \textbf{Communicate:} choose one main channel (e.g. a WhatsApp or Slack group) for quick messages and schedule short regular video meetings to report progress.
+\item \textbf{Deliver:} assemble the final version using the version history, check comments and tracked changes are all resolved, then export and submit before the deadline.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[A group project across three towns]
+Three Upper Sixth students — one in Yaoundé, one in Bafoussam, one in Limbe — must produce a joint ICT report in one week. Describe a concrete collaborative organisation using free tools.
+\tcblower
+\textbf{Solution.} \textbf{Plan:} on day 1 they meet on Google Meet (free), agree on the plan of the report and assign one chapter each, with day 5 as the internal deadline. \textbf{Share:} the Yaoundé student creates a Google Doc and a Drive folder, shares them with \emph{edit} rights to the two others. \textbf{Communicate:} a WhatsApp group carries daily quick questions; a 15-minute Meet call every evening at 8 p.m. synchronises progress. \textbf{Collaborate:} each writes his chapter directly in the shared Doc; the others add comments and suggestions instead of rewriting. \textbf{Deliver:} on day 6 they review the version history to verify all contributions, resolve every comment, export the document as PDF and submit it by e-mail on day 7. No one travelled; the only costs were data bundles.
+\end{exoresolu}
+
+\courssub{Advantages and Limitations of Teleworking}
+
+\begin{propriete}[Advantages vs disadvantages of teleworking]
+Teleworking brings significant benefits but also real challenges; a balanced GCE answer must mention \textbf{both} sides:
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Advantages} & \textbf{Limitations / challenges} \\
+\hline
+No daily commuting: saves transport fares and hours lost in Yaoundé/Douala traffic jams; reduces carbon footprint & Requires reliable electricity and Internet: power cuts and costly data bundles are real obstacles in Cameroon \\
+\hline
+Flexibility: worker organises his own schedule and environment & Isolation: loss of social contact with colleagues, weaker team spirit \\
+\hline
+Access to international jobs and clients without emigrating (a developer in Buea can work for a firm in Canada) & Home distractions: family, noise, television; demands strong self-discipline \\
+\hline
+Lower costs for employers (less office space); work can continue during crises (epidemics, strikes) & Data security risks: professional data transits through home networks and personal devices \\
+\hline
+\end{tabularx}
+\end{center}
+(Not examinable as a formal proof, but you must be able to \emph{justify} each line with a concrete example.)
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw=popdark, fill=popblue, text=white, rounded corners, thick, minimum width=3cm, minimum height=1cm] (root) at (0,0) {\textbf{Teleworking}};
+\node[draw=popblue, fill=popblueL, rounded corners, align=center, minimum width=2.6cm] (tools) at (-5.2,2.2) {\textbf{Tools}\\ videoconf., e-mail,\\ cloud, suites, VPN};
+\node[draw=popgreen, fill=popgreenL, rounded corners, align=center, minimum width=2.6cm] (adv) at (5.2,2.2) {\textbf{Advantages}\\ no commuting,\\ flexibility,\\ global jobs};
+\node[draw=poporange, fill=popblueL!50, rounded corners, align=center, minimum width=2.6cm] (chal) at (-5.2,-2.2) {\textbf{Challenges}\\ power cuts, data cost,\\ isolation, security};
+\node[draw=poppurple, fill=popblueL!30, rounded corners, align=center, minimum width=2.6cm] (prof) at (5.2,-2.2) {\textbf{Professions}\\ freelancing, tutoring,\\ customer service};
+\draw[thick, popline] (root) -- (tools);
+\draw[thick, popline] (root) -- (adv);
+\draw[thick, popline] (root) -- (chal);
+\draw[thick, popline] (root) -- (prof);
+\end{tikzpicture}
+\end{center}
+\legende{Mind map of the teleworking ecosystem: tools, advantages, challenges and professions.}
+\end{popfigure}
+
+\courssub{Teleworking Professions and Platforms}
+
+Which jobs can actually be done remotely? Any job whose output is \emph{digital}: programming, graphic design, translation, writing, accounting, data entry, online marketing, and many more. Three families are particularly accessible to young Cameroonians:
+
+\begin{itemize}
+\item \textbf{Freelancing platforms} (e.g. Upwork, Fiverr, Freelancer): workers create a profile, bid for missions posted by clients worldwide, deliver online and get paid electronically.
+\item \textbf{Online tutoring:} a teacher in Kumba can give mathematics lessons by videoconference to students anywhere, paid via mobile money (MTN MoMo, Orange Money).
+\item \textbf{Remote customer service:} call-centre and chat-support agents answer customers of companies located abroad, from an office or from home.
+\item \textbf{Software development and IT support:} coding, testing, system administration — all doable remotely with version control (Git) and remote desktop tools.
+\end{itemize}
+
+\begin{savaistu}[Teleworking and Cameroon]
+Cameroon's National Development Strategy explicitly counts on the digital economy, and bodies such as ANTIC promote secure online services. With a good connection, a young graduate in Bamenda can earn income from clients in Europe or America while living at home — teleworking is one of the most concrete ways the Internet can fight unemployment and brain drain.
+\end{savaistu}
+
+\courssub{Related ``E-Services'': Applications of the Internet}
+
+Teleworking belongs to a wider family of services where the prefix \emph{e-} (electronic) means ``done through the Internet''. The GCE expects you to define and illustrate each:
+
+\begin{itemize}
+\item \textbf{E-learning:} education delivered online — recorded lessons, virtual classrooms, digital exercises (e.g. distance university courses, revision platforms such as OnBuch+).
+\item \textbf{E-commerce:} buying and selling goods and services online (e.g. Jumia, or a Douala shop receiving orders by WhatsApp and payment by mobile money).
+\item \textbf{E-banking:} performing banking operations online — checking balances, transfers, paying bills — without visiting a branch (mobile money is its most widespread Cameroonian form).
+\item \textbf{E-government:} public administration services delivered online — tax declarations, obtaining official documents, registering a business — reducing queues and travel.
+\end{itemize}
+
+\courssub{Health, Ergonomics and Time Management Online}
+
+Working or studying long hours on a screen has a cost if done carelessly. Good practice includes:
+
+\begin{itemize}
+\item \textbf{Ergonomics:} screen at eye level, back straight, feet flat, good lighting; avoid working from bed. Use an external keyboard and mouse with a laptop.
+\item \textbf{Eye and body rest:} follow the \emph{20-20-20} habit — every 20 minutes, look at something about 6 metres (20 feet) away for 20 seconds; stand and stretch regularly.
+\item \textbf{Time management:} fix working hours, make a daily to-do list, silence non-work notifications, and separate ``work space'' from ``rest space'' even in a small room.
+\item \textbf{Security hygiene:} strong unique passwords, updated software, VPN on public Wi-Fi, and never mixing confidential work files with untrusted downloads.
+\end{itemize}
+
+\begin{attention}[Exam tip: the essay question]
+GCE examiners like open questions such as \emph{``Discuss the impact of teleworking on Cameroonian society.''} Prepare a \textbf{balanced} answer: define teleworking, give at least two advantages with local examples (traffic, access to foreign jobs), at least two challenges with local examples (power cuts, data cost, isolation), and conclude with a nuanced personal judgement. One-sided answers lose marks.
+\end{attention}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item \cle{Teleworking} = performing professional work remotely using ICT; it exists as full remote, hybrid or freelance work.
+\item Its pillars are videoconferencing, e-mail, \cle{cloud computing} and collaborative suites; \cle{collaborative editing} lets several users modify one document in real time, with comments, track changes and version history.
+\item Advantages: no commuting, flexibility, access to international jobs. Challenges: electricity and Internet costs, isolation, distractions, data security.
+\item Teleworking is part of the wider family of e-services: \cle{e-learning}, \cle{e-commerce}, \cle{e-banking}, \cle{e-government}.
+\item Successful online work also requires ergonomics, eye rest and disciplined time management.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Checking your understanding]
+\begin{enumerate}
+\item Define teleworking and name its three types.
+\item Explain the difference between cloud storage and collaborative editing.
+\item A company in Douala wants its five accountants to work from home two days a week. List the tools they need and two risks the manager must plan for.
+\item Give one Cameroonian example each of e-commerce, e-banking and e-government.
+\item \textbf{Integration activity:} Your school organises an inter-school ICT competition. Teams of three students from different schools must design a poster on ``Digital Citizenship'' in 48 hours using only free online tools. Propose a complete collaborative workflow (tools, steps, communication plan) and identify two potential technical obstacles in the Cameroonian context with a mitigation for each.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Teleworking is performing one's professional duties outside the traditional office using ICT (computer, Internet, communication tools). Types: full remote, hybrid (part home, part office), freelance (independent worker serving several clients online).
+\item Cloud storage only keeps files on remote servers accessible from anywhere; collaborative editing goes further: several users modify the \emph{same} cloud document simultaneously, with real-time synchronisation, comments and version history.
+\item Tools: computers, reliable Internet, e-mail, videoconferencing (Meet/Teams/Zoom), a collaborative suite (Google Workspace or Microsoft 365) with shared cloud folders, VPN for secure access to accounting software. Risks: power cuts and connection failures (plan a backup such as a generator or 4G router) and data security (confidential accounting data on home networks — enforce strong passwords, controlled sharing rights, and VPN).
+\item E-commerce: ordering goods on Jumia or via a WhatsApp shop paid by mobile money. E-banking: transferring money or paying bills with MTN MoMo / Orange Money or a bank's app. E-government: declaring taxes or applying for an official document through an online administrative portal.
+\item \textbf{Workflow:} \textbf{Tools:} Google Meet (video), Google Slides (poster design), Google Drive (shared folder), WhatsApp group (quick chat). \textbf{Steps:} (1) Kick-off Meet: agree theme, assign roles (research, design, text). (2) Shared Slides file: each works on assigned slides; use comments for feedback. (3) 12-hour check-in Meet: review progress, merge sections. (4) Final 2-hour sprint: polish, export as PDF/PNG. (5) Submit via Drive link. \textbf{Communication:} WhatsApp for urgent queries; scheduled Meets at 0h, 12h, 36h, 46h. \textbf{Obstacles \& mitigations:} (a) Power cuts — use phone hotspot (4G) as backup, work offline in Slides (syncs when online). (b) Expensive/limited data — use text-only WhatsApp for coordination, disable video in Meet unless screen-sharing, download assets beforehand.
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter \emph{Using the Internet} by asking you to mobilise, in one authentic project, everything you have learnt in Lessons 39 and 40:
+
+\begin{itemize}
+\item \cle{Information retrieval} (Lesson 39): formulating precise queries, using \cle{advanced search operators} (quotation marks for exact phrases, \texttt{site:} to restrict domains, \texttt{-} to exclude terms, \texttt{filetype:} to target specific formats), and evaluating the \cle{reliability} of sources using criteria such as authority, currency, objectivity, and coverage.
+\item \cle{Cloud collaboration} (Lesson 39/40): creating, sharing and co-editing a document online, managing access rights (view, comment, edit) and using version history to track changes.
+\item \cle{Internet communication} (Lesson 40): writing a formal \cle{e-mail} with an attachment or shared link, respecting \cle{netiquette} rules (clear subject line, polite tone, no SMS abbreviations, reasonable file size); organising and running a \cle{videoconference} with proper etiquette (muted microphone when not speaking, camera management, punctuality, agenda).
+\item \cle{Teleworking} (Lesson 40): reflecting critically on remote work, its advantages (flexibility, reduced travel, access to wider talent) and its constraints in the Cameroonian context (connectivity instability, cost of data bundles, power cuts, digital divide).
+\end{itemize}
+
+\begin{aretenir}[Skills assessed]
+Your team will be marked on four criteria:
+\begin{enumerate}
+\item \textbf{Quality and evaluation of sources}: at least three credible sources correctly cited and justified; one rejected source with reasoned argument.
+\item \textbf{Netiquette} in the e-mail and the videoconference: professional tone, structure, and behaviour.
+\item \textbf{Collaboration} in the shared document: evidence of co-editing, comments, replies, and version history use.
+\item \textbf{Clarity of the presentation} and of the written reflection: well-structured oral delivery and honest, context-aware analysis.
+\end{enumerate}
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Project: ``My Digital Study and Work Portfolio''.}\par
+Your class forms consultancy teams of three or four students. Your team, \emph{Nyambé Digital Consulting}, has just been hired by \textbf{KamerCocoa SARL}, a small cocoa-exporting company based in Bonabéri, Douala. KamerCocoa buys cocoa from cooperatives in the Littoral and South-West regions and exports containers through the Port of Douala. The manager, Mrs Ekindi, has never used the Internet for market research: her information comes only from phone calls to intermediaries, and she suspects she is losing money.
+
+She sends you the following brief:
+
+\begin{quote}
+\emph{``Young consultants, I need three things. First, find me reliable, recent information on world cocoa prices and on the export regulations and quality standards that apply to a Cameroonian exporter. I do not want rumours: I want sources I can trust, and I want you to tell me \textbf{why} you trust them. Second, because I travel a lot between Douala and Kumba, I want all your findings in one document that my accountant and I can read and comment on from our phones, without exchanging paper. Third, present your conclusions to me in a short online meeting, because I cannot come to your school.''}
+\end{quote}
+
+\textbf{Available data and constraints.}
+\begin{itemize}
+\item Your school computer room has 12 connected PCs; each team also has at least one smartphone with an MTN or Orange data bundle.
+\item Connection quality is variable: the videoconference may have to be replaced by a recorded presentation or a teleconference call.
+\item You have two weeks, with two one-hour sessions in the computer room per week; the rest of the work is done remotely, from home or from a cybercafé.
+\item Budget: FCFA~0 for software — only free tools (search engines, free cloud office suites, free videoconferencing platforms) may be used.
+\end{itemize}
+
+\textbf{Deliverables} (one per team):
+\begin{enumerate}
+\item A \textbf{source table} with at least three evaluated sources (URL, author/organisation, date, reliability argument).
+\item A \textbf{shared cloud document} containing the findings, co-edited by all members.
+\item A \textbf{formal e-mail} to the client, with the document attached or shared by a correctly configured link.
+\item A \textbf{10-minute videoconference} (or simulated/recorded version) presenting the results.
+\item A one-page \textbf{written reflection} on teleworking in this project.
+\end{enumerate}
+
+\courssub{Tasks}
+
+Work through the following guided tasks in order. They mobilise progressively all the skills of the chapter.
+
+\begin{enumerate}
+\item \textbf{Prepare the search.} As a team, list five keywords or expressions in English and in French related to the brief (e.g. \emph{cocoa farmgate price}, \emph{cacao exportation Cameroun}). Then write three precise queries using advanced operators: one with quotation marks for an exact phrase, one with \texttt{site:} to limit results to an official or institutional domain, and one with \texttt{filetype:pdf} to find reports. Write the three queries down before typing them.
+\item \textbf{Search and select.} Run your queries. From the results, choose at least \textbf{three sources}: for example an international commodity-pricing body, a Cameroonian institutional site (ministry, exporters' association, port authority) and a recognised news or industry source. For each source, record: the full \cle{URL}, the author or organisation, the publication date, and one sentence justifying its reliability (authority, currency, objectivity).
+\item \textbf{Reject a source.} Find one result that looks attractive but that you reject (outdated, anonymous, commercial bias, forum post). Explain in two or three lines why it fails your evaluation criteria.
+\item \textbf{Set up the shared document.} Create a cloud document (e.g. a free online word processor such as Google Docs, Office Online, or OnlyOffice). Share it so that all team members can \emph{edit} and the teacher can \emph{comment}. Agree on rules: who writes which section, and how you will avoid overwriting each other (e.g. work on different paragraphs, use comments for suggestions). Structure the document: title page, source table, summary of prices, summary of regulations, recommendations.
+\item \textbf{Collaborate online.} Each member writes their section, possibly from home. Use the comment feature to give feedback on a teammate's paragraph, and reply to at least one comment addressed to you. Use the \cle{version history} to restore or compare a version if a mistake is made.
+\item \textbf{Write the formal e-mail.} Draft an e-mail to Mrs Ekindi: clear subject line, polite greeting, three short paragraphs (purpose, main findings, invitation to the online meeting), professional closing, and the report attached or shared with a correctly configured link (view or comment rights for the client). Check netiquette: no SMS abbreviations, no ALL CAPS, reasonable attachment size (compress if necessary).
+\item \textbf{Hold the videoconference.} Organise a 10-minute online meeting using a free tool (e.g. Google Meet, Jitsi Meet, Zoom free tier): one member chairs, one presents prices, one presents regulations, one answers questions. Respect videoconference netiquette (microphone muted when not speaking, camera on if bandwidth allows, punctuality, prepared slides or screen share). If the connection fails, record the presentation as a video or audio file and send it instead — and note this adaptation in your reflection.
+\item \textbf{Reflect.} Individually, write one page answering: How did teleworking tools make this project possible? What difficulties did you meet (data cost, power cuts, bandwidth, synchronising the team)? What advice would you give a Cameroonian SME that wants to adopt teleworking?
+\end{enumerate}
+
+\begin{attention}[Common traps]
+\begin{itemize}
+\item Do not copy-paste from sources without quoting them: that is \cle{plagiarism} and fails the evaluation criterion.
+\item Do not share the document with ``anyone with the link can edit'' — restrict rights to team members (edit) and teacher/client (comment or view).
+\item An e-mail without a subject line or written in SMS language fails the netiquette criterion immediately.
+\item Test the videoconference tool \emph{before} the meeting day (audio, video, screen sharing).
+\item In the reflection, avoid vague statements; cite concrete examples from your experience (e.g. ``On day 3, a power cut in Makepe lasted 2 hours, delaying Bih's section'').
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+Below is a condensed model of what an excellent team produces.
+
+\textbf{Task 1 — Queries.} Keywords: \emph{cocoa price ICCO}, \emph{prix bord champ cacao Cameroun}, \emph{cocoa export regulations Cameroon}, \emph{quality standards cocoa beans}, \emph{Douala port export procedures}. Queries:
+\begin{itemize}
+\item \texttt{"cocoa" "daily price" site:icco.org} — exact term, restricted to the International Cocoa Organization.
+\item \texttt{cacao exportation réglementation site:mincommerce.gov.cm OR site:oncc.cm} — Cameroonian institutional sources (Ministry of Commerce, National Cocoa and Coffee Board).
+\item \texttt{cocoa quality standards filetype:pdf} — downloadable official reports (ISO, ICCO, FAO).
+\end{itemize}
+
+\textbf{Tasks 2–3 — Source table (extract).}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL}\textbf{Source} & \textbf{Author / date} & \textbf{Why reliable} \\ \hline
+ICCO daily prices page & International Cocoa Organization, updated daily & Intergovernmental body; primary source for world prices, transparent methodology \\ \hline
+ONCC / Ministry of Commerce page on export procedures & Cameroonian public institution, current year & Official regulator; authoritative on national rules, licensing, quality control \\ \hline
+Reuters article on cocoa market trends & Recognised news agency, recent (within last month) & Editorial control; cross-checked with ICCO data; cites named analysts \\ \hline
+\end{tabularx}
+\end{center}
+\emph{Rejected source}: an anonymous blog post titled ``Cocoa prices will explode!!!'' — no author, no date, no references, clear sensationalist bias; fails authority, currency, and objectivity criteria.
+
+\textbf{Tasks 4–5 — Collaboration.} The team creates a document ``KamerCocoa — Market Study'' in a free cloud suite. Rights: members = \emph{edit}, teacher = \emph{comment}. Sections are assigned (Amina: prices; Bih: regulations; Che: recommendations; all: source table). Bih comments on Amina's paragraph: ``Please add the date of this price''; Amina replies and corrects. When Che accidentally deletes the source table, the team restores it via the version history — proof that the tool was mastered.
+
+\textbf{Task 6 — Model e-mail.}
+\begin{quote}
+\textbf{Subject:} Market study on cocoa prices and export regulations — KamerCocoa SARL\\[2pt]
+Dear Mrs Ekindi,\\
+Further to your request, please find attached our report on world cocoa prices and on the export regulations applicable to Cameroonian exporters.\\
+Our main findings are that world prices are currently high but volatile, and that exporters must respect the quality standards and procedures set by the national regulator before shipment through the Port of Douala. All our sources are listed and evaluated on page 2.\\
+We would be pleased to present these results in a 10-minute videoconference on Thursday at 4 p.m., at your convenience.\\
+Yours faithfully,\\
+Amina Mbappe, for Nyambé Digital Consulting\\
+\emph{Attachment: KamerCocoa\_Market\_Study.pdf (1.2 MB)}
+\end{quote}
+
+\textbf{Task 7 — Videoconference.} The team tests the tool the day before. During the meeting: the chair introduces the agenda (1 min), prices are presented (3 min), regulations (3 min), questions (3 min). Microphones are muted between interventions. Because the school bandwidth drops, cameras are switched off and only slides and voices are shared — a correct adaptation, noted in the reflection.
+
+\textbf{Task 8 — Reflection (extract).} \emph{``Teleworking allowed our team to finish the report although we live in different neighbourhoods and could not meet every evening: the shared document replaced physical meetings, and the videoconference replaced a trip to Bonabéri. However, we faced real Cameroonian constraints: two members exhausted their data bundles before the end, one power cut delayed a work session, and the videoconference quality forced us to turn cameras off. Our advice to an SME: teleworking saves time and transport costs, but one must budget for data, keep offline copies of shared documents, and always have a low-bandwidth fallback (phone call, recorded video).''}
+
+\begin{aretenir}[What the examiner expects]
+A complete portfolio: evaluated sources (not just links), a genuinely co-edited document with visible comment threads and version history, a netiquette-compliant e-mail, a well-run meeting (or recorded fallback with explanation), and a reflection that is honest about both the power and the limits of teleworking in Cameroon.
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Using the Internet}
+
+\courssub{Skill 1: Identifying and Classifying Internet Services}
+
+\begin{methode}[Recognising an Internet Service and Its Protocol]
+When an exam question describes a situation (sending a letter electronically, browsing a page, transferring a file, making a video call), identify the service and its underlying protocol using this reflex:
+\begin{enumerate}
+\item Ask: \emph{what is being exchanged?} (a message, a file, a web page, a live stream, a voice).
+\item Match the exchange to a \cle{service}: e-mail, World Wide Web, FTP, instant messaging, VoIP, newsgroups/IRC, streaming.
+\item Give the \cle{protocol} that carries it: SMTP/POP3/IMAP for mail, HTTP/HTTPS for the web, FTP for file transfer, SIP/RTP for VoIP.
+\item State the \cle{port number} if asked: 25 (SMTP), 110 (POP3), 143 (IMAP), 80 (HTTP), 443 (HTTPS), 21 (FTP).
+\item Justify in one sentence why that service fits the need (speed, cost, reliability, interactivity).
+\end{enumerate}
+\textbf{Key idea to remember:} the Internet is the \emph{network of networks} (the infrastructure); the services (web, e-mail, FTP\ldots) are \emph{applications running on top of it}. The web is only one service among many --- never write ``the Internet is the web''.
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.5cm, every node/.style={font=\small}]
+\node[draw, rounded corners, fill=popblueL, text width=3cm, align=center] (infra) {Internet Infrastructure\\(TCP/IP, routers, cables, ISPs)};
+\node[draw, rounded corners, fill=popgreenL, text width=2.5cm, align=center, below left=1cm and 1cm of infra] (web) {World Wide Web\\HTTP/HTTPS\\Port 80/443};
+\node[draw, rounded corners, fill=popgreenL, text width=2.5cm, align=center, below=1cm of infra] (mail) {E-mail\\SMTP/POP3/IMAP\\Ports 25,110,143};
+\node[draw, rounded corners, fill=popgreenL, text width=2.5cm, align=center, below right=1cm and 1cm of infra] (ftp) {File Transfer\\FTP/SFTP\\Port 21};
+\node[draw, rounded corners, fill=poporange, text width=2.5cm, align=center, right=2cm of web] (voip) {VoIP/Streaming\\SIP/RTP\\Dynamic ports};
+\node[draw, rounded corners, fill=poporange, text width=2.5cm, align=center, right=2cm of mail] (im) {Instant Messaging\\XMPP/Proprietary\\Various ports};
+\draw[->, thick, popdark] (infra) -- (web);
+\draw[->, thick, popdark] (infra) -- (mail);
+\draw[->, thick, popdark] (infra) -- (ftp);
+\draw[->, thick, popdark] (infra) -- (voip);
+\draw[->, thick, popdark] (infra) -- (im);
+\end{tikzpicture}
+\legende{Internet infrastructure vs. application-layer services}
+\end{popfigure}
+
+\begin{exoresolu}[Classifying services in a Douala business]
+The manager of an import company in Douala uses the Internet daily. For each activity below, name the Internet service used and the main protocol involved: (a) consulting a supplier's catalogue online; (b) sending a price list to a client in Bamenda; (c) downloading a 500~MB product database from the supplier's server; (d) holding a voice conversation with a partner in Lagos using the computer.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) Consulting a catalogue online.} This is the \cle{World Wide Web} service: the manager requests pages from a web server using a browser. Protocol: \cle{HTTP} (or \cle{HTTPS}, port 443, if the connection is encrypted --- which is the case for any serious commercial site today).
+\item \textbf{(b) Sending a price list.} This is \cle{electronic mail (e-mail)}. The message leaves the sender's machine via \cle{SMTP} (port 25/587) and is stored on the recipient's mail server, from which it is collected using \cle{POP3} (port 110) or read online with \cle{IMAP} (port 143). Advantage over the post: delivery in seconds at almost zero marginal cost, with an attachment possible.
+\item \textbf{(c) Downloading a large database.} This is a \cle{file transfer}, service \cle{FTP} (File Transfer Protocol, port 21), or its secure variant SFTP (SSH File Transfer Protocol, port 22). FTP is preferred to e-mail for very large files because mail servers limit attachment sizes and FTP supports resuming an interrupted download --- precious where the connection can drop.
+\item \textbf{(d) Voice conversation over the computer.} This is \cle{VoIP} (Voice over IP), e.g.\ a WhatsApp or Skype call. Protocols such as SIP (signalling) and RTP (transport of the voice packets) are used. The voice is digitised, cut into packets and routed over the Internet instead of the classical telephone network, which makes an international Douala--Lagos call cost almost nothing.
+\end{enumerate}
+\textbf{Examiner's remark:} always pair \emph{service} with \emph{protocol}; giving only ``Internet'' as an answer earns no mark.
+\end{exoresolu}
+
+\courssub{Skill 2: Formulating an Effective Search Engine Query}
+
+\begin{methode}[Building a Precise Search Query]
+To retrieve relevant information quickly with a search engine (Google, Bing\ldots):
+\begin{enumerate}
+\item Extract the \cle{keywords} from the question; drop articles and vague words (``the'', ``about'', ``information on'').
+\item Put an \emph{exact phrase} between \cle{quotation marks}: \texttt{"Cameroon GCE Board"}.
+\item Combine terms with \cle{Boolean operators}: \texttt{AND} (both terms), \texttt{OR} (either term), a minus sign \texttt{-} to exclude a word.
+\item Use \cle{advanced operators} when needed: \texttt{site:} to search inside one website, \texttt{filetype:} for a document format (pdf, docx), \texttt{intitle:} for words in the title.
+\item Evaluate the results: check the \emph{source} (official site, .gov, .edu), the \emph{date}, and cross-check at least two sources before trusting a fact.
+\end{enumerate}
+\textbf{Reflex:} a good query is short, precise, and uses the vocabulary that the \emph{author of the answer} would use, not the vocabulary of the question.
+\end{methode}
+
+\begin{exemplebox}[Common Advanced Search Operators]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}\hline
+\rowcolor{popblueL}
+\textbf{Operator} & \textbf{Function} & \textbf{Example} \\ \hline
+\texttt{site:} & Restrict to a domain & \texttt{site:gceboard.com} \\ \hline
+\texttt{filetype:} & Restrict to file format & \texttt{filetype:pdf} \\ \hline
+\texttt{intitle:} & Words in page title & \texttt{intitle:syllabus} \\ \hline
+\texttt{inurl:} & Words in URL & \texttt{inurl:ict} \\ \hline
+\texttt{-} & Exclude term & \texttt{-"Ordinary Level"} \\ \hline
+\texttt{OR} / \texttt{|} & Either term & \texttt{ICT OR "Computer Science"} \\ \hline
+\texttt{*} & Wildcard (whole word) & \texttt{"GCE * syllabus"} \\ \hline
+\end{tabularx}
+\end{center}
+\end{exemplebox}
+
+\begin{exoresolu}[Searching for an official document]
+A student in Buea must find, on the website of the Cameroon GCE Board only, the official Advanced Level ICT syllabus in PDF format, but she wants to exclude results about the Ordinary Level. Write one single search-engine query satisfying all these conditions, and justify each element.
+\tcblower
+\textbf{Solution.} A suitable query is:
+\begin{center}
+\texttt{"ICT syllabus" "Advanced Level" site:gceboard.cm filetype:pdf -"Ordinary Level"}
+\end{center}
+Justification, element by element:
+\begin{itemize}
+\item \texttt{"ICT syllabus"}: the quotation marks force the engine to look for this \emph{exact phrase}, avoiding pages where ``ICT'' and ``syllabus'' appear far apart.
+\item \texttt{"Advanced Level"}: fixes the level required by the question.
+\item \texttt{site:gceboard.cm}: the \texttt{site:} operator restricts the search to the \emph{official GCE Board domain} (using the correct .cm TLD), eliminating blogs and forums that may publish wrong or outdated versions.
+\item \texttt{filetype:pdf}: only PDF documents are returned, as requested.
+\item \texttt{-"Ordinary Level"}: the minus sign \emph{excludes} every page mentioning the Ordinary Level, cleaning the result list.
+\end{itemize}
+\textbf{Verification reflex:} once the document is found, the student checks that it is hosted on the official domain (source reliability) and notes its year of publication to be sure it is the current syllabus. This evaluation step (source, date, cross-checking) is exactly what the syllabus expects under ``information retrieval''.
+\end{exoresolu}
+
+\courssub{Skill 3: Choosing the Right Communication Tool}
+
+\begin{methode}[Selecting a Communication Tool for a Given Need]
+Internet communication tools fall into two families:
+\begin{itemize}
+\item \cle{Asynchronous} tools (the participants need not be connected at the same time): e-mail, forums, mailing lists, newsgroups.
+\item \cle{Synchronous} tools (real time): instant messaging/chat, VoIP calls, videoconferencing, IRC.
+\end{itemize}
+To answer an exam question:
+\begin{enumerate}
+\item Determine whether the exchange must be \emph{immediate} (synchronous) or can wait (asynchronous).
+\item Count the participants: one-to-one, one-to-many, or group discussion.
+\item Check the constraints: need for a written \emph{trace} (e-mail, forum), need for \emph{rich interaction} (videoconference), cost, bandwidth available.
+\item Conclude by naming the tool \emph{and} justifying the choice with two arguments.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Equipping a school staff]
+The principal of a college in Yaoundé wants to: (a) send the official timetable to all 60 teachers, keeping proof that it was sent; (b) allow the five mathematics teachers to discuss exercises quickly among themselves during the day; (c) hold the end-of-term staff meeting with three teachers who are on mission in Maroua. For each case, propose the most appropriate Internet communication tool and justify the choice.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) Timetable to 60 teachers with proof.} Use \cle{e-mail} (one-to-many, asynchronous). Justification: (i) a single message addressed to a mailing list reaches everyone at negligible cost; (ii) the message is \emph{stored and dated} on the server, providing the written trace the principal requires; (iii) teachers read it when convenient --- no need for all 60 to be online simultaneously.
+\item \textbf{(b) Quick exchanges among five teachers.} Use an \cle{instant messaging} group (e.g.\ a WhatsApp or Telegram group), synchronous. Justification: messages are delivered and answered in seconds, the group keeps the five members in one conversation thread, and short informal exchanges do not deserve the formality of e-mail.
+\item \textbf{(c) Staff meeting with distant colleagues.} Use \cle{videoconferencing} (Zoom, Google Meet, Teams), synchronous and multi-participant. Justification: it reproduces face-to-face interaction (voice + image + screen sharing for documents), avoids the travel cost Yaoundé--Maroua, and all participants speak in real time, which a forum or e-mail chain cannot do.
+\end{enumerate}
+\textbf{Examiner's remark:} the marks are in the \emph{justification}: always link the tool's property (trace, real time, group, cost) to the need expressed in the statement.
+\end{exoresolu}
+
+\courssub{Skill 4: Explaining How an E-mail Travels}
+
+\begin{methode}[Describing the Journey of an E-mail]
+To describe the transmission of an e-mail, follow the chain and name the protocol at each stage:
+\begin{enumerate}
+\item The sender composes the message in a \cle{mail client} (Outlook, Thunderbird, or webmail) and clicks ``Send''.
+\item The message is pushed to the sender's \cle{mail server} using \cle{SMTP}.
+\item SMTP servers relay the message across the Internet to the \emph{recipient's} mail server (located thanks to the domain part of the address, after the \texttt{@}).
+\item The message is stored in the recipient's \cle{mailbox} on that server.
+\item The recipient collects it with \cle{POP3} (download to the device, often deleted from the server) or reads/synchronises it with \cle{IMAP} (messages stay on the server, accessible from several devices).
+\end{enumerate}
+\textbf{Key contrast to remember:} SMTP \emph{sends}, POP3/IMAP \emph{receive}. POP3 = one device; IMAP = several devices synchronised.
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.2cm, every node/.style={font=\small}]
+\node[draw, rounded corners, fill=popblueL, text width=2.2cm, align=center] (sender) {Sender\\Mail Client};
+\node[draw, rounded corners, fill=popgreenL, text width=2.2cm, align=center, right=2cm of sender] (smtp1) {Sender's\\SMTP Server};
+\node[draw, rounded corners, fill=popgreenL, text width=2.2cm, align=center, right=2cm of smtp1] (smtp2) {Recipient's\\SMTP Server};
+\node[draw, rounded corners, fill=poporange, text width=2.2cm, align=center, right=2cm of smtp2] (mbox) {Recipient's\\Mailbox};
+\node[draw, rounded corners, fill=popblueL, text width=2.2cm, align=center, below=1.5cm of mbox] (recipient) {Recipient\\Mail Client};
+\draw[->, thick] (sender) -- node[above] {SMTP} (smtp1);
+\draw[->, thick] (smtp1) -- node[above] {SMTP (relay)} (smtp2);
+\draw[->, thick] (smtp2) -- node[above] {Delivery} (mbox);
+\draw[->, thick] (mbox) -- node[right] {POP3 / IMAP} (recipient);
+\end{tikzpicture}
+\legende{Email transmission flow: SMTP for sending/relay, POP3/IMAP for retrieval}
+\end{popfigure}
+
+\begin{exoresolu}[From Bafoussam to Garoua]
+Amina in Bafoussam sends an e-mail with a CV attached to \texttt{hr@company.cm} in Garoua. (a) Describe the complete journey of the message, naming the protocol used at each stage. (b) The company's secretary reads her mail both on her office desktop and on her phone. Should the account be configured with POP3 or IMAP? Justify.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item[(a)] \textbf{Journey of the message.}
+\begin{itemize}
+\item \emph{Step 1:} Amina writes the message in her mail client and attaches the CV. The client encodes the attachment (MIME format) so that binary files can travel inside a text message.
+\item \emph{Step 2:} her client transfers the message to her provider's outgoing mail server using \cle{SMTP} (port 25 or 587 with STARTTLS).
+\item \emph{Step 3:} that server reads the recipient's address, queries the DNS (MX record) to find the mail server responsible for the domain \texttt{company.cm}, and relays the message to it, again by \cle{SMTP}, possibly through intermediate servers.
+\item \emph{Step 4:} the message is stored in the mailbox of \texttt{hr@company.cm} on the destination server, where it waits --- the recipient does not need to be connected; this is why e-mail is \emph{asynchronous}.
+\item \emph{Step 5:} when the secretary checks her mail, her client retrieves the message using \cle{POP3} (port 110/995) or \cle{IMAP} (port 143/993).
+\end{itemize}
+\item[(b)] \textbf{POP3 or IMAP?} Choose \cle{IMAP}. With POP3, messages are typically downloaded to \emph{one} machine and removed from the server: a mail read on the phone would no longer appear on the office desktop. IMAP keeps all messages \emph{on the server} and merely synchronises each device, so the secretary sees the same mailbox --- including folders and read/unread status --- on both her desktop and her phone. This is exactly the situation (several devices, one account) for which IMAP was designed.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Skill 5: Analysing Teleworking: Advantages, Limits and Requirements}
+
+\begin{methode}[Discussing Teleworking in a Structured Way]
+\cle{Teleworking} (telecommuting) is working for an organisation from outside its premises --- typically from home --- using ICT (Internet connection, e-mail, videoconferencing, cloud storage, remote access). For a ``discuss'' question, organise the answer in four blocks:
+\begin{enumerate}
+\item \textbf{Definition} of teleworking and the tools that make it possible.
+\item \textbf{Advantages}: for the worker (no commuting, flexible hours, better family balance), for the employer (smaller offices, access to distant skills, continuity during crises), for society (less traffic and pollution, jobs in regions far from big cities).
+\item \textbf{Limits/drawbacks}: isolation, blurred boundary between work and private life, need for self-discipline, dependence on electricity and a good Internet connection, data security risks outside the office network.
+\item \textbf{Requirements}: reliable computer and broadband connection, collaboration software, security measures (VPN, strong passwords, antivirus), and a clear agreement between employer and worker.
+\end{enumerate}
+Conclude with a balanced personal judgement --- this earns the ``evaluation'' mark.
+\end{methode}
+
+\begin{exoresolu}[Teleworking for a bank in Cameroon]
+A bank headquartered in Douala proposes that its software developers telework three days per week. (a) Define teleworking. (b) Give two advantages for the developers and two for the bank. (c) State two difficulties this arrangement may face in the Cameroonian context and propose a solution for each.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item[(a)] \textbf{Definition.} Teleworking is a way of organising work in which an employee performs his or her duties \emph{outside the company's premises}, from home or another remote location, by means of information and communication technologies: Internet connection, e-mail, videoconferencing, shared cloud documents and secure remote access to the company's systems.
+\item[(b)] \textbf{Advantages.}
+\begin{itemize}
+\item \emph{For the developers:} (i) they save the time and money of daily commuting in Douala's traffic; (ii) they gain flexible organisation of their working day, improving concentration and family life.
+\item \emph{For the bank:} (i) it reduces the office space, electricity and logistics needed per employee; (ii) it can recruit skilled developers living in other towns (Bamenda, Buea\ldots) without relocating them, widening its pool of talent.
+\end{itemize}
+\item[(c)] \textbf{Difficulties and solutions.}
+\begin{itemize}
+\item \emph{Power cuts and unstable Internet.} Interruptions of ENEO supply or of the connection can stop work. \emph{Solution:} provide each teleworker with an inverter/UPS and a backup mobile-data subscription (e.g.\ a 4G modem from MTN or Orange) so that work continues when one channel fails.
+\item \emph{Security of banking data outside the office.} A developer connecting from home could expose confidential customer data. \emph{Solution:} impose a \cle{VPN} (encrypted tunnel to the bank's network), strong authentication (password + one-time code), up-to-date antivirus, and forbid storing data on personal devices.
+\end{itemize}
+\end{enumerate}
+\textbf{Conclusion (evaluation mark):} teleworking is beneficial for this bank \emph{provided} the technical (power, connectivity) and security conditions are met; a hybrid formula --- three days at home, two days in the office --- keeps team cohesion while gaining the advantages.
+\end{exoresolu}
+
+\courssub{Skill 6: Evaluating the Reliability of Online Information}
+
+\begin{methode}[Checking Whether a Web Source Is Trustworthy]
+Before using information found on the Internet (in an essay, a project, or an exam scenario), apply the \cle{CRAP-style} checklist:
+\begin{enumerate}
+\item \textbf{Source/Authority:} who published it? Prefer official institutions (.gov.cm, universities, recognised organisations) to anonymous blogs.
+\item \textbf{Date/Currency:} is the page recent and maintained? Check the publication or update date.
+\item \textbf{Objectivity:} is the page informing or \emph{persuading/selling}? Identify advertising and propaganda.
+\item \textbf{Accuracy/Cross-check:} can the same fact be confirmed by at least one other independent source?
+\item \textbf{Signs of danger:} no author, no date, spelling errors everywhere, sensational claims, requests for money or personal data.
+\end{enumerate}
+\textbf{Reflex:} on the Internet, \emph{anyone can publish anything}; the burden of verification is on the reader.
+\end{methode}
+
+\begin{aretenir}[Quick Reliability Checklist]
+\begin{itemize}
+\item \textbf{URL:} .gov, .edu, .org (official) vs. .blogspot, .wordpress (personal)
+\item \textbf{Author:} named expert vs. anonymous
+\item \textbf{Date:} recent update vs. years old
+\item \textbf{References:} cites sources vs. no citations
+\item \textbf{Design:} professional vs. excessive ads/pop-ups
+\item \textbf{HTTPS:} secure (padlock) vs. HTTP only
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Viral message about a ``scholarship'']
+A message circulates in a WhatsApp group of Upper Sixth students: ``The Ministry of Higher Education offers 500 full scholarships. Send your name, phone number and 2\,000 FCFA registration fee by mobile money to 6XX XX XX XX to register.'' (a) Give three signs that this message is probably fraudulent. (b) Describe the correct procedure a student should follow to verify the information.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item[(a)] \textbf{Signs of fraud.}
+\begin{itemize}
+\item \emph{Request for money:} a genuine State scholarship never requires a ``registration fee'' sent by mobile money to an \emph{individual's} phone number. Asking for payment or personal data is the classic mark of a scam (\cle{phishing}/fraud).
+\item \emph{Unofficial channel:} official ministerial announcements are published on the Ministry's website and official press, not forwarded anonymously in WhatsApp groups. The message names no author, no reference, no website.
+\item \emph{Urgency and vague identity:} the number ``500 scholarships'' with no programme name, no eligibility criteria and a personal number (6XX\ldots) instead of an institutional contact is designed to push victims to act before thinking.
+\end{itemize}
+\item[(b)] \textbf{Correct verification procedure.}
+\begin{enumerate}
+\item Do \emph{not} reply, pay, or forward the message (forwarding spreads the scam).
+\item Check the \emph{official source}: visit the Ministry of Higher Education's website or verified social-media pages, or call the Ministry directly, to see whether such an offer exists.
+\item \emph{Cross-check} with a second independent source (school administration, official press).
+\item Report the fraudulent number to the operator and, where appropriate, to the competent authorities (in Cameroon, ANTIC sensitises the public on exactly this type of cyber-fraud), and warn the group that the message is a scam.
+\end{enumerate}
+\end{enumerate}
+\textbf{Examiner's remark:} this question mixes information retrieval (evaluate the source) with security awareness; both dimensions must appear for full marks.
+\end{exoresolu}
+
+\courssub{Skill 7: Planning an Online Collaborative Work Session}
+
+\begin{methode}[Organising Group Work Online]
+To plan collaboration at a distance (a frequent ``integration'' task):
+\begin{enumerate}
+\item Define the \emph{task} and split it into sub-tasks with a responsible person and a deadline for each.
+\item Choose the \emph{toolchain}: a shared document (Google Docs, OneDrive) for simultaneous writing; instant messaging for quick coordination; videoconferencing for meetings; e-mail for formal communications with a trace.
+\item Set \emph{rules}: file naming, who edits what and when, how versions are managed (history/versions in the cloud avoid ``final\_v2\_real\_final.docx'' chaos).
+\item Plan \emph{security and backup}: strong passwords, controlled sharing rights (``can view'' vs ``can edit''), regular backups.
+\item Schedule \emph{checkpoints} (short video meetings) to synchronise the group.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[A group project across three towns]
+Four Upper Sixth students --- two in Yaoundé, one in Bafoussam, one in Limbe --- must produce a joint ICT project report within two weeks. Propose a complete organisation plan: tools for writing, coordination and meetings; rules for managing the shared document; and one risk with its solution.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Task breakdown.} The report is divided into four parts (introduction, study, realisation, conclusion); each student owns one part, with internal deadlines set three days before the final deadline to leave time for merging and proofreading.
+\item \textbf{Toolchain.}
+\begin{itemize}
+\item \emph{Writing:} a single shared document on Google Docs (or Word Online). All four can write \emph{simultaneously}; the automatic \emph{version history} lets the group see who changed what and restore an earlier version if a section is damaged.
+\item \emph{Coordination:} a WhatsApp group for quick daily questions (synchronous, informal).
+\item \emph{Meetings:} a 30-minute videoconference (Google Meet) twice a week to take decisions together.
+\item \emph{Formal trace:} important decisions (final plan, validation of parts) are confirmed by e-mail so that a dated written record exists.
+\end{itemize}
+\item \textbf{Document rules.} One single master file (no copies circulating by e-mail); each member writes only in his/her section; comments are used for suggestions instead of modifying another's text; the file name is fixed once, e.g.\ \texttt{ICT\_Project\_Group3}, and sharing rights are set to ``can edit'' for the four members only, ``can view'' for the teacher.
+\item \textbf{Risk and solution.} \emph{Risk:} a member loses connectivity (power cut, exhausted data bundle) just before a deadline. \emph{Solution:} internal deadlines are set \emph{before} the real one, the cloud document keeps every member's work accessible to the others at all times, and a backup copy is downloaded weekly --- so one member's failure never blocks the group.
+\end{enumerate}
+\textbf{Conclusion:} this plan combines the chapter's tools (cloud collaboration, messaging, videoconferencing, e-mail) with clear rules, which is exactly what distinguishes effective teleworking/collaboration from simple ``chatting online''.
+\end{exoresolu}
+
+\courssub{Integration Activity: End-to-End Scenario}
+
+\begin{experience}[Designing a Remote Work Setup for an NGO]
+An NGO based in Yaoundé wants to hire two field coordinators based in Bertoua and Maroua. They will visit rural communities, collect data on tablets, and report weekly to the head office. Design a complete ICT setup covering: (a) Internet connectivity options for the field; (b) secure data transmission to the central database; (c) weekly coordination meeting format; (d) document sharing for reports and templates; (e) security policy for lost/stolen devices.
+\tcblower
+\textbf{Guideline Solution.}
+\begin{enumerate}
+\item \textbf{Connectivity:} Primary: 4G/4G+ modems (MTN/Orange/Camtel) with external antennas for rural areas. Backup: satellite internet (e.g., Starlink) for dead zones. Each coordinator gets a dual-SIM router for automatic failover.
+\item \textbf{Data transmission:} Tablets run a custom app (or KoboToolbox/ODK) that stores data locally offline and synchronises via HTTPS/REST API to the NGO's server when online. All traffic forced through an \cle{OpenVPN} or \cle{WireGuard} tunnel to the head office firewall. Server uses PostgreSQL/PostGIS with daily encrypted backups.
+\item \textbf{Weekly meetings:} Videoconference (Jitsi Meet self-hosted or Google Meet) every Monday 09:00. Agenda shared via cloud doc beforehand; minutes written collaboratively during the call.
+\item \textbf{Document sharing:} Nextcloud instance on the NGO's server (or Google Workspace/Office 365 with data residency in EU/Africa). Folders: \texttt{/Templates}, \texttt{/Reports/2025/Week\_NN}, \texttt{/Photos}. Sharing rights: coordinators ``edit'' on their week folder, ``view'' on templates; programme manager ``edit'' everywhere.
+\item \textbf{Security policy:} Tablets enrolled in MDM (Mobile Device Management --- e.g., Microsoft Intune or ManageEngine). Policies: enforced PIN + biometric, full-disk encryption, remote wipe after 48h offline, no installation of unknown apps, automatic screen lock after 2 min. Lost device $\rightarrow$ immediate remote wipe + SIM block via operator.
+\end{enumerate}
+\textbf{Key integration point:} every choice above references a specific tool/protocol from the chapter (VPN, HTTPS, videoconferencing, cloud sync, MDM) and adapts it to Cameroonian constraints (connectivity, power, cost).
+\end{experience}
+
+\begin{aretenir}[Chapter Summary: Using the Internet]
+\begin{itemize}
+\item \textbf{Services $\neq$ Infrastructure:} Web (HTTP/HTTPS), E-mail (SMTP/POP3/IMAP), FTP, VoIP (SIP/RTP), Streaming, IM --- each has its protocol and port.
+\item \textbf{Search mastery:} keywords + quotes + Boolean + \texttt{site:} + \texttt{filetype:} + \texttt{-exclude} + source/date/cross-check.
+\item \textbf{Communication choice:} async (e-mail, forum) vs sync (IM, VoIP, video) $\rightarrow$ match to need (trace, urgency, group size, bandwidth).
+\item \textbf{Email flow:} Client $\xrightarrow{\text{SMTP}}$ Sender MTA $\xrightarrow{\text{SMTP}}$ Recipient MTA $\xrightarrow{\text{POP3/IMAP}}$ Client. IMAP for multi-device sync.
+\item \textbf{Teleworking:} definition + advantages (worker/employer/society) + limits (isolation, security, connectivity) + requirements (hardware, broadband, VPN, policy) + balanced conclusion.
+\item \textbf{Reliability:} CRAP checklist (Authority, Date, Objectivity, Accuracy) + phishing red flags (money request, unofficial channel, urgency).
+\item \textbf{Collaboration:} task split + toolchain (cloud doc + IM + video + e-mail) + rules (naming, versions, rights) + risk mitigation (deadlines, backup, offline-first).
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[GCE-Style Practice Questions]
+\begin{enumerate}
+\item A teacher in Kumba wants to download the latest GCE ICT syllabus from the official board website in PDF format, excluding any Ordinary Level documents. Write the exact search query she should type.
+\item Distinguish between the Internet and the World Wide Web. Give two services that run on the Internet but are not the Web.
+\item An employee in Douala sends an email with a 25 MB attachment to a colleague in Buea. Describe the role of SMTP, the recipient's mail server, and IMAP in this process.
+\item A company decides to allow teleworking two days a week. List three advantages for the employer and three technical requirements for the employee's home setup.
+\item A student receives a WhatsApp message claiming ``MINESUP offers 1000 laptops; send 5000 FCFA via Mobile Money to register''. Give three reasons this is a scam and the correct verification steps.
+\item Four students in different towns must write a joint report in one week. Propose a toolchain (writing, chat, meetings, formal trace) and two rules for the shared document.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\texttt{"ICT syllabus" "Advanced Level" site:gceboard.cm filetype:pdf -"Ordinary Level"}
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+The Internet is the global network infrastructure (hardware, cables, routers, TCP/IP). The World Wide Web is an information system of interlinked hypertext documents accessed via HTTP/HTTPS --- it is \emph{one service} running on the Internet. Other Internet services: e-mail (SMTP/POP3/IMAP), File Transfer (FTP/SFTP), VoIP (SIP/RTP), Instant Messaging (XMPP).
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+SMTP pushes the message from the sender's client to the sender's mail server, then relays it across the Internet to the recipient's mail server (Douala $\rightarrow$ Buea). The recipient's mail server stores the message in the colleague's mailbox. IMAP allows the colleague's client to synchronise with that mailbox (read, flag, folder) without downloading and deleting the message, so it remains accessible from other devices.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Advantages for employer: (1) reduced office space/overheads, (2) wider recruitment pool (no relocation needed), (3) business continuity during disruptions (strikes, floods, pandemics). Home requirements: (1) reliable broadband (fibre/4G) + backup, (2) company-approved laptop with VPN client, antivirus, disk encryption, (3) UPS/inverter for power cuts, ergonomic chair/desk.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+Scam signs: (1) genuine government giveaways never ask for registration fees via personal Mobile Money numbers, (2) official announcements come from \texttt{minesup.gov.cm} or verified accounts, not anonymous WhatsApp forwards, (3) urgency + vague details (``1000 laptops'' no model, no criteria) + personal phone number are classic social-engineering tactics. Verification: (1) do not pay/forward, (2) check MINESUP official website/social media, (3) call MINESUP switchboard, (4) report to ANTIC/operator, (5) warn the group.
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+Toolchain: Writing $\rightarrow$ Google Docs/Word Online (simultaneous edit, version history); Chat $\rightarrow$ WhatsApp/Telegram group (quick sync); Meetings $\rightarrow$ Google Meet/Zoom (2$\times$30 min/week); Formal trace $\rightarrow$ e-mail for decisions. Rules: (1) single master file, no emailing copies; each edits only own section, uses comments for others; (2) sharing: ``can edit'' for the four, ``can view'' for teacher; filename fixed as \texttt{Report\_GroupX}; weekly local backup.
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{aretenir}[Key concepts: Internet services and protocols]
+\begin{itemize}
+\item The \cle{Internet} is the global network infrastructure; the \cle{World Wide Web (WWW)} is an information system accessed via the Internet using HTTP/HTTPS.
+\item Main application-layer protocols: \cle{HTTP/HTTPS} (web), \cle{SMTP} (sending e-mail), \cle{POP3/IMAP} (receiving e-mail), \cle{FTP/SFTP} (file transfer), \cle{VoIP} (voice/video calls).
+\item A \cle{URL} (Uniform Resource Locator) identifies a resource: \texttt{protocol://domain-name/path/file}.
+\item \cle{Search engines} use crawlers to index pages; effective retrieval requires Boolean operators, phrase search, and site/filetype filters.
+\item \cle{Synchronous communication} (real-time): video conferencing, instant messaging. \cle{Asynchronous communication} (delayed): e-mail, forums, shared documents.
+\item \cle{Teleworking} relies on cloud collaboration suites (Google Workspace, Microsoft 365), VPNs, and project-management tools.
+\item \cle{Netiquette} and cyber-hygiene (strong passwords, 2FA, phishing awareness) are essential for safe, professional online behaviour.
+\item In Cameroon, \cle{ANTIC} (Agence Nationale des Technologies de l'Information et de la Communication) oversees cybersecurity and fights cybercrime.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item The protocol used to transfer web pages from a server to a browser is:
+\begin{enumerate}
+\item SMTP \item HTTP \item POP3 \item FTP
+\end{enumerate}
+\item Which of the following tools is best suited for a real-time video meeting between Bamenda and Yaound\'e?
+\begin{enumerate}
+\item E-mail \item A forum \item Zoom \item A mailing list
+\end{enumerate}
+\item In the address \texttt{https://www.minesec.gov.cm}, the top-level domain is:
+\begin{enumerate}
+\item www \item minesec \item gov \item cm
+\end{enumerate}
+\item A search engine works mainly thanks to:
+\begin{enumerate}
+\item modems \item indexing robots (crawlers) \item satellites \item firewalls
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+State whether each statement is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item The World Wide Web and the Internet are exactly the same thing.
+\item POP3 is a protocol used to send e-mail messages.
+\item Teleworking allows an employee to work from home using Internet communication tools.
+\item Information found on the first page of a search engine is always reliable.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two clear sentences:
+\begin{enumerate}
+\item Internet Service Provider (ISP);
+\item Web browser;
+\item Phishing;
+\item Teleworking;
+\item Netiquette.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Matching protocols to services]
+Copy the table below and match each protocol to the Internet service it supports by writing the correct letter in the second column.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL} \textbf{Protocol} & \textbf{Service supported} \\ \hline
+HTTP & \hspace{4cm} \\ \hline
+SMTP & \\ \hline
+POP3 & \\ \hline
+FTP & \\ \hline
+VoIP & \\ \hline
+\end{tabularx}
+\end{center}
+Services: (a) sending e-mail; (b) transferring files between computers; (c) consulting web pages; (d) receiving e-mail from a mail server; (e) telephone calls over the Internet.
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{aretenir}[Practical tips: Searching and communicating effectively]
+\begin{itemize}
+\item Use \texttt{"exact phrase"} for precise matches; \texttt{site:gov.cm} to restrict to government sites; \texttt{filetype:pdf} for documents.
+\item Combine with Boolean logic: \texttt{GCE AND "past papers" AND site:edu.cm}.
+\item For synchronous meetings: test audio/video beforehand, share agenda via calendar invite.
+\item For asynchronous work: name files clearly (\texttt{Project\_Report\_v2\_2025-10-15.pdf}), use version history in cloud drives.
+\item Always verify sender address before clicking links; hover to see true URL.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Anatomy of a URL]
+Consider the following address typed by a candidate checking her results:
+\begin{center}
+\texttt{https://www.minesec.gov.cm/results/gce2025.html}
+\end{center}
+\begin{enumerate}
+\item Identify the protocol, the domain name, the top-level domain and the file name in this URL.
+\item Explain the role of each of these four elements.
+\item What does the letter ``s'' in \texttt{https} indicate, and why is it important when entering personal data on a website?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Narrowing a search]
+A student in Buea types ``GCE past papers'' into a search engine and obtains about 2 million results, most of them irrelevant.
+\begin{enumerate}
+\item Describe three search techniques he can use to narrow down the results (for example: quotation marks, Boolean operators, minus sign, \texttt{site:} operator).
+\item For each technique, write one concrete example of a search query he could type.
+\item State two criteria he should use to verify the reliability of a document he has downloaded (author, date, source, cross-checking, etc.).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Synchronous vs asynchronous communication]
+Copy and complete the comparison table below with two examples of tools and one concrete use case for each type of communication.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Synchronous communication} & \textbf{Asynchronous communication} \\ \hline
+Definition & & \\ \hline
+Example of tool 1 & & \\ \hline
+Example of tool 2 & & \\ \hline
+One use case in Cameroon & & \\ \hline
+\end{tabularx}
+\end{center}
+\end{exercice}
+
+\begin{exercice}[Writing a formal e-mail]
+Manka'a, an Upper Sixth student in Bamenda, wants to request a one-month academic internship at a telecommunications company in Douala. Write the complete e-mail she should send, respecting netiquette. Your e-mail must include:
+\begin{enumerate}
+\item the recipient's address (To field) and a clear subject line;
+\item an appropriate greeting;
+\item a short, polite and well-structured body presenting herself, her request and the desired period;
+\item a formal closing formula and a signature with her contact details.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{aretenir}[Exam focus: What the GCE expects]
+\begin{itemize}
+\item \textbf{Definitions} must be precise, using syllabus terminology (e.g., ``protocol'', ``client-server'', ``encryption'').
+\item \textbf{Structured questions}: answer point-by-point; marks indicate how many distinct points are needed.
+\item \textbf{Essays}: introduction (definition + thesis), body (arguments for/against with Cameroonian examples), conclusion (balanced opinion). Aim for 3--4 well-developed paragraphs.
+\item \textbf{Local context}: cite Cameroonian actors (ANTIC, CAMTEL, MTN, Orange, MINESUP, MINESEC) and realities (mobile money, fibre rollout, load-shedding, rural connectivity).
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Structured question — Internet services and security (10 marks)]
+Ngong, a Lower Sixth student, receives an e-mail claiming that he has won a full scholarship abroad. The message asks him to click on a link and enter his e-mail password and his mother's mobile money PIN ``to confirm his identity''.
+\begin{enumerate}
+\item Name the type of threat contained in this e-mail. \textbf{(2 marks)}
+\item Give three signs in the message that should have made Ngong suspicious. \textbf{(3 marks)}
+\item State four safety rules Ngong should follow to protect himself when using the Internet. \textbf{(4 marks)}
+\item Name one Cameroonian institution involved in the fight against cybercrime. \textbf{(1 mark)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Structured question — Communication tools and collaboration (12 marks)]
+A company in Yaound\'e employs five technicians who work from home in different towns (Bafoussam, Garoua, Limbe, Kribi and Yaound\'e). Every Monday they hold a progress meeting, they exchange documents daily, and they keep a shared calendar of tasks.
+\begin{enumerate}
+\item Distinguish between synchronous and asynchronous communication, giving one example of a tool for each that the team could use. \textbf{(4 marks)}
+\item Propose two online collaboration tools the team could use to share documents and manage the shared calendar, and explain one advantage of each. \textbf{(4 marks)}
+\item Give two advantages and two disadvantages of teleworking for this company. \textbf{(4 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Essay — Teleworking in Cameroon (20 marks)]
+``Teleworking is an opportunity for young Cameroonian graduates, but also a challenge.''
+
+Discuss this statement. Your essay should:
+\begin{enumerate}
+\item define teleworking and name at least three Internet tools that make it possible;
+\item present at least three advantages of teleworking for young graduates in Cameroon (for example: access to foreign employers, reduced transport costs, flexibility);
+\item present at least three disadvantages or obstacles in the Cameroonian context (for example: cost and quality of Internet connection, electricity cuts, isolation, distraction);
+\item conclude with a balanced personal opinion supported by your arguments.
+\end{enumerate}
+(Your essay should be well structured, with an introduction, a developed body and a conclusion.)
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Corrected Exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: (b) HTTP.} The \cle{HyperText Transfer Protocol} (HTTP, or its secure version HTTPS) governs the transfer of web pages from a web server to the browser. SMTP sends e-mail, POP3 receives e-mail, and FTP transfers files.
+\item \textbf{Answer: (c) Zoom.} A video meeting between Bamenda and Yaoundé is a \emph{synchronous} (real-time) activity; Zoom is a video-conferencing tool. E-mail, forums and mailing lists are asynchronous tools with delayed responses.
+\item \textbf{Answer: (d) cm.} In \texttt{www.minesec.gov.cm}, the \cle{top-level domain (TLD)} is the rightmost label, \texttt{cm}, the country-code TLD of Cameroon. \texttt{gov} is a second-level domain indicating a government institution, \texttt{minesec} the organisation's name, and \texttt{www} the host (subdomain).
+\item \textbf{Answer: (b) indexing robots (crawlers).} Search engines send \cle{crawlers} (also called spiders or bots) to explore the web continuously, copy pages and build an index; the engine then searches this index when a user types a query.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false — justify]
+\begin{enumerate}
+\item \textbf{False.} The Internet is the global \emph{infrastructure} of interconnected networks, whereas the World Wide Web is only \emph{one service} running on top of it (via HTTP/HTTPS). Other services such as e-mail and FTP also use the Internet.
+\item \textbf{False.} \cle{POP3} (Post Office Protocol version 3) is used to \emph{receive} (download) e-mail from a mail server. The protocol used to \emph{send} e-mail is SMTP.
+\item \textbf{True.} Teleworking means performing one's professional activity away from the office, typically from home, using Internet tools such as e-mail, video conferencing, VPNs and cloud collaboration suites.
+\item \textbf{False.} Ranking depends on algorithms (popularity, keywords, advertising), not on reliability. Anyone can publish false information online, so the user must always evaluate the author, source, date and cross-check information.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Internet Service Provider (ISP):} a company that sells individuals and organisations access to the Internet, usually through a subscription (e.g.\ CAMTEL, MTN Cameroon, Orange Cameroon).
+\item \textbf{Web browser:} application software used to request, retrieve and display web pages from web servers (e.g.\ Google Chrome, Mozilla Firefox).
+\item \textbf{Phishing:} a cyber-attack in which a criminal sends fraudulent messages (e-mails, SMS, fake websites) imitating a trusted institution in order to steal passwords, bank details or other personal data.
+\item \textbf{Teleworking:} a way of working in which an employee performs his or her duties remotely (often from home) using Internet communication and collaboration tools instead of travelling to the office.
+\item \textbf{Netiquette:} the set of rules of polite and respectful behaviour on the Internet (writing clearly, avoiding capital letters which suggest shouting, respecting others, not sending spam).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Matching protocols to services]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL} \textbf{Protocol} & \textbf{Service supported} \\ \hline
+HTTP & (c) consulting web pages \\ \hline
+SMTP & (a) sending e-mail \\ \hline
+POP3 & (d) receiving e-mail from a mail server \\ \hline
+FTP & (b) transferring files between computers \\ \hline
+VoIP & (e) telephone calls over the Internet \\ \hline
+\end{tabularx}
+\end{center}
+\textbf{Memory aid:} SMTP = \emph{Send} Mail Transfer Protocol; POP3 = \emph{Post} Office Protocol (you ``collect'' your mail, like at a post office box).
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Anatomy of a URL]
+\textbf{1. Identification of the elements}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL} \textbf{Element} & \textbf{Value in the URL} \\ \hline
+Protocol & \texttt{https} \\ \hline
+Domain name & \texttt{www.minesec.gov.cm} \\ \hline
+Top-level domain & \texttt{cm} \\ \hline
+File name & \texttt{gce2025.html} (in the folder \texttt{results}) \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{2. Role of each element}
+\begin{itemize}
+\item \textbf{Protocol (\texttt{https}):} tells the browser \emph{how} to communicate with the server — here, the secure version of HTTP, which encrypts the exchanged data.
+\item \textbf{Domain name (\texttt{www.minesec.gov.cm}):} identifies \emph{which} server (host) holds the resource; it is translated into an IP address by the DNS service. The label \texttt{gov.cm} shows it is a Cameroonian government site.
+\item \textbf{Top-level domain (\texttt{cm}):} the country-code TLD indicating that the domain is registered in Cameroon.
+\item \textbf{Path and file (\texttt{results/gce2025.html}):} indicates \emph{where exactly} on the server the requested document is stored: the file \texttt{gce2025.html} inside the folder \texttt{results}.
+\end{itemize}
+
+\textbf{3. Meaning of the ``s'' in \texttt{https}.} The ``s'' stands for \emph{secure}: the communication between the browser and the server is \cle{encrypted} (using TLS/SSL), and the server's identity is certified. This is crucial when entering personal data (passwords, examination candidate numbers, mobile money details) because encryption prevents a third party intercepting the traffic from reading the information. One should never enter sensitive data on a site using plain \texttt{http}.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Narrowing a search]
+\textbf{1. and 2. Three techniques with example queries}
+\begin{itemize}
+\item \textbf{Quotation marks (exact phrase):} forces the engine to search the words in that exact order.\\ Example: \texttt{"GCE Advanced Level past papers"}
+\item \textbf{Minus sign (exclusion):} removes pages containing an unwanted word.\\ Example: \texttt{GCE past papers -jobs -news}
+\item \textbf{\texttt{site:} operator (domain restriction):} limits results to a given site or domain.\\ Example: \texttt{GCE past papers site:edu.cm} \quad or \quad \texttt{"GCE past papers" site:cameroongcerevision.com}
+\end{itemize}
+(Other acceptable answers: Boolean \texttt{AND}/\texttt{OR}, e.g.\ \texttt{"GCE past papers" AND "ICT" AND filetype:pdf}; the \texttt{filetype:} operator.)
+
+\textbf{3. Two reliability criteria}
+\begin{itemize}
+\item \textbf{Author and source:} check who published the document — an official body (GCE Board, MINESEC, a recognised school) is more trustworthy than an anonymous blog.
+\item \textbf{Date and cross-checking:} check that the document is recent and up to date, and compare its content with at least one other independent source before trusting it.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Synchronous vs asynchronous communication]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Synchronous communication} & \textbf{Asynchronous communication} \\ \hline
+Definition & Communication in real time: all participants are connected at the same moment and respond immediately. & Communication with a delay: the sender and the receiver do not need to be connected at the same time. \\ \hline
+Example of tool 1 & Zoom (video conferencing) & E-mail (Gmail, Outlook) \\ \hline
+Example of tool 2 & WhatsApp instant messaging / live chat & Online forum or shared document with comments (Google Docs) \\ \hline
+One use case in Cameroon & A school in Douala holds a live revision class by video conference with students in Ngaoundéré during holidays. & A teacher in Bamenda e-mails notes and exercises to students, who read and reply when they have connection. \\ \hline
+\end{tabularx}
+\end{center}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Writing a formal e-mail]
+\textbf{To:} hr.director@camtel-douala.cm\par
+\textbf{Subject:} Application for a one-month academic internship — Upper Sixth student\par\medskip
+Dear Sir or Madam,\par\medskip
+My name is Manka'a, an Upper Sixth student at GBHS Bamenda, where I am preparing the GCE Advanced Level in the science series. As part of my training, I am required to complete an academic internship in a company, and I would be honoured to carry it out within your telecommunications company in Douala.\par\medskip
+I am therefore writing to respectfully request a one-month internship in your establishment, preferably during the month of July. I am particularly interested in computer networks and Internet services, and I am eager to discover how these technologies are deployed and maintained in a professional environment.\par\medskip
+I am available for any further information you may require, and I can provide my school results and a recommendation letter from my principal upon request.\par\medskip
+Thank you very much for considering my application. I look forward to your favourable reply.\par\medskip
+Yours faithfully,\par\medskip
+Manka'a\par
+Upper Sixth student, GBHS Bamenda\par
+Tel: 6XX XX XX XX\par
+E-mail: mankaa.student@gmail.com\par\medskip
+\textbf{Netiquette points respected:} clear subject line, formal greeting, short structured paragraphs, polite tone, no capital-letter ``shouting'', formal closing, and a complete signature with contact details.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured question — Internet services and security (10 marks)]
+\textbf{1. Type of threat (2 marks).} This is a \cle{phishing} attack (a fraudulent e-mail imitating a trustworthy organisation to steal personal data). \emph{Examiner expectation: 2 marks for naming ``phishing''; 1 mark only if the candidate writes a vague answer such as ``a virus'' or ``spam'' without the term phishing.}
+
+\textbf{2. Three suspicious signs (3 marks — 1 mark each, any three):}
+\begin{itemize}
+\item An unexpected prize: Ngong never applied for any scholarship, yet he has ``won'' one.
+\item The message requests confidential data (his e-mail password and a mobile money PIN), which no serious institution ever asks for by e-mail.
+\item A sense of urgency / pressure to click a link quickly (``to confirm your identity'').
+\item (Also acceptable: spelling mistakes, a suspicious sender address, a link whose real destination differs from the displayed text.)
+\end{itemize}
+
+\textbf{3. Four safety rules (4 marks — 1 mark each, any four):}
+\begin{itemize}
+\item Never click on links in unexpected or suspicious e-mails; verify the sender's real address first.
+\item Never disclose passwords, PINs or personal data by e-mail or on unverified websites.
+\item Use strong, different passwords for each account and enable two-factor authentication (2FA).
+\item Keep the operating system, browser and antivirus software up to date.
+\item (Also acceptable: check for \texttt{https} and the padlock before entering data; report and delete suspicious messages; avoid using public Wi-Fi for sensitive operations.)
+\end{itemize}
+
+\textbf{4. Cameroonian institution (1 mark).} \cle{ANTIC} — the National Agency for Information and Communication Technologies, which oversees cybersecurity and the fight against cybercrime in Cameroon. (Accept also: the national police / gendarmerie cybercrime units.)
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Structured question — Communication tools and collaboration (12 marks)]
+\textbf{1. Synchronous vs asynchronous (4 marks).}
+\begin{itemize}
+\item \emph{Synchronous communication} (1 mark): participants exchange information in real time, all connected at the same moment. \emph{Example tool} (1 mark): Zoom or Google Meet for the Monday progress meeting.
+\item \emph{Asynchronous communication} (1 mark): exchanges happen with a delay; participants need not be connected simultaneously. \emph{Example tool} (1 mark): e-mail or WhatsApp messages for daily exchanges.
+\end{itemize}
+
+\textbf{2. Two collaboration tools (4 marks — 2 marks each: 1 for the tool, 1 for the advantage).}
+\begin{itemize}
+\item \textbf{Google Drive / Google Docs (or Microsoft OneDrive + Office online):} documents are stored in the cloud, so all five technicians can access, edit and comment on the same file; the version history prevents loss of work and conflicts between copies.
+\item \textbf{Google Calendar (or Microsoft Outlook/Teams calendar):} a shared calendar where every member sees the tasks, deadlines and meetings; automatic reminders reduce the risk of missed appointments.
+\end{itemize}
+
+\textbf{3. Advantages and disadvantages of teleworking (4 marks — 1 mark each).}
+
+\emph{Advantages (any two):}
+\begin{itemize}
+\item Savings on office rent and on transport costs and time for the technicians.
+\item Flexibility: staff can organise their working time and the company can recruit talent in any town.
+\end{itemize}
+\emph{Disadvantages (any two):}
+\begin{itemize}
+\item Dependence on the quality of the Internet connection and on electricity, which can be unstable in some towns (load-shedding).
+\item Risk of isolation, reduced team cohesion and difficulty for the manager to supervise work directly.
+\end{itemize}
+\emph{Examiner expectation: each point must be briefly explained, not just listed; a bare list without justification earns half marks.}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Essay — Teleworking in Cameroon (20 marks)]
+\textbf{Indicative mark scheme:} introduction with definition and thesis (3 marks); at least three tools correctly named (3 marks); three developed advantages (4 marks); three developed disadvantages/obstacles (4 marks); balanced personal conclusion (3 marks); organisation, clarity and quality of English (3 marks).\par\medskip
+\textbf{Model essay.}\par\medskip
+\emph{Introduction.} Teleworking, or remote work, is a way of working in which a person performs professional tasks away from the employer's premises, usually from home, thanks to the Internet. It is made possible by tools such as video-conferencing software (Zoom, Google Meet), cloud collaboration suites (Google Workspace, Microsoft 365), instant messaging (WhatsApp, Slack) and secure remote access through VPNs. With the growth of connectivity in Cameroon, teleworking appears both as a real opportunity for young graduates and as a serious challenge. This essay discusses both faces of the statement.\par\medskip
+\emph{Body — opportunities.} First, teleworking opens access to employers far beyond one's town, and even abroad: a young graduate in Bamenda can work for a company in Douala, Europe or America without emigrating, earning income in stronger currencies. Secondly, it reduces transport costs and time lost in traffic jams, which are heavy in cities like Douala and Yaoundé, and it removes the need to pay expensive rent near the office. Thirdly, it offers flexibility: the worker can organise his schedule, combine several freelance contracts, and balance work with family responsibilities or further studies.\par\medskip
+\emph{Body — challenges.} However, the Cameroonian context presents real obstacles. The cost of a good Internet connection remains high compared with average incomes, and the quality of the network is uneven, especially in rural areas. Electricity cuts (load-shedding) can interrupt a video meeting or corrupt a day's work unless one invests in a generator or an inverter, which is expensive. Moreover, teleworking can cause isolation and a loss of team spirit, and working from home exposes the young worker to many distractions. Finally, online work requires self-discipline and digital skills that not all graduates possess.\par\medskip
+\emph{Conclusion.} Teleworking is therefore neither a miracle nor an illusion for young Cameroonian graduates. It is a genuine opportunity — wider job markets, savings and flexibility — provided that one can afford a reliable connection, secure a stable power supply and develop the necessary discipline. As Cameroon continues to extend its fibre-optic network and as institutions such as ANTIC strengthen trust in online services, teleworking is likely to become an increasingly realistic path to employment. In my opinion, young graduates should prepare for it seriously, while remaining aware of its demands.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style=concept, concept color=popblue,
+    level 1/.append style={level distance=5cm, sibling angle=72},
+    level 2/.append style={level distance=3cm, sibling angle=45}]
+\node[concept] {Using the Internet}
+    child[concept color=popgreen] {node[concept] {Internet Services}}
+    child[concept color=poporange] {node[concept] {Information Retrieval}}
+    child[concept color=poppurple] {node[concept] {Communication Tools}}
+    child[concept color=poppink] {node[concept] {Teleworking}}
+    child[concept color=popgold] {node[concept] {Integration Activities}};
+\end{tikzpicture}
+\legende{Mind map of Chapter ICT13: Using the Internet}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key Definitions}
+\begin{itemize}
+\item \cle{Internet}: Global network of interconnected computer networks using TCP/IP.
+\item \cle{World Wide Web (WWW)}: Information system of interlinked hypertext documents accessed via HTTP/HTTPS.
+\item \cle{Search Engine}: Software that indexes web pages and returns results for queries (e.g., Google, Bing).
+\item \cle{URL}: Uniform Resource Locator, address of a resource (scheme://domain/path).
+\item \cle{Teleworking}: Working remotely using ICT tools, often from home.
+\item \cle{Cloud Collaboration}: Real-time shared editing and file storage on remote servers (e.g., Google Workspace, Microsoft 365).
+\end{itemize}
+
+\textbf{Core Concepts \& Rules}
+\begin{itemize}
+\item \textbf{TCP/IP Model}: Four layers (Application, Transport, Internet, Link) governing data transmission.
+\item \textbf{Domain Name System (DNS)}: Translates domain names to IP addresses.
+\item \textbf{Boolean Search Operators}: AND, OR, NOT, parentheses, quotes for exact phrases, site: operator.
+\item \textbf{Netiquette}: Respectful online behaviour (no spam, clear subject lines, proper language).
+\item \textbf{Security Basics}: HTTPS, strong passwords, two-factor authentication, phishing awareness.
+\end{itemize}
+
+\textbf{Methods}
+\begin{itemize}
+\item \textbf{Effective Search}: 1) Identify keywords; 2) Use Boolean operators; 3) Apply filters (date, site, filetype); 4) Evaluate credibility (author, date, domain).
+\item \textbf{Email Etiquette}: Clear subject, concise body, appropriate greeting/closing, attachments named logically.
+\item \textbf{Video Conference Setup}: Test audio/video, share agenda, mute when not speaking, record if needed.
+\item \textbf{Cloud File Sharing}: Set permissions (view/edit), use version history, organise folders logically.
+\end{itemize}
+
+\textbf{Common Mistakes}
+\begin{itemize}
+\item Confusing the Internet with the Web.
+\item Using only generic keywords, missing advanced operators.
+\item Trusting the first search result without verification.
+\item Sending large attachments via email instead of cloud links.
+\item Ignoring privacy settings on collaboration platforms.
+\end{itemize}
+
+\textbf{GCE Examination Tips}
+\begin{itemize}
+\item Define terms precisely (Internet, WWW, URL, ISP, DNS).
+\item Explain the difference between a search engine and a web browser.
+\item Describe steps to refine a search using Boolean logic.
+\item List advantages and challenges of teleworking (productivity, work-life balance, security).
+\item Be ready to design a simple collaborative workflow using cloud tools.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

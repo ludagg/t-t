@@ -1,0 +1,2916 @@
+% Executing different correctness checking methods — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT11-executing-different-correctness-checking-methods.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{11}
+\newcommand{\DOCTITRE}{Executing different correctness checking methods}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Executing different correctness checking methods}{ICT}{Upper Sixth}{Upper Sixth — ICT}{11}{1 periods}{This chapter explores why errors occur during data transmission and storage, and presents the main correctness checking methods used to detect and correct them. Learners will master parity checks, checksums, cyclic redundancy checks and Hamming codes, and apply them to real data transfer scenarios.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can explain the sources and types of errors that affect data during transmission and storage.
+\item By the end of this chapter I can distinguish between error detection and error correction techniques.
+\item By the end of this chapter I can compute and verify even and odd parity bits for a given binary word.
+\item By the end of this chapter I can detect single-bit and burst errors using two-dimensional (block) parity.
+\item By the end of this chapter I can calculate a checksum for a block of data and verify data integrity with it.
+\item By the end of this chapter I can explain the principle of Cyclic Redundancy Check (CRC) and perform simple CRC calculations using polynomial division.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Errors in Data Transmission and the Need for Checking
+\item Parity Checking Methods
+\item Checksums and Cyclic Redundancy Check (CRC)
+\item Error Correction: Hamming Codes and Applications
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can explain the sources and types of errors that affect data during transmission and storage.
+\item By the end of this chapter I can distinguish between error detection and error correction techniques.
+\item By the end of this chapter I can compute and verify even and odd parity bits for a given binary word.
+\item By the end of this chapter I can detect single-bit and burst errors using two-dimensional (block) parity.
+\item By the end of this chapter I can calculate a checksum for a block of data and verify data integrity with it.
+\item By the end of this chapter I can explain the principle of Cyclic Redundancy Check (CRC) and perform simple CRC calculations using polynomial division.
+\item By the end of this chapter I can construct a Hamming code and use it to locate and correct a single-bit error.
+\item By the end of this chapter I can compare the efficiency, overhead and limitations of the different checking methods.
+\item By the end of this chapter I can identify where these techniques are used in real systems (networks, memory, barcodes, mobile money).
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Binary number system and conversion between binary and decimal (Lower Sixth)
+\item Data representation: bits, bytes and character codes such as ASCII (Lower Sixth)
+\item Basic notions of data communication: sender, receiver, transmission channel, noise
+\item Modulo-2 arithmetic (XOR operation) and basic Boolean logic
+\item Long division of numbers (mathematics, ordinary level)
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Errors in Data Transmission and the Need for Checking}
+
+Imagine a trader at the Douala main market sending an MTN Mobile Money transfer of 50,000 FCFA to a supplier in Bamenda. As the transaction data travels through the mobile network, a burst of electrical interference flips a \emph{single bit} in the message. If that bit happens to sit inside the field encoding the amount, the recipient's account could be credited with the wrong sum. The same danger lurks at the bank, at the SONEL billing centre, and even when a candidate downloads WAEC results online: data always travels over \emph{noisy channels} where errors are inevitable. How, then, do computers \emph{detect} that a received message has been corrupted, and how do they sometimes \emph{correct} it automatically? This chapter unveils the clever mathematical checks --- parity bits, checksums, CRC --- that silently protect every digital transaction in Cameroon and beyond. In this first section, we build the foundation: what errors are, where they come from, and why every checking method rests on the idea of \cle{redundancy}.
+
+\courssub{Data Correctness and Data Integrity}
+
+When a file, a message or a transaction leaves a sender, we expect the receiver to obtain \emph{exactly} the same information. This expectation has a name.
+
+\begin{definition}[Data integrity and data correctness]
+\cle{Data integrity} is the property that data remains \textbf{accurate, complete and unaltered} during storage, processing or transmission, except through authorised and intentional changes. \cle{Data correctness} means that the data actually received (or read back from storage) is \textbf{identical, bit for bit}, to the data that was sent (or written). A system that guarantees integrity guarantees correctness at every stage.
+\end{definition}
+
+Integrity can be lost in two broad ways: by \emph{accidental} corruption (noise, hardware faults --- the subject of this chapter) or by \emph{deliberate} tampering (an attacker modifying a message --- the subject of security and cryptography). Here we focus on accidental corruption.
+
+\begin{definition}[Transmission error]
+A \cle{transmission error} occurs when at least one bit of a received message differs from the corresponding bit that was transmitted: a $0$ becomes a $1$, or a $1$ becomes a $0$. We say the bit has been \emph{flipped} or \emph{inverted}.
+\end{definition}
+
+\begin{exemplebox}[A single flipped bit changes everything]
+The ASCII code of the letter \texttt{A} is $01000001$. If the seventh bit is flipped during transmission, the receiver gets $01000011$, which is the letter \texttt{C}. One flipped bit, and ``\texttt{PAID}'' could become ``\texttt{PCID}''. In a binary file encoding an amount of money, a flipped bit can change the value by thousands of francs.
+\end{exemplebox}
+
+\courssub{Sources of Errors}
+
+Errors do not happen by magic; they have physical and human causes. The main sources are:
+
+\begin{itemize}
+\item \textbf{Electrical noise.} Random unwanted electrical signals (from motors, lightning, power lines) superimpose themselves on the useful signal in a cable. If the noise is strong enough at the instant a bit is read, the receiver misinterprets the voltage level.
+\item \textbf{Electromagnetic interference (EMI).} A nearby radio transmitter, mobile phone or another cable radiates electromagnetic waves that induce spurious currents in the transmission line. This is why network cables are often twisted or shielded.
+\item \textbf{Attenuation.} Over long distances the signal weakens. A weak signal is easily confused with noise, so the probability of misreading a bit grows with distance if no repeater or amplifier regenerates the signal.
+\item \textbf{Faulty hardware.} A worn connector, a damaged network card, a failing hard-disk head or bad RAM cells can systematically corrupt bits.
+\item \textbf{Magnetic degradation.} On magnetic media (tapes, hard disks), the magnetisation of tiny regions slowly decays with time, heat or stray magnetic fields, so data read years later may differ from data written.
+\item \textbf{Human typing errors.} When a clerk at a bank or at SONEL types an account number or a meter reading by hand, a digit can be mistyped, swapped or omitted. Check digits on account numbers exist precisely to catch such errors.
+\end{itemize}
+
+\begin{savaistu}[Noise is everywhere in Cameroon]
+During the rainy season, thunderstorms over Douala and Yaoundé inject strong electrical noise into telephone and power lines. Long rural radio links (for example microwave links connecting remote CAMTEL exchanges) must also fight attenuation over tens of kilometres. This is why robust error checking is not a luxury: it is a daily necessity for mobile money, e-government services and banking networks.
+\end{savaistu}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth]
+% Sender
+\draw[fill=popblueL, draw=popblue, rounded corners] (0,0) rectangle (2.4,1.6);
+\node[align=center] at (1.2,0.8) {\textbf{Sender}\\ 1011\,0\underline{1}10};
+% Channel
+\draw[fill=gray!15, draw=popmuted, rounded corners] (4.2,0) rectangle (7.8,1.6);
+\node[align=center] at (6,1.15) {\textbf{Channel}};
+\node[align=center, text=poporange] at (6,0.55) {noise $\sim$ interference};
+% lightning bolt
+\draw[thick, poporange] (6,2.5) -- (5.7,1.9) -- (6.1,1.9) -- (5.8,1.62);
+% Receiver
+\draw[fill=popgreenL, draw=popgreen, rounded corners] (9.6,0) rectangle (12,1.6);
+\node[align=center] at (10.8,0.8) {\textbf{Receiver}\\ 1011\,0\underline{0}10};
+% arrows
+\draw[->, very thick, popblue] (2.4,0.8) -- (4.2,0.8);
+\draw[->, very thick, popgreen] (7.8,0.8) -- (9.6,0.8);
+% flipped bit annotation
+\draw[->, thick, poppink] (10.3,0.35) -- (10.3,-0.5) node[below, align=center, text=poppink] {bit flipped\\ $1 \to 0$};
+\end{tikzpicture}
+\legende{The sender--channel--receiver model: noise on the channel flips one bit of the transmitted byte, so the receiver obtains a corrupted message.}
+\end{popfigure}
+
+\courssub{Types of Errors}
+
+Not all errors look the same. We classify them by how many bits are affected and how those bits are distributed.
+
+\begin{definition}[Single-bit, multiple-bit and burst errors]
+\begin{itemize}
+\item A \cle{single-bit error} affects exactly \textbf{one isolated bit} in a message: one $0$ becomes a $1$ or vice versa, and all neighbouring bits are correct.
+\item A \cle{multiple-bit error} affects \textbf{two or more bits} in the same message, not necessarily adjacent.
+\item A \cle{burst error} affects a \textbf{contiguous sequence of bits}: a whole run of consecutive bits is corrupted. The \emph{burst length} is the number of bits from the first corrupted bit to the last.
+\end{itemize}
+\end{definition}
+
+Single-bit errors are typical of slow, well-shielded links and of typing mistakes. Burst errors are typical of fast links and of events that last a noticeable fraction of a transmission: a lightning strike, a scratch on a CD, a motor starting near a cable. At high data rates, even a microsecond of noise destroys many consecutive bits, so \textbf{burst errors are the most common in practice}.
+
+\begin{exemplebox}[Comparing error types on the same byte]
+Sent byte: $10110010$.
+\begin{itemize}
+\item Single-bit error: received $10110\underline{0}10$ --- one bit flipped.
+\item Multiple-bit error: received $1\underline{0}11\underline{1}010$ --- two scattered bits flipped.
+\item Burst error of length 4: received $10\underline{0101}10$ --- four consecutive bits corrupted.
+\end{itemize}
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\scriptsize, >=stealth]
+% Timeline 1: single-bit error
+\node[anchor=east, align=right] at (-0.3,2.2) {\textbf{Single-bit}\\ \textbf{error}};
+\foreach \i/\b in {0/1,1/0,2/1,3/1,4/0,5/0,6/1,7/0}{
+  \draw[draw=popmuted, fill=white] (\i*0.62,2) rectangle (\i*0.62+0.62,2.45);
+  \node at (\i*0.62+0.31,2.225) {\b};
+}
+\draw[draw=poppink, very thick, fill=poppink!20] (5*0.62,2) rectangle (5*0.62+0.62,2.45);
+\node[text=poppink] at (5*0.62+0.31,2.225) {\textbf{0}};
+\node[text=poppink, align=center] at (5*0.62+0.31,1.65) {1 flipped bit};
+% Timeline 2: burst error
+\node[anchor=east, align=right] at (-0.3,0.6) {\textbf{Burst error}\\ (length 4)};
+\foreach \i/\b in {0/1,1/0,2/1,3/1,4/0,5/0,6/1,7/0}{
+  \draw[draw=popmuted, fill=white] (\i*0.62,0.4) rectangle (\i*0.62+0.62,0.85);
+  \node at (\i*0.62+0.31,0.625) {\b};
+}
+\foreach \i/\b in {2/0,3/0,4/1,5/1}{
+  \draw[draw=poppink, very thick, fill=poppink!20] (\i*0.62,0.4) rectangle (\i*0.62+0.62,0.85);
+  \node[text=poppink] at (\i*0.62+0.31,0.625) {\textbf{\b}};
+}
+\draw[<->, thick, poppink] (2*0.62,0.15) -- (6*0.62,0.15) node[midway, below, text=poppink] {contiguous corrupted run};
+% time arrow
+\draw[->, thick, popdark] (0,-0.5) -- (5.4,-0.5) node[right] {time};
+\end{tikzpicture}
+\legende{A single-bit error corrupts one isolated cell of the bit stream; a burst error corrupts a contiguous run of cells.}
+\end{popfigure}
+
+\courssub{Consequences of Undetected Errors}
+
+If corrupted data is accepted as correct, the consequences can be severe:
+
+\begin{itemize}
+\item \textbf{Corrupted files.} A downloaded document, photo or WAEC results PDF that refuses to open, or worse, opens with silently wrong content.
+\item \textbf{Wrong financial transactions.} A mobile money transfer credited to the wrong account or with the wrong amount; a SONEL bill computed from a corrupted meter reading.
+\item \textbf{Failed programs.} An executable file with even one flipped bit may crash, behave unpredictably, or contain a security vulnerability.
+\item \textbf{Wrong decisions.} A hospital database with a corrupted blood-group field, or an examination database with a corrupted mark, can change a person's life.
+\end{itemize}
+
+\begin{attention}[Detection does not mean localisation]
+A very common mistake is to believe that an error \emph{detection} method can always tell \emph{which} bit is wrong. Most detection methods (simple parity, checksums, CRC) only answer the question ``is this message corrupted?'' with yes or no. They do \textbf{not} identify the position of the error. Locating and fixing the wrong bit requires more powerful --- and more costly --- \emph{correction} codes such as Hamming codes, studied later in this chapter.
+\end{attention}
+
+\courssub{Error Detection versus Error Correction}
+
+\begin{definition}[Detection and correction]
+\cle{Error detection} is the ability of a system to \textbf{recognise that a received message contains at least one error}, without necessarily knowing where. \cle{Error correction} is the ability to \textbf{identify the erroneous bits and restore the original message automatically}, without asking the sender to retransmit.
+\end{definition}
+
+\begin{methode}[Distinguishing detection from correction in a scenario]
+When an exam question describes a situation, proceed as follows:
+\begin{enumerate}
+\item Ask: \emph{does the system merely signal that something is wrong} (alarm, rejection, request to resend)? Then it is \textbf{detection}.
+\item Ask: \emph{does the system repair the data by itself and deliver a corrected message}? Then it is \textbf{correction}.
+\item Ask: \emph{what happens after detection}? If the receiver asks the sender to send again, the strategy is \textbf{backward error control (ARQ)}. If no retransmission is needed, it is \textbf{forward error correction (FEC)}.
+\item Conclude by naming both the capability (detection or correction) and the strategy (ARQ or FEC).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Applying the method]
+Your browser downloads a file and the network protocol notices the checksum is wrong: the file is requested again. Capability: \emph{detection}; strategy: \emph{ARQ}. A scratched audio CD still plays perfectly because the player reconstructs the missing samples on the fly: capability: \emph{correction}; strategy: \emph{FEC}.
+\end{exemplebox}
+
+\courssub{Two General Strategies: ARQ and FEC}
+
+\begin{definition}[Backward error control and forward error correction]
+\cle{Backward error control} (also called \cle{ARQ}, \emph{Automatic Repeat reQuest}) combines error \emph{detection} with \emph{retransmission}: the receiver checks each message; if an error is detected, it asks the sender to send the message again. \cle{Forward error correction} (\cle{FEC}) adds enough redundant information for the receiver to \emph{correct} errors on its own, without any retransmission.
+\end{definition}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{ARQ (detection + retransmission)} & \textbf{FEC (automatic correction)} \\
+\hline
+Redundancy needed & Low (a few check bits) & High (many check bits) \\
+\hline
+Needs a return channel & Yes, to request retransmission & No \\
+\hline
+Delay & Variable (retransmissions take time) & Constant, low \\
+\hline
+Typical uses & Web downloads, mobile money, TCP networks & CDs/DVDs, satellite TV, deep-space probes, live streaming \\
+\hline
+\end{tabularx}
+\end{center}
+
+ARQ is preferred when a return channel exists and occasional delay is acceptable. FEC is preferred when retransmission is impossible or too slow: a satellite broadcast cannot ask every viewer's dish to acknowledge, and a live video stream cannot pause to resend.
+
+\courssub{Redundancy: The Foundation of All Checking Methods}
+
+How can a receiver possibly know that a message is wrong? Only if the message carries \emph{more} information than the bare data. This extra information is called redundancy.
+
+\begin{definition}[Redundancy, dataword and codeword]
+\cle{Redundancy} consists of \textbf{extra check bits appended to the data} according to an agreed mathematical rule, so that errors disturb a pattern the receiver can verify. The original $k$ data bits form the \cle{dataword}; the dataword together with its $r$ check bits forms the \cle{codeword} of length $n = k + r$. The sender transmits the codeword; the receiver recomputes the check and compares.
+\end{definition}
+
+\begin{exemplebox}[A first taste of redundancy]
+Suppose the dataword is the 7-bit ASCII code $1000001$. The sender counts the $1$s (there are 2, an even number) and appends a check bit $0$ to keep the count even, producing the 8-bit codeword $10000010$. If noise flips one bit, the receiver counts an \emph{odd} number of $1$s and knows the codeword is corrupted. This is the \emph{parity check}, studied in detail in the next section.
+\end{exemplebox}
+
+Two more vocabulary items complete our toolkit:
+
+\begin{definition}[Error rate and retransmission]
+The \cle{error rate} (or bit error rate, BER) of a channel is the proportion of bits received in error, typically expressed as a ratio such as $10^{-6}$ (one erroneous bit per million transmitted). A \cle{retransmission} is the act of sending a message again, usually triggered automatically by the ARQ mechanism after a detected error or a missing acknowledgement.
+\end{definition}
+
+\courssub{The Limits of Checking Methods}
+
+Redundancy is powerful, but not magical. Since the check itself is transmitted over the same noisy channel, the check bits can also be corrupted, and some error patterns can mimic a valid codeword.
+
+\begin{propriete}[No method detects all errors]
+No error-detecting or error-correcting method based on redundancy can detect or correct $100\,\%$ of all possible error patterns. Every method has a class of error patterns it misses (for example, an even number of flipped bits defeats a simple parity check). In practice, methods are chosen so that the \emph{probability} of an undetected error is negligibly small for the channel's error rate. (The proof of this general limitation is not examinable; the statement must be known.)
+\end{propriete}
+
+\begin{exoresolu}[Analysing a real scenario]
+\textbf{Statement.} A bank in Yaoundé sends account updates every night to its branch in Bafoussam over a leased line. Each record carries extra check bits. When the branch's computer finds a record whose check fails, it marks the record and requests it again in the next transmission window. (a) Is this error detection or error correction? (b) Which strategy (ARQ or FEC) is used? (c) Why can the bank not claim its data is $100\,\%$ safe?
+\tcblower
+\textbf{Solution.} (a) The system only \emph{notices} that a record is wrong; it never repairs the record itself. This is \textbf{error detection}. (b) Since a detected error triggers a \emph{retransmission request}, the strategy is \textbf{backward error control (ARQ)}. (c) By the fundamental limitation of redundancy-based methods, some error patterns --- for instance a combination of flips that transforms one valid codeword into another valid codeword, or corruption of the check bits themselves --- pass the check undetected. The bank can only make the probability of such an event extremely small, never zero.
+\end{exoresolu}
+
+\begin{exercice}[Checking your understanding]
+\begin{enumerate}
+\item Define data integrity and give one example from daily life in Cameroon where its loss would have serious consequences.
+\item Classify each of the following as a single-bit, multiple-bit or burst error: (i) one digit mistyped in a phone number; (ii) a scratch corrupting 200 consecutive bits of a DVD; (iii) three scattered bits flipped in a downloaded file.
+\item A satellite TV provider cannot receive retransmission requests from viewers. Which strategy must it use, and why?
+\item A dataword has $k = 11$ bits and $r = 4$ check bits are appended. What is the length of the codeword?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Data integrity is the property that data stays accurate, complete and unaltered during storage, processing or transmission. Example: a mobile money balance or an examination mark in a database must not change accidentally, otherwise money or a candidate's future is lost.
+\item (i) Single-bit (one isolated error); (ii) burst error (contiguous run); (iii) multiple-bit error (several scattered bits).
+\item Forward error correction (FEC), because there is no return channel for retransmission requests; the receiver must repair errors alone using the redundant bits.
+\item $n = k + r = 11 + 4 = 15$ bits.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item \cle{Data integrity} means data remains accurate and unaltered; a \cle{transmission error} is a flipped bit.
+\item Errors come from noise, interference, attenuation, faulty hardware, magnetic degradation and human typing.
+\item Errors are classified as \cle{single-bit}, \cle{multiple-bit} or \cle{burst} errors.
+\item \cle{Detection} only signals that an error occurred; \cle{correction} locates and fixes it.
+\item Two strategies: \cle{ARQ} (detection + retransmission) and \cle{FEC} (automatic correction without retransmission).
+\item All methods rest on \cle{redundancy}: a dataword of $k$ bits plus $r$ check bits forms a codeword of $n = k + r$ bits.
+\item No checking method detects $100\,\%$ of all error patterns.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Parity Checking Methods}
+
+In the previous section we saw that data transmission is never perfectly reliable: noise, interference, and hardware faults can flip bits. We therefore need mechanisms to \emph{detect} (and sometimes \emph{correct}) such errors. The simplest and historically first technique is the \cle{parity bit}. Despite its simplicity, parity checking is still widely used today in serial ports (UART), memory modules (RAM parity/ECC), and even in the magnetic stripes of bank cards. We begin by understanding the core idea, then extend it to two-dimensional block parity which can not only detect but also \emph{locate} and \emph{correct} a single-bit error.
+
+\courssub{Principle of the Parity Bit}
+
+The idea is to add one extra bit — the \emph{parity bit} — to a group of data bits so that the total number of \texttt{1} bits in the extended group satisfies a known condition: either \emph{even} or \emph{odd}. The sender computes the parity bit and appends it; the receiver recomputes the parity of the received bits (including the parity bit) and checks whether the condition still holds. If it does not, at least one bit has been corrupted.
+
+\begin{definition}[Even Parity and Odd Parity]
+For a block of $n$ data bits $b_{n-1}\dots b_1 b_0$:
+\begin{itemize}
+\item \textbf{Even parity}: the parity bit $p$ is chosen so that the total number of \texttt{1}s in the $(n+1)$-bit word $(b_{n-1}\dots b_0 p)$ is \emph{even}.
+\item \textbf{Odd parity}: the parity bit $p$ is chosen so that the total number of \texttt{1}s in the $(n+1)$-bit word is \emph{odd}.
+\end{itemize}
+Mathematically, if $S = \sum_{i=0}^{n-1} b_i$ (the number of \texttt{1}s in the data), then
+\[
+p_{\text{even}} = S \bmod 2 \qquad\text{and}\qquad p_{\text{odd}} = (S+1) \bmod 2.
+\]
+Equivalently, $p_{\text{even}}$ is the \textbf{XOR} of all data bits, and $p_{\text{odd}}$ is its complement.
+\end{definition}
+
+\begin{exemplebox}[Parity bit for a 7-bit ASCII character]
+The letter \texttt{A} has ASCII code $65_{10} = \texttt{1000001}_2$ (7 bits).  
+Number of \texttt{1}s in the data: $S = 2$ (even).
+\begin{itemize}
+\item \textbf{Even parity}: $p = S \bmod 2 = 0$. Transmitted 8-bit word: \texttt{1000001\textbf{0}}.
+\item \textbf{Odd parity}: $p = (S+1) \bmod 2 = 1$. Transmitted 8-bit word: \texttt{1000001\textbf{1}}.
+\end{itemize}
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Title
+\node[align=center, font=\bfseries] at (4.5, 5.5) {Even Parity Bit Appended to ASCII `A' (65)};
+% Table header
+\draw (0,4.5) grid (9,5);
+\node at (0.5,4.75) {Bit position};
+\node at (1.5,4.75) {7};
+\node at (2.5,4.75) {6};
+\node at (3.5,4.75) {5};
+\node at (4.5,4.75) {4};
+\node at (5.5,4.75) {3};
+\node at (6.5,4.75) {2};
+\node at (7.5,4.75) {1};
+\node at (8.5,4.75) {0 (parity)};
+% Data row
+\draw (0,4) grid (9,4.5);
+\node at (0.5,4.25) {Value};
+\node at (1.5,4.25) {1};
+\node at (2.5,4.25) {0};
+\node at (3.5,4.25) {0};
+\node at (4.5,4.25) {0};
+\node at (5.5,4.25) {0};
+\node at (6.5,4.25) {0};
+\node at (7.5,4.25) {1};
+\node[fill=popgreenL] at (8.5,4.25) {\textbf{0}};
+% Arrow and explanation
+\draw[->, thick, popblue] (4.5,3.8) -- (4.5,3.2);
+\node[align=center, text width=6cm] at (4.5,2.6) {Number of 1s in data = 2 (even) $\Rightarrow$ parity bit = 0 \\ Total 1s in transmitted word = 2 (even) \checkmark};
+\end{tikzpicture}
+\legende{Even parity bit computation for ASCII `A' (7-bit code 1000001). The parity bit (highlighted) makes the total number of 1s even.}
+\end{popfigure}
+
+\courssub{Computing and Checking a Parity Bit}
+
+The procedure is straightforward and can be implemented in hardware with a simple XOR tree or in software with a loop.
+
+\begin{methode}[Computing and Verifying a Parity Bit]
+\textbf{At the sender (even parity):}
+\begin{enumerate}
+\item Count the number of \texttt{1} bits in the data word ($S$).
+\item If $S$ is even, set parity bit $p = 0$; else $p = 1$. (Equivalently: $p = \bigoplus_{i} b_i$, the XOR of all data bits.)
+\item Transmit the data word followed by $p$ (or preceded by $p$, as agreed).
+\end{enumerate}
+\textbf{At the receiver:}
+\begin{enumerate}
+\item Receive the $(n+1)$-bit word.
+\item Compute the XOR of \emph{all} received bits (data + parity bit). Call this $R$.
+\item If $R = 0$ (even parity) $\rightarrow$ \textbf{no error detected} (accept the data).
+\item If $R = 1$ (odd parity) $\rightarrow$ \textbf{error detected} (request retransmission or discard).
+\end{enumerate}
+For odd parity, the receiver expects $R = 1$ for a valid word.
+\end{methode}
+
+\begin{exoresolu}[Parity check detects a single-bit error]
+\textbf{Statement:} A system uses even parity. The sender transmits the 8-bit word \texttt{10110010} (7 data bits + 1 parity bit). During transmission, bit 3 (counting from 0 at the rightmost data bit) flips from \texttt{0} to \texttt{1}. The receiver gets \texttt{10110110}. Show that the error is detected.
+
+\textbf{Solution:}
+\begin{itemize}
+\item \textbf{Sender side:} Data bits = \texttt{1011001} (positions 6..0). Number of \texttt{1}s = 4 (even) $\Rightarrow$ parity bit $p = 0$. Transmitted word = \texttt{1011001\textbf{0}}.
+\item \textbf{Channel:} Bit 3 flips: \texttt{10110010} $\rightarrow$ \texttt{10110110} (the 4th bit from right, originally 0, becomes 1).
+\item \textbf{Receiver side:} Received word = \texttt{10110110}. Compute XOR of all 8 bits:
+$1 \oplus 0 \oplus 1 \oplus 1 \oplus 0 \oplus 1 \oplus 1 \oplus 0 = 1$ (odd).
+Since the result is \texttt{1} (odd), but even parity expects \texttt{0}, the receiver \textbf{detects an error}.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Capabilities and Limits of Single Parity}
+
+Parity checking is extremely cheap (one extra bit) and catches many common errors, but it has a fundamental limitation.
+
+\begin{propriete}[Error Detection Capability of a Single Parity Bit]
+A single parity bit (even or odd) detects \textbf{any odd number of bit errors} (1, 3, 5, \dots) in the transmitted word. It \textbf{fails to detect any even number of bit errors} (2, 4, 6, \dots) because flipping two bits changes the total number of \texttt{1}s by $-2$, $0$, or $+2$, preserving the parity.
+\end{propriete}
+
+\begin{attention}[Common Mistake: Assuming Parity Catches All Errors]
+Many students believe that because parity detects a single-bit error, it is ``reliable''. In reality, \textbf{two simultaneous bit flips cancel each other out} as far as parity is concerned. For example, if \texttt{10110010} (even parity) suffers flips at positions 2 and 5, the received word might be \texttt{10010010} — still even parity — and the error goes unnoticed. In noisy environments (e.g., industrial machinery near a CAMTEL line), burst errors often affect multiple adjacent bits, making single parity insufficient. Always state: ``Parity detects all odd-numbered errors but no even-numbered ones.''
+\end{attention}
+
+\begin{aretenir}[Key Points on Single Parity]
+\begin{itemize}
+\item Overhead: 1 check bit per $n$ data bits $\rightarrow$ ratio $1/n$ (e.g., 12.5\% for 7-bit ASCII, 11.1\% for 8-bit bytes).
+\item Detects \emph{all} odd-numbered bit errors; detects \emph{no} even-numbered bit errors.
+\item Cannot locate which bit is wrong, hence cannot correct errors (only request retransmission).
+\item Used in: UART/RS-232 serial ports, PCI bus, some RAM (parity SIMMs), magnetic stripe cards.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Two-Dimensional (Block) Parity}
+
+To gain error \emph{location} and \emph{correction} capability, we arrange data in a rectangular block and compute parity bits for each row \emph{and} each column. This is called \textbf{two-dimensional parity} or \textbf{block parity}.
+
+\begin{methode}[Constructing and Using Two-Dimensional Parity]
+\textbf{Block formation:} Arrange $k$ data words of $m$ bits each into a $k \times m$ matrix.
+\textbf{Row parity:} Append a parity bit to each row (making each row have even/odd parity).
+\textbf{Column parity:} Add an extra row at the bottom containing the parity bits for each column (including the row-parity column).
+\textbf{Transmission:} Send the entire $(k+1) \times (m+1)$ block row by row.
+\textbf{Reception and checking:}
+\begin{enumerate}
+\item Recompute row parities: any row with wrong parity is marked ``faulty''.
+\item Recompute column parities: any column with wrong parity is marked ``faulty''.
+\item \textbf{No faulty row/column} $\rightarrow$ no error detected.
+\item \textbf{Exactly one faulty row AND one faulty column} $\rightarrow$ the bit at their intersection is the \textbf{single corrupted bit}. Flip it to correct the error.
+\item \textbf{Multiple faulty rows/columns} $\rightarrow$ multiple errors detected but cannot be uniquely corrected (request retransmission).
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Block parity: locating and correcting a single-bit error]
+Consider 4 data words of 8 bits each (even parity for rows and columns). The sender builds the following block (data bits only shown, parity bits computed):
+
+\begin{center}
+\begin{tabular}{|c|cccccccc|c|}
+\hline
+\rowcolor{popblueL}
+\textbf{Row} & \multicolumn{8}{c|}{\textbf{Data bits (D7..D0)}} & \textbf{Row parity} \\ \hline
+0 & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & \textbf{0} \\
+1 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & \textbf{0} \\
+2 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & \textbf{0} \\
+3 & 0 & 0 & 1 & 1 & 0 & 1 & 1 & 0 & \textbf{0} \\ \hline
+\textbf{Col parity} & \textbf{0} & \textbf{0} & \textbf{1} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{0} & \textbf{1} & \textbf{0} \\
+\hline
+\end{tabular}
+\end{center}
+
+During transmission, the bit at \textbf{Row 2, Column 5} (value \texttt{1}) flips to \texttt{0}. The receiver gets the block with that single error. Recomputing parities:
+\begin{itemize}
+\item Row 2 now has an odd number of \texttt{1}s $\rightarrow$ row parity check fails for row 2.
+\item Column 5 now has an odd number of \texttt{1}s $\rightarrow$ column parity check fails for column 5.
+\item All other rows and columns pass.
+\end{itemize}
+The intersection of faulty row 2 and faulty column 5 pinpoints the erroneous bit. The receiver flips it back to \texttt{1} and \textbf{corrects the error} without retransmission.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.75, every node/.style={font=\scriptsize}]
+% Title
+\node[align=center, font=\bfseries] at (5.5, 11) {Two-Dimensional Parity Block (4$\times$8 data + row/col parity)};
+\node[align=center, font=\small] at (5.5, 10.5) {Single error at Row 2, Column 5 (highlighted) detected and corrected};
+% Grid coordinates: columns 0..8 (8 data + 1 row parity), rows 0..4 (4 data + 1 col parity)
+% Draw cells
+\foreach \r in {0,...,4} {
+  \foreach \c in {0,...,8} {
+    \pgfmathsetmacro{\x}{\c*1.2}
+    \pgfmathsetmacro{\y}{-\r*0.7}
+    \draw[popline] (\x, \y) rectangle (\x+1.2, \y+0.7);
+  }
+}
+% Column headers
+\foreach \c/\lbl in {0/D7,1/D6,2/D5,3/D4,4/D3,5/D2,6/D1,7/D0,8/R-parity} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \node at (\x, 0.4) {\lbl};
+}
+% Row headers
+\foreach \r/\lbl in {0/Row 0,1/Row 1,2/Row 2,3/Row 3,4/C-parity} {
+  \pgfmathsetmacro{\y}{-\r*0.7+0.35}
+  \node at (-0.8, \y) {\lbl};
+}
+% Data values (from example)
+% Row 0: 1 0 1 1 0 0 1 0 | row parity 0
+\foreach \c/\val in {0/1,1/0,2/1,3/1,4/0,5/0,6/1,7/0,8/0} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \node at (\x, 0.35) {\val};
+}
+% Row 1: 0 1 1 0 1 0 0 1 | row parity 0
+\foreach \c/\val in {0/0,1/1,2/1,3/0,4/1,5/0,6/0,7/1,8/0} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \pgfmathsetmacro{\y}{-0.7+0.35}
+  \node at (\x, \y) {\val};
+}
+% Row 2: 1 1 0 0 1 1 0 0 | row parity 0  -> ERROR at col 5 (index 5) should be 1 but received 0
+\foreach \c/\val in {0/1,1/1,2/0,3/0,4/1,5/0,6/0,7/0,8/0} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \pgfmathsetmacro{\y}{-1.4+0.35}
+  \ifnum\c=5
+    \node[fill=poppink!80, draw=poppink, thick, rounded corners=2pt] at (\x, \y) {\val};
+  \else
+    \node at (\x, \y) {\val};
+  \fi
+}
+% Row 3: 0 0 1 1 0 1 1 0 | row parity 0
+\foreach \c/\val in {0/0,1/0,2/1,3/1,4/0,5/1,6/1,7/0,8/0} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \pgfmathsetmacro{\y}{-2.1+0.35}
+  \node at (\x, \y) {\val};
+}
+% Column parity row (row 4): 0 0 1 0 0 0 0 1 | corner 0
+\foreach \c/\val in {0/0,1/0,2/1,3/0,4/0,5/0,6/0,7/1,8/0} {
+  \pgfmathsetmacro{\x}{\c*1.2+0.6}
+  \pgfmathsetmacro{\y}{-2.8+0.35}
+  \node at (\x, \y) {\val};
+}
+% Highlight faulty row and column
+\draw[poporange, thick, ->] (-1.5, -1.05) -- (-0.5, -1.05) node[right] {Faulty row};
+\draw[poporange, thick, ->] (5*1.2+0.6, 0.8) -- (5*1.2+0.6, 0.2) node[above] {Faulty column};
+\end{tikzpicture}
+\legende{Two-dimensional parity block. The single erroneous bit (Row 2, Column 5) is highlighted in pink. Its row and column parity checks both fail, uniquely identifying the error location for correction.}
+\end{popfigure}
+
+\begin{propriete}[Error Detection and Correction with Two-Dimensional Parity]
+For a block of $k \times m$ data bits with one row parity bit per row and one column parity bit per column (total $(k+1)(m+1)$ bits transmitted):
+\begin{itemize}
+\item \textbf{Detects} all 1-bit, 2-bit, and 3-bit errors (any odd number of errors in a row/column will be caught by that row/column parity).
+\item \textbf{Corrects} any single-bit error (unique intersection of faulty row and column).
+\item \textbf{Cannot correct} two or more errors (multiple intersections possible), but detects them.
+\item Overhead: $(k+m+1)$ check bits for $km$ data bits $\rightarrow$ ratio $\frac{k+m+1}{km}$. For large blocks this approaches $\frac{1}{m}+\frac{1}{k}$, much lower than single parity per word.
+\end{itemize}
+\end{propriete}
+
+\begin{exoresolu}[Overhead comparison: single parity vs block parity]
+\textbf{Statement:} Compare the check-bit overhead for transmitting 1024 data bits using (a) single even parity per 8-bit byte, and (b) a $32 \times 32$ two-dimensional parity block.
+
+\textbf{Solution:}
+\begin{itemize}
+\item \textbf{(a) Single parity per byte:} 1024 bits = 128 bytes. Each byte gets 1 parity bit $\rightarrow$ 128 check bits. Overhead = $128/1024 = 12.5\%$.
+\item \textbf{(b) Block parity $32 \times 32$:} Data bits = $32 \times 32 = 1024$. Row parity bits = 32. Column parity bits = 32. Corner bit (parity of parities) = 1. Total check bits = $32+32+1 = 65$. Overhead = $65/1024 \approx 6.35\%$.
+\end{itemize}
+Block parity cuts the overhead roughly in half while adding single-error correction capability.
+\end{exoresolu}
+
+\courssub{Real-Life Uses and Practical Considerations}
+
+\begin{savaistu}[Parity in Everyday Cameroonian Tech]
+\begin{itemize}
+\item \textbf{Mobile Money USSD:} When you dial \texttt{*123\#} on MTN or Orange, the GSM network uses parity (and more advanced CRC) on the signalling channel to ensure your transaction request isn't corrupted by radio noise.
+\item \textbf{RAM in your phone/laptop:} Many DRAM modules use \textbf{ECC (Error-Correcting Code)} which is essentially a multi-bit generalization of Hamming codes (seen in the next section), but basic parity RAM (now rare) stored one parity bit per byte.
+\item \textbf{Serial ports (UART) on microcontrollers:} Every Arduino, STM32, or Raspberry Pi UART frame includes a parity bit (configurable even/odd/none). This is why you must set ``8N1'' (8 data bits, No parity, 1 stop bit) or ``8E1'' (Even parity) identically on both ends.
+\item \textbf{Historical:} Punched cards (used in early Cameroonian census data processing) used a parity-like ``check hole'' per column.
+\end{itemize}
+\end{savaistu}
+
+\begin{attention}[Exam Traps on Parity]
+\begin{itemize}
+\item \textbf{Confusing even/odd parity formulas:} Remember: even parity bit = XOR of data bits; odd parity bit = NOT(XOR of data bits).
+\item \textbf{Forgetting the corner bit in block parity:} The bottom-right corner of a 2D parity block is the parity of the row-parity column \emph{and} the column-parity row. It must be consistent; if only the corner bit is wrong, it indicates an error in the parity bits themselves, not in data.
+\item \textbf{Assuming block parity corrects all double errors:} It does not. Two errors in the same row (or same column) will not be detected by that row/column parity, though the other dimension may catch them. Three errors can mimic a single error at a different location. Always say: ``Corrects all single-bit errors; detects all double-bit errors; may miscorrect some triple-bit errors.''
+\end{itemize}
+\end{attention}
+
+\courssub{Summary}
+
+\begin{aretenir}[Parity Checking Methods — What You Must Master]
+\begin{enumerate}
+\item \textbf{Single parity bit}: Adds 1 bit per word to make total \texttt{1}s even (even parity) or odd (odd parity). Computed by XOR of data bits.
+\item \textbf{Detection capability}: Catches \emph{all} odd-numbered bit errors; misses \emph{all} even-numbered bit errors. Cannot locate or correct errors.
+\item \textbf{Overhead}: $1/n$ per $n$-bit word (e.g., 12.5\% for 7-bit ASCII).
+\item \textbf{Two-dimensional (block) parity}: Organises data in a $k \times m$ array; adds row parity bits (one per row) and column parity bits (one per column) plus a corner bit.
+\item \textbf{Block parity capabilities}: Detects 1, 2, 3-bit errors; \textbf{corrects any single-bit error} at the intersection of the faulty row and column.
+\item \textbf{Block parity overhead}: $(k+m+1)/(km)$; for large blocks $\approx 1/k + 1/m$, much more efficient than single parity.
+\item \textbf{Applications}: UART serial links, memory parity/ECC, magnetic stripes, legacy punched cards, GSM signalling.
+\end{enumerate}
+\end{aretenir}
+
+\begin{exercice}[Practice Problems]
+\begin{enumerate}
+\item Compute the even and odd parity bits for the 8-bit byte \texttt{11010110}. Write the transmitted 9-bit words for each case.
+\item A system uses even parity. The receiver gets the 8-bit word \texttt{10101010}. The receiver computes XOR of all 8 bits and obtains 0. Can the receiver be certain the word is error-free? Justify.
+\item A $3 \times 4$ data block (3 rows, 4 columns) uses even row and column parity. The received block (including parity row/column) is:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL}
+1 & 0 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 1 \\ \hline
+0 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+Identify which row(s) and column(s) fail parity. Is there a single-bit error? If so, locate and correct it.
+\item Calculate the check-bit overhead (as a percentage) for a $16 \times 16$ two-dimensional parity block. Compare with single parity per 8-bit byte for the same amount of data.
+\item \textbf{Challenge:} Explain why a single parity bit cannot detect a 2-bit error, but a two-dimensional parity block \emph{can} detect any 2-bit error (though it cannot always correct it).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Data: \texttt{11010110}. Number of \texttt{1}s = 5 (odd).
+Even parity bit = 1 (to make total even $\rightarrow$ 6). Transmitted: \texttt{11010110\textbf{1}}.
+Odd parity bit = 0 (total stays odd $\rightarrow$ 5). Transmitted: \texttt{11010110\textbf{0}}.
+\item No. XOR = 0 means even parity holds. This could mean (a) no error, or (b) an even number of bit flips (2, 4, 6, 8). The receiver cannot distinguish.
+\item Recompute row parities (including row parity bit):
+Row 0: \texttt{1 0 1 1 | 1} $\rightarrow$ four \texttt{1}s (even) $\checkmark$
+Row 1: \texttt{0 1 0 1 | 0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+Row 2: \texttt{1 1 1 0 | 1} $\rightarrow$ four \texttt{1}s (even) $\checkmark$
+Column parities (including column parity row):
+Col 0: \texttt{1,0,1,0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+Col 1: \texttt{0,1,1,0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+Col 2: \texttt{1,0,1,0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+Col 3: \texttt{1,1,0,0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+Col 4 (row parity col): \texttt{1,0,1,0} $\rightarrow$ two \texttt{1}s (even) $\checkmark$
+All parities pass $\rightarrow$ \textbf{no error detected}. The block is valid.
+\item $16 \times 16$ block: data = 256 bits. Check bits = 16 (row) + 16 (col) + 1 (corner) = 33. Overhead = $33/256 \approx 12.89\%$.
+Single parity per byte: 256 bits = 32 bytes $\rightarrow$ 32 check bits. Overhead = $32/256 = 12.5\%$.
+Surprisingly, for this small block, single parity has slightly lower overhead! Block parity becomes more efficient for larger blocks (e.g., $32 \times 32$ gave 6.35\%).
+\item Single parity: two flips change the count of \texttt{1}s by $-2, 0,$ or $+2$ $\rightarrow$ parity unchanged $\rightarrow$ undetected.
+2D parity: two errors either lie in (a) same row $\rightarrow$ that row parity still ok, but two columns become faulty $\rightarrow$ detected; (b) same column $\rightarrow$ two rows faulty $\rightarrow$ detected; (c) different row and column $\rightarrow$ two rows and two columns faulty $\rightarrow$ detected. In all cases at least one parity check fails. However, correction is ambiguous because there are two possible error patterns (the two actual bits, or the other two corners of the rectangle).
+\end{enumerate}
+\end{corrige}
+
+\coursec{Checksums and Cyclic Redundancy Check (CRC)}
+
+In the previous section we studied \cle{parity checking}: a single extra bit that reveals whether an odd number of bits have been corrupted. Parity is cheap and fast, but it is blind to all even numbers of errors, and it tells us nothing about \emph{where} the error lies. When a bank in Douala transfers an account record, or when you download a file through a CAMTEL fibre link, a single parity bit is simply not trustworthy enough. We need stronger \cle{error detection codes}: the \cle{checksum} and the \cle{Cyclic Redundancy Check} (CRC). Both follow the same philosophy as parity --- append redundant information computed from the data, and let the receiver recompute and compare --- but they protect much longer blocks and detect far more error patterns.
+
+\courssub{The Checksum Principle}
+
+\textbf{Intuition first.} Imagine a market woman in Buea who sells five heaps of tomatoes. Instead of checking each heap again at the end of the day, she simply counts the \emph{total} number of heaps' worth of money expected. If the total at the end does not match, something went wrong --- even if she cannot say exactly which heap was miscounted. A checksum applies exactly this idea to data: we \emph{add up} all the data units, transmit the sum alongside the data, and let the receiver add again and compare.
+
+\begin{definition}[Checksum]
+A \cle{checksum} is a small block of redundant data obtained by applying an arithmetic function --- usually a \emph{sum} --- to all the units (bytes or words) of a message. The checksum is transmitted together with the message. The receiver recomputes the sum on the received data and compares it with the received checksum: any mismatch reveals that the data (or the checksum itself) was corrupted during transmission.
+\end{definition}
+
+\textbf{The simple additive checksum.} The data is split into fixed-size words (for example 8-bit bytes or 16-bit words). All words are added; the sum, truncated to the word size (overflow carries are discarded or folded back), is the checksum.
+
+\begin{methode}[Computing and verifying an additive checksum]
+\begin{enumerate}
+\item Split the message into words of $k$ bits (e.g.\ $k = 16$).
+\item Add all the words together using unsigned arithmetic.
+\item Keep only the lowest $k$ bits of the result: this is the \cle{checksum}. (For the \emph{one's complement checksum}, fold any carry out of the top bit back into the sum, then take the one's complement, i.e.\ flip every bit.)
+\item Transmit data words followed by the checksum.
+\item \textbf{At the receiver:} add all received words \emph{including} the checksum.
+\item \textbf{Interpretation:} for a plain additive checksum, the receiver recomputes the sum of the data words only and compares with the received checksum. For the \emph{one's complement} checksum, the sum of \emph{all} words including the checksum must give all 1s (e.g.\ \texttt{FFFF} in hexadecimal for 16-bit words). Any other result means an error has been detected.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[One's complement checksum, as used in the Internet (IP/TCP/UDP)]
+Suppose a packet header consists of four 16-bit words (written in hexadecimal):
+\[
+W_1 = \texttt{4500},\quad W_2 = \texttt{003C},\quad W_3 = \texttt{1C46},\quad W_4 = \texttt{4000}.
+\]
+\textbf{Step 1 --- add the words:}
+\[
+\texttt{4500} + \texttt{003C} = \texttt{453C};\qquad
+\texttt{453C} + \texttt{1C46} = \texttt{6182};\qquad
+\texttt{6182} + \texttt{4000} = \texttt{A182}.
+\]
+\textbf{Step 2 --- fold the carry} (here there is no carry beyond 16 bits, so nothing to fold).
+
+\textbf{Step 3 --- take the one's complement} (subtract from \texttt{FFFF}):
+\[
+\text{checksum} = \texttt{FFFF} - \texttt{A182} = \texttt{5E7D}.
+\]
+The sender transmits $W_1, W_2, W_3, W_4$ and \texttt{5E7D}.
+
+\textbf{Verification at the receiver:} add all five words:
+\[
+\texttt{A182} + \texttt{5E7D} = \texttt{FFFF}.
+\]
+The result is all 1s: the header is accepted as correct. This is precisely the algorithm used for the \cle{IPv4 header checksum} and (in a slightly extended form) by TCP and UDP --- the very protocols that carry your WhatsApp messages and MTN Mobile Money requests.
+\end{exemplebox}
+
+\begin{attention}[Limits of checksums]
+A checksum is stronger than a single parity bit, but it has two structural weaknesses you must know for the examination:
+\begin{itemize}
+\item \textbf{Insensitivity to reordering:} addition is commutative. If two 16-bit words are \emph{swapped} during transmission, the sum is unchanged and the corruption is invisible.
+\item \textbf{Compensating errors:} if one word increases by $5$ and another decreases by $5$ (for example a 1 becomes 0 in one word while a 0 becomes 1 in the same position of another word), the total is unchanged and the error escapes detection.
+\end{itemize}
+Consequence: checksums are acceptable for headers and short control information, but \emph{not} for protecting long frames on noisy links. For that, we use the CRC.
+\end{attention}
+
+\courssub{The Cyclic Redundancy Check (CRC)}
+
+\textbf{Intuition.} Long division with remainder is a much more sensitive ``mixer'' than addition: changing almost any digit of the dividend changes the remainder. The CRC exploits this by treating the bits of the message as the coefficients of a \emph{binary polynomial} and dividing it by a fixed \emph{generator polynomial}, using arithmetic modulo 2, where addition and subtraction are both the XOR operation (no carries, no borrows).
+
+\begin{definition}[CRC and generator polynomial]
+A \cle{Cyclic Redundancy Check} (CRC) is an error-detecting code in which:
+\begin{itemize}
+\item the message $M$ of $k$ bits is viewed as a polynomial $M(x)$ with coefficients in $\{0,1\}$ (bit $1$ in position $i$ means the term $x^i$ is present);
+\item a fixed \cle{generator polynomial} $G(x)$ of \emph{degree} $n$, agreed by sender and receiver, is chosen;
+\item the sender appends $n$ zero bits to $M$ (this multiplies $M(x)$ by $x^n$), divides the result by $G(x)$ using \emph{modulo-2} (XOR) division, and obtains a remainder $R(x)$ of degree less than $n$, i.e.\ an $n$-bit \cle{FCS} (Frame Check Sequence);
+\item the transmitted frame is $T = M$ followed by the $n$ bits of $R$, so that $T(x)$ is exactly divisible by $G(x)$;
+\item the receiver divides the whole received frame by the same $G(x)$: a \textbf{zero remainder} means the frame is accepted; a \textbf{non-zero remainder} means an error has been detected and the frame is discarded (and usually retransmitted).
+\end{itemize}
+\end{definition}
+
+\begin{methode}[Performing modulo-2 (XOR) division]
+\begin{enumerate}
+\item Write the generator $G$ as a bit string (degree $n$ gives $n+1$ bits, the leading bit is always 1).
+\item Append $n$ zeros to the message $M$.
+\item Proceed as in ordinary long division, but replace every subtraction by an \textbf{XOR}: align the leading 1 of $G$ with the leftmost 1 of the current dividend, XOR, and bring down the next bit.
+\item If the current leading bit is 0, the quotient bit is 0 (equivalently, XOR with $0\ldots0$); just bring down the next bit.
+\item Stop when no more bits can be brought down. The last $n$ bits form the remainder $R$.
+\item Transmit $M$ followed by $R$. At the receiver, divide the whole received frame by $G$: remainder $000\ldots0$ $\Rightarrow$ no error detected.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common mistake: borrowing instead of XOR]
+The most frequent error in CRC computations is to perform \emph{ordinary binary subtraction with borrows} during the division. In modulo-2 arithmetic there are \textbf{no borrows and no carries}: $1 - 1 = 0$, $1 - 0 = 1$, $0 - 1 = 1$ (not ``borrow from the next column''). In other words, subtraction \emph{is} XOR, and it is identical to addition. Always XOR the aligned strings bit by bit.
+\end{attention}
+
+\begin{exoresolu}[CRC computation with generator $G(x) = x^3 + x + 1$]
+Statement. The message is $M = 110101$ and the generator polynomial is $G(x) = x^3 + x + 1$. Compute the CRC remainder and the transmitted frame, then show the receiver's check.
+\tcblower
+\textbf{Solution.} $G(x) = x^3 + x + 1$ corresponds to the bit string $1011$ (coefficients of $x^3, x^2, x^1, x^0$), and $n = 3$, so we append 3 zeros: dividend $= 110101\,000$.
+
+Modulo-2 long division by $1011$ (quotient bits shown above the dividend):
+\begin{align*}
+&\phantom{000000}111101 \quad \text{(quotient)} \\
+1011&\overline{\smash{\big)}\,110101000} \\
+&\phantom{000000}1011 \\
+&\phantom{000000}\underline{\oplus\;1011} \\
+&\phantom{00000}1100 \\
+&\phantom{00000}1011 \\
+&\phantom{00000}\underline{\oplus\;1011} \\
+&\phantom{0000}1110 \\
+&\phantom{0000}1011 \\
+&\phantom{0000}\underline{\oplus\;1011} \\
+&\phantom{000}1010 \\
+&\phantom{000}0000 \quad \text{(since $1010 < 1011$, quotient bit 0)} \\
+&\phantom{000}\underline{\oplus\;0000} \\
+&\phantom{00}10100 \quad \text{(bring down 0)} \\
+&\phantom{00}0000 \quad \text{(quotient bit 0)} \\
+&\phantom{00}\underline{\oplus\;0000} \\
+&\phantom{0}101000 \quad \text{(bring down 0)} \\
+&\phantom{0}10110 \quad \text{(align divisor)} \\
+&\phantom{0}\underline{\oplus\;10110} \\
+&\phantom{0}00110 \quad \text{(bring down 0 -- no more bits)} \\
+&\phantom{0}00000 \quad \text{(quotient bit 0)} \\
+&\phantom{0}\underline{\oplus\;00000} \\
+&\phantom{00}0110 \quad \text{? Wait.}
+\end{align*}
+\textbf{Correction:} The standard schoolbook long division for CRC is best performed bit-by-bit using a shift register. The polynomial division yields:
+\[
+M(x) = x^5 + x^4 + x^2 + 1,\quad x^3M(x) = x^8 + x^7 + x^5 + x^3.
+\]
+Dividing by $G(x) = x^3 + x + 1$:
+\begin{itemize}
+\item $x^5 G(x) = x^8 + x^6 + x^5$; remainder $x^7 + x^6 + x^3$.
+\item $x^4 G(x) = x^7 + x^5 + x^4$; remainder $x^6 + x^5 + x^4 + x^3$.
+\item $x^3 G(x) = x^6 + x^4 + x^3$; remainder $x^5$.
+\item $x^2 G(x) = x^5 + x^3 + x^2$; remainder $x^3 + x^2$.
+\item $x^1 G(x) = x^4 + x^2 + x$ (degree 4 > 3, quotient bit 0).
+\item $x^0 G(x) = x^3 + x + 1$; remainder $x^2 + x + 1$.
+\end{itemize}
+Remainder $R(x) = x^2 + x + 1 \rightarrow \texttt{111}$ (3 bits).
+
+\textbf{Transmitted frame:} $T = 110101\,111$.
+
+\textbf{Receiver's check:} dividing $110101111$ by $1011$ with the same XOR procedure gives remainder $000$: the frame is accepted. If a burst of noise flips, say, three consecutive bits, the division yields a non-zero remainder and the frame is rejected.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth]
+% Shift Register for CRC-3 (G = x^3 + x + 1 = 1011)
+% Nodes: XOR gates and D-FFs
+\node[draw, circle, minimum size=0.6cm, popblue] (xor1) at (0,0) {$\oplus$};
+\node[draw, rectangle, minimum size=0.7cm, popdark] (r2) at (1.5,0) {$r_2$};
+\node[draw, rectangle, minimum size=0.7cm, popdark] (r1) at (3.5,0) {$r_1$};
+\node[draw, rectangle, minimum size=0.7cm, popdark] (r0) at (5.5,0) {$r_0$};
+\node[draw, circle, minimum size=0.6cm, popblue] (xor2) at (1.5,-1.5) {$\oplus$};
+\node[draw, circle, minimum size=0.6cm, popblue] (xor3) at (5.5,-1.5) {$\oplus$};
+
+% Input
+\node[left] at (-1,0) {Data In};
+\draw[->, popline] (-1,0) -- (xor1);
+\draw[->, popline] (xor1) -- (r2);
+\draw[->, popline] (r2) -- (r1);
+\draw[->, popline] (r1) -- (xor3);
+\draw[->, popline] (xor3) -- (r0);
+\draw[->, popline] (r0) -- (7,0) node[right] {Data Out / Remainder};
+
+% Feedback taps
+\draw[popline] (r2.north) -- ++(0,0.5) -| (xor1.north);
+\draw[popline] (r2.south) -- ++(0,-0.5) |- (xor2);
+\draw[popline] (xor2) -- (r1.south);
+\draw[popline] (r0.south) -- ++(0,-0.5) -| (xor3.south);
+\draw[popline] (r2.south) -| (xor3.north);
+
+% Labels
+\node[above, popmuted] at (xor1) {Input $\oplus r_2$};
+\node[below, popmuted, align=center] at (xor2) {$r_2$};
+\node[below, popmuted, align=center] at (xor3) {$r_1 \oplus r_2$};
+\node[above, popmuted] at (r2) {$x^3$};
+\node[above, popmuted] at (r1) {$x^1$};
+\node[above, popmuted] at (r0) {$x^0$};
+\node[below, poporange, font=\bfseries] at (3.5,-2.5) {Generator $G(x)=x^3+x+1$ (1011)};
+\end{tikzpicture}
+\end{center}
+\legende{Shift-register (LFSR) circuit for CRC-3 with $G(x)=x^3+x+1$. Clock in the 6 message bits followed by 3 zeros; the register $(r_2,r_1,r_0)$ then holds the remainder $\texttt{111}$.}
+\end{popfigure}
+
+\begin{propriete}[Detection power of a CRC (admitted)]
+A CRC generated by a polynomial of degree $n$ detects:
+\begin{itemize}
+\item \textbf{all burst errors of length $\le n$ bits} (a burst is a cluster of corrupted bits, possibly with correct bits inside, whose first and last bits are in error);
+\item all single-bit and all double-bit errors (provided $G(x)$ has more than one term and does not divide $x^e + 1$ for any $e$ up to the frame length);
+\item all odd numbers of bit errors, provided $G(x)$ contains the factor $(x+1)$;
+\item a fraction $1 - 2^{-n}$ of all longer bursts (e.g.\ more than $99.9999\%$ for CRC-32).
+\end{itemize}
+This property is admitted; its proof (based on polynomial factorisation over $\{0,1\}$) is \emph{not} examinable, but the statement itself must be known.
+\end{propriete}
+
+\textbf{Standard generator polynomials.} Different standards use different generators; the degree $n$ fixes the size of the FCS field.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Name} & \textbf{Degree} & \textbf{Typical uses} \\
+\hline
+CRC-8 & 8 & Short frames, GSM/3G control channels, some sensor buses \\
+\hline
+CRC-16 (IBM) & 16 & USB packets, Modbus, XMODEM file transfer ($x^{16}+x^{15}+x^2+1$) \\
+\hline
+CRC-32 (Ethernet) & 32 & Ethernet frames (FCS field), ZIP archives, PNG images, Wi-Fi ($x^{32}+x^{26}+x^{23}+x^{22}+x^{16}+x^{12}+x^{11}+x^{10}+x^8+x^7+x^5+x^4+x^2+x+1$) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[CRC around you in Cameroon]
+Every Ethernet frame travelling through a CAMTEL or MTN backbone router ends with a 32-bit FCS computed with CRC-32; a corrupted frame is silently discarded and retransmitted by higher layers. When you unzip a downloaded document and the archiver reports a ``CRC failed'' message, it is precisely this remainder check that has detected a corrupted byte inside the archive.
+\end{savaistu}
+
+\courssub{Comparing Parity, Checksum and CRC}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Parity bit} & \textbf{Checksum} & \textbf{CRC} \\
+\hline
+Redundancy (overhead) & 1 bit & One word (8--32 bits) & $n$ bits (8--32) \\
+\hline
+Single-bit error & Detected & Detected & Detected \\
+\hline
+Odd number of errors & Detected & Often detected & Detected if $(x+1)$ divides $G$ \\
+\hline
+Double-bit error & Missed & Often detected & Detected \\
+\hline
+Burst of length $\le n$ & Missed & Not guaranteed & \textbf{All detected} \\
+\hline
+Reordered blocks & Missed & \textbf{Missed} & Detected \\
+\hline
+Compensating errors & Missed & \textbf{Missed} & Detected \\
+\hline
+Computation cost & Trivial (XOR tree) & Low (additions) & Moderate; very fast in hardware (shift registers + XOR gates) \\
+\hline
+Typical use & RAM, simple serial links & IP/TCP/UDP headers & Ethernet, USB, ZIP, storage \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=0.55cm,
+  width=11.5cm, height=6.2cm,
+  ymin=0, ymax=10.5,
+  ylabel={Score (0 = poor, 10 = excellent)},
+  symbolic x coords={Parity, Checksum, CRC-16, CRC-32},
+  xtick=data,
+  legend style={at={(0.5,-0.22)}, anchor=north, legend columns=3, font=\small},
+  nodes near coords, every node near coord/.append style={font=\scriptsize},
+  ymajorgrids, grid style={popline!40},
+]
+\addplot[fill=popblue]  coordinates {(Parity,1) (Checksum,4) (CRC-16,8) (CRC-32,9)};
+\addplot[fill=poporange] coordinates {(Parity,10) (Checksum,8) (CRC-16,6) (CRC-32,5)};
+\addplot[fill=popgreen]  coordinates {(Parity,10) (Checksum,7) (CRC-16,7) (CRC-32,6)};
+\legend{Detection power, Low overhead, Low cost}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Qualitative comparison: detection power rises from parity to CRC-32, while overhead and computational cost increase moderately.}
+\end{popfigure}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A \cle{checksum} sums the data words; the \emph{one's complement} version (IP/TCP) makes the receiver's total come out as all 1s.
+\item Checksums miss \emph{reordered blocks} and \emph{compensating errors}.
+\item A \cle{CRC} divides the message polynomial by a generator $G(x)$ of degree $n$ using \textbf{XOR only} (no borrows); the $n$-bit remainder is appended to the frame.
+\item Receiver: divide the whole frame by $G(x)$; remainder $0$ $\Rightarrow$ accepted.
+\item A degree-$n$ CRC detects \textbf{all bursts of length $\le n$} and virtually all longer errors; CRC-32 protects Ethernet frames and ZIP files.
+\item The stronger the code, the higher the redundancy and cost: choose parity for trivial links, checksums for headers, CRC for frames and files.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Four 16-bit words \texttt{2345}, \texttt{AB00}, \texttt{1F1F} and \texttt{70A6} (hexadecimal) are to be protected by a one's complement checksum. Compute the checksum, then verify it as the receiver would.
+\item Using the generator $G(x) = x^3 + x + 1$ (bit string $1011$), compute the CRC of the message $M = 1001101$ and give the transmitted frame.
+\item A receiver using the same $G$ receives the frame $1001101\,001$. Perform the division and state whether the frame is accepted.
+\item Explain why a checksum would fail to detect the corruption of a message in which two bytes have been exchanged, whereas a CRC would almost certainly detect it.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Sum: $\texttt{2345} + \texttt{AB00} = \texttt{CE45}$; $+\,\texttt{1F1F} = \texttt{ED64}$; $+\,\texttt{70A6} = \texttt{15E0A}$. Fold the carry: $\texttt{5E0A} + 1 = \texttt{5E0B}$. One's complement: $\texttt{FFFF} - \texttt{5E0B} = \texttt{A1F4}$. Receiver: $\texttt{5E0B} + \texttt{A1F4} = \texttt{FFFF}$: accepted.
+
+\textbf{2.} Message $M = 1001101$ (7 bits). Append 3 zeros: $1001101000$.
+Polynomial division by $G(x)=x^3+x+1$ ($1011$):
+$M(x) = x^6 + x^3 + x^2 + 1$. $x^3M(x) = x^9 + x^6 + x^5 + x^3$.
+Divide by $x^3+x+1$:
+\begin{itemize}
+\item $x^6 G = x^9 + x^7 + x^6$; rem $x^7 + x^5 + x^3$.
+\item $x^4 G = x^7 + x^5 + x^4$; rem $x^4 + x^3$.
+\item $x^1 G = x^4 + x^2 + x$; rem $x^3 + x^2 + x$.
+\item $x^0 G = x^3 + x + 1$; rem $x^2 + 1$.
+\end{itemize}
+Remainder $R(x) = x^2 + 1 \rightarrow \texttt{101}$.
+\textbf{Transmitted frame:} $1001101\,101$.
+
+\textbf{3.} Received frame $1001101001$. Divide by $1011$:
+The correct remainder for the valid frame is $101$. The received frame has $001$ as the last 3 bits.
+Dividing $1001101001$ by $1011$ yields a non-zero remainder (specifically, the syndrome is non-zero). The frame is \textbf{rejected}; an error has been detected.
+
+\textbf{4.} Addition is commutative: swapping two bytes leaves the sum unchanged, so the checksum still matches and the corruption is invisible. A CRC divides the bit sequence as a polynomial, where the \emph{position} of every bit matters (it determines the power of $x$); swapping two bytes changes the dividend polynomial, hence (almost always) the remainder, so the receiver detects the error.
+\end{corrige}
+
+\coursec{Error Correction: Hamming Codes and Applications}
+
+In the previous section we studied checksums and the Cyclic Redundancy Check (CRC). Both are excellent \emph{detection} tools: they tell the receiver ``something went wrong''. But detection alone raises an awkward question: once you know a message is corrupted, what do you do? The usual answer is ``ask for it again''. In this section we study what happens when asking again is impossible, and we meet the great classic of the subject: the \cle{Hamming code}, which not only detects an error but \emph{locates and corrects it automatically}.
+
+\courssub{Why Correction Matters: When Retransmission Is Not an Option}
+
+Consider three concrete situations.
+
+\begin{itemize}
+\item \textbf{Broadcast and one-way links.} A television satellite over Yaound\'e broadcasts the same signal to millions of receivers. If one receiver detects an error, it cannot ask the satellite to repeat just for itself: there is no return channel, or it would be absurdly expensive.
+\item \textbf{Data storage.} A file written on a disk or in memory today may be read back \emph{next year}. By then, the ``sender'' (the disk head of last year) no longer exists. If a bit has flipped, nobody can retransmit: the data must heal itself.
+\item \textbf{Deep space and long delays.} A signal from a space probe takes minutes or hours to arrive. Retransmitting doubles an already enormous delay, and the probe may have moved on.
+\end{itemize}
+
+In all these cases we need \cle{Forward Error Correction} (FEC): the sender adds \emph{more} clever redundancy than a simple check, so that the receiver can \textbf{reconstruct} the original data even after some bits are damaged. The price is extra bits; the reward is autonomy. The simplest and most instructive FEC scheme is the family of Hamming codes, invented by Richard Hamming in 1950 after he grew frustrated with a computer that stopped every time it detected an error.
+
+\begin{savaistu}[Did you know?]
+Richard Hamming worked at Bell Labs with relay computers that ran unattended over the weekend. The machine could \emph{detect} an error using parity, but then it simply abandoned the whole job. Hamming reportedly said, in essence: ``If the machine can detect an error, why can't it locate it and correct it?'' The result was the family of codes that still protects your computer's memory today.
+\end{savaistu}
+
+\courssub{Hamming Distance: Measuring How Different Two Words Are}
+
+Before correcting errors, we need a ruler to measure ``how far apart'' two binary words are.
+
+\begin{definition}[Hamming distance]
+The \cle{Hamming distance} between two binary words of equal length is the \textbf{number of positions in which they differ}. It is computed by counting the 1s in the bitwise XOR of the two words. The \emph{minimum distance} $d_{\min}$ of a code is the smallest Hamming distance between any two distinct valid codewords.
+\end{definition}
+
+\begin{exemplebox}[Computing Hamming distances]
+Compare $1011001$ and $1001011$:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+\rowcolor{popblueL} Position & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+Word A & 1 & 0 & 1 & 1 & 0 & 0 & 1 \\
+Word B & 1 & 0 & 0 & 1 & 0 & 1 & 1 \\
+\hline
+Differ? & no & no & \textbf{yes} & no & no & \textbf{yes} & no \\
+\hline
+\end{tabular}
+\end{center}
+Two positions differ, so the Hamming distance is $2$. Equivalently, $1011001 \oplus 1001011 = 0010010$, which contains two 1s.
+\end{exemplebox}
+
+Why does this matter? Imagine valid codewords as cities on a map, and errors as steps along the roads. If every pair of cities is at least $d_{\min}$ steps apart, then a small number of erroneous steps cannot turn one valid word into another valid one --- the corruption is \emph{visible}. And if the received word is closer to one city than to any other, we can \emph{guess} which city it came from. This intuition is captured by a fundamental property.
+
+\begin{propriete}[Detection and correction capability]
+Let a code have minimum Hamming distance $d_{\min}$. Then:
+\begin{itemize}
+\item it can \textbf{detect} up to $d$ erroneous bits if and only if $d_{\min} \geq d + 1$;
+\item it can \textbf{correct} up to $d$ erroneous bits if and only if $d_{\min} \geq 2d + 1$.
+\end{itemize}
+\emph{Justification (instructive, not required for the exam):} to detect $d$ errors, $d$ flips must never transform a valid word into another valid word, so valid words must be more than $d$ apart. To correct $d$ errors, the corrupted word must remain \emph{closer} to the original word than to any other valid word; two ``correction balls'' of radius $d$ around distinct codewords must not overlap, which forces a separation of at least $2d+1$.
+\end{propriete}
+
+\begin{exemplebox}[Applying the property]
+A simple parity bit gives $d_{\min} = 2$: it detects $1$ error ($2 = 1+1$) but corrects none ($2 < 2\times1+1 = 3$). Hamming(7,4) has $d_{\min} = 3$: it corrects exactly $1$ error ($3 = 2\times1+1$) and detects up to $2$ errors ($3 = 2+1$) --- but not both at once, a subtlety we return to below.
+\end{exemplebox}
+
+\courssub{Structure of a Hamming(7,4) Codeword}
+
+Hamming's brilliant idea: instead of \emph{one} parity bit covering everything, use \emph{several} parity bits, each watching a \emph{different, overlapping group} of positions. When an error occurs, the pattern of failed checks --- the \cle{syndrome} --- points like a compass to the exact faulty position.
+
+The construction rule is:
+
+\begin{itemize}
+\item Positions are numbered \textbf{from 1} (not 0).
+\item Positions that are \textbf{powers of 2} ($1, 2, 4, 8, \dots$) hold \cle{parity bits}.
+\item All other positions ($3, 5, 6, 7, 9, \dots$) hold \cle{data bits}, filled in order.
+\item Parity bit at position $2^k$ checks every position whose binary numeral has a 1 in bit $k$ (with bit 0 being the least significant).
+\end{itemize}
+
+For Hamming(7,4): positions $1, 2, 4$ are parity bits $p_1, p_2, p_4$; positions $3, 5, 6, 7$ carry the four data bits $d_1 d_2 d_3 d_4$. The coverage groups are:
+
+\begin{center}
+\begin{tabular}{|c|l|c|}
+\hline
+\rowcolor{popblueL} Parity bit & Checks positions & Binary reason \\
+\hline
+$p_1$ (pos.\ 1) & 1, 3, 5, 7 & numbers ending in 1 (001, 011, 101, 111) \\
+$p_2$ (pos.\ 2) & 2, 3, 6, 7 & numbers with middle bit 1 (010, 011, 110, 111) \\
+$p_4$ (pos.\ 4) & 4, 5, 6, 7 & numbers with leading bit 1 (100, 101, 110, 111) \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+% Position row
+\foreach \i in {1,...,7} {
+  \draw[thick, popline] (\i,1) rectangle (\i+1,2);
+  \node at (\i+0.5,1.5) {\i};
+}
+\node[left, popdark] at (1,1.5) {Position};
+% Content row
+\foreach \i/\r in {1/$p_1$,2/$p_2$,3/$d_1$,4/$p_4$,5/$d_2$,6/$d_3$,7/$d_4$} {
+  \draw[thick, popline] (\i,0) rectangle (\i+1,1);
+  \node at (\i+0.5,0.5) {\r};
+}
+\node[left, popdark] at (1,0.5) {Content};
+% Colour the cells
+\fill[popblueL] (1,1) rectangle (2,2);
+\fill[popblueL] (2,1) rectangle (3,2);
+\fill[popblueL] (4,1) rectangle (5,2);
+\fill[popgreenL] (3,1) rectangle (4,2);
+\fill[popgreenL] (5,1) rectangle (6,2);
+\fill[popgreenL] (6,1) rectangle (7,2);
+\fill[popgreenL] (7,1) rectangle (8,2);
+\fill[popblueL] (1,0) rectangle (2,1);
+\fill[popblueL] (2,0) rectangle (3,1);
+\fill[popblueL] (4,0) rectangle (5,1);
+\fill[popgreenL] (3,0) rectangle (4,1);
+\fill[popgreenL] (5,0) rectangle (6,1);
+\fill[popgreenL] (6,0) rectangle (7,1);
+\fill[popgreenL] (7,0) rectangle (8,1);
+% Redraw borders and text for content row
+\foreach \i in {1,...,7} {
+  \draw[thick, popline] (\i,0) rectangle (\i+1,1);
+  \node at (\i+0.5,0.5) {\i};
+}
+\foreach \i/\r in {1/$p_1$,2/$p_2$,3/$d_1$,4/$p_4$,5/$d_2$,6/$d_3$,7/$d_4$} {
+  \node at (\i+0.5,0.5) {\r};
+}
+% Coverage rows
+\foreach \i/\c in {1/popblue,3/popblue,5/popblue,7/popblue} {
+  \node[\c] at (\i+0.5,-0.75) {$\bullet$};
+}
+\foreach \i in {1,...,7} \draw[popline] (\i,-1.5) rectangle (\i+1,-0.5);
+\node[left, popdark] at (1,-1) {$p_1$ covers};
+\foreach \i/\c in {2/poporange,3/poporange,6/poporange,7/poporange} {
+  \node[\c] at (\i+0.5,-1.75) {$\bullet$};
+}
+\foreach \i in {1,...,7} \draw[popline] (\i,-2.5) rectangle (\i+1,-1.5);
+\node[left, popdark] at (1,-2) {$p_2$ covers};
+\foreach \i/\c in {4/poppurple,5/poppurple,6/poppurple,7/poppurple} {
+  \node[\c] at (\i+0.5,-2.75) {$\bullet$};
+}
+\foreach \i in {1,...,7} \draw[popline] (\i,-3.5) rectangle (\i+1,-2.5);
+\node[left, popdark] at (1,-3) {$p_4$ covers};
+\end{tikzpicture}
+\end{center}
+\legende{Hamming(7,4) codeword: parity bits sit at positions 1, 2, 4 (powers of 2); each parity bit ``covers'' the positions whose binary index contains its bit.}
+\end{popfigure}
+
+\begin{attention}[Number positions from 1, never from 0]
+The single most common exam mistake is to number the positions $0, 1, 2, \dots$ The whole magic of the Hamming code rests on position numbers written in binary: parity bit $p_1$ watches positions whose binary index ends in 1, $p_2$ those with a 1 in the second binary digit, and so on. If you start numbering at 0, the powers-of-2 rule collapses, the syndrome no longer gives the error position, and every subsequent computation is wrong. Always write the position row $1$ to $7$ \emph{first}.
+\end{attention}
+
+\courssub{Encoding a Hamming(7,4) Codeword}
+
+\begin{methode}[Encoding a 4-bit dataword into Hamming(7,4) with even parity]
+\begin{enumerate}
+\item Write the position numbers $1$ to $7$. Place the four data bits, in order, at positions $3, 5, 6, 7$.
+\item For parity bit $p_1$ (position 1): count the 1s among positions $3, 5, 7$. With \emph{even} parity, set $p_1$ so the total over $\{1,3,5,7\}$ is even.
+\item For parity bit $p_2$ (position 2): do the same over positions $\{2,3,6,7\}$.
+\item For parity bit $p_4$ (position 4): do the same over positions $\{4,5,6,7\}$.
+\item Read the 7-bit codeword from position 1 to position 7.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Encoding the dataword 1011]
+Data: $d_1=1$ (pos.\ 3), $d_2=0$ (pos.\ 5), $d_3=1$ (pos.\ 6), $d_4=1$ (pos.\ 7).
+\begin{itemize}
+\item $p_1$ over positions $\{3,5,7\} = \{1,0,1\}$: two 1s, already even $\Rightarrow p_1 = 0$.
+\item $p_2$ over positions $\{3,6,7\} = \{1,1,1\}$: three 1s, odd $\Rightarrow p_2 = 1$.
+\item $p_4$ over positions $\{5,6,7\} = \{0,1,1\}$: two 1s, even $\Rightarrow p_4 = 0$.
+\end{itemize}
+Codeword (positions 1--7): \textbf{0\,1\,1\,0\,0\,1\,1}, i.e. $0110011$.
+\end{exemplebox}
+
+\begin{experience}[Spreadsheet simulation of Hamming(7,4) encoding]
+Open a spreadsheet (LibreOffice Calc, Excel, or Google Sheets). In row 1, enter headers: \texttt{Pos} in A1, then \texttt{1} to \texttt{7} in B1:H1. In row 2, enter the role: \texttt{p1}, \texttt{p2}, \texttt{d1}, \texttt{p4}, \texttt{d2}, \texttt{d3}, \texttt{d4} in B2:H2. In row 3, enter your 4 data bits in D3, E3, F3, G3 (positions 3,5,6,7). In B3 (p1) enter formula: \texttt{=MOD(D3+E3+G3,2)}. In C3 (p2): \texttt{=MOD(D3+F3+G3,2)}. In E3 (p4): \texttt{=MOD(E3+F3+G3,2)}. The codeword appears in B3:H3. Test with data 1011 and verify you get 0110011. Then flip a bit in the codeword and build a decoder in row 5 using the same parity formulas on the received word to compute the syndrome.
+\end{experience}
+
+\courssub{Decoding: Syndrome Computation and Correction}
+
+At the receiver, each parity group is re-checked. Each check produces one bit: $0$ if the group has even parity (all fine), $1$ if odd (something is wrong). Read in the order $c_4 c_2 c_1$, these bits form the \cle{syndrome} --- and here is Hamming's stroke of genius: \textbf{the syndrome, read as a binary number, is exactly the position of the erroneous bit}. A syndrome of $000$ means ``no error''.
+
+\begin{methode}[Locating and correcting a single-bit error in Hamming(7,4)]
+\begin{enumerate}
+\item Recompute the parity check $c_1$ over positions $\{1,3,5,7\}$: $c_1 = 1$ if the count of 1s is odd, else $0$.
+\item Similarly compute $c_2$ over $\{2,3,6,7\}$ and $c_4$ over $\{4,5,6,7\}$.
+\item Form the binary number $c_4 c_2 c_1$. If it is $000$, accept the word as correct.
+\item Otherwise, convert $c_4 c_2 c_1$ to decimal: this is the \textbf{position of the error}. Flip that bit.
+\item Extract the data bits from positions $3, 5, 6, 7$.
+\end{enumerate}
+Why does it work? A bit at position $n$ belongs to exactly the parity groups corresponding to the 1s in the binary notation of $n$. If only that bit flips, exactly those checks fail --- so the failed-check pattern \emph{spells out} $n$ in binary.
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Nodes with explicit coordinates
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (data) at (0,0) {Dataword $d_1d_2d_3d_4$};
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (enc) at (3.5,0) {Encode: place data, compute $p_1,p_2,p_4$};
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (chan) at (7,0) {Transmit / store (noise may flip a bit)};
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (syn) at (10.5,0) {Compute checks $c_1,c_2,c_4$};
+\node[draw=popline, thick, fill=popgreenL, text width=2.8cm, align=center, minimum height=0.85cm] (test) at (10.5,-2) {Syndrome $c_4c_2c_1 = 000$?};
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (corr) at (7,-2) {Flip bit at position $c_4c_2c_1$};
+\node[draw=popline, thick, rounded corners=2pt, fill=popblueL, text width=2.8cm, align=center, minimum height=0.85cm] (out) at (3.5,-2) {Extract data from positions 3, 5, 6, 7};
+% Arrows
+\draw[-{latex}, thick, popdark] (data.east) -- (enc.west);
+\draw[-{latex}, thick, popdark] (enc.east) -- (chan.west);
+\draw[-{latex}, thick, popdark] (chan.east) -- (syn.west);
+\draw[-{latex}, thick, popdark] (syn.south) -- (test.north) node[midway, right, font=\small] {no};
+\draw[-{latex}, thick, popdark] (test.west) -- (corr.east);
+\draw[-{latex}, thick, popdark] (corr.west) -- (out.east);
+\draw[-{latex}, thick, popdark] (test.east) -- ++(0.5,0) |- (out.east) node[pos=0.25, above, font=\small] {yes};
+\end{tikzpicture}
+\end{center}
+\legende{The Hamming encode--transmit--decode--correct pipeline. The syndrome decides: no error, or the exact position to flip.}
+\end{popfigure}
+
+\begin{exoresolu}[Complete worked example: encode, corrupt, correct]
+A sender must transmit the dataword $1011$ using Hamming(7,4) with even parity. During transmission, the bit at position 5 is flipped. Show how the receiver detects and corrects the error.
+\tcblower
+\textbf{Step 1 --- Encode.} As computed above, dataword $1011$ gives the codeword
+\[ 0110011 \quad (\text{positions } 1\text{--}7). \]
+\textbf{Step 2 --- Corrupt.} Position 5 flips from $0$ to $1$. The receiver gets $0110\mathbf{1}11$.
+\textbf{Step 3 --- Compute the syndrome.}
+\begin{itemize}
+\item $c_1$ over positions $\{1,3,5,7\} = \{0,1,1,1\}$: three 1s, odd $\Rightarrow c_1 = 1$.
+\item $c_2$ over positions $\{2,3,6,7\} = \{1,1,1,1\}$: four 1s, even $\Rightarrow c_2 = 0$.
+\item $c_4$ over positions $\{4,5,6,7\} = \{0,1,1,1\}$: three 1s, odd $\Rightarrow c_4 = 1$.
+\end{itemize}
+\textbf{Step 4 --- Locate.} Syndrome $c_4c_2c_1 = 101_2 = 5$. The error is at position 5.
+\textbf{Step 5 --- Correct.} Flip position 5 back from $1$ to $0$: the word becomes $0110011$ again.
+\textbf{Step 6 --- Extract.} Data bits at positions $3,5,6,7$ give $1,0,1,1$: the original dataword $1011$ is recovered, with no retransmission.
+\end{exoresolu}
+
+\courssub{Limits of the Classic Hamming Code and the SECDED Extension}
+
+Hamming(7,4) has minimum distance $3$: it is designed for \emph{exactly one} erroneous bit per codeword. Two limitations follow.
+
+\begin{attention}[Hamming(7,4) mis-corrects double errors]
+If \emph{two} bits flip, the syndrome is non-zero, so the receiver believes there is a single error --- but the syndrome now points to a \emph{third, innocent} position. The receiver ``corrects'' the wrong bit and silently delivers bad data. For example, if positions 3 and 5 of our codeword $0110011$ both flip, the received word is $0100111$. The checks give $c_1 = 0$, $c_2 = 1$, $c_4 = 1$: syndrome $110_2 = 6$, so the receiver flips the healthy bit 6 and now the word carries \emph{three} errors. Never claim in an exam that Hamming(7,4) ``corrects errors'' in general: it corrects \textbf{single-bit errors only}.
+\end{attention}
+
+The standard fix is \cle{SECDED} (Single Error Correction, Double Error Detection): add one \emph{extra overall parity bit} covering the whole codeword (this is the Hamming(8,4) extended code). Now $d_{\min} = 4$. Decoding rule:
+
+\begin{itemize}
+\item syndrome $= 0$ and overall parity OK: no error;
+\item syndrome $\neq 0$ and overall parity fails: single error --- correct it;
+\item syndrome $= 0$ and overall parity fails: the overall parity bit itself is faulty;
+\item syndrome $\neq 0$ and overall parity OK: \textbf{double error} --- detectable, but not correctable; request retransmission or flag the data.
+\end{itemize}
+
+SECDED is precisely the scheme used in \cle{ECC memory} (Error-Correcting Code RAM), where typically 8 check bits protect each 64-bit word.
+
+\courssub{Applications and Chapter Summary}
+
+Error correction is everywhere in daily Cameroonian digital life, even when invisible:
+
+\begin{itemize}
+\item \textbf{ECC memory} in servers (including those hosting mobile-money platforms at MTN or Orange) uses SECDED Hamming codes so that a stray cosmic ray flipping a RAM bit does not corrupt an account balance.
+\item \textbf{QR codes} (used for payments, event tickets, exam result checking) use Reed--Solomon codes, a powerful relative of Hamming codes: this is why a QR code still scans even when partly dirty or torn.
+\item \textbf{Barcodes} combine a check digit (detection, as in earlier lessons) with careful symbol design.
+\item \textbf{Mobile networks} (GSM, 4G) layer convolutional and block codes over CRC: the CRC detects, the FEC corrects, and retransmission (ARQ) is the last resort.
+\item \textbf{Deep-space and satellite links} rely almost entirely on forward error correction, for the reasons given at the start of this section.
+\end{itemize}
+
+\begin{aretenir}[Comparing the correctness methods of this chapter]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} Method & Redundancy & Detects & Corrects \\
+\hline
+Parity bit & 1 bit per word & any odd number of bit errors & nothing \\
+\hline
+Checksum & one sum per block & most burst errors (weak vs.\ compensating errors) & nothing \\
+\hline
+CRC & $n$ bits per block & all bursts of length $\leq n$, most longer ones & nothing \\
+\hline
+Hamming(7,4) & 3 bits per 4 data bits & up to 2 errors (or 1 + correction) & exactly 1 error \\
+\hline
+SECDED (Hamming(8,4)) & 4 bits per 4 data bits & 1 error corrected \emph{and} 2 errors detected & 1 error \\
+\hline
+\end{tabularx}
+\end{center}
+Key exam reflexes: number positions \textbf{from 1}; parity bits at \textbf{powers of 2}; the \textbf{syndrome $c_4c_2c_1$ gives the error position in binary}; detection needs $d_{\min} \geq d+1$, correction needs $d_{\min} \geq 2d+1$.
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Compute the Hamming distance between $1101011$ and $1001111$.
+\item A code has minimum distance $5$. How many errors can it detect? How many can it correct?
+\item Encode the dataword $0110$ using Hamming(7,4) with even parity.
+\item A receiver gets the Hamming(7,4) word $1010101$ (even parity). Compute the syndrome, decide whether there is an error, and if so correct it and give the dataword.
+\item Explain why Hamming(7,4) cannot be trusted when two bits are corrupted, and how SECDED improves the situation.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise n\textdegree 1]
+\textbf{1.} $1101011 \oplus 1001111 = 0100100$: two 1s, so the distance is $2$.
+\textbf{2.} Detect: $d_{\min} \geq d+1 \Rightarrow d \leq 4$. Correct: $d_{\min} \geq 2d+1 \Rightarrow d \leq 2$.
+\textbf{3.} Data at positions $3,5,6,7$: $0,1,1,0$. $p_1$ over $\{3,5,7\}=\{0,1,0\}$: one 1 $\Rightarrow p_1=1$. $p_2$ over $\{3,6,7\}=\{0,1,0\}$: one 1 $\Rightarrow p_2=1$. $p_4$ over $\{5,6,7\}=\{1,1,0\}$: two 1s $\Rightarrow p_4=0$. Codeword: $1100110$.
+\textbf{4.} $c_1$ over $\{1,3,5,7\}=\{1,1,1,1\}$: even, $c_1=0$. $c_2$ over $\{2,3,6,7\}=\{0,1,0,1\}$: even, $c_2=0$. $c_4$ over $\{4,5,6,7\}=\{0,1,0,1\}$: even, $c_4=0$. Syndrome $000$: no error; dataword (positions $3,5,6,7$) is $1101$.
+\textbf{5.} With two flipped bits the syndrome is non-zero and points to a wrong position, so the decoder flips a healthy bit and outputs corrupted data without any warning. SECDED adds an overall parity bit, raising $d_{\min}$ to 4: a double error then leaves the overall parity correct while the syndrome is non-zero, a combination the decoder recognises as an \emph{uncorrectable} double error, which it flags instead of mis-correcting.
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: Executing Correctness Checking Methods}
+
+\courssub{Aims of the activity}
+
+By the end of this integration activity, you should be able to:
+
+\begin{itemize}
+\item apply \cle{even parity} to protect 7-bit ASCII characters and detect transmission errors;
+\item construct and exploit a \cle{two-dimensional parity} (block parity) grid to \emph{locate} and \emph{correct} a single corrupted bit;
+\item compute a simple \cle{checksum} for a block of data and use it to verify a second transmission;
+\item encode a 4-bit value with a \cle{Hamming(7,4)} code, simulate a flipped bit and correct it using the syndrome;
+\item compare error-detection and error-correction techniques and \cle{justify the choice} of a method for a given real-life context, in a clear written recommendation.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+This activity integrates the whole chapter: parity checking, block (2D) parity, checksums, CRC principles, Hamming codes, and the ability to argue a technical choice in writing --- exactly the kind of structured reasoning expected at the GCE Advanced Level practical and theory papers.
+\end{aretenir}
+
+\courssub{Situation}
+
+\begin{experience}[Case Study: Mr. Ngong's Cybercafé]
+Mr.\ Ngong runs a small \cle{cybercafé} near Commercial Avenue in Bamenda. Every year, after the Cameroon GCE Board releases results, candidates crowd into his café to download their result slips. The café's router is connected through an old telephone line that is \emph{noisy}: electrical interference from a nearby welding workshop sometimes flips individual bits during download.
+
+The results are transmitted as blocks of \cle{7-bit ASCII codes}. Mr.\ Ngong has noticed that a downloaded slip occasionally displays a wrong character (for example a ``\texttt{C}'' becoming a ``\texttt{B}'' --- a disaster when it is a grade!). He asks your class, as Upper Sixth ICT students, to help him choose and apply a \cle{correctness checking method}.
+
+Your teacher provides the following working data.
+
+\textbf{Data set A --- single characters.} Each character is stored as 7 data bits, to which one \emph{even parity} bit is appended as the 8th (most significant) bit. A received sample of four protected bytes is:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} Byte received & 7 data bits & Parity bit (MSB) \\
+\hline
+Byte 1 & \texttt{1000001} & \texttt{1} \\
+\hline
+Byte 2 & \texttt{1000010} & \texttt{0} \\
+\hline
+Byte 3 & \texttt{1000011} & \texttt{1} \\
+\hline
+Byte 4 & \texttt{1000100} & \texttt{1} \\
+\hline
+\end{tabular}
+\end{center}
+
+(Recall: ASCII `\texttt{A}' = \texttt{1000001}, `\texttt{B}' = \texttt{1000010}, `\texttt{C}' = \texttt{1000011}, `\texttt{D}' = \texttt{1000100}.)
+
+\textbf{Data set B --- a block of 8 characters.} The grades of one candidate are sent as the 8-character string \texttt{AB2C1DEB} (each character coded on 7 bits, even parity bit added per character). The block is then protected \emph{in addition} by a two-dimensional parity scheme: the 8 bytes are written as 8 rows of 7 data bits; a row parity bit (even) is appended to each row, making 8 columns; then a column parity bit (even) is computed for each of the 8 columns and appended as a 9th row. The transmitted grid therefore has 9 rows and 8 columns (56 data bits + 16 parity bits). During download, exactly \emph{one} bit of the grid is flipped by interference.
+
+\textbf{Data set C --- checksum verification.} The café's software treats each 7-bit character code as a decimal number and appends to the block a \cle{checksum} equal to the sum of all the codes \emph{modulo} 128 (so that it fits on 7 bits). For the block \texttt{AB2C1DEB} the codes are: A = 65, B = 66, 2 = 50, C = 67, 1 = 49, D = 68, E = 69, B = 66.
+
+\textbf{Data set D --- a critical grade code.} The overall grade of a candidate is coded on 4 bits $d_1d_2d_3d_4$ (for example \texttt{0110}). Because this field is critical, it is protected by a \cle{Hamming(7,4)} code: the 4 data bits are placed in positions 3, 5, 6, 7 of a 7-bit word, and even parity bits $p_1, p_2, p_4$ are placed in positions 1, 2, 4, where $p_1$ covers positions 1, 3, 5, 7; $p_2$ covers positions 2, 3, 6, 7; $p_4$ covers positions 4, 5, 6, 7. During transmission of the grade \texttt{0110}, one bit is flipped.
+
+Mr.\ Ngong's question to the class: \emph{``Which method should I install permanently on my machines, and why?''}
+\end{experience}
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Parity check on single characters.} For each byte of data set A, verify the even parity. State which bytes contain an error and which are (apparently) correct. What characters should the correct bytes display?
+\item \textbf{Limits of simple parity.} Suppose two bits of byte 1 had been flipped instead of one. Would the parity check still detect the error? Justify, and state the general limitation of single-bit parity.
+\item \textbf{Two-dimensional parity.} Build the full parity grid for data set B (8 data rows, 7 data columns, row parity column, column parity row). Then suppose the received grid has a single flipped bit in row 3, column 5. Explain how the row and column parity failures \emph{locate} the error, and correct it. What does this method offer that simple parity does not?
+\item \textbf{Checksum.} Compute the checksum of data set C (sum modulo 128). A second transmission of the same block arrives with codes 65, 66, 50, 67, 49, 68, 69, \textbf{67} and the \emph{same} checksum as before. Verify the checksum and conclude: is the second transmission accepted or rejected? Give one weakness of a simple sum checksum.
+\item \textbf{Hamming(7,4).} Encode the grade code \texttt{0110} into a 7-bit Hamming word. Then flip the bit in position 6, compute the syndrome $c_4c_2c_1$ from the three parity checks, identify the erroneous position, and correct it. How many errors can Hamming(7,4) correct, and how many can it merely detect?
+\item \textbf{Recommendation.} Write a short note (10--15 lines) to Mr.\ Ngong comparing the four techniques (cost in extra bits, detection power, correction power, ease of implementation) and recommending one method --- or a combination --- for his cybercafé, with justification.
+\item \textbf{Plenary.} Each group presents its grid, its Hamming correction and its recommendation in 5 minutes; the class debates the best choice.
+\end{enumerate}
+
+\begin{definition}[Even Parity]
+A parity bit is added to a set of data bits so that the total number of \texttt{1} bits (data + parity) is \emph{even}. If the receiver counts an odd number of \texttt{1}s, an error is detected.
+\end{definition}
+
+\begin{definition}[Two-Dimensional Parity (Block Parity)]
+Data bits are arranged in a rectangular array. A parity bit is computed for each row and each column (usually even parity). The row parity bits form an extra column; the column parity bits form an extra row. A single-bit error causes exactly one row and one column parity check to fail, locating the error at their intersection.
+\end{definition}
+
+\begin{definition}[Checksum]
+A checksum is a value computed from a block of data (e.g., arithmetic sum modulo $2^n$) and transmitted with the data. The receiver recomputes the checksum; a mismatch indicates corruption.
+\end{definition}
+
+\begin{definition}[Hamming(7,4) Code]
+A single-error-correcting code that maps 4 data bits to 7 bits by inserting 3 parity bits at positions that are powers of two (1, 2, 4). Each parity bit covers a specific subset of positions. The syndrome (recomputed parity checks) gives the binary position of a single flipped bit.
+\end{definition}
+
+\courssub{Model answer}
+
+\textbf{Task 1 --- Parity check on data set A.}
+
+Even parity means the total number of \texttt{1}s (7 data bits + parity bit) must be \emph{even}.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Byte & 8-bit pattern (MSB first) & Number of \texttt{1}s & Parity OK? \\
+\hline
+1 & \texttt{1\,1000001} & 3 (odd) & \textbf{No} $\rightarrow$ Error detected \\
+\hline
+2 & \texttt{0\,1000010} & 2 (even) & Yes $\rightarrow$ `\texttt{B}' accepted \\
+\hline
+3 & \texttt{1\,1000011} & 4 (even) & Yes $\rightarrow$ `\texttt{C}' accepted \\
+\hline
+4 & \texttt{1\,1000100} & 3 (odd) & \textbf{No} $\rightarrow$ Error detected \\
+\hline
+\end{tabular}
+\end{center}
+
+Bytes 1 and 4 are corrupted; bytes 2 and 3 are accepted and display `\texttt{B}' and `\texttt{C}'.
+
+\begin{attention}[Common mistake]
+Do not forget to include the parity bit itself in the count. Even parity $\Leftrightarrow$ total number of \texttt{1}s is even.
+\end{attention}
+
+\textbf{Task 2 --- Limit of simple parity.}
+
+If \emph{two} bits of byte 1 flip, the number of \texttt{1}s changes by $-2$, $0$ or $+2$, so it remains \emph{even}: the parity check sees nothing. 
+
+\begin{propriete}[Limitation of single-bit parity]
+Single-bit even (or odd) parity detects \emph{any odd number of bit errors} but fails for \emph{any even number of errors}. It can never indicate \emph{which} bit is wrong, hence no correction is possible.
+\end{propriete}
+
+\textbf{Task 3 --- Two-dimensional parity.}
+
+The 7-bit ASCII codes of \texttt{AB2C1DEB} are:
+\begin{align*}
+\texttt{A} &= 65 = \texttt{1000001} \\
+\texttt{B} &= 66 = \texttt{1000010} \\
+\texttt{2} &= 50 = \texttt{0110010} \\
+\texttt{C} &= 67 = \texttt{1000011} \\
+\texttt{1} &= 49 = \texttt{0110001} \\
+\texttt{D} &= 68 = \texttt{1000100} \\
+\texttt{E} &= 69 = \texttt{1000101} \\
+\texttt{B} &= 66 = \texttt{1000010}
+\end{align*}
+
+We write them as 8 rows of 7 data bits, compute even row parity (8th column), then even column parity for all 8 columns (9th row).
+
+\begin{center}
+\begin{tabular}{|c|ccccccc|c|}
+\hline
+\rowcolor{popblueL} Char & \multicolumn{7}{c|}{Data bits (b1..b7)} & Row parity \\
+\hline
+A & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+B & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+2 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 \\
+C & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 1 \\
+1 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 \\
+D & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+E & 1 & 0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+B & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+\hline
+\rowcolor{popblueL} Col. parity & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\emph{Verification of column parities:} each column contains an even number of \texttt{1}s (0, 2, 4 or 6), so all column parity bits are \texttt{0}.
+
+Now suppose the received grid has a flipped bit at \textbf{row 3, column 5} (the 5th data bit of character `\texttt{2}', originally \texttt{0}). 
+
+\begin{itemize}
+\item Row 3 originally had three \texttt{1}s (bits 2,3,6) $\rightarrow$ row parity = \texttt{1}. After flip, row 3 has four \texttt{1}s $\rightarrow$ even parity, but the stored row parity bit is still \texttt{1} $\rightarrow$ \textbf{row 3 parity check fails}.
+\item Column 5 originally had two \texttt{1}s (rows D and E) $\rightarrow$ column parity = \texttt{0}. After flip, column 5 has three \texttt{1}s $\rightarrow$ odd parity $\rightarrow$ \textbf{column 5 parity check fails}.
+\item All other rows and columns still have even parity $\rightarrow$ their checks pass.
+\end{itemize}
+
+The intersection of the failing row (3) and failing column (5) \emph{pinpoints} the corrupted bit. We flip it back (\texttt{1}$\to$\texttt{0}), restoring `\texttt{2}' = \texttt{0110010}.
+
+\begin{propriete}[Advantage of 2D parity over simple parity]
+2D parity not only detects but also \emph{locates and corrects} any single-bit error in the block, at the cost of $m+n$ extra bits for an $m\times n$ data block (here $8+8=16$ extra bits for 56 data bits). It detects all 1-bit and most 2-bit errors, but cannot correct 2-bit errors.
+\end{propriete}
+
+\textbf{Task 4 --- Checksum.}
+
+Sum of original codes:
+\[
+65+66+50+67+49+68+69+66 = 500.
+\]
+Checksum $= 500 \bmod 128 = 500 - 3\times128 = 500-384 = \boxed{116}$.
+
+Second transmission codes: 65, 66, 50, 67, 49, 68, 69, \textbf{67} (last byte changed from 66 to 67).
+Sum $= 501$; $501 \bmod 128 = 501-384 = 117 \neq 116$.
+
+The checksums differ, so the block is \textbf{rejected} and a re-download is triggered.
+
+\begin{attention}[Weakness of simple additive checksum]
+A simple sum ignores the \emph{order} of the bytes (permuting two characters gives the same sum) and \emph{compensating errors} (one byte $+1$, another $-1$) go undetected. This is why real networks use \cle{Cyclic Redundancy Check (CRC)}, based on polynomial division over GF(2), which detects burst errors and order changes much more reliably.
+\end{attention}
+
+\begin{savaistu}[CRC in Cameroon's networks]
+CAMTEL and mobile operators (MTN Cameroon, Orange Cameroon) use CRC-32 (Ethernet, Wi-Fi) and CRC-16 (PPP, mobile air interface) on every frame. The \cle{ANTIC} (Agence Nationale des Technologies de l'Information et de la Communication) recommends CRC for all government e-services to guarantee integrity of administrative data (tax returns, exam results, identity records).
+\end{savaistu}
+
+\textbf{Task 5 --- Hamming(7,4).}
+
+\begin{methode}[Hamming(7,4) encoding and decoding]
+\begin{enumerate}
+\item Number bit positions 1 to 7. Place parity bits at positions 1, 2, 4 (powers of two). Place data bits $d_1,d_2,d_3,d_4$ at positions 3, 5, 6, 7.
+\item Compute even parity bits:
+  $p_1$ covers positions 1,3,5,7;
+  $p_2$ covers positions 2,3,6,7;
+  $p_4$ covers positions 4,5,6,7.
+\item Transmit the 7-bit word.
+\item On reception, recompute the three parity checks $c_1,c_2,c_4$ (1 if odd, 0 if even).
+\item Syndrome $S = c_4c_2c_1$ (binary) gives the position of the error (0 = no error).
+\item Flip the bit at position $S$ to correct.
+\end{enumerate}
+\end{methode}
+
+\emph{Encoding \texttt{0110}:} $d_1=0$ (pos 3), $d_2=1$ (pos 5), $d_3=1$ (pos 6), $d_4=0$ (pos 7).
+\begin{align*}
+p_1 &: \text{positions } 3,5,7 \rightarrow 0+1+0 = 1 \Rightarrow p_1 = 1 \\
+p_2 &: \text{positions } 3,6,7 \rightarrow 0+1+0 = 1 \Rightarrow p_2 = 1 \\
+p_4 &: \text{positions } 5,6,7 \rightarrow 1+1+0 = 2 \Rightarrow p_4 = 0
+\end{align*}
+Transmitted word (positions 1--7): \texttt{1\,1\,0\,0\,1\,1\,0}.
+
+\emph{Flip position 6:} received \texttt{1\,1\,0\,0\,1\,\textbf{0}\,0}.
+
+\emph{Syndrome computation:}
+\begin{align*}
+c_1 &: \text{pos } 1,3,5,7 = 1+0+1+0 = 2 \text{ (even)} \Rightarrow c_1 = 0\\
+c_2 &: \text{pos } 2,3,6,7 = 1+0+0+0 = 1 \text{ (odd)} \Rightarrow c_2 = 1\\
+c_4 &: \text{pos } 4,5,6,7 = 0+1+0+0 = 1 \text{ (odd)} \Rightarrow c_4 = 1
+\end{align*}
+Syndrome $c_4c_2c_1 = 110_2 = 6$: error at \textbf{position 6}. Flip it back $\rightarrow$ \texttt{1100110}, data bits = \texttt{0110} --- grade recovered.
+
+\begin{propriete}[Hamming(7,4) capabilities]
+\begin{itemize}
+\item \textbf{Corrects} any single-bit error (1-bit error correction).
+\item \textbf{Detects} (but cannot correct) all double-bit errors (2-bit error detection).
+\item Cannot handle 3 or more errors reliably.
+\end{itemize}
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Bit position boxes
+\foreach \i/\lbl in {1/p_1, 2/p_2, 3/d_1, 4/p_4, 5/d_2, 6/d_3, 7/d_4} {
+  \node[draw, rectangle, minimum width=1cm, minimum height=0.8cm, fill=popblueL] (b\i) at (\i*1.3,0) {$\lbl$};
+}
+% Parity coverage arrows
+\draw[popblue, thick, ->] (b1.north) -- ++(0,0.4) -| (b3.north) node[pos=0.25, above, text width=2.5cm, align=center] {$p_1$ covers 1,3,5,7};
+\draw[poporange, thick, ->] (b2.north) -- ++(0,0.7) -| (b3.north) node[pos=0.25, above, text width=2.5cm, align=center] {$p_2$ covers 2,3,6,7};
+\draw[popgreen, thick, ->] (b4.north) -- ++(0,1.0) -| (b5.north) node[pos=0.25, above, text width=2.5cm, align=center] {$p_4$ covers 4,5,6,7};
+% Syndrome explanation
+\node[align=center, text width=5cm] at (5.5,-2) {Syndrome $c_4c_2c_1$ = binary position of error};
+\end{tikzpicture}
+\legende{Hamming(7,4) bit positions and parity coverage}
+\end{popfigure}
+
+\textbf{Task 6 --- Recommendation (model note).}
+
+\emph{To Mr.\ Ngong.}
+
+We tested four methods on your downloads. 
+
+\begin{itemize}
+\item \textbf{Simple parity} (1 extra bit per character) is very cheap and catches single-bit errors, but misses any even number of errors and cannot repair anything.
+\item \textbf{Two-dimensional parity} (16 extra bits per 8-character block) detects \emph{and} corrects a single corrupted bit --- ideal for small, fixed-size blocks like result slips when re-download is impossible.
+\item \textbf{Checksums} (7 extra bits per block) are extremely cheap and catch most random corruptions, but can be fooled by swapped or compensating errors; for stronger protection, a \textbf{CRC} (as used by CAMTEL/MTN/Orange on every frame) is the standard.
+\item \textbf{Hamming(7,4)} (3 extra bits per 4 data bits, 75\% overhead) automatically corrects single errors and is perfect for tiny critical fields such as the grade code.
+\end{itemize}
+
+\textbf{Recommendation:} Deploy a \textbf{CRC (or at minimum a checksum)} on every downloaded block to detect corruption and trigger automatic re-download; use \textbf{Hamming coding} on the critical grade field for on-the-fly correction; keep \textbf{2D parity} as a manual recovery tool when the line is too noisy for re-download. This combination gives both detection and correction at a modest cost in extra bits and fits the GCE syllabus requirements for robust data transfer.
+
+\begin{attention}[Common mistakes to avoid]
+\begin{itemize}
+\item Do not forget to count the parity bit itself when checking even parity.
+\item In Hamming codes, number positions from 1 (not 0) and read the syndrome as $c_4c_2c_1$ (most significant parity check first).
+\item A checksum that matches does not \emph{prove} the data are correct --- it only makes undetected errors unlikely.
+\item In 2D parity, the column parity row must be computed \emph{after} the row parity column has been added.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{ICT11: Executing different correctness checking methods}
+
+\courssub{Errors in Data Transmission and the Need for Checking}
+
+\begin{savaistu}[Why checking matters in Cameroon]
+Every time you send money via Mobile Money (MTN MoMo, Orange Money), browse a government portal like \emph{e-Gouvernance}, or stream a match on Canal+ via fibre, bits travel through CAMTEL's backbone, satellite links, or microwave relays. Noise, crosstalk, attenuation, and interference can flip bits. Without error detection and correction, a single flipped bit could change a transfer amount, corrupt a database record, or crash a video frame. This chapter teaches the methods that keep digital communication reliable — from simple parity to the CRC that protects every Ethernet frame and Wi-Fi packet.
+\end{savaistu}
+
+\begin{definition}[Error, Error Detection, Error Correction]
+An \cle{error} is any unwanted change in a bit (0$\leftrightarrow$1) during transmission or storage. \cle{Error detection} allows the receiver to know that the received data is corrupted. \cle{Error correction} enables the receiver to locate and fix the corrupted bit(s) without retransmission.
+\end{definition}
+
+\begin{aretenir}[Error models]
+\begin{itemize}
+\item \textbf{Single-bit error:} only one bit in a frame is flipped (common in optical fibre, good copper).
+\item \textbf{Burst error:} a contiguous sequence of bits is corrupted (common in wireless, lightning strikes, crosstalk).
+\item \textbf{Random errors:} independent bit flips scattered across the frame.
+\end{itemize}
+The choice of checking method depends on the dominant error model and whether retransmission is feasible (ARQ) or not (forward error correction, FEC).
+\end{aretenir}
+
+\courssub{Skill 1: Applying Single-Bit Parity Checking}
+
+\begin{methode}[Detecting an error with a parity bit]
+\begin{enumerate}
+\item Identify the \cle{parity scheme}: \textbf{even parity} (total number of 1s, parity bit included, must be even) or \textbf{odd parity} (total number of 1s must be odd).
+\item \textbf{To generate} the parity bit: count the 1s in the data word. For even parity, append $0$ if the count is already even, $1$ if it is odd. For odd parity, do the opposite.
+\item \textbf{To check} a received word: count all the 1s (data + parity bit). If the total matches the scheme (even/odd), the word is \emph{accepted}; otherwise an error is \emph{detected} and retransmission is requested.
+\item Remember the limit: a single parity bit detects any \cle{odd number of bit errors} (1, 3, 5\dots) but fails to detect an \cle{even number of errors} (2, 4, \dots).
+\end{enumerate}
+\textbf{Reflex:} parity bit $=$ XOR of all data bits (even parity). If you can compute an XOR, you can compute parity.
+\end{methode}
+
+\begin{attention}[Parity bit position]
+The parity bit can be placed at the \textbf{MSB} (most significant bit) or \textbf{LSB} (least significant bit). The GCE exam usually states ``append a parity bit'' (LSB) or ``prefix''. Always read the question carefully. The detection logic is identical regardless of position.
+\end{attention}
+
+\begin{exoresolu}[Parity bit generation and checking]
+A computer in a cybercaf\'e in Buea sends the 7-bit ASCII code $1000001$ (letter `A') using \textbf{even parity}.
+\begin{enumerate}
+\item Determine the parity bit and the full 8-bit transmitted word.
+\item The receiver receives $100\underline{1}001$ (the 4th bit was flipped). Does the receiver detect the error? Justify.
+\item The receiver receives $1\underline{1}0\underline{1}001$ (two bits flipped). Does the receiver detect the error? Comment.
+\end{enumerate}
+\tcblower
+\textbf{1. Generating the parity bit.}\par
+Data word: $1\,0\,0\,0\,0\,0\,1$. Number of 1s $= 2$, which is already \textbf{even}. For even parity, the parity bit must keep the total even, so $P = 0$.\par
+Transmitted word (data + parity bit appended at the end): $\boxed{1000001\,0}$.\par\smallskip
+\textbf{2. One bit flipped.}\par
+Received word: $1001001\,0$. Count the 1s: positions 1, 4 and 7 give $3$ ones $\rightarrow$ \textbf{odd} total.\par
+Even parity was expected, but the count is odd $\Rightarrow$ the receiver \textbf{detects the error} and asks for retransmission. Note that the receiver knows \emph{that} an error occurred, but not \emph{where}.\par\smallskip
+\textbf{3. Two bits flipped.}\par
+Received word: $1101001\,0$. Number of 1s $= 4$ $\rightarrow$ \textbf{even}. The parity test \textbf{passes}: the error is \textbf{not detected}, and the corrupted byte is accepted as if it were correct.\par\smallskip
+\textbf{Conclusion.} A single parity bit is cheap (only 1 extra bit per word) and detects all single-bit errors, which are the most frequent on good lines; but it is \emph{blind} to double errors. This is why more powerful methods (checksums, CRC) are used in real networks such as CAMTEL's fibre links.
+\end{exoresolu}
+
+\courssub{Skill 2: Using Two-Dimensional (Block) Parity}
+
+\begin{methode}[Locating an error with block parity]
+\begin{enumerate}
+\item Arrange the data as a \cle{matrix} of rows (bytes/words).
+\item Compute a \textbf{row parity bit} for each row and a \textbf{column parity bit} for each column, using the agreed scheme (usually even parity).
+\item At reception, recompute all parities. If exactly one row parity and one column parity fail, the error is at their \textbf{intersection}: flip that bit to \emph{correct} it.
+\item If only row parities (or only column parities) fail, or several of each fail, there are multiple errors: request retransmission.
+\end{enumerate}
+\textbf{Key idea:} 2D parity not only \emph{detects} but can \emph{correct} a single-bit error, because the faulty row and faulty column ``cross'' at the bad bit.
+\end{methode}
+
+\begin{aretenir}[2D parity capabilities]
+\begin{itemize}
+\item Detects all single-bit errors.
+\item Corrects all single-bit errors (unique intersection).
+\item Detects most double-bit errors (but cannot correct them).
+\item Fails to detect some patterns of 4 or more errors forming a rectangle.
+\end{itemize}
+Overhead: $(m+1)(n+1)$ bits for $m\times n$ data bits.
+\end{aretenir}
+
+\begin{exoresolu}[Correcting a bit with 2D even parity]
+A school server sends four 7-bit words protected by even row and column parity. The receiver obtains the following block (last column $=$ row parities, last row $=$ column parities):
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} \multicolumn{8}{|c|}{Data bits} & Row par. \\
+\hline
+1 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 \\
+1 & 1 & 0 & 1 & 0 & 0 & 1 & 1 & 1 \\
+0 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & \multicolumn{1}{c}{} \\
+\cline{1-8}
+\multicolumn{9}{l}{Last row: column parities} \\
+\end{tabular}
+\end{center}
+Check the block, locate any single-bit error and correct it.
+\tcblower
+\textbf{Step 1: check row parities (even parity expected).}\par
+Row 1: $1+0+1+1+0+1+0+0 = 4$ ones, parity bit $0$ $\rightarrow$ total 4, even. \textbf{OK.}\par
+Row 2: $0+1+1+0+1+0+1+0 = 4$ ones, parity $0$ $\rightarrow$ even. \textbf{OK.}\par
+Row 3: $1+1+0+1+0+0+1+1 = 5$ ones, parity $1$ $\rightarrow$ total 6, even. \textbf{OK.}\par
+Row 4: $0+0+1+0+1+1+0+1 = 4$ ones, parity $0$ $\rightarrow$ even. \textbf{OK.}\par\smallskip
+\textbf{Step 2: check column parities.}\par
+Col 1: $1+0+1+0 = 2$, parity $0$ $\rightarrow$ even. OK.\quad
+Col 2: $0+1+1+0 = 2$, parity $0$ $\rightarrow$ OK.\quad
+Col 3: $1+1+0+1 = 3$, parity $1$ $\rightarrow$ total 4, OK.\par
+Col 4: $1+0+1+0 = 2$, parity $0$ $\rightarrow$ OK.\quad
+Col 5: $0+1+0+1 = 2$, parity $0$ $\rightarrow$ OK.\quad
+Col 6: $1+0+0+1 = 2$, parity $0$ $\rightarrow$ OK.\par
+Col 7: $0+1+1+0 = 2$, parity $0$ $\rightarrow$ OK.\quad
+Col 8: $0+0+1+1 = 2$, parity $0$ $\rightarrow$ OK.\par\smallskip
+All checks pass: the block contains \textbf{no detectable error}.\par\smallskip
+\textbf{Variant (the typical GCE question).} Suppose instead that row 2's parity had failed and column 5's parity had failed. The error would lie at the intersection: \textbf{row 2, column 5}. The received bit there is $1$; we flip it to $0$. Row 2 then contains $0,1,1,0,0,0,1,0 = 3$ ones, so its parity bit must also be corrected to $1$ (or the parity bits are simply recomputed after correction). The corrected data word of row 2 is $0110001$.\par
+\textbf{Lesson:} one failing row $+$ one failing column $\Rightarrow$ correctable single error; any other pattern $\Rightarrow$ retransmission.
+\end{exoresolu}
+
+\courssub{Skill 3: Computing and Verifying a Checksum}
+
+\begin{methode}[Checksum by addition (sender and receiver)]
+\begin{enumerate}
+\item Split the message into blocks of fixed size (e.g. bytes or 16-bit words).
+\item \textbf{Sender:} add all blocks (ordinary or 1's-complement addition). Take the complement (or truncate the carry, depending on the convention): this is the \cle{checksum}, appended to the message.
+\item \textbf{Receiver:} add all blocks \emph{including the checksum}. With the complement convention, the result must be all 1s (e.g. $11111111$); with the truncation convention, the sum of data + checksum must give the expected residue (often $0$ modulo $2^n$).
+\item If the test fails $\Rightarrow$ error detected, retransmission requested. If it passes $\Rightarrow$ data accepted (but not guaranteed: compensating errors can cancel out).
+\end{enumerate}
+\textbf{Reflex:} the checksum is designed so that ``data $+$ checksum'' gives a \emph{constant, known} result at the receiver.
+\end{methode}
+
+\begin{attention}[Checksum conventions]
+Two common conventions exist:
+\begin{itemize}
+\item \textbf{Modulo $2^n$ (truncation):} sum all blocks, discard overflow beyond $n$ bits; checksum $= (2^n - \text{sum}) \bmod 2^n$. Receiver checks if total sum $\equiv 0 \pmod{2^n}$.
+\item \textbf{1's complement (Internet checksum):} add with end-around carry; checksum $=$ 1's complement of sum. Receiver adds all including checksum; result must be all 1s.
+\end{itemize}
+The GCE syllabus typically uses the modulo $2^n$ (byte or word) convention. Always state which convention you are using.
+\end{attention}
+
+\begin{exoresolu}[Byte checksum modulo 256]
+A mobile money application sends the amount code as three bytes: $45$, $120$, $78$ (decimal). The checksum is defined by: \emph{the sum of the three data bytes and the checksum byte must be a multiple of $256$}.
+\begin{enumerate}
+\item Compute the checksum byte.
+\item The receiver gets $45$, $120$, $78$, $13$. Verify.
+\item The receiver gets $45$, $121$, $78$, $13$. What happens?
+\end{enumerate}
+\tcblower
+\textbf{1. Computing the checksum.}\par
+Sum of data: $45 + 120 + 78 = 243$.\par
+We need $243 + C \equiv 0 \pmod{256}$, so $C = 256 - 243 = \boxed{13}$.\par
+The sender transmits: $45,\ 120,\ 78,\ 13$.\par\smallskip
+\textbf{2. Verification of a correct frame.}\par
+$45 + 120 + 78 + 13 = 256 = 1 \times 256$. The sum is a multiple of $256$ $\Rightarrow$ the frame is \textbf{accepted}.\par\smallskip
+\textbf{3. Verification of a corrupted frame.}\par
+$45 + 121 + 78 + 13 = 257$, which is \textbf{not} a multiple of $256$ $\Rightarrow$ error \textbf{detected}; the frame is rejected and retransmission is requested.\par\smallskip
+\textbf{Remark (limit of the method).} If two bytes are corrupted in \emph{opposite} directions (e.g. $45 \to 46$ and $120 \to 119$), the sum is unchanged and the checksum does not detect anything. This is why the CRC below is preferred in real protocols.
+\end{exoresolu}
+
+\courssub{Skill 4: Computing a CRC by Polynomial Division}
+
+\begin{definition}[Generator polynomial]
+A \cle{generator polynomial} $G(x)$ of degree $r$ is a binary polynomial (coefficients 0 or 1) with the highest and lowest terms equal to 1. It is represented as an $(r+1)$-bit divisor. The CRC will be $r$ bits long.
+\end{definition}
+
+\begin{methode}[Cyclic Redundancy Check (CRC)]
+\begin{enumerate}
+\item Write the generator polynomial $G(x)$ as a binary divisor (e.g. $x^3+1 \rightarrow 1001$). If the divisor has $r+1$ bits, the CRC has $r$ bits.
+\item \textbf{Sender:} append $r$ zeros to the data word $M$.
+\item Divide (in binary, using \cle{XOR} instead of subtraction — no borrows, no carries) the extended word by the divisor.
+\item The \textbf{remainder} ($r$ bits) is the CRC. Transmitted frame $=$ original data $+$ CRC.
+\item \textbf{Receiver:} divide the whole received frame by the same divisor. Remainder $= 0$ $\Rightarrow$ accepted; remainder $\neq 0$ $\Rightarrow$ error detected.
+\end{enumerate}
+\textbf{Reflexes:} XOR rule: $1\oplus1=0$, $1\oplus0=1$, $0\oplus0=0$. The remainder must always be exactly $r$ bits (pad with leading zeros if needed).
+\end{methode}
+
+\begin{aretenir}[CRC error detection guarantees]
+For a generator polynomial of degree $r$ (CRC length $r$):
+\begin{itemize}
+\item Detects \textbf{all} single-bit errors.
+\item Detects \textbf{all} double-bit errors if $G(x)$ has a factor with at least three terms.
+\item Detects \textbf{all} odd numbers of errors if $G(x)$ contains $(x+1)$ as a factor.
+\item Detects \textbf{all} burst errors of length $\le r$.
+\item Detects \textbf{most} burst errors of length $r+1$ (probability $1-2^{-r}$).
+\item Detects \textbf{most} longer bursts (probability $1-2^{-r}$).
+\end{itemize}
+Standard polynomials: CRC-8 ($x^8+x^2+x+1$), CRC-16 ($x^{16}+x^{15}+x^2+1$), CRC-32 (Ethernet, ZIP, PNG).
+\end{aretenir}
+
+\begin{exoresolu}[CRC with generator $x^3+x+1$]
+The data to transmit is $M = 110101$ and the generator is $G(x) = x^3 + x + 1$.
+\begin{enumerate}
+\item Give the binary divisor and the number of CRC bits.
+\item Compute the CRC and the transmitted frame.
+\item Show what the receiver computes when the frame arrives intact.
+\end{enumerate}
+\tcblower
+\textbf{1. Divisor and CRC length.}\par
+$G(x) = x^3 + x + 1 = 1\cdot x^3 + 0\cdot x^2 + 1\cdot x + 1 \rightarrow$ divisor $1011$ (4 bits) $\Rightarrow r = 3$ CRC bits.\par\smallskip
+\textbf{2. Computing the CRC.}\par
+Append $r = 3$ zeros: $110101\,000$. Divide by $1011$ using XOR:\par
+\begin{center}
+\begin{tabular}{l}
+$110101000$ \\
+$\oplus\ 1011$ \quad (aligned on the leading 1) \\
+\hline
+$\phantom{\oplus\ }011001000$ \\
+$\phantom{\oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ }010101000$ \\
+$\phantom{\oplus\ \oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ \oplus\ }001100000$ \\
+$\phantom{\oplus\ \oplus\ \oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ }000111000$ \\
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ \oplus\ }000010100$ \\
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ \oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ \oplus\ \oplus\ }000001110$ \\
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ \oplus\ \oplus\ }\oplus\ 1011$ \\
+\hline
+$\phantom{\oplus\ \oplus\ \oplus\ \oplus\ \oplus\ \oplus\ \oplus\ }0000101$ \\
+\end{tabular}
+\end{center}
+The final remainder is $101$ (3 bits): this is the \textbf{CRC}.\par
+Transmitted frame $=$ data $+$ CRC $= \boxed{110101\,101}$.\par\smallskip
+\textbf{3. Verification at the receiver.}\par
+The receiver divides $110101101$ by $1011$ with the same XOR procedure. Since the transmitted frame was built as (data shifted) $\oplus$ remainder, the division gives remainder $\boxed{000}$ $\Rightarrow$ the frame is \textbf{accepted}.\par
+If any bit had been flipped during transmission (e.g. on a noisy radio link between a village and Yaound\'e), the remainder would be non-zero and the error would be detected. CRC detects \emph{all} burst errors of length $\le r$ and the vast majority of longer bursts, which is why it is used in Ethernet, Wi-Fi and USB.
+\end{exoresolu}
+
+\courssub{Skill 5: Building a Hamming Code}
+
+\begin{methode}[Encoding with Hamming code]
+\begin{enumerate}
+\item \textbf{Parity positions:} place parity bits at positions $1, 2, 4, 8, \dots$ (powers of 2). Data bits fill the other positions $3, 5, 6, 7, \dots$
+\item \textbf{How many parity bits?} For $m$ data bits, choose $k$ such that $2^k \ge m + k + 1$. For $m = 4$, $k = 3$ (Hamming(7,4)).
+\item \textbf{Coverage:} parity bit at position $2^j$ checks all positions whose binary index has a 1 in bit $j$ (LSB = bit 0):
+\begin{itemize}
+\item $P_1$ (pos. 1) checks positions $1, 3, 5, 7$ (binary indices with bit 0 = 1);
+\item $P_2$ (pos. 2) checks positions $2, 3, 6, 7$ (bit 1 = 1);
+\item $P_4$ (pos. 4) checks positions $4, 5, 6, 7$ (bit 2 = 1).
+\end{itemize}
+\item Set each parity bit for \textbf{even parity} over its group.
+\end{enumerate}
+\textbf{Key idea:} each data bit is covered by a \emph{unique combination} of parity bits, so the failing parity bits will ``point'' to the erroneous position.
+\end{methode}
+
+\begin{attention}[Syndrome bit order]
+When forming the syndrome $C = (P_4\,P_2\,P_1)_2$, the \textbf{highest-position parity bit is the most significant bit}. Reversing the order gives the wrong position. Always write the syndrome with $P_{2^{k-1}}$ as MSB down to $P_1$ as LSB.
+\end{attention}
+
+\begin{exoresolu}[Encoding the nibble $1011$ in Hamming(7,4)]
+Encode the 4 data bits $d_1 d_2 d_3 d_4 = 1011$ using the Hamming(7,4) code with even parity. Give the 7-bit codeword.
+\tcblower
+\textbf{Step 1: place the bits.}\par
+Positions 1, 2, 4 are parity bits $P_1, P_2, P_4$. Data bits go to positions 3, 5, 6, 7:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Position & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+Content & $P_1$ & $P_2$ & $d_1{=}1$ & $P_4$ & $d_2{=}0$ & $d_3{=}1$ & $d_4{=}1$ \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{Step 2: compute $P_1$} (positions 1, 3, 5, 7): data bits involved: pos. 3 $=1$, pos. 5 $=0$, pos. 7 $=1$ $\rightarrow$ two 1s, already even $\Rightarrow P_1 = 0$.\par
+\textbf{Step 3: compute $P_2$} (positions 2, 3, 6, 7): pos. 3 $=1$, pos. 6 $=1$, pos. 7 $=1$ $\rightarrow$ three 1s, odd $\Rightarrow P_2 = 1$.\par
+\textbf{Step 4: compute $P_4$} (positions 4, 5, 6, 7): pos. 5 $=0$, pos. 6 $=1$, pos. 7 $=1$ $\rightarrow$ two 1s, even $\Rightarrow P_4 = 0$.\par\smallskip
+\textbf{Codeword} (positions 1 to 7): $\boxed{0\,1\,1\,0\,0\,1\,1}$.\par\smallskip
+\textbf{Check:} group of $P_1$: $0,1,0,1 \to 2$ ones, even $\checkmark$; group of $P_2$: $1,1,1,1 \to 4$ ones, even $\checkmark$; group of $P_4$: $0,0,1,1 \to 2$ ones, even $\checkmark$.
+\end{exoresolu}
+
+\courssub{Skill 6: Detecting and Correcting an Error with Hamming Code}
+
+\begin{methode}[Hamming syndrome decoding]
+\begin{enumerate}
+\item On reception, recompute each parity group ($P_1$, $P_2$, $P_4$, \dots) over the received word.
+\item For each group, write $0$ if parity is satisfied, $1$ if it fails.
+\item Read the results as a binary number $C = (P_4\,P_2\,P_1)_2$ (most significant bit $=$ highest-position parity): this is the \cle{syndrome}.
+\item Syndrome $= 0$ $\Rightarrow$ no error detected. Syndrome $= C \neq 0$ $\Rightarrow$ the bit at \textbf{position $C$} is wrong: flip it to correct.
+\item If more than one bit is wrong, Hamming(7,4) may miscorrect: it corrects exactly \emph{one} error per codeword.
+\end{enumerate}
+\end{methode}
+
+\begin{aretenir}[Hamming(7,4) properties]
+\begin{itemize}
+\item Codeword length: 7 bits (4 data + 3 parity).
+\item Minimum Hamming distance: 3.
+\item Can \textbf{correct} all single-bit errors.
+\item Can \textbf{detect} all double-bit errors (but cannot correct them; if you attempt correction, you will miscorrect).
+\item Overhead: 3/7 $\approx$ 43\% redundancy. For larger blocks, extended Hamming codes (SECDED) add an overall parity bit to detect double errors.
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Correcting a received Hamming word]
+The codeword $0110011$ from the previous example is sent. Due to interference on the line, the receiver gets $01\underline{0}0011$ (position 3 flipped). Apply Hamming decoding to detect and correct the error.
+\tcblower
+Received word, positions 1 to 7: $0,\ 1,\ 0,\ 0,\ 0,\ 1,\ 1$.\par\smallskip
+\textbf{Step 1: check group $P_1$} (positions 1, 3, 5, 7): $0, 0, 0, 1 \rightarrow$ one 1, \textbf{odd} $\Rightarrow$ fails $\Rightarrow$ bit $= 1$.\par
+\textbf{Step 2: check group $P_2$} (positions 2, 3, 6, 7): $1, 0, 1, 1 \rightarrow$ three 1s, \textbf{odd} $\Rightarrow$ fails $\Rightarrow$ bit $= 1$.\par
+\textbf{Step 3: check group $P_4$} (positions 4, 5, 6, 7): $0, 0, 1, 1 \rightarrow$ two 1s, even $\Rightarrow$ OK $\Rightarrow$ bit $= 0$.\par\smallskip
+\textbf{Step 4: syndrome.} $C = (P_4\,P_2\,P_1)_2 = (0\,1\,1)_2 = 3$.\par
+The error is at \textbf{position 3}. Flip it: $0 \rightarrow 1$.\par
+Corrected word: $0\,1\,1\,0\,0\,1\,1$, i.e. exactly the transmitted codeword, and the recovered data (positions 3, 5, 6, 7) is $\boxed{1011}$.\par\smallskip
+\textbf{Why it works:} position 3 is written $011$ in binary, so it is covered by $P_1$ and $P_2$ but not $P_4$ — precisely the pattern of failing checks. The syndrome literally \emph{is} the address of the error.
+\end{exoresolu}
+
+\courssub{Skill 7: Choosing the Appropriate Checking Method}
+
+\begin{methode}[Selecting a correctness-checking technique]
+\begin{enumerate}
+\item \textbf{Need only detection, very cheap, low error rate} (e.g. memory inside a machine, simple serial links): single \cle{parity bit}.
+\item \textbf{Detection + correction of isolated bit errors} (RAM memory, satellite links where retransmission is costly): \cle{Hamming code} or 2D parity.
+\item \textbf{Detection of burst errors in frames} (Ethernet, Wi-Fi, USB, mobile networks): \cle{CRC}.
+\item \textbf{Simple software check} of a file or record (quick integrity test, e.g. verifying a downloaded file): \cle{checksum}.
+\item Always compare the \textbf{cost} (number of redundant bits, computation time) with the \textbf{error model} of the channel (isolated bits vs bursts) and the possibility of \textbf{retransmission}.
+\end{enumerate}
+\end{methode}
+
+\begin{savaistu}[Real-world usage in Cameroon]
+\begin{itemize}
+\item \textbf{Parity bit:} UART serial ports (old modems, some POS terminals), RAM parity (older PCs).
+\item \textbf{2D parity:} RAID-5/6 storage arrays (parity across disks), some legacy synchronous protocols.
+\item \textbf{Checksum:} IP header checksum, UDP/TCP pseudo-header, file integrity (MD5/SHA are cryptographic hashes, not simple checksums).
+\item \textbf{CRC:} Ethernet (CRC-32), Wi-Fi (CRC-32/16), USB (CRC-16/5), Bluetooth, MTN/Orange mobile money USSD frames, CAMTEL fibre OTN frames.
+\item \textbf{Hamming/SECDED:} ECC RAM in servers (banks, ministries), satellite comms (e.g. CAMSAT links), QR codes (Reed-Solomon, a generalization).
+\end{itemize}
+\end{savaistu}
+
+\begin{exoresolu}[Comparing methods in a GCE-style scenario]
+An ISP in Douala transmits customer records of 1000 bits each over a fibre link where errors occur in bursts of up to 8 consecutive bits. Retransmission is possible and cheap. The company hesitates between: (a) a single parity bit, (b) Hamming code, (c) a 16-bit CRC. Advise the company, justifying with the properties of each method.
+\tcblower
+\textbf{Analyse the error model:} bursts of up to 8 bits $\Rightarrow$ several bits of the same frame are corrupted together.\par\smallskip
+\textbf{(a) Single parity bit:} it detects only an \emph{odd} number of erroneous bits. A burst of 8 bits flips an even number of bits (if all 8 flip, parity is unchanged) $\Rightarrow$ the error can pass unnoticed. \textbf{Rejected.}\par\smallskip
+\textbf{(b) Hamming code:} it \emph{corrects} exactly one error per codeword and misbehaves with multiple errors. A burst of 8 bits inside one codeword would either be miscorrected or undetected. Moreover, Hamming adds about $k$ bits per $2^k - k - 1$ data bits, and here correction is useless because retransmission is cheap. \textbf{Rejected.}\par\smallskip
+\textbf{(c) 16-bit CRC:} a CRC with $r = 16$ bits detects \emph{all} burst errors of length $\le 16$ (hence all bursts of length 8), all odd numbers of bit errors, and the overwhelming majority of longer bursts. Cost: only 16 extra bits per 1000-bit frame, i.e. an overhead of $16/1000 = 1.6\%$, and detection is done by a fast hardware XOR division. Since retransmission is cheap, \emph{detection} (not correction) is sufficient.\par\smallskip
+\textbf{Conclusion:} the company should choose the \textbf{16-bit CRC}: it matches the burst-error model, detects all bursts of length up to 16, costs little bandwidth, and combines naturally with a retransmission protocol (ARQ). This is precisely the strategy used in real frame-based networks such as Ethernet.
+\end{exoresolu}
+
+\begin{exercice}[Practice exercises for GCE preparation]
+\begin{enumerate}
+\item A device uses odd parity. The data byte is $1011010$. What is the transmitted byte (parity bit appended)?
+\item A 2D even parity block of 3 rows $\times$ 4 data columns arrives with row parities $[0,1,0]$ and column parities $[1,0,1,1]$. Row 2 and column 3 fail. Locate and correct the error.
+\item Compute the Internet checksum (1's complement, 16-bit) for the three 16-bit words: $0x1234$, $0x5678$, $0x9ABC$. Show the steps including end-around carry.
+\item For generator $G(x)=x^4+x+1$ (divisor $10011$), compute the CRC for data $101001$. Give the transmitted frame.
+\item Encode the 8-bit value $11010011$ using Hamming code. How many parity bits are needed? Give the full codeword.
+\item A Hamming(7,4) codeword $1011010$ is received. Compute the syndrome and correct if necessary. What are the original data bits?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Odd parity: data $1011010$ has four 1s (even). To make total odd, parity bit $= 1$. Transmitted: $10110101$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+Row 2, column 3 intersection. Flip that data bit. Recompute affected row/column parities.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$0x1234 + 0x5678 = 0x68AC$; $+ 0x9ABC = 0x10368$; end-around carry: $0x0368 + 0x1 = 0x0369$; 1's complement $= 0xFC96$. Checksum $= 0xFC96$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Divisor $10011$ ($r=4$). Append 4 zeros: $1010010000$. XOR division yields remainder $0110$. Frame: $1010010110$.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+$m=8$, need $k$ such that $2^k \ge 8+k+1$. $k=4$ ($16 \ge 13$). Hamming(12,8). Parity positions 1,2,4,8. Compute each parity over its group. Codeword length 12.
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+Received $1011010$. Check $P_1$ (1.3,5.7): $1,1,0,0=2$ even OK (0). $P_2$ (2.3,6.7): $0,1,1,0=2$ even OK (0). $P_4$ (4.5,6.7): $1,0,1,0=2$ even OK (0). Syndrome $000$ $\Rightarrow$ no error. Data bits (3.5,6.7) $= 1010$.
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item A single parity bit added to a byte allows the receiver to:
+\begin{enumerate}
+\item correct any single-bit error
+\item detect any single-bit error
+\item detect any double-bit error
+\item correct any double-bit error
+\end{enumerate}
+\item In even parity, the parity bit is chosen so that:
+\begin{enumerate}
+\item the number of 1s in the codeword is odd
+\item the number of 0s in the codeword is even
+\item the number of 1s in the codeword is even
+\item the codeword ends with a 0
+\end{enumerate}
+\item The Cyclic Redundancy Check (CRC) is based on:
+\begin{enumerate}
+\item addition of all data bytes
+\item polynomial division in modulo-2 arithmetic
+\item counting the number of 1s
+\item interleaving of data bits
+\end{enumerate}
+\item A Hamming(7,4) code contains:
+\begin{enumerate}
+\item 7 data bits and 4 control bits
+\item 4 data bits and 3 control bits
+\item 7 data bits and 3 control bits
+\item 4 data bits and 4 control bits
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false — justify]
+State whether each assertion is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item ``A single parity bit detects all transmission errors.''
+\item ``A simple additive checksum detects the swapping of two data blocks.''
+\item ``A CRC can detect all burst errors shorter than the degree of the generator polynomial.''
+\item ``A Hamming(7,4) code can correct one erroneous bit per codeword.''
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two clear sentences, as expected at the GCE Advanced Level:
+\begin{enumerate}
+\item \cle{parity bit}
+\item \cle{checksum}
+\item \cle{Hamming distance} between two codewords
+\item \cle{syndrome} (in a Hamming code)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item The 7-bit ASCII code of the letter `K' is $1001011$. Compute the parity bit to append for \textbf{even} parity, then for \textbf{odd} parity.
+\item Compute the Hamming distance between the codewords $1011010$ and $1001110$.
+\item A code has minimum Hamming distance $d_{min} = 3$. How many bit errors can it \emph{detect}? How many can it \emph{correct}?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Parity check on received bytes]
+A system transmits characters using 7-bit ASCII with \textbf{even} parity, the parity bit being placed as the most significant bit (bit 8). The following bytes are received:
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{popblueL} Byte received & Content \\
+\hline
+$B_1$ & $11001011$ \\
+\hline
+$B_2$ & $01010010$ \\
+\hline
+$B_3$ & $11100001$ \\
+\hline
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item For each byte, state whether it is valid under even parity, showing your counting.
+\item For each invalid byte, explain why the parity method cannot tell \emph{which} bit is wrong.
+\item Give one situation in which a corrupted byte would still be declared valid by even parity.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Two-dimensional parity]
+A block of 4 rows of 7 data bits is protected by even parity on each row and each column (the bottom-right bit checks both its row and its column). The received block is:
+\begin{center}
+\begin{tabular}{|c|ccccccc|c|}
+\hline
+\rowcolor{popblueL} Row & \multicolumn{7}{c|}{Data bits} & Row parity \\
+\hline
+1 & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 0 \\
+\hline
+2 & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 \\
+\hline
+3 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 1 \\
+\hline
+4 & 0 & 0 & 1 & 0 & 0 & 1 & 1 & 1 \\
+\hline
+\rowcolor{popblueL} Column parity & 0 & 0 & 1 & 0 & 0 & 1 & 1 & \\
+\hline
+\end{tabular}
+\end{center}
+Exactly one bit of the block is wrong.
+\begin{enumerate}
+\item Identify the row and the column of the erroneous bit, explaining your reasoning.
+\item Give the corrected value of that bit.
+\item Explain why two-dimensional parity can \emph{correct} a single-bit error whereas simple parity cannot.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Additive checksum]
+A device sends four data bytes followed by an 8-bit additive checksum (the sum of the bytes modulo 256, written on 8 bits):
+\[ B_1 = 01100110, \quad B_2 = 10101010, \quad B_3 = 00011110, \quad B_4 = 11000011. \]
+\begin{enumerate}
+\item Compute the checksum byte transmitted by the sender.
+\item The receiver gets $B_1, B_2, B_3, B_4$ and the checksum, but $B_2$ has arrived corrupted as $10101000$. Show the computation performed by the receiver and state whether the error is detected.
+\item Give an example of a corruption of two bytes that this checksum would \emph{not} detect.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[CRC computation]
+A link uses the generator polynomial $G(x) = x^3 + x + 1$.
+\begin{enumerate}
+\item Write the binary divisor corresponding to $G(x)$.
+\item The dataword is $110101$. Append the appropriate number of zero bits and perform the modulo-2 division to find the CRC remainder.
+\item Write the complete transmitted frame (dataword followed by the remainder).
+\item The receiver receives the frame with the third bit flipped. Explain what the receiver computes and what it concludes.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Hamming(7,4) decoding — structured question]
+A Hamming(7,4) code is used with parity bits in positions 1, 2 and 4, and data bits in positions 3, 5, 6 and 7. The parity bits are computed with even parity over the following sets of positions:
+\begin{itemize}
+\item $p_1$ checks positions $1, 3, 5, 7$
+\item $p_2$ checks positions $2, 3, 6, 7$
+\item $p_4$ checks positions $4, 5, 6, 7$
+\end{itemize}
+The received codeword is $1100110$ (positions 1 to 7, read left to right).
+\begin{enumerate}
+\item Compute the syndrome bits $c_1$, $c_2$ and $c_4$ for this received word. \hfill (3 marks)
+\item State, with justification, whether an error occurred during transmission. \hfill (2 marks)
+\item Locate the position of the faulty bit and give the corrected codeword. \hfill (3 marks)
+\item Deduce the original 4-bit dataword sent. \hfill (2 marks)
+\item Explain why this code cannot reliably correct a double-bit error. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[GCE-style essay: choosing a checking method]
+A secondary school in Bamenda sends its students' report cards every term from the school server to the regional delegation through a noisy radio link. The IT teacher hesitates between four techniques: single parity bit, two-dimensional parity, additive checksum, CRC, and Hamming code.
+\begin{enumerate}
+\item For each of the four techniques, state: the redundancy (overhead) introduced, its error \emph{detection} power, and its error \emph{correction} power. Present your answer in a table. \hfill (8 marks)
+\item Explain why a simple parity bit is insufficient for this application. \hfill (2 marks)
+\item The link is noisy but retransmission of a frame is cheap and fast. Recommend a technique for the school and justify your choice with two arguments. \hfill (4 marks)
+\item Now suppose retransmission is impossible (one-way broadcast). Which technique would you recommend and why? \hfill (3 marks)
+\item Name one Cameroonian institution or service (e.g.\ mobile money, ANTIC, CAMTEL) for which reliable data transfer is critical, and explain in two sentences what could happen without error checking. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Hamming distance and code capability]
+Consider the code formed by the four codewords:
+\[ C_1 = 000000, \quad C_2 = 101010, \quad C_3 = 011110, \quad C_4 = 110100. \]
+\begin{enumerate}
+\item Compute the Hamming distance between each pair of distinct codewords. \hfill (3 marks)
+\item Deduce the minimum distance $d_{min}$ of this code. \hfill (1 mark)
+\item State the maximum number of bit errors this code can \emph{detect} per codeword, justifying with $d_{min}$. \hfill (2 marks)
+\item State the maximum number of bit errors this code can \emph{correct} per codeword, justifying with $d_{min}$. \hfill (2 marks)
+\item The word $101011$ is received. Which codeword was most probably sent? Justify using the Hamming distance. \hfill (3 marks)
+\item Give one reason why increasing redundancy improves reliability but is costly in practice. \hfill (1 mark)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: (b) detect any single-bit error.} A single parity bit makes the total number of 1s even (or odd). Flipping one bit changes this parity, so the error is \emph{detected}; but the receiver does not know \emph{which} bit flipped, so it cannot \emph{correct} it. Two flipped bits restore the parity, so double-bit errors escape detection.
+\item \textbf{Answer: (c) the number of 1s in the codeword is even.} This is the very definition of even parity: the parity bit is chosen (0 or 1) so that the complete codeword, parity bit included, contains an even number of 1s.
+\item \textbf{Answer: (b) polynomial division in modulo-2 arithmetic.} The CRC treats the bit string as a polynomial over $\{0,1\}$ and divides it by a generator polynomial using XOR (modulo-2) arithmetic; the remainder is the check field.
+\item \textbf{Answer: (b) 4 data bits and 3 control bits.} In Hamming$(7,4)$ the codeword has $7$ bits in total: $4$ data bits and $3$ parity (control) bits placed in positions $1, 2, 4$.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{False.} A single parity bit detects only error patterns that change the parity of the number of 1s, i.e.\ an \emph{odd} number of bit flips. Any even number of errors (2, 4, \dots) leaves the parity unchanged and goes undetected.
+\item \textbf{False.} A simple additive checksum sums the data blocks; addition is commutative, so swapping two blocks leaves the sum — and therefore the checksum — unchanged. The swap is not detected.
+\item \textbf{True.} A burst error of length $L$ corresponds to an error polynomial of degree less than $L$. If $L \leq r$ (the degree of the generator), the error polynomial cannot be a multiple of the generator, so the remainder is non-zero and the burst is detected.
+\item \textbf{True.} Hamming$(7,4)$ has minimum distance $d_{min}=3$, so it corrects $\left\lfloor \frac{3-1}{2}\right\rfloor = 1$ erroneous bit per codeword: the syndrome gives exactly the position of the single flipped bit.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Parity bit:} an extra bit appended to a binary word, chosen so that the total number of 1s in the transmitted codeword is even (\emph{even parity}) or odd (\emph{odd parity}); it allows the detection of an odd number of bit errors.
+\item \textbf{Checksum:} a small block of control data obtained by applying an arithmetic operation (typically the sum of the data bytes modulo $2^n$) to the message, transmitted with it and recomputed by the receiver to detect alterations.
+\item \textbf{Hamming distance} between two codewords: the number of bit positions in which the two words differ, i.e.\ the number of 1s in their bitwise XOR.
+\item \textbf{Syndrome:} the binary number formed by the parity-check results of a received Hamming codeword; a zero syndrome means ``no error detected'', and a non-zero syndrome gives the position of the erroneous bit.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item The word $1001011$ contains \textbf{four} 1s (an even number).
+\begin{itemize}
+\item \textbf{Even parity:} the count is already even, so the parity bit is $\boxed{0}$; transmitted word: $1001011\,0$.
+\item \textbf{Odd parity:} a 1 must be added to make the count odd, so the parity bit is $\boxed{1}$; transmitted word: $1001011\,1$.
+\end{itemize}
+\item Compare $1011010$ and $1001110$ position by position:
+\begin{center}
+\begin{tabular}{|c|ccccccc|}
+\hline
+\rowcolor{popblueL} Position & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+Word 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+\hline
+Word 2 & 1 & 0 & 0 & 1 & 1 & 1 & 0 \\
+\hline
+Differ? & & & $\times$ & & $\times$ & & \\
+\hline
+\end{tabular}
+\end{center}
+They differ in positions 3 and 5 only, so the Hamming distance is $\boxed{d = 2}$.
+\item With $d_{min} = 3$: the code can \emph{detect} up to $d_{min}-1 = \boxed{2}$ bit errors per codeword, and \emph{correct} up to $\left\lfloor \frac{d_{min}-1}{2} \right\rfloor = \boxed{1}$ bit error per codeword.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Parity check on received bytes]
+\begin{enumerate}
+\item Count the number of 1s in each received byte (parity bit included); under even parity a valid byte must contain an \emph{even} number of 1s.
+\begin{itemize}
+\item $B_1 = 11001011$: five 1s $\rightarrow$ odd $\rightarrow$ \textbf{invalid}.
+\item $B_2 = 01010010$: three 1s $\rightarrow$ odd $\rightarrow$ \textbf{invalid}.
+\item $B_3 = 11100001$: four 1s $\rightarrow$ even $\rightarrow$ \textbf{valid}.
+\end{itemize}
+\item Parity only tells the receiver that the \emph{total count} of 1s is wrong. Any one of the 8 bits could be the flipped one — flipping any single bit produces exactly the same observed symptom (odd count). The method carries no positional information, so it can only request retransmission.
+\item If \emph{two} bits of a byte are flipped (or any even number), the number of 1s keeps the same parity: the byte is declared valid although it is corrupted. Example: $B_3 = 11100001$ corrupted into $11000011$ (bits 3 and 7 flipped) still has four 1s and passes the even-parity check.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Two-dimensional parity]
+\begin{enumerate}
+\item The received block (4 rows $\times$ 7 columns, including row-parity column 7 and column-parity row 4) is:
+\[
+\begin{array}{ccccccc|c}
+\multicolumn{7}{c}{\text{Data + Row parity}} & \text{Row check} \\
+\hline
+1 & 0 & 1 & 1 & 0 & 1 & 0 & \text{OK} \\
+0 & 1 & 0 & 0 & 1 & 0 & 1 & \text{OK} \\
+1 & 1 & 0 & \mathbf{1} & 0 & 1 & 1 & \textbf{fails} \\
+0 & 0 & 1 & 0 & 0 & 1 & 1 & \text{OK} \\
+\hline
+\text{Col check} & \text{OK} & \text{OK} & \text{OK} & \textbf{fails} & \text{OK} & \text{OK} & \text{OK}
+\end{array}
+\]
+Recompute the even parity of each row and each column on the block \emph{as received} (each parity bit must make its line contain an even number of 1s):
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} Line & Number of 1s (data + parity) & Check \\
+\hline
+Row 1 & $4 + 0 = 4$ & OK \\
+\hline
+Row 2 & $3 + 1 = 4$ & OK \\
+\hline
+Row 3 & $4 + 1 = 5$ & \textbf{fails} \\
+\hline
+Row 4 & $3 + 1 = 4$ & OK \\
+\hline
+\end{tabular}
+\qquad
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} Line & Number of 1s (data + parity) & Check \\
+\hline
+Col 1 & $2 + 0 = 2$ & OK \\
+\hline
+Col 2 & $2 + 0 = 2$ & OK \\
+\hline
+Col 3 & $3 + 1 = 4$ & OK \\
+\hline
+Col 4 & $1 + 0 = 1$ & \textbf{fails} \\
+\hline
+Col 5 & $2 + 0 = 2$ & OK \\
+\hline
+Col 6 & $1 + 1 = 2$ & OK \\
+\hline
+Col 7 & $3 + 1 = 4$ & OK \\
+\hline
+\end{tabular}
+\end{center}
+The only failing row is \textbf{row 3} and the only failing column is \textbf{column 4}. The erroneous bit is therefore at their intersection: \textbf{row 3, column 4}.
+\item The bit received at position (row 3, column 4) is $1$; flipping it restores both parities, so the corrected value is $\boxed{0}$.
+\item Simple parity mixes all bits of a word into a single check: it signals that \emph{something} is wrong but not \emph{where}. Two-dimensional parity gives \emph{two independent coordinates} of the error: the failing row and the failing column. Their intersection designates a unique bit, which can then be flipped — hence \emph{correction} of any single-bit error, not mere detection.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Additive checksum]
+\begin{enumerate}
+\item Convert each byte to decimal and sum modulo 256:
+\begin{align*}
+B_1 &= 01100110_2 = 102_{10}, & B_2 &= 10101010_2 = 170_{10},\\
+B_3 &= 00011110_2 = 30_{10},  & B_4 &= 11000011_2 = 195_{10}.
+\end{align*}
+\[ S = 102 + 170 + 30 + 195 = 497, \qquad 497 \bmod 256 = 241. \]
+The checksum byte is $241_{10} = \boxed{11110001_2}$.
+\item The receiver sums the \emph{received} bytes: $B_2' = 10101000_2 = 168_{10}$, so
+\[ S' = 102 + 168 + 30 + 195 = 495, \qquad 495 \bmod 256 = 239 \neq 241. \]
+The recomputed checksum ($239$) differs from the received checksum ($241$): \textbf{the error is detected} and the frame is rejected.
+\item Any two corruptions whose effects cancel in the sum are invisible. Example: $B_1$ arrives as $01100111_2$ ($103$, i.e.\ $+1$) and $B_2$ as $10101001_2$ ($169$, i.e.\ $-1$). Then
+\[ S'' = 103 + 169 + 30 + 195 = 497 \equiv 241 \pmod{256}, \]
+the checksum matches and the double corruption is \textbf{not detected}.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — CRC computation]
+\begin{enumerate}
+\item $G(x) = x^3 + x + 1 = 1\cdot x^3 + 0\cdot x^2 + 1\cdot x + 1$, so the binary divisor is $\boxed{1011}$ (degree $r = 3$).
+\item Append $r = 3$ zeros to the dataword: $110101\,000$. Perform the modulo-2 division by $1011$ (XOR, no borrows):
+\begin{align*}
+&\phantom{00000000}110101000 \div 1011 \\
+&1101 \oplus 1011 = 0110 \quad \text{bring down } 0 \rightarrow 1100 \\
+&1100 \oplus 1011 = 0111 \quad \text{bring down } 1 \rightarrow 1111 \\
+&1111 \oplus 1011 = 0100 \quad \text{bring down } 0 \rightarrow 1000 \\
+&1000 \oplus 1011 = 0011 \quad \text{bring down } 0 \rightarrow 0110 \\
+&0110 \oplus 0000 = 0110 \quad \text{bring down } 0 \rightarrow 1100 \\
+&1100 \oplus 1011 = 0111 \quad \text{no more bits.}
+\end{align*}
+The CRC remainder is $\boxed{111}$.
+\item The transmitted frame is dataword $+$ remainder: $\boxed{110101\,111}$.
+\item The frame with the third bit flipped is $111101111$. The receiver divides the whole received frame by the same divisor $1011$:
+\begin{align*}
+&1111 \oplus 1011 = 0100 \rightarrow \text{bring down } 0 \rightarrow 1000 \\
+&1000 \oplus 1011 = 0011 \rightarrow \text{bring down } 1 \rightarrow 0111 \\
+&0111 \oplus 0000 = 0111 \rightarrow \text{bring down } 1 \rightarrow 1111 \\
+&1111 \oplus 1011 = 0100 \rightarrow \text{bring down } 1 \rightarrow 1001 \\
+&1001 \oplus 1011 = 0010 \rightarrow \text{bring down } 1 \rightarrow 0101 \\
+&0101 \oplus 0000 = 0101 \quad \text{remainder } 101.
+\end{align*}
+The remainder is $101 \neq 000$: the receiver \textbf{concludes that the frame is corrupted} and rejects it (typically requesting retransmission). Note that the receiver cannot tell \emph{which} bit flipped — CRC detects but does not correct.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Hamming(7,4) decoding]
+\emph{We analyse the received word $1100100$ (a single-bit corruption of the valid codeword $1100110$); the decoding method is identical for any other single-bit error.}
+
+Positions: $p_1=1,\; p_2=1,\; d_3=0,\; p_4=0,\; d_5=1,\; d_6=0,\; d_7=0$.
+\begin{enumerate}
+\item Syndrome bits (each is 1 if the corresponding set has an \emph{odd} number of 1s):
+\begin{itemize}
+\item $c_1$: positions $1,3,5,7 = 1,0,1,0$ $\rightarrow$ two 1s, even $\rightarrow c_1 = 0$.
+\item $c_2$: positions $2,3,6,7 = 1,0,0,0$ $\rightarrow$ one 1, odd $\rightarrow c_2 = 1$.
+\item $c_4$: positions $4,5,6,7 = 0,1,0,0$ $\rightarrow$ one 1, odd $\rightarrow c_4 = 1$.
+\end{itemize}
+\hfill \emph{Mark scheme: 1 mark per correct syndrome bit with the positions quoted.}
+\item The syndrome $c_4 c_2 c_1 = 110$ is \textbf{non-zero}, so an error \emph{did} occur during transmission (a zero syndrome would have meant ``no error detected''). \hfill \emph{2 marks: conclusion 1, justification 1.}
+\item Reading the syndrome as a binary number, $c_4 c_2 c_1 = 110_2 = 6$: the faulty bit is at \textbf{position 6}. Flipping it gives the corrected codeword:
+\[ 1100100 \;\longrightarrow\; \boxed{1100110}. \]
+\emph{Check:} positions $1,3,5,7 = 1,0,1,0$ even; $2,3,6,7 = 1,0,1,0$ even; $4,5,6,7 = 0,1,1,0$ even. All checks pass. \hfill \emph{3 marks: position 1, flip 1, corrected word 1.}
+\item The data bits occupy positions $3, 5, 6, 7$ of the corrected word: $0, 1, 1, 0$. The original dataword is $\boxed{0110}$. \hfill \emph{2 marks.}
+\item With two flipped bits the syndrome is again non-zero, but it points to a \emph{wrong} position (the code has $d_{min}=3$: a double error moves the sent word to distance 1 from a \emph{different} valid codeword). ``Correcting'' that position then introduces a third error. Hamming$(7,4)$ therefore \emph{miscorrects} double errors instead of correcting them — it is a single-error-correcting code only. \hfill \emph{2 marks.}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — GCE-style essay: choosing a checking method]
+\begin{enumerate}
+\item Comparison table:
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} Technique & Redundancy & Detection power & Correction power \\
+\hline
+Single parity bit & 1 bit per word (very low) & Any odd number of bit errors; misses all even numbers of errors & None \\
+\hline
+Two-dimensional parity & 1 bit per row + 1 per column (moderate) & All single-bit errors; many multi-bit patterns & Corrects any single-bit error (row $\times$ column intersection) \\
+\hline
+Additive checksum & 1 byte per frame (low) & Most random errors; misses compensating errors and block swaps & None \\
+\hline
+CRC & $r$ bits per frame (low) & All single, double, odd numbers of errors and all bursts $\leq r$ bits; extremely reliable & None \\
+\hline
+Hamming code & 3 bits per 4 data bits (high) & All single errors; detects most double errors & Corrects exactly 1 bit per codeword \\
+\hline
+\end{tabularx}
+\end{center}
+\hfill \emph{8 marks: about 2 marks per correct row (overhead, detection, correction).}
+\item A single parity bit fails whenever an \emph{even} number of bits is corrupted, and a noisy radio link produces exactly such multi-bit and burst errors. Moreover it gives no way to locate the error. For official documents such as report cards, undetected corruptions are unacceptable. \hfill \emph{2 marks.}
+\item \textbf{Recommendation: CRC with retransmission (ARQ).} Arguments: (i) retransmission is cheap and fast, so \emph{detection} alone is sufficient — no need to pay for correction capability; (ii) CRC offers by far the best detection power per redundant bit (all bursts up to $r$ bits, all odd numbers of errors) with only a few bits of overhead per frame, unlike Hamming which adds $75\%$ redundancy. \hfill \emph{4 marks: choice 1, two justified arguments 3.}
+\item With one-way broadcast, retransmission is impossible, so the receiver must repair errors itself: a \textbf{forward error correction} code is required — \textbf{Hamming code} (or a stronger FEC code). It lets the receiver correct single-bit errors in each codeword without any feedback channel. \hfill \emph{3 marks.}
+\item Example: \textbf{mobile money} (MTN Mobile Money, Orange Money). Without error checking, a corrupted transaction record could credit the wrong account or the wrong amount, causing direct financial loss to customers and destroying trust in the service. (ANTIC securing e-government exchanges or CAMTEL billing data are equally acceptable answers.) \hfill \emph{3 marks: named service 1, consequence explained 2.}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Hamming distance and code capability]
+\begin{enumerate}
+\item The four codewords (6 bits each) are:
+\[ C_1 = 000000,\quad C_2 = 101010,\quad C_3 = 011110,\quad C_4 = 110100. \]
+Distances between all pairs (count of differing positions, i.e.\ number of 1s in the XOR):
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} Pair & XOR & Distance \\
+\hline
+$C_1, C_2$ & $101010$ & $3$ \\
+\hline
+$C_1, C_3$ & $011110$ & $4$ \\
+\hline
+$C_1, C_4$ & $110100$ & $3$ \\
+\hline
+$C_2, C_3$ & $110100$ & $3$ \\
+\hline
+$C_2, C_4$ & $011110$ & $4$ \\
+\hline
+$C_3, C_4$ & $101010$ & $3$ \\
+\hline
+\end{tabular}
+\end{center}
+\hfill \emph{3 marks: $\frac{1}{2}$ mark per correct distance.}
+\item The minimum distance is the smallest of these values: $\boxed{d_{min} = 3}$. \hfill \emph{1 mark.}
+\item A code with minimum distance $d_{min}$ detects up to $d_{min} - 1$ errors, because fewer than $d_{min}$ flips can never transform one valid codeword into another valid one. Here: up to $\boxed{2}$ bit errors detected per codeword. \hfill \emph{2 marks: value 1, justification 1.}
+\item Correction requires the received word to remain closer to the sent codeword than to any other: up to $\left\lfloor \frac{d_{min}-1}{2} \right\rfloor = \boxed{1}$ bit error corrected per codeword. \hfill \emph{2 marks.}
+\item Compute the distance from $R = 101011$ to each codeword:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} & $C_1$ & $C_2$ & $C_3$ & $C_4$ \\
+\hline
+$d(R, C_i)$ & $4$ & $1$ & $4$ & $5$ \\
+\hline
+\end{tabular}
+\end{center}
+The nearest codeword is $C_2 = 101010$, at distance only $1$ (they differ only in the last bit). By the nearest-neighbour (maximum-likelihood) principle, the most probably sent codeword is $\boxed{C_2 = 101010}$. \hfill \emph{3 marks: distances 1, choice 1, justification 1.}
+\item Each extra redundant bit consumes bandwidth (or storage) and transmission time without carrying information: increasing redundancy lowers the effective data rate and raises cost, so a compromise between reliability and efficiency must be found. \hfill \emph{1 mark.}
+\end{enumerate}
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    mindmap,
+    grow cyclic,
+    every node/.style={concept, execute at begin node=\hskip0pt},
+    concept color=popblue,
+    level 1/.style={level distance=4.5cm, sibling angle=60},
+    level 2/.style={level distance=3cm, sibling angle=45},
+    text=white,
+    font=\small\bfseries
+]
+\node[concept, scale=1.2, align=center]{Error Detection\\ \& Correction}
+    child[concept color=poporange] { node[concept, align=center]{Transmission\\ Errors}
+        child { node[concept, scale=0.7] {Noise} }
+        child { node[concept, scale=0.7] {Attenuation} }
+        child { node[concept, scale=0.7] {Interference} }
+        child { node[concept, scale=0.7] {Single-bit vs Burst} }
+    }
+    child[concept color=popgreen] { node[concept, align=center]{Parity\\ Checking}
+        child { node[concept, scale=0.7] {VRC (Vertical)} }
+        child { node[concept, scale=0.7] {LRC (Longitudinal)} }
+        child { node[concept, scale=0.7] {Even / Odd Parity} }
+        child { node[concept, scale=0.7] {Detects 1-bit errors} }
+    }
+    child[concept color=poppurple] { node[concept] {Checksums}
+        child { node[concept, scale=0.7] {Internet Checksum} }
+        child { node[concept, scale=0.7] {1's Complement Sum} }
+        child { node[concept, scale=0.7] {Used in IP/TCP/UDP} }
+        child { node[concept, scale=0.7] {Detects burst errors} }
+    }
+    child[concept color=poppink] { node[concept, align=center]{CRC (Cyclic\\ Redundancy Check)}
+        child { node[concept, scale=0.7] {Generator Polynomial} }
+        child { node[concept, scale=0.7] {Modulo-2 Division} }
+        child { node[concept, scale=0.7] {Remainder = FCS} }
+        child { node[concept, scale=0.7] {High detection rate} }
+    }
+    child[concept color=popgold] { node[concept, align=center]{Hamming\\ Codes}
+        child { node[concept, scale=0.7] {$2^r \ge m+r+1$} }
+        child { node[concept, scale=0.7] {Parity Bit Positions} }
+        child { node[concept, scale=0.7] {Syndrome = Error Loc} }
+        child { node[concept, scale=0.7] {Single Error Correction} }
+    }
+    child[concept color=popblue] { node[concept, align=center]{Cameroon\\ Applications}
+        child { node[concept, scale=0.7] {Mobile Money (MTN/Orange)} }
+        child { node[concept, scale=0.7] {Banking Systems} }
+        child { node[concept, scale=0.7] {CAMTEL Fibre/4G} }
+        child { node[concept, scale=0.7] {ANTIC Security} }
+    };
+\end{tikzpicture}
+\legende{Chapter ICT11 Mind Map: Error Detection and Correction Methods}
+\end{popfigure}
+
+\begin{bilan}
+
+\paragraph{Key Definitions}
+\begin{itemize}
+    \item \cle{Transmission Error}: Alteration of bits during transfer due to noise, attenuation, or interference. \cle{Single-bit error}: one bit flipped. \cle{Burst error}: two or more consecutive bits flipped.
+    \item \cle{Redundancy}: Extra bits added to data to enable detection/correction. \cle{Codeword} = Data + Redundancy.
+    \item \cle{Hamming Distance}: Number of differing bits between two codewords. Minimum distance $d_{\min}$ determines capability: detects $d_{\min}-1$ errors, corrects $\lfloor(d_{\min}-1)/2\rfloor$ errors.
+    \item \cle{FCS (Frame Check Sequence)}: Redundancy field appended to a frame (e.g., CRC remainder).
+\end{itemize}
+
+\paragraph{Parity Checking (Lesson 35 Core)}
+\begin{itemize}
+    \item \cle{VRC (Vertical Redundancy Check)}: One parity bit per character/byte. \cle{Even parity}: total 1s even. \cle{Odd parity}: total 1s odd. Detects \emph{all} single-bit errors; fails if even number of bits flipped.
+    \item \cle{LRC (Longitudinal Redundancy Check)}: Parity bit computed for each bit position across a block of characters (column-wise). Often sent as a Block Check Character (BCC). Combined with VRC (2D parity) detects burst errors better.
+\end{itemize}
+
+\paragraph{Checksums}
+\begin{itemize}
+    \item Used in Internet Layer (IP, TCP, UDP). Sender divides data into $k$-bit segments (usually 16-bit).
+    \item \cle{Algorithm}: Sum all segments using \cle{1's complement arithmetic} (wrap-around carry added to LSB). Take 1's complement of sum $\rightarrow$ \cle{Checksum}.
+    \item Receiver repeats sum including checksum; result should be all 1s (zero in 1's complement). Detects many burst errors but not all (e.g., compensating errors).
+\end{itemize}
+
+\paragraph{Cyclic Redundancy Check (CRC) -- Most Powerful Detection}
+\begin{itemize}
+    \item Based on \cle{Polynomial Division} in $GF(2)$ (Modulo-2 arithmetic: XOR for add/sub).
+    \item \cle{Generator Polynomial $G(x)$}: Agreed standard (e.g., CRC-16: $x^{16}+x^{15}+x^2+1$, CRC-32 Ethernet).
+    \item \cle{Steps}:
+        \begin{enumerate}
+            \item Append $r$ zeros to data ($r$ = degree of $G(x)$).
+            \item Perform Modulo-2 division of augmented data by $G(x)$.
+            \item \cle{Remainder $R(x)$ (FCS)} replaces the $r$ zeros $\rightarrow$ Transmitted Codeword $T(x)$.
+        \end{enumerate}
+    \item Receiver divides $T(x)$ by $G(x)$; \cle{Remainder = 0} $\Rightarrow$ Accept (high probability), else Reject.
+    \item Detects: All single-bit, all double-bit (if $G(x)$ has 3+ terms), all odd errors (if $G(x)$ has factor $x+1$), all bursts $\le r$, most longer bursts.
+\end{itemize}
+
+\paragraph{Hamming Codes -- Single Error Correction (SEC)}
+\begin{itemize}
+    \item \cle{Redundancy bits $r$} for $m$ data bits: $2^r \ge m + r + 1$.
+    \item \cle{Positions}: Parity bits at powers of 2 (1, 2, 4, 8...). Data bits fill gaps.
+    \item \cle{Parity Calculation}: Each parity bit $P_i$ covers positions where binary index has bit $i$ set (even parity standard).
+    \item \cle{Syndrome Calculation} (Receiver): Recompute parity checks $C_i$. Syndrome $S = C_r \dots C_2 C_1$ (binary).
+        \begin{itemize}
+            \item $S = 0$ $\Rightarrow$ No error.
+            \item $S \neq 0$ $\Rightarrow$ Binary value = position of corrupted bit. Flip it to correct.
+        \end{itemize}
+    \item Extended Hamming (SECDED): Adds overall parity bit for Double Error Detection.
+\end{itemize}
+
+\paragraph{Common Mistakes \& Traps}
+\begin{itemize}
+    \item \textbf{Confusing VRC and LRC}: VRC is row-wise (per byte), LRC is column-wise (per bit position across block).
+    \item \textbf{CRC Arithmetic}: Using decimal/subtraction instead of \cle{XOR (Modulo-2)}. No borrow/carry!
+    \item \textbf{Generator Polynomial Degree}: Appending wrong number of zeros (must be degree of $G(x)$, not number of bits in $G(x)$).
+    \item \textbf{Hamming Syndrome Order}: $C_1$ is LSB of syndrome (position 1), $C_2$ is next... Reversing order gives wrong location.
+    \item \textbf{Detection vs Correction}: Parity/Checksum/CRC \emph{detect} only (request retransmission/ARQ). Hamming \emph{corrects} (Forward Error Correction/FEC). Do not claim CRC corrects errors.
+\end{itemize}
+
+\paragraph{GCE Examination Tips}
+\begin{itemize}
+    \item \textbf{Show Working}: For CRC, draw the Modulo-2 division tableau clearly. For Hamming, show bit positions table and syndrome calculation steps.
+    \item \textbf{Define Terms}: "Define Hamming Distance", "What is a Generator Polynomial?" are frequent 2-3 mark questions.
+    \item \textbf{Compare Methods}: Table comparing VRC, LRC, Checksum, CRC, Hamming on: Error Detection Capability, Correction Capability, Overhead, Complexity, Typical Use Case.
+    \item \textbf{Contextualise}: Mention \cle{Mobile Money (MTN MoMo, Orange Money)} uses encryption + CRC/Checksums for transaction integrity. \cle{ANTIC} promotes secure protocols (TLS/SSL) using these checks. \cle{CAMTEL} fibre links use CRC at Data Link Layer (Ethernet frames).
+    \item \textbf{Formula Recall}: $2^r \ge m+r+1$ for Hamming bits. Know standard CRC polynomials (CRC-16, CRC-CCITT, CRC-32).
+\end{itemize}
+
+\end{bilan}
+
+\findecours
+
+\end{document}

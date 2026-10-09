@@ -1,0 +1,2535 @@
+% Using common protocols in data transmission — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT10-using-common-protocols-in-data-transmission.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{10}
+\newcommand{\DOCTITRE}{Using common protocols in data transmission}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Using common protocols in data transmission}{ICT}{Upper Sixth}{Upper Sixth — ICT}{10}{3 periods}{This chapter introduces the common protocols that govern data transmission in networks, explaining their roles, how they are organised into suites such as TCP/IP, and how the OSI reference model structures communication into layers. Students learn to identify, compare and correctly situate protocols in real Cameroonian and global networking situations, in preparation for the GCE Advanced Level examination.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define a network protocol and explain why protocols are necessary for data transmission.
+\item By the end of this chapter I can describe the role of common protocols (HTTP/HTTPS, FTP, SMTP, POP3, IMAP, DNS, DHCP, TCP, UDP, IP) in data transmission.
+\item By the end of this chapter I can distinguish connection-oriented from connectionless transmission and give the protocol associated with each.
+\item By the end of this chapter I can explain what a protocol suite is and describe the layers of the TCP/IP suite.
+\item By the end of this chapter I can name and order the seven layers of the OSI reference model and state the function of each layer.
+\item By the end of this chapter I can map common protocols and devices to their corresponding OSI or TCP/IP layers.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Network Protocols: Concepts and Roles
+\item Transport and Internet Protocols: TCP, UDP and IP
+\item Protocol Suites and the TCP/IP Model
+\item The OSI Reference Model and Integration
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define a network protocol and explain why protocols are necessary for data transmission.
+\item By the end of this chapter I can describe the role of common protocols (HTTP/HTTPS, FTP, SMTP, POP3, IMAP, DNS, DHCP, TCP, UDP, IP) in data transmission.
+\item By the end of this chapter I can distinguish connection-oriented from connectionless transmission and give the protocol associated with each.
+\item By the end of this chapter I can explain what a protocol suite is and describe the layers of the TCP/IP suite.
+\item By the end of this chapter I can name and order the seven layers of the OSI reference model and state the function of each layer.
+\item By the end of this chapter I can map common protocols and devices to their corresponding OSI or TCP/IP layers.
+\item By the end of this chapter I can explain encapsulation and how data units (segment, packet, frame) change as they move through the layers.
+\item By the end of this chapter I can compare the OSI model with the TCP/IP suite and justify their use in real networks.
+\item By the end of this chapter I can solve GCE-style problems that require identifying the protocol or layer responsible for a given transmission task or failure.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Computer networks: definition, types (LAN, WAN) and topologies (Lower Sixth).
+\item Transmission media (guided and unguided) and basic network devices (switch, router, modem).
+\item IP addressing basics: what an IP address is and why hosts need one.
+\item Client–server model and common Internet services (web, e-mail, file transfer).
+\item Data representation: bits, bytes and units of data transmission rate.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Network Protocols: Concepts and Roles}
+
+Aminata, a student in Yaoundé, sends a photo to her cousin in Douala via WhatsApp, pays her mother's Orange Money bill, then checks her GCE results online --- all within five minutes. Behind each of these actions, invisible sets of rules called \cle{protocols} negotiate, package, address and deliver her data across networks. Yet when her connection fails, she blames ``the network'' without knowing which layer or which protocol is actually at fault. How do machines that have never met --- a phone built in China, a server hosted in Europe, a router operated by CAMTEL --- agree on how to talk to each other? This chapter opens the door to the hidden language of data transmission.
+
+\courssub{What is a Network Protocol?}
+
+\textbf{An everyday observation.} Imagine two people who wish to hold a telephone conversation. Before any useful word is exchanged, they must agree on a common language, on who speaks first (``Hello?''), on how to take turns, on how to signal that they did not understand (``Can you repeat that?''), and on how to end the call (``Goodbye''). These unwritten rules of politeness and turn-taking are a \emph{human protocol}. Remove them, and the conversation collapses into noise.
+
+Computers face exactly the same problem, but with zero tolerance for ambiguity. A laptop in Bamenda and a web server in Frankfurt were built by different manufacturers, run different operating systems, and have never ``met''. For them to exchange a single web page, every detail must be fixed in advance: how bits are grouped, how the receiver knows where a message starts and ends, what happens if a piece is lost, and how fast the sender may transmit.
+
+\begin{definition}[Network protocol]
+A \cle{network protocol} is a formal set of rules and conventions that governs how devices exchange data over a network. It specifies the \textbf{format} of the messages, the \textbf{timing} of the exchanges, the \textbf{sequencing} of the steps, and the mechanisms of \textbf{error control}.
+\end{definition}
+
+\begin{savaistu}[Why ``protocol''?]
+The word comes from diplomacy: a \emph{protocol} is the set of rules of etiquette that governs official ceremonies --- who greets whom first, in which order delegations speak. Computer scientists borrowed the term because network communication, like diplomacy, only works when both parties follow the same agreed procedure, even if they do not trust or know each other.
+\end{savaistu}
+
+\courssub{Why Are Protocols Needed?}
+
+Protocols are not an optional refinement; without them, no communication between different machines is possible at all. Four concrete reasons explain their existence.
+
+\begin{itemize}
+\item \textbf{Heterogeneity of hardware and software.} Networks connect devices of every kind: Android phones, Windows PCs, Linux servers, routers from different vendors. A common protocol is the only way an iPhone can exchange data with a server it has never encountered.
+\item \textbf{Addressing.} Data must know \emph{where} to go. Just as a letter posted at the Mile 4 Nkwen post office needs a destination address, every packet of data must carry the address of its recipient. Protocols define how addresses are written and interpreted.
+\item \textbf{Reliability.} Transmission lines are imperfect: packets get lost, duplicated or corrupted. Protocols define how errors are detected and how lost data is re-sent, so that the user sees a complete, correct message.
+\item \textbf{Mutual understanding.} The receiver must interpret the bits exactly as the sender intended them --- is this number a port, a length, or a piece of the photo? Protocols fix the meaning of every field.
+\end{itemize}
+
+\begin{attention}[The protocol is the rule, not the application]
+A very common mistake at the GCE is to confuse the \emph{service} with the \emph{protocol}. ``E-mail'' is a service; \textbf{SMTP}, \textbf{POP3} and \textbf{IMAP} are the protocols that make it work. ``The web'' is a service; \textbf{HTTP} is the protocol. WhatsApp is an application, not a protocol. In an exam answer, always name the protocol, not the software.
+\end{attention}
+
+\courssub{The Three Elements of a Protocol}
+
+Every protocol, from the simplest to the most complex, is completely described by three elements.
+
+\begin{definition}[Syntax, semantics and timing]
+\begin{itemize}
+\item \textbf{Syntax}: the \emph{format} of the data --- the structure of messages, the order and size of fields (for example: the first 32 bits are the destination address).
+\item \textbf{Semantics}: the \emph{meaning} of each field and of each message --- what a particular value implies and what action the receiver must take (for example: a flag set to 1 means ``I have finished sending'').
+\item \textbf{Timing}: \emph{when} and \emph{how fast} data is sent --- the speed of transmission, the order of messages, and the delays allowed before a response is considered lost.
+\end{itemize}
+\end{definition}
+
+\begin{exemplebox}[The three elements in a phone call]
+Syntax: ``we will speak English, one sentence at a time''. Semantics: ``the word \emph{hello} means the conversation begins; \emph{goodbye} means it ends''. Timing: ``if the other person stays silent for more than a few seconds, I ask whether they are still on the line''. A network protocol specifies exactly the same three things, but in writing, with no room for interpretation.
+\end{exemplebox}
+
+\courssub{Key Functions of Protocols}
+
+Whatever their service, most protocols provide some or all of the following functions.
+
+\begin{itemize}
+\item \textbf{Addressing.} Identifying the sender and the receiver (for example, an IP address identifies a machine on the Internet).
+\item \textbf{Segmentation and reassembly.} Long messages are cut into smaller pieces (segments or packets) that travel independently and are reassembled in the correct order at the destination. A 10~MB photo never crosses the network as one block.
+\item \textbf{Error detection and correction.} Extra control information (checksums, cyclic redundancy checks) is added so the receiver can detect corrupted data and request retransmission.
+\item \textbf{Flow control.} A fast sender must not overwhelm a slow receiver; protocols let the receiver regulate the sending rate (e.g., sliding window mechanism).
+\item \textbf{Connection establishment and termination.} Many protocols open a dialogue with a \emph{handshake} (``are you there?'' --- ``yes'' --- ``let us begin'') and close it cleanly when finished, so that no data is left hanging.
+\end{itemize}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth]
+\draw[thick, popblue] (0,0) -- (0,-5.6);
+\draw[thick, poporange] (8,0) -- (8,-5.6);
+\node[above, popblue, font=\small\bfseries] at (0,0) {Host A (phone)};
+\node[above, poporange, font=\small\bfseries] at (8,0) {Host B (server)};
+\draw[->, thick, popdark] (0,-0.8) -- node[above, sloped]{Connection request (SYN)} (8,-1.2);
+\draw[->, thick, popdark] (8,-1.8) -- node[above, sloped]{Acknowledgement (SYN-ACK)} (0,-2.2);
+\draw[->, thick, popgreen] (0,-2.8) -- node[above, sloped]{Data (segment 1, 2, \ldots)} (8,-3.2);
+\draw[->, thick, popgreen] (8,-3.8) -- node[above, sloped]{Acknowledgement (ACK)} (0,-4.2);
+\draw[->, thick, poppurple] (0,-4.8) -- node[above, sloped]{Close connection (FIN)} (8,-5.2);
+\node[popmuted, align=center, font=\footnotesize] at (4,-6.1) {Time flows downwards: request, acknowledgement, data, close.};
+\end{tikzpicture}
+\end{center}
+\legende{A protocol ``handshake'': the two hosts agree to communicate, exchange data with acknowledgements, then close the connection.}
+\end{popfigure}
+
+\courssub{Standards and Standardisation Bodies}
+
+A protocol is only useful if \emph{everyone} implements it the same way. Protocols are therefore published as \cle{standards}. Two kinds of standards must be distinguished.
+
+\begin{definition}[De jure and de facto standards]
+A \cle{de jure} standard is approved formally by an official standardisation body after a public procedure (for example, the OSI model approved by ISO). A \cle{de facto} standard becomes dominant simply because everyone uses it, without formal approval (for example, the TCP/IP suite, which conquered the Internet through practice before any official consecration).
+\end{definition}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Body} & \textbf{Full name} & \textbf{Role and famous standards} \\
+\hline
+ISO & International Organization for Standardization & Official international standards; created the \textbf{OSI reference model} (7 layers). \\
+\hline
+\rowcolor{popgreenL} IETF & Internet Engineering Task Force & Develops the open standards of the Internet (TCP, IP, HTTP, SMTP) published as \textbf{RFC} documents. \\
+\hline
+IEEE & Institute of Electrical and Electronics Engineers & Standards for local networks, e.g.\ \textbf{IEEE 802.3} (Ethernet) and \textbf{IEEE 802.11} (Wi-Fi). \\
+\hline
+\rowcolor{popblueL} W3C & World Wide Web Consortium & Standards for the Web: HTML, CSS, and the evolution of HTTP. \\
+\hline
+ITU-T & International Telecommunication Union - Telecommunication Sector & Standards for telecommunications (e.g., X.25, V.90, G.711 for VoIP). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[Standards in Cameroon]
+In Cameroon, ANTIC (the National Agency for Information and Communication Technologies) promotes the adoption of international ICT standards and secures state networks, while operators such as CAMTEL, MTN and Orange must interconnect their equipment following the same international protocols --- otherwise a call or a mobile-money transaction could never cross from one network to another. The \emph{Agence de Régulation des Télécommunications (ART)} also ensures compliance with ITU-T recommendations for telephony and numbering.
+\end{savaistu}
+
+\courssub{Common Protocols Grouped by Service}
+
+Each network service relies on one or more application protocols. The table below summarises the ones every Upper Sixth candidate must know.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|c|}
+\hline
+\rowcolor{popblueL} \textbf{Service} & \textbf{Protocol} & \textbf{Role} & \textbf{Default port} \\
+\hline
+Web & HTTP & Transfer of web pages (unencrypted) & 80 \\
+\hline
+\rowcolor{popgreenL} Secure web & HTTPS & HTTP encrypted with TLS & 443 \\
+\hline
+File transfer & FTP & Uploading and downloading files & 21 \\
+\hline
+\rowcolor{popgreenL} Sending e-mail & SMTP & Sending mail between servers & 25 \\
+\hline
+Receiving e-mail & POP3 & Downloading mail to a device & 110 \\
+\hline
+\rowcolor{popgreenL} Receiving e-mail & IMAP & Reading mail kept on the server & 143 \\
+\hline
+Name resolution & DNS & Translating names into IP addresses & 53 \\
+\hline
+\rowcolor{popgreenL} Auto-configuration & DHCP & Assigning IP addresses automatically & 67/68 \\
+\hline
+Remote login & SSH & Secure remote command execution & 22 \\
+\hline
+\rowcolor{popgreenL} Network management & SNMP & Monitoring and managing network devices & 161/162 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw, fill=popblueL, rounded corners, minimum width=3.2cm, minimum height=1.1cm, font=\small\bfseries] (web) at (0,3.5) {Web browsing};
+\node[draw, fill=popgreenL, rounded corners, minimum width=3.2cm, minimum height=1.1cm, font=\small\bfseries] (mail) at (0,1.8) {E-mail};
+\node[draw, fill=popblueL, rounded corners, minimum width=3.2cm, minimum height=1.1cm, font=\small\bfseries] (ftp) at (0,0.1) {File transfer};
+\node[draw, fill=popgreenL, rounded corners, minimum width=3.2cm, minimum height=1.1cm, font=\small\bfseries] (ssh) at (0,-1.6) {Remote access};
+\node[draw, rounded corners, minimum width=3.6cm, minimum height=0.85cm] (http) at (5.5,4) {HTTP / HTTPS};
+\node[draw, rounded corners, minimum width=3.6cm, minimum height=0.85cm] (smtp) at (5.5,2.5) {SMTP (sending)};
+\node[draw, rounded corners, minimum width=3.6cm, minimum height=0.85cm] (pop) at (5.5,1.5) {POP3 / IMAP (reading)};
+\node[draw, rounded corners, minimum width=3.6cm, minimum height=0.85cm] (ftpp) at (5.5,0.1) {FTP};
+\node[draw, rounded corners, minimum width=3.6cm, minimum height=0.85cm] (sshp) at (5.5,-1.6) {SSH};
+\node[draw, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=0.85cm] (p1) at (10.5,4) {Ports 80 / 443};
+\node[draw, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=0.85cm] (p2) at (10.5,2.5) {Port 25};
+\node[draw, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=0.85cm] (p3) at (10.5,1.5) {Ports 110 / 143};
+\node[draw, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=0.85cm] (p4) at (10.5,0.1) {Port 21};
+\node[draw, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=0.85cm] (p5) at (10.5,-1.6) {Port 22};
+\draw[->, thick, popdark] (web) -- (http);
+\draw[->, thick, popdark] (mail) -- (smtp);
+\draw[->, thick, popdark] (mail) -- (pop);
+\draw[->, thick, popdark] (ftp) -- (ftpp);
+\draw[->, thick, popdark] (ssh) -- (sshp);
+\draw[->, thick, popblue] (http) -- (p1);
+\draw[->, thick, popblue] (smtp) -- (p2);
+\draw[->, thick, popblue] (pop) -- (p3);
+\draw[->, thick, popblue] (ftpp) -- (p4);
+\draw[->, thick, popblue] (sshp) -- (p5);
+\node[font=\small\bfseries, popmuted] at (0,4.7) {Service};
+\node[font=\small\bfseries, popmuted] at (5.5,4.7) {Protocol};
+\node[font=\small\bfseries, popmuted] at (10.5,4.7) {Default port};
+\end{tikzpicture}
+\end{center}
+\legende{Mapping common services to their application protocols and default port numbers (extended).}
+\end{popfigure}
+
+\begin{aretenir}[Port numbers to memorise for the GCE]
+HTTP: \textbf{80}; HTTPS: \textbf{443}; FTP: \textbf{21}; SMTP: \textbf{25}; POP3: \textbf{110}; IMAP: \textbf{143}; DNS: \textbf{53}; DHCP: \textbf{67/68}; SSH: \textbf{22}; SNMP: \textbf{161/162}. The GCE very frequently asks candidates to match a protocol to its default port --- learn this list by heart.
+\end{aretenir}
+
+\begin{methode}[Identifying the protocol(s) involved in a user action]
+\begin{enumerate}
+\item \textbf{Identify the service} the user is requesting (web page, e-mail, file download, automatic connection\ldots).
+\item \textbf{Name the application protocol} that provides this service (HTTP/HTTPS, SMTP, FTP, DHCP\ldots).
+\item \textbf{Add the supporting protocols}: almost every action needs DNS first (to translate the server name into an IP address), then a transport protocol (TCP or UDP), then IP to route the packets.
+\item \textbf{State the port} if the question asks for it.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Tracing the protocols behind one click in Bamenda]
+A student in Bamenda types \emph{www.gceb.cm} into her browser and presses Enter. List, in order, the protocols involved in loading the home page.
+\tcblower
+\textbf{Step 1 --- Name resolution (DNS, port 53).} The browser does not know the IP address of \emph{www.gceb.cm}. It sends a DNS query to a DNS server, which replies with the IP address of the web server.
+
+\textbf{Step 2 --- Connection (TCP over IP).} The browser opens a TCP connection to that IP address on port 443 (the HTTPS port): a three-step handshake (SYN, SYN-ACK, ACK) establishes the session. IP routes every packet across the networks of the access provider and the Internet backbone.
+
+\textbf{Step 3 --- Request and response (HTTPS).} The browser sends an HTTPS request (``give me the home page''), encrypted with TLS. The server replies with the page, segmented into TCP segments carried inside IP packets, checked for errors, reassembled in order, decrypted, and finally displayed.
+
+\textbf{Answer:} DNS, then TCP (handshake), then HTTPS --- all transported by IP.
+\end{exoresolu}
+
+\begin{exoresolu}[Analysing a mobile money transaction]
+A trader in Bafoussam uses USSD (\emph{*150\#}) to send 5000 FCFA via Orange Money. Identify the protocols at each layer.
+\tcblower
+\textbf{Application layer:} USSD (Unstructured Supplementary Service Data) over MAP/CAMEL (GSM signalling protocols). Not an Internet protocol, but a telecom protocol.
+\textbf{Transport/Network:} SS7 (Signalling System No. 7) over MTP (Message Transfer Part) --- the telecom equivalent of TCP/IP.
+\textbf{Link/Physical:} GSM/UMTS/LTE radio interface (depending on phone and coverage).
+\textbf{Note:} This is \emph{not} HTTP/HTTPS. Mobile money in Cameroon often uses USSD (GSM signalling) rather than IP-based apps, especially on feature phones. The GCE expects you to distinguish Internet protocols from telecom signalling protocols.
+\end{exoresolu}
+
+\begin{exercice}[Matching services, protocols and ports]
+For each action, name the application protocol and its default port:
+\begin{enumerate}
+\item A teacher in Buea downloads a syllabus file from an FTP server.
+\item A student sends an application letter by e-mail.
+\item A candidate consults her results on a secure website (address starting with \emph{https://}).
+\item A laptop obtains its IP address automatically when it joins the school Wi-Fi.
+\item A network administrator monitors router traffic from a management station.
+\item A developer connects securely to a remote Linux server in Douala.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item FTP, port 21.
+\item SMTP, port 25 (the sending protocol).
+\item HTTPS, port 443 (preceded, as always, by DNS on port 53 to resolve the site name).
+\item DHCP (ports 67/68).
+\item SNMP, ports 161 (agent) / 162 (traps).
+\item SSH, port 22.
+\end{enumerate}
+\end{corrige}
+
+\begin{attention}[Trap: port numbers belong to protocols, not to services]
+Do not write ``the port of e-mail is 25''. E-mail uses \emph{several} protocols with different ports: SMTP (25) for sending, POP3 (110) or IMAP (143) for receiving. Examiners reward candidates who distinguish sending from receiving.
+\end{attention}
+
+\begin{attention}[Trap: well-known vs ephemeral ports]
+The ports listed above are \textbf{well-known ports} (0--1023) used by \emph{servers} listening for connections. The \emph{client} uses an \textbf{ephemeral port} (typically 49152--65535) chosen randomly for the duration of the session. A question may ask: ``Which port does the \emph{client} use?'' Answer: an ephemeral port, not the well-known port.
+\end{attention}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item A protocol is a formal set of rules governing the \textbf{format}, \textbf{timing}, \textbf{sequencing} and \textbf{error control} of exchanged data.
+\item Its three elements are \textbf{syntax}, \textbf{semantics} and \textbf{timing}.
+\item Its key functions: addressing, segmentation/reassembly, error control, flow control, connection management.
+\item Standards are \textbf{de jure} (ISO, IEEE, ITU-T) or \textbf{de facto} (TCP/IP); the IETF publishes Internet standards as RFCs, the W3C standardises the Web.
+\item Know the common protocols and their default ports: HTTP~80, HTTPS~443, FTP~21, SMTP~25, POP3~110, IMAP~143, DNS~53, DHCP~67/68, SSH~22, SNMP~161/162.
+\item Distinguish \emph{application protocols} (HTTP, SMTP, FTP) from \emph{transport protocols} (TCP, UDP) and \emph{internetwork protocols} (IP) --- this prepares the TCP/IP and OSI models in the next section.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Transport and Internet Protocols: TCP, UDP and IP}
+
+In the previous section, we established that \textbf{network protocols} are the agreed-upon rules that allow heterogeneous devices to communicate. We saw that protocols exist at different levels: some define how bits travel on a wire (Physical/Data Link), others define how packets find their way across interconnected networks (Network/Internet), and others ensure that the data arriving at a destination application is complete, ordered, and meaningful (Transport/Application).
+
+We now zoom in on the \textbf{Transport Layer} and the \textbf{Internet Layer} (Network Layer in OSI terms). These two layers form the engine room of the Internet. The Internet Layer, dominated by the \textbf{Internet Protocol (IP)}, handles the \emph{routing} of packets across network boundaries using logical addresses. The Transport Layer, primarily through the \textbf{Transmission Control Protocol (TCP)} and the \textbf{User Datagram Protocol (UDP)}, handles the \emph{process-to-process} delivery, deciding whether reliability or speed is the priority.
+
+\courssub{The Internet Protocol (IP): Addressing and Best-Effort Delivery}
+
+At the heart of internetworking lies the \textbf{Internet Protocol (IP)}. Its job is to take segments from the transport layer, encapsulate them into \textbf{packets} (often called \textbf{datagrams} at this layer), and route them independently across multiple networks (autonomous systems) from a source host to a destination host.
+
+\begin{definition}[Internet Protocol (IP)]
+\textbf{IP} is a \cle{connectionless}, \cle{best-effort} protocol responsible for \textbf{logical addressing} and \textbf{routing} of packets across interconnected networks. It makes no guarantee of delivery, order, or duplicate protection.
+\end{definition}
+
+\paragraph{IPv4 Address Structure.}
+The most widely deployed version is \textbf{IPv4}. An IPv4 address is a \textbf{32-bit} number, typically written in \textbf{dotted-decimal notation} as four octets (8-bit groups) separated by dots, e.g., \texttt{192.168.1.10} or \texttt{41.205.128.45} (a typical Cameroonian public IP range). Each octet ranges from 0 to 255.
+\begin{itemize}
+    \item \textbf{Network portion:} Identifies the specific network (assigned by ISPs or registries like AFRINIC for Africa).
+    \item \textbf{Host portion:} Identifies the specific device (interface) within that network.
+    \item The boundary is defined by a \textbf{subnet mask} (e.g., \texttt{255.255.255.0} or \texttt{/24} in CIDR notation).
+\end{itemize}
+
+\paragraph{IPv6: The Future.}
+With the exhaustion of IPv4 addresses (~4.3 billion), \textbf{IPv6} uses \textbf{128-bit} addresses (written in hexadecimal, e.g., \texttt{2001:0db8:85a3:0000:0000:8a2e:0370:7334}), providing a virtually inexhaustible address space ($3.4 \times 10^{38}$ addresses). It simplifies header processing (fixed 40-byte header) and improves security (IPsec mandatory support). In Cameroon, CAMTEL and MTN have begun IPv6 trials, but IPv4 + NAT remains dominant for end-users.
+
+\paragraph{The IPv4 Packet (Datagram) Structure.}
+An IPv4 packet consists of a \textbf{Header} (20 to 60 bytes) and a \textbf{Payload} (Data).
+Key header fields:
+\begin{itemize}
+    \item \textbf{Version (4 bits):} 4 for IPv4.
+    \item \textbf{IHL (Internet Header Length, 4 bits):} Header length in 32-bit words (min 5 = 20 bytes).
+    \item \textbf{DSCP/ECN (8 bits):} Differentiated Services Code Point / Explicit Congestion Notification (QoS).
+    \item \textbf{Total Length (16 bits):} Total packet size (header + data), max \SI{65535}{bytes}.
+    \item \textbf{Identification, Flags, Fragment Offset (32 bits):} Used for fragmentation/reassembly if packet exceeds link MTU.
+    \item \textbf{TTL (Time To Live, 8 bits):} Hop counter. Decremented by 1 at each router. If 0, packet is discarded (prevents infinite loops). Typical start: 64 (Linux) or 128 (Windows).
+    \item \textbf{Protocol (8 bits):} Identifies the upper-layer protocol (\texttt{6} = TCP, \texttt{17} = UDP, \texttt{1} = ICMP).
+    \item \textbf{Header Checksum (16 bits):} Error detection for the header only (recalculated at every hop).
+    \item \textbf{Source IP Address (32 bits)} and \textbf{Destination IP Address (32 bits)}.
+    \item \textbf{Options (variable):} Rarely used (e.g., Record Route, Timestamp).
+\end{itemize}
+
+\begin{propriete}[IP Service Model: Best-Effort, Connectionless]
+IP provides an \textbf{unreliable}, \textbf{connectionless} datagram delivery service.
+\begin{enumerate}
+    \item \textbf{No connection setup:} No handshake before sending data.
+    \item \textbf{No guarantee of delivery:} Packets may be lost, corrupted, duplicated, or delivered out of order.
+    \item \textbf{No flow/congestion control:} IP does not slow down for the receiver or network.
+    \item \textbf{Routing independence:} Each packet is routed independently; packets of the same flow may take different paths.
+\end{enumerate}
+\textit{Examinable:} You must be able to explain \emph{why} IP is designed this way (simplicity, robustness, heterogeneity of underlying networks) and \emph{what} layer fixes the reliability gaps (Transport Layer / TCP).
+\end{propriete}
+
+\begin{attention}[Common Mistake: IP Guarantees Delivery]
+\textbf{Wrong:} "IP ensures the packet arrives safely."
+\textbf{Correct:} IP makes its \emph{best effort}. It is the \textbf{Transport Layer (TCP)} that adds reliability (acknowledgements, retransmissions, sequencing). If you use UDP over IP, you get \textbf{no reliability guarantees at all}.
+\end{attention}
+
+\paragraph{Routing and Forwarding: A Cameroonian Journey.}
+When you send a WhatsApp message from Yaoundé to a server in London, IP handles the hop-by-hop journey.
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm and 1.5cm,
+    host/.style={draw, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=1cm, align=center, font=\small},
+    router/.style={draw, circle, fill=poporange!20, minimum size=1.2cm, align=center, font=\small\bfseries},
+    arrow/.style={->, thick, popdark},
+    label/.style={font=\tiny, popmuted, midway, above, sloped}
+]
+% Nodes
+\node[host, align=center] (src){Your Phone\\Yaoundé\\IP: 102.164.12.5};
+\node[router, right=of src, align=center] (r1){R1\\CAMTEL\\Gateway};
+\node[router, right=of r1, align=center] (r2){R2\\WACS\\Landing\\Station\\Kribi};
+\node[router, right=of r2, align=center] (r3){R3\\London\\IXP};
+\node[host, right=of r3, align=center] (dst){WhatsApp\\Server\\London\\IP: 157.240.10.17};
+
+% Arrows
+\draw[arrow] (src) -- node[label] {Frame 1: MAC@R1} (r1);
+\draw[arrow] (r1) -- node[label] {Frame 2: MAC@R2} (r2);
+\draw[arrow] (r2) -- node[label] {Frame 3: Subsea Cable} (r3);
+\draw[arrow] (r3) -- node[label] {Frame 4: MAC@Server} (dst);
+
+% Annotations: IP addresses constant, MAC changes
+\node[font=\tiny, poppurple, align=center] at ($(src)!0.5!(r1) + (0, -1.2)$) {IP Packet:\\Src: 102.164.12.5\\Dst: 157.240.10.17\\TTL=64 $\to$ 63};
+\node[font=\tiny, poppurple, align=center] at ($(r1)!0.5!(r2) + (0, -1.2)$) {IP Packet:\\Src: 102.164.12.5\\Dst: 157.240.10.17\\TTL=63 $\to$ 62};
+\node[font=\tiny, poppurple, align=center] at ($(r2)!0.5!(r3) + (0, -1.2)$) {IP Packet:\\Src: 102.164.12.5\\Dst: 157.240.10.17\\TTL=62 $\to$ 61};
+\node[font=\tiny, poppurple, align=center] at ($(r3)!0.5!(dst) + (0, -1.2)$) {IP Packet:\\Src: 102.164.12.5\\Dst: 157.240.10.17\\TTL=61 $\to$ 60};
+
+% Legend
+\node[draw, fill=white, rounded corners, font=\tiny, anchor=south west, align=center] at (current bounding box.south west){
+    \textbf{Key Observation:} IP Addresses (Layer 3) stay \textbf{constant} end-to-end.\\ MAC Addresses (Layer 2) change at \textbf{every hop}.
+};
+\end{tikzpicture}
+\legende{IP forwarding from Yaoundé to London: IP addresses remain constant; Data Link frames (MAC addresses) change at every router hop. TTL decrements at each router.}
+\end{popfigure}
+
+\courssub{Transport Layer: TCP and UDP — Two Philosophies}
+
+While IP gets packets from \textbf{host-to-host} (IP address to IP address), the Transport Layer gets data from \textbf{process-to-process} (application to application). It uses \textbf{Port Numbers} (16-bit integers, 0--65535) to identify the sending and receiving applications.
+
+\begin{definition}[Socket]
+A \textbf{Socket} is the unique identifier for a network communication endpoint: \textbf{IP Address + Port Number} (e.g., \texttt{192.168.1.5:54321} $\leftrightarrow$ \texttt{157.240.10.17:443}). A connection is defined by a \textbf{socket pair} (5-tuple): (Source IP, Source Port, Destination IP, Destination Port, Protocol).
+\end{definition}
+
+Two dominant protocols offer radically different services:
+
+\begin{definition}[Connection-Oriented vs Connectionless Transmission]
+\begin{itemize}
+    \item \textbf{Connection-Oriented (TCP):} A logical connection is \textbf{established} (handshake) before data flows. State is maintained at both ends (buffers, sequence numbers). Guarantees reliable, ordered byte-stream delivery. Analogy: A \textbf{telephone call} — you dial, wait for answer, speak, both hear each other clearly, hang up.
+    \item \textbf{Connectionless (UDP):} No setup. Each datagram is independent. No state maintained. "Fire and forget". Best-effort, unreliable, unordered. Analogy: \textbf{Posting letters} — you post them; some may arrive late, out of order, or not at all. No confirmation.
+\end{itemize}
+\end{definition}
+
+\paragraph{TCP: Transmission Control Protocol (RFC 793).}
+TCP provides a \textbf{reliable byte-stream service} over IP's unreliable datagram service. It achieves this through:
+\begin{enumerate}
+    \item \textbf{Segmentation \& Reassembly:} Breaks application data into \textbf{segments} (MSS $\approx$ 1460 bytes on Ethernet, derived from MTU 1500 - 20 IP - 20 TCP).
+    \item \textbf{Sequencing:} Every \textbf{byte} gets a sequence number (32-bit). Allows receiver to reorder segments and detect gaps.
+    \item \textbf{Acknowledgements (ACKs) \& Retransmission:} Receiver acknowledges received bytes (cumulative ACK: "I have all bytes up to $N$"). Sender retransmits on timeout (RTO) or duplicate ACKs (Fast Retransmit, typically 3 DupACKs).
+    \item \textbf{Flow Control (Sliding Window):} Receiver advertises a \textbf{Window Size} (16-bit, scaled via Window Scale option) telling sender how much buffer space remains. Prevents overwhelming the receiver.
+    \item \textbf{Congestion Control:} Sender infers network congestion (packet loss $\approx$ congestion) and reduces sending rate (Slow Start, Congestion Avoidance, Fast Recovery). \textit{Critical for Internet stability.}
+\end{enumerate}
+
+\begin{experience}[The TCP Three-Way Handshake (Connection Establishment)]
+Before data flows, TCP performs a \textbf{Three-Way Handshake} to synchronize sequence numbers and allocate buffers.
+\begin{enumerate}
+    \item \textbf{SYN:} Client $\to$ Server. Flags: \texttt{SYN=1}. Seq = $x$ (random Initial Sequence Number, ISN). No data.
+    \item \textbf{SYN-ACK:} Server $\to$ Client. Flags: \texttt{SYN=1, ACK=1}. Seq = $y$ (Server ISN). Ack = $x+1$.
+    \item \textbf{ACK:} Client $\to$ Server. Flags: \texttt{ACK=1}. Seq = $x+1$. Ack = $y+1$. \textbf{Data can be sent with this packet.}
+\end{enumerate}
+\end{experience}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    host/.style={draw, rectangle, rounded corners, minimum width=2.5cm, minimum height=1.5cm, align=center, font=\small},
+    arrow/.style={->, thick, popdark},
+    msg/.style={font=\small, poppurple, midway, above, sloped},
+    state/.style={font=\tiny, popmuted, anchor=north}
+]
+\node[host, align=center] (client){Client\\State: CLOSED};
+\node[host, right=3.5cm of client, align=center] (server){Server\\State: LISTEN};
+
+% 1. SYN
+\draw[arrow] (client.east) -- node[msg] {1. SYN (Seq=$x$)} (server.west);
+\node[state] at ($(client.east)!0.5!(server.west) + (0, -1.0)$) {Client: SYN\_SENT};
+
+% 2. SYN-ACK
+\draw[arrow] (server.west) -- node[msg] {2. SYN-ACK (Seq=$y$, Ack=$x+1$)} (client.east);
+\node[state] at ($(server.west)!0.5!(client.east) + (0, 1.0)$) {Server: SYN\_RCVD};
+
+% 3. ACK
+\draw[arrow] (client.east) -- node[msg] {3. ACK (Seq=$x+1$, Ack=$y+1$)} (server.west);
+\node[state] at ($(client.east)!0.5!(server.west) + (0, -2.0)$) {Client: ESTABLISHED};
+\node[state] at ($(server.west)!0.5!(client.east) + (0, 2.0)$) {Server: ESTABLISHED};
+
+% Data flow example
+\draw[arrow, popgreen] (client.east) -- node[msg, popgreen] {Data Segment (Seq=$x+1$)} (server.west);
+\draw[arrow, popgreen] (server.west) -- node[msg, popgreen] {ACK (Ack=$x+1+len$)} (client.east);
+\end{tikzpicture}
+\legende{TCP Three-Way Handshake. The ISNs ($x, y$) are randomized for security (preventing spoofing). After the 3rd ACK, both sides enter \texttt{ESTABLISHED} state.}
+\end{popfigure}
+
+\begin{aretenir}[GCE Exam Tip: The Three-Way Handshake]
+\textbf{Exam Alert:} "Describe the TCP three-way handshake" or "Draw a diagram showing the flags and sequence numbers" is a \textbf{very frequent} 4--6 mark question.
+\begin{itemize}
+    \item Memorize the flags: \texttt{SYN}, \texttt{SYN+ACK}, \texttt{ACK}.
+    \item Memorize the sequence number arithmetic: Client ISN=$x$, Server ISN=$y$. ACKs acknowledge the \emph{next expected byte} ($x+1$, $y+1$).
+    \item Mention \textbf{why} 3 steps? To verify \textbf{both directions} reachability and synchronize \textbf{both} ISNs.
+\end{itemize}
+\end{aretenir}
+
+\paragraph{UDP: User Datagram Protocol (RFC 768).}
+UDP is a minimal wrapper around IP. It adds only:
+\begin{itemize}
+    \item \textbf{Source/Destination Ports} (Process-to-process delivery).
+    \item \textbf{Length} (UDP header + data, 16 bits).
+    \item \textbf{Checksum} (Optional in IPv4, mandatory in IPv6; covers header + data + pseudo-header with IPs).
+\end{itemize}
+\textbf{No} sequencing, \textbf{no} ACKs, \textbf{no} retransmission, \textbf{no} flow control, \textbf{no} congestion control. Header is only \textbf{8 bytes} fixed size.
+
+\begin{propriete}[TCP vs UDP: Service Comparison]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Feature} & \textbf{TCP (Reliable Stream)} & \textbf{UDP (Unreliable Datagram)} \\
+\hline
+\textbf{Connection} & Connection-oriented (Handshake) & Connectionless \\
+\hline
+\textbf{Reliability} & Guaranteed (ACKs, Retransmission) & None (Best-effort) \\
+\hline
+\textbf{Ordering} & Guaranteed (Sequence Numbers) & Not guaranteed \\
+\hline
+\textbf{Duplicates} & Detected \& Discarded & Possible \\
+\hline
+\textbf{Flow Control} & Yes (Sliding Window) & No \\
+\hline
+\textbf{Congestion Control} & Yes (Complex Algorithms) & No (Application must handle) \\
+\hline
+\textbf{Header Overhead} & 20--60 bytes (Variable) & \textbf{8 bytes} (Fixed) \\
+\hline
+\textbf{Latency} & Higher (Handshake, ACK wait) & \textbf{Lower} (Send immediately) \\
+\hline
+\textbf{Typical Uses} & Web (HTTP/HTTPS), Email (SMTP, IMAP), File Transfer (FTP, SFTP), SSH & Streaming (Video/Audio), VoIP, DNS Queries, Online Gaming, DHCP, SNMP \\
+\hline
+\end{tabularx}
+\end{center}
+\end{propriete}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[
+    box/.style={draw, rectangle, rounded corners, minimum height=0.7cm, align=center, font=\small},
+    tcpbox/.style={box, fill=popblueL, minimum width=1.8cm},
+    udpbox/.style={box, fill=poporangeL, minimum width=1.8cm},
+    field/.style={draw, minimum height=0.7cm, align=center, font=\tiny, inner sep=1pt},
+    label/.style={font=\small\bfseries, popdark}
+]
+% TCP Header (Simplified 20 bytes)
+\node[label] at (0, 3.5) {TCP Segment Header (Min 20 Bytes)};
+\foreach \i/\w/\t in {0/1.8/Src Port, 1.8/1.8/Dst Port, 3.6/3.6/Seq Number, 7.2/3.6/Ack Number, 10.8/0.4/Data Offset, 11.2/0.6/Reserved, 11.8/0.6/Flags, 12.4/1.8/Window Size, 14.2/1.8/Checksum, 16/1.8/Urgent Ptr, 17.8/3.6/Options (0-40B)} {
+    \node[field, minimum width=\w cm] at (\i+\w/2, 3.0) {\t};
+}
+\node[field, minimum width=1.8cm, fill=popgreenL] at (19.7, 3.0) {Data...};
+
+% UDP Header (8 bytes)
+\node[label] at (0, 1.0) {UDP Datagram Header (8 Bytes Fixed)};
+\foreach \i/\w/\t in {0/1.8/Src Port, 1.8/1.8/Dst Port, 3.6/1.8/Length, 5.4/1.8/Checksum} {
+    \node[field, minimum width=\w cm, fill=poporangeL] at (\i+\w/2, 0.5) {\t};
+}
+\node[field, minimum width=1.8cm, fill=popgreenL] at (7.2, 0.5) {Data...};
+
+% Legend
+\node[draw, fill=white, rounded corners, font=\tiny, anchor=north east, align=center] at (22, 3.8){
+    \textbf{TCP Flags (6 bits):} URG, ACK, PSH, RST, SYN, FIN.\\
+    \textbf{Key:} SYN (Sync), ACK (Ack), FIN (Finish), RST (Reset).
+};
+\end{tikzpicture}
+\legende{Simplified header comparison. TCP header is complex (stateful); UDP header is minimal (stateless). TCP Options (e.g., MSS, Window Scale, SACK, Timestamps) add variable length.}
+\end{popfigure}
+
+\courssub{Choosing the Right Transport Protocol: A Decision Method}
+
+In the GCE exam, you will often face a scenario: "A developer is building Application X. Should they use TCP or UDP? Justify." Use this structured reasoning.
+
+\begin{methode}[Deciding Between TCP and UDP]
+\textbf{Step 1: Ask the "Integrity Question".} \emph{"Must every single byte arrive intact, in the exact order sent, with zero loss?"}
+\begin{itemize}
+    \item \textbf{YES} $\to$ \textbf{TCP}. (File transfer, Email, Web pages, Database sync, Banking/MTN MoMo API calls).
+    \item \textbf{NO / "Mostly, but speed matters more"} $\to$ Go to Step 2.
+\end{itemize}
+
+\textbf{Step 2: Ask the "Real-Time / Tolerance Question".} \emph{"Is the data real-time (voice/video) or query-response (DNS) where \textbf{latency} is critical and \textbf{late data is useless}?"}
+\begin{itemize}
+    \item \textbf{YES} $\to$ \textbf{UDP}. (VoIP: WhatsApp Call, Zoom; Live Streaming: Canal+ / Netflix live; Online Gaming: PUBG/Fortnite movement updates; DNS lookups).
+    \item \textbf{NO} $\to$ Usually TCP (simpler to code correctly).
+\end{itemize}
+
+\textbf{Step 3: Consider "Application-Layer Reliability".} If you choose UDP but need \emph{some} reliability (e.g., QUIC/HTTP/3, TFTP, custom game protocol), \textbf{you must implement it yourself} (ACKs, Seq\#, Retransmission) at the Application Layer. This is complex; only do it if TCP's head-of-line blocking or handshake latency is unacceptable.
+\end{methode}
+
+\begin{exoresolu}[Scenario Analysis: Choosing the Protocol]
+\textbf{Scenario:} A Cameroonian startup builds a mobile app for \textbf{mobile money transactions (like MoMo/Orange Money)}. Users transfer money, check balances, pay merchants. The same startup adds a \textbf{live voice chat} feature for customer support inside the app. The app needs to \textbf{resolve the API server's domain name} (api.momo.cm) to an IP address at startup.
+
+\tcblower
+
+\textbf{Solution:}
+\begin{itemize}
+    \item \textbf{Transactions (Money Transfer): TCP.} \textit{Reasoning:} Financial data \textbf{must} be 100\% accurate, ordered, and complete. A lost "debit 5000 XAF" packet or a duplicated "credit 10000 XAF" packet is catastrophic. TCP's reliability, flow control, and congestion control are mandatory. HTTPS (TLS over TCP) is standard.
+    \item \textbf{Voice Chat: UDP.} \textit{Reasoning:} Voice is real-time. A packet lost 200ms ago is useless; retransmitting it causes jitter/glitches. Better to lose a tiny fraction (codec conceals it) than delay the stream. UDP's low overhead and no head-of-line blocking are essential. (WebRTC uses UDP/SRTP).
+    \item \textbf{DNS Lookup: UDP.} \textit{Reasoning:} DNS queries are tiny (fit in one packet), request-response pattern. TCP handshake (1.5 RTT) doubles latency for a simple lookup. UDP (1 RTT) is standard. \textit{Note:} DNS over TCP is used for responses $>$ 512 bytes (or DNSSEC/DoT/DoH).
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Port Numbers and Demultiplexing}
+
+How does the OS know whether an incoming packet belongs to the Web Browser (port 443), the Email Client (port 993), or the Game (port 30000)?
+
+\begin{definition}[Port Number Ranges (IANA)]
+\begin{itemize}
+    \item \textbf{Well-Known Ports (0--1023):} Reserved for standard system services. Require root/admin privileges to bind.
+        \begin{itemize}
+            \item \texttt{20, 21}: FTP (Data, Control)
+            \item \texttt{22}: SSH
+            \item \texttt{23}: Telnet (Insecure)
+            \item \texttt{25}: SMTP (Mail Submission)
+            \item \texttt{53}: DNS (TCP \& UDP)
+            \item \texttt{67, 68}: DHCP
+            \item \texttt{80}: HTTP
+            \item \texttt{110}: POP3
+            \item \texttt{143}: IMAP
+            \item \texttt{443}: HTTPS (TLS)
+            \item \texttt{993}: IMAPS, \texttt{995}: POP3S
+        \end{itemize}
+    \item \textbf{Registered Ports (1024--49151):} Assigned by IANA to specific applications (e.g., \texttt{3306} MySQL, \texttt{5432} PostgreSQL, \texttt{8080} HTTP Proxy/Alt).
+    \item \textbf{Ephemeral/Dynamic Ports (49152--65535):} Used by \textbf{clients} as \textbf{source ports} for outgoing connections. Chosen randomly by OS for each new connection.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Key Points: Transport \& Internet Layer]
+\begin{enumerate}
+    \item \textbf{IP (Layer 3)}: Logical addressing (IPv4 32-bit, IPv6 128-bit), Routing, Best-effort/Connectionless/Unreliable. TTL prevents loops.
+    \item \textbf{TCP (Layer 4)}: Connection-oriented, Reliable byte stream. 3-Way Handshake (SYN, SYN-ACK, ACK). Sequencing, ACKs, Retransmission, Flow Control (Window), Congestion Control. Header 20--60 bytes. Ports identify apps.
+    \item \textbf{UDP (Layer 4)}: Connectionless, Unreliable datagrams. No handshake, no sequencing, no flow/congestion control. 8-byte header. Low latency, low overhead.
+    \item \textbf{Socket} = IP + Port. Demultiplexing uses the 5-tuple (SrcIP, SrcPort, DstIP, DstPort, Proto).
+    \item \textbf{Choice}: TCP for integrity (Files, Web, Mail, API). UDP for speed/real-time (VoIP, Streaming, Gaming, DNS).
+    \item \textbf{ICMP}: Control/Error messages (Ping = Echo Request/Reply, Destination Unreachable, Time Exceeded). \textit{Not for user data transport.}
+\end{enumerate}
+\end{aretenir}
+
+\courssub{ICMP: The Internet's Diagnostic Assistant}
+
+While not a transport protocol for user data, the \textbf{Internet Control Message Protocol (ICMP)} rides alongside IP (Protocol Number 1) to report errors and operational information.
+
+\begin{definition}[ICMP (Internet Control Message Protocol)]
+ICMP is a \textbf{Network Layer} helper protocol used by hosts and routers to send \textbf{error messages} (Destination Unreachable, Time Exceeded, Parameter Problem) and \textbf{informational messages} (Echo Request/Reply, Timestamp).
+\end{definition}
+
+\paragraph{Key ICMP Messages for Exams:}
+\begin{itemize}
+    \item \textbf{Type 8 / 0: Echo Request / Echo Reply} $\to$ \textbf{ping} utility. Tests reachability and RTT (Round Trip Time).
+    \item \textbf{Type 3: Destination Unreachable} (Codes: 0=Net, 1=Host, 3=Port $\to$ \textbf{Port Unreachable} tells sender "No app listening on this port").
+    \item \textbf{Type 11: Time Exceeded} (Code 0: TTL=0 in transit) $\to$ Basis of \textbf{traceroute} (send packets with TTL=1, 2, 3... collect ICMP Time Exceeded from each router).
+    \item \textbf{Type 4: Source Quench} (Deprecated: Congestion control signal).
+    \item \textbf{Type 12: Parameter Problem} (Bad header).
+\end{itemize}
+
+\begin{savaistu}[ICMP in Cameroon: "Ping" and MTN/CAMTEL Troubleshooting]
+When you call MTN Cameroon support (\texttt{8080} or \texttt{111}) complaining "Internet not working", the first thing they ask you to do is \textbf{ping 8.8.8.8} (Google DNS) or \texttt{ping google.com}.
+\begin{itemize}
+    \item \textbf{Reply from 8.8.8.8:} Your IP stack, local LAN, CAMTEL/MTN backbone, and international gateway are working. Problem likely DNS or Application.
+    \item \textbf{Request Timed Out:} Packet lost (congestion, firewall blocking ICMP, or link down).
+    \item \textbf{Destination Host Unreachable:} Your local router (box) has no route to the internet (WAN link down).
+    \item \textbf{TTL Expired in Transit:} Routing loop or too many hops.
+\end{itemize}
+\textbf{Note:} Many firewalls (including some ISP CGNATs) block ICMP Echo Request for "security", making ping fail even when TCP/HTTP works. Always test with \texttt{telnet <ip> <port>} or \texttt{nc -zv <ip> <port>} for true TCP connectivity.
+\end{savaistu}
+
+\begin{exercice}[Practice Questions]
+\begin{enumerate}
+    \item \textbf{Short Answer:} Explain why IP is described as a "best-effort, connectionless" protocol. What are the implications for the Transport Layer?
+    \item \textbf{Diagram:} Draw a sequence diagram showing the TCP connection termination (Four-Way Handshake: FIN, ACK, FIN, ACK). Label the states (FIN\_WAIT\_1, TIME\_WAIT, etc.).
+    \item \textbf{Comparison:} A developer wants to build a real-time multiplayer game for the Cameroonian market (often high latency, mobile networks). Compare TCP and UDP for sending player position updates (20 updates/sec). Justify your recommendation.
+    \item \textbf{Calculation:} A TCP segment has Sequence Number = 1000 and carries 1460 bytes of data. The receiver sends an ACK. What is the Acknowledgement Number in that ACK? If the receiver only received 1000 bytes (fragmented), what would the ACK be? (Assume no SACK).
+    \item \textbf{Scenario:} You run \texttt{traceroute} to a server in Douala from Yaoundé. The output shows \texttt{* * *} for hop 3, but hop 4 replies. Explain two possible reasons why hop 3 shows stars.
+    \item \textbf{Port Numbers:} A web server in Buea listens on port 80. A client in Yaoundé connects from ephemeral port 54321. Write the \textbf{Socket Pair} (5-tuple) for this connection in both directions (Client $\to$ Server, Server $\to$ Client).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+IP is \textbf{best-effort} because it does not guarantee delivery, order, or integrity; packets can be dropped, corrupted, duplicated, or reordered by routers. It is \textbf{connectionless} because it sends each datagram independently without prior handshake or state reservation. \textbf{Implication:} The Transport Layer (specifically TCP) must provide reliability (ACKs, retransmission), ordering (sequence numbers), and flow/congestion control if the application requires it. UDP applications must accept unreliability or implement their own mechanisms.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+\textit{Diagram Description:}
+1. Client (ESTABLISHED) $\xrightarrow{\text{FIN, Seq=u}}$ Server $\to$ Client: FIN\_WAIT\_1.
+2. Server (ESTABLISHED) $\xrightarrow{\text{ACK, Ack=u+1}}$ Client $\to$ Server: CLOSE\_WAIT / Client: FIN\_WAIT\_2.
+3. Server (CLOSE\_WAIT) $\xrightarrow{\text{FIN, Seq=v}}$ Client $\to$ Server: LAST\_ACK.
+4. Client (FIN\_WAIT\_2) $\xrightarrow{\text{ACK, Ack=v+1}}$ Server $\to$ Client: TIME\_WAIT (wait 2$\times$MSL) $\to$ CLOSED. Server: CLOSED.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+\textbf{Recommendation: UDP.}
+\textbf{Justification:} Player positions are \textbf{real-time, periodic updates} (20 Hz). \textbf{TCP Head-of-Line Blocking:} If one packet is lost, TCP buffers subsequent packets until retransmission arrives $\to$ massive latency spike (jitter), unplayable. \textbf{UDP:} Lost position update is simply ignored; next update (50ms later) overwrites it. Application can add sequence numbers to discard stale packets. Overhead: UDP 8B vs TCP 20B+ per packet. Mobile networks (MTN/Orange 4G) have variable latency; UDP + application-level congestion control (e.g., ENet, QUIC-style) is standard for games.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+\textbf{Full data received:} Ack Number = $1000 + 1460 = \mathbf{2460}$ (Next expected byte).
+\textbf{Partial (1000 bytes) received:} TCP ACKs are \textbf{cumulative}. Receiver cannot acknowledge byte 2000 if 1000--1999 missing. It re-sends \textbf{Ack = 1000} (Duplicate ACK). Sender eventually triggers Fast Retransmit (3 DupACKs) or Timeout.
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+\textbf{Reason 1:} Router at hop 3 is configured to \textbf{rate-limit or drop ICMP Time Exceeded messages} (common on carrier-grade routers to protect CPU), but forwards transit traffic (hop 4) normally.
+\textbf{Reason 2:} Router at hop 3 has a \textbf{firewall/ACL blocking ICMP} from the source network, or the return path for the ICMP error packet from hop 3 is broken (asymmetric routing), while hop 4's return path works.
+\end{corrige}
+
+\begin{corrige}[Exercise 6]
+Let Server IP = $S$, Client IP = $C$.
+\textbf{Client $\to$ Server (Forward):} $(C, 54321, S, 80, \text{TCP})$
+\textbf{Server $\to$ Client (Reverse):} $(S, 80, C, 54321, \text{TCP})$
+\textit{Note:} Source/Destination swap roles depending on direction. The "Socket Pair" uniquely identifies the connection in the OS kernel tables.
+\end{corrige}
+
+\coursec{Protocol Suites and the TCP/IP Model}
+
+In the previous section we studied three protocols in detail: \cle{TCP} and \cle{UDP} for transport, and \cle{IP} for addressing and routing. You may have noticed that none of them works alone: TCP hands its segments to IP, IP hands its packets to the network hardware, and above TCP sit protocols such as HTTP that carry web pages. This is not an accident. Modern networks are built as \emph{families} of protocols that cooperate, each one doing a small, well-defined job. Such a family is called a \cle{protocol suite}, and the suite that runs the Internet is the \cle{TCP/IP suite}. In this section we organise everything we have learned so far into this single, coherent model and compare it with the \cle{OSI reference model} required by the syllabus.
+
+\courssub{What is a Protocol Suite?}
+
+\textbf{An observation to start with.} Think of sending a parcel from Bamenda to a friend in London. You do not deal with airplanes, customs, or British postal vans yourself. You wrap the parcel (one job), the local agency transports it to Douala airport (another job), an airline flies it (another job), and the Royal Mail delivers it (yet another job). Each stage uses the service of the stage below and offers a service to the stage above. Nobody needs to know how the other stages work internally. Data transmission is organised in exactly the same way.
+
+\begin{definition}[Protocol suite]
+A \cle{protocol suite} (or \cle{protocol stack}) is an organised set of protocols that work together, arranged in \cle{layers}, to achieve complete communication between two machines. Each layer performs a specific function, \emph{uses the services of the layer immediately below it}, and \emph{provides services to the layer immediately above it}.
+\end{definition}
+
+The word \emph{stack} is suggestive: the layers are stacked on top of one another, and data travels \emph{down} the stack on the sending machine and \emph{up} the stack on the receiving machine.
+
+\courssub{Why Layering?}
+
+Why not write one giant protocol that does everything? Layering is a deliberate engineering decision, and its advantages are frequently asked at the GCE:
+
+\begin{itemize}
+\item \textbf{Modularity.} A complex problem (moving data reliably across the planet) is broken into small, manageable sub-problems. Each layer is simple enough to be designed, tested and understood on its own.
+\item \textbf{Easier design and maintenance.} A bug in one layer can be fixed without touching the others, because the interface between layers is fixed.
+\item \textbf{Interoperability.} Any manufacturer can build equipment or software for one layer, as long as it respects the layer's standard interface. This is why a Tecno phone on MTN can talk to a server in Douala built by a completely different company.
+\item \textbf{Independent evolution.} Layers can improve independently. The world moved from IPv4 towards IPv6 (Internet layer) without anyone having to rewrite HTTP (Application layer); similarly Wi-Fi replaced many Ethernet cables (Link layer) without TCP changing at all.
+\end{itemize}
+
+\begin{propriete}[Service principle of layered architectures]
+In a layered architecture, layer $N$ \emph{provides services} to layer $N+1$ and \emph{uses the services} of layer $N-1$. A layer neither knows nor cares how the layer below implements its service; it only knows the \emph{interface} (what it can ask for). This principle is what guarantees modularity and interoperability. (Statement to know for the examination; no formal proof is examinable.)
+\end{propriete}
+
+\courssub{The Four Layers of the TCP/IP Suite}
+
+The TCP/IP suite is organised into \cle{four layers}. From bottom to top:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Layer} & \textbf{Function} & \textbf{Example protocols} \\
+\hline
+4. Application & Provides network services directly to user applications: web, mail, file transfer, name resolution. & HTTP, FTP, SMTP, DNS \\
+\hline
+3. Transport & End-to-end delivery between processes: reliability, ordering, ports (TCP) or fast best-effort delivery (UDP). & TCP, UDP \\
+\hline
+2. Internet & Logical addressing and routing of packets across interconnected networks, from source host to destination host. & IP (IPv4, IPv6), ICMP \\
+\hline
+1. Link (Network Access) & Physical delivery of frames over a single network segment: cables, radio, MAC addresses, error detection on the link. & Ethernet, Wi-Fi (IEEE 802.11) \\
+\hline
+\end{tabularx}
+\end{center}
+
+Notice the perfect correspondence with what we have already studied: the \emph{application protocols} of the Web, mail and file transfer (HTTP, FTP, SMTP, DNS) live at the top; \cle{TCP} and \cle{UDP} form the Transport layer; \cle{IP} is the heart of the Internet layer; and technologies such as \cle{Ethernet} and \cle{Wi-Fi} handle the Link layer.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[fill=popblueL,draw=popblue,thick,rounded corners] (0,4.8) rectangle (8,6.0);
+\node[align=center] at (4,5.55) {\textbf{Application layer}};
+\node[align=center,text=popdark] at (4,5.1) {HTTP \quad FTP \quad SMTP \quad DNS};
+\draw[fill=popgreenL,draw=popgreen,thick,rounded corners] (0,3.4) rectangle (8,4.6);
+\node[align=center] at (4,4.15) {\textbf{Transport layer}};
+\node[align=center,text=popdark] at (4,3.7) {TCP \quad UDP};
+\draw[fill=popblueL,draw=popink,thick,rounded corners] (0,2.0) rectangle (8,3.2);
+\node[align=center] at (4,2.75) {\textbf{Internet layer}};
+\node[align=center,text=popdark] at (4,2.3) {IP (IPv4 / IPv6) \quad ICMP};
+\draw[fill=popgreenL,draw=poporange,thick,rounded corners] (0,0.6) rectangle (8,1.8);
+\node[align=center] at (4,1.35) {\textbf{Link layer (Network Access)}};
+\node[align=center,text=popdark] at (4,0.9) {Ethernet \quad Wi-Fi};
+\draw[-{latex},thick,popmuted] (-0.6,0.9) -- (-0.6,5.7);
+\node[rotate=90,text=popmuted] at (-1.0,3.3) {data sent downwards};
+\draw[-{latex},thick,popmuted] (8.6,5.7) -- (8.6,0.9);
+\node[rotate=270,text=popmuted] at (9.0,3.3) {data received upwards};
+\end{tikzpicture}
+\end{center}
+\legende{The four layers of the TCP/IP protocol stack, with example protocols in each layer.}
+\end{popfigure}
+
+\begin{methode}[Placing a protocol in the TCP/IP model]
+To decide in which layer a protocol belongs, ask: \emph{what job does it do?}
+\begin{enumerate}
+\item Does it provide a service directly to a user application (web, mail, files, names)? $\rightarrow$ \textbf{Application layer}.
+\item Does it manage end-to-end delivery between programs (reliability, order, ports)? $\rightarrow$ \textbf{Transport layer}.
+\item Does it address and route data across networks towards a destination host? $\rightarrow$ \textbf{Internet layer}.
+\item Does it physically move bits over one cable or one radio link? $\rightarrow$ \textbf{Link layer}.
+\end{enumerate}
+\end{methode}
+
+\courssub{Encapsulation and Protocol Data Units}
+
+\textbf{Intuition.} When your parcel travels from Bamenda to London, it is wrapped several times: you put the gift in a box, the agency puts the box in a mailbag with a routing label, the airline puts the mailbag in a container. At the destination, each wrapping is removed in the reverse order. Networks do exactly the same: as data goes \emph{down} the stack, each layer adds its own \cle{header} (control information such as port numbers, IP addresses, MAC addresses). This process is called \cle{encapsulation}. At the receiver, each layer removes and interprets its own header as data goes \emph{up} the stack.
+
+The piece of data handled by a layer has a specific name, called a \cle{Protocol Data Unit} (\cle{PDU}):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Layer} & \textbf{PDU name} & \textbf{Header added (examples)} \\
+\hline
+Application & Data (message) & application-specific (e.g.\ HTTP request line) \\
+\hline
+Transport & \cle{Segment} (TCP) / datagram (UDP) & source and destination \emph{ports} \\
+\hline
+Internet & \cle{Packet} (datagram) & source and destination \emph{IP addresses} \\
+\hline
+Link & \cle{Frame} & source and destination \emph{MAC addresses}, error check \\
+\hline
+Physical medium & Bits & --- (electrical / radio signals) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\node at (0.4,4.6) {\textbf{Sender}};
+\node[draw,fill=popblueL,minimum width=2.2cm,minimum height=0.7cm] (d) at (0.4,3.8) {Data};
+\node[draw,fill=popgreenL,minimum width=3.2cm,minimum height=0.7cm] (s) at (0.4,2.8) {TCP hdr \textbar\ Data};
+\node[draw,fill=popblueL,minimum width=4.2cm,minimum height=0.7cm] (p) at (0.4,1.8) {IP hdr \textbar\ TCP hdr \textbar\ Data};
+\node[draw,fill=popgreenL,minimum width=5.4cm,minimum height=0.7cm] (f) at (0.4,0.8) {Eth hdr \textbar\ IP hdr \textbar\ TCP hdr \textbar\ Data};
+\draw[-{latex},thick,popink] (d.south) -- (s.north);
+\draw[-{latex},thick,popink] (s.south) -- (p.north);
+\draw[-{latex},thick,popink] (p.south) -- (f.north);
+\node[text=popmuted] at (3.6,3.3) {segment};
+\node[text=popmuted] at (3.9,2.3) {packet};
+\node[text=popmuted] at (4.2,1.3) {frame};
+\draw[-{latex},very thick,poporange] (3.4,0.8) -- (6.6,0.8) node[midway,below,text=popdark]{network};
+\node at (9.6,0.6) {\textbf{Receiver}};
+\node[draw,fill=popgreenL,minimum width=5.4cm,minimum height=0.7cm] (f2) at (9.6,1.6) {Eth hdr \textbar\ IP hdr \textbar\ TCP hdr \textbar\ Data};
+\node[draw,fill=popblueL,minimum width=4.2cm,minimum height=0.7cm] (p2) at (9.6,2.6) {IP hdr \textbar\ TCP hdr \textbar\ Data};
+\node[draw,fill=popgreenL,minimum width=3.2cm,minimum height=0.7cm] (s2) at (9.6,3.6) {TCP hdr \textbar\ Data};
+\node[draw,fill=popblueL,minimum width=2.2cm,minimum height=0.7cm] (d2) at (9.6,4.6) {Data};
+\draw[-{latex},thick,popink] (f2.north) -- (p2.south);
+\draw[-{latex},thick,popink] (p2.north) -- (s2.south);
+\draw[-{latex},thick,popink] (s2.north) -- (d2.south);
+\node[text=popmuted] at (6.3,2.1) {headers removed};
+\end{tikzpicture}
+\end{center}
+\legende{Encapsulation: each layer adds its header on the way down (sender) and removes it on the way up (receiver).}
+\end{popfigure}
+
+\begin{attention}[Frequent confusion]
+A very common mistake is to place \cle{Ethernet} or \cle{Wi-Fi} at the Application layer ``because they are what connect us to the Internet''. They belong to the \textbf{Link (Network Access) layer}: their job is the physical delivery of frames on \emph{one} local network. Likewise, do not confuse the \emph{Internet layer} (routing, IP) with ``the Internet'' as a service, and remember that TCP/UDP port numbers are added at the \emph{Transport} layer, not by IP.
+\end{attention}
+
+\courssub{End-to-End versus Hop-by-Hop Communication}
+
+A subtle but important idea: not all layers are involved at every machine on the path.
+
+\begin{itemize}
+\item The \textbf{Transport} and \textbf{Application} layers operate only on the \emph{end hosts} (your phone and the web server). They provide \cle{end-to-end} communication: TCP, for example, reassembles and checks the whole conversation between the two endpoints, ignoring everything in between.
+\item The \textbf{Internet} layer is examined by every \cle{router} on the path: each router reads the destination IP address of the packet and forwards it to the next \emph{hop}. This is \cle{hop-by-hop} behaviour.
+\item The \textbf{Link} layer works strictly hop-by-hop: a frame travels on exactly one link (one cable, one Wi-Fi cell) and is then discarded; a new frame, with new MAC addresses, is built for the next link.
+\end{itemize}
+
+So when your phone in Yaound\'e loads a page from a server in Douala, the IP packet may cross many routers, but the TCP segment inside it is only understood by your phone and the server, and the Ethernet/Wi-Fi frames change at every single hop.
+
+\courssub{The OSI Reference Model}
+
+The \cle{OSI (Open Systems Interconnection) reference model} was developed by the ISO in the late 1970s as a \emph{theoretical framework} for standardising network communication. It defines \cle{seven layers} and is used worldwide as a common vocabulary for describing network functions, even though the Internet itself runs on the four-layer TCP/IP suite. The GCE syllabus requires you to know both models and to map one onto the other.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{OSI Layer} & \textbf{Name} & \textbf{Main function} \\
+\hline
+7 & Application & User-level services (HTTP, FTP, SMTP, DNS) \\
+\hline
+6 & Presentation & Data formatting, encryption, compression \\
+\hline
+5 & Session & Dialogue control, synchronisation \\
+\hline
+4 & Transport & End-to-end delivery, reliability (TCP, UDP) \\
+\hline
+3 & Network & Logical addressing, routing (IP, ICMP) \\
+\hline
+2 & Data Link & Framing, MAC addressing, error detection (Ethernet, Wi-Fi) \\
+\hline
+1 & Physical & Bits on the medium (cables, radio signals) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+% TCP/IP stack on left
+\draw[fill=popblueL,draw=popblue,thick,rounded corners] (0,6.5) rectangle (3.5,7.5);
+\node[align=center] at (1.75,7.15) {\textbf{Application}};
+\node[align=center,text=popdark] at (1.75,6.7) {HTTP, FTP, SMTP, DNS};
+\draw[fill=popgreenL,draw=popgreen,thick,rounded corners] (0,5.2) rectangle (3.5,6.2);
+\node[align=center] at (1.75,5.85) {\textbf{Transport}};
+\node[align=center,text=popdark] at (1.75,5.4) {TCP, UDP};
+\draw[fill=popblueL,draw=popink,thick,rounded corners] (0,3.9) rectangle (3.5,4.9);
+\node[align=center] at (1.75,4.55) {\textbf{Internet}};
+\node[align=center,text=popdark] at (1.75,4.1) {IP, ICMP};
+\draw[fill=popgreenL,draw=poporange,thick,rounded corners] (0,2.6) rectangle (3.5,3.6);
+\node[align=center] at (1.75,3.25) {\textbf{Link}};
+\node[align=center,text=popdark] at (1.75,2.8) {Ethernet, Wi-Fi};
+\draw[fill=popblueL,draw=poppurple,thick,rounded corners] (0,1.3) rectangle (3.5,2.3);
+\node[align=center] at (1.75,1.95) {\textbf{Physical}};
+\node[align=center,text=popdark] at (1.75,1.5) {Cables, Radio};
+
+% OSI stack on right
+\draw[fill=popblueL,draw=popblue,thick,rounded corners] (5,6.5) rectangle (8.5,7.5);
+\node[align=center] at (6.75,7.15) {\textbf{7 Application}};
+\draw[fill=popgreenL,draw=popgreen,thick,rounded corners] (5,5.7) rectangle (8.5,6.2);
+\node[align=center] at (6.75,6.1) {\textbf{6 Presentation}};
+\draw[fill=popblueL,draw=popink,thick,rounded corners] (5,4.9) rectangle (8.5,5.4);
+\node[align=center] at (6.75,5.3) {\textbf{5 Session}};
+\draw[fill=popgreenL,draw=poporange,thick,rounded corners] (5,4.1) rectangle (8.5,4.6);
+\node[align=center] at (6.75,4.5) {\textbf{4 Transport}};
+\draw[fill=popblueL,draw=poppurple,thick,rounded corners] (5,3.3) rectangle (8.5,3.8);
+\node[align=center] at (6.75,3.7) {\textbf{3 Network}};
+\draw[fill=popgreenL,draw=popgreen,thick,rounded corners] (5,2.5) rectangle (8.5,3.0);
+\node[align=center] at (6.75,2.9) {\textbf{2 Data Link}};
+\draw[fill=popblueL,draw=poppink,thick,rounded corners] (5,1.7) rectangle (8.5,2.2);
+\node[align=center] at (6.75,2.1) {\textbf{1 Physical}};
+
+% Mapping arrows
+\draw[-{latex},thick,popmuted] (3.5,7.0) -- (5,7.0);
+\draw[-{latex},thick,popmuted] (3.5,5.7) -- (5,5.7);
+\draw[-{latex},thick,popmuted] (3.5,4.4) -- (5,4.4);
+\draw[-{latex},thick,popmuted] (3.5,3.1) -- (5,3.1);
+\draw[-{latex},thick,popmuted] (3.5,1.8) -- (5,1.8);
+
+\node[align=center,text=popmuted] at (4.25,7.3) {maps to};
+\node[align=center,text=popmuted] at (4.25,6.0) {maps to};
+\node[align=center,text=popmuted] at (4.25,4.7) {maps to};
+\node[align=center,text=popmuted] at (4.25,3.4) {maps to};
+\node[align=center,text=popmuted] at (4.25,2.1) {maps to};
+\end{tikzpicture}
+\end{center}
+\legende{Mapping the four TCP/IP layers onto the seven OSI layers.}
+\end{popfigure}
+
+\begin{aretenir}[TCP/IP $\leftrightarrow$ OSI mapping (examinable)]
+\begin{itemize}
+\item TCP/IP \textbf{Application layer} $\approx$ OSI layers \textbf{5, 6, 7} (Session, Presentation, Application).
+\item TCP/IP \textbf{Transport layer} $\approx$ OSI \textbf{layer 4} (Transport).
+\item TCP/IP \textbf{Internet layer} $\approx$ OSI \textbf{layer 3} (Network).
+\item TCP/IP \textbf{Link layer} $\approx$ OSI \textbf{layers 1 and 2} (Physical and Data Link).
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[OSI vs TCP/IP in examinations]
+The GCE often asks: ``State two differences between the OSI and TCP/IP models.'' Good answers:
+\begin{enumerate}
+\item OSI has 7 layers; TCP/IP has 4 layers.
+\item OSI is a theoretical reference model; TCP/IP is the practical suite used on the Internet.
+\item OSI separates Session, Presentation and Application; TCP/IP merges them into one Application layer.
+\item OSI separates Physical and Data Link; TCP/IP combines them into Link (Network Access) layer.
+\end{enumerate}
+Do \emph{not} say ``OSI is old and TCP/IP is new'' --- both are still used as reference frameworks.
+\end{attention}
+
+\courssub{Protocol Data Units in the OSI Model}
+
+For completeness, the OSI model gives specific names to the PDU at each layer:
+
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{OSI Layer} & \textbf{PDU Name} & \textbf{TCP/IP Equivalent} \\
+\hline
+7 Application & Data & Data \\
+\hline
+6 Presentation & Data & Data \\
+\hline
+5 Session & Data & Data \\
+\hline
+4 Transport & \cle{Segment} (TCP) / Datagram (UDP) & Segment / Datagram \\
+\hline
+3 Network & \cle{Packet} & Packet \\
+\hline
+2 Data Link & \cle{Frame} & Frame \\
+\hline
+1 Physical & \cle{Bits} & Bits \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{savaistu}[A short history note (cultural context, not examinable)]
+The TCP/IP suite grew out of \cle{ARPANET}, a research network funded by the US Department of Defense in the late 1960s and 1970s. Vint Cerf and Bob Kahn designed TCP/IP so that very different networks could interconnect --- the origin of the word \emph{inter-net}. The suite was standardised in the early 1980s and later carried the World Wide Web. The OSI model was developed in parallel by ISO as a universal standard; although OSI protocols (like TP4, CLNP) were implemented, TCP/IP won the marketplace. This background is given for culture only; you will not be examined on dates or names.
+\end{savaistu}
+
+\begin{exoresolu}[Worked example: tracing a web request through the stack]
+A student in Buea types the address of a school website into a browser on a Wi-Fi network. Describe, layer by layer, what happens to the request on the sending machine, and name the PDU at each stage.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Application layer (TCP/IP) / Layers 5-7 (OSI).} The browser builds an HTTP request (e.g.\ a request for the home page). PDU: \emph{data} (the HTTP message).
+\item \textbf{Transport layer (TCP/IP) / Layer 4 (OSI).} TCP takes the message, adds a header with the source port (chosen by the browser) and destination port 80, and prepares reliable delivery. PDU: \emph{segment}.
+\item \textbf{Internet layer (TCP/IP) / Layer 3 (OSI).} IP adds a header with the source IP address (the student's machine) and the destination IP address (the web server, found earlier via DNS). PDU: \emph{packet}.
+\item \textbf{Link layer (TCP/IP) / Layers 1-2 (OSI).} Wi-Fi wraps the packet in a frame with the MAC addresses of the laptop and the access point, plus an error-detection field. PDU: \emph{frame}, transmitted as radio \emph{bits} (Physical layer).
+\end{enumerate}
+At the server, the reverse happens: each layer strips its header, and the HTTP request is finally delivered to the web server program.
+\end{exoresolu}
+
+\begin{exercice}[Check your understanding]
+\begin{enumerate}
+\item Define the term \emph{protocol suite} and state two advantages of organising protocols in layers.
+\item In which layer of the TCP/IP model does each of the following belong: SMTP, UDP, IP, Ethernet, DNS, TCP?
+\item Name the PDU used at the Transport, Internet and Link layers of the TCP/IP model.
+\item True or false (justify): ``Routers on the path read and process the TCP header of every segment they forward.''
+\item Map each TCP/IP layer to the corresponding OSI layer(s).
+\item A network administrator captures a frame on an Ethernet link. Which headers are present in that frame, from outermost to innermost?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item A protocol suite is an organised set of protocols, arranged in layers, that cooperate to achieve complete communication, each layer using the services of the layer below and serving the layer above. Advantages (any two): modularity; easier design and maintenance; interoperability between different manufacturers; independent evolution of each layer.
+\item SMTP: Application; UDP: Transport; IP: Internet; Ethernet: Link; DNS: Application; TCP: Transport.
+\item Transport: segment; Internet: packet; Link: frame.
+\item \textbf{False.} TCP is end-to-end: its header is processed only by the two end hosts. Routers act at the Internet layer (IP) and below; they forward the packet without interpreting the TCP segment inside it.
+\item TCP/IP Application $\rightarrow$ OSI 5,6,7; TCP/IP Transport $\rightarrow$ OSI 4; TCP/IP Internet $\rightarrow$ OSI 3; TCP/IP Link $\rightarrow$ OSI 1,2.
+\item Outermost: Ethernet header (MAC addresses, FCS) $\rightarrow$ IP header (IP addresses) $\rightarrow$ TCP header (ports) $\rightarrow$ HTTP data. The Ethernet header is the first added (outermost) and the first removed at the receiver.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Exam tip]
+Learn the PDU names by heart --- \emph{data, segment, packet, frame, bits} --- and which layer produces each. ``What is the PDU of the Internet layer?'' or ``At which layer is a frame produced?'' are classic one-mark questions. Also memorise the four TCP/IP layers in order with one example protocol each, the seven OSI layers in order, the mapping between them, and the direction of encapsulation (headers added going down, removed going up).
+\end{aretenir}
+
+\coursec{The OSI Reference Model and Integration}
+
+In the previous section we studied the TCP/IP suite, the four-layer model that actually carries traffic on the Internet today. But when engineers, examiners and textbooks need a \emph{universal language} to describe precisely where a function, a protocol or a device sits, they use a richer model: the \cle{OSI reference model}. This final section presents that model layer by layer, maps it onto TCP/IP, and closes the chapter with the integration skills the GCE examiner expects.
+
+\courssub{Why the OSI Model?}
+
+\begin{experience}[A problem of vocabulary]
+In the 1970s, each manufacturer (IBM, DEC, and others) sold computers that could only communicate with machines of the same brand, because each company had invented its own private architecture. A bank in Douala buying computers from two suppliers simply could not connect them. What was missing was not technology but a \emph{common, vendor-neutral description} of how communication should be organised.
+\end{experience}
+
+To solve this, the \cle{ISO} (International Organization for Standardization) published in 1984 the \textbf{Open Systems Interconnection} model, usually called the \cle{OSI model}.
+
+\begin{definition}[OSI reference model]
+The \textbf{OSI reference model} is a seven-layer conceptual framework, standardised by ISO in 1984 (standard ISO 7498), that describes how data communication between two systems is organised. Each layer provides services to the layer above it and uses the services of the layer below it. It is a \emph{reference} model: it describes concepts and functions, not the exact protocols used on the Internet.
+\end{definition}
+
+The word \emph{Open} is essential: any system built according to the model can communicate with any other, whatever the brand. The word \emph{reference} warns us that OSI is primarily a teaching and design tool.
+
+\courssub{The Seven Layers}
+
+\begin{aretenir}[The seven OSI layers, from top to bottom]
+\begin{enumerate}
+\item[\textbf{7.}] \textbf{Application} — services directly usable by applications (web, email, file transfer).
+\item[\textbf{6.}] \textbf{Presentation} — data format: encoding, compression, encryption.
+\item[\textbf{5.}] \textbf{Session} — opening, managing and closing dialogues between applications.
+\item[\textbf{4.}] \textbf{Transport} — end-to-end delivery: segmentation, reliability, ports (TCP, UDP).
+\item[\textbf{3.}] \textbf{Network} — logical addressing and routing between networks (IP).
+\item[\textbf{2.}] \textbf{Data Link} — frames, physical (MAC) addressing, error detection on one link.
+\item[\textbf{1.}] \textbf{Physical} — transmission of raw bits as signals on the medium (cables, radio).
+\end{enumerate}
+\end{aretenir}
+
+Let us visit each layer with a concrete image: sending an MTN Mobile Money confirmation message from a phone in Bamenda to a server in Yaoundé.
+
+\textbf{Layer 1 — Physical.} This layer defines the \emph{medium} and the \emph{signals}: voltages on a copper cable, light pulses in optical fibre, radio waves for 4G. It knows nothing about meaning; it only carries bits. Devices: cables, connectors, \cle{repeaters}, \cle{hubs}.
+
+\textbf{Layer 2 — Data Link.} On a single link (for example one Ethernet segment or one Wi-Fi cell), this layer organises bits into \cle{frames}, addresses them with \cle{MAC addresses}, and detects transmission errors. Devices: \cle{switches} and \cle{bridges}. Protocols: Ethernet, Wi-Fi (802.11), PPP.
+
+\textbf{Layer 3 — Network.} This layer gives every machine a \emph{logical address} (an \cle{IP address}) and chooses a \emph{route} across many interconnected networks. Its device is the \cle{router}; its star protocol is \cle{IP}. When your packet travels Bamenda $\rightarrow$ Yaoundé through several CAMTEL routers, each routing decision is a layer-3 decision.
+
+\textbf{Layer 4 — Transport.} This layer delivers data \emph{end to end}, from the sending application to the receiving application, using \cle{port numbers} to identify them. \cle{TCP} offers a reliable, connection-oriented service; \cle{UDP} a fast, unreliable one. Layer 4 is the hinge of the model.
+
+\textbf{Layer 5 — Session.} This layer establishes, maintains, synchronises and terminates \emph{dialogues} (sessions) between two applications: for example keeping you logged in while you consult several pages of your school's results portal, and allowing an interrupted download to resume from a checkpoint.
+
+\textbf{Layer 6 — Presentation.} This layer translates data into a common format: character encoding (ASCII, Unicode), image formats (JPEG), \cle{compression}, and \cle{encryption}/decryption. When your browser and a bank server encrypt their exchange, conceptually that is presentation-layer work.
+
+\textbf{Layer 7 — Application.} This layer provides network services directly to user applications: \cle{HTTP} for the web, \cle{SMTP} for sending email, \cle{FTP} for file transfer, \cle{DNS} for name resolution. It is the only layer the user "sees".
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm, font=\small]
+\foreach \i/\name/\func/\ex/\col in {
+  7/Application/{HTTP, DNS, SMTP, FTP}/{web browser, email app}/popblueL,
+  6/Presentation/{encryption, compression, formats}/{TLS, JPEG, ASCII}/popblueL,
+  5/Session/{dialogue management, checkpoints}/{NetBIOS, RPC}/popblueL,
+  4/Transport/{end-to-end delivery, ports}/{TCP, UDP}/popgreenL,
+  3/Network/{logical addressing, routing}/{IP, ICMP; router}/popgreenL,
+  2/Data Link/{frames, MAC addresses, error detection}/{Ethernet, Wi-Fi; switch}/popgreenL,
+  1/Physical/{bits as signals on the medium}/{cables, fibre, hub, repeater}/popgreenL}
+{
+  \pgfmathsetmacro{\y}{\i-1}
+  \fill[\col] (0,\y) rectangle (3.2,\y+0.9);
+  \draw[popline] (0,\y) rectangle (3.2,\y+0.9);
+  \node[anchor=west, font=\bfseries] at (0.1,\y+0.45) {\name};
+  \node[anchor=west, font=\scriptsize] at (3.4,\y+0.45) {\func};
+  \node[anchor=west, font=\scriptsize\itshape, text=popmuted] at (9.2,\y+0.45) {\ex};
+  \node[anchor=east, font=\bfseries] at (-0.1,\y+0.45) {\i};
+}
+\draw[->, thick, poporange] (-0.9,-0.2) -- (-0.9,7.1) node[midway, rotate=90, above, font=\scriptsize]{data travels UP on reception};
+\end{tikzpicture}
+\end{center}
+\legende{The seven OSI layers with their functions and typical protocols or devices.}
+\end{popfigure}
+
+\begin{propriete}[Network layers, host layers, and the bridge]
+Layers \textbf{1 to 3} are the \emph{network (media) layers}: they work \textbf{hop by hop} — every intermediate device (hub, switch, router) processes them. Layers \textbf{5 to 7} are the \emph{host (application) layers}: they work \textbf{end to end}, only on the source and destination machines. Layer \textbf{4 (Transport)} is the \textbf{bridge}: it is the first layer that is purely end-to-end, hiding the network's details from the application layers. (This classification is conceptual; no written proof is examinable, but you must be able to justify it.)
+\end{propriete}
+
+\begin{attention}[Session vs Presentation — the classic swap]
+Candidates very often invert layers 5 and 6, or attribute encryption to the Application layer. Remember: \textbf{Session (5)} manages the \emph{dialogue} (who speaks, checkpoints, resumption); \textbf{Presentation (6)} manages the \emph{form of the data} (encoding, compression, \textbf{encryption}). Encryption is \emph{not} an Application-layer service in the OSI model, even though in practice TLS libraries are called by applications.
+\end{attention}
+
+\begin{savaistu}[A mnemonic — an exam technique extra]
+To recall the order from layer 7 down to layer 1, many students use: \emph{"\textbf{A}ll \textbf{P}eople \textbf{S}eem \textbf{T}o \textbf{N}eed \textbf{D}ata \textbf{P}rocessing"} (Application, Presentation, Session, Transport, Network, Data Link, Physical). From bottom to top: \emph{"\textbf{P}lease \textbf{D}o \textbf{N}ot \textbf{T}hrow \textbf{S}ausage \textbf{P}izza \textbf{A}way"}. Any mnemonic is acceptable — what matters at the GCE is the \emph{exact numbering}.
+\end{savaistu}
+
+\courssub{OSI versus TCP/IP: Two Models, One Reality}
+
+The TCP/IP model has four layers; OSI has seven. The correspondence is not one-to-one: TCP/IP's Application layer absorbs OSI's top three layers, and its Link layer absorbs OSI's bottom two.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm, font=\small]
+% OSI stack
+\foreach \i/\name in {7/Application,6/Presentation,5/Session,4/Transport,3/Network,2/Data Link,1/Physical}{
+  \pgfmathsetmacro{\y}{(\i-1)*0.85}
+  \fill[popblueL] (0,\y) rectangle (3.4,\y+0.75);
+  \draw[popline] (0,\y) rectangle (3.4,\y+0.75);
+  \node[font=\bfseries] at (1.7,\y+0.375) {\name};
+}
+\node[font=\bfseries, popdark] at (1.7,6.3) {OSI (7 layers)};
+% TCP/IP stack
+\foreach \y/\h/\name in {5.1/1.7/Application,3.4/0.75/Transport,2.55/0.75/Internet,0/2.35/Link (Network Access)}{
+  \fill[popgreenL] (6.2,\y) rectangle (9.8,\y+\h);
+  \draw[popline] (6.2,\y) rectangle (9.8,\y+\h);
+  \node[font=\bfseries] at (8,\y+\h/2) {\name};
+}
+\node[font=\bfseries, popdark] at (8,6.3) {TCP/IP (4 layers)};
+% correspondence lines
+\draw[poporange, thick, <->] (3.4,5.475) -- (6.2,5.95);
+\draw[poporange, thick, <->] (3.4,3.4) -- (6.2,3.775);
+\draw[poporange, thick, <->] (3.4,2.55) -- (6.2,2.925);
+\draw[poporange, thick, <->] (3.4,0.8) -- (6.2,1.175);
+% protocols
+\node[font=\scriptsize, anchor=west] at (10.1,5.95) {HTTP, DNS, SMTP};
+\node[font=\scriptsize, anchor=west] at (10.1,3.77) {TCP, UDP};
+\node[font=\scriptsize, anchor=west] at (10.1,2.92) {IP, ICMP};
+\node[font=\scriptsize, anchor=west] at (10.1,1.17) {Ethernet, Wi-Fi};
+\end{tikzpicture}
+\end{center}
+\legende{Correspondence between the seven OSI layers and the four TCP/IP layers.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{OSI model} & \textbf{TCP/IP model} \\
+\hline
+Number of layers & 7 & 4 \\
+\hline
+Origin & ISO, 1984 (theory first) & US DoD / ARPANET (practice first) \\
+\hline
+Nature & Reference model for teaching and design & Model actually implemented on the Internet \\
+\hline
+Session / Presentation & Separate layers & Merged into Application \\
+\hline
+Strength & Precise, universal vocabulary; excellent for diagnosis & Simple, proven, matches real protocols \\
+\hline
+Limit & Rarely implemented as-is & Less detailed for analysis and troubleshooting \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[What to say in the exam]
+OSI is the \textbf{reference model}: it is used to \emph{describe, compare and diagnose}. TCP/IP is the \textbf{operational model}: it is the one \emph{actually used} on the Internet. A good answer often uses OSI vocabulary (layer numbers) while naming TCP/IP protocols.
+\end{aretenir}
+
+\courssub{Encapsulation and Peer-to-Peer Communication in OSI Terms}
+
+We met encapsulation with TCP/IP; OSI makes it even more explicit. As data goes \emph{down} the sender's stack, each layer adds its own \cle{header} (and the Data Link layer also a trailer); the resulting unit has a specific name, the \cle{PDU} (Protocol Data Unit):
+
+\begin{itemize}
+\item Layers 7--5: \textbf{Data};
+\item Layer 4: \textbf{Segment} (TCP) or \textbf{Datagram} (UDP);
+\item Layer 3: \textbf{Packet};
+\item Layer 2: \textbf{Frame};
+\item Layer 1: \textbf{Bits}.
+\end{itemize}
+
+Communication is \emph{peer-to-peer}: logically, each layer talks to the \emph{same layer} on the remote machine (the two Transport layers exchange segments, the two Network layers exchange packets), even though physically the data always travels down, across the medium, and up again.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm, font=\scriptsize]
+% Sender stack
+\foreach \i/\name in {4/App--Pres--Sess,3/Transport,2/Network,1/{Data Link + Physical}}{
+  \pgfmathsetmacro{\y}{(\i-1)*0.95}
+  \fill[popblueL] (0,\y) rectangle (3.6,\y+0.8);
+  \draw[popline] (0,\y) rectangle (3.6,\y+0.8);
+  \node at (1.8,\y+0.4) {\name};
+}
+\node[font=\small\bfseries, popdark] at (1.8,4.35) {Sender};
+% Receiver stack
+\foreach \i/\name in {4/App--Pres--Sess,3/Transport,2/Network,1/{Data Link + Physical}}{
+  \pgfmathsetmacro{\y}{(\i-1)*0.95}
+  \fill[popgreenL] (8.4,\y) rectangle (12,\y+0.8);
+  \draw[popline] (8.4,\y) rectangle (12,\y+0.8);
+  \node at (10.2,\y+0.4) {\name};
+}
+\node[font=\small\bfseries, popdark] at (10.2,4.35) {Receiver};
+% PDUs on sender side
+\node[anchor=east] at (-0.15,3.25) {Data};
+\node[anchor=east] at (-0.15,2.3) {Segment};
+\node[anchor=east] at (-0.15,1.35) {Packet};
+\node[anchor=east] at (-0.15,0.4) {Frame / bits};
+% down arrow
+\draw[->, very thick, poporange] (4.1,3.6) -- (4.1,0.1);
+% medium
+\draw[->, very thick, poppurple] (4.3,0.4) -- (7.9,0.4) node[midway, above]{physical medium (bits)};
+% up arrow
+\draw[->, very thick, poporange] (8.1,0.1) -- (8.1,3.6);
+% peer-to-peer dashed
+\draw[dashed, popmuted] (3.6,3.25) -- (8.4,3.25);
+\draw[dashed, popmuted] (3.6,2.3) -- (8.4,2.3);
+\draw[dashed, popmuted] (3.6,1.35) -- (8.4,1.35);
+\node[font=\scriptsize\itshape, text=popmuted] at (6,2.62) {peer-to-peer (logical)};
+\end{tikzpicture}
+\end{center}
+\legende{Encapsulation down the sender's stack, transmission of bits, decapsulation up the receiver's stack; dashed lines show logical peer-to-peer dialogue.}
+\end{popfigure}
+
+\courssub{Integration Activities (Lesson 34)}
+
+This final lesson trains you to \emph{combine} everything: protocols, suites and the OSI model, in complete scenarios and in GCE-style structured questions.
+
+\begin{methode}[Diagnosing a network problem, layer by layer]
+Work \textbf{from the bottom up}:
+\begin{enumerate}
+\item \textbf{Layer 1:} Is the cable plugged in? Is the Wi-Fi or mobile signal present? Are the link LEDs on?
+\item \textbf{Layer 2:} Does the machine have a valid MAC-level connection to the switch/access point?
+\item \textbf{Layer 3:} Does the machine have an IP address? Can it \texttt{ping} its gateway, then an external IP?
+\item \textbf{Layer 4:} Is the right port open? Is a firewall blocking TCP/UDP traffic?
+\item \textbf{Layers 5--7:} Does the name resolve (DNS)? Does the application itself respond (correct URL, credentials, service running)?
+\end{enumerate}
+Each failed test points to the layer at fault — a favourite GCE reasoning.
+\end{methode}
+
+\begin{exoresolu}[Worked exercise: locating a failure]
+\textbf{Statement.} In a school cybercafé in Buea, a student can open the local school's intranet page but cannot reach any website on the Internet. The technician checks: the Ethernet cable is connected and the link LED is on; the computer has IP address 192.168.1.25 and successfully pings the gateway 192.168.1.1; pinging an external IP address fails. (a) At which OSI layers is the connection working? (b) At which layer does the problem most likely lie? (c) Suggest two possible causes. \tcblower
+\textbf{Solution.} (a) The link LED and successful local communication show that \textbf{layers 1 (Physical) and 2 (Data Link)} work: signals and frames circulate on the local link. The valid IP address and the successful ping to the gateway show that \textbf{layer 3 (Network)} works \emph{inside} the local network. (b) Since pinging an \emph{external} IP fails while the gateway is reachable, the failure lies at \textbf{layer 3, beyond the local network}: the routing of packets towards the Internet. (c) Possible causes: the router's link to the ISP (e.g.\ the CAMTEL line) is down; the router has a wrong default route or no NAT configuration; or the ISP connection has been suspended. Note the method: each successful test \emph{eliminates} a layer, from the bottom up.
+\end{exoresolu}
+
+\begin{exoresolu}[Worked exercise: mapping protocols and devices to layers]
+\textbf{Statement.} Copy and complete: for each item give the OSI layer and justify in one sentence: (a) a switch; (b) a router; (c) HTTP; (d) TCP; (e) a repeater; (f) encryption of data. \tcblower
+\textbf{Solution.} (a) \textbf{Switch — layer 2}: it forwards \emph{frames} using MAC addresses. (b) \textbf{Router — layer 3}: it forwards \emph{packets} between networks using IP addresses. (c) \textbf{HTTP — layer 7}: it provides a web service directly to the browser application. (d) \textbf{TCP — layer 4}: it ensures reliable end-to-end transport using ports. (e) \textbf{Repeater — layer 1}: it merely regenerates the electrical/optical signal, without reading addresses. (f) \textbf{Encryption — layer 6 (Presentation)}: it transforms the \emph{form} of the data so that only the intended peer can read it.
+\end{exoresolu}
+
+\begin{attention}[Two exam traps]
+\begin{itemize}
+\item A \textbf{hub} is layer 1 (it repeats bits to all ports); a \textbf{switch} is layer 2 (it reads MAC addresses). Do not confuse them.
+\item "At which layer does X operate?" requires the \textbf{number} \emph{and} the \textbf{name} of the layer, plus a \textbf{justification by the function} — a bare number earns only part of the marks.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[GCE-style structured question]
+A student in Yaoundé types \texttt{www.minesec.gov.cm} in a browser connected through a router to the Internet.
+\begin{enumerate}
+\item Name the layer-7 protocol that resolves the domain name, and the one that fetches the web page.
+\item At which OSI layer does the router operate, and what address does it use to forward the packet?
+\item Which transport protocol carries the web request, and why is it preferred to UDP here?
+\item The browser shows "server not found", but pinging the server's IP address works. At which layer is the problem, and which protocol is probably at fault?
+\item Give the PDU name at layers 4, 3 and 2 during this exchange.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item \textbf{DNS} resolves the name; \textbf{HTTP} (or HTTPS) fetches the page. Both are layer-7 (Application) services.
+\item \textbf{Layer 3 (Network)}; the router uses the destination \textbf{IP address} to choose the route.
+\item \textbf{TCP}: a web page must arrive complete and in order, so the reliable, connection-oriented service is required; UDP would risk missing or unordered pieces.
+\item The network layers work (ping succeeds), so the failure is at the \textbf{Application layer}: the \textbf{DNS} resolution is at fault (wrong DNS server or DNS service down) — the name cannot be translated into an IP address.
+\item Layer 4: \textbf{segment}; layer 3: \textbf{packet}; layer 2: \textbf{frame}.
+\end{enumerate}
+\end{corrige}
+
+\begin{exercice}[Synthesis]
+(a) Draw from memory the seven OSI layers in order, numbered. (b) Place on your diagram: IP, TCP, HTTP, Ethernet, a switch, a router, encryption. (c) Explain in three sentences why OSI is called a \emph{reference} model whereas TCP/IP is called an \emph{operational} model.
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+(a) From 7 to 1: Application, Presentation, Session, Transport, Network, Data Link, Physical. (b) HTTP $\rightarrow$ 7; encryption $\rightarrow$ 6; TCP $\rightarrow$ 4; IP and router $\rightarrow$ 3; Ethernet and switch $\rightarrow$ 2 (Ethernet also touches layer 1). (c) OSI was designed by ISO as a universal conceptual framework to \emph{describe and compare} architectures; real Internet protocols were not built to follow it exactly. TCP/IP emerged from the practical ARPANET implementation and is the suite \emph{actually running} on the Internet. Hence OSI guides analysis and diagnosis, while TCP/IP carries the real traffic.
+\end{corrige}
+
+\begin{aretenir}[Chapter essentials]
+\begin{itemize}
+\item OSI = 7 layers, ISO 1984: \textbf{P}hysical, \textbf{D}ata Link, \textbf{N}etwork, \textbf{T}ransport, \textbf{S}ession, \textbf{P}resentation, \textbf{A}pplication.
+\item Layers 1--3: hop-by-hop (media); layers 5--7: end-to-end (host); layer 4 is the bridge.
+\item Devices: repeater/hub $\rightarrow$ 1, switch/bridge $\rightarrow$ 2, router $\rightarrow$ 3.
+\item Protocols: HTTP/DNS $\rightarrow$ 7, encryption $\rightarrow$ 6, TCP/UDP $\rightarrow$ 4, IP $\rightarrow$ 3, Ethernet $\rightarrow$ 2.
+\item PDUs: data $\rightarrow$ segment $\rightarrow$ packet $\rightarrow$ frame $\rightarrow$ bits.
+\item Diagnose bottom-up; always justify a layer choice by its \emph{function}.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity mobilises everything you have learned in this chapter: the role of \cle{protocols} in data transmission, the transport and Internet protocols \cle{TCP}, \cle{UDP} and \cle{IP}, the \cle{TCP/IP protocol suite}, and the \cle{OSI reference model} with its encapsulation mechanism. By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item identify the protocols required by common Internet services and state their standard port numbers;
+\item justify the choice between TCP and UDP for a given application;
+\item place each protocol at its correct layer in the TCP/IP stack and in the OSI model;
+\item describe, using encapsulation, the complete journey of a message from sender to receiver;
+\item diagnose simple network failures by reasoning layer by layer;
+\item work in a team, present a technical solution and defend it orally, as expected at the GCE Advanced Level.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+Analysing a real need, selecting appropriate protocols, modelling a protocol stack, applying the OSI encapsulation process, troubleshooting, and communicating a technical argument.
+\end{aretenir}
+
+\courssub{Situation}
+
+\begin{experience}[Networking the MINESEC Regional Office in Buea]
+The Regional Delegation of Secondary Education (MINESEC) for the South-West Region, located in Buea, has just connected its new computer room and staff offices to the Internet through a fibre link provided by CAMTEL. The network consists of a router, a switch, a wireless access point, and 25 staff computers.
+
+The Regional Delegate wants the staff to be able to use exactly four services:
+
+\begin{enumerate}
+\item \textbf{Secure results portal:} staff must consult examination results on a secure web portal hosted at the Yaoundé headquarters. The address is of the form \texttt{https://results.minesec.gov.cm} and the connection must be encrypted.
+\item \textbf{Official e-mail:} each staff member sends and receives official mail using an e-mail client (such as Mozilla Thunderbird) configured with the delegation's mailbox.
+\item \textbf{Large file transfers:} the statistics office must transfer large enrolment files (up to 500 MB) reliably to a server at the Yaoundé headquarters.
+\item \textbf{Automatic addressing:} when a staff computer starts, it must obtain its IP address, subnet mask, default gateway and DNS server address automatically, without manual configuration.
+\end{enumerate}
+
+The network administrator, a former GCE A-Level ICT student, asks your class for help in documenting the solution. Your group must produce a complete technical file: the list of protocols and ports for each service, the transport choice for each one, the protocol stack of a staff computer, the encapsulated journey of one e-mail, and a diagnosis of two breakdowns that occurred during the first week of operation:
+
+\begin{itemize}
+\item \textbf{Breakdown 1:} the results portal opens correctly when staff type the server's IP address, but fails when they type the name \texttt{results.minesec.gov.cm}.
+\item \textbf{Breakdown 2:} a staff computer shows the message ``No Internet access''; the technician discovers that the machine has been given the address \texttt{169.254.23.41}.
+\end{itemize}
+\end{experience}
+
+\courssub{Tasks}
+
+Work in groups of four. Answer the following tasks in order; each one builds on the previous.
+
+\begin{enumerate}
+\item \textbf{Protocols and ports.} For each of the four services, name the application-layer protocol(s) needed and give the standard port number(s). Present your answer as a table with columns: Service, Protocol, Port, Transport protocol.
+\item \textbf{TCP or UDP?} For each service, state whether TCP or UDP is appropriate and justify your choice in one or two sentences, referring to reliability, connection establishment and speed.
+\item \textbf{The TCP/IP stack.} Draw the four layers of the TCP/IP model for a staff computer. Place every protocol you identified in Tasks 1 and 2 at its correct layer, and add the protocols that operate at the Internet layer (IP) and at the Network Access layer (Ethernet).
+\item \textbf{Journey of an e-mail.} A secretary in Buea sends an official e-mail to the Delegate in Yaoundé. Describe the journey of this message through the layers of the OSI model on the sending machine, across the network, and up the layers of the receiving machine. Name the PDU (data, segment, packet, frame) at each stage and explain what encapsulation adds at each layer.
+\item \textbf{Diagnosis of Breakdown 1.} Explain which protocol is failing, at which OSI layer it operates, and why the portal still works when the IP address is typed directly.
+\item \textbf{Diagnosis of Breakdown 2.} Explain what the address \texttt{169.254.23.41} reveals about the automatic addressing service, name the protocol concerned, and propose one corrective action.
+\item \textbf{Plenary defence.} Prepare a five-minute presentation. Be ready to answer: ``Why can't we use UDP everywhere since it is faster?'' and ``Why do we need both the TCP/IP model and the OSI model?''
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Task 1 — Protocols and ports.}
+
+\begin{center}
+\begin{tabular}{|l|l|c|l|}
+\hline
+\rowcolor{popblueL} \textbf{Service} & \textbf{Protocol} & \textbf{Port} & \textbf{Transport} \\
+\hline
+Secure results portal & HTTPS (HTTP over TLS) & 443 & TCP \\
+\hline
+Sending e-mail & SMTP & 25 or 587 & TCP \\
+\hline
+Receiving e-mail & POP3 / IMAP & 110 / 143 & TCP \\
+\hline
+Large file transfer & FTP & 20 (data), 21 (control) & TCP \\
+\hline
+Automatic addressing & DHCP & 67 (server), 68 (client) & UDP \\
+\hline
+Name resolution (needed by all) & DNS & 53 & UDP (mostly) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Task 2 — TCP or UDP?}
+
+\begin{itemize}
+\item \textbf{HTTPS, SMTP, POP3/IMAP, FTP $\rightarrow$ TCP.} These services require \cle{reliable}, ordered and complete delivery: a results page with missing bytes, a corrupted e-mail or a truncated 500 MB file would be useless. TCP establishes a connection (three-way handshake), numbers segments, acknowledges them and retransmits losses.
+\item \textbf{DHCP $\rightarrow$ UDP.} A requesting machine has no IP address yet, so it cannot establish a TCP connection; it broadcasts a DHCP Discover message. UDP is connectionless, light and fast, which suits this short request/response exchange.
+\item \textbf{DNS $\rightarrow$ UDP} for ordinary queries, because a name lookup is a single small question and answer where UDP's low overhead matters more than guaranteed delivery; if no reply arrives, the resolver simply asks again. (DNS falls back to TCP for responses larger than 512 bytes, e.g. DNSSEC or zone transfers.)
+\end{itemize}
+
+\textbf{Task 3 — The TCP/IP stack of a staff computer.}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+layer/.style={draw=popblue, thick, fill=popblueL, rounded corners, minimum width=10cm, minimum height=1.1cm, align=center},
+lab/.style={font=\bfseries\small, text=popdark}]
+\node[layer] (app) at (0,3.5) {HTTPS, SMTP, POP3, IMAP, FTP, DNS, DHCP};
+\node[layer, fill=popgreenL, draw=popgreen] (tra) at (0,2.2) {TCP \qquad UDP};
+\node[layer] (int) at (0,0.9) {IP (IPv4 / IPv6)};
+\node[layer, fill=popgreenL, draw=popgreen] (net) at (0,-0.4) {Ethernet (IEEE 802.3), Wi-Fi (IEEE 802.11)};
+\node[lab, left=0.3cm of app] {Application};
+\node[lab, left=0.3cm of tra] {Transport};
+\node[lab, left=0.3cm of int] {Internet};
+\node[lab, left=0.3cm of net, align=center] {Network\\Access};
+\end{tikzpicture}
+\end{center}
+\legende{The TCP/IP stack of a staff computer with the protocols of the MINESEC scenario.}
+\end{popfigure}
+
+\textbf{Task 4 — Journey of an e-mail through the OSI layers.}
+
+On the \textbf{sending machine} in Buea, the e-mail client hands the message to the \emph{Application layer} (layer 7), where \cle{SMTP} formats the sending commands (MAIL FROM, RCPT TO, DATA). The \emph{Presentation layer} (layer 6) handles encoding (character encoding such as UTF-8, MIME for attachments, and encryption if STARTTLS is used). The \emph{Session layer} (layer 5) manages the dialogue with the mail server (session establishment, maintenance, and termination). At the \emph{Transport layer} (layer 4), TCP cuts the message into \cle{segments}, adds a header with the source and destination ports (for example 51234 $\rightarrow$ 587), sequence numbers, acknowledgement numbers, and checksums. At the \emph{Network layer} (layer 3), IP wraps each segment in a \cle{packet} by adding the source and destination IP addresses (and TTL, protocol field = 6 for TCP). At the \emph{Data Link layer} (layer 2), Ethernet encapsulates the packet in a \cle{frame} with the source and destination MAC addresses, a type field (0x0800 for IPv4), and an error-detection field (FCS). Finally, the \emph{Physical layer} (layer 1) converts the frame into electrical/optical signals on the fibre or radio waves on Wi-Fi.
+
+The frame travels through the office switch (layer 2 forwarding), then the router, which reads the IP addresses at layer 3 and forwards the packet hop by hop across the CAMTEL fibre link to Yaoundé. On the \textbf{receiving machine}, the reverse process occurs: each layer removes its own header (\cle{decapsulation}) — Physical receives bits, Data Link checks FCS and strips frame header, Network checks IP header and passes payload up, Transport reassembles segments in order using sequence numbers, Session/Presentation handle decoding, and Application delivers the complete, reassembled message to the mail server application.
+
+\begin{attention}[Common confusions]
+Do not confuse the PDU names: \textbf{data} (layers 7--5), \textbf{segment} (layer 4), \textbf{packet} (layer 3), \textbf{frame} (layer 2), \textbf{bits} (layer 1). Also remember that encapsulation \emph{adds} headers (and sometimes trailers) going down and \emph{removes} them going up. The router operates up to layer 3 only; it does not decapsulate to layer 4.
+\end{attention}
+
+\textbf{Task 5 — Breakdown 1: portal works by IP address but not by name.}
+
+Typing the IP address bypasses \cle{DNS}; typing the name requires DNS to translate \texttt{results.minesec.gov.cm} into an IP address. Since the site works by address, the web server, HTTPS, TCP, IP and lower layers are all healthy: the failure is in the \textbf{DNS service}, which operates at the \textbf{Application layer (layer 7)} of the OSI model. The fix is to check the DNS server address in the computer's configuration (or the DHCP options delivered by the router) and verify that the DNS server is reachable (ping the DNS server IP, check firewall rules on port 53).
+
+\textbf{Task 6 — Breakdown 2: address 169.254.23.41.}
+
+An address in the range \texttt{169.254.0.0} to \texttt{169.254.255.255} (prefix \texttt{169.254.0.0/16}) is an \cle{APIPA} (Automatic Private IP Addressing) link-local address: the machine assigns it to itself when it has broadcast DHCP Discover messages and \textbf{received no answer from any DHCP server}. The addressing service (DHCP, Application layer, using UDP ports 67/68) has therefore failed. Possible causes: the DHCP service on the router is stopped, the router is unreachable (link down, VLAN mismatch), or the address pool is exhausted. Corrective action: restart or reconfigure the DHCP service on the router, then renew the lease on the computer (for example with \texttt{ipconfig /release} then \texttt{ipconfig /renew} on Windows, or \texttt{dhclient -r} then \texttt{dhclient} on Linux).
+
+\textbf{Task 7 — Plenary defence (expected arguments).}
+
+\begin{itemize}
+\item \emph{Why not UDP everywhere?} UDP never retransmits and never reorders: a lost piece of a 500 MB enrolment file would silently corrupt it, and an e-mail could arrive incomplete. Only applications that tolerate loss or need minimal delay (live voice, video, short lookups such as DNS) benefit from UDP's speed. TCP's congestion control also prevents network collapse.
+\item \emph{Why two models?} The \cle{TCP/IP model} is the practical suite actually implemented on the Internet; the \cle{OSI model} is a more detailed seven-layer reference that helps to describe, teach and troubleshoot (as in Tasks 4--6). Professionals map TCP/IP protocols onto OSI layers when diagnosing problems. The OSI model separates Session and Presentation concerns that TCP/IP merges into Application, which is useful for understanding encryption (TLS at Presentation) and session management.
+\end{itemize}
+
+\begin{exercice}[Extension]
+The delegation later adds two services: (a) a live video conference with the Minister in Yaoundé, and (b) remote administration of the server using a secure command-line session. For each, propose a protocol (with port), choose TCP or UDP, and justify your answer.
+\end{exercice}
+
+\begin{corrige}[Extension]
+(a) \textbf{Video conference:} UDP is appropriate because live video tolerates small losses but not the delay caused by TCP retransmissions; real-time streams typically use RTP over UDP (ports dynamic, often 5004/5005 for RTP/RTCP). (b) \textbf{Secure remote administration:} SSH on port 22 over TCP, because every command and its output must arrive completely, in order and encrypted; a lost byte in a terminal session is unacceptable.
+\end{corrige}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Methods and Worked Examples}
+
+This part trains you to answer the typical GCE Advanced Level questions on protocols: identifying the role of a protocol, choosing between TCP and UDP, matching protocols to OSI layers, encapsulating data, and analysing simple transmission scenarios. Each method card is immediately followed by a fully solved examination-style exercise.
+
+\begin{methode}[Identifying the role of a common protocol]
+When a question asks \emph{``state the role of protocol X''} or \emph{``which protocol is used to \ldots''}, proceed as follows:
+\begin{enumerate}
+\item \textbf{Recall the definition:} a \cle{protocol} is a set of rules and conventions that govern the format, timing, sequencing and error control of data exchanged between devices.
+\item \textbf{Classify the protocol} by the service it provides:
+\begin{itemize}
+\item \emph{Addressing and routing:} IP, ICMP;
+\item \emph{Reliable transport:} TCP (connection-oriented, ordered, error-checked);
+\item \emph{Fast transport:} UDP (connectionless, no guarantee);
+\item \emph{Application services:} HTTP/HTTPS (web), FTP (file transfer), SMTP (sending mail), POP3/IMAP (reading mail), DNS (name resolution), DHCP (automatic addressing), ARP (MAC address resolution).
+\end{itemize}
+\item \textbf{Link the protocol to a concrete situation} (e.g.\ paying by MTN Mobile Money or Orange Money uses HTTPS to secure the web session with the payment server).
+\item \textbf{Answer in one precise sentence}: ``Protocol X is used to \ldots; it operates at the \ldots\ layer.''
+\end{enumerate}
+\textbf{Reflex:} never answer with the acronym only; always expand it and give its function.
+\end{methode}
+
+\begin{savaistu}[Cameroon context: securing online services]
+The \cle{ANTIC} (Agence Nationale des Technologies de l'Information et de la Communication) oversees the security of Cameroon's cyberspace. It manages the \texttt{.cm} domain and promotes the use of HTTPS for all government and banking websites (e.g.\ \texttt{www.minesec.gov.cm}, \texttt{www.camtelecom.cm}). When you access Mobile Money services via USSD (\texttt{*126\#} for MTN, \texttt{*150\#} for Orange) or the web portal, the session is protected by TLS over TCP.
+\end{savaistu}
+
+\begin{exoresolu}[Recognising protocols in everyday services]
+A student in Bamenda carries out the following tasks on her smartphone: (a) she browses the website of the University of Bamenda; (b) she sends an e-mail to her teacher; (c) she downloads a past GCE paper as a PDF file using a file-transfer application; (d) her phone automatically obtains an IP address when it joins the school Wi-Fi. For each task, name the application-layer protocol involved and state its role.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Browsing the website:} the protocol is \textbf{HTTP} (\emph{HyperText Transfer Protocol}), or its secure version \textbf{HTTPS} (HTTP over TLS). Its role is to govern the request/response exchange of web pages between the browser (client) and the web server.
+\item \textbf{Sending an e-mail:} the protocol is \textbf{SMTP} (\emph{Simple Mail Transfer Protocol}). Its role is to transfer the outgoing message from the user's device to the mail server, and between mail servers. (Reading the mail later would use POP3 or IMAP.)
+\item \textbf{Downloading the file:} the protocol is \textbf{FTP} (\emph{File Transfer Protocol}). Its role is to transfer files between a client and a server, with commands to list, upload and download files.
+\item \textbf{Automatic IP configuration:} the protocol is \textbf{DHCP} (\emph{Dynamic Host Configuration Protocol}). Its role is to automatically assign the phone an IP address, subnet mask, default gateway and DNS server when it joins the network.
+\end{enumerate}
+\textbf{Examiner's remark:} each answer names the protocol, expands the acronym and states the role — this is what earns full marks.
+\end{exoresolu}
+
+\begin{methode}[Choosing between TCP and UDP]
+To justify the choice of a transport protocol for a given application:
+\begin{enumerate}
+\item \textbf{Ask the key question:} does the application tolerate data loss?
+\item \textbf{If reliability matters} (every byte must arrive, in order): choose \cle{TCP} — connection-oriented, three-way handshake, acknowledgements, retransmission, sequencing, flow control.
+\item \textbf{If speed matters more than reliability} (a lost packet is acceptable): choose \cle{UDP} — connectionless, no acknowledgement, no retransmission, low overhead.
+\item \textbf{Memorise the standard associations:} TCP $\rightarrow$ HTTP/HTTPS, FTP, SMTP, POP3, IMAP; UDP $\rightarrow$ DNS queries, live video/voice streaming, online gaming, DHCP, SNMP.
+\item \textbf{Justify} your answer with one mechanism (e.g.\ ``retransmission of lost segments'' or ``low delay due to absence of handshake'').
+\end{enumerate}
+\textbf{Reflex:} in a justification, always name at least one mechanism (acknowledgement, retransmission, handshake) rather than writing ``TCP is better''.
+\end{methode}
+
+\begin{exoresolu}[TCP or UDP?]
+For each of the following applications, state whether TCP or UDP is the appropriate transport protocol and justify your choice: (a) transferring students' transcripts from a school server to the GCE Board; (b) a live video broadcast of a football match; (c) a DNS query translating \texttt{www.minesec.gov.cm} into an IP address; (d) an online banking session.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Transfer of transcripts: TCP.} A transcript is an official document; every byte must arrive intact and in order. TCP provides acknowledgements, sequencing and retransmission of lost segments, guaranteeing a complete and error-free file.
+\item \textbf{Live video broadcast: UDP.} In live streaming, delay is critical: retransmitting a lost packet would arrive too late to be displayed. UDP's low overhead and absence of retransmission give a smooth real-time stream; a few lost packets only cause a brief glitch in the picture.
+\item \textbf{DNS query: UDP.} A DNS request is a single short message with a single short reply. Establishing a TCP connection (three-way handshake) would cost more time than the exchange itself, so DNS normally uses UDP for speed. (TCP is used for zone transfers or when the response exceeds 512 bytes.)
+\item \textbf{Online banking: TCP.} Financial transactions must be exact and complete; no data may be lost or duplicated. TCP's reliability mechanisms (acknowledgements, retransmission, ordered delivery) are essential. (Security is additionally provided by HTTPS/TLS above TCP.)
+\end{enumerate}
+\textbf{Key idea:} reliability $\Rightarrow$ TCP; speed/real-time $\Rightarrow$ UDP.
+\end{exoresolu}
+
+\begin{methode}[Working with IPv4 addresses]
+To handle questions on IP addressing:
+\begin{enumerate}
+\item \textbf{Recall the format:} an \cle{IPv4 address} is 32 bits long, written as four decimal numbers (octets) separated by dots, each between 0 and 255, e.g.\ $192.168.1.10$.
+\item \textbf{Validate an address:} check there are exactly 4 octets and each lies in $[0, 255]$.
+\item \textbf{Identify the network part} using the subnet mask: perform the logical AND between the address and the mask, octet by octet. With mask $255.255.255.0$, the first three octets identify the network, the last identifies the host.
+\item \textbf{Count hosts:} with $n$ host bits, the number of usable addresses is $2^n - 2$ (subtract the network address and the broadcast address).
+\item \textbf{Distinguish} private ranges ($10.0.0.0$--$10.255.255.255$, $172.16.0.0$--$172.31.255.255$, $192.168.0.0$--$192.168.255.255$) used inside a LAN, from public addresses routed on the Internet.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Private vs. public address confusion]
+A private address (e.g.\ $192.168.x.x$) is \textbf{never} routed on the public Internet. If a question asks ``can this host communicate directly with a server on the Internet?'', the answer is \textbf{no} — a router performing \cle{NAT} (Network Address Translation) must translate the private address into a public one provided by the ISP (CAMTEL, MTN, Orange, etc.).
+\end{attention}
+
+\begin{exoresolu}[Analysing a school network address]
+The computer laboratory of a college in Yaoundé uses the network $192.168.10.0$ with subnet mask $255.255.255.0$. (a) How many bits of an IPv4 address are used for host identification in this network? (b) How many computers can be addressed? (c) The teacher's PC has address $192.168.10.5$ and a student PC has $192.168.10.37$. Are they on the same network? (d) Is $192.168.10.5$ a private or a public address? What does this imply?
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Host bits:} the mask $255.255.255.0$ corresponds to 24 network bits ($3 \times 8$). Since an IPv4 address has 32 bits, the host part has $32 - 24 = 8$ bits.
+\item \textbf{Number of computers:} with 8 host bits there are $2^8 = 256$ possible addresses. Removing the network address ($192.168.10.0$) and the broadcast address ($192.168.10.255$), the number of addressable computers is
+\[ 2^8 - 2 = 254 \text{ computers.} \]
+\item \textbf{Same network?} Apply the mask (logical AND) to each address. For $192.168.10.5$: network part $= 192.168.10$. For $192.168.10.37$: network part $= 192.168.10$. Both give the network $192.168.10.0$, so \textbf{yes, the two PCs are on the same network} and can communicate directly through the laboratory switch without a router.
+\item \textbf{Private or public:} $192.168.10.5$ belongs to the private range $192.168.0.0$--$192.168.255.255$. It is a \textbf{private address}: it is valid only inside the college LAN. To access the Internet, the school's router must translate it into a public address (this translation is called NAT, \emph{Network Address Translation}), typically provided by the ISP (e.g.\ CAMTEL, MTN or Orange Cameroon).
+\end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Matching protocols and devices to OSI layers]
+To place a protocol or device in the \cle{OSI model} (7 layers):
+\begin{enumerate}
+\item \textbf{Memorise the layers from bottom to top:} 1 Physical, 2 Data Link, 3 Network, 4 Transport, 5 Session, 6 Presentation, 7 Application. (Mnemonic: \emph{``Please Do Not Throw Sausage Pizza Away''}.)
+\item \textbf{Associate the key functions:}
+\begin{itemize}
+\item Physical: bits, cables, signals, hubs, repeaters;
+\item Data Link: frames, MAC addresses, switches, bridges, error detection (FCS);
+\item Network: packets, IP addressing, routing, routers;
+\item Transport: segments, TCP/UDP, end-to-end reliability, port numbers;
+\item Session: opening/managing dialogues, synchronisation;
+\item Presentation: encoding, encryption, compression, formatting;
+\item Application: services to the user (HTTP, FTP, SMTP, DNS, DHCP).
+\end{itemize}
+\item \textbf{Place the item} by asking: ``what does it manipulate — bits, frames, packets, segments or messages?''
+\item \textbf{State the layer number AND name} in your answer.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Frequent confusion: switch vs. router]
+A \textbf{switch} works at layer 2 (MAC addresses, frames); a \textbf{router} works at layer 3 (IP addresses, packets). Do not swap them in the exam. A \textbf{hub} is a layer-1 device (repeats bits to all ports).
+\end{attention}
+
+\begin{exoresolu}[Placing protocols and devices in the OSI model]
+Copy and complete the following table by giving the OSI layer number and name for each item: HTTP; TCP; IP; a switch; a router; data encryption; an Ethernet cable.
+\tcblower
+\textbf{Solution.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|c|X|}
+\hline
+\rowcolor{popblueL} \textbf{Item} & \textbf{Layer} & \textbf{Justification} \\
+\hline
+HTTP & 7 — Application & Provides the web service directly to the user's browser. \\
+\hline
+TCP & 4 — Transport & Ensures reliable end-to-end delivery of segments between applications. \\
+\hline
+IP & 3 — Network & Handles logical addressing and routing of packets across networks. \\
+\hline
+A switch & 2 — Data Link & Forwards frames using MAC addresses inside a LAN. \\
+\hline
+A router & 3 — Network & Forwards packets between different networks using IP addresses. \\
+\hline
+Data encryption & 6 — Presentation & Transforms data representation (encryption, compression, encoding). \\
+\hline
+An Ethernet cable & 1 — Physical & Carries the raw bits as electrical signals. \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Method reminder:} identify what the item manipulates (message, segment, packet, frame, bit) and the layer follows immediately.
+\end{exoresolu}
+
+\begin{methode}[Describing encapsulation when data is sent]
+To explain how a message travels through the layers of a sending host:
+\begin{enumerate}
+\item \textbf{Start at the top:} the application creates the \emph{data} (e.g.\ an HTTP request).
+\item \textbf{Transport layer:} TCP adds its header (source/destination ports, sequence number) $\rightarrow$ the unit is a \cle{segment}.
+\item \textbf{Network layer:} IP adds its header (source/destination IP addresses) $\rightarrow$ the unit is a \cle{packet} (datagram).
+\item \textbf{Data Link layer:} adds a header (MAC addresses) and a trailer (error-detection code, FCS) $\rightarrow$ the unit is a \cle{frame}.
+\item \textbf{Physical layer:} the frame is transmitted as \cle{bits} (signals on the medium).
+\item \textbf{On the receiving host} the reverse process (\emph{decapsulation}) occurs: each layer removes its own header and passes the data upward.
+\end{enumerate}
+\textbf{Key formula:} PDU names — \textbf{data} (application), \textbf{segment} (transport), \textbf{packet} (network), \textbf{frame} (data link), \textbf{bits} (physical).
+\end{methode}
+
+\begin{savaistu}[Encapsulation on mobile networks]
+When you send a WhatsApp message over MTN or Orange 4G, the Data Link layer uses LTE/4G protocols (not Ethernet) and the Physical layer uses radio waves. The encapsulation principle remains identical: each layer adds its own header/trailer.
+\end{savaistu}
+
+\begin{exoresolu}[Encapsulation of an e-mail]
+A teacher in Douala sends an e-mail from his PC to a colleague. Describe, layer by layer, what happens to the message on the sending PC according to the OSI model, naming the protocol data unit (PDU) at each layer. What happens on the colleague's PC?
+\tcblower
+\textbf{Solution.} On the \textbf{sending PC}, the message is encapsulated downwards:
+\begin{enumerate}
+\item \textbf{Application layer (7):} the mail software uses SMTP to format the message; PDU = \emph{data}.
+\item \textbf{Presentation layer (6):} the data is encoded (e.g.\ character encoding, possible encryption by TLS); PDU = \emph{data}.
+\item \textbf{Session layer (5):} a dialogue session is established and managed with the mail server; PDU = \emph{data}.
+\item \textbf{Transport layer (4):} TCP divides the data and adds a header containing the source and destination port numbers and sequence numbers; PDU = \emph{segment}. TCP will ensure reliable, ordered delivery.
+\item \textbf{Network layer (3):} IP adds a header with the source IP address (teacher's PC) and destination IP address (mail server), so routers can forward it; PDU = \emph{packet}.
+\item \textbf{Data Link layer (2):} the network card adds a header with the source and destination MAC addresses and a trailer (FCS) for error detection; PDU = \emph{frame}.
+\item \textbf{Physical layer (1):} the frame is converted into electrical or radio signals and sent as \emph{bits} on the cable or Wi-Fi.
+\end{enumerate}
+On the \textbf{receiving PC} (colleague's machine, after the mail server delivers the message), \textbf{decapsulation} takes place: each layer reads and removes the header added by the corresponding layer of the sender, checks for errors, and passes the remaining data upward, until the mail application presents the original message to the colleague.
+\textbf{Examiner's remark:} quoting the PDU name at each layer (data, segment, packet, frame, bits) is what distinguishes a full-mark answer.
+\end{exoresolu}
+
+\begin{methode}[Comparing the OSI and TCP/IP models]
+To answer a comparison question:
+\begin{enumerate}
+\item \textbf{Draw the two columns:} OSI has 7 layers; the TCP/IP model has 4 layers (Link / Network Access, Internet, Transport, Application).
+\item \textbf{Memorise the correspondence:}
+\begin{itemize}
+\item OSI 1--2 (Physical + Data Link) $\leftrightarrow$ TCP/IP Link layer;
+\item OSI 3 (Network) $\leftrightarrow$ TCP/IP Internet layer (IP, ICMP, ARP);
+\item OSI 4 (Transport) $\leftrightarrow$ TCP/IP Transport layer (TCP, UDP);
+\item OSI 5--7 (Session + Presentation + Application) $\leftrightarrow$ TCP/IP Application layer (HTTP, FTP, SMTP, DNS, DHCP).
+\end{itemize}
+\item \textbf{State the roles:} OSI is a \emph{reference model} (theoretical, used for teaching and standardisation); TCP/IP is the \emph{protocol suite actually implemented} on the Internet.
+\item \textbf{Conclude} with one difference (number of layers, prescriptive vs.\ implemented).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[From OSI to TCP/IP]
+(a) Give the four layers of the TCP/IP model and one protocol that operates at each of the two middle layers. (b) A web page is requested using HTTPS. Show how the OSI layers 7, 4 and 3 map onto the TCP/IP layers for this request, naming the protocol used at each TCP/IP layer.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{The four TCP/IP layers} (bottom to top): \textbf{Link} (or Network Access), \textbf{Internet}, \textbf{Transport}, \textbf{Application}. At the \textbf{Internet} layer the main protocol is \textbf{IP} (with ICMP for diagnostics and ARP for address resolution); at the \textbf{Transport} layer the protocols are \textbf{TCP} and \textbf{UDP}.
+\item \textbf{Mapping for the HTTPS request:}
+\begin{itemize}
+\item OSI layer 7 (Application) $\rightarrow$ TCP/IP \textbf{Application} layer: the browser uses \textbf{HTTPS} (HTTP secured by TLS) to formulate the page request.
+\item OSI layer 4 (Transport) $\rightarrow$ TCP/IP \textbf{Transport} layer: \textbf{TCP} segments the request, numbers the segments and guarantees reliable, ordered delivery to the web server.
+\item OSI layer 3 (Network) $\rightarrow$ TCP/IP \textbf{Internet} layer: \textbf{IP} addresses each packet with the source and destination IP addresses so that routers across the Internet can forward them to the server.
+\end{itemize}
+The OSI layers 1--2 correspond to the TCP/IP Link layer (Ethernet/Wi-Fi frame transmission), and OSI layers 5--6 functions (session management, encryption by TLS) are absorbed into the TCP/IP Application layer.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{methode}[Analysing a complete transmission scenario (integration)]
+For a scenario question (``explain what happens when \ldots''), structure the answer in four stages:
+\begin{enumerate}
+\item \textbf{Identify the actors and services:} client, server, application protocol (e.g.\ HTTP), and any support protocols needed (DNS to resolve the name, DHCP for addressing, ARP to find MAC addresses).
+\item \textbf{Follow the data down the sender's layers} (encapsulation: data $\rightarrow$ segment $\rightarrow$ packet $\rightarrow$ frame $\rightarrow$ bits), naming the protocol and PDU at each stage.
+\item \textbf{Cross the network:} switches forward frames (layer 2), routers forward packets between networks (layer 3) using IP addresses.
+\item \textbf{Follow the data up the receiver's layers} (decapsulation) and state the reliability mechanism (TCP acknowledgements and retransmission).
+\end{enumerate}
+\textbf{Reflex:} a strong answer mentions at least DNS, TCP, IP and one layer-2 device.
+\end{methode}
+
+\begin{exoresolu}[Integration: checking an examination result online]
+A candidate in Buea types the address of the GCE Board results portal into her browser, which is connected to her home router by Wi-Fi, itself connected to the Internet through an ISP (e.g.\ CAMTEL fibre or MTN 4G). Describe the main steps of the communication, from the moment she presses ``Enter'' until the page is displayed, indicating the protocols and devices involved at each step.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Name resolution (DNS):} the browser needs the server's IP address. The PC sends a \textbf{DNS} query (over UDP, port 53) to the DNS server indicated by the ISP (or a public one like 8.8.8.8); the reply contains the IP address of the portal's web server (e.g.\ \texttt{results.gceboard.cm}).
+\item \textbf{Connection establishment (TCP):} the PC opens a reliable connection to that IP address using \textbf{TCP}'s three-way handshake (SYN, SYN-ACK, ACK) on port 443. Because the portal is secured, a \textbf{TLS} session is then negotiated to encrypt the exchange (HTTPS).
+\item \textbf{Application request (HTTPS):} the browser builds an HTTP \texttt{GET} request for the results page — this is the application-layer \emph{data}.
+\item \textbf{Encapsulation on the PC:} TCP places the request in \emph{segments} (with port 443 as destination); IP wraps each segment in a \emph{packet} with the source IP (the home router's public address, after NAT) and the server's destination IP; the Wi-Fi interface wraps each packet in a \emph{frame} with MAC addresses and sends it as radio \emph{bits}.
+\item \textbf{Crossing the network:} the home \textbf{router} (layer 3) forwards the packets to the ISP; \textbf{routers} on the Internet examine the destination IP address of each packet (layer 3) and forward it hop by hop towards the server; \textbf{switches} forward frames within each local network crossed (layer 2).
+\item \textbf{Reception and reply:} the server decapsulates the request (frame $\rightarrow$ packet $\rightarrow$ segment $\rightarrow$ data), its TCP layer reassembles the segments in order and acknowledges them, and the web application generates the results page. The page travels back through the same mechanisms.
+\item \textbf{Display:} the candidate's browser receives the segments, TCP reorders and checks them (requesting retransmission of any lost segment), decapsulation delivers the page to the browser, which displays the result.
+\end{enumerate}
+\textbf{Protocols involved:} DNS (name resolution), TCP (reliable transport), TLS/HTTPS (secure application exchange), IP (addressing and routing), ARP (MAC resolution on the LAN), Ethernet/Wi-Fi (link and physical layers). \textbf{Devices:} switches (layer 2), routers (layer 3), home router (NAT + layer 3). This four-stage structure (services $\rightarrow$ encapsulation $\rightarrow$ network $\rightarrow$ decapsulation) can be reused for any transmission scenario in the examination.
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer and justify your choice in one sentence.
+\begin{enumerate}
+\item Which protocol is used to translate a domain name such as \texttt{www.gceb.cm} into an IP address?
+\begin{enumerate}
+\item DHCP \item DNS \item SMTP \item FTP
+\end{enumerate}
+\item The three-way handshake of TCP consists of the following sequence of segments:
+\begin{enumerate}
+\item SYN, SYN-ACK, ACK \item ACK, SYN, FIN \item SYN, ACK, FIN \item SYN, SYN, ACK
+\end{enumerate}
+\item Which layer of the OSI model is responsible for routing packets between different networks?
+\begin{enumerate}
+\item Data Link layer \item Transport layer \item Network layer \item Session layer
+\end{enumerate}
+\item Which of the following protocols is connectionless and does not guarantee delivery?
+\begin{enumerate}
+\item TCP \item HTTP \item UDP \item POP3
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each assertion is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item UDP is more suitable than TCP for a live video broadcast because lost packets are not retransmitted.
+\item The OSI model has five layers, whereas the TCP/IP model has seven.
+\item SMTP is the protocol normally used to \emph{send} electronic mail from a client to a mail server.
+\item DHCP is used to assign an IP address automatically to a station joining a network.
+\item In the TCP/IP model, the Application layer corresponds to the three upper layers of the OSI model.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two clear sentences, as you would in the GCE examination:
+\begin{enumerate}
+\item protocol;
+\item protocol suite;
+\item port number;
+\item encapsulation;
+\item three-way handshake.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item A file of size $8\ \mathrm{MB}$ is downloaded over a link of effective throughput $4\ \mathrm{Mbit\,s^{-1}}$. Assuming the throughput is constant, calculate the theoretical download time in seconds. (Recall: $1\ \mathrm{byte} = 8\ \mathrm{bits}$.)
+\item TCP segments carry a sequence number field of $32$ bits. How many distinct sequence numbers can be represented?
+\item A web server listens on port $80$ and a mail server on port $25$ of the same machine. How many different TCP services can in principle be distinguished on one host, knowing that port numbers range from $0$ to $65535$?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Matching protocols to roles, ports and layers]
+Copy and complete the following table. For each protocol, give its role in one short phrase, its default port number, and the TCP/IP layer to which it belongs: HTTP, FTP, SMTP, POP3, DNS, DHCP, TCP, UDP, IP.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Protocol} & \textbf{Role} & \textbf{Default port} & \textbf{TCP/IP layer} \\
+\hline
+HTTP & & & \\
+\hline
+FTP & & & \\
+\hline
+SMTP & & & \\
+\hline
+POP3 & & & \\
+\hline
+DNS & & & \\
+\hline
+DHCP & & & \\
+\hline
+TCP & & & \\
+\hline
+UDP & & & \\
+\hline
+IP & & & \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exercice}
+
+\begin{exercice}[TCP or UDP?]
+Two students in Yaoundé use the same Internet connection: the first streams a live football match, the second downloads a GCE past paper in PDF format.
+\begin{enumerate}
+\item For each student, state which transport protocol (TCP or UDP) is the most suitable and justify your choice.
+\item Explain the consequences of packet loss in each of the two situations.
+\item Name one other application (different from the two above) for which UDP is preferred, and justify briefly.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[From the click to the web page]
+A user in Buea types \texttt{www.gceb.cm} in a browser and presses Enter. List, in chronological order, the main protocols involved from the click until the page is displayed. For each protocol, indicate its role and the OSI layer (or layers) at which it operates. Assume the station obtains its configuration automatically when it joins the network.
+\end{exercice}
+
+\begin{exercice}[Diagnosing network faults]
+For each of the following four faults observed in a school computer laboratory, identify the OSI layer most directly concerned and propose one concrete test or command to confirm the diagnosis:
+\begin{enumerate}
+\item the network cable of a workstation is unplugged;
+\item a workstation has been given an IP address in the wrong subnet;
+\item the DNS server of the school is down, although the Internet link works;
+\item the web server machine is reachable, but its port $80$ is closed.
+\end{enumerate}
+Present your answer as a table with three columns: Fault, OSI layer, Test to confirm.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question: TCP, a connection-oriented protocol]
+\hfill (20 marks)
+\begin{enumerate}
+\item Define the term \emph{protocol} and state two reasons why protocols are necessary in data transmission. \hfill (4 marks)
+\item Draw a labelled diagram describing the TCP three-way handshake between a client and a server, naming each segment exchanged. \hfill (6 marks)
+\item Explain why TCP is said to be \emph{connection-oriented}, referring to your diagram. \hfill (4 marks)
+\item State three mechanisms by which TCP provides reliable delivery, and explain briefly how each works. \hfill (6 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Structured question: the OSI reference model]
+\hfill (20 marks)
+\begin{enumerate}
+\item Copy and complete the following table by giving the \textbf{name} and \textbf{number} of the OSI layer responsible for each function: \hfill (10 marks)
+\begin{enumerate}
+\item routing of packets between networks;
+\item MAC addressing and framing;
+\item encryption and data presentation;
+\item reliable end-to-end delivery;
+\item transmission of signals on the cable.
+\end{enumerate}
+\item Draw the correspondence between the seven layers of the OSI model and the four layers of the TCP/IP model. \hfill (6 marks)
+\item State two reasons why the TCP/IP model dominates real networks although the OSI model remains widely taught. \hfill (4 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Essay: protocols, the grammar of the Internet]
+\hfill (20 marks)
+\begin{quote}
+\emph{``Protocols are the grammar of the Internet.''}
+\end{quote}
+Discuss this statement. Your essay must:
+\begin{enumerate}
+\item explain the analogy between a protocol and the grammar of a language;
+\item refer to at least four protocols studied in this chapter (for example HTTP, DNS, TCP, UDP, IP, SMTP, DHCP), describing the role of each;
+\item show how the layered models (OSI and TCP/IP) organise the cooperation between these protocols;
+\item illustrate your discussion with a concrete Cameroonian example (for example a mobile money transaction, an e-government service, or browsing a website of the GCE Board).
+\end{enumerate}
+Your answer should be structured with an introduction, a developed body and a conclusion. \hfill (20 marks)
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: b) DNS.} The \cle{Domain Name System} (DNS) is the directory service of the Internet: it resolves human-readable domain names such as \texttt{www.gceb.cm} into the numerical IP addresses that machines actually use to communicate.
+\item \textbf{Answer: a) SYN, SYN-ACK, ACK.} The TCP \cle{three-way handshake} opens a connection: the client sends SYN, the server replies SYN-ACK, and the client confirms with ACK before any data is exchanged.
+\item \textbf{Answer: c) Network layer.} \cle{Routing} — choosing a path for packets across different interconnected networks — is the defining function of layer 3 (Network layer), where the IP protocol operates.
+\item \textbf{Answer: c) UDP.} \cle{UDP} is connectionless: it sends datagrams without establishing a connection, without acknowledgements and without retransmission, so delivery is not guaranteed.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{True.} In a live broadcast, retransmitting a lost packet would arrive too late to be displayed and would add delay; a small gap in the image is preferable to a growing lag, so UDP's ``send and forget'' behaviour is suitable.
+\item \textbf{False.} It is the opposite: the OSI model has \textbf{seven} layers, whereas the TCP/IP model has \textbf{four} layers (Link, Internet, Transport, Application).
+\item \textbf{True.} \cle{SMTP} (Simple Mail Transfer Protocol, port 25) is used to \emph{send} mail from a client to a server and between mail servers; retrieval uses POP3 or IMAP.
+\item \textbf{True.} \cle{DHCP} (Dynamic Host Configuration Protocol) automatically provides a station with an IP address, subnet mask, default gateway and DNS server when it joins a network.
+\item \textbf{True.} The Application layer of TCP/IP merges the functions of the OSI Application (7), Presentation (6) and Session (5) layers.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Protocol:} a set of rules and formats that govern the exchange of data between two or more communicating entities, defining how a dialogue is started, conducted and ended.
+\item \textbf{Protocol suite:} an organised family of protocols that work together, each handling a specific task at a given layer, to provide complete network communication (example: the TCP/IP suite).
+\item \textbf{Port number:} a 16-bit identifier (from 0 to 65535) that distinguishes the different services or applications running on the same host, so that incoming data is delivered to the correct program.
+\item \textbf{Encapsulation:} the process by which each layer adds its own header (control information) around the data received from the layer above, before passing it down; the reverse operation (decapsulation) occurs at the receiver.
+\item \textbf{Three-way handshake:} the TCP connection-establishment procedure in three steps — SYN, SYN-ACK, ACK — through which client and server agree to communicate and synchronise their initial sequence numbers.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+\begin{enumerate}
+\item Convert the file size to bits:
+\[ 8\ \mathrm{MB} = 8 \times 8\ \mathrm{Mbit} = 64\ \mathrm{Mbit}. \]
+Then
+\[ t = \dfrac{64\ \mathrm{Mbit}}{4\ \mathrm{Mbit\,s^{-1}}} = 16\ \mathrm{s}. \]
+The theoretical download time is \textbf{16 seconds}.
+\item With 32 bits, the number of distinct values is
+\[ 2^{32} = 4\,294\,967\,296 \approx 4.3 \times 10^{9}\ \text{distinct sequence numbers}. \]
+\item Port numbers range from 0 to 65535 inclusive, giving
+\[ 65535 - 0 + 1 = 65\,536\ \text{distinct ports}, \]
+so up to \textbf{65\,536 TCP services} can in principle be distinguished on one host.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Matching protocols to roles, ports and layers]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Protocol} & \textbf{Role} & \textbf{Default port} & \textbf{TCP/IP layer} \\
+\hline
+HTTP & Transfer of web pages & 80 & Application \\
+\hline
+FTP & File transfer & 21 & Application \\
+\hline
+SMTP & Sending electronic mail & 25 & Application \\
+\hline
+POP3 & Retrieving electronic mail & 110 & Application \\
+\hline
+DNS & Name resolution (name $\rightarrow$ IP) & 53 & Application \\
+\hline
+DHCP & Automatic IP configuration & 67/68 & Application \\
+\hline
+TCP & Reliable connection-oriented transport & --- & Transport \\
+\hline
+UDP & Fast connectionless transport & --- & Transport \\
+\hline
+IP & Addressing and routing of packets & --- & Internet \\
+\hline
+\end{tabularx}
+\end{center}
+\emph{Remark:} TCP, UDP and IP have no port number of their own; ports are used \emph{by} TCP and UDP to identify the application-layer services above them.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — TCP or UDP?]
+\begin{enumerate}
+\item \textbf{Live football stream: UDP.} The video must arrive in real time; speed matters more than perfect integrity, and retransmissions would only increase the delay. \textbf{PDF download: TCP.} A document must be received completely and without errors; a single corrupted byte can make the file unreadable, so reliability is essential.
+\item \textbf{Consequences of packet loss.} With UDP (streaming), a lost packet simply causes a brief glitch — a frozen frame or a crack in the sound — and the stream continues. With TCP (download), a lost segment is detected (missing acknowledgement) and retransmitted, so the file eventually arrives intact, at the cost of a slightly longer transfer.
+\item \textbf{Other UDP application:} voice over IP (a WhatsApp call), online gaming, or DNS queries. For example, in a voice call a late retransmitted packet is useless — the conversation cannot wait — so UDP is preferred.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — From the click to the web page]
+Chronological sequence of the main protocols:
+\begin{enumerate}
+\item \textbf{DHCP} (Application layer of TCP/IP; OSI layer 7, using UDP at layer 4): when the station joined the network it automatically obtained its IP address, subnet mask, default gateway and DNS server address.
+\item \textbf{DNS} (OSI layer 7, over UDP port 53): the browser asks the DNS server to resolve \texttt{www.gceb.cm} into an IP address.
+\item \textbf{TCP} (OSI layer 4): the browser opens a connection to the web server on port 80 via the three-way handshake (SYN, SYN-ACK, ACK).
+\item \textbf{IP} (OSI layer 3): every segment is encapsulated in IP packets and routed from Buea across the networks to the server and back.
+\item \textbf{HTTP} (OSI layer 7): the browser sends an HTTP \texttt{GET} request; the server replies with the HTML page, which the browser displays.
+\item At the bottom, the \textbf{Data Link and Physical layers} (OSI 2 and 1, e.g. Ethernet or Wi-Fi) carry the frames and signals on the local medium.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Diagnosing network faults]
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Fault} & \textbf{OSI layer} & \textbf{Test to confirm} \\
+\hline
+Unplugged cable & Layer 1 (Physical) & Check the link LED on the network card and switch; plug the cable back and observe the LED. \\
+\hline
+Wrong subnet & Layer 3 (Network) & Run \texttt{ipconfig} (Windows) or \texttt{ip addr} (Linux) and compare the IP address and mask with the network plan; \texttt{ping} the gateway fails. \\
+\hline
+DNS server down & Layer 7 (Application) & \texttt{ping 8.8.8.8} succeeds but \texttt{ping www.gceb.cm} fails; \texttt{nslookup} returns no answer. \\
+\hline
+Port 80 closed & Layer 4 (Transport) & \texttt{telnet server 80} or a port scan shows the connection refused, while \texttt{ping} to the machine succeeds. \\
+\hline
+\end{tabularx}
+\end{center}
+\emph{Method:} always diagnose from the bottom up — a fault at a lower layer (cable, addressing) makes all higher layers fail, so check the Physical layer first.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured question: TCP, a connection-oriented protocol]
+\textbf{Indicative mark scheme (20 marks).}
+\begin{enumerate}
+\item \textbf{Definition and reasons (4 marks).} A protocol is a set of rules and formats governing the exchange of data between communicating entities (2 marks). Two reasons (1 mark each): protocols allow machines from different manufacturers to interoperate (standardisation), and they organise the dialogue so that data is transmitted correctly and in order (who speaks, when, how errors are handled).
+\item \textbf{Diagram (6 marks).} Expect two vertical lifelines labelled ``Client'' and ``Server'', with three labelled arrows in the correct order: SYN $\rightarrow$, $\leftarrow$ SYN-ACK, ACK $\rightarrow$; optionally initial sequence numbers. Award 2 marks per correctly placed and named segment.
+\begin{popfigure}
+\begin{tikzpicture}[scale=1]
+\draw[thick] (0,0) -- (0,-3.6); \draw[thick] (6,0) -- (6,-3.6);
+\node[above] at (0,0) {\textbf{Client}}; \node[above] at (6,0) {\textbf{Server}};
+\draw[->,thick,popblue] (0,-0.7) -- (6,-1.1) node[midway,above,sloped]{SYN};
+\draw[->,thick,poporange] (6,-1.8) -- (0,-2.2) node[midway,above,sloped]{SYN-ACK};
+\draw[->,thick,popgreen] (0,-2.9) -- (6,-3.3) node[midway,above,sloped]{ACK};
+\end{tikzpicture}
+\legende{The TCP three-way handshake.}
+\end{popfigure}
+\item \textbf{Connection-oriented (4 marks).} TCP is connection-oriented because a logical connection is explicitly established by the handshake \emph{before} any data is sent: both ends agree to communicate, synchronise their initial sequence numbers and allocate resources; the connection is also explicitly closed at the end. Data therefore travels within a controlled session, like a telephone call rather than a letter.
+\item \textbf{Reliability mechanisms (6 marks, 2 each).} \emph{Acknowledgements and retransmission:} the receiver acknowledges received segments; if an ACK does not arrive in time, the sender retransmits. \emph{Sequence numbers:} each byte is numbered so segments can be reordered and losses detected. \emph{Error detection (checksum):} a checksum detects corrupted segments, which are discarded and retransmitted. (Flow control via the sliding window is also acceptable.)
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Structured question: the OSI reference model]
+\textbf{Indicative mark scheme (20 marks).}
+\begin{enumerate}
+\item \textbf{Table (10 marks, 2 per row: 1 for the name, 1 for the number).}
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Function} & \textbf{Layer name} & \textbf{Number} \\
+\hline
+Routing of packets between networks & Network & 3 \\
+\hline
+MAC addressing and framing & Data Link & 2 \\
+\hline
+Encryption and data presentation & Presentation & 6 \\
+\hline
+Reliable end-to-end delivery & Transport & 4 \\
+\hline
+Transmission of signals on the cable & Physical & 1 \\
+\hline
+\end{tabularx}
+\end{center}
+\item \textbf{Correspondence (6 marks).} Expect a clear two-column diagram: OSI 7 Application, 6 Presentation, 5 Session $\rightarrow$ TCP/IP Application; OSI 4 Transport $\rightarrow$ TCP/IP Transport; OSI 3 Network $\rightarrow$ TCP/IP Internet; OSI 2 Data Link and 1 Physical $\rightarrow$ TCP/IP Link (Network Access). Award 1.5 marks per correct grouping.
+\item \textbf{Why TCP/IP dominates (4 marks, 2 each).} (i) TCP/IP was implemented and proven in the real ARPANET/Internet before the OSI model was finalised, so it became the practical standard. (ii) It is simpler (four layers), open and free to implement, which encouraged universal adoption. The OSI model remains taught because its seven layers give a precise conceptual framework for understanding, comparing and troubleshooting networks.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Essay: protocols, the grammar of the Internet]
+\textbf{Examiner expectations and indicative mark scheme (20 marks):} introduction and conclusion (4), the grammar analogy (4), at least four protocols correctly described (4), layered organisation (4), Cameroonian illustration (4).
+
+\textbf{Model outline.}
+\emph{Introduction.} Just as two people can only converse if they share a grammar, two machines can only exchange data if they share protocols. A protocol fixes the vocabulary (message formats), the syntax (order of exchanges) and the etiquette (who speaks when) of digital communication.
+
+\emph{Body — the analogy.} Grammar tells a speaker how to build a correct sentence and how to take turns in a dialogue; likewise TCP's handshake opens a conversation, acknowledgements confirm understanding, and a closed connection ends it politely. Without shared rules, bits would be as meaningless as random sounds.
+
+\emph{Body — the protocols.} \textbf{IP} is the addressing and routing grammar: every packet carries source and destination addresses so routers can forward it. \textbf{TCP} guarantees reliable, ordered delivery through sequence numbers, acknowledgements and retransmission; \textbf{UDP} sacrifices reliability for speed. \textbf{DNS} translates names such as \texttt{www.gceb.cm} into IP addresses. \textbf{HTTP} structures the request/response dialogue of the web; \textbf{SMTP} governs the sending of electronic mail; \textbf{DHCP} automatically configures a station joining a network.
+
+\emph{Body — layered organisation.} The OSI model (7 layers) and the TCP/IP model (4 layers) organise this cooperation: each layer offers services to the one above and uses the one below, encapsulating data as it descends. HTTP relies on TCP, which relies on IP, which relies on the link and physical layers — a division of labour that lets each protocol remain simple and replaceable.
+
+\emph{Body — Cameroonian example.} When a student in Bamenda pays school fees by mobile money, the phone app uses HTTPS over TCP/IP to contact the operator's server; DNS resolves the server's name, IP routes the packets through MTN's or Orange's network, and TCP guarantees that the transaction record arrives complete — a missing byte could corrupt an amount. The same grammar lets a candidate in Yaoundé consult GCE results online.
+
+\emph{Conclusion.} Protocols are indeed the grammar of the Internet: invisible to users, they make a worldwide conversation between billions of heterogeneous machines possible, and the layered models are the textbooks in which that grammar is written.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+\node[draw, circle, fill=popblue, text=white, minimum width=3cm, align=center] (center) {Network Protocols\\ \& Data Transmission};
+\node[draw, rounded rectangle, fill=popblue!20, text=popblue, minimum width=2.5cm, align=center] (b1) at (3.5,2) {Network Protocols:\\ Concepts \& Roles};
+\node[draw, rounded rectangle, fill=poporange!20, text=poporange, minimum width=2.5cm, align=center] (b2) at (4.5,-0.5) {Transport Layer:\\ TCP \& UDP};
+\node[draw, rounded rectangle, fill=popgreen!20, text=popgreen, minimum width=2.5cm, align=center] (b3) at (3.5,-3) {Internet Layer:\\ IP (v4/v6)};
+\node[draw, rounded rectangle, fill=poppurple!20, text=poppurple, minimum width=2.5cm, align=center] (b4) at (0,-4) {Protocol Suites:\\ TCP/IP Model};
+\node[draw, rounded rectangle, fill=poppink!20, text=poppink, minimum width=2.5cm, align=center] (b5) at (-3.5,-3) {OSI Reference Model:\\ 7 Layers};
+\node[draw, rounded rectangle, fill=popgold!20, text=popgold, minimum width=2.5cm, align=center] (b6) at (-3.5,2) {Integration:\\ Encapsulation \& Data Flow};
+\draw[thick, popblue] (center) -- (b1);
+\draw[thick, poporange] (center) -- (b2);
+\draw[thick, popgreen] (center) -- (b3);
+\draw[thick, poppurple] (center) -- (b4);
+\draw[thick, poppink] (center) -- (b5);
+\draw[thick, popgold] (center) -- (b6);
+\end{tikzpicture}
+\legende{Mind map of Chapter ICT10: Using common protocols in data transmission}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key Definitions}
+\begin{itemize}
+\item \cle{Protocol}: A set of rules governing format, timing, sequencing, and error control in data communication.
+\item \cle{Encapsulation}: Process of adding headers (and trailers) at each layer as data moves down the stack.
+\item \cle{PDU (Protocol Data Unit)}: Unit of data at a given layer (e.g., segment at Transport, packet at Network, frame at Data Link).
+\item \cle{Port Number}: 16-bit identifier used by Transport layer to multiplex applications (well-known: 80 HTTP, 443 HTTPS, 53 DNS).
+\item \cle{IP Address}: Logical address (IPv4 32-bit, IPv6 128-bit) identifying a host on a network.
+\item \cle{OSI Model}: 7-layer reference model (Physical, Data Link, Network, Transport, Session, Presentation, Application).
+\item \cle{TCP/IP Model}: 4-layer practical suite (Network Access, Internet, Transport, Application).
+\end{itemize}
+
+\textbf{Laws, Formulas \& Theorems to Know}
+\begin{itemize}
+\item \cle{TCP Three-Way Handshake}: SYN $\rightarrow$ SYN-ACK $\rightarrow$ ACK establishes reliable connection.
+\item \cle{UDP Header}: 8 bytes (Source Port, Destination Port, Length, Checksum) — no connection, no guarantee.
+\item \cle{IPv4 Header Fields}: Version, IHL, DSCP, Total Length, Identification, Flags, Fragment Offset, TTL, Protocol, Header Checksum, Source/Destination IP.
+\item \cle{Subnetting Formula}: Number of hosts $= 2^{(32 - prefix)} - 2$; number of subnets $= 2^{borrowed\ bits}$.
+\item \cle{Encapsulation Order}: Application data $\rightarrow$ Transport header $\rightarrow$ Network header $\rightarrow$ Data Link header/trailer $\rightarrow$ Physical bits.
+\item \cle{Layer Mapping}: OSI Transport $\leftrightarrow$ TCP/IP Transport; OSI Network $\leftrightarrow$ TCP/IP Internet; OSI Data Link+Physical $\leftrightarrow$ TCP/IP Network Access.
+\end{itemize}
+
+\textbf{Methods}
+\begin{enumerate}
+\item \textbf{Identify Protocol Role}: Given a scenario (web browsing, video streaming, DNS query), decide TCP vs UDP and justify (reliability vs speed).
+\item \textbf{Analyze Packet Header}: Extract source/destination port, IP addresses, flags (SYN, ACK), TTL, protocol number (6=TCP, 17=UDP).
+\item \textbf{Subnet Calculation}: Convert IP and mask to binary, determine network address, broadcast, usable range.
+\item \textbf{Trace Encapsulation}: Draw the PDU at each layer for a given application message (e.g., HTTP GET).
+\item \textbf{Compare OSI \& TCP/IP}: List layers, note where session/presentation functions reside in TCP/IP Application layer.
+\end{enumerate}
+
+\textbf{Common Mistakes}
+\begin{itemize}
+\item Confusing \cle{port numbers} with IP addresses; ports identify processes, IPs identify hosts.
+\item Thinking UDP has sequence numbers or acknowledgements — it does not.
+\item Forgetting that IPv4 header checksum covers only the header, not the payload.
+\item Misplacing the \cle{TCP three-way handshake} steps (e.g., SYN-ACK before SYN).
+\item Assuming OSI Session and Presentation layers have direct equivalents in TCP/IP; they are merged into Application.
+\item Incorrect subnetting: using $2^n$ instead of $2^n-2$ for usable hosts.
+\end{itemize}
+
+\textbf{GCE Tips}
+\begin{itemize}
+\item \textbf{Definition questions}: Quote the exact wording for protocol, encapsulation, PDU, port, IP address.
+\item \textbf{Diagram questions}: Draw the TCP/IP stack with layer names and typical protocols (HTTP, TCP, IP, Ethernet). Label data flow arrows.
+\item \textbf{Calculation}: Show binary working for subnetting; final answer in dotted decimal.
+\item \textbf{Scenario}: "A student streams a video on YouTube." Answer: Uses TCP (HTTP/HTTPS over TCP) for control, but video data often uses UDP-based QUIC; explain trade-offs.
+\item \textbf{Integration}: Explain how a message travels from Application down to Physical and up at receiver, naming headers added at each step.
+\item \textbf{Time management}: Allocate 2-3 minutes per short-answer, 8-10 minutes for essay-type integration question.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
