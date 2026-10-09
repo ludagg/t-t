@@ -1,0 +1,2135 @@
+% Cloud computing — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT24-cloud-computing.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{24}
+\newcommand{\DOCTITRE}{Cloud computing}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Cloud computing}{ICT}{Upper Sixth}{Upper Sixth — ICT}{24}{4 periods}{This chapter introduces cloud computing: its definition, essential characteristics and the service models (IaaS, PaaS, SaaS) that deliver computing resources over the Internet. It then examines deployment models, security challenges and the ethical issues raised by storing and processing data in the cloud, preparing learners to advise real organisations on cloud adoption.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define cloud computing and state its essential characteristics (on-demand self-service, broad network access, resource pooling, rapid elasticity, measured service).
+\item By the end of this chapter I can distinguish cloud computing from traditional on-premises computing and from simple web hosting.
+\item By the end of this chapter I can describe and compare the three main cloud service models: IaaS, PaaS and SaaS, with concrete examples of each.
+\item By the end of this chapter I can identify which service model best suits a given organisation's needs.
+\item By the end of this chapter I can describe the four cloud deployment models (public, private, community, hybrid) and give a use case for each.
+\item By the end of this chapter I can explain the main security threats and protection measures related to cloud computing.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Introduction to Cloud Computing
+\item Types of Cloud Computing Services
+\item Cloud Deployment Models
+\item Cloud Security and Cloud Ethics
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define cloud computing and state its essential characteristics (on-demand self-service, broad network access, resource pooling, rapid elasticity, measured service).
+\item By the end of this chapter I can distinguish cloud computing from traditional on-premises computing and from simple web hosting.
+\item By the end of this chapter I can describe and compare the three main cloud service models: IaaS, PaaS and SaaS, with concrete examples of each.
+\item By the end of this chapter I can identify which service model best suits a given organisation's needs.
+\item By the end of this chapter I can describe the four cloud deployment models (public, private, community, hybrid) and give a use case for each.
+\item By the end of this chapter I can explain the main security threats and protection measures related to cloud computing.
+\item By the end of this chapter I can discuss ethical issues of the cloud: data privacy, data sovereignty, vendor lock-in and digital divide.
+\item By the end of this chapter I can evaluate the advantages and limitations of cloud computing for a Cameroonian SME or school.
+\item By the end of this chapter I can propose and justify a cloud adoption plan for a real local organisation.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Computer networks: LAN, WAN, Internet, clients and servers (Lower Sixth)
+\item Internet services: web, email, file transfer; role of ISPs
+\item Basic data security notions: passwords, backups, malware (Lower Sixth)
+\item Hardware and software basics: storage, processing, operating systems and applications
+\item Databases and files: how organisations store their data
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Introduction to Cloud Computing}
+
+\courssub{Opening scenario}
+Amina’s uncle runs a growing microfinance cooperative in Bamenda. Last month his only computer crashed and the records of 400 members were nearly lost because everything was stored on that single machine. A friend told him: \emph{“You should move to the cloud — your data would follow you anywhere, even on your phone.”} But what exactly is this \cle{cloud}? Is it safe to put members’ financial data there? This section answers these questions and shows how cloud computing is transforming businesses, schools and public services in Cameroon and worldwide.
+
+\courssub{What is cloud computing?}
+\begin{definition}[Cloud computing (NIST SP 800‑145, simplified)]
+Cloud computing is a model for enabling ubiquitous, convenient, on‑demand network access to a shared pool of configurable computing resources (e.g. networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
+\end{definition}
+
+In everyday language: instead of buying and maintaining your own servers, you \emph{rent} computing power, storage and software over the Internet, paying only for what you use. The \cle{cloud} symbol in network diagrams (a fluffy cloud) historically represented the Internet — the part of the network you do not manage yourself. The term therefore means \emph{“computing delivered as a service across the Internet”}.
+
+\begin{savaistu}[From mainframes to modern data centres]
+\begin{itemize}
+\item 1960s: Time‑sharing on mainframes (IBM System/360) — many users shared one expensive machine.
+\item 1990s: Application Service Providers (ASPs) hosted business applications for clients.
+\item 2006: Amazon launched EC2 and S3 — the first widely used \cle{Infrastructure as a Service} (IaaS).
+\item Today: Hyperscale data centres (Google, Microsoft Azure, Amazon AWS, plus African providers like \cle{MTN Cloud} and \cle{Orange Cloud}) host millions of virtual servers.
+\end{itemize}
+\end{savaistu}
+
+\courssub{The five essential characteristics (NIST model)}
+\begin{propriete}[Five essential characteristics of cloud computing]
+\begin{enumerate}
+\item \textbf{On‑demand self‑service} — A consumer can unilaterally provision computing capabilities (e.g. server time, network storage) automatically without human interaction with the service provider.
+\item \textbf{Broad network access} — Capabilities are available over the network and accessed through standard mechanisms (web browser, mobile app, API) by heterogeneous client platforms (PCs, tablets, smartphones).
+\item \textbf{Resource pooling} — The provider’s computing resources are pooled to serve multiple consumers using a multi‑tenant model; physical and virtual resources are dynamically assigned and reassigned according to demand.
+\item \textbf{Rapid elasticity} — Capabilities can be elastically provisioned and released, often automatically, to scale rapidly outward and inward commensurate with demand.
+\item \textbf{Measured service} — Cloud systems automatically control and optimise resource use by leveraging a metering capability at some level of abstraction appropriate to the type of service (storage, processing, bandwidth, active user accounts). Resource usage can be monitored, controlled, and reported, providing transparency for both provider and consumer.
+\end{enumerate}
+\end{propriete}
+
+\begin{definition}[On‑demand self‑service \& Measured service (pay‑as‑you‑go)]
+\begin{itemize}
+\item \textbf{On‑demand self‑service}: The user requests resources (e.g. a virtual machine, extra storage) through a portal or API and receives them within minutes, without calling a sales person.
+\item \textbf{Measured service (pay‑as‑you‑go)}: The provider meters consumption (CPU‑hours, GB‑months, API calls) and bills accordingly. No large upfront capital expenditure (CapEx); instead you have operational expenditure (OpEx).
+\end{itemize}
+\end{definition}
+
+\begin{exemplebox}[Recognising a cloud service]
+\textbf{Scenario:} A school in Yaoundé uses a web‑based grade‑book. Teachers log in from home, enter marks, and the system automatically backs up data every night. The school pays a monthly fee per teacher.
+\textbf{Check the five characteristics:}
+\begin{itemize}
+\item On‑demand self‑service? \emph{Yes} — teachers create their own accounts.
+\item Broad network access? \emph{Yes} — works on laptop, phone, tablet.
+\item Resource pooling? \emph{Yes} — the provider runs one application for many schools.
+\item Rapid elasticity? \emph{Yes} — if the school adds 50 teachers, capacity grows instantly.
+\item Measured service? \emph{Yes} — billed per teacher per month.
+\end{itemize}
+\emph{Conclusion:} This is a genuine cloud service (Software as a Service).
+\end{exemplebox}
+
+\begin{methode}[How to recognise a cloud service — step by step]
+\begin{enumerate}
+\item Identify the service (e.g. email, file storage, virtual server).
+\item Ask: \emph{Can I provision it myself via a web portal or API?} → On‑demand self‑service.
+\item Ask: \emph{Can I access it from any device with an Internet connection?} → Broad network access.
+\item Ask: \emph{Does the provider share underlying hardware among many customers?} → Resource pooling.
+\item Ask: \emph{Can capacity grow/shrink automatically with my load?} → Rapid elasticity.
+\item Ask: \emph{Am I billed only for what I actually consume?} → Measured service.
+\item If \textbf{all five} are true → it is a cloud service. If one or more are missing → it is likely traditional hosting or a simple web application.
+\end{enumerate}
+\end{methode}
+
+\courssub{Cloud vs. traditional on‑premises computing}
+\begin{popfigure}
+\begin{tikzpicture}[node distance=1.2cm, every node/.style={font=\small}]
+% On-premises side
+\node[draw, rounded corners, fill=popblueL, minimum width=5cm, minimum height=3.5cm] (onprem) at (0,0) {};
+\node[anchor=north, font=\bfseries] at (onprem.north) {On‑premises model};
+\node[anchor=north west, text width=4.5cm, align=left] at ($(onprem.north west)+(0.2,-0.3)$) {
+\textbf{Ownership:} Organisation buys servers, storage, networking.\\
+\textbf{Maintenance:} In‑house IT staff handles hardware, OS, patches.\\
+\textbf{Cost model:} High CapEx (purchase), predictable OpEx (power, staff).\\
+\textbf{Data location:} Physically inside the organisation’s premises.\\
+\textbf{Scalability:} Limited — must order, deliver, rack new hardware.
+};
+
+% Cloud side
+\node[draw, rounded corners, fill=popgreenL, minimum width=5cm, minimum height=3.5cm] (cloud) at (11,0) {};
+\node[anchor=north, font=\bfseries] at (cloud.north) {Cloud model};
+\node[anchor=north west, text width=4.5cm, align=left] at ($(cloud.north west)+(0.2,-0.3)$) {
+\textbf{Ownership:} Provider owns the infrastructure.\\
+\textbf{Maintenance:} Provider manages hardware, hypervisor, physical security.\\
+\textbf{Cost model:} Low/zero CapEx, pay‑per‑use OpEx (monthly, per second).\\
+\textbf{Data location:} Provider’s data centres (may be in another country).\\
+\textbf{Scalability:} Near‑instant — add VMs, storage via API.
+};
+
+% Arrow
+\draw[->, thick, poporange] (onprem.east) -- node[above, font=\small] {Migration} (cloud.west);
+\end{tikzpicture}
+\legende{Comparison: on‑premises vs. cloud — who owns, maintains, pays, where data lives, scalability.}
+\end{popfigure}
+
+\begin{attention}[Common mistake: “The cloud is in the sky”]
+The word \emph{cloud} is a metaphor. Your data is \textbf{not} floating in the atmosphere; it resides on physical hard drives inside secure, climate‑controlled data centres (often called \cle{server farms}). In Cameroon, major data centres are located in Douala and Yaoundé (e.g. CAMTEL’s facilities, MTN’s Tier‑III centre). Always ask your provider: \emph{“Where exactly are my bits stored?”}
+\end{attention}
+
+\begin{attention}[Common mistake: Confusing cloud computing with ordinary Internet browsing]
+Visiting a website (e.g. reading news on \texttt{www.crtv.cm}) uses the Internet but is \textbf{not} cloud computing — you are only consuming content. Cloud computing implies \emph{you} provision, manage, or store \emph{your own} resources (VMs, databases, files) on the provider’s infrastructure. If you cannot scale, self‑service, or are not metered, it is just a web site, not a cloud service.
+\end{attention}
+
+\courssub{Advantages of cloud computing}
+\begin{aretenir}[Key advantages]
+\begin{itemize}
+\item \textbf{Cost reduction} — No need to buy servers, UPS, cooling; pay only for what you use (OpEx).
+\item \textbf{Scalability \& elasticity} — Handle traffic spikes (e.g. exam results release) automatically.
+\item \textbf{Accessibility} — Work from any device with Internet (critical during COVID‑19 lockdowns).
+\item \textbf{Automatic updates} — Provider patches OS, hypervisor, firmware; you focus on your application.
+\item \textbf{Collaboration} — Real‑time co‑editing (Google Docs, Microsoft 365) across regions.
+\item \textbf{Disaster recovery} — Geo‑replication across multiple data centres; backup and restore in minutes.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Limitations and challenges (especially in Cameroon)}
+\begin{aretenir}[Key limitations]
+\begin{itemize}
+\item \textbf{Internet dependence} — Unreliable or expensive bandwidth (e.g. rural areas) can halt work.
+\item \textbf{Recurring costs} — Monthly subscriptions can exceed on‑premises cost over many years if usage is steady and high.
+\item \textbf{Less control} — You cannot physically access the hardware; custom kernel modules or specialised hardware (GPU, FPGA) may be unavailable.
+\item \textbf{Data sovereignty} — Laws may require certain data (health, finance) to stay within Cameroon; provider’s data centre might be abroad.
+\item \textbf{Vendor lock‑in} — Proprietary APIs make migration difficult.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Cloud in everyday Cameroonian life]
+\begin{itemize}
+\item \textbf{Gmail / Google Drive} — Free 15 GB storage, accessible from any phone.
+\item \textbf{WhatsApp backup} — Messages and media stored on Google Drive (Android) or iCloud (iOS).
+\item \textbf{YouTube} — Videos hosted on Google’s global CDN (Content Delivery Network).
+\item \textbf{Online banking (UBA, Afriland, BICEC)} — Core banking runs on private/hybrid clouds.
+\item \textbf{Mobile money (MTN MoMo, Orange Money)} — Transaction platforms hosted in secure cloud environments with high availability.
+\end{itemize}
+\end{savaistu}
+
+\courssub{Worked example: Identifying a cloud service}
+\begin{exoresolu}[Is the school’s local file server a cloud service?]
+\textbf{Statement:} A secondary school in Buea runs a Windows file server in its computer lab. Teachers copy lesson plans to it via LAN. The server is backed up weekly to an external hard drive kept in the principal’s office. The school paid \SI{1200000}{XAF} for the hardware three years ago and pays nothing monthly.
+\textbf{Solution:}
+\begin{enumerate}
+\item \textbf{On‑demand self‑service?} No — teachers cannot provision storage themselves; they ask the IT teacher.
+\item \textbf{Broad network access?} No — only accessible on the school LAN, not from home.
+\item \textbf{Resource pooling?} No — the server is dedicated to this school.
+\item \textbf{Rapid elasticity?} No — adding storage requires buying a new disk.
+\item \textbf{Measured service?} No — no metering, no recurring bill.
+\end{enumerate}
+\textbf{Conclusion:} This is \textbf{traditional on‑premises file sharing}, not a cloud service.
+\end{exoresolu}
+
+\courssub{Exam tip}
+\begin{attention}[GCE Advanced Level — Cloud computing questions]
+Examiners frequently ask: \emph{“State three advantages and three limitations of cloud computing for a small business in Cameroon.”} Always give \textbf{both sides} — a one‑sided answer loses marks. Use the terminology \cle{CapEx} vs \cle{OpEx}, \cle{elasticity}, \cle{data sovereignty}, and mention \cle{Internet connectivity} as a local constraint.
+\end{attention}
+
+\courssub{Summary}
+\begin{aretenir}[What you must remember from this section]
+\begin{itemize}
+\item Cloud computing = delivery of computing resources as services over the Internet, on‑demand, pay‑per‑use.
+\item Five NIST characteristics: on‑demand self‑service, broad network access, resource pooling, rapid elasticity, measured service.
+\item Cloud vs. on‑premises: ownership, maintenance, cost model (CapEx vs OpEx), data location, scalability.
+\item Advantages: cost, scalability, accessibility, auto‑updates, collaboration, disaster recovery.
+\item Limitations: Internet dependence, recurring cost, less control, data sovereignty, vendor lock‑in.
+\item Everyday examples: Gmail, Google Drive, WhatsApp backup, YouTube, mobile money platforms.
+\item \textbf{The cloud is physical data centres, not the sky.}
+\item \textbf{Not every Internet service is cloud computing.}
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Self‑assessment]
+\begin{enumerate}
+\item Define cloud computing in your own words, referencing the NIST model.
+\item List the five essential characteristics and give a one‑sentence explanation for each.
+\item A company hosts its own email server on a physical machine in its office. Using the five characteristics, explain why this is \emph{not} a cloud service.
+\item Give two advantages and two limitations of moving a Cameroonian SME’s accounting system to the cloud.
+\item Why is it incorrect to say “my data is stored in the cloud” as if the cloud were a physical place in the sky?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Cloud computing is a model that provides on‑demand network access to a shared pool of configurable computing resources (servers, storage, applications) that can be rapidly provisioned and released with minimal management effort, typically billed on a pay‑per‑use basis.
+\item \begin{enumerate}
+\item On‑demand self‑service — users provision resources automatically via portal/API.
+\item Broad network access — services reachable over the Internet from diverse devices.
+\item Resource pooling — provider’s physical/virtual resources serve multiple tenants dynamically.
+\item Rapid elasticity — capacity scales out/in automatically with demand.
+\item Measured service — usage metered and billed transparently (CPU‑hours, GB‑months, etc.).
+\end{enumerate}
+\item The company’s email server fails all five: no self‑service (IT staff provisions), no broad access (LAN only), no pooling (dedicated hardware), no elasticity (manual upgrades), no metering (fixed CapEx).
+\item Advantages: lower upfront cost (OpEx), automatic updates/backups, remote access for staff. Limitations: requires reliable Internet, recurring subscription, data may reside outside Cameroon (sovereignty risk), less control over infrastructure.
+\item “The cloud” is a metaphor for the Internet in network diagrams; data actually lives on physical disks in data centres. Saying it is “in the sky” confuses the symbol with reality.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Types of Cloud Computing Services}
+
+In the previous section we discovered that \cle{cloud computing} means using computing resources --- servers, storage, software --- delivered over the Internet on demand, instead of owning and maintaining physical machines yourself. But ``the cloud'' is not a single product. A student who stores photos on Google Drive, a developer who rents a virtual server, and a company that runs its payroll software online are all ``in the cloud'', yet they are using very different kinds of services. In this section we classify cloud services into the three great \cle{service models} --- \cle{IaaS}, \cle{PaaS} and \cle{SaaS} --- and we learn how to decide which one fits a given situation. This corresponds to \textbf{Lesson 74} of the official Upper Sixth syllabus.
+
+\courssub{The ``as-a-Service'' Family and the Idea of Shared Responsibility}
+
+Imagine you want to eat pizza. You have four options:
+
+\begin{itemize}
+\item \textbf{Cook everything at home}: you buy the flour, make the dough, use your own oven and your own table. You control everything, but you do all the work.
+\item \textbf{Buy a pizza base}: the shop provides the base; you add toppings and bake it at home.
+\item \textbf{Order a cooked pizza}: the pizzeria cooks it; you only provide a table and your appetite.
+\item \textbf{Eat at the restaurant}: everything is done for you; you simply sit down and eat.
+\end{itemize}
+
+Cloud service models follow exactly the same logic. Every IT system is built as a \emph{stack} of layers: at the bottom, physical \textbf{networking}, \textbf{storage} and \textbf{servers}; above them, \textbf{virtualisation} (software that carves one physical machine into many virtual machines); then the \textbf{operating system} (OS); then \textbf{middleware} and the \textbf{runtime} (the software environment in which programs execute, e.g.\ a Java or Python runtime); and finally the \textbf{data} and the \textbf{applications} that users actually see.
+
+The essential question is: \emph{who manages each layer --- the cloud provider or the customer?} Each service model is simply a different answer to that question. This division of labour is called \cle{shared responsibility}.
+
+\begin{definition}[Service model]
+A \cle{cloud service model} is a category of cloud offering defined by \textbf{which layers of the computing stack are managed by the provider} and which remain the responsibility of the customer. The three standard models defined by NIST SP 800-145 are \cle{IaaS}, \cle{PaaS} and \cle{SaaS}.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[x=2.9cm,y=0.52cm,font=\small]
+% legend colours: provider = popblue, customer = poporange
+% columns: On-premises (all customer), IaaS, PaaS, SaaS
+% layers bottom to top: networking, storage, servers, virtualisation, OS, middleware, runtime, data, applications
+% On-premises: all orange
+\foreach \y/\name in {0/Networking,1/Storage,2/Servers,3/Virtualisation,4/O.S.,5/Middleware,6/Runtime,7/Data,8/Applications}{
+  \fill[poporange] (0,\y) rectangle (0.9,\y+0.9);
+  \node at (0.45,\y+0.45) {\name};
+}
+\node[align=center] at (0.45,9.6) {\textbf{On-}\\\textbf{premises}};
+% IaaS: bottom 4 provider, top 5 customer
+\foreach \y/\name in {0/Networking,1/Storage,2/Servers,3/Virtualisation}{
+  \fill[popblue] (1.2,\y) rectangle (2.1,\y+0.9);
+  \node[white] at (1.65,\y+0.45) {\name};
+}
+\foreach \y/\name in {4/O.S.,5/Middleware,6/Runtime,7/Data,8/Applications}{
+  \fill[poporange] (1.2,\y) rectangle (2.1,\y+0.9);
+  \node at (1.65,\y+0.45) {\name};
+}
+\node at (1.65,9.6) {\textbf{IaaS}};
+% PaaS: bottom 7 provider, top 2 customer
+\foreach \y/\name in {0/Networking,1/Storage,2/Servers,3/Virtualisation,4/O.S.,5/Middleware,6/Runtime}{
+  \fill[popblue] (2.4,\y) rectangle (3.3,\y+0.9);
+  \node[white] at (2.85,\y+0.45) {\name};
+}
+\foreach \y/\name in {7/Data,8/Applications}{
+  \fill[poporange] (2.4,\y) rectangle (3.3,\y+0.9);
+  \node at (2.85,\y+0.45) {\name};
+}
+\node at (2.85,9.6) {\textbf{PaaS}};
+% SaaS: all provider
+\foreach \y/\name in {0/Networking,1/Storage,2/Servers,3/Virtualisation,4/O.S.,5/Middleware,6/Runtime,7/Data,8/Applications}{
+  \fill[popblue] (3.6,\y) rectangle (4.5,\y+0.9);
+  \node[white] at (4.05,\y+0.45) {\name};
+}
+\node at (4.05,9.6) {\textbf{SaaS}};
+% legend
+\fill[popblue] (0,-1.6) rectangle (0.3,-1.1); \node[anchor=west] at (0.4,-1.35) {Managed by the provider};
+\fill[poporange] (2.4,-1.6) rectangle (2.7,-1.1); \node[anchor=west] at (2.8,-1.35) {Managed by the customer};
+\end{tikzpicture}
+\end{center}
+\legende{The shared responsibility stack: which layers the provider manages (blue) and which the customer manages (orange) in each model.}
+\end{popfigure}
+
+\courssub{IaaS --- Infrastructure as a Service}
+
+\begin{definition}[IaaS]
+\cle{Infrastructure as a Service (IaaS)} is a cloud service model in which the provider supplies \textbf{virtualised fundamental computing resources} --- servers, storage and networking --- over the Internet, while the \textbf{customer installs and manages the operating system, middleware, runtime, data and applications}.
+\end{definition}
+
+Intuition: IaaS is like \textbf{renting an empty shop} in Douala. The landlord provides the building, electricity and water connections; you bring your own shelves, goods and staff. You have great freedom, but also great responsibility.
+
+With IaaS, a company no longer buys physical servers. Instead it creates \cle{virtual machines} (VMs) in the provider's data centre, chooses how much processing power, memory and disk space each VM receives, and pays only for what it uses (pay-as-you-go). Well-known examples include \textbf{Amazon EC2} (Elastic Compute Cloud), \textbf{Microsoft Azure Virtual Machines} and \textbf{Google Compute Engine}.
+
+\begin{exemplebox}[A startup in Buea using IaaS]
+A young startup in Buea has developed a mobile application that helps farmers check cocoa prices. Instead of buying an expensive physical server, the team rents a virtual server on Amazon EC2, installs Linux, a web server and their database on it, and deploys their application. When the number of users grows during the harvest season, they increase the VM's capacity in a few clicks --- and reduce it afterwards to save money.
+\end{exemplebox}
+
+\begin{attention}[IaaS requires system administration skills]
+In IaaS the customer is responsible for patching the OS, configuring firewalls, managing backups and monitoring the virtual machines. This model is chosen when the organisation has qualified IT staff and needs full control over the software stack.
+\end{attention}
+
+\courssub{PaaS --- Platform as a Service}
+
+\begin{definition}[PaaS]
+\cle{Platform as a Service (PaaS)} is a cloud service model in which the provider supplies the \textbf{hardware, the operating system and the development/execution tools} (middleware and runtime), so that the customer only has to \textbf{develop, deploy and manage their own applications and data}.
+\end{definition}
+
+Intuition: PaaS is like renting a \textbf{fully equipped kitchen}. The ovens, fridges and utensils are already there and maintained by the owner; the cook only brings the recipe and the ingredients. A developer using PaaS does not install or update the operating system, does not configure the web server, and does not worry about security patches: the provider handles all of that. The developer simply uploads the application code, and the platform runs it, scales it and keeps it alive.
+
+Well-known examples include \textbf{Google App Engine}, \textbf{Heroku} and \textbf{Microsoft Azure App Service}.
+
+\begin{exemplebox}[A developer team using PaaS]
+A team of three students from the University of Yaound\'e I builds a web application for registering candidates for a school competition. They deploy their Python code on Google App Engine. They never touch any server: the platform runs the code, manages the OS updates, and automatically adds capacity when thousands of candidates connect on the registration deadline day.
+\end{exemplebox}
+
+\begin{attention}[PaaS users do NOT manage the operating system]
+A very common exam mistake is to write that in PaaS the customer manages the OS. This is false: in \textbf{PaaS}, the provider manages everything \emph{up to and including the runtime} (hardware, virtualisation, OS, middleware). The customer manages \textbf{only the applications and the data}. If the customer manages the OS, then the service is IaaS, not PaaS.
+\end{attention}
+
+\courssub{SaaS --- Software as a Service}
+
+\begin{definition}[SaaS]
+\cle{Software as a Service (SaaS)} is a cloud service model in which the provider supplies \textbf{complete, ready-to-use applications} that customers access through a \textbf{web browser} (or a thin app) over the Internet; the customer manages only their \textbf{own data and user settings}.
+\end{definition}
+
+Intuition: SaaS is like taking a \textbf{taxi} instead of buying and maintaining a car. You simply use the service; the driver (provider) owns, fuels, insures and repairs the vehicle. With SaaS there is nothing to install, nothing to update, no server to maintain: you open a browser, log in, and work. The provider manages the entire stack.
+
+Everyday examples include \textbf{Gmail} (webmail), \textbf{Google Workspace} (Docs, Sheets, Classroom), \textbf{Microsoft 365} (Word, Excel, Teams online) and \textbf{Dropbox} (file storage and sharing).
+
+\begin{exemplebox}[A school in Bamenda using SaaS]
+A secondary school in Bamenda uses \textbf{Google Classroom} for homework and \textbf{Gmail} for staff communication. Teachers create classes, post assignments and mark scripts online. The school buys no server, installs no software and employs no system administrator for these tools: Google manages everything. The school only manages its user accounts, its data and its settings. This is a pure SaaS situation.
+\end{exemplebox}
+
+\begin{attention}[Gmail is SaaS, not IaaS]
+Many candidates classify Gmail or Yahoo Mail as IaaS ``because it runs on servers''. This is wrong. The question is not where the software runs, but \emph{what the customer manages}. A Gmail user manages neither servers, nor storage, nor an operating system, nor even the mail application itself --- only their messages and settings. Webmail is therefore a textbook example of \textbf{SaaS}.
+\end{attention}
+
+\courssub{Comparing the Models and Choosing Between Them}
+
+\begin{propriete}[Control versus convenience]
+The \textbf{higher} the service level (from IaaS to PaaS to SaaS), the \textbf{less} the customer has to manage and the \textbf{faster} the solution can be used --- but the \textbf{less control} and the \textbf{less flexibility} the customer has over the underlying system. Conversely, IaaS gives maximum control at the price of maximum management effort. (Not a theorem to prove, but a guiding principle to justify choices in examination questions.)
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+% pyramid: IaaS base, PaaS middle, SaaS top
+\fill[popblueL] (-3,0) -- (3,0) -- (2,1.6) -- (-2,1.6) -- cycle;
+\fill[popgreenL] (-2,1.6) -- (2,1.6) -- (1,3.2) -- (-1,3.2) -- cycle;
+\fill[popgold] (-1,3.2) -- (1,3.2) -- (0,4.8) -- cycle;
+\node at (0,0.8) {\textbf{IaaS}: Amazon EC2, Azure VMs};
+\node at (0,2.4) {\textbf{PaaS}: App Engine, Heroku};
+\node[align=center] at (0,3.95) {\textbf{SaaS}\\ Gmail, Microsoft 365};
+\draw[->,thick,popdark] (3.4,0.3) -- (3.4,4.5) node[midway,right,align=center]{more managed\\ less control};
+\draw[->,thick,popdark] (-3.4,4.5) -- (-3.4,0.3) node[midway,left,align=center]{more control\\ more effort};
+\end{tikzpicture}
+\end{center}
+\legende{The cloud service pyramid: from infrastructure (IaaS) up to complete software (SaaS), with typical examples.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{IaaS} & \textbf{PaaS} & \textbf{SaaS} \\
+\hline
+Customer manages & OS, runtime, apps, data & Apps, data only & Own data and settings \\
+\hline
+Provider manages & Hardware, virtualisation & Hardware to runtime & Entire stack \\
+\hline
+Technical skills needed & High (system administration) & Medium (programming) & Low (ordinary user) \\
+\hline
+Control and flexibility & Maximum & Medium & Minimum \\
+\hline
+Cost model & Pay per VM/hour + storage & Pay per app execution / instance & Subscription per user/month \\
+\hline
+Scalability & Manual or auto-scaling VMs & Automatic (platform handles) & Transparent to user \\
+\hline
+Typical user & IT company, startup, sysadmin & Developer team, DevOps & School, office, individual \\
+\hline
+Examples & Amazon EC2, Azure VMs, Google Compute Engine & Google App Engine, Heroku, Azure App Service & Gmail, Microsoft 365, Dropbox, Google Classroom \\
+\hline
+\end{tabularx}
+\end{center}
+
+To choose a model, ask four questions: \textbf{(1)} What technical skills are available? \textbf{(2)} How much control over the system is needed? \textbf{(3)} What is the budget (buying servers vs.\ paying a subscription)? \textbf{(4)} What type of application is involved (a standard need like email, or a custom-built program)? A school that only needs email and classroom tools chooses SaaS; a developer team building a custom app chooses PaaS; a company that must fully control its servers chooses IaaS.
+
+\begin{methode}[Classifying a cloud service]
+To classify any given service in an examination question:
+\begin{enumerate}
+\item Ask: \emph{``What does the customer still have to install and manage?''}
+\item If the customer manages the \textbf{OS and everything above} $\Rightarrow$ \textbf{IaaS}.
+\item If the customer manages only their \textbf{application code and data} $\Rightarrow$ \textbf{PaaS}.
+\item If the customer manages only their \textbf{data and settings}, using a ready-made application in a browser $\Rightarrow$ \textbf{SaaS}.
+\item Justify your answer by naming the layers the provider manages.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Classifying real services]
+For each situation, state the service model and justify: (a) A company rents virtual machines on Microsoft Azure, installs Windows Server and its own accounting software on them. (b) A teacher creates and shares quizzes using Google Forms. (c) A developer uploads her PHP code to Heroku, which runs it without her configuring any server.
+\tcblower
+\textbf{Solution.} Apply the method ``what does the customer still manage?''
+\begin{itemize}
+\item (a) The customer installs and manages the \textbf{operating system} (Windows Server) and the application; Azure provides only the virtualised hardware. This is \textbf{IaaS}.
+\item (b) The teacher uses a complete, ready-made application through a browser and manages only her own quizzes (data). Google manages the entire stack. This is \textbf{SaaS}.
+\item (c) The developer manages only her \textbf{code and data}; Heroku manages the servers, OS and runtime. This is \textbf{PaaS}.
+\end{itemize}
+\end{exoresolu}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item The three service models differ by \textbf{who manages which layers} of the stack (shared responsibility).
+\item \textbf{IaaS}: provider gives virtualised hardware; customer manages OS and above (Amazon EC2, Azure VMs).
+\item \textbf{PaaS}: provider gives hardware, OS and runtime; customer manages apps and data (Google App Engine, Heroku).
+\item \textbf{SaaS}: provider gives complete applications via a browser; customer manages only data and settings (Gmail, Microsoft 365, Dropbox).
+\item More management by the provider $\Rightarrow$ less effort but less control for the customer.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Beyond the three classics: XaaS (GCE enrichment)]
+Cloud providers now sell almost everything ``as a Service''. You may meet these labels (recognition level only): \textbf{DaaS} (Desktop as a Service --- a full virtual desktop delivered through the browser), \textbf{STaaS} (Storage as a Service --- renting raw storage space, e.g.\ for backups) and \textbf{FaaS} (Function as a Service, also called \emph{serverless} computing --- the provider runs small functions on demand and the customer does not manage any server at all). The general trend is summarised by the acronym \textbf{XaaS}: ``Anything as a Service''.
+\end{savaistu}
+
+\begin{attention}[Exam tip: memorise examples]
+GCE questions frequently ask you to ``give two examples'' of each service model. Learn at least two per model by heart: \textbf{IaaS} --- Amazon EC2, Microsoft Azure Virtual Machines; \textbf{PaaS} --- Google App Engine, Heroku; \textbf{SaaS} --- Gmail, Microsoft 365 (or Dropbox, Google Classroom). An answer without concrete examples often loses marks.
+\end{attention}
+
+\begin{exercice}[Classify and justify]
+A cybercaf\'e owner in Limbe (i) stores his business files on Dropbox, (ii) rents a virtual server from a provider and installs Ubuntu and a billing application on it, and (iii) pays for an online platform where he only uploads the code of his website. Identify the service model used in each case and justify your answer in one sentence each.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(i) \textbf{SaaS}: Dropbox is a complete application used through a browser or app; the owner manages only his files (data). (ii) \textbf{IaaS}: he rents virtualised hardware and manages the operating system (Ubuntu) and the application himself. (iii) \textbf{PaaS}: the platform manages the servers, OS and runtime; he manages only his website's code and data.
+\end{corrige}
+
+\coursec{Cloud Deployment Models}
+
+In the previous section we studied \emph{what} a cloud can deliver: infrastructure (IaaS), a platform (PaaS) or ready-made software (SaaS). But two organisations using exactly the same service, say Gmail (SaaS) or virtual servers (IaaS), may be in very different situations depending on \emph{who owns the machines} and \emph{who is allowed to use them}. A cybercaf\'e in Buea renting a few virtual servers from Amazon is not in the same position as a bank in Douala running its own private data centre. This \emph{who owns it, who uses it} question is precisely what a \cle{deployment model} describes.
+
+\courssub{What is a Deployment Model?}
+
+Imagine you need somewhere to live in Yaound\'e. You could rent a room in a large hotel (cheap, shared with many strangers), build your own house (expensive, but fully yours), share a residence with colleagues from the same institution, or combine several of these options. Cloud computing offers exactly the same four choices for computing infrastructure.
+
+\begin{definition}[Deployment model]
+A \cle{cloud deployment model} defines \textbf{who owns the cloud infrastructure}, \textbf{where it is located}, and \textbf{who is allowed to use it}. It answers the questions: \emph{Whose computers are these? Who else is using them? Who controls them?}
+\end{definition}
+
+\begin{aretenir}[The four deployment models]
+The standard deployment models are: the \cle{public cloud}, the \cle{private cloud}, the \cle{community cloud} and the \cle{hybrid cloud}. Do not confuse them with the \emph{service} models (IaaS, PaaS, SaaS): a service model says \emph{what} is provided; a deployment model says \emph{to whom} and \emph{by whom} it is provided.
+\end{aretenir}
+
+\courssub{The Public Cloud}
+
+\begin{definition}[Public cloud]
+A \cle{public cloud} is a cloud infrastructure \textbf{owned and operated by an external provider} and made available to \textbf{the general public or to many unrelated customers} over the Internet. The same physical machines, storage and networks are shared by many customers, who are isolated from one another logically (by software). Well-known public clouds include \textbf{Amazon Web Services (AWS)}, \textbf{Microsoft Azure} and \textbf{Google Cloud}.
+\end{definition}
+
+The sharing of physical resources by several customers has a name:
+
+\begin{definition}[Multi-tenancy]
+\cle{Multi-tenancy} is the property of a cloud system in which \textbf{several independent customers (tenants) share the same physical resources} (servers, disks, network) while being \textbf{logically isolated} from one another: each tenant sees only its own data and virtual machines, as if it were alone on the infrastructure. Isolation is enforced by software (virtualisation, access control), not by separate hardware.
+\end{definition}
+
+Think of a block of flats: many families live in the same building (shared walls, shared water supply), but each family has its own locked door. Multi-tenancy is what makes the public cloud cheap: the provider spreads the cost of huge data centres over thousands of customers.
+
+\textbf{Advantages of the public cloud.}
+\begin{itemize}
+\item \textbf{Low cost:} no hardware to buy; you pay only for what you consume (pay-as-you-go).
+\item \textbf{High scalability:} resources can grow or shrink almost instantly with demand.
+\item \textbf{No maintenance:} the provider handles hardware failures, power, cooling and updates.
+\item \textbf{Immediate availability:} services can be obtained in minutes, from anywhere with Internet access.
+\end{itemize}
+
+\textbf{Risks and limitations.}
+\begin{itemize}
+\item \textbf{Less control:} you do not choose where the machines are or how they are managed.
+\item \textbf{Data location and privacy:} your data may physically reside in another country, under foreign laws.
+\item \textbf{Dependence on the provider} (vendor lock-in) and on your Internet connection.
+\item \textbf{Shared environment:} although isolation is strong, some organisations simply cannot accept sharing hardware with strangers.
+\end{itemize}
+
+\begin{savaistu}[Public cloud in Cameroon]
+A small business in Douala --- say an online shop or a startup --- typically cannot afford its own data centre. By renting public SaaS (e-mail, accounting software, online storage) it obtains professional tools for a small monthly fee, paid even by mobile money in some cases. This is why public cloud services are driving digital entrepreneurship among Cameroonian SMEs.
+\end{savaistu}
+
+\courssub{The Private Cloud}
+
+\begin{definition}[Private cloud]
+A \cle{private cloud} is a cloud infrastructure \textbf{dedicated exclusively to a single organisation}. It may be located \textbf{on-premises} (in the organisation's own data centre) or \textbf{hosted by a third party}, but in both cases the resources are reserved for that one organisation and are not shared with other customers.
+\end{definition}
+
+A private cloud keeps the \emph{cloud technologies} (virtualisation, self-service, elasticity) but applies them to infrastructure that belongs to, or is reserved for, one organisation only. It is the model traditionally chosen by \textbf{banks}, \textbf{governments}, \textbf{armies} and \textbf{hospitals}, whose data are too sensitive to leave their control.
+
+\textbf{Advantages.} Maximum \textbf{control} over hardware, software and data location; easier \textbf{compliance} with national regulations on sensitive data; security policies tailored to the organisation; performance not affected by other tenants.
+
+\textbf{Costs and limitations.} High \textbf{initial investment} (servers, data centre, skilled staff); the organisation bears \textbf{maintenance} and upgrade costs; scalability is limited by the hardware actually purchased.
+
+\begin{attention}[Common mistake: ``private account'' is not a private cloud]
+Having a \emph{private account} with a password on Gmail or on AWS does \textbf{not} mean you have a private cloud. A private cloud is \textbf{dedicated infrastructure}: the physical resources themselves are reserved for one organisation. Your password-protected account on a public cloud is still multi-tenant --- you are sharing the machines with millions of other users.
+\end{attention}
+
+\courssub{The Community Cloud}
+
+\begin{definition}[Community cloud]
+A \cle{community cloud} is a cloud infrastructure \textbf{shared by several organisations that have common needs or concerns} --- for example similar security requirements, the same regulations, or a common mission. It may be owned and managed by one or more of the organisations in the community, or by a third party.
+\end{definition}
+
+Typical examples: several \textbf{universities} sharing a research computing platform; a group of \textbf{hospitals} sharing a health-data system under the same confidentiality rules; several \textbf{government agencies} sharing a common e-government infrastructure. The community cloud is a compromise: costs are shared (cheaper than private), but access is restricted to a known group (more controlled than public).
+
+\courssub{The Hybrid Cloud}
+
+\begin{definition}[Hybrid cloud]
+A \cle{hybrid cloud} is a cloud infrastructure that \textbf{combines two or more different deployment models} (for example private + public), bound together by technology that allows \textbf{data and applications to move between them}. Each part remains a distinct cloud, but they work as a coordinated whole.
+\end{definition}
+
+The classic pattern: an organisation keeps its \textbf{sensitive data} (customer accounts, medical records) on a \textbf{private cloud} where it has full control, while running its \textbf{public website} or seasonal workloads on a \textbf{public cloud} where it benefits from cheap, elastic capacity. Another pattern is \emph{cloud bursting}: everyday demand runs on the private cloud, and traffic peaks overflow onto the public cloud.
+
+\begin{exemplebox}[Cloud bursting at examination results time]
+Consider an examinations board whose website is quiet all year but receives hundreds of thousands of visits on the day results are published. Buying enough private hardware for that single peak would waste money for the other 364 days. With a hybrid cloud, the board runs the site on its private cloud all year, and on results day the extra traffic ``bursts'' onto rented public-cloud capacity, which is released again afterwards. The board pays for the peak capacity only for the few days it is needed.
+\end{exemplebox}
+
+\begin{attention}[Common mistake: hybrid does not mean ``two public clouds'']
+Using AWS \emph{and} Azure at the same time is using \textbf{two public clouds} (sometimes called \emph{multi-cloud}); it is \textbf{not} a hybrid cloud. A hybrid cloud must mix \textbf{at least two different deployment models} --- for example a private cloud connected to a public cloud --- with data or applications able to move between them.
+\end{attention}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.92, every node/.style={transform shape}]
+\tikzset{
+  cloudnode/.style={cloud, draw=popblue, fill=popblueL, thick, aspect=2, minimum width=3.1cm, minimum height=1.6cm, inner sep=1pt},
+  pcloud/.style={cloud, draw=poppurple, fill=poppurple!15},
+  ccloud/.style={cloud, draw=popgreen, fill=popgreenL},
+  user/.style={circle, draw=popdark, fill=white, thick, minimum size=0.55cm, font=\scriptsize},
+  org/.style={rectangle, rounded corners=2pt, draw=popdark, fill=white, thick, font=\scriptsize, align=center},
+  ttl/.style={font=\bfseries\small, text=popdark}
+}
+% Panel 1: Public
+\node[ttl] at (0,2.6) {Public cloud};
+\node[cloudnode] (pub) at (0,1.2) {\scriptsize Provider cloud};
+\node[user] (u1) at (-2.2,-0.6) {};
+\node[user] (u2) at (0,-0.9) {};
+\node[user] (u3) at (2.2,-0.6) {};
+\node[font=\scriptsize, text=popmuted] at (0,-1.6) {many unrelated customers};
+\draw[thick, popline] (u1) -- (pub.south west);
+\draw[thick, popline] (u2) -- (pub.south);
+\draw[thick, popline] (u3) -- (pub.south east);
+% Panel 2: Private
+\begin{scope}[xshift=6.4cm]
+\node[ttl] at (0,2.6) {Private cloud};
+\node[pcloud] (prv) at (0,1.2) {\scriptsize Dedicated cloud};
+\node[org, align=center] (bank) at (0,-0.8){One organisation\\(bank, ministry)};
+\draw[thick, popline] (bank) -- (prv.south);
+\node[font=\scriptsize, text=popmuted] at (0,-1.6) {single tenant};
+\end{scope}
+% Panel 3: Community
+\begin{scope}[yshift=-4.6cm]
+\node[ttl] at (0,2.6) {Community cloud};
+\node[ccloud] (com) at (0,1.2) {\scriptsize Shared cloud};
+\node[org] (o1) at (-2.4,-0.7) {Univ.\ A};
+\node[org] (o2) at (0,-1.0) {Univ.\ B};
+\node[org] (o3) at (2.4,-0.7) {Univ.\ C};
+\draw[thick, popline] (o1) -- (com.south west);
+\draw[thick, popline] (o2) -- (com.south);
+\draw[thick, popline] (o3) -- (com.south east);
+\node[font=\scriptsize, text=popmuted] at (0,-1.7) {organisations with common needs};
+\end{scope}
+% Panel 4: Hybrid
+\begin{scope}[xshift=6.4cm, yshift=-4.6cm]
+\node[ttl] at (0,2.6) {Hybrid cloud};
+\node[pcloud, minimum width=2.4cm] (hp) at (-1.6,1.2) {\scriptsize Private};
+\node[cloudnode, minimum width=2.4cm] (hq) at (1.8,1.2) {\scriptsize Public};
+\draw[very thick, poporange, <->] (hp) -- (hq) node[midway, above, font=\scriptsize, text=popdark]{data/apps};
+\node[org] (ent) at (0.1,-0.8) {One organisation};
+\draw[thick, popline] (ent) -- (hp.south);
+\draw[thick, popline] (ent) -- (hq.south);
+\node[font=\scriptsize, text=popmuted] at (0.1,-1.7) {workloads move between models};
+\end{scope}
+\end{tikzpicture}
+\legende{The four deployment models: who connects to which cloud infrastructure.}
+\end{popfigure}
+
+\courssub{Comparing the Deployment Models}
+
+Choosing a deployment model is an engineering and management decision based on five criteria: \cle{cost}, \cle{control}, \cle{security}, \cle{scalability} and \cle{compliance} (obeying laws and regulations on data).
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Public} & \textbf{Private} & \textbf{Community} & \textbf{Hybrid} \\
+\hline
+Cost & Very low & High & Shared & Medium \\
+\hline
+Control & Low & Very high & Medium & High \\
+\hline
+Security & Good (shared) & Very high & High & High \\
+\hline
+Scalability & Excellent & Limited & Good & Very good \\
+\hline
+Compliance & Difficult & Easy & Shared rules & Flexible \\
+\hline
+Best for & SMEs, startups & Banks, government & Univ., hospitals & Mixed needs \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{methode}[Choosing a deployment model]
+To select the right deployment model for an organisation, proceed in order:
+\begin{enumerate}
+\item \textbf{List the constraints:} How sensitive are the data (personal, financial, State secrets)? What is the budget (capital available, or only monthly payments)? Are there regulations imposing where data must be stored? How variable is the workload?
+\item \textbf{Rank the criteria:} decide which of cost, control, security, scalability and compliance matter most.
+\item \textbf{Match to a model:} tight budget + ordinary data $\Rightarrow$ public; sensitive data + regulation $\Rightarrow$ private; several similar institutions $\Rightarrow$ community; mixed needs $\Rightarrow$ hybrid.
+\item \textbf{Justify the choice} in terms of the constraints listed in step 1 --- this justification is what the examiner wants to read.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Choosing a model for three Cameroonian organisations]
+For each organisation, propose a deployment model and justify it: (a) a small private school in Bamenda wanting e-mail and online enrolment; (b) a commercial bank in Douala storing customer account data; (c) a ministry that must keep citizens' identity data under national control but also publish a high-traffic public information portal.
+\tcblower
+\textbf{(a) Small school.} Constraints: very small budget, no IT staff, non-critical data, need for ready-made tools. The \textbf{public cloud} (typically public SaaS such as hosted e-mail and a web enrolment application) is the best match: no hardware to buy, pay-as-you-go, immediately available. Control and compliance are not major issues here.
+
+\textbf{(b) Commercial bank.} Constraints: highly sensitive financial data, strict confidentiality obligations, need for full control, sufficient budget. A \textbf{private cloud} (on-premises or dedicated hosting) is appropriate: the bank keeps exclusive control of the infrastructure, applies its own security policies and can demonstrate compliance to regulators. The high cost is justified by the sensitivity of the data.
+
+\textbf{(c) Ministry.} Constraints: citizens' identity data must remain under national control (private side), while the public portal faces large, variable traffic (public side). A \textbf{hybrid cloud} is the right answer: identity databases stay on a \textbf{private} (or government community) cloud, while the public website runs on a \textbf{public} cloud that absorbs traffic peaks cheaply. Data and applications are coordinated between the two. This is exactly the reasoning behind many national e-government architectures promoted with bodies such as ANTIC.
+\end{exoresolu}
+
+\begin{exercice}[Deployment models in context]
+\begin{enumerate}
+\item Define \emph{multi-tenancy} and explain why it makes the public cloud cheap.
+\item A group of five regional hospitals wants to share a medical-imaging platform under common confidentiality rules. Which deployment model do you recommend? Justify.
+\item State two differences between a private cloud and a private account on a public cloud.
+\item True or false (justify): ``A company that uses both AWS and Google Cloud is using a hybrid cloud.''
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Multi-tenancy means several independent customers share the same physical resources while being logically isolated by software. It makes the public cloud cheap because the provider spreads the cost of its data centres over thousands of tenants, so each customer pays only a small share.
+\item A \textbf{community cloud}: the hospitals form a group with common needs (health-data confidentiality, same regulations) and share the costs of a restricted infrastructure.
+\item A private cloud is \emph{dedicated infrastructure} reserved for one organisation (control over hardware and data location); a private account on a public cloud is only a password-protected access to \emph{shared, multi-tenant} infrastructure controlled by the provider.
+\item \textbf{False.} Using two public clouds is multi-cloud, not hybrid. A hybrid cloud mixes at least two \emph{different} deployment models (e.g.\ private + public) with data and applications able to move between them.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A deployment model describes \textbf{who owns} the infrastructure and \textbf{who may use} it: public, private, community or hybrid.
+\item \textbf{Public:} provider-owned, multi-tenant, cheap and scalable, but less control. \textbf{Private:} dedicated to one organisation, maximum control and compliance, but expensive. \textbf{Community:} shared by organisations with common needs. \textbf{Hybrid:} combines at least two different models with data moving between them.
+\item Choose by listing constraints (data sensitivity, budget, regulation, workload) and matching them to the model --- and always \textbf{justify} the match.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Cloud Security and Cloud Ethics}
+
+In the previous section we studied the different \cle{deployment models} (public, private, hybrid, community) and saw that each model offers a different balance between cost, control and security. Whichever model is chosen, one question always comes back: \emph{``Is my data safe, and who else can see it?''} This final section answers that question. We first explain why security is the number one concern in cloud adoption, then we examine the main threats and the protection measures, including the crucial role of the \cle{Service Level Agreement} (SLA). Finally, we discuss four major ethical issues — privacy, data sovereignty, vendor lock-in and the digital divide — and we end with practical guidelines for responsible cloud usage.
+
+\courssub{Why Security Is the Main Concern in Cloud Adoption}
+
+\textbf{A concrete situation.} A secondary school in Buea keeps its students' report cards on the head teacher's laptop. The laptop never leaves the office; only the head teacher knows the password. Now the school moves to a cloud-based school management system hosted on servers in Europe. Overnight, the same data crosses the Internet, passes through routers the school does not control, and is stored on machines managed by people the school has never met. The convenience is real — teachers can enter marks from home — but so is the new exposure.
+
+The fundamental change is this: with cloud computing, \textbf{data leaves the organisation's premises}. It is transmitted over public networks and stored on shared infrastructure owned by a third party. The customer no longer physically controls who touches the machines, who administers them, or under which country's laws they operate. Surveys of IT decision-makers consistently rank security and privacy as the top barrier to cloud adoption — ahead of cost and performance. This is why a GCE candidate must be able to identify the threats, the protections, and the \emph{shared} nature of cloud security.
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth]
+% Nodes
+\node[draw=popblue, fill=popblueL, rounded corners, text width=2.4cm, align=center, minimum height=1.2cm] (user) at (0,0) {\textbf{User device}\\ Yaound\'e};
+\node[draw=popmuted, fill=white, rounded corners, text width=2.2cm, align=center, minimum height=1.2cm] (isp) at (4,0) {\textbf{Internet}\\ (ISP, routers)};
+\node[draw=poppurple, fill=poppink!40, rounded corners, text width=2.6cm, align=center, minimum height=1.2cm] (dc) at (8,0) {\textbf{Data centre}\\ abroad};
+% Arrows
+\draw[->, very thick, popdark] (user) -- (isp);
+\draw[->, very thick, popdark] (isp) -- (dc);
+% Threats (orange)
+\node[draw=poporange, fill=white, text width=2.6cm, align=center, font=\small] (t1) at (2,1.7) {\textbf{Threat:} account hijacking (phishing, weak password)};
+\draw[->, poporange, dashed] (t1.south) -- (1,0.65);
+\node[draw=poporange, fill=white, text width=2.6cm, align=center, font=\small] (t2) at (4,-2) {\textbf{Threat:} interception of data in transit};
+\draw[->, poporange, dashed] (t2.north) -- (4,-0.65);
+\node[draw=poporange, fill=white, text width=2.6cm, align=center, font=\small] (t3) at (8,1.7) {\textbf{Threat:} provider access, foreign laws, insider};
+\draw[->, poporange, dashed] (t3.south) -- (8,0.65);
+% Protections (green)
+\node[draw=popgreen, fill=popgreenL, text width=2.4cm, align=center, font=\small] (p1) at (0,-2.2) {\textbf{Protection:} strong password + 2FA};
+\draw[->, popgreen] (p1.north) -- (0,-0.65);
+\node[draw=popgreen, fill=popgreenL, text width=2.4cm, align=center, font=\small] (p2) at (6,-2) {\textbf{Protection:} encryption HTTPS/SSL};
+\draw[->, popgreen] (p2.north) -- (5.5,-0.55);
+\node[draw=popgreen, fill=popgreenL, text width=2.6cm, align=center, font=\small] (p3) at (11,0) {\textbf{Protection:} encryption at rest, backups, SLA};
+\draw[->, popgreen] (p3.west) -- (dc.east);
+\end{tikzpicture}
+\legende{Data journey from Yaound\'e to a data centre abroad: threat points (orange, dashed) and protections (green).}
+\end{popfigure}
+
+\courssub{Main Threats to Cloud Security}
+
+A \cle{threat} is any event or action that can compromise the \textbf{confidentiality}, \textbf{integrity} or \textbf{availability} of data (the famous \emph{CIA triad}). The main cloud threats are:
+
+\begin{itemize}
+\item \textbf{Data breaches:} attackers (or accidents) expose stored data to unauthorised persons — e.g.\ a misconfigured storage folder left publicly readable.
+\item \textbf{Account hijacking:} an attacker takes control of a user's account, usually through \emph{weak passwords} (``123456'', names, birthdays) or \emph{phishing} (fake login pages sent by SMS, WhatsApp or email that steal credentials). Once inside, the attacker reads, modifies or deletes everything.
+\item \textbf{Insecure interfaces and APIs:} cloud services are managed through web interfaces and \cle{APIs} (Application Programming Interfaces). If these are poorly designed or unprotected, attackers exploit them to bypass normal controls.
+\item \textbf{Data loss:} data can be destroyed by accidental deletion, ransomware, fire or disk failure at the provider — especially dangerous if the customer kept \emph{no other copy}.
+\item \textbf{Denial-of-service (DoS/DDoS) attacks:} attackers flood the service with traffic so that legitimate users can no longer access it — a direct attack on \emph{availability}.
+\item \textbf{Insider threats at the provider:} a dishonest or careless employee of the cloud provider may access customer data, since provider staff administer the machines.
+\end{itemize}
+
+\courssub{Protection Measures}
+
+\begin{definition}[Encryption in transit and at rest]
+\cle{Encryption} is the mathematical transformation of readable data (\emph{plaintext}) into an unreadable form (\emph{ciphertext}) using a key, so that only someone holding the correct key can read it.
+\begin{itemize}
+\item \textbf{Encryption in transit} protects data \emph{while it travels} over the network. It is provided by protocols such as \textbf{HTTPS/SSL/TLS} — visible as the padlock in the browser address bar. It defeats interception (``eavesdropping'').
+\item \textbf{Encryption at rest} protects data \emph{while it is stored} on the provider's disks, so that even someone who steals or accesses the physical storage cannot read the files without the key.
+\end{itemize}
+Both are necessary: one protects the journey, the other protects the destination.
+\end{definition}
+
+The essential protection measures are:
+
+\begin{itemize}
+\item \textbf{Strong authentication and two-factor authentication (2FA):} a long, unique password plus a second proof of identity (a code sent by SMS or generated by an app). Even if the password is stolen by phishing, the attacker cannot log in without the second factor.
+\item \textbf{Encryption} of data in transit (HTTPS/SSL) and at rest, as defined above.
+\item \textbf{Regular backups:} keeping independent, up-to-date copies of important data (ideally in a second location) so that data loss or ransomware is survivable.
+\item \textbf{Access control and least privilege:} each user receives only the \emph{minimum} rights needed for their job. A form teacher who only enters marks should not be able to delete the whole database.
+\item \textbf{Choosing reputable providers:} established providers with recognised security certifications, transparent policies and a good track record.
+\item \textbf{Reading the SLA} before signing (see below).
+\end{itemize}
+
+\begin{definition}[Service Level Agreement (SLA)]
+A \cle{Service Level Agreement} (SLA) is the contractual document in which a cloud provider formally commits to measurable levels of service, typically:
+\begin{itemize}
+\item \textbf{Guaranteed availability} (``uptime''), e.g.\ 99.9\,\% per month — which still allows about 43 minutes of downtime per month;
+\item \textbf{Support} commitments (response times, support channels);
+\item \textbf{Compensation} (service credits or refunds) if the commitments are not met.
+\end{itemize}
+The SLA matters because it defines what the customer can \emph{legally demand}. A customer who never reads the SLA may discover — after an outage or a data loss — that the provider owes almost nothing. \textbf{Always read the SLA before signing.}
+\end{definition}
+
+\courssub{Shared Responsibility for Security}
+
+\begin{attention}[The most common mistake]
+Believing that ``the provider is a big company, so security is their problem'' is the single most dangerous misconception in cloud computing. The provider secures the \emph{infrastructure}; the \textbf{customer} remains responsible for securing \emph{accounts, passwords, access rights and data classification}. Most real-world cloud breaches come from the customer side: weak passwords, no 2FA, files shared publicly by mistake.
+\end{attention}
+
+Security in the cloud is a \cle{shared responsibility}:
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small]
+\node[draw=poppurple, fill=poppink!40, rounded corners, text width=5.6cm, align=left, minimum height=3.2cm, anchor=north west] at (0,0) {\textbf{Provider secures:}\\[4pt]
+$\bullet$ physical data centres\\
+$\bullet$ servers, disks, network\\
+$\bullet$ hypervisors, host OS\\
+$\bullet$ encryption at rest\\
+$\bullet$ infrastructure backups};
+\node[draw=popblue, fill=popblueL, rounded corners, text width=5.6cm, align=left, minimum height=3.2cm, anchor=north west] at (6.4,0) {\textbf{Customer secures:}\\[4pt]
+$\bullet$ passwords and 2FA\\
+$\bullet$ user access rights (least privilege)\\
+$\bullet$ sharing settings of files\\
+$\bullet$ data classification (what is sensitive)\\
+$\bullet$ own backups of critical data};
+\node[draw=popgreen, fill=popgreenL, rounded corners, text width=11.6cm, align=center, anchor=north west] at (0,-3.6) {\textbf{Both share:} monitoring, incident reporting, compliance with the SLA and the law};
+\end{tikzpicture}
+\legende{The shared-responsibility model for cloud security.}
+\end{popfigure}
+
+\begin{methode}[Securing a cloud account]
+\begin{enumerate}
+\item Choose a \textbf{strong, unique password}: at least 12 characters, mixing letters, digits and symbols, never reused from another site and never containing your name or birthday.
+\item Activate \textbf{two-factor authentication (2FA)} on the account (SMS code or authenticator app).
+\item \textbf{Review sharing settings} regularly: check who can view or edit each file, remove ``anyone with the link'' sharing for sensitive documents, and apply least privilege.
+\item Make \textbf{regular backups} of important files to a second location (external disk or another provider).
+\item Read the \textbf{terms of service and the SLA} before storing sensitive data, and log out on shared computers.
+\end{enumerate}
+\end{methode}
+
+\courssub{Cloud Ethics}
+
+Beyond technical security, the cloud raises \cle{ethical} questions — questions about what is \emph{right}, fair and respectful of persons and society.
+
+\textbf{Ethical issue 1 — Data privacy: who can read my files?} When your photos, assignments or medical records sit on a provider's servers, several parties may potentially access them: \emph{provider staff} (for maintenance, or abusively), \emph{governments} (through legal requests addressed to the provider), and the provider itself for \emph{profiling and advertising} — many ``free'' services analyse your data to target advertisements. The ethical rule: never store in the cloud what you could not accept being read by a stranger, unless it is properly encrypted.
+
+\textbf{Ethical issue 2 — Data sovereignty and jurisdiction.}
+
+\begin{definition}[Data sovereignty]
+\cle{Data sovereignty} is the principle that data is subject to the laws of the \emph{country where it is physically stored}. A file stored in a data centre abroad falls under \emph{foreign} laws: a foreign court or government may lawfully compel the provider to hand it over, sometimes without informing the owner. For Cameroonian citizens, businesses and the State, storing sensitive data (civil records, health data, financial data) abroad means losing legal control over it — a strong argument for national data centres and data-protection legislation.
+\end{definition}
+
+\begin{definition}[Vendor lock-in]
+\cle{Vendor lock-in} is the situation in which a customer becomes so dependent on one provider — proprietary formats, proprietary tools, high migration costs — that \emph{changing provider becomes practically impossible}. The defence is \textbf{data portability}: exporting data regularly in \emph{open formats} (CSV, PDF, ODF, standard SQL dumps) so that migration remains possible.
+\end{definition}
+
+\textbf{Ethical issue 3 — Vendor lock-in} (defined above): beyond the technical difficulty, lock-in gives the provider power to raise prices or change terms, knowing the customer cannot easily leave. Ethical and professional practice demands open standards and exit plans.
+
+\textbf{Ethical issue 4 — Digital divide and environment.} Cloud services presuppose \emph{reliable, affordable Internet}. In Cameroon, connectivity is excellent in parts of Yaound\'e and Douala but slow, expensive or absent in many rural areas: moving school or health services ``to the cloud'' can unintentionally \emph{exclude} the least connected populations — this is the \cle{digital divide}. In addition, data centres consume enormous amounts of electricity (for servers and cooling), raising a real \emph{environmental} concern that responsible providers address with renewable energy and efficient cooling.
+
+\begin{savaistu}[Cloud ethics in Cameroon]
+Cameroon has taken steps towards digital sovereignty: the national data centre and e-government projects promoted under the supervision of ANTIC (the National Agency for Information and Communication Technologies) aim to keep sensitive State data on national soil and to strengthen cybersecurity. Mobile-money platforms (MTN Mobile Money, Orange Money) also depend on trusted data hosting — a concrete reminder that cloud security and sovereignty touch every Cameroonian's wallet.
+\end{savaistu}
+
+\begin{exoresolu}[Analysing a cloud security incident]
+\textbf{Statement.} A small business in Douala stores all its customer invoices on a free cloud storage account. The accountant uses the password ``douala2020'', 2FA is not activated, and the invoice folder is shared via a public link ``for convenience''. One morning, all files are found deleted and the account password changed. (a) Identify three security failures. (b) For each, state the protection measure that would have prevented or limited the damage. (c) State one ethical issue illustrated by this case.
+\tcblower
+\textbf{Solution.}
+(a) \emph{Failures:} (1) a weak, predictable password, enabling account hijacking; (2) two-factor authentication not activated, so the stolen password alone was sufficient; (3) public-link sharing of sensitive data, violating least privilege and exposing the files to anyone. One may add: no independent backup, turning account loss into total data loss.
+(b) \emph{Protections:} (1) a strong, unique password (at least 12 mixed characters); (2) activating 2FA, which blocks login even with a stolen password; (3) restricting sharing to named users with minimum rights; (4) regular backups to a second location would have allowed recovery after deletion.
+(c) \emph{Ethical issue:} data privacy — the customers' personal and financial data were exposed to strangers without their consent; the business had a duty of care towards its customers' information (data sovereignty could also be accepted if the candidate discusses foreign hosting).
+\end{exoresolu}
+
+\begin{attention}[Exam tip — structuring a `discuss' question on cloud ethics]
+GCE questions such as \emph{``Discuss the ethical issues raised by cloud computing''} expect a \textbf{structured} answer, not a list of fears. Organise your essay around the four pillars: (1) \textbf{privacy} (who can read the data: provider, governments, advertisers); (2) \textbf{data sovereignty} (foreign laws apply to data stored abroad); (3) \textbf{vendor lock-in} (portability and open formats); (4) \textbf{digital divide and environment} (unequal connectivity, energy-hungry data centres). For each pillar, state the issue, give a concrete (ideally Cameroonian) example, and propose a mitigation. That structure alone earns most of the marks.
+\end{attention}
+
+\begin{exercice}[Securing a school's cloud migration]
+A school in Bamenda wants to move its student records to a public cloud service hosted abroad. (a) State two threats specific to this scenario and one protection measure for each. (b) Explain why the school must read the SLA before signing, mentioning two elements it should check. (c) Discuss two ethical issues the school should consider, using the concepts of data sovereignty and the digital divide.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) \emph{Threats and protections} (any two): account hijacking of staff accounts $\rightarrow$ strong unique passwords plus 2FA; interception of records in transit $\rightarrow$ encryption in transit via HTTPS/SSL; data loss at the provider $\rightarrow$ regular independent backups; excessive access rights $\rightarrow$ least-privilege access control.
+(b) The SLA is the only contractual guarantee of service quality. The school should check the \textbf{guaranteed availability} (uptime percentage and what downtime is tolerated), the \textbf{support} response times, and the \textbf{compensation} offered if commitments are broken — otherwise the school has no legal remedy after an outage or data loss.
+(c) \emph{Data sovereignty:} records stored abroad fall under foreign law; a foreign authority could lawfully obtain students' personal data, and Cameroonian law may not protect them — the school should prefer providers with clear jurisdiction terms or national hosting. \emph{Digital divide:} if access to records requires the Internet, students and parents in poorly connected areas may be excluded; the school should keep an offline fallback. (Vendor lock-in and privacy answers are also acceptable if well argued.)
+\end{corrige}
+
+\begin{aretenir}[Key points of the section]
+\begin{itemize}
+\item Security is the main barrier to cloud adoption because \textbf{data leaves the organisation's premises} and transits over networks and machines the customer does not control.
+\item Main threats: data breaches, account hijacking (weak passwords, phishing), insecure APIs, data loss, denial of service, insider threats.
+\item Protections: strong passwords + \textbf{2FA}, encryption \textbf{in transit} (HTTPS/SSL) and \textbf{at rest}, backups, least privilege, reputable providers, reading the \textbf{SLA} (availability, support, compensation).
+\item Security is a \textbf{shared responsibility}: the provider secures the infrastructure; the customer secures accounts, passwords, access rights and data classification.
+\item Four ethical pillars: \textbf{privacy}, \textbf{data sovereignty}, \textbf{vendor lock-in} (fight it with portability and open formats), \textbf{digital divide and environment}.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter on \cle{cloud computing}. It is designed to make you \emph{mobilise}, in one coherent project, everything you have learned in Lessons 73 to 75:
+
+\begin{itemize}
+\item the definition and characteristics of cloud computing (on-demand self-service, broad network access, resource pooling, rapid elasticity, measured service);
+\item the three \cle{service models} --- \cle{IaaS}, \cle{PaaS}, \cle{SaaS} --- and the division of responsibilities between provider and customer in each;
+\item the four \cle{deployment models} --- \cle{public}, \cle{private}, \cle{community} and \cle{hybrid} cloud;
+\item the main \cle{security} mechanisms (authentication, encryption, backups, service level agreements) and the \cle{ethical} questions raised by the cloud (privacy, data location, dependence on a provider).
+\end{itemize}
+
+By the end of the activity you should be able to:
+\begin{enumerate}
+\item analyse the needs and constraints of a real-type organisation;
+\item select and \emph{justify} a service model and a deployment model;
+\item propose concrete, realistic security measures;
+\item identify ethical risks and suggest mitigations;
+\item defend a technical recommendation orally before a decision-making body.
+\end{enumerate}
+
+\begin{attention}[What is expected of you]
+A good answer is not a list of definitions copied from the course. The examiners --- here, the cooperative's board --- want \emph{justified choices}: every decision must be linked to a need or a constraint of the situation. ``We choose SaaS'' earns little; ``We choose SaaS because the cooperative has no IT staff to maintain servers, and SaaS transfers maintenance to the provider'' earns full marks.
+\end{attention}
+
+\courssub{Situation}
+
+\textbf{Case file --- Coopérative Espoir, Bamenda.}\par
+
+\emph{Coopérative Espoir} is a microfinance cooperative created by traders of the Bamenda Main Market. It collects daily savings from its members and grants small loans (for example to buy stock, pay school fees or repair a kiosk). The cooperative employs a manager, one accountant and two field collectors who move around the market with receipt booklets.
+
+The board has called you, a group of Upper Sixth ICT students, as consultants. Here is the information collected during your visit:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Item} & \textbf{Description} \\
+\hline
+Members & 400 active members; about 60 new members per year. \\
+\hline
+Data held & Member identity (name, photo, phone, guarantor), savings accounts, loan files, repayment schedules, accounting books. \\
+\hline
+Current equipment & One ageing desktop computer (more than 8 years old, disk nearly full), one printer, no server, no local network. \\
+\hline
+Backups & Paper registers kept in a wooden cupboard; one USB flash drive ``sometimes'' updated by the accountant. \\
+\hline
+Staff skills & The accountant uses a spreadsheet at basic level; nobody has system administration skills. \\
+\hline
+Budget & A one-off budget of about 500\,000 FCFA, plus at most 25\,000 FCFA per month for running costs. \\
+\hline
+Connectivity & A 4G modem (MTN or Orange) shared between staff; the connection is slow in the evening and cut several times a month; electricity cuts are frequent. \\
+\hline
+Incidents & Last year, a register was damaged by water during the rainy season and 30 members' savings records had to be reconstructed from memory. \\
+\hline
+Wishes of the board & Members should be able to check their balance by phone; collectors should enter deposits on a smartphone while in the market; the board wants costs to stay predictable. \\
+\hline
+\end{tabularx}
+\end{center}
+
+The board is worried about two things in particular: (i) the \emph{confidentiality} of members' financial data, and (ii) rumours that ``data in the cloud is stored abroad and can be read by anyone''. Your group must produce a \textbf{cloud adoption plan} and defend it in a 5-minute presentation. The class plays the role of the board and votes for the most convincing plan, using the teacher's marking grid (needs analysis, justified choices, security, ethics, quality of defence).
+
+\courssub{Tasks}
+
+Work in groups of four. Answer the following tasks in order; each one prepares the next.
+
+\begin{enumerate}
+\item \textbf{Needs and constraints analysis.} From the case file, list at least four \emph{needs} of the cooperative and at least four \emph{constraints} (technical, financial, human). Present them in a two-column table.
+
+\item \textbf{Choice of a service model.} For each of the three functions --- (a) member records and loans, (b) accounting, (c) communication with members --- state whether IaaS, PaaS or SaaS is the most appropriate, and justify by referring to the staff skills, the budget and the division of responsibilities.
+
+\item \textbf{Choice of a deployment model.} Compare public, private, community and hybrid cloud for this cooperative. Choose one model (or a combination) and justify it, taking into account the sensitivity of financial data, the budget and the possibility that several cooperatives of the North-West could share a solution.
+
+\item \textbf{Security plan.} Propose exactly five concrete security measures, and for each one state the risk it reduces. Think of: strong passwords and a password policy, two-factor authentication (2FA), encryption of data in transit and at rest, a backup strategy (for example the 3-2-1 rule), and verification of the provider's Service Level Agreement (SLA).
+
+\item \textbf{Ethical reflection.} Identify two ethical risks of your plan (for example: privacy of members' personal data; data stored on servers located abroad; dependence on a single provider). For each risk, propose a realistic mitigation (consent of members, clear internal rules, choice of provider, contract clauses, possibility of exporting the data).
+
+\item \textbf{Degraded-mode plan.} The Internet connection is unreliable. Explain what happens to the collectors' work when the connection is cut, and propose one measure so that the cooperative can keep working (offline mode with later synchronisation, paper fallback, second SIM card from another operator, etc.).
+
+\item \textbf{Oral defence.} Prepare a 5-minute presentation of your plan (one slide or one poster per part: needs, service model, deployment model, security, ethics, degraded mode). Every member of the group must speak. The board (the class) then votes.
+\end{enumerate}
+
+\courssub{Model answer}
+
+Below is a complete worked answer, at the level expected from an excellent group. Your own plan may differ on some choices, provided the justification is sound.
+
+\textbf{Task 1 --- Needs and constraints.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Needs} & \textbf{Constraints} \\
+\hline
+Secure, centralised storage of member and loan records & Very small budget (about 25\,000 FCFA/month running costs) \\
+\hline
+Access from the market (smartphones) for collectors & Unreliable 4G connection and frequent power cuts \\
+\hline
+Reliable backups (the water incident must never happen again) & No IT specialist on staff; basic spreadsheet skills only \\
+\hline
+Members checking balances by phone; predictable costs & Ageing single computer; sensitive financial data to protect \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Task 2 --- Service model: SaaS for all three functions.}
+
+\begin{itemize}
+\item \emph{Member records and loans:} \cle{SaaS} --- a ready-made microfinance or cooperative management application, rented monthly. The cooperative has no administrator to install, patch and update software; with SaaS the provider handles maintenance, updates and security of the platform.
+\item \emph{Accounting:} \cle{SaaS} --- an online accounting tool, or the accounting module of the same application, so that data is entered once.
+\item \emph{Communication:} \cle{SaaS} --- e-mail and SMS-notification services (balance alerts), which work on simple smartphones.
+\end{itemize}
+
+IaaS is rejected: renting virtual servers would require a system administrator the cooperative cannot afford. PaaS is rejected: it targets developers, and nobody can build an application in-house. SaaS also matches the budget: a predictable monthly subscription instead of buying servers.
+
+\textbf{Task 3 --- Deployment model: public cloud now, community cloud as a perspective.}
+
+A \emph{private} cloud is impossible (no server room, no staff, no money). A pure \emph{public} cloud from a reputable provider is the realistic choice today: low cost, professional security, immediate availability. Because financial data is sensitive, the group adds two conditions: the provider must offer encryption and 2FA, and the contract must state where data is stored. As a future perspective, several cooperatives of the North-West region could move to a \emph{community} cloud --- a shared microfinance platform whose cost and governance are split between them. A hybrid model is not needed at this scale.
+
+\textbf{Task 4 --- Five security measures.}
+
+\begin{enumerate}
+\item \textbf{Password policy:} unique passwords of at least 12 characters, changed if compromised, never shared --- reduces unauthorised access.
+\item \textbf{Two-factor authentication (2FA)} by SMS code for the manager and accountant --- an attacker with the password alone cannot enter.
+\item \textbf{Encryption} of data in transit (HTTPS) and at rest by the provider --- stolen or intercepted data remains unreadable.
+\item \textbf{Backups following the 3-2-1 rule:} the provider's automatic backups, plus a monthly export kept on an encrypted USB drive in a safe place --- protects against data loss and provider failure.
+\item \textbf{SLA verification before signing:} guaranteed availability, backup frequency, support delay, and the right to export all data --- protects against a provider that disappears or locks the data.
+\end{enumerate}
+
+\textbf{Task 5 --- Ethical risks and mitigations.}
+
+\begin{itemize}
+\item \emph{Privacy of members:} personal and financial data could be misused. Mitigation: informed consent of members, access limited by role (a collector sees deposits, not loan decisions), and an internal confidentiality rule signed by all staff.
+\item \emph{Data stored abroad:} the board fears foreign servers. Mitigation: ask the provider where the data centres are, prefer providers with African or regional data centres when possible, and include contract clauses on confidentiality and data ownership --- the data must remain the property of the cooperative and be exportable at any time.
+\end{itemize}
+
+\textbf{Task 6 --- Degraded mode.} The chosen SaaS application must offer an \emph{offline mode}: collectors record deposits on the smartphone without connection, and data synchronises automatically when the network returns. As a fallback, the paper receipt booklet is kept, and entries are typed in the evening. A second SIM card from another operator (MTN and Orange) provides redundancy when one network fails.
+
+\textbf{Task 7 --- Defence.} The group presents in 5 minutes: needs, SaaS choice, public cloud with conditions, the five security measures, the two ethical mitigations, and the offline plan. The board votes; the winning group is the one whose choices are the most clearly \emph{linked to the constraints of the case}.
+
+\begin{exercice}[Going further]
+The cooperative grows to 2\,000 members and opens a second branch in Bafoussam. Re-examine your plan: which choices (service model, deployment model, security measures) would you change, and why?
+\end{exercice}
+
+\begin{corrige}[Going further]
+The SaaS choice remains valid but the cooperative should move to a professional multi-branch subscription with role-based access per branch. The deployment model could evolve towards a community cloud shared with other cooperatives, or a hybrid approach if a regional union of cooperatives hosts part of the service. Security must be strengthened: centralised account management, immediate revocation of departed staff accounts, more frequent tested backups, and an audit of the SLA. The offline mode remains essential for the Bafoussam--Bamenda context.
+\end{corrige}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1 — Identifying and defining cloud computing characteristics}
+
+\begin{methode}[Recognising a cloud computing service]
+When a GCE question describes an IT situation and asks whether it is ``cloud computing'', or asks you to justify why a service qualifies as cloud, proceed as follows.
+\begin{enumerate}
+\item Check the \cle{five essential characteristics} (NIST SP 800-145 definition): \cle{on-demand self-service}, \cle{broad network access}, \cle{resource pooling}, \cle{rapid elasticity}, \cle{measured service} (pay-per-use).
+\item Identify where the hardware and software physically reside: if they are in a \cle{remote data centre} accessed through the \cle{Internet} (or a network), and not on the user's own machine, cloud is involved.
+\item Identify the billing model: subscription or pay-as-you-go is a strong indicator of cloud; a one-off licence installed locally is not.
+\item In your answer, always \textbf{quote evidence from the scenario} (e.g.\ ``files are accessed through a browser from any connected device'') and link each piece of evidence to a characteristic.
+\item Conclude explicitly: ``Therefore this is (is not) a cloud computing service because \ldots''
+\end{enumerate}
+\textbf{Reflex:} definition first, evidence second, conclusion third. Never write ``it is cloud because it uses the Internet'' alone: many non-cloud systems use the Internet.
+\end{methode}
+
+\begin{exoresolu}[Is this cloud computing?]
+\textbf{Statement.} A cybercaf\'e in Buea offers two services. Service A: customers type documents on the caf\'e's computers using a word processor installed on each machine, and save their work on a USB flash drive. Service B: customers log into a web-based office suite through a browser; documents are stored on the provider's servers, and customers pay a small monthly subscription to keep their storage space. For each service, state whether it is cloud computing, justifying your answer with the essential characteristics of the cloud.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Recall the definition.} Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort. The five essential characteristics are: on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service.
+\item \textbf{Analyse Service A.} The word processor is installed \emph{locally} on each machine; files are stored on a personal USB drive; no remote data centre is involved; there is no subscription for computing resources --- the customer only rents time on a physical machine. None of the essential characteristics (broad network access to pooled remote resources, measured service for IT resources, resource pooling, rapid elasticity) is satisfied. \textbf{Service A is not cloud computing}; it is a classic local/desktop computing model.
+\item \textbf{Analyse Service B.} The application runs on the provider's remote servers and is reached through a browser (broad network access); storage is on the provider's infrastructure shared by many customers (resource pooling); the customer can obtain the service without human intervention from the provider (on-demand self-service) and pays a subscription proportional to usage (measured service); capacity can scale with demand (rapid elasticity). \textbf{Service B is cloud computing} (more precisely, a SaaS offer).
+\item \textbf{Conclusion.} Only Service B qualifies as cloud computing, because the computing resources are remote, pooled, delivered over the network and billed as a measured service.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 2 — Distinguishing IaaS, PaaS and SaaS}
+
+\begin{methode}[Classifying a cloud service model]
+To classify a given service as \cle{IaaS}, \cle{PaaS} or \cle{SaaS}:
+\begin{enumerate}
+\item Ask: \textbf{what does the customer manage?} Draw the responsibility split in your head.
+\item If the customer manages everything from the \textbf{operating system upward} (OS, middleware, runtime, applications, data) and the provider supplies only virtualised hardware (servers, storage, network) $\Rightarrow$ \textbf{IaaS} (Infrastructure as a Service).
+\item If the provider manages the hardware \textbf{and} the OS/middleware/runtime, and the customer only deploys and manages \textbf{his own applications and data} $\Rightarrow$ \textbf{PaaS} (Platform as a Service).
+\item If the provider manages \textbf{everything} and the customer simply \textbf{uses a finished application} through a browser or thin client $\Rightarrow$ \textbf{SaaS} (Software as a Service).
+\item Use the analogy: IaaS = renting an empty building (you install everything); PaaS = renting a fitted workshop (tools and power provided); SaaS = buying the finished product from the shop.
+\item Give one concrete example of each in the exam (e.g.\ virtual servers for IaaS; a web-application hosting platform for PaaS; webmail or online office suites for SaaS).
+\end{enumerate}
+\textbf{Reflex:} ``The more the provider manages, the higher the service level (IaaS $<$ PaaS $<$ SaaS).''
+\end{methode}
+
+\begin{exoresolu}[Classifying three services]
+\textbf{Statement.} A software company in Douala uses three external services: (i) it rents virtual machines and disk space on which its engineers install Linux, a database server and their own billing application; (ii) its junior developers push their Python web application code to a platform that automatically provides the runtime, web server and scaling, without the developers touching any operating system; (iii) the sales team uses an online customer-management application accessed entirely through a browser, for a monthly fee per user. Classify each service as IaaS, PaaS or SaaS, justifying each answer by stating who manages what.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Service (i) $\Rightarrow$ IaaS.} The provider supplies only the fundamental resources: virtual machines, storage, network. The company's engineers install and manage the OS (Linux), the middleware (database server) and the application. Customer responsibility starts at the operating system: this is the signature of \textbf{Infrastructure as a Service}.
+\item \textbf{Service (ii) $\Rightarrow$ PaaS.} The provider manages the hardware, the operating system, the runtime (Python), the web server and automatic scaling. The developers only supply and manage their \emph{code and data}. This is exactly \textbf{Platform as a Service}: a ready development-and-deployment environment.
+\item \textbf{Service (iii) $\Rightarrow$ SaaS.} The sales team installs nothing, configures no server and writes no code: they simply \emph{consume} a complete application through a browser, billed per user per month. The provider manages the entire stack. This is \textbf{Software as a Service}.
+\item \textbf{Summary table.}
+\end{enumerate}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Service} & \textbf{Model} & \textbf{Customer manages} \\
+\hline
+(i) Virtual machines + storage & IaaS & OS, middleware, application, data \\
+\hline
+(ii) Code-hosting platform & PaaS & Application code and data only \\
+\hline
+(iii) Online CRM in browser & SaaS & Nothing (usage and own data only) \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exoresolu}
+
+\courssub{Method 3 — Choosing a deployment model}
+
+\begin{methode}[Selecting public, private, community or hybrid cloud]
+Given an organisation's needs, choose the deployment model as follows.
+\begin{enumerate}
+\item List the constraints in the scenario: \textbf{sensitivity of data} (personal, financial, state data), \textbf{budget}, \textbf{need for control}, \textbf{regulatory obligations} (e.g.\ data localisation), \textbf{variable workload}.
+\item \textbf{Public cloud}: shared provider infrastructure; cheapest, very elastic; suitable for non-sensitive data and start-ups.
+\item \textbf{Private cloud}: infrastructure dedicated to one organisation (on-premises or hosted); maximum control and security; expensive; suitable for banks, ministries, hospitals.
+\item \textbf{Community cloud}: shared by several organisations with common requirements (e.g.\ several universities, several councils); costs and governance are shared.
+\item \textbf{Hybrid cloud}: combination; keep sensitive data in the private part, put variable/public workloads in the public part (``cloud bursting'').
+\item Justify the choice by matching \emph{each} constraint to a property of the chosen model, and mention one drawback accepted as a trade-off.
+\end{enumerate}
+\textbf{Reflex:} sensitive + regulated $\Rightarrow$ private or hybrid; low budget + non-sensitive + variable demand $\Rightarrow$ public.
+\end{methode}
+
+\begin{exoresolu}[Advising a Cameroonian bank and a start-up]
+\textbf{Statement.} (a) A commercial bank in Yaound\'e must host customers' account data and transaction records, which are highly sensitive and subject to strict confidentiality rules, but it also wants to run its public marketing website, whose traffic varies greatly during promotional campaigns. Advise a deployment model, justifying your choice. (b) A two-person start-up in Bamenda wants to launch a mobile game with almost no capital and unpredictable numbers of players. Advise a deployment model.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{(a) Constraints.} Highly sensitive, regulated financial data (need for control, confidentiality, possibly data localisation) + one workload (the website) with strongly variable, non-sensitive traffic.
+\item \textbf{(a) Choice: hybrid cloud.} Account and transaction data are kept in a \textbf{private cloud} (dedicated infrastructure, full control over access, encryption and auditing, easier compliance with confidentiality obligations). The marketing website is hosted in a \textbf{public cloud}, which offers rapid elasticity to absorb campaign traffic peaks at low cost (cloud bursting). The trade-off accepted: a hybrid architecture is more complex and costly to manage than a single-model solution, but no single model satisfies both constraints.
+\item \textbf{(b) Constraints.} Minimal capital, unpredictable (possibly rapidly growing) workload, non-sensitive game data.
+\item \textbf{(b) Choice: public cloud.} No hardware to buy (no capital expenditure), pay-as-you-go billing matches the tiny initial budget, and rapid elasticity lets the game scale automatically if the number of players explodes. Trade-off: less control and dependence on the provider, acceptable for non-sensitive data.
+\item \textbf{Conclusion.} Bank $\Rightarrow$ hybrid cloud (private for core banking, public for the website); start-up $\Rightarrow$ public cloud.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 4 — Comparing costs: on-premises vs cloud}
+
+\begin{methode}[Computing and comparing total costs]
+GCE questions may ask you to compare the cost of owning servers with a cloud subscription.
+\begin{enumerate}
+\item \textbf{On-premises cost} = hardware purchase + software licences + electricity + cooling + maintenance + IT staff costs (over the period considered). This is capital expenditure (\cle{CapEx}) followed by operating costs.
+\item \textbf{Cloud cost} = (price per unit) $\times$ (quantity) $\times$ (duration). This is operating expenditure (\cle{OpEx}), pay-as-you-go.
+\item Compute both totals over the \textbf{same period} (e.g.\ 3 years) and in the \textbf{same currency} (FCFA).
+\item Compare, but also comment on \textbf{non-monetary factors}: elasticity, obsolescence of owned hardware, need for a reliable Internet connection for the cloud option, data sovereignty.
+\end{enumerate}
+\textbf{Key idea:} the cloud converts CapEx into OpEx; it is usually cheaper for small or variable workloads, not always for large stable ones.
+\end{methode}
+
+\begin{exoresolu}[Three-year cost comparison for a school]
+\textbf{Statement.} A secondary school in Limbe wants to host its e-learning platform. Option 1 (on-premises): buy a server for $2\,500\,000$ FCFA, pay $100\,000$ FCFA per year for electricity and cooling, and $600\,000$ FCFA per year for a technician's maintenance contract. Option 2 (cloud): rent an equivalent virtual server at $85\,000$ FCFA per month. (a) Compute the total cost of each option over 3 years. (b) Which option is cheaper over 3 years, and by how much? (c) State two non-financial factors that could still justify the more expensive option.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Option 1 (on-premises), 3 years:}
+\begin{align*}
+C_1 &= \text{server} + 3 \times (\text{electricity} + \text{maintenance}) \\
+&= 2\,500\,000 + 3 \times (100\,000 + 600\,000) \\
+&= 2\,500\,000 + 3 \times 700\,000 = 4\,600\,000\ \text{FCFA}.
+\end{align*}
+\item \textbf{Option 2 (cloud), 3 years:} 3 years $= 36$ months.
+\[ C_2 = 85\,000 \times 36 = 3\,060\,000\ \text{FCFA}. \]
+\item \textbf{(b) Comparison.} $C_1 - C_2 = 4\,600\,000 - 3\,060\,000 = 1\,540\,000$ FCFA. The \textbf{cloud option is cheaper by $1\,540\,000$ FCFA} over 3 years.
+\item \textbf{(c) Non-financial factors.} (i) The cloud requires a \textbf{reliable Internet connection}: in an area with frequent cuts, the platform becomes unavailable, whereas a local server works on the school LAN. (ii) The cloud offers \textbf{elasticity and no obsolescence}: capacity can grow with enrolment and the provider replaces ageing hardware, while the purchased server will be outdated after a few years. (iii) Conversely, on-premises gives full control over data location --- useful if the school must keep student data in-house.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 5 — Analysing cloud security threats and countermeasures}
+
+\begin{methode}[Matching threats to countermeasures]
+For a security question, build a two-column reasoning:
+\begin{enumerate}
+\item \textbf{Identify the asset at risk} (data confidentiality, integrity, availability).
+\item \textbf{Name the threat}: unauthorised access, data breach, interception on the network, account hijacking (weak passwords, phishing), data loss (provider failure), insider misuse, insecure APIs, denial of service.
+\item \textbf{Propose the matching countermeasure}:
+\begin{itemize}
+\item interception / breach $\Rightarrow$ \cle{encryption} in transit (TLS/HTTPS) and at rest;
+\item account hijacking $\Rightarrow$ strong passwords + \cle{multi-factor authentication} (MFA);
+\item unauthorised access $\Rightarrow$ access control, least privilege, identity management;
+\item data loss $\Rightarrow$ \cle{backups}, redundancy, disaster-recovery plan;
+\item availability $\Rightarrow$ redundancy across data centres, anti-DDoS protection, SLA guarantees.
+\end{itemize}
+\item Mention \textbf{shared responsibility}: the provider secures the infrastructure (physical, network, hypervisor); the customer must secure his accounts, configurations, data and access policies. Many breaches come from customer misconfiguration.
+\end{enumerate}
+\textbf{Reflex:} one threat $\Rightarrow$ one precise countermeasure, never just ``use antivirus''.
+\end{methode}
+
+\begin{exoresolu}[Securing a hospital's cloud records]
+\textbf{Statement.} A regional hospital in Garoua migrates patient records to a cloud service. Staff access the records through a web portal. Identify four security threats to this system and, for each, propose an appropriate countermeasure, stating whether it is mainly the provider's or the hospital's responsibility.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Threat 1 --- Account hijacking} (stolen or weak staff passwords, phishing). \emph{Countermeasure (hospital):} enforce strong password policy and \textbf{multi-factor authentication}, plus staff training against phishing.
+\item \textbf{Threat 2 --- Interception of data} travelling between the hospital and the data centre. \emph{Countermeasure (provider + hospital):} \textbf{encryption in transit} using TLS/HTTPS; the hospital must check the portal uses HTTPS and avoid public Wi-Fi without VPN.
+\item \textbf{Threat 3 --- Data breach at the data centre} (intruder or malicious insider reading records). \emph{Countermeasure (provider):} \textbf{encryption at rest}, physical security of the data centre, strict internal access logging; the hospital should verify these in the contract/SLA.
+\item \textbf{Threat 4 --- Data loss or unavailability} (provider failure, ransomware, accidental deletion). \emph{Countermeasure (shared):} regular \textbf{backups}, geographic redundancy, a disaster-recovery plan, and an SLA guaranteeing availability; the hospital keeps its own backup copies and defines who may delete records (least privilege).
+\item \textbf{Conclusion.} Security is a \textbf{shared responsibility}: the provider secures the infrastructure, but the hospital remains responsible for user accounts, access rights and correct configuration. Patient confidentiality also raises an ethical and legal duty, since medical data are highly sensitive personal data.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 6 — Reasoning about cloud ethics and legal issues}
+
+\begin{methode}[Discussing ethics, privacy and data localisation]
+For an essay-style GCE question on cloud ethics:
+\begin{enumerate}
+\item Identify the \textbf{stakeholders}: users, the provider, the State, third parties.
+\item Raise the \textbf{key ethical issues}: \cle{privacy} (who can read my data?), \cle{data ownership} (does the provider own or exploit uploaded data?), \cle{data localisation} (in which country are the servers, under which law?), \cle{vendor lock-in} (can I leave with my data?), environmental impact of data centres, digital divide.
+\item Link to the Cameroonian context where natural: the law on cybersecurity and cybercriminality, the role of \cle{ANTIC} (National Agency for Information and Communication Technologies) in securing information systems, and the question of hosting State or citizens' data abroad.
+\item For each issue, state a \textbf{good practice}: read terms of service, encrypt sensitive files before upload, choose providers with clear privacy policies, keep backups, comply with national regulations on personal data.
+\item Conclude with a balanced judgement: cloud benefits (cost, access, elasticity) must be weighed against these risks.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Ethical analysis of a ministry's cloud project]
+\textbf{Statement.} A Cameroonian ministry proposes to store civil-status records (births, marriages) of citizens on the public cloud of a foreign provider whose data centres are outside Africa. Discuss three ethical or legal issues this raises and recommend good practices the ministry should adopt.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Issue 1 --- Privacy and confidentiality.} Civil-status records are sensitive personal data. On a shared public cloud abroad, unauthorised access (breach, insider, foreign surveillance laws of the host country) could expose citizens' identities. \emph{Good practice:} encrypt data at rest and in transit, strict access control with MFA, and a contract forbidding the provider from exploiting the data.
+\item \textbf{Issue 2 --- Data localisation and sovereignty.} Data stored abroad fall under foreign legislation; Cameroonian authorities may lose effective control over citizens' data, a matter of \textbf{digital sovereignty}. \emph{Good practice:} prefer data centres located in Cameroon (or at least under jurisdictions with compatible data-protection rules), in line with national cybersecurity orientations and the guidance of ANTIC; a private or sovereign cloud is more appropriate for State registries.
+\item \textbf{Issue 3 --- Ownership, lock-in and continuity.} If the contract ends or the provider fails, can the ministry recover all records in a usable format? \emph{Good practice:} contractual guarantees of data portability and deletion, regular independent backups held in Cameroon, and an exit plan.
+\item \textbf{Conclusion.} While the public cloud offers low cost and elasticity, hosting civil-status data abroad on it is ethically and legally risky. A private or sovereign cloud, strong encryption, clear contracts and compliance with national data-protection rules are the responsible approach.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Method 7 — Designing a complete cloud solution (integration)}
+
+\begin{methode}[Synthesising: service model + deployment + security + cost]
+For a long integration question (typical of Lesson 76):
+\begin{enumerate}
+\item \textbf{Analyse needs}: users, data sensitivity, workload variability, budget, connectivity.
+\item \textbf{Choose the service model} (IaaS/PaaS/SaaS) by asking what the organisation is able and willing to manage.
+\item \textbf{Choose the deployment model} (public/private/community/hybrid) from sensitivity and budget.
+\item \textbf{Plan security}: encryption, MFA, access control, backups, SLA.
+\item \textbf{Estimate costs} and compare with the on-premises alternative.
+\item \textbf{Address ethics}: privacy, localisation, terms of service.
+\item Structure the final answer with one short paragraph per point and a justified conclusion.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Full design: a cooperative of farmers goes digital]
+\textbf{Statement.} A cooperative of 500 cocoa farmers in the Centre Region wants a digital platform to (i) record harvests and sales, (ii) let field agents enter data from smartphones, (iii) give members access to market prices. The cooperative has little capital, no IT engineer, and considers members' sales data commercially sensitive. Propose a complete cloud solution: service model, deployment model, three security measures, and two ethical precautions. Justify each choice.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Service model: SaaS.} With no IT engineer, the cooperative cannot manage servers (IaaS) or even deployment platforms (PaaS). A ready-made cooperative-management or farm-record application used through a browser/smartphone app (SaaS) transfers all technical management to the provider; the cooperative only enters and uses its data.
+\item \textbf{Deployment model: public cloud.} The budget is small and the number of users may grow; public cloud offers pay-as-you-go pricing with no hardware purchase and easy scaling. (If data sensitivity were judged extreme, a community cloud shared by several cooperatives under a common governance would be an acceptable alternative, sharing costs and control.)
+\item \textbf{Security measures.} (a) \textbf{MFA and strong passwords} for agents and members, since smartphones are easily lost; (b) \textbf{HTTPS/TLS encryption} of all exchanges and encryption of stored data, protecting sales figures in transit and at rest; (c) \textbf{role-based access control with least privilege} --- field agents can enter data but only the treasurer sees consolidated accounts --- plus regular \textbf{backups} guaranteed in the SLA.
+\item \textbf{Ethical precautions.} (a) \textbf{Data ownership}: the contract must state that the cooperative owns its data, that the provider may not sell or exploit members' commercial data, and that data can be exported (avoiding vendor lock-in). (b) \textbf{Privacy and consent}: members must be informed of what is collected and where it is hosted, in line with Cameroonian data-protection expectations; a provider with clear privacy policies and, if possible, regional data hosting should be preferred.
+\item \textbf{Conclusion.} A SaaS application on the public cloud, secured by MFA, encryption and least-privilege access, with contractual guarantees on ownership and privacy, gives the cooperative a low-cost, scalable and responsible digital solution.
+\end{enumerate}
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Essential Characteristics]
+Which of the following is \textbf{NOT} one of the five essential characteristics of cloud computing as defined by NIST?
+\begin{enumerate}
+\item On-demand self-service
+\item Broad network access
+\item Resource pooling
+\item Dedicated hardware per customer
+\item Measured service
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False with Justification]
+State whether each statement is True or False. Justify your answer in one sentence.
+\begin{enumerate}
+\item In the SaaS model, the customer is responsible for patching the underlying operating system.
+\item A community cloud is shared by several organisations with common concerns (e.g., regulatory compliance).
+\item Multi-tenancy means a single physical server hosts virtual machines for only one customer.
+\item Data sovereignty refers to the legal requirement that data is subject to the laws of the country where it is physically stored.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define the following terms concisely, as expected in a GCE Paper 1 short-answer question:
+\begin{enumerate}
+\item Cloud computing
+\item Service Level Agreement (SLA)
+\item Vendor lock-in
+\item Hybrid cloud
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct Classification]
+Classify each of the following services as IaaS, PaaS or SaaS. Write only the acronym next to each name.
+\begin{enumerate}
+\item Amazon EC2
+\item Google App Engine
+\item Microsoft 365 (Office 365)
+\item Azure Virtual Machines
+\item Dropbox
+\item Heroku
+\item Gmail
+\item AWS Lambda
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Service Model Comparison Table]
+Copy and complete the table below by placing a tick (\checkmark) in the columns for the components managed by the \textbf{customer} in each service model. The first row (On-premises) is done for you.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|}\hline
+\textbf{Model} & \textbf{Applications} & \textbf{Data} & \textbf{Runtime / Middleware} & \textbf{OS} \\ \hline
+On-premises & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+IaaS &  &  &  &  \\ \hline
+PaaS &  &  &  &  \\ \hline
+SaaS &  &  &  &  \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{Extension:} Add two more columns for \emph{Virtualisation} and \emph{Physical Hardware} and complete them.
+\end{exercice}
+
+\begin{exercice}[Deployment Model Selection]
+A public hospital in Douala wants to migrate its patient record system to the cloud. The system handles highly sensitive personal health data regulated by Cameroon's data protection laws. The hospital has a limited IT budget but requires strict access control and audit trails.
+\begin{enumerate}
+\item Recommend the most suitable deployment model (public, private, community or hybrid). Justify your choice with \textbf{three} distinct arguments.
+\item Identify one major risk of choosing a public cloud for this scenario and one mitigation measure.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Security Threats and Countermeasures]
+Match each cloud-specific security threat (A–D) with the most appropriate protection measure (1–4). Write the pairs (e.g., A–3).
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\textbf{Threat} & \textbf{Protection Measure} \\ \hline
+A. Data breach due to misconfigured storage bucket & 1. Encryption at rest and in transit with customer-managed keys \\ \hline
+B. Account hijacking via phishing & 2. Multi-factor authentication (MFA) and conditional access policies \\ \hline
+C. Insider threat from cloud provider staff & 3. Regular automated configuration audits and policy-as-code \\ \hline
+D. Denial of Service (DoS) attacking cloud resources & 4. Web Application Firewall (WAF) and DDoS protection service \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{Explain briefly} why measure 1 mitigates threat A.
+\end{exercice}
+
+\begin{exercice}[Shared Responsibility Diagram]
+Draw a clear, labelled diagram (stacked bars or layered rectangles) showing the \textbf{shared responsibility model} for the four cases: On-premises, IaaS, PaaS, SaaS. Use the following layers (from bottom to top): Physical Security, Network, Host OS, Middleware/Runtime, Application, Data, Identity \& Access. Shade or label the layers managed by the \textbf{Cloud Provider} vs the \textbf{Customer} in each case. Annotate with arrows indicating the boundary shift.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured Essay: Cloud Computing Characteristics]
+\textbf{(a)} Define cloud computing. \hfill [2 marks]\\
+\textbf{(b)} State the \textbf{five} essential characteristics of cloud computing according to NIST. \hfill [5 marks]\\
+\textbf{(c)} For \textbf{three} of these characteristics, give a concrete example showing how a Cameroonian SME (e.g., a startup in Yaoundé using MTN Mobile Money APIs) benefits from it. \hfill [6 marks]\\
+\textbf{(d)} Explain the difference between \emph{scalability} and \emph{elasticity}. \hfill [3 marks]
+\end{exercice}
+
+\begin{exercice}[Discussion Essay: Opportunities and Ethics]
+\textbf{``Cloud computing offers great opportunities to Cameroonian SMEs but also raises serious ethical concerns.''} Discuss this statement. Your answer must include:
+\begin{itemize}
+\item At least \textbf{two} advantages for Cameroonian SMEs (with local context). \hfill [4 marks]
+\item At least \textbf{two} limitations or challenges specific to the Cameroonian context (e.g., connectivity, cost, skills). \hfill [4 marks]
+\item At least \textbf{two} ethical issues (e.g., data privacy, vendor lock-in, digital divide, environmental impact). \hfill [4 marks]
+\item A balanced conclusion. \hfill [3 marks]
+\end{itemize}
+\emph{Total: 15 marks}
+\end{exercice}
+
+\begin{exercice}[Scenario Analysis: Account Compromise]
+A final-year student at a bilingual high school in Buea uses Google Workspace for Education. One morning she finds her Google Drive empty, her Gmail sent folder full of spam, and she cannot log in because the password and recovery phone number have been changed.
+\begin{enumerate}
+\item Identify \textbf{two} likely security mistakes she made that facilitated the hijack. \hfill [4 marks]
+\item Describe \textbf{three} concrete technical measures (configurable in Google Workspace) that would have prevented or limited the damage. \hfill [6 marks]
+\item Explain the concept of \textbf{data sovereignty} and why it matters if the school's data is stored in Google's data centres in Europe or the USA. \hfill [5 marks]
+\end{enumerate}
+\emph{Total: 15 marks}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Essential Characteristics]
+\textbf{Correct answer: (d) Dedicated hardware per customer.}
+
+\textbf{Justification.} The NIST definition (SP 800-145) lists exactly five essential characteristics: \cle{on-demand self-service}, \cle{broad network access}, \cle{resource pooling}, \cle{rapid elasticity} and \cle{measured service}. Options (a), (b), (c) and (e) all appear in this list.
+
+Option (d) is the \emph{opposite} of resource pooling: in the cloud, physical hardware is \textbf{shared} among many customers (multi-tenancy), not dedicated to one customer. Dedicated hardware is a feature of traditional hosting or a private data centre, not an essential cloud characteristic.
+
+\begin{attention}[Examiner's tip]
+In GCE MCQs, the distractor is often the \emph{negation} of a correct characteristic. Learn the five NIST characteristics as a fixed list and check each option against it.
+\end{attention}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True/False with Justification]
+\begin{enumerate}
+\item \textbf{False.} In SaaS, the provider manages the entire stack — hardware, virtualisation, OS, middleware and the application itself — so OS patching is the \emph{provider's} responsibility; the customer only manages user access and data.
+\item \textbf{True.} A community cloud is precisely a cloud infrastructure shared by a specific group of organisations that have common requirements such as security policy, compliance obligations or mission (e.g., several Cameroonian ministries sharing a government cloud).
+\item \textbf{False.} Multi-tenancy means the \emph{opposite}: a single physical server (or software instance) hosts virtual machines or data belonging to \emph{several} customers (tenants), logically isolated from one another.
+\item \textbf{True.} Data sovereignty is the principle that data is governed by the laws of the country in which it is physically stored or processed, which is why the location of a provider's data centres (e.g., Europe or the USA) has legal consequences for Cameroonian users.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{\cle{Cloud computing}:} a model for enabling convenient, on-demand network access to a shared pool of configurable computing resources (servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service-provider interaction (NIST).
+\item \textbf{\cle{Service Level Agreement (SLA)}:} a formal contract between a cloud provider and a customer that specifies measurable service guarantees — such as availability percentage, response time and support — together with the penalties or compensation due if they are not met.
+\item \textbf{\cle{Vendor lock-in}:} a situation in which a customer becomes so dependent on one cloud provider's proprietary technologies, formats or APIs that migrating to another provider becomes technically difficult or very costly.
+\item \textbf{\cle{Hybrid cloud}:} a deployment model that combines two or more distinct clouds (typically private and public) that remain separate entities but are connected so that data and applications can move between them (e.g., sensitive data kept private, peak workloads sent to the public cloud).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct Classification]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL} \textbf{Service} & \textbf{Model} \\ \hline
+1. Amazon EC2 & \textbf{IaaS} (virtual machines, customer manages OS and above) \\ \hline
+2. Google App Engine & \textbf{PaaS} (deploy code; provider manages runtime and OS) \\ \hline
+3. Microsoft 365 (Office 365) & \textbf{SaaS} (ready-to-use applications via browser) \\ \hline
+4. Azure Virtual Machines & \textbf{IaaS} \\ \hline
+5. Dropbox & \textbf{SaaS} (finished storage/file-sharing application) \\ \hline
+6. Heroku & \textbf{PaaS} \\ \hline
+7. Gmail & \textbf{SaaS} \\ \hline
+8. AWS Lambda & \textbf{PaaS} (serverless functions: the provider manages everything below the code) \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[Frequent trap]
+Students often classify Dropbox or Gmail as IaaS ``because they store data''. The test is \emph{what the customer manages}: if you only use a finished application, it is SaaS. AWS Lambda is also debated: although called ``serverless'', the customer supplies only code while the provider manages runtime and OS, so it belongs to the PaaS family (Function-as-a-Service).
+\end{attention}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Service Model Comparison Table]
+\textbf{Completed table (customer-managed components ticked):}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|X|}\hline
+\rowcolor{popblueL}\textbf{Model} & \textbf{Applications} & \textbf{Data} & \textbf{Runtime / Middleware} & \textbf{OS} & \textbf{Virtualisation} & \textbf{Physical Hardware} \\ \hline
+On-premises & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+IaaS & \checkmark & \checkmark & \checkmark & \checkmark &  &  \\ \hline
+PaaS & \checkmark & \checkmark &  &  &  &  \\ \hline
+SaaS &  & \checkmark &  &  &  &  \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{Justification.}
+\begin{itemize}
+\item \textbf{IaaS:} the provider supplies only the physical infrastructure and the virtualisation layer; the customer installs and manages the OS, runtime, applications and data.
+\item \textbf{PaaS:} the provider additionally manages the OS, runtime and middleware; the customer deploys only applications and data.
+\item \textbf{SaaS:} the provider manages the whole stack including the application; the customer remains responsible only for the \textbf{data} entered into it (and user access).
+\end{itemize}
+
+\begin{attention}[Nuances accepted by examiners]
+Some textbooks tick ``Data'' for SaaS and others leave it blank, arguing the provider stores it. The rigorous position: the provider manages the \emph{storage infrastructure}, but the customer remains responsible for the \emph{content and correctness of the data}. Stating this nuance earns credit.
+\end{attention}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Deployment Model Selection]
+\textbf{(a) Recommended model: a \cle{private cloud} (a hybrid cloud with a private core is also acceptable if well argued).}
+
+Three distinct arguments:
+\begin{enumerate}
+\item \textbf{Confidentiality and legal compliance:} patient health records are highly sensitive personal data; a private cloud gives the hospital exclusive control over where data resides and who can access it, easing compliance with Cameroonian data protection requirements (Law No. 2010/012 on cybersecurity and cybercriminality and the data protection framework overseen by ANTIC).
+\item \textbf{Strict access control and audit trails:} on a private cloud the hospital defines its own identity management, role-based access and logging policies, and keeps complete audit trails — a stated requirement that a shared public platform cannot guarantee to the same degree.
+\item \textbf{Budget realism:} a full private cloud is costly, so the hospital can adopt a \emph{community cloud shared by several public hospitals} (mutualising costs among institutions with common compliance needs) or a \emph{hybrid} solution: sensitive records on the private core, non-sensitive services (appointments website, statistics) on a public cloud to reduce cost.
+\end{enumerate}
+
+\textbf{(b) Risk of a public cloud and mitigation.}
+\begin{itemize}
+\item \textbf{Risk:} data breach or unauthorised access to patient records due to multi-tenancy, misconfiguration, or data being stored outside Cameroon (loss of sovereignty).
+\item \textbf{Mitigation:} strong encryption of data at rest and in transit with keys managed by the hospital itself, combined with strict identity and access management (MFA, least privilege) and contractual guarantees on data location in the SLA.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Security Threats and Countermeasures]
+\textbf{Correct pairs: A–3, B–2, C–1, D–4.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL}\textbf{Threat} & \textbf{Measure} & \textbf{Reason} \\ \hline
+A. Misconfigured storage bucket & 3. Automated configuration audits and policy-as-code & Detects and corrects wrong settings (e.g., a bucket left public) continuously. \\ \hline
+B. Account hijacking via phishing & 2. MFA and conditional access & A stolen password alone is no longer sufficient to log in. \\ \hline
+C. Insider threat from provider staff & 1. Encryption with customer-managed keys & Provider staff cannot read the data because they do not hold the decryption keys. \\ \hline
+D. DoS attack & 4. WAF and DDoS protection & Filters and absorbs malicious traffic before it exhausts the service. \\ \hline
+\end{tabularx}
+\end{center}
+
+\textbf{Why measure 1 mitigates threat A:} if a storage bucket is misconfigured and accidentally exposed, the data inside remains encrypted; anyone who accesses it obtains only ciphertext. Since the keys are managed by the \emph{customer}, neither an external attacker nor a third party can decrypt the content, so the confidentiality impact of the misconfiguration is neutralised. (Note: measure 3 \emph{prevents} the misconfiguration; measure 1 \emph{limits the damage} — both are valid defences in depth.)
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Shared Responsibility Diagram]
+The expected diagram is a set of four stacked bars. The boundary between provider (bottom, shaded) and customer (top, unshaded) rises from On-premises to SaaS.
+
+\begin{popfigure}
+\begin{tikzpicture}[x=1.55cm,y=0.42cm,font=\scriptsize]
+% layer labels
+\foreach \y/\t in {0/{Physical Security},1/{Network},2/{Host OS},3/{Middleware / Runtime},4/{Application},5/{Data},6/{Identity \& Access}}
+  \node[anchor=east] at (-0.15,\y+0.5) {\t};
+% helper: draw one column. \#1 x-pos, \#2 title, \#3 provider height (in layers)
+% On-premises: provider 0 ; IaaS: 2 ; PaaS: 4 ; SaaS: 6 (provider up to Data incl., customer keeps Identity)
+% Column 1: On-premises (provider 0)
+\foreach \y in {0,...,6} \draw[fill=popblueL] (0,\y) rectangle (1.6,\y+1);
+\node[align=center] at (0.8,-0.6) {On-premises};
+% Column 2: IaaS (provider: Physical, Network)
+\foreach \y in {0,1} \draw[fill=popgreenL] (2.2,\y) rectangle (3.8,\y+1);
+\foreach \y in {2,...,6} \draw[fill=popblueL] (2.2,\y) rectangle (3.8,\y+1);
+\node[align=center] at (3,-0.6) {IaaS};
+% Column 3: PaaS (provider: up to Middleware)
+\foreach \y in {0,...,3} \draw[fill=popgreenL] (4.4,\y) rectangle (6,\y+1);
+\foreach \y in {4,...,6} \draw[fill=popblueL] (4.4,\y) rectangle (6,\y+1);
+\node[align=center] at (5.2,-0.6) {PaaS};
+% Column 4: SaaS (provider: up to Data)
+\foreach \y in {0,...,5} \draw[fill=popgreenL] (6.6,\y) rectangle (8.2,\y+1);
+\draw[fill=popblueL] (6.6,6) rectangle (8.2,7);
+\node[align=center] at (7.4,-0.6) {SaaS};
+% boundary arrows
+\draw[->,thick,poporange] (0.8,7.3) -- (0.8,0.2) node[midway,right,popdark]{customer manages all};
+\draw[->,thick,poporange] (8.6,0) -- (8.6,6) node[midway,right,popdark]{provider manages more};
+% legend
+\draw[fill=popgreenL] (0,-1.6) rectangle (0.4,-1.2); \node[anchor=west] at (0.5,-1.4) {Cloud provider};
+\draw[fill=popblueL] (2.6,-1.6) rectangle (3,-1.2); \node[anchor=west] at (3.1,-1.4) {Customer};
+\end{tikzpicture}
+\legende{Shared responsibility model: the provider's share (green) grows from On-premises to SaaS.}
+\end{popfigure}
+
+\textbf{Marking expectations:} one mark per correctly shaded column (4), one mark for the layer labels in the correct bottom-to-top order (1), one mark for a clear legend distinguishing provider/customer (1), one mark for annotation of the shifting boundary (1). Note: \emph{Identity \& Access} and \emph{Data} remain the customer's responsibility even in SaaS — a point that distinguishes excellent scripts.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Structured Essay: Cloud Computing Characteristics]
+\textbf{(a) Definition [2 marks].} Cloud computing is a model for enabling convenient, on-demand network access to a shared pool of configurable computing resources (e.g., servers, storage, applications) that can be rapidly provisioned and released with minimal management effort or service-provider interaction. \emph{[1 mark for on-demand network access to shared resources; 1 mark for rapid provisioning/minimal management.]}
+
+\textbf{(b) Five essential characteristics [5 marks — 1 each].}
+\begin{enumerate}
+\item On-demand self-service;
+\item Broad network access;
+\item Resource pooling (multi-tenancy);
+\item Rapid elasticity;
+\item Measured service (pay-per-use metering).
+\end{enumerate}
+
+\textbf{(c) Examples for a Yaoundé startup using MTN Mobile Money APIs [6 marks — 2 each: characteristic + benefit].}
+\begin{itemize}
+\item \textbf{On-demand self-service:} the startup provisions a new server in minutes through a web console, without calling a salesperson or buying hardware, so it can test a new Mobile Money payment feature the same day.
+\item \textbf{Rapid elasticity:} during salary week, when Mobile Money transactions peak, the platform automatically scales up capacity, then scales down afterwards — the startup never pays for idle servers.
+\item \textbf{Measured service:} the startup pays only for the compute time and storage actually consumed (pay-as-you-go), which suits a small business without capital for a data centre.
+\end{itemize}
+\emph{(Broad network access — staff reach the service from any phone/PC on MTN or Orange networks — and resource pooling are also acceptable.)}
+
+\textbf{(d) Scalability vs elasticity [3 marks].} \cle{Scalability} is the \emph{ability} of a system to handle growing workloads by adding resources (scale up/out), often as a planned, longer-term capacity change. \cle{Elasticity} is the \emph{automatic and rapid} adjustment of resources up \emph{and down} in real time to match the current demand. \emph{[1 mark each for the two definitions; 1 mark for the key contrast: elasticity is automatic, dynamic and bidirectional, whereas scalability is the general capacity to grow.]}
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Discussion Essay: Opportunities and Ethics]
+\textbf{Indicative mark scheme (15 marks):} advantages 4, limitations 4, ethical issues 4, balanced conclusion 3.
+
+\textbf{Advantages for Cameroonian SMEs (any two, 2 marks each).}
+\begin{itemize}
+\item \textbf{Lower entry cost:} no need to buy servers or build a data centre; a Douala e-commerce shop can rent computing power pay-as-you-go and invest its limited capital in the business itself.
+\item \textbf{Scalability and reach:} a startup can serve customers nationwide (and abroad) through web and mobile apps, scaling resources during peak periods such as end-of-year festivities, without owning the infrastructure.
+\end{itemize}
+
+\textbf{Limitations in the Cameroonian context (any two, 2 marks each).}
+\begin{itemize}
+\item \textbf{Connectivity:} cloud services require reliable Internet; bandwidth is still costly and outages occur, so a business depending entirely on the cloud risks interruption of service.
+\item \textbf{Cost in foreign currency and skills:} subscriptions are billed in dollars/euros (exchange-rate exposure for FCFA revenues), and there is a shortage of locally trained cloud administrators and security specialists.
+\end{itemize}
+
+\textbf{Ethical issues (any two, 2 marks each).}
+\begin{itemize}
+\item \textbf{Data privacy and sovereignty:} customer data stored in foreign data centres falls under foreign laws; Cameroonian users may lose control over how their personal data is used, which conflicts with national data protection efforts (ANTIC).
+\item \textbf{Vendor lock-in and digital divide:} SMEs may become dependent on one provider's proprietary tools, and cloud adoption may widen the gap between connected urban businesses (Yaoundé, Douala) and rural areas with poor Internet access.
+\end{itemize}
+
+\textbf{Balanced conclusion (3 marks).} Cloud computing is a genuine lever for Cameroonian SMEs — it lowers costs, accelerates innovation and widens markets — but its benefits can only be realised if connectivity improves, local skills are developed, and data protection is enforced. A prudent strategy (clear SLAs, encryption, attention to data location, avoiding excessive dependence on one vendor) allows SMEs to seize the opportunities while managing the ethical risks. \emph{[Full marks require an explicit weighing of both sides plus a justified personal position, not a mere summary.]}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Scenario Analysis: Account Compromise]
+\textbf{(a) Two likely security mistakes [4 marks — 2 each].}
+\begin{itemize}
+\item She used a \textbf{weak or reused password} (e.g., the same password as on another site that was leaked), making credential-stuffing or guessing easy.
+\item She had \textbf{not enabled two-factor authentication (2FA)} and used her own phone number as the only recovery option, so once the attacker changed the password and recovery phone, she was locked out completely. (Accept: falling for a phishing message that captured her credentials.)
+\end{itemize}
+
+\textbf{(b) Three technical measures in Google Workspace [6 marks — 2 each].}
+\begin{enumerate}
+\item \textbf{Enforce 2-Step Verification (2FA)} for all accounts (ideally with an authenticator app or security key): a stolen password alone cannot open the account.
+\item \textbf{Login alerts and suspicious-activity blocking:} Google notifies the user of sign-ins from new devices/locations and can block unusual login attempts, allowing fast reaction.
+\item \textbf{Recovery and restore tools:} set a secondary recovery email/phone that the attacker cannot change silently, and use Drive's \emph{version history / restore} and the admin console (for Workspace for Education) to recover deleted files and reset a compromised account.
+\end{enumerate}
+
+\textbf{(c) Data sovereignty [5 marks].} \cle{Data sovereignty} is the principle that data is subject to the laws and courts of the country where it is physically stored or processed \emph{[2 marks]}. If the school's data sits in Google data centres in Europe or the USA, it falls under European (GDPR) or American law rather than Cameroonian law \emph{[1 mark]}: foreign authorities may be able to demand access to the data, and Cameroonian protections (supervised nationally by ANTIC) may not apply \emph{[1 mark]}. For a school holding minors' personal data, this raises questions of consent, confidentiality and legal recourse, which is why data location and contractual guarantees in the SLA matter \emph{[1 mark]}.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap, grow cyclic,
+  every node/.style={concept, font=\small},
+  root concept/.append style={concept color=popblue, font=\bfseries},
+  level 1/.append style={level distance=3.4cm, sibling angle=60},
+  level 2/.append style={level distance=2.1cm, font=\scriptsize},
+  concept connection/.append style={color=popmuted}
+]
+\node[root concept]{Cloud Computing}
+  child[concept color=poporange]{ node {Definition \& Characteristics}
+    child { node {On-demand, pay-per-use} }
+    child { node {Virtualisation} }
+  }
+  child[concept color=popgreen]{ node {Service Models}
+    child { node {IaaS} }
+    child { node {PaaS} }
+    child { node {SaaS} }
+  }
+  child[concept color=popblue]{ node {Deployment Models}
+    child { node {Public} }
+    child { node {Private} }
+    child { node {Hybrid / Community} }
+  }
+  child[concept color=poppurple]{ node {Advantages \& Limits}
+    child { node {Scalability, cost} }
+    child { node {Internet dependence} }
+  }
+  child[concept color=poppink]{ node {Cloud Security}
+    child { node {Encryption, MFA} }
+    child { node {Shared responsibility} }
+  }
+  child[concept color=popgold]{ node {Cloud Ethics}
+    child { node {Data privacy} }
+    child { node {Data sovereignty} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: Cloud computing}
+\end{popfigure}
+
+\begin{aretenir}[Key definitions]
+\begin{itemize}
+  \item \cle{Cloud computing}: the delivery of computing services (servers, storage, databases, software, networking) over the Internet, \emph{on demand}, with \emph{pay-per-use} pricing. Instead of buying and maintaining its own hardware, an organisation rents computing resources from a provider.
+  \item \cle{Virtualisation}: the technology that allows one physical server to host several independent virtual machines; it is the technical foundation of the cloud, because it enables resources to be pooled and shared efficiently.
+  \item \cle{Data centre}: the physical facility where cloud providers host the servers, storage and network equipment that deliver cloud services.
+  \item Essential characteristics (as described by NIST): on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service (you pay for what you actually consume).
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Service models: the SPI pyramid]
+\begin{itemize}
+  \item \cle{IaaS} (Infrastructure as a Service): the provider rents virtual machines, storage and networks; the client manages the operating system and the applications. Examples: Amazon EC2, Microsoft Azure Virtual Machines.
+  \item \cle{PaaS} (Platform as a Service): the provider supplies a complete development and deployment platform (OS, runtime, tools); the client manages only the applications and the data. Examples: Google App Engine, Heroku.
+  \item \cle{SaaS} (Software as a Service): ready-to-use applications accessed through a web browser, with no installation or maintenance by the user. Examples: Gmail, Microsoft 365, Google Classroom.
+  \item Rule: the higher the level in the pyramid, the \textbf{less} the client manages and the \textbf{more} the provider manages.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Deployment models]
+\begin{itemize}
+  \item \cle{Public cloud}: shared infrastructure owned and operated by a provider (AWS, Microsoft Azure, Google Cloud); cheap, highly scalable, but resources are shared with other customers.
+  \item \cle{Private cloud}: infrastructure dedicated to a single organisation; offers more control and security, at a higher cost.
+  \item \cle{Hybrid cloud}: a combination of private and public clouds, with data and applications able to move between them (e.g. sensitive data kept private, peak workloads sent to the public cloud).
+  \item \cle{Community cloud}: infrastructure shared by several organisations with common requirements, for example government agencies.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Advantages and limitations]
+\begin{itemize}
+  \item Advantages: cost reduction (no heavy hardware purchase, pay-per-use), scalability and elasticity, accessibility anywhere and anytime, automatic updates and maintenance by the provider, easier collaboration and backup.
+  \item Limitations: total dependence on the Internet connection, risks to confidentiality of data, vendor lock-in (difficulty of changing provider), possible hidden long-term costs, and reduced control over where data is physically stored.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Security and ethics]
+\begin{itemize}
+  \item Threats: data breaches, account hijacking, insecure interfaces (APIs), denial-of-service attacks, insider threats.
+  \item Protections: \cle{encryption} of data (in transit and at rest), strong passwords and \cle{multi-factor authentication} (MFA), access control, regular backups, security audits.
+  \item \cle{Shared responsibility model}: the provider secures the underlying infrastructure; the client remains responsible for securing data, user accounts and access rights.
+  \item Ethics: data privacy (consent, confidentiality), \cle{data sovereignty} (where data is stored and which country's law applies), the digital divide, and the environmental impact of data centres. In Cameroon, ANTIC supervises cybersecurity and the protection of personal data.
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Classifying and choosing cloud solutions]
+\begin{enumerate}
+  \item To classify a service, ask: ``What does the client still manage?'' Almost everything (OS, apps) $\to$ IaaS; only apps and data $\to$ PaaS; nothing (the client simply uses the software) $\to$ SaaS.
+  \item To choose a deployment model, balance \textbf{control and security} (private cloud) against \textbf{cost and scalability} (public cloud); choose a hybrid model when both are needed.
+  \item To evaluate a cloud solution, check: cost, reliability (the Service Level Agreement, SLA), security measures, data location and legal compliance.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common mistakes]
+\begin{itemize}
+  \item Confusing SaaS and PaaS: Gmail is SaaS (you simply use it); a platform for \emph{building} and deploying your own applications is PaaS.
+  \item Believing the cloud is ``someone else's computer with no risks'': security is \emph{shared}; a weak password remains the client's fault.
+  \item Thinking a private cloud means ``on a personal laptop'': it means infrastructure dedicated to one \emph{organisation}.
+  \item Ignoring the Internet requirement: cloud services are unavailable when the connection is down --- a crucial point in areas with unstable connectivity.
+\end{itemize}
+\end{attention}
+
+\begin{methode}[GCE examination tips]
+\begin{enumerate}
+  \item Define precisely, then give one correct example per service or deployment model --- examiners reward accurate examples.
+  \item Use the SPI pyramid and the shared responsibility model to structure essay answers.
+  \item For ``discuss'' questions, always present advantages \emph{and} limitations, then conclude with a justified position, ideally illustrated with a Cameroonian example (e-government services, mobile money platforms hosted on cloud infrastructure).
+\end{enumerate}
+\end{methode}
+
+\findecours
+
+\end{document}

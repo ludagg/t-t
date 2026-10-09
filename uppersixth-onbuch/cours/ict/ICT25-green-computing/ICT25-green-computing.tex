@@ -1,0 +1,2161 @@
+% Green computing — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT25-green-computing.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{25}
+\newcommand{\DOCTITRE}{Green computing}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Green computing}{ICT}{Upper Sixth}{Upper Sixth — ICT}{25}{3 periods}{This chapter introduces green computing: the environmentally responsible design, use and disposal of ICT equipment. Students learn energy-saving practices, the dangers of e-waste, and the correct procedures for reducing, reusing, recycling and safely disposing of ICT equipment, with a focus on the Cameroonian context.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define green computing and explain its goals and importance.
+\item By the end of this chapter I can identify the environmental and health impacts of ICT equipment throughout its life cycle.
+\item By the end of this chapter I can describe practical techniques for reducing energy consumption of computers and data centres.
+\item By the end of this chapter I can explain the concepts of e-waste and hazardous components found in ICT devices.
+\item By the end of this chapter I can apply the 3R principle (Reduce, Reuse, Recycle) to ICT equipment.
+\item By the end of this chapter I can describe safe and responsible methods of disposing of computers, batteries, cartridges and mobile phones.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Introduction to Green Computing
+\item Green Practices in the Use of ICT
+\item E-waste and Responsible Disposal
+\item Building a Green IT Policy and Chapter Synthesis
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define green computing and explain its goals and importance.
+\item By the end of this chapter I can identify the environmental and health impacts of ICT equipment throughout its life cycle.
+\item By the end of this chapter I can describe practical techniques for reducing energy consumption of computers and data centres.
+\item By the end of this chapter I can explain the concepts of e-waste and hazardous components found in ICT devices.
+\item By the end of this chapter I can apply the 3R principle (Reduce, Reuse, Recycle) to ICT equipment.
+\item By the end of this chapter I can describe safe and responsible methods of disposing of computers, batteries, cartridges and mobile phones.
+\item By the end of this chapter I can distinguish responsible disposal from dangerous practices such as open burning and landfill dumping.
+\item By the end of this chapter I can propose a green computing policy for a school or small business in Cameroon.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Basic hardware components of a computer system (Lower Sixth: hardware unit)
+\item Input/output and storage devices and their power supply
+\item Basic notions of software, operating systems and settings (power options)
+\item General awareness of environmental protection and pollution from science subjects
+\item Internet research and word-processing skills for the integration activity
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Introduction to Green Computing}
+
+In Douala and Yaoundé, thousands of old computers, phones and CRT monitors end up dumped in open landfills like Nkolfoulou, where informal workers burn cables to recover copper, releasing toxic fumes over nearby homes. At the same time, cybercafés and schools complain about electricity bills and ENEO power cuts, while servers and PCs run all day at full power. The United Nations estimates that the world generates over 50 million tonnes of e-waste annually, and Africa receives a growing share of it, often illegally imported as ``second-hand donations''. How can a school, a business or a government in Cameroon use ICT without poisoning the environment or wasting energy? This chapter shows that computing can be designed, used and disposed of responsibly: this is \cle{green computing}.
+
+\courssub{What is Green Computing?}
+
+\textbf{Intuition first.} A computer is not ``clean'' just because it makes no smoke. Behind every laptop there is a mine (for copper, gold and critical minerals), a factory (using water, chemicals and energy), a ship or a truck (burning fuel), years of electricity consumption, and finally a corpse of plastic, glass and toxic metals that must go somewhere. Green computing simply means being honest about this whole story and acting at every stage to reduce the harm.
+
+\begin{definition}[Green computing (green IT)]
+\cle{Green computing}, also called \cle{green IT} or \emph{sustainable IT}, is the study and practice of \textbf{designing}, \textbf{manufacturing}, \textbf{using} and \textbf{disposing of} computers and related devices \emph{efficiently} and with \emph{minimal impact on the environment}. It covers the entire life cycle of ICT equipment, from raw material extraction to end-of-life treatment.
+\end{definition}
+
+Notice the four verbs in the definition: designing, manufacturing, using, disposing. Green computing is not only about switching off your screen at night. It concerns the engineer who chooses components, the factory that assembles them, the school that buys and operates them, and the recycler who treats them at the end. A complete green IT strategy acts on all four stages.
+
+\courssub{Origins and Goals of Green Computing}
+
+Green computing emerged in the early 1990s, when governments and manufacturers realised that the explosive growth of personal computers was creating a new category of energy demand and waste. One landmark was the launch of the \textbf{Energy Star} programme (1992) by the US EPA, an energy-efficiency labelling scheme for office equipment that pushed manufacturers to build devices consuming less power, especially in standby mode. Similar standards (e.g. EU RoHS directive restricting hazardous substances) followed worldwide. Since then, the idea has widened from ``save electricity'' to a full environmental approach.
+
+The main goals of green computing can be summarised as follows:
+
+\begin{itemize}
+\item \textbf{Energy efficiency:} design and operate devices so that they do the same work with fewer watts (efficient power supplies, low-power processors, sleep modes, virtualised servers).
+\item \textbf{Reduction of hazardous materials:} eliminate or minimise toxic substances such as lead, mercury, cadmium and brominated flame retardants in components (RoHS compliance).
+\item \textbf{Recyclability:} design products that are easy to dismantle, so that plastics, glass and metals can be recovered instead of dumped or burnt (WEEE directive principles).
+\item \textbf{Longer equipment lifespan:} fight \emph{planned obsolescence} by making devices durable, upgradeable (more RAM, replaceable battery) and repairable, so that a machine serves 6 years instead of 3.
+\end{itemize}
+
+\begin{aretenir}[The four goals of green computing]
+Green computing aims at: (1) using less \cle{energy}, (2) using fewer \cle{hazardous materials}, (3) making equipment \cle{recyclable}, and (4) extending the \cle{lifespan} of equipment. Every green practice you will meet in this chapter serves at least one of these four goals.
+\end{aretenir}
+
+\courssub{Why Green Computing Matters}
+
+\textbf{Climate change.} Most of the world's electricity is still produced by burning fossil fuels (coal, gas, oil). Every kilowatt-hour consumed by a data centre or a classroom of PCs therefore corresponds, directly or indirectly, to emissions of carbon dioxide ($\mathrm{CO_2}$), the main greenhouse gas. Reducing ICT energy consumption is a concrete way of fighting global warming.
+
+\begin{definition}[Carbon footprint of ICT]
+The \cle{carbon footprint} of an ICT device or service is the total quantity of greenhouse gases (expressed in kilograms or tonnes of $\mathrm{CO_2}$-equivalent) emitted during its whole life cycle: extraction of raw materials, manufacturing, transport, electricity consumed during use, and end-of-life treatment.
+\end{definition}
+
+\begin{savaistu}[ICT and the aviation sector]
+It is estimated that the ICT sector (devices, networks and data centres together) accounts for 2--4\% of global $\mathrm{CO_2}$ emissions --- an order of magnitude comparable to the entire civil aviation sector. And unlike air traffic, digital traffic grows every year. This is why engineers now speak of ``digital sobriety''.
+\end{savaistu}
+
+\textbf{Rising energy costs and limited electricity supply in Cameroon.} In Cameroon, electricity is expensive for schools and businesses, and the supply is not always reliable: load shedding and power cuts are part of daily life in many towns. A computer lab of 30 desktops left on all day is a heavy burden on a school's budget and on the national grid. Green practices (efficient machines, sleep mode, switching off at night) directly reduce bills and free capacity for other users.
+
+\textbf{The growth of e-waste in Africa.} The world generates tens of millions of tonnes of electronic waste every year, and only a small fraction is properly recycled. A significant share is shipped to developing countries, sometimes disguised as ``second-hand donations'' or ``aid'', and ends up in open dumps where it is burnt or dismantled without protection. African cities, including Cameroonian ones, receive a growing part of this flow. Green computing is therefore not a luxury for rich countries: it is a public health and environmental necessity here.
+
+\courssub{The Life Cycle of ICT Equipment}
+
+To understand where the environmental cost of a computer really lies, we follow it through its \cle{life cycle}, from the mine to the grave.
+
+\begin{enumerate}
+\item \textbf{Raw material extraction:} a single computer contains dozens of materials --- copper, aluminium, iron, gold, silver, and critical minerals (rare earth elements, cobalt, tantalum). Mining them consumes enormous energy and water, destroys landscapes, and sometimes fuels conflict and poor labour conditions.
+\item \textbf{Manufacturing:} producing microchips and screens requires ultra-pure water, solvents and chemicals, and a great deal of electricity. For many devices, manufacturing represents a surprisingly large share of the total carbon footprint --- often comparable to, or greater than, the whole usage phase.
+\item \textbf{Transport:} components and finished products travel thousands of kilometres by ship, plane and truck before reaching a shop in Douala or a school in Bamenda, burning fuel at every step.
+\item \textbf{Use:} the device consumes electricity for years. This is the stage the user controls directly: settings, habits and maintenance decide how large this part of the footprint will be.
+\item \textbf{End-of-life:} the device is discarded. If it is refurbished, reused or properly recycled, materials are recovered and harm is limited. If it is dumped or burnt, toxic substances escape into the air, soil and water.
+\end{enumerate}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  stage/.style={draw=popblue, fill=popblueL, rounded corners, thick, minimum width=2.6cm, minimum height=1cm, align=center, font=\small\bfseries},
+  impact/.style={draw=poporange, fill=white, rounded corners, align=center, font=\scriptsize, text width=2.7cm},
+  arr/.style={-{Stealth[length=3mm]}, very thick, popdark}
+]
+\node[stage, align=center] (extract) at (0,0){Raw material\\extraction};
+\node[stage] (manuf) at (4.2,0) {Manufacturing};
+\node[stage] (transp) at (8.4,0) {Transport};
+\node[stage] (use) at (12.6,0) {Use};
+\node[stage] (end) at (8.4,-3.4) {End-of-life};
+\draw[arr] (extract) -- (manuf);
+\draw[arr] (manuf) -- (transp);
+\draw[arr] (transp) -- (use);
+\draw[arr] (use.south) |- (end.east);
+\draw[arr, popgreen, dashed] (end.west) -| (extract.south) node[midway, above left, font=\scriptsize\itshape, text=popgreen, align=center, text width=2.5cm]{reuse / recycle\\(materials recovered)};
+\node[impact, below=0.25cm of extract] {Energy \& water use, landscape destruction};
+\node[impact, below=0.25cm of manuf] {Chemicals, pure water, high electricity use};
+\node[impact, below=0.25cm of transp] {Fuel burnt, $\mathrm{CO_2}$ emitted};
+\node[impact, below=0.25cm of use] {Electricity consumption, heat};
+\node[impact, below=0.25cm of end] {Toxic leakage if dumped; recovery if recycled};
+\end{tikzpicture}
+\end{center}
+\legende{Life cycle of a computer, with the main environmental impact of each stage. The dashed arrow shows the ``green'' loop: reuse and recycling return materials to the start of the cycle.}
+\end{popfigure}
+
+\begin{attention}[The hidden footprint]
+A common mistake is to think that a computer only pollutes when it is switched on. In reality, a large part of its carbon footprint is already ``spent'' before you first press the power button, because of mining and manufacturing. That is why \textbf{keeping a device longer} is often the greenest action of all: it spreads the manufacturing cost over more years.
+\end{attention}
+
+\courssub{Environmental and Health Impacts of ICT}
+
+\textbf{Electricity consumption and $\mathbf{CO_2}$ emissions.} Every device has a \cle{power rating} in watts (W). The energy it consumes is power multiplied by time, and producing that energy emits greenhouse gases. Devices differ enormously:
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=0.7cm,
+  width=12cm, height=6.5cm,
+  ymin=0, ymax=550,
+  ylabel={Typical power consumption (W)},
+  symbolic x coords={CRT monitor, LCD monitor, Laptop, Desktop PC, Server},
+  xtick=data,
+  x tick label style={font=\small, align=center},
+  nodes near coords, nodes near coords style={font=\small\bfseries},
+  ymajorgrids, grid style={popline, dashed},
+  every axis plot/.append style={fill=popblue, draw=popdark}
+]
+\addplot coordinates {(CRT monitor,110) (LCD monitor,35) (Laptop,50) (Desktop PC,200) (Server,500)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Typical power consumption of common ICT devices (indicative average values). Replacing CRT monitors with LCD screens and desktops with laptops can divide consumption by three or more.}
+\end{popfigure}
+
+The chart shows why simple choices matter: an old CRT monitor consumes about three times more than an LCD screen, and a server can consume as much as ten laptops. In a school with 30 CRT monitors, replacing them with LCDs saves roughly $30 \times (110 - 35) = 2250\ \mathrm{W}$ whenever the lab is running.
+
+\textbf{Water and rare minerals in manufacturing.} Fabricating chips requires large volumes of ultra-pure water and minerals that exist in limited quantities on Earth. Extraction of some of these minerals is associated with severe environmental damage and difficult social conditions in mining regions.
+
+\textbf{Toxic substances.} ICT equipment contains hazardous materials, including:
+\begin{itemize}
+\item \textbf{Lead} (in old solder and CRT glass): attacks the nervous system, especially in children;
+\item \textbf{Mercury} (in some backlights and switches): a potent neurotoxin that accumulates in food chains;
+\item \textbf{Cadmium} (in some batteries and coatings): damages kidneys and bones;
+\item \textbf{Brominated flame retardants} (in plastics): release toxic compounds when burnt.
+\end{itemize}
+
+\textbf{Health impacts of improper handling.} When e-waste is dumped and burnt in the open --- as happens near landfills such as Nkolfoulou --- these substances do not disappear. Toxic fumes cause \emph{respiratory diseases} among workers and neighbouring residents; rainwater washes metals into the \emph{soil} and \emph{groundwater}, contaminating wells, streams and crops; children playing near dumps are the most exposed. The damage falls on communities that often never used the equipment in the first place.
+
+\begin{attention}[Standby is not ``off'']
+A very common mistake is to believe that a device that is switched off but still plugged in consumes no energy. In fact, many devices (TVs, chargers, printers, decoders, PCs in sleep mode) keep drawing a small current called \cle{standby power} or \emph{phantom power}. A charger left in the socket, or 20 computers left in sleep mode every night in a school, waste real money over a year. The correct habit: switch off at the power strip or unplug.
+\end{attention}
+
+\begin{methode}[Estimating the electricity cost of a device]
+To estimate how much a device costs to run:
+\begin{enumerate}
+\item Find its \textbf{power} $P$ in watts (on the label or in the manual) and convert to kilowatts: $P_{\mathrm{kW}} = P / 1000$.
+\item Multiply by the \textbf{number of hours of use} $t$ to get the energy in kilowatt-hours: $E = P_{\mathrm{kW}} \times t$ (kWh).
+\item Multiply by the \textbf{tariff} $\tau$ in FCFA per kWh charged by the electricity provider (e.g.\ ENEO): $\text{Cost} = E \times \tau$.
+\end{enumerate}
+In short: $\text{Cost} = \dfrac{P \times t}{1000} \times \tau$.
+\end{methode}
+
+\begin{exoresolu}[Electricity cost of a school computer lab]
+A school lab has 30 desktop PCs rated at $200\ \mathrm{W}$ each, used 6 hours per day, 20 days per month. The electricity tariff is $100\ \mathrm{FCFA/kWh}$. (a) Compute the monthly energy consumption of the lab. (b) Compute the monthly cost. (c) The school replaces the desktops with laptops of $50\ \mathrm{W}$. What is the monthly saving?
+\tcblower
+\textbf{Solution.}
+(a) Total power: $30 \times 200 = 6000\ \mathrm{W} = 6\ \mathrm{kW}$. Monthly time: $6 \times 20 = 120\ \mathrm{h}$.
+\[ E = 6\ \mathrm{kW} \times 120\ \mathrm{h} = 720\ \mathrm{kWh}. \]
+(b) Monthly cost:
+\[ \text{Cost} = 720 \times 100 = 72\,000\ \mathrm{FCFA}. \]
+(c) With laptops: total power $= 30 \times 50 = 1500\ \mathrm{W} = 1.5\ \mathrm{kW}$, so $E' = 1.5 \times 120 = 180\ \mathrm{kWh}$, costing $180 \times 100 = 18\,000\ \mathrm{FCFA}$.
+\[ \text{Saving} = 72\,000 - 18\,000 = 54\,000\ \mathrm{FCFA\ per\ month}, \]
+i.e.\ a 75\% reduction --- enough to pay for other school needs, and less strain on the grid during peak hours.
+\end{exoresolu}
+
+\courssub{Benefits of Green Computing}
+
+Green computing is not only about avoiding harm; it brings concrete advantages:
+
+\begin{itemize}
+\item \textbf{Lower bills:} efficient devices and good habits reduce electricity costs, as the worked example shows.
+\item \textbf{Longer hardware life:} well-maintained, correctly cooled and properly shut-down equipment lasts longer, delaying expensive replacements.
+\item \textbf{Legal compliance:} environmental regulations increasingly restrict hazardous substances and impose rules on e-waste; responsible organisations avoid fines and sanctions.
+\item \textbf{Corporate image:} a business, bank or administration that adopts green IT gains the trust of customers, partners and citizens.
+\item \textbf{Protection of public health:} proper handling and disposal keep toxic substances away from the air people breathe and the water they drink.
+\end{itemize}
+
+\begin{exercice}[Your school's footprint]
+Choose one device in your school or home (computer, printer, or router). (a) Find its power rating in watts. (b) Estimate how many hours per month it is really on, including standby. (c) Using a tariff of $100\ \mathrm{FCFA/kWh}$, compute its monthly electricity cost. (d) Propose two concrete actions to reduce this cost, and compute the new monthly cost if both actions are applied.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Example with a printer rated $400\ \mathrm{W}$ when printing but left in standby ($5\ \mathrm{W}$) all month. (a) Power: $400\ \mathrm{W}$ active, $5\ \mathrm{W}$ standby. (b) Suppose 10 h of actual printing and $30 \times 24 - 10 = 710$ h in standby per month. (c) Energy: printing $0.4\ \mathrm{kW} \times 10 = 4\ \mathrm{kWh}$; standby $0.005\ \mathrm{kW} \times 710 = 3.55\ \mathrm{kWh}$; total $7.55\ \mathrm{kWh}$, i.e.\ about $755\ \mathrm{FCFA}$ --- nearly half of it wasted in standby. (d) Actions: switch the printer off at the strip when idle (standby drops to almost zero) and print in draft mode to shorten active time. New cost falls to roughly $400$--$500\ \mathrm{FCFA}$ per month. Answers will vary with the device chosen; the method (power $\times$ time $\times$ tariff) must be applied rigorously.
+\end{corrige}
+
+\begin{aretenir}[Section summary]
+Green computing is the responsible design, manufacture, use and disposal of ICT equipment. Its goals are energy efficiency, fewer hazardous materials, recyclability and longer lifespan. Every device has a life cycle --- extraction, manufacturing, transport, use, end-of-life --- and each stage carries an environmental cost, including a large ``hidden'' footprint before first use. ICT accounts for 2--4\% of global $\mathrm{CO_2}$ emissions, and e-waste is a growing health threat in Africa. The good news: simple, measurable actions (efficient hardware, no standby, longer use, proper disposal) cut bills, protect health and preserve the environment.
+\end{aretenir}
+
+\coursec{Green Practices in the Use of ICT}
+
+In the previous section we discovered that ICT equipment consumes large amounts of electricity and that the production, use and disposal of computers all leave an environmental footprint. Knowing the problem is not enough: the real question every GCE candidate must be able to answer is \emph{what can we actually do about it?} This section answers that question in a very practical way. Whether you are a student in a school computer laboratory in Bamenda, a secretary in a ministry in Yaound\'e, or a cybercaf\'e owner in Douala, the same green practices apply: \cle{manage power intelligently}, \cle{choose efficient equipment}, \cle{print responsibly}, \cle{share resources} and \cle{make equipment last longer}.
+
+\courssub{Power Management Settings}
+
+\textbf{Observation.} In many school computer rooms, the machines are switched on at 7~a.m. and remain fully on until 4~p.m., even during break time, lunch and the hours when no class is using the room. A desktop computer that sits idle for six hours still draws almost as much power as one in active use. This is pure waste --- and it is completely avoidable, because every modern operating system contains built-in \cle{power management} tools.
+
+\begin{definition}[Power management]
+\cle{Power management} is the set of hardware and software techniques used to reduce the electricity consumed by a computer when it is idle or partially idle, by placing the whole machine or some of its components into low-power states.
+\end{definition}
+
+The main power states you must know for the examination are:
+
+\begin{itemize}
+\item \textbf{Sleep (standby / S3 state):} the computer's current work is kept in RAM and most components are switched to very low power. The machine wakes up in a few seconds. Ideal for short breaks (a few minutes to a few hours).
+\item \textbf{Hibernate (S4 state):} the contents of RAM are saved to the hard disk (or SSD) and the computer switches off almost completely, consuming practically no power. Waking up takes longer than sleep, but no energy is wasted overnight or during long idle periods.
+\item \textbf{Screen-off timer:} the display is switched off while the computer keeps running. Useful because the monitor is one of the most power-hungry components.
+\item \textbf{Shut down (S5 state):} the machine is switched off completely after work. This is the greenest option when the computer will not be used for a long period (overnight, weekends, holidays).
+\end{itemize}
+
+\begin{methode}[Setting up a power-saving plan on a school computer (Windows / Linux)]
+\begin{enumerate}
+\item Open the \textbf{Control Panel} (Windows) and choose \textbf{Power Options} (on Linux, open \textbf{Settings} $\rightarrow$ \textbf{Power} or \textbf{Power Management}).
+\item Select or create a \textbf{power plan} (e.g. \emph{Balanced} or \emph{Power saver}) and click \emph{Change plan settings}.
+\item Set \emph{Turn off the display} to about \textbf{5--10 minutes} of inactivity.
+\item Set \emph{Put the computer to sleep} to about \textbf{15--30 minutes} of inactivity.
+\item In \emph{Change advanced power settings}, enable \textbf{hibernation} for longer idle periods (for example after 1 hour) and configure \emph{Critical battery action} to hibernate.
+\item Save the plan, then educate users: everyone must \textbf{shut down} the machine at the end of the day.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small]
+% Window frame
+\draw[fill=popblueL, draw=popline, rounded corners=2pt] (0,0) rectangle (10,6.2);
+\draw[fill=popblue, draw=popblue] (0,5.5) rectangle (10,6.2);
+\node[text=white, anchor=west] at (0.25,5.85) {\textbf{Power Options -- Edit Plan Settings}};
+\draw[fill=white, draw=popline] (9.3,5.6) rectangle (9.85,6.1);
+\node at (9.575,5.85) {\textbf{X}};
+% Labels and dropdowns
+\node[anchor=west] at (0.4,4.7) {Turn off the display:};
+\draw[fill=white, draw=popline] (5.2,4.4) rectangle (9.6,5.0);
+\node[anchor=west] at (5.4,4.7) {10 minutes};
+\node at (9.3,4.7) {$\blacktriangledown$};
+\node[anchor=west] at (0.4,3.6) {Put the computer to sleep:};
+\draw[fill=white, draw=popline] (5.2,3.3) rectangle (9.6,3.9);
+\node[anchor=west] at (5.4,3.6) {30 minutes};
+\node at (9.3,3.6) {$\blacktriangledown$};
+\node[anchor=west] at (0.4,2.5) {Hibernate after:};
+\draw[fill=white, draw=popline] (5.2,2.2) rectangle (9.6,2.8);
+\node[anchor=west] at (5.4,2.5) {1 hour};
+\node at (9.3,2.5) {$\blacktriangledown$};
+% Buttons
+\draw[fill=popgreen, draw=popgreen, rounded corners=2pt] (5.2,0.5) rectangle (7.3,1.2);
+\node[text=white] at (6.25,0.85) {\textbf{Save changes}};
+\draw[fill=white, draw=popline, rounded corners=2pt] (7.6,0.5) rectangle (9.6,1.2);
+\node at (8.6,0.85) {Cancel};
+\end{tikzpicture}
+\legende{A mock-up of an operating system's power options dialog: the display turns off after 10 minutes, the computer sleeps after 30 minutes and hibernates after 1 hour.}
+\end{popfigure}
+
+\begin{attention}[Screen savers do NOT save energy]
+A very common mistake is to believe that a \textbf{screen saver} (the flying text or moving pictures that appear when the computer is idle) saves energy. It does \emph{not}: the monitor remains fully powered and the processor keeps working to draw the animation. Only \cle{sleep mode}, \cle{switching off the screen} or \cle{shutting down} actually reduces consumption. In a green IT policy, screen savers should be disabled and replaced by a screen-off timer.
+\end{attention}
+
+\begin{definition}[Phantom (standby) power consumption]
+\cle{Phantom power} (also called \cle{standby power} or \emph{vampire power}) is the electricity consumed by a device while it is switched off or in standby but still plugged into the mains. Phone chargers, printers, monitors, televisions, set-top boxes and microwave ovens all draw a small current continuously. Individually it is small (typically 0.5--5~W per device), but across a whole school or office, all day and all night, it adds up to a significant waste.
+\end{definition}
+
+The remedy is simple: \textbf{unplug chargers} when not in use, and use \textbf{power strips with switches} so that a whole row of computers can be truly switched off at the end of the day with one action. In Cameroon, where electricity costs are rising, this also reduces the bill.
+
+\courssub{Choosing Energy-Efficient Equipment}
+
+\textbf{Observation.} A school that replaces old desktop towers with bulky CRT monitors by modern laptops immediately sees its electricity bill fall, even though the same number of students is working. Why? Because not all computers are equal in terms of energy.
+
+\begin{propriete}[Laptop versus desktop consumption]
+A laptop typically consumes \textbf{3 to 5 times less energy} than a desktop computer equipped with a CRT monitor. Laptops are engineered for battery life, so every component (processor, screen, power supply) is optimised for low consumption. (This comparison is a general rule of thumb, not a theorem to prove; it is examinable as factual knowledge.)
+\end{propriete}
+
+When choosing equipment, keep the following comparisons in mind:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Choice} & \textbf{Less green option} & \textbf{Greener option} \\
+\hline
+Computer type & Desktop tower & Laptop or low-power mini-PC (e.g. Raspberry Pi, Intel NUC) \\
+\hline
+Monitor & CRT (cathode ray tube) & LCD/LED flat screen (IPS or VA panel) \\
+\hline
+Storage & Mechanical hard disk (HDD) & Solid-state drive (SSD) -- no moving parts, lower power \\
+\hline
+Power supply & Unrated, inefficient PSU & 80 PLUS certified PSU (Bronze, Silver, Gold, Platinum, Titanium) \\
+\hline
+Processor & High TDP desktop CPU & Low TDP mobile CPU (e.g. Intel U-series, AMD Ryzen Mobile, ARM-based) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{definition}[Energy labels]
+An \cle{energy label} is an independent certification that guarantees a device meets defined energy-efficiency standards. Two labels to know are:
+\begin{itemize}
+\item \textbf{Energy Star}: an international label for efficient computers, monitors, printers, copiers and other office equipment. Devices carrying this label meet strict power consumption limits in idle, sleep and active modes.
+\item \textbf{80 PLUS}: a certification for computer power supply units (PSUs) guaranteeing that at least 80\,\% of the electricity drawn from the mains is actually delivered to the computer components (the rest is lost as heat). Levels: 80 PLUS, Bronze, Silver, Gold, Platinum, Titanium (increasing efficiency).
+\end{itemize}
+\end{definition}
+
+\begin{savaistu}[Cameroon context]
+When the Ministry of Secondary Education (MINESEC) or a regional delegation procures computers for schools, specifying \textbf{Energy Star} and \textbf{80 PLUS Gold} in the tender documents ensures lower running costs over the 5--7 year lifespan of the equipment. Many cybercaf\'es in Douala and Yaound\'e have switched to laptops and LED screens precisely to cut electricity bills.
+\end{savaistu}
+
+\courssub{Green Printing Practices}
+
+Printing consumes paper (trees, water, energy), ink or toner (whose cartridges are polluting to produce and discard) and electricity. Green printing rests on one principle: \emph{print less, and print smart}.
+
+\begin{itemize}
+\item \textbf{Print preview first:} always check the preview to avoid printing pages with errors, blank pages or unwanted pages.
+\item \textbf{Print only when necessary:} ask yourself whether a digital copy (PDF, email, shared document on Google Drive, OneDrive or a school intranet) is enough. In many offices, most printed documents are read once and thrown away.
+\item \textbf{Double-sided (duplex) printing:} printing on both sides of the sheet halves paper consumption. Configure the printer driver default to duplex.
+\item \textbf{Draft / economy mode:} for internal documents, use the printer's draft or economy mode, which uses far less ink or toner.
+\item \textbf{Reuse paper:} sheets printed on one side only can be reused for drafts, notes, calculations or student rough work.
+\item \textbf{Print several pages per sheet:} for handouts, printing 2 or 4 pages per sheet (N-up printing) saves paper while remaining readable.
+\item \textbf{Use recycled paper:} choose paper with high post-consumer recycled content (e.g. 100\,\% recycled) and recognised labels (FSC, Blue Angel).
+\end{itemize}
+
+\begin{exoresolu}[Paper saved by duplex printing and reuse]
+A school prints 2\,000 single-sided pages of internal memos per month. The school decides to print all internal memos double-sided and to reuse single-sided sheets for drafts, which reduces the number of new sheets needed by a further 10\,\%. How many new sheets of paper does the school now use per month?
+\tcblower
+\textbf{Step 1: effect of duplex printing.} Printing double-sided puts 2 pages on each sheet:
+\[ \frac{2000 \text{ pages}}{2 \text{ pages per sheet}} = 1000 \text{ sheets}. \]
+\textbf{Step 2: effect of reusing paper.} A further 10\,\% reduction:
+\[ 1000 \times (1 - 0.10) = 1000 \times 0.90 = 900 \text{ sheets}. \]
+\textbf{Conclusion:} the school now uses \textbf{900 sheets per month} instead of 2\,000, a saving of 1\,100 sheets, i.e. 55\,\% of its previous consumption.
+\end{exoresolu}
+
+\begin{exemplebox}[Toner saving calculation]
+A laser printer toner cartridge yields 3\,000 pages at 5\,\% coverage in normal mode. In draft mode it yields approximately 5\,000 pages. If a school prints 12\,000 pages per year, how many cartridges are saved annually by using draft mode for internal documents (assume 80\,\% of prints are internal)?
+\textbf{Solution:} Internal pages = 9\,600. Normal mode cartridges for these = 9\,600 / 3\,000 = 3.2. Draft mode cartridges = 9\,600 / 5\,000 = 1.92. Saving $\approx$ 1.3 cartridges/year. At 25\,000~FCFA per cartridge, that is $\approx$ 32\,500~FCFA saved annually.
+\end{exemplebox}
+
+\courssub{Virtualisation and Consolidation}
+
+\textbf{Observation.} In a typical company, university or government ministry, each service (web site, email, student database, file storage, accounting) used to run on its own physical server. Measurements show that such dedicated servers often run at only 10--15\,\% of their CPU capacity: the machine consumes nearly full power while doing almost nothing. \cle{Virtualisation} solves this waste.
+
+\begin{definition}[Virtualisation]
+\cle{Virtualisation} is a technology that allows several independent \cle{virtual machines} (VMs), each with its own operating system and applications, to run simultaneously on a \emph{single physical machine}, sharing its processor, memory, storage and network interfaces. The software layer that creates and manages the virtual machines is called a \cle{hypervisor} (Type 1 / bare-metal: VMware ESXi, Microsoft Hyper-V, Proxmox VE; Type 2 / hosted: VMware Workstation, VirtualBox).
+\end{definition}
+
+The practice of replacing many underused physical servers by a few powerful machines hosting many virtual machines is called \cle{server consolidation}. Its green benefits are direct: fewer physical machines means less electricity for running and cooling them, less hardware to manufacture, and less e-waste at end of life.
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, every node/.style={align=center}]
+% Left: many underused servers
+\node[font=\bfseries] at (2.2,4.8) {Before consolidation};
+\foreach \y/\p in {3.8/12\%, 2.8/10\%, 1.8/15\%, 0.8/11\%}{
+  \draw[fill=popblueL, draw=popline] (0.5,\y) rectangle (3.9,\y+0.7);
+  \node[anchor=west] at (0.65,\y+0.35) {Physical server};
+  \node[anchor=east, text=poporange] at (3.75,\y+0.35) {CPU: \p};
+}
+\node[align=center, text=popmuted] at (2.2,-0.2) {4 machines, 4 PSUs,\\ 4 cooling fans,\\ most capacity wasted};
+% Arrow
+\draw[-{Stealth}, very thick, popgreen] (4.2,2.3) -- (5.8,2.3);
+% Right: one physical server with VMs
+\node[font=\bfseries] at (9.5,4.8) {After virtualisation};
+\draw[fill=popgreenL, draw=popgreen, thick] (6.5,0.2) rectangle (12.5,4.4);
+\node[anchor=south] at (9.5,0.3) {\textbf{1 physical server + hypervisor}};
+\foreach \x/\n in {6.8/{VM 1\\Web}, 8.5/{VM 2\\Mail}, 10.2/{VM 3\\Files}}{
+  \draw[fill=white, draw=popblue] (\x,1.8) rectangle (\x+1.4,3.5);
+  \node at (\x+0.7,2.65) {\n};
+}
+\node[align=center, text=popgreen] at (9.5,-0.2) {1 machine well used,\\ less energy, less cooling,\\ less e-waste};
+\end{tikzpicture}
+\legende{Server consolidation through virtualisation: four underused physical servers (left) are replaced by one physical server hosting several virtual machines (right).}
+\end{popfigure}
+
+\courssub{Cloud Computing and Shared Resources}
+
+\cle{Cloud computing} takes the idea of sharing one step further: instead of each school, company or ministry buying and maintaining its own servers, computing resources (storage, software, processing power) are provided as a service over the Internet by large, professionally managed data centres. A small business in Buea can keep its accounts on a cloud service (e.g. Microsoft 365, Google Workspace, AWS, Azure, or a local provider like CAMTEL Cloud) instead of running its own server room.
+
+The green logic is the same as for virtualisation: \textbf{shared infrastructure avoids duplication}. One large, efficient data centre serving thousands of clients generally uses less energy per user than thousands of small, inefficient private server rooms. Major cloud providers (Google, Microsoft, Amazon) invest heavily in renewable energy and advanced cooling (free cooling, liquid immersion) to improve their \cle{Power Usage Effectiveness (PUE)}.
+
+\begin{attention}[The cloud is not ``free'' for the planet]
+Cloud services run in \textbf{data centres} that themselves consume enormous amounts of electricity, both for the servers and for cooling them. Cloud computing is greener mainly because resources are \emph{shared and well utilised}, not because the energy disappears. Storing useless files, old emails and duplicate backups in the cloud forever still has an environmental cost. \textbf{Digital sobriety} applies to the cloud too: delete what you don't need.
+\end{attention}
+
+\begin{savaistu}[Cameroon context]
+The \textbf{Antic} (Agence Nationale des Technologies de l'Information et de la Communication) encourages public administrations to adopt cloud solutions hosted in sovereign data centres to reduce the proliferation of inefficient server rooms in ministries. Mobile money platforms (MTN MoMo, Orange Money) rely on highly available cloud infrastructure that is far more energy-efficient per transaction than if each agent ran their own database server.
+\end{savaistu}
+
+\courssub{Good Daily Habits for Users and Schools}
+
+Technology alone is not enough: green ICT depends on the \textbf{behaviour of users}. The following habits cost nothing and can be applied immediately in any school, office or home:
+
+\begin{itemize}
+\item \textbf{Switch off unused equipment:} computers, monitors, printers, projectors and scanners should be off when nobody is using them, especially overnight, weekends and holidays.
+\item \textbf{Unplug chargers:} a charger left in the socket keeps drawing phantom power even when no phone is connected. Use a power strip with a switch for the charging station.
+\item \textbf{Use natural light:} position desks near windows instead of switching on lamps during the day. In Cameroon's sunny climate, this is easy for most of the year.
+\item \textbf{Prefer ventilation to over-cooling:} open windows and use fans where the climate allows, rather than running air conditioning at maximum; when air conditioning is necessary, a moderate setting (around 24--25\,\textdegree C) saves considerable energy. Every degree lower increases consumption by 6--8\,\%.
+\item \textbf{Work offline when possible:} downloading a document and working locally avoids keeping network equipment (switches, routers, Wi-Fi access points) active unnecessarily.
+\item \textbf{Reduce video streaming quality:} for training videos or tutorials, 720p or 480p is often sufficient and uses far less bandwidth and data-centre energy than 4K.
+\end{itemize}
+
+\courssub{Extending Equipment Lifespan}
+
+The greenest computer is the one you \emph{do not have to manufacture}. Producing a new computer requires raw materials (rare earths, gold, copper, lithium), energy (embodied energy $\approx$ 1\,500--2\,000~kWh for a laptop) and transport, so \textbf{keeping equipment in service longer} is one of the most effective green practices.
+
+\begin{itemize}
+\item \textbf{Regular software maintenance:} updating the OS and drivers, removing unnecessary programs, disabling startup bloatware, and checking disks keeps a machine fast and reliable.
+\item \textbf{Physical dust cleaning:} dust blocks fans and vents, causing overheating, higher fan energy use, thermal throttling and premature component failure. In dusty environments (harmattan season, unpaved roads near schools), computers should be opened and cleaned carefully with compressed air or anti-static brushes on a regular schedule (e.g. every 6 months).
+\item \textbf{Upgrade instead of replace:} adding \textbf{RAM} (e.g. from 4~GB to 8~GB or 16~GB) or replacing a mechanical hard disk (HDD) with a \textbf{SATA or NVMe SSD} can make an old computer feel new again, at a fraction of the financial and environmental cost of a new machine.
+\item \textbf{Repair instead of discard:} replacing a failed power supply, a swollen laptop battery, a cracked screen or a faulty keyboard is often economical and extends life by years.
+\end{itemize}
+
+\begin{exemplebox}[Upgrading instead of replacing -- real school case]
+A secondary school in the West Region had 20 desktop computers (Core 2 Duo, 4~GB RAM, 500~GB HDD) that had become painfully slow. Instead of buying 20 new computers at $\approx$ 350\,000~FCFA each (total 7~million FCFA), the IT teacher upgraded each with 8~GB DDR3 RAM (15\,000~FCFA) and a 480~GB SATA SSD (25\,000~FCFA). Total cost: 800\,000~FCFA. Boot time dropped from 3 minutes to 35 seconds; the machines served 4 more years. The school saved 6.2~million FCFA and avoided 20 units of e-waste.
+\end{exemplebox}
+
+\courssub{Green Procurement}
+
+\cle{Green procurement} means taking environmental criteria into account when \emph{buying} equipment, not only when using it. A responsible buyer (school, ministry, company) should:
+
+\begin{itemize}
+\item choose \textbf{durable} equipment with a long expected lifespan (business-class laptops, not consumer models);
+\item choose \textbf{repairable} equipment, for which spare parts are available, components are modular (RAM, SSD, battery, keyboard, screen) and repair manuals exist;
+\item choose \textbf{recyclable} equipment, and check whether the seller/manufacturer offers a take-back or trade-in programme;
+\item check \textbf{energy labels} (Energy Star, 80 PLUS, EPEAT Gold/Silver);
+\item consider the \cle{Total Cost of Ownership (TCO)}: the purchase price \emph{plus} the costs of electricity, maintenance, repairs, consumables and disposal over the whole life of the equipment (typically 5--7 years for a school computer).
+\end{itemize}
+
+A cheap, inefficient desktop may cost less to buy but more to run: over five years, the electricity bill can exceed the difference in purchase price. Green procurement is therefore often \emph{economically} smart as well as ecologically smart.
+
+\begin{exoresolu}[TCO comparison: cheap desktop vs. efficient laptop]
+A school compares two options for 50 workstations over 5 years (electricity 75~FCFA/kWh, 8~h/day, 220~days/year).
+\begin{itemize}
+\item \textbf{Option A (cheap desktop + CRT):} Purchase 180\,000~FCFA. Power: 180~W (desktop) + 75~W (CRT) = 255~W. Energy cost = 255~W $\times$ 8~h $\times$ 220~days $\times$ 5~years $\times$ 75~FCFA/kWh / 1000 = 1\,683\,000~FCFA. TCO $\approx$ 1\,863\,000~FCFA.
+\item \textbf{Option B (laptop, Energy Star):} Purchase 350\,000~FCFA. Power: 30~W. Energy cost = 30~W $\times$ 8~h $\times$ 220~days $\times$ 5~years $\times$ 75~FCFA/kWh / 1000 = 198\,000~FCFA. TCO $\approx$ 548\,000~FCFA.
+\end{itemize}
+\textbf{Conclusion:} Despite a higher purchase price, the laptop saves \textbf{1.3~million FCFA per unit} over 5 years. For 50 units, that is 65~million FCFA saved.
+\end{exoresolu}
+
+\courssub{Remote Work and Digital Sobriety}
+
+The COVID-19 pandemic accelerated remote work and online learning. While commuting less reduces transport emissions, digital activities have their own footprint. \cle{Digital sobriety} means using digital resources mindfully:
+
+\begin{itemize}
+\item \textbf{Video conferencing:} turn off the camera when not speaking (saves $\approx$ 60\,\% bandwidth and server CPU).
+\item \textbf{File sharing:} send a link to a cloud file instead of attaching large files to emails (avoids duplication in mailboxes).
+\item \textbf{Storage hygiene:} regularly delete old downloads, duplicate photos, unused apps and empty the recycle bin/trash.
+\item \textbf{Streaming vs downloading:} if you will watch a video multiple times, download it once rather than streaming repeatedly.
+\end{itemize}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item Use \textbf{power management}: sleep for short breaks, hibernate for long ones, shut down after work; screen savers do \emph{not} save energy.
+\item Fight \textbf{phantom power} by unplugging chargers and using switched power strips.
+\item A \textbf{laptop} consumes about 3 to 5 times less energy than a desktop with a CRT monitor; prefer LCD/LED screens, SSDs and certified equipment (Energy Star, 80 PLUS).
+\item Print responsibly: preview, duplex, draft mode, only when necessary, reuse paper, print N-up, choose recycled paper.
+\item \textbf{Virtualisation} consolidates many VMs on one physical server; \textbf{cloud computing} shares infrastructure at scale, though data centres themselves consume energy -- practise digital sobriety.
+\item Extend equipment lifespan through maintenance, dust cleaning, upgrades (RAM, SSD) and repairs; apply \textbf{green procurement} with TCO in mind.
+\item Adopt daily habits: switch off, unplug, use natural light, moderate AC, work offline, lower streaming quality.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Green practices in a school]
+The computer laboratory of a secondary school in Bafoussam contains 25 desktop computers with CRT monitors. The machines are switched on from 7~a.m. to 5~p.m. every school day, screen savers are active, and all documents are printed single-sided in normal mode. Propose \textbf{six} concrete measures, drawn from this section, to make the laboratory greener, and justify each one briefly.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Possible measures (any six, with justification):
+\begin{enumerate}
+\item \textbf{Configure power management} (screen off after 10 min, sleep after 30 min, hibernate after 1 h) so idle machines stop wasting power during breaks and free periods.
+\item \textbf{Disable screen savers}, because they keep the monitor fully powered and the GPU active; replace with screen-off timer.
+\item \textbf{Shut down all machines at the end of the day} and switch them off at a power strip to eliminate phantom consumption overnight and weekends.
+\item \textbf{Replace CRT monitors with LCD/LED screens} (progressively as budget allows), which consume 3--4 times less energy and emit less heat.
+\item \textbf{Print double-sided and in draft mode} for internal documents, after checking the print preview, to save paper and toner.
+\item \textbf{Reuse single-sided sheets} for drafts, rough work and student exercises.
+\item \textbf{Use natural light and ventilation} instead of electric lighting and over-cooling where possible; set AC to 24--25\,\textdegree C if used.
+\item \textbf{Maintain and upgrade} (clean dust every 6 months, add RAM, install SSDs) rather than replacing the computers.
+\item \textbf{Procure Energy Star / 80 PLUS equipment} for future purchases and calculate TCO over 5 years.
+\end{enumerate}
+\end{corrige}
+
+\begin{savaistu}[Exam tip (extra)]
+GCE Advanced Level questions on green computing very often ask candidates to \textbf{list practical energy-saving measures} in the use of ICT. Memorise at least \textbf{five} solid examples you can state and justify quickly: (1) enable sleep mode and screen-off timers, (2) shut down equipment after work, (3) unplug chargers to avoid phantom power, (4) choose laptops and LCD/LED screens rather than desktops with CRTs, (5) print double-sided in draft mode only when necessary, (6) virtualise and share servers. Being able to \emph{justify} each measure (what it saves and why) is what earns full marks.
+\end{savaistu}
+
+\coursec{E-waste and Responsible Disposal}
+
+In the previous section we learned how to \emph{use} ICT equipment in a green way: switching off idle machines, printing less, adjusting power settings, and extending the lifetime of devices. But even the best-maintained computer eventually reaches the end of its life. A school in Yaoundé that bought thirty computers in 2010 will one day have thirty machines that no longer work. What should be done with them? Throwing them behind the building, burning them, or selling them to an informal scrap dealer may seem easy, but these practices poison the soil, the water and the people. This section studies \cle{e-waste} and the \cle{responsible disposal} of ICT equipment.
+
+\courssub{What is E-waste?}
+
+\textbf{An observation to start with.} Walk through the Mellah or Deïdo neighbourhoods of Douala, or near some markets in Yaoundé, and you may see young men burning bundles of electrical cables to recover the copper inside, or breaking open old television sets with stones. The smoke is black and irritating. What they are handling is \emph{electronic waste}, and what they are doing is dangerous --- for themselves and for everyone living nearby.
+
+\begin{definition}[E-waste (WEEE)]
+\cle{E-waste} (electronic waste), officially called \cle{WEEE} --- \emph{Waste Electrical and Electronic Equipment} --- is any discarded device that works with electricity or batteries and has reached the end of its useful life or is no longer wanted by its owner.
+\end{definition}
+
+Typical examples of e-waste found in homes, schools and offices include:
+
+\begin{itemize}
+\item desktop computers, laptops, servers and their parts (motherboards, hard disks, power supplies);
+\item monitors (old CRT screens and flat LCD/LED screens);
+\item mobile phones, tablets and chargers;
+\item printers, scanners and photocopiers, together with their ink and toner cartridges;
+\item batteries (laptop batteries, phone batteries, UPS batteries, dry cells);
+\item cables, keyboards, mice and other accessories.
+\end{itemize}
+
+\begin{attention}[A computer is not ordinary rubbish]
+E-waste must \textbf{never} be mixed with household waste. Unlike food remains or paper, electronic equipment contains toxic substances that do not disappear when buried or burned. A dead laptop thrown into a dustbin will end up in a landfill where its chemicals will slowly leak into the soil and groundwater for decades.
+\end{attention}
+
+\courssub{Hazardous Components Hidden in E-waste}
+
+Why is e-waste so dangerous? Because electronic devices are made of a complex mixture of valuable materials (gold, silver, copper, aluminium) and \emph{toxic} materials. The table below summarises the main hazardous components.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Substance} & \textbf{Where it is found} & \textbf{Danger} \\
+\hline
+Lead & CRT monitor glass, solder on circuit boards & Poisons the nervous system, especially in children \\
+\hline
+Mercury & Flat-screen backlights (CCFL), fluorescent lamps, some switches & Attacks the brain and kidneys; contaminates water and fish \\
+\hline
+Cadmium & Rechargeable batteries (Ni-Cd), some chips & Carcinogenic; accumulates in kidneys and bones \\
+\hline
+Lithium & Phone and laptop batteries (Li-ion) & Fire and explosion risk when damaged or heated \\
+\hline
+Acids and solvents & Printer and toner cartridges, battery electrolyte & Burns, soil and water contamination \\
+\hline
+Brominated flame retardants & Plastics of casings and circuit boards & Release toxic fumes (dioxins) when burned \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[Key fact]
+A single old \cle{CRT monitor} (the bulky ``box'' screens) can contain between \textbf{1 and 3 kg of lead}. Breaking one open in a courtyard releases this lead into the immediate environment where children play.
+\end{aretenir}
+
+\courssub{The E-waste Situation in Cameroon and Africa}
+
+Africa faces a double e-waste problem. First, the continent generates its own growing volume of e-waste as mobile phones, computers and solar equipment spread. Second, large quantities of \emph{used} equipment are imported from Europe, America and Asia --- sometimes as ``donations'' or ``second-hand goods'', but often these devices are already dead or die within months, becoming waste immediately.
+
+In Cameroon, as in many African countries, there is still no large-scale industrial recycling plant for e-waste. Disposal is largely handled by the \cle{informal sector}: street collectors, scrap dealers and young recyclers who dismantle devices by hand, without gloves, masks or training. Common dangerous practices include:
+
+\begin{itemize}
+\item \textbf{Open burning of cables} to melt the plastic and recover copper --- releasing dioxins and heavy-metal fumes;
+\item \textbf{Acid leaching}: soaking circuit boards in acid baths to extract gold, then pouring the acid into gutters and streams;
+\item \textbf{Manual smashing} of CRT screens and batteries, exposing workers to lead, mercury and cadmium dust;
+\item \textbf{Dumping} of the remaining worthless fractions in open landfills or wetlands.
+\end{itemize}
+
+The victims are the informal recyclers themselves --- often young people, sometimes children --- and the surrounding communities whose air, soil and water are contaminated.
+
+\begin{attention}[Common mistake: burning is never a solution]
+Burning cables, circuit boards or plastic casings releases \cle{dioxins} (among the most toxic substances known) and heavy metals into the air. It is dangerous to health, pollutes the neighbourhood, and is \textbf{illegal} under environmental regulations. Recovering copper this way earns a few hundred francs but costs years of health.
+\end{attention}
+
+\courssub{The 3R Principle Applied to ICT}
+
+Before thinking about disposal, we should ask a better question: \emph{does this equipment really need to become waste?} The \cle{3R principle} gives the correct order of priorities.
+
+\begin{definition}[The 3R Principle]
+The \cle{3R principle} ranks waste-management strategies from most to least environmentally friendly:
+\begin{enumerate}
+\item \cle{Reduce}: consume less --- buy only the equipment you truly need, and choose durable, repairable, upgradeable devices;
+\item \cle{Reuse}: give a second life to equipment --- donate it, sell it, refurbish it, or repurpose it for a lighter task;
+\item \cle{Recycle}: only when an item can neither be avoided nor reused, dismantle it and recover its raw materials (metals, plastics) through \emph{certified} recyclers.
+\end{enumerate}
+Recycling is the \emph{last} option, not the first.
+\end{definition}
+
+Applied to ICT, the 3Rs look like this:
+
+\begin{itemize}
+\item \textbf{Reduce}: keep your phone for four years instead of two; buy a laptop with replaceable RAM and battery; share one printer per office instead of one per desk.
+\item \textbf{Reuse}: donate working computers to a school or church; refurbish old PCs with a lightweight operating system; repurpose an old desktop as a \cle{thin client}, a file server or a firewall.
+\item \textbf{Recycle}: hand dead equipment to an authorised collection point so that copper, aluminium, gold and plastics are recovered safely.
+\end{itemize}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\fill[popgreen] (0,0) -- (6,0) -- (5.1,1.8) -- (0.9,1.8) -- cycle;
+\fill[poporange] (0.9,1.8) -- (5.1,1.8) -- (4.2,3.6) -- (1.8,3.6) -- cycle;
+\fill[popblue] (1.8,3.6) -- (4.2,3.6) -- (3,5.4) -- cycle;
+\node[white, align=center] at (3,0.9) {\textbf{RECYCLE} --- certified recovery of metals \& plastics};
+\node[white, align=center] at (3,2.7) {\textbf{REUSE} --- donate, refurbish, repurpose};
+\node[white, align=center] at (3,4.4) {\textbf{REDUCE}};
+\node[align=center, text=popdark] at (8.6,4.4) {Most preferred:\\ buy less, buy durable};
+\node[align=center, text=popdark] at (8.6,2.7) {Second life:\\ thin clients, servers, donations};
+\node[align=center, text=popdark] at (8.6,0.9) {Last resort:\\ authorised recyclers only};
+\draw[->, thick, popmuted] (6.2,4.4) -- (6.9,4.4);
+\draw[->, thick, popmuted] (6.2,2.7) -- (6.9,2.7);
+\draw[->, thick, popmuted] (6.2,0.9) -- (6.9,0.9);
+\end{tikzpicture}
+\legende{The 3R hierarchy: the higher the level, the better for the environment.}
+\end{popfigure}
+
+\courssub{Responsible Disposal Procedures}
+
+When equipment is truly dead and cannot be reused, disposal must follow a rigorous procedure. The first step --- too often forgotten --- concerns \emph{data}, not hardware.
+
+\begin{attention}[Never dispose of a computer without erasing your data]
+A discarded hard disk may contain passwords, bank details, mobile money records, photos and documents. Simple deletion or even \emph{formatting} is often \textbf{not enough}: the data can be recovered with freely available tools. Before any disposal, use a \cle{data-wiping tool} that overwrites the disk several times (for example tools implementing secure-erase standards such as NIST SP 800-88 or DoD 5220.22-M), or physically destroy the storage medium (drilling or shredding the disk). This protects you from identity theft and fraud.
+\end{attention}
+
+\begin{methode}[Responsibly disposing of a dead laptop]
+\begin{enumerate}
+\item \textbf{Backup}: copy all useful files (documents, photos) to an external disk or cloud storage.
+\item \textbf{Wipe the data}: run a secure data-wiping tool on the hard disk; if the disk cannot be wiped, remove it and destroy it physically.
+\item \textbf{Remove the battery}: laptop batteries (lithium-ion) are hazardous and must be disposed of separately at a battery collection point.
+\item \textbf{Sort the parts}: separate cables, chargers and accessories if the collection point requires it.
+\item \textbf{Deliver to an authorised collection point or certified recycler}: never put the laptop in household waste, never burn it, never abandon it in a landfill.
+\end{enumerate}
+\end{methode}
+
+Other responsible channels include \cle{manufacturer take-back programmes} (some vendors accept old equipment when you buy new), collection campaigns organised by local councils, schools or NGOs, and authorised dealers who group e-waste for proper treatment.
+
+\begin{popfigure}
+\begin{tikzpicture}[
+node distance=0.55cm,
+startstop/.style={rectangle, rounded corners, draw=popdark, fill=popblueL, text width=4.6cm, align=center, minimum height=0.9cm},
+decision/.style={diamond, draw=popdark, fill=popgreenL, text width=2.6cm, align=center, aspect=2},
+process/.style={rectangle, draw=popdark, fill=poporange!30, text width=3.4cm, align=center, minimum height=0.9cm},
+arrow/.style={->, thick, popdark}]
+\node[startstop] (start) {I have an old computer};
+\node[decision, below=of start] (works) {Does it still work?};
+\node[process, right=2.6cm of works] (donate) {Donate, sell or repurpose it (thin client, server)};
+\node[decision, below=of works] (repair) {Can it be repaired?};
+\node[process, right=2.6cm of repair] (fix) {Repair it and keep using it};
+\node[process, below=of repair] (wipe) {Backup, then securely wipe or destroy the data};
+\node[process, below=of wipe] (battery) {Remove battery and sort the parts};
+\node[startstop, below=of battery] (recycle) {Take it to a certified collection point / recycler};
+\draw[arrow] (start) -- (works);
+\draw[arrow] (works) -- node[above]{Yes} (donate);
+\draw[arrow] (works) -- node[right]{No} (repair);
+\draw[arrow] (repair) -- node[above]{Yes} (fix);
+\draw[arrow] (repair) -- node[right]{No} (wipe);
+\draw[arrow] (wipe) -- (battery);
+\draw[arrow] (battery) -- (recycle);
+\end{tikzpicture}
+\legende{Decision flowchart: what should I do with an old computer?}
+\end{popfigure}
+
+\courssub{Disposal of Specific Items}
+
+Some items require special attention:
+
+\begin{itemize}
+\item \textbf{Batteries and UPS units}: they contain lithium, cadmium or lead-acid. Never throw them in household waste or fire (explosion risk). Deposit them at battery collection points (often found at supermarkets, phone shops, or council offices).
+\item \textbf{Toner and ink cartridges}: they contain residual chemical powders and solvents. Many suppliers take back empty cartridges for refilling or recycling --- prefer refilled or remanufactured cartridges.
+\item \textbf{Mobile phones}: they concentrate precious metals (gold, silver) and a lithium battery in a small volume. Wipe personal data (factory reset after removing accounts and SIM/SD cards), then return them through take-back schemes or collection campaigns.
+\item \textbf{Fluorescent backlights and lamps}: they contain mercury vapour. They must never be broken open; hand them over intact to authorised collectors.
+\end{itemize}
+
+\courssub{Regulations and Initiatives}
+
+E-waste is not only a technical problem; it is also a legal one.
+
+\begin{itemize}
+\item The \cle{Basel Convention} (1989, entered into force 1992) is an international treaty that controls the transboundary movement of hazardous wastes, including e-waste. It aims to prevent rich countries from dumping their toxic waste in poorer countries. Cameroon ratified the Basel Convention in 1997.
+\item Cameroon has an \cle{environmental law framework} (notably Law No. 96/12 of 5 August 1996 on environmental management and related texts) that makes polluters responsible and forbids uncontrolled dumping and burning of hazardous waste.
+\item \cle{Local councils}, schools and \cle{NGOs} play a growing role by organising e-waste collection campaigns, awareness days and drop-off points. As future ICT professionals, students can help by sensitising their communities.
+\end{itemize}
+
+\begin{experience}[Organising a school e-waste collection day]
+\textbf{Objective:} Plan a one-day e-waste collection campaign in your school.
+\textbf{Steps:}
+\begin{enumerate}
+\item Form a committee (students, ICT teacher, administration).
+\item Contact the local council or an authorised recycler (e.g. HYSACAM, or a certified NGO) to arrange pickup.
+\item Advertise two weeks ahead: posters, assembly announcement, social media. Specify accepted items (computers, phones, batteries, cartridges, cables) and excluded items (fridges, AC units).
+\item On the day: set up a sheltered collection point with labelled bins (batteries separate, screens separate, rest together).
+\item Assign students to log each item (type, quantity, approximate weight) for a report.
+\item After collection: hand over to the recycler, obtain a receipt/certificate, publish results.
+\end{enumerate}
+\textbf{Learning outcome:} Understand the logistics of responsible disposal and the role of traceability.
+\end{experience}
+
+\begin{exoresolu}[Applying the 3Rs in a school]
+A secondary school in Bafoussam has 25 old desktop computers. 10 still work but are slow, 8 have faulty power supplies, and 7 are completely dead. The principal proposes to burn everything behind the school. Advise the principal using the 3R principle and responsible disposal procedures.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Reject burning}: it releases dioxins and heavy metals, endangers students and is illegal under Law No. 96/12.
+\item \textbf{Reuse (10 working PCs)}: install a lightweight operating system (e.g. Linux Mint XFCE, Ubuntu Server) and use them as thin clients or for a typing/computer-literacy club, or donate them to a primary school.
+\item \textbf{Repair (8 faulty PCs)}: replace the power supplies --- a cheap repair (approx. 5\,000--10\,000 FCFA each) --- and return them to service or donate them.
+\item \textbf{Recycle (7 dead PCs)}: wipe or physically destroy the hard disks (they may contain staff and student data), remove any CMOS batteries, then transport the machines to an authorised collection point or certified recycler, possibly during a council or NGO collection campaign.
+\end{enumerate}
+Result: 18 computers get a second life, toxic waste is avoided, and the school may even recover a small amount of money from the recyclable materials.
+\end{exoresolu}
+
+\begin{exercice}[Your turn]
+Your uncle wants to throw his old laptop and two phone batteries into the household dustbin. Write a short paragraph (5--8 lines) explaining to him, with at least three arguments, why this is wrong, and describe the correct steps he should follow instead.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Expected elements: (1) the laptop and batteries contain toxic substances (lead in solder, lithium in batteries, cadmium in some components) that will leak into soil and water in a landfill; (2) the hard disk contains personal data that can be recovered even after formatting --- it must be securely wiped or destroyed; (3) lithium batteries can cause fires in refuse trucks and dumps. Correct steps: backup the files, wipe the disk with a data-wiping tool (e.g. DBAN, Nwipe) or destroy it physically, remove the batteries, and take everything to an authorised collection point, a certified recycler or a take-back programme. Batteries go to a separate battery collection point.
+\end{corrige}
+
+\begin{aretenir}[To remember]
+\begin{itemize}
+\item E-waste (WEEE) is discarded electrical and electronic equipment; it contains toxic substances (lead, mercury, cadmium, lithium, acids) and must never be mixed with household waste.
+\item Apply the 3Rs in order: \textbf{Reduce}, then \textbf{Reuse}, then \textbf{Recycle} through certified channels.
+\item Before any disposal: backup, then \textbf{securely wipe or destroy the data}; formatting alone is not enough.
+\item Burning cables or boards releases dioxins and heavy metals: dangerous and illegal under Law No. 96/12.
+\item Batteries, cartridges, phones and fluorescent lamps each have specific disposal channels.
+\item The Basel Convention (ratified by Cameroon in 1997) and Cameroonian environmental law frame the fight against e-waste dumping; councils and NGOs organise collection.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Building a Green IT Policy and Chapter Synthesis}
+
+In the previous section we learned how to dispose of ICT equipment responsibly: sorting e-waste, refurbishing, and handing devices to certified recyclers. But an organisation that only thinks about disposal is reacting to a problem instead of preventing it. A school that buys energy-hungry computers, lets them run all night, prints carelessly and then pays for recycling has treated the symptom, not the cause. The final step of green computing is therefore \emph{organisational}: writing down clear rules, assigning responsibilities, raising awareness and measuring progress. This is the purpose of a \cle{green IT policy}.
+
+\courssub{What is a Green IT Policy?}
+
+Observe any well-run institution — a bank in Douala, a hospital in Yaoundé, a big secondary school in Bamenda. Nothing important is left to individual goodwill: there are written rules for security, for finance, for hygiene. Energy and equipment should be no different. When rules exist only in people's heads, they disappear as soon as a staff member is transferred.
+
+\begin{definition}[Green IT policy]
+A \cle{green IT policy} (or green computing policy) is a written document adopted by an organisation that defines its \textbf{objectives} for reducing the environmental impact of ICT, names the \textbf{persons responsible} for applying it, and states the \textbf{rules} to follow for purchasing equipment, using it, and disposing of it at end of life.
+\end{definition}
+
+A complete green IT policy contains five elements:
+
+\begin{enumerate}
+\item \textbf{Objectives.} Clear, measurable targets, e.g.\ ``reduce the computer lab electricity bill by 20\% within one year'' or ``recycle 100\% of dead computers through an authorised channel''.
+\item \textbf{Responsible persons.} A named \cle{green IT coordinator} (for example the ICT teacher or the bursar), supported by a small committee. A policy with no owner is never applied.
+\item \textbf{Purchasing rules (green procurement).} Buy energy-efficient equipment (energy labels, low-power processors), prefer durable and upgradeable machines, consider quality refurbished equipment, and choose suppliers offering a \cle{take-back} programme.
+\item \textbf{Usage rules.} Switch off machines at closing time, activate sleep mode, print double-sided and only when necessary, set default printers to draft mode, use virtualisation on servers where relevant.
+\item \textbf{Disposal procedures.} An inventory of equipment, a storage point for dead devices, and a written procedure naming the certified recycler or take-back scheme to contact — never the dustbin, never the open dump.
+\end{enumerate}
+
+\begin{methode}[Drafting a one-page green computing charter for a school computer lab]
+\begin{enumerate}
+\item \textbf{Diagnose.} Walk through the lab and note the facts: number of computers, whether they stay on at night, printer settings, how dead equipment is currently stored or discarded.
+\item \textbf{Set two or three measurable objectives.} Example: ``all computers off by 6 p.m.'', ``paper use halved by double-sided printing''.
+\item \textbf{Write five to eight short rules} in simple language, each beginning with an action verb: \emph{Switch off\ldots, Print only\ldots, Report faulty equipment to\ldots, Never throw\ldots}
+\item \textbf{Name the responsible persons} (lab monitor, ICT teacher, green club president) and their duties.
+\item \textbf{Add the disposal procedure}: where dead devices are kept and who contacts the recycler.
+\item \textbf{Get it approved and signed} by the principal, display it on the lab wall, and review it once a year.
+\end{enumerate}
+\end{methode}
+
+\courssub{Raising Awareness: the Human Side of the Policy}
+
+Rules on paper change nothing if users ignore them. Experience in schools shows that the largest savings come not from new equipment but from \emph{behaviour}: switching off monitors, closing unused applications, printing less. Behaviour changes only through continuous awareness.
+
+Practical awareness actions include:
+\begin{itemize}
+\item \textbf{Training sessions} for teachers, administrative staff and students at the start of each year;
+\item \textbf{Posters and stickers} near switches and printers (``Switch me off!'', ``Think before you print'');
+\item \textbf{Energy-saving reminders} in announcements, staff meetings and screen wallpapers;
+\item \textbf{Green IT clubs} in schools, where students audit the lab, run campaigns and monitor the electricity meter — an excellent integration activity;
+\item \textbf{Small incentives}: a class or department that reduces consumption can be publicly congratulated.
+\end{itemize}
+
+\begin{attention}[A green policy fails without user awareness]
+The most common mistake is to write a beautiful policy, file it in an office, and tell nobody. Rules must be \textbf{communicated} (training, posters, meetings), \textbf{explained} (users cooperate when they understand \emph{why}), and \textbf{monitored} (a coordinator who checks and reports). A rule that is never checked is quickly forgotten. Budget time and people for awareness, not only money for equipment.
+\end{attention}
+
+\courssub{Measuring Progress}
+
+``You cannot manage what you do not measure.'' A green IT policy must include simple indicators, recorded regularly (monthly or each term):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Indicator} & \textbf{How to measure it} & \textbf{What it shows} \\
+\hline
+Electricity bill (FCFA / kWh) & Read ENEO bills or the lab meter monthly & Energy savings from usage rules \\
+\hline
+Number of devices recycled & Count devices sent to certified recyclers & Responsible disposal performance \\
+\hline
+Paper consumption & Reams of paper purchased per term & Effect of printing rules \\
+\hline
+Devices refurbished / reused & Count machines repaired or donated & Extension of equipment lifetime \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{exemplebox}[Worked example: costs and benefits for a Cameroonian school]
+A school lab in Bafoussam has 25 desktop computers left on 10 hours per day, 26 days per month. Each PC with monitor draws about $150\ \mathrm{W}$ when idle-but-on. Suppose the policy (switching off after 4 hours of real use, sleep mode, double-sided printing) cuts average ``on'' time from 10 to 5 hours daily.
+
+Energy saved per month:
+\[
+E = 25 \times 0.150\ \mathrm{kW} \times 5\ \mathrm{h/day} \times 26\ \mathrm{days} = 487.5\ \mathrm{kWh}.
+\]
+At an illustrative tariff of $100\ \mathrm{FCFA/kWh}$, this is about $48\,750$ FCFA saved per month — roughly $585\,000$ FCFA per year, with \textbf{zero investment}. If the school then replaces 10 old CRT-era machines with efficient ones at extra cost, the annual savings help pay back the investment in a few years, after which the savings are pure gain. This is the logic of a \cle{cost--benefit analysis}: compare the cost of the green initiative (efficient equipment, training time, recycling fees) with the recurring savings (bills, paper, repairs).
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, bar width=1.1cm, width=10.5cm, height=6cm,
+    ymin=0, ymax=120000,
+    ylabel={Monthly electricity bill (FCFA)},
+    symbolic x coords={Before policy, After policy},
+    xtick=data,
+    nodes near coords, nodes near coords align={vertical},
+    every node near coord/.append style={font=\small},
+    ymajorgrids=true, grid style={popline!40},
+    axis line style={popink},
+]
+\addplot[fill=poporange, draw=popdark] coordinates {(Before policy,97500) (After policy,48750)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Illustrative monthly electricity bill of a school computer lab before and after applying green usage measures (worked example data).}
+\end{popfigure}
+
+\courssub{Challenges in the Cameroonian Context}
+
+A rigorous policy must be realistic. In Cameroon, several obstacles make green computing harder than in industrialised countries:
+
+\begin{itemize}
+\item \textbf{Cost of certified recycling.} Proper treatment of e-waste (safe extraction of lead, mercury, plastics) is expensive, and few certified facilities exist locally; shipping waste abroad is costly and legally sensitive.
+\item \textbf{Lack of collection infrastructure.} Outside Yaoundé and Douala, there are few official collection points, so dead equipment accumulates in storerooms or ends up in informal dumps where it pollutes soil and water.
+\item \textbf{Cheap second-hand imports.} Low-cost used computers (``occasion'') are attractive to schools and SMEs, but they are often near end of life, energy-hungry, and quickly become e-waste. A policy should set a minimum quality standard for such purchases.
+\item \textbf{Power instability.} Frequent cuts and voltage fluctuations damage equipment (shortening its life and creating more e-waste) and push organisations towards generators, which are polluting. Surge protectors, UPS units and solar backup can be part of a green policy.
+\item \textbf{Limited budgets and awareness.} For many SMEs, survival comes first; environmental benefits must be presented together with the \emph{financial} savings to convince decision-makers.
+\end{itemize}
+
+\begin{savaistu}[Did you know?]
+Cameroon, through agencies such as ANTIC and the Ministry of Posts and Telecommunications, has taken part in national reflections and regulations on electronic waste management, and awareness campaigns on e-waste have been organised in Yaoundé and Douala. Meanwhile, informal e-waste handlers recover copper and other metals by burning cables — a dangerous practice that releases toxic fumes. A school green IT club that collects and channels dead equipment properly is already part of the national solution.
+\end{savaistu}
+
+\courssub{Chapter Synthesis: From Definition to Policy}
+
+Let us assemble the whole chapter. \cle{Green computing} is the environmentally responsible use of ICT: designing, using and disposing of technology so as to minimise energy consumption, pollution and waste. ICT has real \textbf{impacts}: electricity consumption (and its carbon footprint), resource extraction for manufacturing, and toxic e-waste. We reduce these impacts through \textbf{green usage practices} (switching off, sleep mode, sensible printing, virtualisation, cloud consolidation) and through \textbf{responsible disposal} (the 3Rs — Reduce, Reuse, Recycle — refurbishing, donation, certified recyclers, take-back schemes). Finally, an organisation anchors all of this in a \textbf{green IT policy} with objectives, responsibilities, rules, awareness and measurement.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  grow cyclic, mindmap, concept color=popblue,
+  level 1 concept/.append style={level distance=3.4cm, sibling angle=60, concept color=popblueL},
+  every node/.style={concept, font=\small},
+  root concept/.append style={concept color=popblue, font=\small\bfseries}
+]
+\node[root concept]{Green computing}
+  child { node {Definition \& goals} }
+  child { node {Impacts: energy, carbon, resources} }
+  child { node {Green use: sleep, printing, virtualisation} }
+  child { node {E-waste: toxicity \& volumes} }
+  child { node {Disposal: 3R, refurbish, certified recycler} }
+  child { node {Policy: rules, awareness, measurement} };
+\end{tikzpicture}
+\end{center}
+\legende{Mind map summarising the chapter ``Green computing''.}
+\end{popfigure}
+
+\begin{aretenir}[The 10 key terms of the chapter]
+\begin{enumerate}
+\item \cle{Green computing}: environmentally responsible design, use and disposal of ICT.
+\item \cle{Carbon footprint}: total greenhouse gas emissions caused by an activity, expressed in CO$_2$ equivalent.
+\item \cle{E-waste}: discarded electrical and electronic equipment, often toxic.
+\item \cle{3R}: Reduce, Reuse, Recycle — the hierarchy of waste management.
+\item \cle{Virtualisation}: running several virtual machines on one physical server to save hardware and energy.
+\item \cle{Standby power}: electricity consumed by devices that are ``off'' but still plugged in.
+\item \cle{Refurbishing}: repairing and upgrading used equipment to give it a second life.
+\item \cle{Certified recycler}: an authorised company that treats e-waste safely and legally.
+\item \cle{Take-back}: a scheme where the manufacturer or seller collects old equipment from the customer.
+\item \cle{Green procurement}: purchasing rules favouring energy-efficient, durable and recyclable equipment.
+\end{enumerate}
+\end{aretenir}
+
+\courssub{GCE Examination Preparation}
+
+Green computing questions at the GCE Advanced Level are usually short-answer or structured essay questions. Typical formats:
+
+\begin{itemize}
+\item \textbf{Define}: ``Define the term \emph{green computing}.'' — Give one precise sentence, possibly with an example.
+\item \textbf{List / State}: ``State three green computing practices.'' / ``List two methods of disposing of e-waste responsibly.'' — Give exactly the number requested, each in a few words.
+\item \textbf{Explain}: ``Explain why e-waste is dangerous.'' — Give a reasoned answer (toxic components $\to$ soil, water and health pollution), not just a list.
+\item \textbf{Propose measures}: ``Your school wants to reduce the environmental impact of its computer lab. Propose four measures.'' — Mix usage rules, purchasing rules, disposal and awareness.
+\end{itemize}
+
+\begin{exemplebox}[Exam tip (extra)]
+For essay-type questions, structure your answer in four moves: \textbf{definition} of the key term $\to$ \textbf{problems} (impacts, dangers) $\to$ \textbf{measures} (practices, disposal, policy) $\to$ short \textbf{conclusion}. Examiners reward a clear structure and correct English vocabulary: \emph{e-waste, carbon footprint, energy-efficient, recycle, refurbish, dispose of responsibly, policy, awareness}.
+\end{exemplebox}
+
+\begin{exoresolu}[Worked examination question]
+\textbf{Question.} (a) Define \emph{green computing}. (b) State two reasons why electronic waste is dangerous. (c) The principal of your school asks you to propose measures to make the computer laboratory more environmentally friendly. Propose four measures, briefly justifying each.
+\tcblower
+\textbf{Solution.} (a) Green computing is the environmentally responsible design, use and disposal of ICT equipment, aiming to reduce energy consumption, pollution and waste.
+(b) E-waste is dangerous because (i) it contains toxic substances (lead, mercury, cadmium) that pollute soil and water, and (ii) informal burning of components releases poisonous fumes harmful to human health.
+(c) Four measures:
+\begin{enumerate}
+\item \emph{Switch-off rule}: all computers and monitors off at closing time — saves standby and idle electricity, cutting the ENEO bill.
+\item \emph{Printing rules}: double-sided, draft mode by default — halves paper consumption.
+\item \emph{Green procurement}: when replacing machines, buy energy-efficient models with a take-back option — reduces future energy use and guarantees proper end-of-life handling.
+\item \emph{Responsible disposal}: store dead equipment and send it to a certified recycler, never to the dump — prevents toxic pollution.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exercice}[Green charter for your school]
+Your school has a computer laboratory of 30 machines. (a) Draft five rules of a green computing charter for this laboratory. (b) Name two indicators the green IT club could measure each term to check progress. (c) Give two obstacles to responsible e-waste disposal in Cameroon and suggest one realistic solution for each.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) Possible rules: switch off computers and monitors after each session; activate sleep mode during short breaks; print only when necessary and double-sided; report faulty equipment to the lab monitor instead of abandoning it; place dead devices in the labelled e-waste storage box. (b) Indicators: the monthly electricity bill of the lab; the number of reams of paper used per term (also acceptable: number of devices recycled or refurbished). (c) Obstacles and solutions: lack of collection points $\to$ organise a school collection day and group deliveries to a certified recycler in the regional capital; cheap second-hand imports that die quickly $\to$ set a minimum quality/age standard in the purchasing rules and prefer suppliers offering take-back. Power instability $\to$ use surge protectors and UPS to extend equipment lifetime is also acceptable.
+\end{corrige}
+
+This closes our study of green computing. You have moved from understanding what green computing is, through everyday green practices and responsible disposal, to the organisational skill of writing and monitoring a green IT policy. These are exactly the competencies the GCE examiner — and, soon, your employer or your own enterprise — will expect from you.
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter on \cle{green computing} by putting you in the role of a \emph{green IT consultant}. Working in teams, you will carry out a \cle{green audit} of a real computer environment --- your school computer laboratory --- and transform your findings into a concrete action plan.
+
+By the end of the activity, you should be able to:
+
+\begin{itemize}
+\item \textbf{Inventory} ICT equipment and read its power ratings, a first step in any energy assessment;
+\item \textbf{Estimate} the electricity consumption and cost of a computer lab using simple calculations (energy $=$ power $\times$ time);
+\item \textbf{Observe and evaluate} user habits (standby, printing, switching off) against the green practices studied in this chapter;
+\item \textbf{Assess} how end-of-life equipment, cartridges and batteries are stored or discarded, and identify the environmental and health risks involved;
+\item \textbf{Propose} realistic, costed and justified measures in a one-page \emph{Green Lab Charter}, covering energy settings, printing rules, reuse, data wiping and certified recycling;
+\item \textbf{Communicate} your recommendations orally and defend them before the class, as an ICT professional would before a school administration.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+This activity integrates the three lessons of the chapter: the \emph{concept and stakes of green computing} (Lesson 77), \emph{responsible disposal of e-waste} (Lesson 78), and the transversal skills of \emph{measurement, calculation, teamwork and written communication}. The only formula you need is the one used throughout the chapter:
+\[ \text{Energy (kWh)} = \text{Power (kW)} \times \text{Time (h)}, \qquad \text{Cost} = \text{Energy} \times \text{tariff}. \]
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Green Audit of the Computer Laboratory of Government High School Mfoundi.}
+
+Government High School Mfoundi (Yaoundé) has a computer laboratory used by about 600 students per week for ICT lessons and practical work. The school bursar has noticed that the electricity bill has been rising steadily, and the Parent--Teacher Association has complained that old machines are ``rotting in a store room''. The principal has therefore asked the Upper Sixth ICT students to audit the laboratory and propose a \emph{Green Lab Charter}.
+
+Your team visits the laboratory and collects the following data.
+
+\textbf{Equipment inventory.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|c|c|X|}
+\hline
+\rowcolor{popblueL} \textbf{Item} & \textbf{Quantity} & \textbf{Average power} & \textbf{Remarks} \\
+\hline
+Desktop computers (system units) & 20 & 200 W & 12 are over 8 years old \\
+\hline
+CRT monitors & 8 & 80 W & Paired with the oldest PCs \\
+\hline
+LCD monitors & 12 & 25 W & Recent \\
+\hline
+Laser printer & 1 & 500 W (printing), 15 W (standby) & Left on all day \\
+\hline
+Projector & 1 & 250 W & Used 2 h per day \\
+\hline
+Standing fans & 3 & 60 W & Run whenever the lab is open \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Usage habits observed.}
+\begin{itemize}
+\item The lab is open Monday to Friday, 8:00 to 17:00 (9 hours per day).
+\item All computers and monitors are switched on at 8:00 and left on until 17:00, but the lab is actually \emph{used} only 5 hours per day on average; during breaks and free periods the machines sit idle, with no standby or sleep mode configured.
+\item The laser printer is never switched off, even overnight and at weekends.
+\item Students print an average of 400 pages per week; many pages are misprints that are thrown away immediately. Single-sided printing is the default.
+\item At closing time, the fans and projector are sometimes forgotten and left running.
+\end{itemize}
+
+\textbf{End-of-life equipment.} In a store room behind the lab, your team finds: 6 broken CRT monitors, 10 obsolete system units (some still containing hard disks with old school records), 4 damaged UPS batteries, and a cardboard box with about 30 empty ink and toner cartridges. The store room is damp. The caretaker admits that ``when the room is full, some things are burned with the rubbish behind the school''. No data has ever been erased from the discarded hard disks.
+
+\textbf{Financial data.} The school pays its electricity to ENEO at an average tariff of 100 FCFA per kWh (all taxes included, simplified for this exercise). A new low-power desktop (about 65 W with an LCD monitor) costs about 150\,000 FCFA.
+
+\courssub{Tasks}
+
+\begin{enumerate}
+\item \textbf{Inventory and consumption.} Using the inventory table, compute the total power (in watts) of all the equipment when everything is switched on. Convert your answer to kilowatts.
+\item \textbf{Energy and cost of the computers.} The 20 desktop computers with their monitors are on 9 hours per day, 5 days a week. Taking an average of 200 W per system unit, 80 W per CRT monitor (8 of them) and 25 W per LCD monitor (12 of them), calculate the energy consumed per week (in kWh) by the computers and monitors, then the weekly cost in FCFA.
+\item \textbf{The cost of idleness.} The machines are actually used only 5 hours per day. Assuming that a properly configured sleep mode reduces consumption to 10 W per computer (screen off) during the 4 idle hours, calculate the energy and money that could be saved \emph{per week} on the computers and monitors alone. Comment on your result.
+\item \textbf{The printer that never sleeps.} The printer (15 W in standby) is left on 24 hours a day, 7 days a week, but prints only about 2 hours per day in total. Estimate the energy it wastes per month (take 30 days) in standby outside printing periods, and its monthly cost. What simple rule would you propose?
+\item \textbf{Printing habits.} The lab prints 400 pages per week, single-sided, and about 10\% are misprints thrown away. Propose two concrete printing rules and estimate the percentage of paper each could save.
+\item \textbf{E-waste assessment.} List the categories of e-waste found in the store room. For each category, state one environmental or health risk of the current practice (damp storage, open burning) and the responsible disposal channel you recommend.
+\item \textbf{Data security.} Explain why simply throwing away the old hard disks is dangerous for the school, and describe two methods of secure data erasure or destruction before disposal.
+\item \textbf{Reuse before recycling.} The 10 obsolete system units still work but are too slow for the lab. Propose two reuse or repurposing options consistent with green computing principles.
+\item \textbf{The Green Lab Charter.} As a team, write a one-page charter (8 to 10 articles maximum) addressed to the principal, covering: power management, printing rules, end-of-day procedure, reuse, data wiping and certified disposal. Each article must be a clear, measurable rule.
+\item \textbf{Presentation and defence.} Present your charter to the class in 5 minutes. Be ready to defend the cost--benefit balance of your proposals (for example: is it worth replacing the CRT monitors?).
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Question 1.} Total power with everything on:
+\begin{align*}
+P &= 20(200) + 8(80) + 12(25) + 500 + 250 + 3(60)\\
+  &= 4000 + 640 + 300 + 500 + 250 + 180 = 5870\ \text{W} = 5.87\ \text{kW}.
+\end{align*}
+
+\textbf{Question 2.} Computers and monitors consume $4000 + 640 + 300 = 4940\ \text{W} = 4.94\ \text{kW}$. Weekly operating time: $9 \times 5 = 45$ h.
+\[ E = 4.94 \times 45 = 222.3\ \text{kWh per week}, \qquad C = 222.3 \times 100 = 22\,230\ \text{FCFA per week}. \]
+
+\textbf{Question 3.} Idle time is $4\ \text{h/day}$, i.e. $4 \times 5 = 20\ \text{h/week}$. During idle time, the 20 computers currently draw $20 \times 200 = 4000\ \text{W}$ (for simplicity we treat the monitors as switched off or included in this figure during idle periods; a stricter count would only increase the saving). With sleep mode this drops to $20 \times 10 = 200\ \text{W}$. Saving: $4000 - 200 = 3800\ \text{W} = 3.8\ \text{kW}$, so
+\[ E_{\text{saved}} = 3.8 \times 20 = 76\ \text{kWh/week}, \qquad C_{\text{saved}} = 76 \times 100 = 7\,600\ \text{FCFA/week}, \]
+that is roughly \textbf{30\,000 FCFA per month} --- enough to buy a new low-power computer every five months. Sleep mode costs nothing to configure: this is the most profitable single measure.
+
+\textbf{Question 4.} The printer is in standby $24 - 2 = 22$ h/day. Wasted energy: $0.015\ \text{kW} \times 22\ \text{h} \times 30 = 9.9\ \text{kWh/month}$, i.e. about \textbf{990 FCFA per month}, plus unnecessary wear on the device. Rule: \emph{``The printer is switched on only when a print job is ready and switched off at 17:00; it is never left on overnight or at weekends.''}
+
+\textbf{Question 5.} Two rules: (a) \emph{default double-sided (duplex) printing}, which can save up to 50\% of paper; (b) \emph{mandatory print preview and teacher validation for jobs over 5 pages}, which eliminates most of the 10\% misprints. Combined, paper consumption could fall by more than half.
+
+\textbf{Question 6.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{E-waste} & \textbf{Risk of current practice} & \textbf{Recommended channel} \\
+\hline
+CRT monitors & Lead and phosphorus in glass; burning releases toxic fumes & Certified e-waste recycler \\
+\hline
+System units & Heavy metals (lead, mercury, cadmium) leach into soil and water & Refurbish/reuse, else certified recycler \\
+\hline
+UPS batteries & Sulphuric acid and lead; corrosion in a damp room & Return to supplier / battery collection point \\
+\hline
+Cartridges & Residual ink and toner pollute; plastic persists for centuries & Refill programmes or manufacturer take-back \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Question 7.} Discarded disks still contain school records (marks, staff data); anyone recovering them could read or sell this information --- a breach of privacy and of the data-protection principles applicable in Cameroon. Before disposal: (a) \emph{secure software erasure} (multiple-pass overwriting with a tool such as DBAN) if the disk will be reused; (b) \emph{physical destruction} (degaussing, drilling or shredding) if the disk is faulty, followed by certified recycling.
+
+\textbf{Question 8.} Reuse options: (a) install a lightweight Linux system and donate the machines to the school library or a nearby primary school as typing/research stations; (b) use them in the ICT club as \emph{disassembly/training machines} for hardware practicals. Reuse extends the equipment's life and delays the environmental cost of manufacturing new machines.
+
+\textbf{Question 9. Extract from the model Green Lab Charter.}
+\begin{enumerate}
+\item All computers are configured to enter sleep mode after 10 minutes of inactivity.
+\item Machines are switched on only at the start of a session and shut down at 17:00; the last teacher checks the projector, fans and printer.
+\item Duplex printing is the default; every job over 5 pages requires print preview and validation.
+\item A paper-recycling tray sits beside the printer; single-sided misprints are reused as draft paper.
+\item No equipment, battery or cartridge is ever burned or thrown in the ordinary rubbish.
+\item All storage media are securely wiped or physically destroyed before any disposal.
+\item Usable old equipment is offered for reuse (library, primary schools, charities) before being recycled.
+\item E-waste is stored in a dry, locked area and handed only to a certified recycler, with a register kept by the lab attendant.
+\end{enumerate}
+
+\textbf{Question 10.} In the defence, a strong team argues with figures: the sleep-mode measure alone saves about 30\,000 FCFA/month at zero cost, while replacing the 8 CRT monitors (80 W) with LCDs (25 W) saves $8 \times (80 - 25) = 8 \times 55 = 440\ \text{W} = 0.44\ \text{kW}$, i.e. about $0.44 \times 45 = 19.8\ \text{kWh/week}$, or roughly 7\,900 FCFA/month --- the replacement pays for itself over time while also freeing the school from hazardous leaded glass.
+
+\begin{attention}[Common mistakes in this activity]
+Do not confuse \emph{power} (kW, an instantaneous rate) with \emph{energy} (kWh, power $\times$ time) --- mixing them invalidates all cost calculations. Remember to convert watts to kilowatts before computing kWh. Finally, a charter article such as ``save energy'' is worthless: every rule must be \emph{measurable and assignable} (who does what, when).
+\end{attention}
+
+\begin{exercice}[Extension: your own school]
+Repeat the audit in your real school laboratory or a nearby cybercafé: count the equipment, read the power ratings on the labels, observe habits for one day, and compute the monthly electricity cost. Compare your Green Charter with the model above and present it to your principal.
+\end{exercice}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Green Computing}
+
+This chapter covers the principles and practices of \cle{green computing} (also called \cle{green IT}): the study and practice of designing, manufacturing, using, and disposing of computers, servers, and associated subsystems in an environmentally responsible and energy-efficient manner. We follow the official GCE Advanced Level syllabus (Lessons 77–79) and structure the chapter around four key areas: introduction and concepts, green practices during use, e-waste and responsible disposal, and building a green IT policy. Each notion is introduced through concrete Cameroonian contexts, illustrated with worked examples, and consolidated with methods you can apply directly in examination questions.
+
+\courssub{Method 1 — Identifying and Classifying Green Computing Practices}
+
+\begin{methode}[Recognising a green computing practice]
+When a GCE question asks you to \emph{identify} or \emph{classify} green computing practices, proceed as follows:
+\begin{enumerate}
+\item \textbf{Recall the definition.} Green computing (green IT) is the study and practice of designing, manufacturing, using and disposing of computers and ICT equipment in an \cle{environmentally responsible} and \cle{energy-efficient} way.
+\item \textbf{Identify the life-cycle stage} concerned by the action: \textbf{design} (green design), \textbf{manufacture} (green manufacturing), \textbf{use} (green use), \textbf{disposal} (green disposal). This is the standard \cle{four-pillar} classification.
+\item \textbf{Check the effect}: does the action reduce energy consumption, reduce toxic materials, extend equipment lifetime, or prevent pollution? If yes to at least one, it is a green practice.
+\item \textbf{Match to a concrete example}: power management settings $\rightarrow$ green use; lead-free solder $\rightarrow$ green manufacturing; donating an old computer $\rightarrow$ green disposal; a low-power processor $\rightarrow$ green design.
+\item \textbf{Justify} your classification in one sentence stating the environmental benefit.
+\end{enumerate}
+\textbf{Reflex:} always quote the pillar \emph{and} the benefit (energy saved, pollution avoided, lifetime extended).
+\end{methode}
+
+\begin{exoresolu}[Classifying practices at a school in Yaoundé]
+The computer club of a secondary school in Yaoundé carries out the following actions: (a) setting all laboratory computers to sleep after 10 minutes of inactivity; (b) buying laptops certified ENERGY STAR; (c) giving five old but working desktops to a neighbouring primary school; (d) printing handouts on both sides of the paper.\par
+For each action, state the green computing pillar concerned and justify.
+\tcblower
+\textbf{Solution.}\par
+Recall the four pillars of green computing: green \textbf{design}, green \textbf{manufacturing}, green \textbf{use}, green \textbf{disposal}.\par
+\textbf{(a) Sleep mode after 10 minutes.} This is \textbf{green use}. The equipment already exists; the school changes \emph{how it is used}. A computer in sleep mode consumes only a few watts instead of tens of watts when fully on, so electricity consumption (and the ENEO bill) is reduced.\par
+\textbf{(b) ENERGY STAR laptops.} This concerns \textbf{green design} (the manufacturer designed an energy-efficient product) and the school's \textbf{green purchasing} decision. ENERGY STAR certified devices meet strict energy-efficiency requirements, so less electricity is consumed over the whole lifetime of the machine.\par
+\textbf{(c) Donating working desktops.} This is \textbf{green disposal}. Reuse is the best form of end-of-life management: the lifetime of the equipment is extended, the primary school saves money, and the production of new machines (with its environmental cost) is postponed. It also prevents the computers from becoming e-waste prematurely.\par
+\textbf{(d) Double-sided printing.} This is \textbf{green use}. It halves paper consumption, which saves trees, water and energy used in paper production, and reduces waste.\par
+\textbf{Conclusion:} (a) green use; (b) green design/purchasing; (c) green disposal; (d) green use. Each action reduces either energy consumption or waste, so all four are genuine green computing practices.
+\end{exoresolu}
+
+\courssub{Method 2 — Computing Energy Consumption and Cost Savings}
+
+\begin{methode}[Energy, cost and savings calculations]
+Exam questions frequently require numerical estimates. Master these formulas:
+\begin{enumerate}
+\item \textbf{Energy:} $E = P \times t$, with $P$ in kilowatts (kW) and $t$ in hours (h), giving $E$ in kilowatt-hours (kWh). Convert watts to kilowatts: $P(\mathrm{kW}) = P(\mathrm{W}) / 1000$.
+\item \textbf{Cost:} $\text{Cost} = E \times \text{tariff}$, where the tariff is in FCFA per kWh.
+\item \textbf{Savings:} $\text{Savings} = E_{\text{before}} - E_{\text{after}}$ (in kWh), then convert to FCFA.
+\item \textbf{Annualisation:} multiply a daily consumption by the number of working days; multiply a weekly figure by the number of weeks.
+\item \textbf{Payback / interpretation:} compare the saving with the cost of the green measure to judge if it is worthwhile.
+\end{enumerate}
+\textbf{Reflex:} always write the unit at each step (W, kW, h, kWh, FCFA) and round sensibly.
+\end{methode}
+
+\begin{exoresolu}[Sleep mode in a cybercafé in Douala]
+A cybercafé in Douala has 20 desktop computers. Each computer consumes $100\ \mathrm{W}$ when on and $5\ \mathrm{W}$ in sleep mode. The café is open 12 hours per day, 300 days per year, but on average each computer is actually used only 7 hours per day; previously, machines stayed fully on for the whole 12 hours. The electricity tariff is $90\ \mathrm{FCFA/kWh}$.\par
+(a) Compute the annual energy consumption before the measure. (b) Compute the annual consumption if machines sleep during the 5 idle hours. (c) Compute the annual savings in kWh and in FCFA.
+\tcblower
+\textbf{Solution.}\par
+\textbf{(a) Before.} Power per machine: $P = 100\ \mathrm{W} = 0.1\ \mathrm{kW}$. Daily energy per machine:
+\[ E_{\text{day}} = 0.1 \times 12 = 1.2\ \mathrm{kWh}. \]
+For 20 machines over 300 days:
+\[ E_{\text{before}} = 1.2 \times 20 \times 300 = 7200\ \mathrm{kWh}. \]
+\textbf{(b) After.} Each machine is now fully on 7 h and in sleep mode 5 h per day. Sleep power: $5\ \mathrm{W} = 0.005\ \mathrm{kW}$. Daily energy per machine:
+\[ E'_{\text{day}} = (0.1 \times 7) + (0.005 \times 5) = 0.7 + 0.025 = 0.725\ \mathrm{kWh}. \]
+For 20 machines over 300 days:
+\[ E_{\text{after}} = 0.725 \times 20 \times 300 = 4350\ \mathrm{kWh}. \]
+\textbf{(c) Savings.}
+\[ \Delta E = 7200 - 4350 = 2850\ \mathrm{kWh/year}. \]
+In money:
+\[ \Delta C = 2850 \times 90 = 256\,500\ \mathrm{FCFA/year}. \]
+\textbf{Interpretation:} a simple, free configuration change (enabling sleep mode) saves $2850\ \mathrm{kWh}$ and about $256\,500\ \mathrm{FCFA}$ per year, while also reducing heat production and component wear. This illustrates that \textbf{green use} can be both ecological and economical.
+\end{exoresolu}
+
+\courssub{Method 3 — Estimating the Benefit of Virtualisation and Consolidation}
+
+\begin{methode}[Analysing server consolidation]
+\begin{enumerate}
+\item \textbf{Identify the baseline}: number of physical servers, their individual power, their utilisation rate.
+\item \textbf{Apply the consolidation ratio}: e.g. one powerful server hosting $n$ virtual machines replaces $n$ physical servers.
+\item \textbf{Compute energy before and after} with $E = P \times t$ (servers usually run $24\ \mathrm{h/day}$, $365$ days/year).
+\item \textbf{Add indirect savings}: fewer machines means less cooling (air conditioning), less space, less e-waste at end of life.
+\item \textbf{Conclude with the green pillar}: virtualisation is a \textbf{green use / green design} strategy that raises hardware utilisation and cuts energy per service delivered.
+\end{enumerate}
+\textbf{Reflex:} a physical server at $10\%$ utilisation wastes most of its energy; consolidation raises utilisation and is the key argument to cite.
+\end{methode}
+
+\begin{exoresolu}[Virtualising servers at a ministry in Yaoundé]
+A government ministry runs 10 old physical servers, each consuming $400\ \mathrm{W}$ continuously ($24\ \mathrm{h/day}$, $365$ days/year) but used at only $10\%$ of capacity on average. An engineer proposes replacing them with 2 modern servers of $500\ \mathrm{W}$ each, using virtualisation to host all the services. Cooling needs are assumed proportional to total IT power.\par
+(a) Compute the annual energy consumption before and after. (b) Give three additional green benefits of the project.
+\tcblower
+\textbf{Solution.}\par
+\textbf{(a) Before:} total power $= 10 \times 400 = 4000\ \mathrm{W} = 4\ \mathrm{kW}$. Annual hours: $24 \times 365 = 8760\ \mathrm{h}$.
+\[ E_{\text{before}} = 4 \times 8760 = 35\,040\ \mathrm{kWh/year}. \]
+\textbf{After:} total power $= 2 \times 500 = 1000\ \mathrm{W} = 1\ \mathrm{kW}$.
+\[ E_{\text{after}} = 1 \times 8760 = 8760\ \mathrm{kWh/year}. \]
+Savings: $35\,040 - 8760 = 26\,280\ \mathrm{kWh/year}$, i.e. a $75\%$ reduction in IT energy, with a similar reduction in cooling load.\par
+\textbf{(b) Additional green benefits:}
+\begin{itemize}
+\item \textbf{Less e-waste in future:} 2 machines to dispose of instead of 10 at end of life.
+\item \textbf{Higher utilisation:} the new servers run at a much higher percentage of capacity, so energy per service delivered drops dramatically.
+\item \textbf{Less space and fewer raw materials:} manufacturing 2 servers instead of 10 saves metals, plastics and transport emissions; the machine room can be smaller.
+\item \textbf{Easier maintenance and longer lifetime} of modern, efficient hardware.
+\end{itemize}
+\textbf{Conclusion:} virtualisation is a powerful green IT strategy: same services, $75\%$ less energy, less future e-waste.
+\end{exoresolu}
+
+\courssub{Method 4 — Managing E-waste: the Responsible Disposal Procedure}
+
+\begin{methode}[Choosing the correct end-of-life route for ICT equipment]
+Follow the \cle{waste hierarchy} (from best to worst): \textbf{Refuse/Reduce} $\rightarrow$ \textbf{Reuse} $\rightarrow$ \textbf{Repair/Refurbish} $\rightarrow$ \textbf{Recycle} $\rightarrow$ \textbf{Dispose (last resort)}.
+\begin{enumerate}
+\item \textbf{Assess the equipment}: is it working, repairable, or truly dead?
+\item \textbf{Working} $\rightarrow$ reuse: donate to a school, resell, redeploy internally.
+\item \textbf{Faulty but repairable} $\rightarrow$ repair or refurbish; harvest spare parts.
+\item \textbf{Dead} $\rightarrow$ recycle through an \cle{authorised e-waste recycler}: valuable materials (gold, copper, aluminium) are recovered and \cle{hazardous substances} (lead, mercury, cadmium, brominated flame retardants) are treated safely.
+\item \textbf{Never} burn, bury, or dump e-waste in nature or in ordinary bins: toxic substances contaminate soil and water, and informal burning releases dangerous fumes.
+\item \textbf{Wipe data} (secure erasure or destruction of storage) before any disposal to protect confidentiality.
+\item \textbf{Keep records}: inventory of disposed items and certificates from the recycler (traceability).
+\end{enumerate}
+\textbf{Reflex:} in Cameroon, cite the role of \cle{ANTIC} in awareness and regulation of the digital environment, and the danger of informal e-waste dumping.
+\end{methode}
+
+\begin{exoresolu}[Disposing of 30 old computers at a college in Bafoussam]
+A college in Bafoussam replaces its computer room and must dispose of 30 old desktops: 12 still work, 8 have minor faults (dead power supplies, missing RAM), and 10 are completely dead. The bursar proposes throwing everything into the municipal dump. Advise the school with a complete, justified disposal plan.
+\tcblower
+\textbf{Solution.}\par
+Apply the waste hierarchy: Reduce, Reuse, Repair, Recycle, Dispose as last resort.\par
+\textbf{Step 1 — Data protection.} Before any operation, securely erase or physically destroy the hard disks of all 30 machines, because they may contain student records, examination files and passwords. Disposal without data wiping is a security breach.\par
+\textbf{Step 2 — The 12 working computers (Reuse).} Donate them to a nearby primary school, a youth centre or a charity, or redeploy them for light tasks (typing, library catalogue). Reuse extends lifetime, avoids new manufacturing, and benefits the community.\par
+\textbf{Step 3 — The 8 faulty computers (Repair/Refurbish).} Dead power supplies and missing RAM are cheap, simple repairs. Repair them with parts cannibalised from the dead machines (a working power supply from a dead unit can revive a faulty one). Refurbished units can then also be donated or sold at low cost.\par
+\textbf{Step 4 — The 10 dead computers (Recycle).} After harvesting usable spare parts, send the remains to an \textbf{authorised e-waste recycler}, never to the municipal dump. These machines contain hazardous substances (lead in solder, mercury in old screens, cadmium in batteries) that would contaminate soil and groundwater if dumped or burned. Recycling recovers valuable materials such as copper, aluminium and small quantities of gold.\par
+\textbf{Step 5 — Traceability.} Record serial numbers and keep the recycler's certificate in the school's files.\par
+\textbf{Conclusion:} the bursar's proposal is dangerous and irresponsible: dumping 30 computers would pollute the environment and expose data. The correct plan reuses 12, repairs about 8, recycles 10 properly, protects data, and keeps records — a model of \textbf{green disposal}.
+\end{exoresolu}
+
+\courssub{Method 5 — Comparing Equipment Using Total Environmental Impact}
+
+\begin{methode}[Evaluating a purchase decision with green criteria]
+\begin{enumerate}
+\item \textbf{List the criteria}: purchase price, power consumption, energy label (ENERGY STAR, EPEAT), expected lifetime, repairability, recyclability, manufacturer take-back programme.
+\item \textbf{Compute Total Cost of Ownership (TCO)}: $\text{TCO} = \text{purchase price} + \text{energy cost over lifetime} + \text{maintenance} - \text{residual value}$.
+\item \textbf{Compute lifetime energy}: $E = P \times t_{\text{daily}} \times \text{days} \times \text{years}$.
+\item \textbf{Compare}: the cheapest machine to buy is often \emph{not} the cheapest or greenest over its life.
+\item \textbf{Decide and justify} with both economic and environmental arguments (green purchasing).
+\end{enumerate}
+\textbf{Reflex:} a laptop generally consumes far less than a desktop of similar performance — a classic exam comparison.
+\end{methode}
+
+\begin{exoresolu}[Desktop versus laptop for a secretary's office]
+An office in Bamenda hesitates between: \textbf{Option A}, a desktop with monitor costing $250\,000\ \mathrm{FCFA}$, average consumption $150\ \mathrm{W}$; \textbf{Option B}, a laptop costing $350\,000\ \mathrm{FCFA}$, average consumption $40\ \mathrm{W}$. Both are used $8\ \mathrm{h/day}$, $250\ \mathrm{days/year}$, for 5 years; tariff $90\ \mathrm{FCFA/kWh}$. Both have zero residual value.\par
+(a) Compute the 5-year energy cost of each option. (b) Compute the TCO of each. (c) Advise the office.
+\tcblower
+\textbf{Solution.}\par
+Total usage time: $t = 8 \times 250 \times 5 = 10\,000\ \mathrm{h}$.\par
+\textbf{(a) Energy costs.}\par
+Option A: $E_A = 0.150\ \mathrm{kW} \times 10\,000\ \mathrm{h} = 1500\ \mathrm{kWh}$; cost $= 1500 \times 90 = 135\,000\ \mathrm{FCFA}$.\par
+Option B: $E_B = 0.040\ \mathrm{kW} \times 10\,000\ \mathrm{h} = 400\ \mathrm{kWh}$; cost $= 400 \times 90 = 36\,000\ \mathrm{FCFA}$.\par
+\textbf{(b) TCO.}
+\begin{align*}
+\text{TCO}_A &= 250\,000 + 135\,000 = 385\,000\ \mathrm{FCFA},\\
+\text{TCO}_B &= 350\,000 + 36\,000 = 386\,000\ \mathrm{FCFA}.
+\end{align*}
+\textbf{(c) Advice.} Financially the two options are nearly equal over 5 years (difference of only $1000\ \mathrm{FCFA}$). Environmentally, Option B consumes $1100\ \mathrm{kWh}$ less (a $73\%$ reduction), produces less heat (less need for fans or air conditioning), contains a battery allowing work during power cuts (frequent in many localities), and takes less material to manufacture. If the tariff rises or usage increases, the laptop becomes strictly cheaper. \textbf{Recommendation: Option B}, the laptop, on green purchasing grounds: much lower lifetime energy for an identical total cost.\par
+\textbf{Lesson:} looking only at the purchase price (a common mistake) would have hidden the real comparison.
+\end{exoresolu}
+
+\courssub{Method 6 — Designing a Green IT Policy for an Organisation}
+
+\begin{methode}[Building a green IT policy (integration skill)]
+A GCE integration task may ask you to \emph{propose a green IT policy}. Structure it in five parts:
+\begin{enumerate}
+\item \textbf{Diagnosis}: audit existing equipment, energy consumption, printing habits, current disposal practices.
+\item \textbf{Green purchasing rules}: energy labels, repairable and upgradable machines, suppliers with take-back schemes.
+\item \textbf{Green use rules}: power management (sleep/shutdown), default double-sided and draft printing, digital documents instead of paper, reasonable screen brightness, switching off at closing time.
+\item \textbf{Green disposal rules}: waste hierarchy, data wiping, authorised recyclers, disposal register.
+\item \textbf{Governance}: a responsible person, measurable targets (e.g. reduce electricity by $20\%$ in one year), staff sensitisation, periodic review.
+\end{enumerate}
+\textbf{Reflex:} a good policy is \cle{measurable} (targets with numbers), \cle{assigned} (someone is responsible) and \cle{reviewed} (evaluated regularly).
+\end{methode}
+
+\begin{exoresolu}[Integration activity: green policy for a microfinance institution]
+A microfinance institution in Buea has 3 branches, 25 desktop computers left on day and night, heavy paper printing of receipts and reports, and old equipment is stored in a backyard room then abandoned. The director asks you, as ICT consultant, to propose a one-year green IT policy with measurable targets.
+\tcblower
+\textbf{Solution.}\par
+\textbf{1. Diagnosis (month 1).} Audit: 25 desktops on $24\ \mathrm{h/day}$; if each draws $100\ \mathrm{W}$, annual energy is $0.1 \times 24 \times 365 \times 25 = 21\,900\ \mathrm{kWh}$, of which roughly two-thirds is wasted outside the 8 working hours. Paper consumption is unmonitored; e-waste is stockpiled without data wiping.\par
+\textbf{2. Green use rules (months 1--2, zero cost).}
+\begin{itemize}
+\item Enable sleep after 10 idle minutes; mandatory shutdown at closing time. Expected saving: machines on 9 h instead of 24 h, i.e. energy falls to about $0.1 \times 9 \times 365 \times 25 \approx 8200\ \mathrm{kWh}$ — a reduction of more than $60\%$.
+\item Default double-sided, draft-quality printing; receipts printed only on request; internal reports circulated by email or shared folders. Target: $-40\%$ paper in one year.
+\end{itemize}
+\textbf{3. Green purchasing rules (from month 3).} Any new machine must be ENERGY STAR certified, upgradeable (RAM, storage) and bought from a supplier offering take-back. Prefer laptops for mobile staff.\par
+\textbf{4. Green disposal rules (months 2--4).} Inventory the backyard stockpile; wipe or destroy all hard disks; donate working units to schools; send the rest to an authorised e-waste recycler; open a disposal register recording each item and its destination.\par
+\textbf{5. Governance.} Appoint a \textbf{Green IT officer} (the ICT technician); sensitise staff during one training session per quarter; display reminders near printers and switches; review electricity bills and paper purchases every quarter against the targets ($-60\%$ IT electricity, $-40\%$ paper, zero e-waste in nature).\par
+\textbf{Conclusion.} This policy costs almost nothing at the start, is measurable, assigns responsibility, and covers the full life cycle (purchase, use, disposal): exactly what a green IT policy requires. The money saved on electricity can fund the replacement of the oldest machines by efficient ones, creating a virtuous circle.
+\end{exoresolu}
+
+\courssub{Method 7 — Analysing the Environmental Impact of Digital Services}
+
+\begin{methode}[Evaluating everyday digital habits]
+\begin{enumerate}
+\item \textbf{Identify the hidden infrastructure}: behind an email, a video stream or a cloud file there are data centres, networks and end-user devices, all consuming electricity.
+\item \textbf{Estimate orders of magnitude}: streaming video is far more energy- and data-intensive than text; a stored email with a large attachment is duplicated on servers and backups.
+\item \textbf{Propose reduction actions}: download instead of re-streaming, clean mailboxes, unsubscribe from unwanted newsletters, compress attachments, prefer Wi-Fi to mobile data when possible, keep phones longer.
+\item \textbf{Link to the pillars}: these are \textbf{green use} behaviours — they cost nothing and are immediately applicable by any user, including students.
+\end{enumerate}
+\textbf{Reflex:} the greenest device is the one you \emph{do not replace}; extending a smartphone's lifetime avoids the large manufacturing footprint of a new one.
+\end{methode}
+
+\begin{exoresolu}[A student's digital footprint]
+Manka'a, an Upper Sixth student, watches 2 hours of online video daily on her phone, changes smartphone every year, keeps 15\,000 emails (many with large attachments) in her mailbox, and leaves her laptop charger plugged in permanently. Identify four green improvements and justify each.
+\tcblower
+\textbf{Solution.}\par
+\textbf{1. Video streaming.} Streaming is the most data-intensive common activity: the video travels from energy-hungry data centres through the mobile network to her phone. \emph{Improvement:} download lessons/videos once over Wi-Fi (e.g. at school) and watch offline; lower the resolution when on mobile data. Benefit: less network and data-centre energy, and a smaller phone bill.\par
+\textbf{2. Yearly phone replacement.} Most of a smartphone's environmental impact occurs during \textbf{manufacturing} (extraction of metals, energy, water, transport). \emph{Improvement:} keep the phone 3--4 years, protect it with a case, replace the battery instead of the phone. Benefit: the manufacturing footprint is divided by three or four; less e-waste.\par
+\textbf{3. The 15\,000 emails.} Every stored email is duplicated on servers and backups that run $24/7$. \emph{Improvement:} delete useless emails, especially those with heavy attachments (save needed files locally first), empty the trash, unsubscribe from unread newsletters. Benefit: less storage infrastructure needed; a faster mailbox.\par
+\textbf{4. The permanently plugged charger.} A charger left in the socket draws a small standby power continuously and wears out faster. \emph{Improvement:} unplug after charging or use a switchable power strip; also enable the laptop's power-saving mode. Benefit: eliminates standby waste and reduces fire risk during voltage fluctuations.\par
+\textbf{Conclusion:} all four actions are \textbf{green use} practices: free, immediate, and effective when multiplied by millions of users — including the rapidly growing number of mobile users in Cameroon.
+\end{exoresolu}
+
+\begin{attention}[Frequent exam mistakes in this chapter]
+\begin{itemize}
+\item Confusing the pillars: donating a computer is \textbf{disposal} (reuse), not \textbf{use}; buying an efficient machine is \textbf{design/purchasing}, not \textbf{use}.
+\item Forgetting to convert watts to kilowatts before applying $E = P \times t$; mixing hours and days without converting.
+\item Claiming e-waste can go to ordinary bins: it contains \textbf{hazardous substances} (lead, mercury, cadmium) and must go to authorised recyclers.
+\item Forgetting \textbf{data wiping} before disposal — both a security and an exam-mark issue.
+\item Writing a ``policy'' with no measurable target and no responsible person: a green IT policy must be quantified and assigned.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer and justify your choice in one sentence.
+\begin{enumerate}
+\item Green computing is best defined as:
+\begin{enumerate}
+\item painting computer cases with ecological paint;
+\item the environmentally responsible design, use and disposal of ICT equipment;
+\item using computers only outdoors;
+\item buying the most powerful computers available.
+\end{enumerate}
+\item Which practice saves the most energy on a desktop computer?
+\begin{enumerate}
+\item using an animated screen saver;
+\item enabling sleep mode after a few minutes of inactivity;
+\item lowering the screen brightness by one level;
+\item changing the desktop wallpaper to green.
+\end{enumerate}
+\item The correct order of the 3R principle, from most to least preferable, is:
+\begin{enumerate}
+\item Recycle, Reuse, Reduce;
+\item Reuse, Reduce, Recycle;
+\item Reduce, Reuse, Recycle;
+\item Reduce, Recycle, Reuse.
+\end{enumerate}
+\item Before donating an old computer, the most important operation is:
+\begin{enumerate}
+\item cleaning the screen;
+\item securely erasing all personal data from the storage devices;
+\item installing new games;
+\item changing the keyboard.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+Say whether each statement is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item A screen saver reduces the energy consumption of a modern monitor.
+\item E-waste can contain hazardous substances such as lead and mercury.
+\item Burning old cables to recover copper is a safe recycling method.
+\item Virtualisation allows several virtual servers to run on one physical machine, reducing energy use.
+\item A device in standby mode consumes exactly zero watts.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Key definitions]
+Define each of the following terms in one or two sentences, and give one ICT-related example for each:
+\begin{enumerate}
+\item green computing;
+\item e-waste;
+\item reuse;
+\item recycling;
+\item carbon footprint.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculation]
+A desktop computer of power $300\ \mathrm{W}$ runs $8$ hours per day, $22$ days per month.
+\begin{enumerate}
+\item Calculate its monthly energy consumption in kWh.
+\item Calculate the monthly cost of this consumption at $100\ \mathrm{FCFA/kWh}$.
+\item The computer is replaced by a $90\ \mathrm{W}$ laptop used for the same duration. Compute the new monthly cost and the monthly savings in FCFA.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Greening a school computer lab]
+Your school in Bamenda has a computer lab of 25 desktop computers. List six practical measures the school can take to reduce the energy consumption of this lab, and for each measure state briefly why it saves energy.
+\end{exercice}
+
+\begin{exercice}[Reuse versus recycle]
+\begin{enumerate}
+\item Explain the difference between \emph{reuse} and \emph{recycle}.
+\item Give one concrete ICT example of each (for example, what can be done with an old but working laptop, and what can be done with a broken motherboard).
+\item Explain why reuse is generally preferred to recycling in the 3R hierarchy.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Hazardous substances in e-waste]
+State four hazardous substances commonly found in electronic waste, and give one health or environmental effect of each. Present your answer in a table with two columns: \emph{Substance} and \emph{Effect}.
+\end{exercice}
+
+\begin{exercice}[Energy audit of a cybercaf\'e]
+A cybercaf\'e in Douala uses 10 desktop computers of $250\ \mathrm{W}$ each, running $10$ hours per day, $26$ days per month. The owner also leaves 2 laser printers of $400\ \mathrm{W}$ switched on $10$ hours per day even though they are used only $1$ hour per day.
+\begin{enumerate}
+\item Compute the monthly energy consumption of the computers in kWh.
+\item Compute the energy wasted each month by leaving the printers on unnecessarily (in kWh).
+\item At $100\ \mathrm{FCFA/kWh}$, how much money does the owner waste per month because of the printers?
+\item Propose two simple behavioural changes that would reduce the cybercaf\'e's electricity bill.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question: responsible disposal]
+Your school wants to throw away 15 old computers.
+\begin{enumerate}
+\item Define the term \emph{e-waste}. \textbf{(2 marks)}
+\item Describe, step by step, the correct procedure for the responsible disposal of these computers, from the backup of data to the final treatment. Your procedure must include data protection measures. \textbf{(8 marks)}
+\item Give two reasons why the computers should not simply be dumped at an open refuse site. \textbf{(4 marks)}
+\item Suggest two alternative destinations for computers that are still in working order. \textbf{(2 marks)}
+\item Name one Cameroonian institution or initiative that can be involved in the management of e-waste. \textbf{(2 marks)}
+\end{enumerate}
+\hfill\textbf{(Total: 18 marks)}
+\end{exercice}
+
+\begin{exercice}[Essay: informal recycling]
+\emph{``Burning old cables to recover copper is a quick way to make money.''}
+
+Discuss this statement using your knowledge of e-waste and responsible disposal. Your essay should:
+\begin{enumerate}
+\item explain why informal recycling of this kind is practised in many towns; \textbf{(4 marks)}
+\item describe at least three dangers it presents for human health and for the environment; \textbf{(6 marks)}
+\item propose at least three safer, legal alternatives for valorising e-waste, referring to the 3R principle; \textbf{(6 marks)}
+\item conclude with a justified personal position. \textbf{(4 marks)}
+\end{enumerate}
+\hfill\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\begin{exercice}[Case study: a green IT policy]
+The Ministry of Secondary Education asks your school to design a \emph{Green IT policy} for its new multimedia centre.
+\begin{enumerate}
+\item Define green computing and give four reasons why it is important for a country like Cameroon. \textbf{(6 marks)}
+\item Propose four rules concerning the \emph{purchase} of equipment (energy labels, durability, repairability) and justify each one. \textbf{(4 marks)}
+\item Propose four rules concerning the daily \emph{use} of the equipment (power management, printing, switching off) and justify each one. \textbf{(4 marks)}
+\item Propose two rules concerning the \emph{end of life} of the equipment. \textbf{(2 marks)}
+\item Explain how the school can sensitise students and staff so that the policy is actually respected. \textbf{(4 marks)}
+\end{enumerate}
+\hfill\textbf{(Total: 20 marks)}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 --- Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Correct answer: (b).} Green computing (green IT) is precisely the environmentally responsible \cle{design}, \cle{use} and \cle{disposal} of ICT equipment throughout its life cycle; the other options are either absurd or unrelated to the environment.
+\item \textbf{Correct answer: (b).} Sleep mode cuts consumption of the whole machine to a few watts, whereas an animated screen saver keeps the processor and screen active and the other options have a negligible or zero effect.
+\item \textbf{Correct answer: (c).} The 3R hierarchy is \cle{Reduce}, then \cle{Reuse}, then \cle{Recycle}: avoiding consumption is best, giving a second life is next, and recycling is the last resort because it consumes energy and destroys the object.
+\item \textbf{Correct answer: (b).} Before donation, all personal data must be \cle{securely erased} (wiped or the disk destroyed) to protect privacy; cosmetic operations do not protect the previous owner.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True or false]
+\begin{enumerate}
+\item \textbf{False.} A screen saver only changes the image displayed; the monitor stays fully powered and an animated saver even keeps the processor busy. Only sleep mode or switching off saves energy.
+\item \textbf{True.} E-waste contains hazardous substances such as lead (solder, CRT glass), mercury (backlights, switches), cadmium and brominated flame retardants, which poison soil, water and human health.
+\item \textbf{False.} Burning cables releases toxic fumes (dioxins, heavy metals) that damage the lungs and pollute the air and soil; copper must be recovered by mechanical stripping or in controlled industrial facilities.
+\item \textbf{True.} Virtualisation consolidates several virtual servers on one physical machine, so fewer machines are powered, which reduces electricity consumption, heat production and hardware purchases.
+\item \textbf{False.} A device in standby still draws a small current (typically $1$ to $5\ \mathrm{W}$) to maintain the quick-start circuits; only switching off at the plug or a power strip brings consumption to zero.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Key definitions]
+\begin{enumerate}
+\item \textbf{Green computing:} the study and practice of designing, manufacturing, using and disposing of ICT equipment in an environmentally responsible way, so as to minimise energy consumption and pollution. \emph{Example:} configuring all school computers to sleep after $10$ minutes of inactivity.
+\item \textbf{E-waste (WEEE):} waste electrical and electronic equipment --- any discarded device with a plug, battery or circuit board. \emph{Example:} a broken CRT monitor, an old mobile phone or a dead printer.
+\item \textbf{Reuse:} using a product or component again, for the same or a new purpose, without destroying its form. \emph{Example:} donating a working old laptop to a school or converting it into a file server.
+\item \textbf{Recycling:} processing a discarded product to recover raw materials that are used to manufacture new products. \emph{Example:} shredding a broken motherboard to recover copper, gold and plastics.
+\item \textbf{Carbon footprint:} the total quantity of greenhouse gases (expressed in $\mathrm{CO_2}$ equivalent) emitted directly or indirectly by an activity, product or person. \emph{Example:} the emissions caused by generating the electricity that powers a data centre.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Direct calculation]
+\begin{enumerate}
+\item Monthly operating time: $t = 8 \times 22 = 176$ hours. Energy:
+\[ E = P \times t = 300\ \mathrm{W} \times 176\ \mathrm{h} = 52\,800\ \mathrm{Wh} = 52.8\ \mathrm{kWh}. \]
+\item Monthly cost: $C = 52.8 \times 100 = 5\,280\ \mathrm{FCFA}$.
+\item New consumption: $E' = 90 \times 176 = 15\,840\ \mathrm{Wh} = 15.84\ \mathrm{kWh}$. New cost: $C' = 15.84 \times 100 = 1\,584\ \mathrm{FCFA}$. Monthly savings:
+\[ C - C' = 5\,280 - 1\,584 = 3\,696\ \mathrm{FCFA}, \]
+that is a saving of $70\%$ of the electricity bill for this workstation.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 --- Greening a school computer lab]
+Any six of the following measures (with justification) are acceptable:
+\begin{enumerate}
+\item \textbf{Enable sleep mode} after $5$--$10$ minutes of inactivity: an idle desktop still consumes nearly full power, while sleep mode reduces it to a few watts.
+\item \textbf{Switch off all machines at closing time} using a master power strip: standby consumption of 25 machines over nights and weekends is pure waste.
+\item \textbf{Replace CRT monitors with LED/LCD screens}: LED monitors consume roughly half to a third of the power of CRTs and emit less heat.
+\item \textbf{Reduce screen brightness} to a comfortable level: the backlight is the main consumer of a monitor.
+\item \textbf{Use laptops or thin clients} for basic tasks: they consume $50$--$90\ \mathrm{W}$ instead of $250$--$300\ \mathrm{W}$.
+\item \textbf{Consolidate printing} on one shared printer switched on only when needed: several idle printers each waste standby power.
+\item \textbf{Ventilate naturally and avoid unnecessary air conditioning}: good airflow and shading reduce the cooling load, which often exceeds the computers' own consumption.
+\item \textbf{Disable animated screen savers} and set the screen to turn off instead: screen savers do not save energy on modern monitors.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- Reuse versus recycle]
+\begin{enumerate}
+\item \textbf{Reuse} means using a product or component again in its existing form, for the same or another purpose, with at most minor repair. \textbf{Recycling} means destroying the product and processing it to recover raw materials (metals, plastics) used to manufacture new items.
+\item \emph{Reuse example:} an old but working laptop is wiped, fitted with a lightweight operating system and given to a pupil or used as a school library catalogue station. \emph{Recycle example:} a broken motherboard is sent to a recycling facility where copper, gold and other metals are extracted from it.
+\item Reuse is preferred because it preserves all the energy and materials already invested in manufacturing the product (its \emph{embodied energy}), requires no industrial processing, generates no recycling emissions, and extends the product's life --- whereas recycling consumes energy, loses part of the materials and produces residues.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Hazardous substances in e-waste]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Substance} & \textbf{Effect} \\
+\hline
+Lead (solder, CRT glass) & Attacks the nervous system and kidneys; particularly harmful to children's brain development; contaminates soil and groundwater. \\
+\hline
+Mercury (backlights, switches) & Highly toxic to the brain and nervous system; accumulates in the food chain (fish) and poisons consumers. \\
+\hline
+Cadmium (batteries, chips) & Carcinogenic; damages kidneys and bones; persists in soils for decades. \\
+\hline
+Brominated flame retardants (plastics) & Release toxic dioxins and furans when burnt; disrupt hormones and accumulate in living organisms. \\
+\hline
+\end{tabularx}
+\end{center}
+(Also acceptable: hexavalent chromium --- carcinogenic corrosion coatings; arsenic --- poison used in some semiconductors.)
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- Energy audit of a cybercaf\'e]
+\begin{enumerate}
+\item Computers: total power $= 10 \times 250 = 2\,500\ \mathrm{W} = 2.5\ \mathrm{kW}$; time $= 10 \times 26 = 260\ \mathrm{h}$.
+\[ E = 2.5 \times 260 = 650\ \mathrm{kWh} \quad (\text{cost } 65\,000\ \mathrm{FCFA}). \]
+\item The printers are on $10$ h/day but needed only $1$ h/day, so $9$ h/day are wasted. Wasted energy:
+\[ E_{\text{waste}} = 2 \times 400\ \mathrm{W} \times 9\ \mathrm{h} \times 26 = 187\,200\ \mathrm{Wh} = 187.2\ \mathrm{kWh}. \]
+\item Money wasted: $187.2 \times 100 = 18\,720\ \mathrm{FCFA}$ per month --- more than a quarter of the computers' own bill, for nothing.
+\item Two behavioural changes (any two):
+\begin{itemize}
+\item Switch the printers on only when a print job arrives and off afterwards (or use a timer/power strip).
+\item Enable sleep mode on all computers and switch everything off at closing time.
+\item Print only when necessary and use draft/duplex mode to reduce both energy and paper.
+\end{itemize}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 --- Structured question: responsible disposal]
+\textbf{Indicative mark scheme (18 marks).}
+\begin{enumerate}
+\item \textbf{Definition (2 marks).} E-waste (waste electrical and electronic equipment, WEEE) is any discarded device that operates with electricity or batteries --- computers, phones, printers, cables. \emph{(1 mark for ``discarded equipment'', 1 mark for ``electrical/electronic''.)}
+\item \textbf{Procedure (8 marks --- 1 mark per valid step, any 8):}
+\begin{enumerate}
+\item \textbf{Inventory:} list the 15 computers and identify those still working.
+\item \textbf{Backup:} copy all useful files (documents, results, accounts) to an external disk or server.
+\item \textbf{Data protection:} securely erase the hard disks using wiping software (multiple-pass overwrite) or physically destroy the disks, so that pupils' and staff data cannot be recovered.
+\item \textbf{Sort:} separate reusable machines from truly dead ones.
+\item \textbf{Reuse/donate:} offer working units to another school, a charity or a computer club after refurbishment.
+\item \textbf{Certified collection:} hand the remaining units to an authorised e-waste collector or recycler --- never to informal burners.
+\item \textbf{Traceability:} keep a record/receipt of the transfer (who took what, when).
+\item \textbf{Final treatment:} dismantling, recovery of metals and plastics, and safe treatment of hazardous fractions (batteries, screens, capacitors) in a controlled facility.
+\end{enumerate}
+\item \textbf{Why not an open dump (4 marks --- 2 per reason):} (i) toxic substances (lead, mercury, cadmium) leach into soil and groundwater, poisoning people and crops; (ii) scavengers often burn the waste, releasing dioxins and heavy-metal fumes that cause cancers and respiratory diseases. (Also: loss of valuable recoverable materials; violation of environmental regulations.)
+\item \textbf{Alternative destinations (2 marks --- 1 each):} donation to a primary school or community centre; sale/donation to a refurbishment workshop or computer training club.
+\item \textbf{Cameroonian institution (2 marks):} ANTIC (National Agency for Information and Communication Technologies), which promotes responsible ICT practices; also acceptable: the Ministry of Environment (MINEPDED), municipal hygiene services (HYSACAM for waste collection), or authorised private recyclers.
+\end{enumerate}
+\emph{Examiner expectations:} a logical, ordered procedure; data wiping explicitly mentioned (a frequent omission); precise hazards named rather than vague ``pollution''.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- Essay: informal recycling]
+\textbf{Indicative mark scheme (20 marks) and model outline.}
+\begin{enumerate}
+\item \textbf{Why it is practised (4 marks).} Poverty and unemployment push youths to recover copper, which sells well; e-waste is abundant and often free; there are few formal recycling channels and little enforcement; the work requires no capital or training. \emph{(1 mark per explained cause.)}
+\item \textbf{Dangers (6 marks --- 2 per danger, any 3):}
+\begin{itemize}
+\item \emph{Health:} burning PVC insulation releases dioxins and furans --- carcinogenic fumes inhaled by burners and neighbours.
+\item \emph{Health:} exposure to lead, mercury and cadmium dust damages the nervous system, kidneys and children's development.
+\item \emph{Environment:} ashes and residues contaminate soil and groundwater, entering the food chain.
+\item \emph{Environment:} air pollution affects whole neighbourhoods; acid leaching (used to strip metals) poisons streams.
+\end{itemize}
+\item \textbf{Safer legal alternatives (6 marks --- 2 each, linked to 3R):}
+\begin{itemize}
+\item \emph{Reduce:} buy durable, repairable equipment and avoid unnecessary replacement, so less waste is generated.
+\item \emph{Reuse:} repair, refurbish and resell or donate working devices --- this earns more value than raw copper and creates skilled jobs.
+\item \emph{Recycle properly:} strip cables mechanically (no burning) and sell sorted materials to authorised recyclers; organise formal collection cooperatives with protective equipment and traceability.
+\end{itemize}
+\item \textbf{Conclusion (4 marks).} A justified personal position, e.g.: the statement confuses quick cash with real value --- informal burning trades the health of workers and communities for a few francs; only organised reuse and certified recycling create sustainable income without poisoning anyone. \emph{(2 marks for a clear position, 2 for justification linked to the arguments.)}
+\end{enumerate}
+\emph{Examiner expectations:} structured essay (introduction, development, conclusion), correct vocabulary (dioxins, heavy metals, valorisation), explicit reference to the 3R hierarchy.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Case study: a green IT policy]
+\textbf{Indicative mark scheme (20 marks).}
+\begin{enumerate}
+\item \textbf{Definition and importance (6 marks).} Green computing: the environmentally responsible design, purchase, use and disposal of ICT equipment \emph{(2 marks)}. Importance for Cameroon (any 4, 1 mark each): reduces electricity bills in a context of costly, sometimes unreliable power; lowers pressure on the national grid and generator fuel; protects public health against informal e-waste burning; preserves the environment (soil, water); creates jobs in repair and refurbishment; aligns the country with international environmental commitments.
+\item \textbf{Purchase rules (4 marks --- 1 each with justification):}
+\begin{itemize}
+\item Buy equipment with recognised energy-efficiency labels (e.g.\ ENERGY STAR): lower consumption over the whole life of the machine.
+\item Prefer durable, upgradeable models (RAM/disk can be replaced): longer lifespan means less e-waste.
+\item Choose repairable equipment with available spare parts: avoids discarding a whole machine for one fault.
+\item Buy only what is needed (right-sizing, possibly laptops/thin clients): avoids overconsumption and unnecessary cost.
+\end{itemize}
+\item \textbf{Use rules (4 marks --- 1 each with justification):}
+\begin{itemize}
+\item Sleep mode after $10$ minutes of inactivity: idle machines waste nearly full power.
+\item Switch off all equipment (master strip) at closing time: standby is not zero consumption.
+\item Print only when necessary, duplex and draft by default: saves energy, paper and ink.
+\item Set reasonable screen brightness and ban animated screen savers: the backlight is the main monitor consumer.
+\end{itemize}
+\item \textbf{End-of-life rules (2 marks --- 1 each):} wipe all data then donate or resell working equipment; hand dead equipment to an authorised e-waste recycler with a transfer record --- never dump or burn it.
+\item \textbf{Sensitisation (4 marks --- any 4):} training sessions for staff and students; posters and reminders near switches and printers; appointing ``green IT delegates'' per class; including the rules in the school rules of procedure; periodic energy audits with published results and rewards for the most economical class.
+\end{enumerate}
+\emph{Examiner expectations:} each rule must be \emph{justified} (a bare list scores half marks); the policy must cover the full life cycle --- purchase, use, end of life --- plus the human factor, without which a policy remains on paper.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, font=\small},
+root concept/.append style={concept color=popgreen, font=\bfseries},
+level 1/.append style={level distance=3.4cm, sibling angle=60},
+level 2/.append style={level distance=2.2cm, sibling angle=45}]
+\node[root concept]{Green Computing}
+  child[concept color=popblue]{ node{Definition \& Goals}
+    child{ node{Eco-friendly IT life cycle} }
+    child{ node{Reduce energy \& e-waste} }
+  }
+  child[concept color=poporange]{ node{Green Practices}
+    child{ node{Power settings, sleep mode} }
+    child{ node{Virtualisation, cloud} }
+    child{ node{Paperless work} }
+  }
+  child[concept color=poppurple]{ node{E-waste}
+    child{ node{Toxic: Pb, Hg, Cd} }
+    child{ node{Growing global problem} }
+  }
+  child[concept color=popgold]{ node{Responsible Disposal}
+    child{ node{3Rs: Reduce, Reuse, Recycle} }
+    child{ node{Certified recyclers} }
+    child{ node{Data wiping first} }
+  }
+  child[concept color=poppink]{ node{Green IT Policy}
+    child{ node{Audit, targets, rules} }
+    child{ node{Staff awareness} }
+  }
+  child[concept color=popblueL]{ node{Cameroon Context}
+    child{ node{ANTIC, refurbishing} }
+    child{ node{Solar-powered centres} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: green computing, from definition to a complete green IT policy.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item \cle{Green computing} (green IT): the environmentally responsible design, manufacture, use and disposal of computers and ICT equipment, so as to minimise energy consumption and pollution.
+\item \cle{E-waste} (WEEE): discarded electrical and electronic equipment (computers, phones, printers, batteries) that is no longer wanted or working.
+\item \cle{Carbon footprint}: the total greenhouse-gas emissions caused directly or indirectly by an activity, a person or a device, expressed in CO$_2$ equivalent.
+\item \cle{Responsible disposal}: getting rid of ICT equipment through reuse, refurbishment or certified recycling, never through open dumping or burning.
+\item \cle{Virtualisation}: running several virtual machines on one physical server, reducing the number of machines, hence energy and heat.
+\item \cle{Energy Star}: an international label identifying energy-efficient devices.
+\item The \cle{3Rs}: \textbf{Reduce} consumption, \textbf{Reuse} equipment, \textbf{Recycle} materials.
+\end{itemize}
+
+\textbf{Essential facts and figures to know}
+\begin{itemize}
+\item ICT devices consume electricity even on \cle{standby}; switching off completely saves energy.
+\item E-waste contains \textbf{toxic substances}: lead (Pb), mercury (Hg), cadmium (Cd), brominated flame retardants --- dangerous for soil, water and human health.
+\item E-waste also contains \textbf{valuable materials}: gold, copper, aluminium, which can be recovered by proper recycling.
+\item A CRT monitor and old batteries are among the most hazardous components.
+\item Green practices: activate \cle{power management} (sleep after inactivity), lower screen brightness, print only when necessary (duplex, both sides), use e-mail and cloud storage instead of paper, buy durable and upgradeable equipment, unplug chargers.
+\end{itemize}
+
+\textbf{Methods to master}
+\begin{itemize}
+\item \textbf{Disposing of an old computer correctly:} (1) back up useful files; (2) wipe or destroy the hard disk data (secure erasure, not just delete); (3) donate or resell if still working; (4) otherwise hand it to a certified e-waste recycler or an official collection point; (5) never burn it or throw it in a household bin.
+\item \textbf{Building a green IT policy (integration activity):} (1) audit current energy use and equipment; (2) set measurable targets (e.g.\ reduce printing, switch off at night); (3) define purchasing rules (Energy Star, repairable devices); (4) organise reuse and recycling channels; (5) train and sensitise users; (6) monitor and review results.
+\end{itemize}
+
+\textbf{Common mistakes to avoid}
+\begin{itemize}
+\item Confusing \emph{deleting files} with \emph{secure data destruction} before disposal.
+\item Thinking standby mode means zero consumption --- it does not.
+\item Believing e-waste is harmless because it looks like ordinary rubbish.
+\item Burning cables to extract copper: this releases toxic fumes and is dangerous and illegal.
+\item Writing ``recycling'' as the first option: the correct order is \textbf{Reduce, then Reuse, then Recycle}.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Define terms precisely and always give \textbf{one concrete example} (e.g.\ a school computer laboratory in Yaound\'e switching PCs off at night).
+\item For essay questions on disposal, structure the answer: dangers of e-waste $\rightarrow$ 3Rs $\rightarrow$ correct procedure $\rightarrow$ role of organisations such as \cle{ANTIC} in Cameroon.
+\item In the integration activity, present the green IT policy as a short, realistic action plan with actors, actions and deadlines.
+\item Mention both the \textbf{environmental} benefit (less pollution) and the \textbf{economic} benefit (lower electricity bills) --- examiners reward balanced answers.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
