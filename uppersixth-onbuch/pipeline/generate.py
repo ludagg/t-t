@@ -366,7 +366,7 @@ def repair_damage(body):
         return re.sub(r"\$([\^_]\{[^{}]*\})\$", r"\1", m.group(0))
     body = re.sub(r"\\(?:ensuremath|mathrm|SI|si|SIrange|numrange)" + _BR + "(?:" + _BR + ")?(?:" + _BR + ")?", strip, body)
     # \n littéral dans \texttt{...} (code C, chaînes)
-    body = re.sub(r"\\texttt\{((?:[^{}]|\\[{}])*)\}", lambda m: "\\texttt{" + re.sub(r"(?<!\\)\\n(?![A-Za-z])", lambda _k: "\\textbackslash{}n", m.group(1)) + "}", body)
+    body = re.sub(r"\\texttt\{((?:[^{}]|\\[{}])*)\}", lambda m: "\\texttt{" + re.sub(r"(?<![\\\w])\^", lambda _k: "\\textasciicircum{}", re.sub(r"(?<!\\)~", lambda _k: "\\textasciitilde{}", re.sub(r"(?<!\\)\\n(?![A-Za-z])", lambda _k: "\\textbackslash{}n", m.group(1)))) + "}", body)
     return body
 
 
@@ -424,6 +424,7 @@ def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
     body = node_lists_fix(body)
+    body = re.sub(r"(?<=/)\^(?=[\\\w\[(])", lambda _m: "\\textasciicircum{}", body)   # regex /^...$/ dans le texte
     body = re.sub(r"^(\s*(?:\\item\s+)?)\\(texttt|textbf|emph|textit)[ \t]+(?=[^{\s\\])([^\n]*\})[ \t]*(\\\\)?[ \t]*$", lambda m: m.group(1) + "\\" + m.group(2) + "{" + m.group(3) + (m.group(4) or "") if m.group(3).count("}") > m.group(3).count("{") else m.group(0), body, flags=re.M)   # \texttt sans accolade ouvrante
     body = re.sub(r"(?<!\\)#", lambda _m: "\\#", body)          # # nu (C#, #hashtag) -> \#
     body = re.sub(r"\$\$(\\[A-Za-z]+)\$\$", lambda m: "$" + m.group(1) + "$", body)     # $$\rightarrow$$ (dégât ancien)
