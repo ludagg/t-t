@@ -6,10 +6,6 @@ Ludovic A.
 
 ---
 
-*À la ministre des Enseignements secondaires.*
-
----
-
 *On a écrit un mot sur toi. Ce n’était pas ton nom.*
 
 ---

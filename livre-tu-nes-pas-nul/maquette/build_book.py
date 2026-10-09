@@ -69,7 +69,7 @@ def conv(path):
 def dedicace():
     t=(ROOT/"chapitres"/"00-liminaire.md").read_text(encoding="utf-8")
     parts=re.split(r"\n---\n",t)
-    d=parts[1].strip() if len(parts)>2 else ""
+    d=parts[1].strip() if len(parts)>3 else ""
     if not d or "⟦" in d: return ""
     return r"\thispagestyle{empty}\vspace*{0.3\textheight}\begin{flushright}\itshape "+esc(d.strip("*").strip())+r"\end{flushright}\vfill\cleardoublepage"+"\n"
 def front():

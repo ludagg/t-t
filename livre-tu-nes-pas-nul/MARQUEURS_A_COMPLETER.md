@@ -4,7 +4,7 @@
 
 Ces passages ne peuvent être écrits que par toi (vie réelle, faits vérifiables). Le livre tient sans eux ; chaque marqueur apparaît en encadré orange dans le PDF de travail. Après avoir rempli un marqueur, supprime les ⟦ ⟧ dans le fichier `chapitres/…md`, puis relance `maquette/build_book.py` et la compilation.
 
-1. **00-liminaire.md**, ligne 9 — la dédicace, si tu en veux une — à qui, en une ligne
+1. ~~00-liminaire.md — dédicace~~ : abandonnée ; la ministre des Enseignements secondaires est remerciée dans 20-remerciements.md
 2. **19-note-de-l-auteur.md**, ligne 27 — pourquoi tu as écrit ce livre, en tes mots, si tu veux l'ajouter — quelques lignes
 3. **20-remerciements.md**, ligne 9 — les personnes que tu veux remercier nommément
 

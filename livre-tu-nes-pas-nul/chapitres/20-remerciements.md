@@ -6,4 +6,6 @@ Je pense aussi aux parents qui veillent sans toujours savoir comment aider. Ils 
 
 Et aux élèves qui ont posé leurs questions, y compris celles qu’ils trouvaient bêtes, à voix haute, sur un bout de papier ou à la sortie du cours : chacune de ces questions a servi à quelqu’un d’autre qu’eux.
 
+Merci à la ministre des Enseignements secondaires, et à son ministère : les programmes officiels qu’ils publient sont le cadre sur lequel OnBuch est construit.
+
 ⟦À COMPLÉTER PAR LUDOVIC : les personnes que tu veux remercier nommément⟧
