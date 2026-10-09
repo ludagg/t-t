@@ -50,17 +50,33 @@ def seg_hits(rect,s):
                 t1=min(t1,r)
     return (t1-t0)*math.hypot(dx,dy)>=2.0
 
+POPLINE=(0.91765,0.87451,0.82353)
+def figure_rects(p):
+    """cadres \\popfigure : forme pleine couleur popline (#EADFD2), sans trait, large"""
+    out=[]
+    for dr in p.get_drawings():
+        f=dr.get("fill");r=dr["rect"]
+        if f and dr.get("color") is None and all(abs(a-b)<0.01 for a,b in zip(f,POPLINE)) and r.width>150 and r.height>50:
+            out.append(pymupdf.Rect(r.x0+2,r.y0+2,r.x1-2,r.y1-2))
+    return out
+
 def analyse_page(p):
     if p.number==0: return []
+    figs=figure_rects(p)
+    if not figs: return []
     segs,boxes=segments(p)
-    if len(segs)<6: return []
+    def infig(r): 
+        c=pymupdf.Point((r.x0+r.x1)/2,(r.y0+r.y1)/2)
+        return any(f.contains(c) for f in figs)
+    segs=[s_ for s_ in segs if any(f.contains(pymupdf.Point((s_[0]+s_[2])/2,(s_[1]+s_[3])/2)) for f in figs)]
+    if len(segs)<3: return []
     sp=[]
     for b in p.get_text("dict")["blocks"]:
         for l in b.get("lines",[]):
             for s in l["spans"]:
                 t=s["text"].strip()
                 r=pymupdf.Rect(s["bbox"])
-                if t and not (len(t)<=1 and not t.isalnum()) and 62<r.y0 and r.y1<p.rect.y1-72: sp.append((r,t,s["size"]))
+                if t and not (len(t)<=1 and not t.isalnum()) and 62<r.y0 and r.y1<p.rect.y1-72 and infig(r): sp.append((r,t,s["size"]))
     # zone des figures : texte proche d'un dessin non rectiligne ou de >=6 segments
     res=[]
     # texte / texte
