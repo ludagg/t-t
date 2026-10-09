@@ -287,7 +287,7 @@ HEADER = r"""\newcommand{\DOCMATIERE}{Test}\newcommand{\DOCNIVEAU}{Upper Sixth}\
 _BR = r"(?:\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})"
 _PROT = re.compile("|".join([
     r"\\begin\{(tikzpicture|axis|align\*?|equation\*?|gather\*?|multline\*?|pmatrix|bmatrix|cases|eqnarray\*?|displaymath|math)\}.*?\\end\{\1\}",
-    r"\$\$.*?\$\$", r"\$[^$]*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
+    r"\$\$.*?\$\$", r"(?<!\\)\$(?:[^$\\]|\\.)*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
     r"\\ce" + _BR,
     r"\\(?:SI|si|num|qty|ang|SIrange|numrange|SIlist|numlist)" + _BR + "(?:" + _BR + ")?(?:" + _BR + ")?",
     r"\\(?:ensuremath|mathrm|mathbf|mathit|label|ref|legende|tikzmarknode)" + _BR,
@@ -299,10 +299,17 @@ _SUB = re.compile(r"(?<=[A-Za-z0-9)\]])_(\{[^{}]*\}|[0-9]+)")
 
 
 def _text_scripts(seg):
-    seg = _GREEK.sub(lambda m: "$\\" + m.group(1) + m.group(2) + "$", seg)
-    seg = _SUP.sub(lambda m: "$^{" + m.group(1).strip("{}") + "}$", seg)
-    seg = _SUB.sub(lambda m: "$_{" + m.group(1).strip("{}") + "}$", seg)
-    return re.sub(r"(?<!\\)_", lambda _m: "\\_", seg)   # _ nu en texte -> \_
+    """Exposants/indices/lettres grecques en texte -> math ; _ nu -> \\_ (les $...$ créés sont mis à l'abri pendant l'échappement)."""
+    store = []
+
+    def keep(txt):
+        store.append("$" + txt + "$")
+        return "\x01%d\x02" % (len(store) - 1)
+    seg = _GREEK.sub(lambda m: keep("\\" + m.group(1) + m.group(2)), seg)
+    seg = _SUP.sub(lambda m: keep("^{" + m.group(1).strip("{}") + "}"), seg)
+    seg = _SUB.sub(lambda m: keep("_{" + m.group(1).strip("{}") + "}"), seg)
+    seg = re.sub(r"(?<!\\)_", lambda _m: "\\_", seg)   # _ nu en texte -> \_
+    return re.sub("\x01(\\d+)\x02", lambda m: store[int(m.group(1))], seg)
 
 
 def text_scripts_fix(body):
@@ -365,7 +372,7 @@ def repair_damage(body):
 
 _AMP_PROT = re.compile("|".join([
     r"\\begin\{(tabular\*?|tabularx|array|align\*?|aligned|alignedat|gather\*?|multline\*?|matrix|pmatrix|bmatrix|vmatrix|cases|split|eqnarray\*?|tikzpicture|axis)\}.*?\\end\{\1\}",
-    r"\$\$.*?\$\$", r"\$[^$]*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
+    r"\$\$.*?\$\$", r"(?<!\\)\$(?:[^$\\]|\\.)*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
     r"\\ce" + _BR, r"\\[&_^%#$]", r"%[^\n]*",
 ]), re.S)
 
@@ -418,6 +425,16 @@ def us_fix(body):
     body = re.sub(r"\$\$(\\[A-Za-z]+)\$ ", lambda m: "$" + m.group(1) + " ", body)       # $$\Delta$ h = .. $ -> $\Delta h = .. $
     body = re.sub(r"\\texttt\{((?:[^{}]|\\[{}])*)\}", lambda m: "\\texttt{" + re.sub(r"\\(?=[A-Z][a-z]|[A-Z]{2})(?!Delta|Gamma|Lambda|Omega|Sigma|Theta|Phi|Psi|Pi\b)", lambda _k: "\\textbackslash{}", m.group(1)) + "}", body)  # C:\Windows
     body = re.sub(r"\\addlegendentry\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}", lambda m: "\\addlegendentry{" + re.sub(r"\\to(?![A-Za-z])", lambda _k: "\\rightarrow ", re.sub(r"\\bar\b", lambda _k: "\\overline", m.group(1))).replace("{,}", ",").replace(",", "{,}") + "}", body)  # \bar est une commande pgfplots
+    body = re.sub(r"\bcircuit logic\b(?! US| IEC| CDH)", lambda _m: "circuit logic US", body)
+    def _gates(m):   # ancres des portes logiques, figure par figure : input N (input pour une porte NON) / output
+        t = m.group(0)
+        if not re.search(r"gate US|logic gate", t):
+            return t
+        nots = set(re.findall(r"\\node\[[^\]]*not gate[^\]]*\][^;]*?\((\w+)\)\s*\{", t))
+        t = re.sub(r"\((\w+)\.in(?: (\d))?\)", lambda k: "(" + k.group(1) + (".input)" if k.group(1) in nots else ".input " + (k.group(2) or "1") + ")"), t)
+        return re.sub(r"\.out\)", lambda _k: ".output)", t)
+    body = re.sub(r"\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}", _gates, body, flags=re.S)
+    body = re.sub(r"(?<=[\d(])%(?=[ \t]?[A-Za-z)\d])", lambda _m: "\\%", body)   # % de prose non échappé : (% GDP), 50%x
     body = re.sub(r"\\clip\[[^\]\n]*\]", lambda _m: "\\clip", body)   # \clip n'accepte pas d'options
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
@@ -1094,7 +1111,7 @@ Do not shorten the content: the final version must be at least as rich. Reply on
             ok, err, line = compile_check(body)
             if ok:
                 rev_f.write_text(body)
-    if not ok and os.environ.get("DROP_FAULT", "1") == "1":
+    if not ok and os.environ.get("DROP_FAULT", "0") == "1":
         body3, ok3 = drop_fault(body)
         if ok3:
             log(f"  ✂ figure/tableau fautif supprimé dans {L['id']}/{name}")

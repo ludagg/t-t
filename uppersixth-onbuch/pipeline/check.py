@@ -6,6 +6,7 @@
                                        le valide (s03.ok.tex) et supprime le .err,
                                        sinon affiche l'erreur et le contexte.
 """
+import os
 import sys
 from pathlib import Path
 
@@ -60,7 +61,7 @@ def llm_repair(ref):
         for src in cands:
             body = g.autofix((d / src).read_text())
             ok, _, _ = g.compile_check(body)
-            if not ok and drop_:
+            if not ok and drop_ and os.environ.get('DROP_FAULT') == '1':
                 body, ok = g.drop_fault(body)
             if ok:
                 break
