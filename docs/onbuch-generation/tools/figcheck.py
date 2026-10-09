@@ -99,6 +99,19 @@ def analyse_page(p):
             res.append(("trait/texte",t[:30],tuple(round(v) for v in r)));break
     for r,t,sz in sp:
         if r.x1>p.rect.x1+4 or r.x0<-4: res.append(("hors-page",t[:30],tuple(round(v) for v in r)))
+    # débordement du cadre : texte ou dessin à cheval sur le bord du cadre de figure
+    for f in figs:
+        for r,t,sz in sp:
+            if (r&f).is_valid and not (r&f).is_empty and not (f+(-1,-1,1,1)).contains(r): res.append(("debordement",t[:30],tuple(round(v) for v in r)))
+        for dr in p.get_drawings():
+            dd=dr["rect"]
+            if dd.width>=f.width-8 and dd.height>=f.height-8: continue
+            if dd.width<2 and dd.height<2: continue
+            if (dd&f).is_valid and not (dd&f).is_empty and not (f+(-3,-3,3,3)).contains(dd): res.append(("debordement","dessin",tuple(round(v) for v in dd)));break
+        for b in p.get_text("dict")["blocks"]:
+            for l in b.get("lines",[]):
+                for s_ in l["spans"]:
+                    if "COMPLÉTER" in s_["text"] and f.intersects(pymupdf.Rect(s_["bbox"])): res.append(("marqueur",s_["text"][:30],tuple(round(v) for v in s_["bbox"])))
     return res
 
 def analyse_pdf(path):
