@@ -1,0 +1,2713 @@
+% Differentiating modes of data transmission — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT07-differentiating-modes-of-data-transmission.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{7}
+\newcommand{\DOCTITRE}{Differentiating modes of data transmission}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Differentiating modes of data transmission}{ICT}{Upper Sixth}{Upper Sixth — ICT}{7}{1 periods}{This chapter studies the different modes by which data is transmitted between devices: direction of flow (simplex, half-duplex, full-duplex), number of bits sent at once (serial and parallel), timing of transmission (synchronous and asynchronous) and the nature of the signal (analog and digital, baseband and broadband). Learners will be able to compare these modes and select the appropriate one for a given communication situation, a key skill for the GCE Advanced Level ICT paper.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define data transmission and state its basic elements (sender, receiver, medium, message).
+\item By the end of this chapter I can distinguish simplex, half-duplex and full-duplex transmission with real-life examples.
+\item By the end of this chapter I can differentiate serial from parallel transmission and state the advantages and disadvantages of each.
+\item By the end of this chapter I can explain synchronous and asynchronous transmission and identify where each is used.
+\item By the end of this chapter I can distinguish analog from digital signals and explain why computers use digital signals.
+\item By the end of this chapter I can differentiate baseband from broadband transmission.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Data Transmission and Direction of Flow
+\item Serial and Parallel Transmission
+\item Synchronous and Asynchronous Transmission
+\item Signal Types: Analog/Digital, Baseband/Broadband
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define data transmission and state its basic elements (sender, receiver, medium, message).
+\item By the end of this chapter I can distinguish simplex, half-duplex and full-duplex transmission with real-life examples.
+\item By the end of this chapter I can differentiate serial from parallel transmission and state the advantages and disadvantages of each.
+\item By the end of this chapter I can explain synchronous and asynchronous transmission and identify where each is used.
+\item By the end of this chapter I can distinguish analog from digital signals and explain why computers use digital signals.
+\item By the end of this chapter I can differentiate baseband from broadband transmission.
+\item By the end of this chapter I can compare transmission modes using criteria such as speed, cost, distance and reliability.
+\item By the end of this chapter I can select and justify an appropriate transmission mode for a given real-life scenario (GCE exam skill).
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Definition of data, information and ICT (Lower Sixth)
+\item Basic computer hardware: ports, cables and connectors (Lower Sixth)
+\item Notion of a computer network and communication media (cables, radio waves)
+\item Binary representation of data (bits and bytes)
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Data Transmission and Direction of Flow}
+
+\emph{This section covers Lesson 27 of the official Upper Sixth ICT syllabus: Modes of data transmission --- directional modes.}
+
+It is 7~p.m. in a family house in Bamenda. Aminatou is sending a voice note on WhatsApp to her cousin in Douala. In the parlour, her father is watching the evening news on CRTV. In the bedroom, her brother is downloading a past GCE paper from the school server. Three different activities, one common reality: \emph{data is travelling from one point to another}. Yet observe carefully --- the data does not move in the same way in the three cases. The CRTV signal flows in \textbf{one direction only}, from the transmitter to the television set; the television can never ``answer'' the broadcasting station. Aminatou's voice note, on the other hand, is part of a conversation that can go \textbf{both ways}. And her brother's file is sent \textbf{bit after bit} along a single line, like passengers walking in single file through a narrow corridor.
+
+Why do engineers choose different ways of moving data? What difference does it make in speed, cost and reliability? These are exactly the questions this chapter answers. In this first section, we define data transmission, identify the elements of any transmission system, and study the \textbf{directional modes} of transmission: simplex, half-duplex and full-duplex.
+
+\courssub{What is Data Transmission?}
+
+\textbf{Intuition.} When you speak to a friend across the road, your voice (the message) leaves you (the sender), travels through the air (the medium) and reaches your friend's ears (the receiver). Data transmission is exactly the same idea, except that the message is coded as \emph{signals} --- electrical pulses, light flashes or radio waves --- and the sender and receiver are machines.
+
+\begin{definition}[Data transmission]
+\cle{Data transmission} is the process of sending data, in the form of signals, from a sender (transmitter) to a receiver through a transmission medium (channel). The data may represent text, sound, images or video, and it is always carried by a physical signal: an electrical voltage on a copper cable, light pulses in an optical fibre, or electromagnetic waves in the air.
+\end{definition}
+
+Data transmission is the foundation of every network, from the Bluetooth link between a phone and a headset to the fibre-optic backbone that connects Cameroon to the rest of the world through the WACS submarine cable landing at Douala.
+
+\courssub{Elements of a Data Transmission System}
+
+Whatever the technology, every data transmission system is built from the same five elements. Identifying them in a given situation is a classic GCE question.
+
+\begin{aretenir}[The five elements of a data transmission system]
+\begin{enumerate}
+\item \textbf{Sender (transmitter):} the device that creates and sends the message, e.g.\ a computer, a mobile phone, a radio station.
+\item \textbf{Receiver:} the device that captures and interprets the message, e.g.\ a television set, another phone, a server.
+\item \textbf{Message / signal:} the actual data to be communicated, carried by a physical signal.
+\item \textbf{Transmission medium (channel):} the physical path between sender and receiver --- guided media (twisted pair, coaxial cable, optical fibre) or unguided media (radio waves, microwaves, satellite links).
+\item \textbf{Protocol:} the set of rules both parties must follow so that the message is correctly formatted, sent, received and understood (e.g.\ TCP/IP on the Internet, GSM rules on a mobile network).
+\end{enumerate}
+\end{aretenir}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth, node distance=0.4cm]
+\tikzset{dev/.style={draw=popink, fill=popblueL, rounded corners, minimum width=2.6cm, minimum height=1.1cm, align=center, thick}}
+\tikzset{lab/.style={text=popmuted, align=center}}
+\node[dev, align=center] (sender){\textbf{Sender}\\(transmitter)};
+\node[dev, right=4.6cm of sender] (receiver) {\textbf{Receiver}};
+\draw[->, very thick, poporange] (sender) -- (receiver)
+  node[midway, above, text=popdark, align=center]{\textbf{Message (signal)}\\governed by a \textbf{protocol}}
+  node[midway, below, text=popdark, align=center]{\textbf{Transmission medium}\\cable, fibre, radio waves};
+\node[lab, below=0.9cm of sender] {e.g.\ MTN phone in Bamenda};
+\node[lab, below=0.9cm of receiver] {e.g.\ cousin's phone in Douala};
+\end{tikzpicture}
+\legende{Block diagram of a data transmission system: the message, governed by a protocol, travels from the sender to the receiver through a transmission medium.}
+\end{popfigure}
+
+\begin{exemplebox}[Identifying the elements in Aminatou's voice note]
+When Aminatou sends a WhatsApp voice note: the \textbf{sender} is her smartphone, the \textbf{message} is her digitised voice, the \textbf{medium} is the mobile network (radio waves to the nearest MTN or Orange base station, then fibre or microwave links to Douala), the \textbf{receiver} is her cousin's smartphone, and the \textbf{protocols} include those of the mobile network and of the Internet (TCP/IP) that carry WhatsApp traffic.
+\end{exemplebox}
+
+\begin{attention}[Do not forget the protocol]
+Students often list only sender, medium and receiver. A transmission system without a \cle{protocol} cannot work: if the sender codes the message one way and the receiver expects another, communication fails --- exactly like two people speaking different languages with no interpreter.
+\end{attention}
+
+\courssub{Meaning of ``Mode of Transmission''}
+
+\begin{definition}[Mode of transmission]
+A \cle{mode of transmission} describes \emph{the way data flows between two communicating devices}. Two independent questions define a mode: (i) in which \textbf{direction(s)} can data flow? (ii) \textbf{how are the bits organised} on the line (serial or parallel, synchronous or asynchronous)? In this section we study the first question: the \textbf{direction of flow}.
+\end{definition}
+
+According to the direction in which data is allowed to flow, there are three directional modes: \cle{simplex}, \cle{half-duplex} and \cle{full-duplex}.
+
+\courssub{Simplex Transmission}
+
+\textbf{Intuition.} Think of a one-way road in a town: traffic is allowed in one direction only, forever. A simplex link is a one-way road for data.
+
+\begin{definition}[Simplex transmission]
+\cle{Simplex transmission} is a directional mode in which data flows in \textbf{one direction only}, from the sender to the receiver. The receiver can never send data back on the same channel: one device is permanently the transmitter and the other is permanently the receiver.
+\end{definition}
+
+\begin{exemplebox}[Everyday examples of simplex transmission]
+\begin{itemize}
+\item \textbf{Radio and television broadcasting:} CRTV's transmitter sends programmes to thousands of television sets; a TV set cannot transmit anything back to the station.
+\item \textbf{Keyboard to CPU (classic model):} the keyboard only sends keystrokes to the processor; the processor never sends data to the keyboard on that line. (Modern USB keyboards can receive LED commands, but the traditional PS/2 or AT keyboard interface is simplex.)
+\item \textbf{Public address systems:} the principal's microphone and loudspeakers during morning assembly --- sound goes out, nothing comes back.
+\item \textbf{Radio-controlled clocks and weather sensors} that only report readings to a central station.
+\end{itemize}
+\end{exemplebox}
+
+Simplex is the \textbf{cheapest} and \textbf{simplest} mode: the channel and the equipment are designed for a single direction, so no mechanism is needed to manage turns or simultaneous flows. Its obvious weakness is that the receiver cannot even acknowledge receipt of the message.
+
+\courssub{Half-Duplex Transmission}
+
+\textbf{Intuition.} Picture a narrow single-lane bridge over a river. Cars can cross in \emph{both} directions, but not at the same time: a policeman lets one lane go, stops it, then lets the other lane go. That bridge is half-duplex.
+
+\begin{definition}[Half-duplex transmission]
+\cle{Half-duplex transmission} is a directional mode in which data can flow in \textbf{both directions, but not at the same time}. The two devices share a single channel and take turns: while one is transmitting, the other must wait and listen.
+\end{definition}
+
+\begin{exemplebox}[Everyday examples of half-duplex transmission]
+\begin{itemize}
+\item \textbf{Walkie-talkies} used by security guards at a bank in Yaoundé: the guard presses a button to speak and says ``over'' to release the channel so the colleague can reply.
+\item \textbf{CB (citizens band) radio} used by some drivers and radio amateurs.
+\item A traditional \textbf{hub-based Ethernet} network, where all stations share one medium and must avoid talking simultaneously.
+\end{itemize}
+\end{exemplebox}
+
+Half-duplex uses the channel more economically than full-duplex (a single channel serves both directions), but time is lost each time the direction is switched, so it is \textbf{slower} than full-duplex for interactive communication.
+
+\courssub{Full-Duplex Transmission}
+
+\textbf{Intuition.} Now imagine a modern dual-carriage road: traffic flows in both directions \emph{at the same time}, each direction on its own lane, without disturbing the other. That is full-duplex.
+
+\begin{definition}[Full-duplex transmission]
+\cle{Full-duplex transmission} is a directional mode in which data flows in \textbf{both directions simultaneously}. Each device can transmit and receive at the same time, because the channel provides two separate paths (or two separate frequencies) --- one for each direction.
+\end{definition}
+
+\begin{exemplebox}[Everyday examples of full-duplex transmission]
+\begin{itemize}
+\item \textbf{Telephone conversation:} Aminatou and her cousin can talk and listen at the same time; each can even interrupt the other.
+\item \textbf{WhatsApp video calls:} video and sound travel in both directions simultaneously.
+\item Modern \textbf{switched Ethernet} networks and most mobile data connections (4G/5G).
+\end{itemize}
+\end{exemplebox}
+
+Full-duplex is the \textbf{fastest} of the three modes because no time is wasted taking turns, but it is also the \textbf{most expensive}: it requires a channel capable of carrying two flows at once and more sophisticated equipment at both ends.
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth]
+\tikzset{dev/.style={draw=popink, fill=popblueL, rounded corners, minimum width=1.5cm, minimum height=0.9cm, align=center, thick}}
+\tikzset{title/.style={text=popdark, font=\bfseries}}
+
+% ---- Simplex ----
+\node[title] at (1.9,1.2) {Simplex};
+\node[dev] (a1) at (0,0) {A};
+\node[dev] (b1) at (3.8,0) {B};
+\draw[->, very thick, poporange] (a1) -- (b1);
+\node[text=popmuted, align=center] at (1.9,-0.9) {one direction only\\(CRTV broadcast)};
+
+% ---- Half-duplex ----
+\node[title] at (8.3,1.2) {Half-duplex};
+\node[dev] (a2) at (6.4,0) {A};
+\node[dev] (b2) at (10.2,0) {B};
+\draw[->, very thick, popgreen] ([yshift=2pt]a2.east) -- ([yshift=2pt]b2.west);
+\draw[->, very thick, popgreen, dashed] ([yshift=-2pt]b2.west) -- ([yshift=-2pt]a2.east);
+\node[text=popmuted, align=center] at (8.3,-0.9) {both directions,\\one at a time (walkie-talkie)};
+
+% ---- Full-duplex ----
+\node[title] at (14.7,1.2) {Full-duplex};
+\node[dev] (a3) at (12.8,0) {A};
+\node[dev] (b3) at (16.6,0) {B};
+\draw[->, very thick, poppurple] ([yshift=3pt]a3.east) -- ([yshift=3pt]b3.west);
+\draw[->, very thick, poppurple] ([yshift=-3pt]b3.west) -- ([yshift=-3pt]a3.east);
+\node[text=popmuted, align=center] at (14.7,-0.9) {both directions\\simultaneously (telephone)};
+\end{tikzpicture}
+\legende{The three directional modes of transmission between two devices A and B. In half-duplex the dashed arrow (offset) represents a flow that is possible but must wait its turn.}
+\end{popfigure}
+
+\courssub{Comparing the Three Directional Modes}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Simplex} & \textbf{Half-duplex} & \textbf{Full-duplex} \\
+\hline
+Direction of flow & One direction only & Both directions, one at a time & Both directions simultaneously \\
+\hline
+Channel usage & Channel used in a single direction permanently & One channel shared by taking turns & Channel carries two flows at once (two paths or two frequencies) \\
+\hline
+Speed & One-way flow only; no return traffic possible & Slower: time lost switching direction & Fastest: no waiting, no turn-taking \\
+\hline
+Cost & Cheapest and simplest equipment & Moderate cost & Most expensive equipment and channel \\
+\hline
+Typical examples & CRTV broadcast, keyboard to CPU, public address system & Walkie-talkie, CB radio, hub Ethernet & Telephone, WhatsApp video call, switched Ethernet \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Identifying the directional mode of a communication device]
+\begin{enumerate}
+\item Ask: \emph{Can the receiver send data back on this link?} If \textbf{no}, the mode is \textbf{simplex}.
+\item If yes, ask: \emph{Can both devices transmit at the same time?}
+\item If \textbf{no} (they must take turns, e.g.\ pressing a button to talk), the mode is \textbf{half-duplex}.
+\item If \textbf{yes} (both can talk and listen simultaneously, e.g.\ a phone call), the mode is \textbf{full-duplex}.
+\item Conclude by quoting a concrete example that behaves the same way.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[The classic confusion: half-duplex vs full-duplex]
+The most common mistake at the GCE is to write that half-duplex means ``both directions'' and to stop there. That is incomplete. \textbf{Half-duplex} means both directions \emph{but one at a time} (walkie-talkie); \textbf{full-duplex} means both directions \emph{at the same time} (telephone). The word ``simultaneously'' is the key discriminator --- always state it clearly.
+\end{attention}
+
+\begin{exoresolu}[Classifying real-life communication situations]
+\textbf{Statement.} For each situation, state the directional mode of transmission and justify: (a) a CRTV radio broadcast received on a car radio; (b) two security guards coordinating with walkie-talkies at a Douala seaport warehouse; (c) a WhatsApp video call between Aminatou and her cousin.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{CRTV broadcast: simplex.} The signal flows in one direction only, from the transmitter to the car radio. The radio set has no means of sending data back to the station.
+\item \textbf{Walkie-talkies: half-duplex.} Each guard can both transmit and receive, so data flows in both directions; but they share one channel and must take turns (press to talk, release to listen), so transmission is never simultaneous.
+\item \textbf{WhatsApp video call: full-duplex.} Sound and video travel in both directions at the same time: each speaker can talk while still hearing and seeing the other.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exercice}[Test your understanding]
+\begin{enumerate}
+\item Define data transmission and name the five elements of a data transmission system.
+\item A school bell is controlled from the head teacher's office and only receives commands. Which directional mode is this? Justify.
+\item Explain why a telephone network is more expensive to build than a walkie-talkie system, using the vocabulary of transmission modes.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item Data transmission is the process of sending data, in the form of signals, from a sender to a receiver through a transmission medium. The five elements are: the sender (transmitter), the receiver, the message/signal, the transmission medium (channel) and the protocol.
+\item \textbf{Simplex}: commands flow in one direction only, from the office to the bell; the bell never sends data back.
+\item A telephone network operates in \textbf{full-duplex}: it must carry two simultaneous flows, which requires a channel with two paths and more sophisticated equipment. A walkie-talkie system is \textbf{half-duplex}: a single shared channel is used in turns, so the equipment and the channel are cheaper.
+\end{enumerate}
+\end{corrige}
+
+\begin{savaistu}[Did you know?]
+The very first telegraph lines of the 19th century were simplex: one operator sent, the other only received. Engineers later invented half-duplex telegraphy, and finally full-duplex systems that doubled the capacity of a single line. The same evolution is visible today in Cameroon: old hub-based cybercafé networks were half-duplex, while the modern switched networks deployed by operators such as CAMTEL, MTN and Orange run in full-duplex, which is one reason your connection feels faster.
+\end{savaistu}
+
+\begin{aretenir}[Exam tip]
+Whenever a GCE question asks you to \emph{differentiate} transmission modes, structure your answer in three steps: (i) state the \textbf{direction rule} of each mode precisely (do not forget ``one at a time'' or ``simultaneously''); (ii) \textbf{support each mode with a concrete example} (CRTV broadcast, walkie-talkie, telephone); (iii) where relevant, add a word on \textbf{channel usage, speed and cost}. An answer with definitions only, and no examples, rarely earns full marks.
+\end{aretenir}
+
+\begin{aretenir}[Summary of Section 1: Directional Modes]
+\begin{itemize}
+\item \textbf{Simplex}: one direction only (A $\to$ B). Example: CRTV broadcast.
+\item \textbf{Half-duplex}: both directions, but one at a time (A $\leftrightarrow$ B, turn-based). Example: walkie-talkie.
+\item \textbf{Full-duplex}: both directions simultaneously (A $\rightleftarrows$ B). Example: telephone.
+\item Key discriminator: \emph{simultaneity} of the two flows.
+\item Cost and complexity increase from simplex to full-duplex.
+\end{itemize}
+\end{aretenir}
+
+We have now seen \emph{in which direction} data may flow. But direction is only half of the story: we must also examine \emph{how the bits are organised} on the line --- one after another or side by side --- which leads us to serial and parallel transmission in the next section.
+
+\coursec{Serial and Parallel Transmission}
+
+In the previous section we examined the \emph{direction} of data flow (simplex, half-duplex, full-duplex). Now we turn to the \emph{structure} of the link itself: how bits are physically arranged on the medium. The choice between sending bits one by one on a single path or several at once on multiple paths has profound consequences for cost, speed, distance and reliability — and it explains why the bulky parallel printer cable of the 1990s has disappeared while the slender USB cable thrives.
+
+\courssub{Serial Transmission}
+
+\begin{definition}[Serial Transmission]
+In \cle{serial transmission}, bits are sent \textbf{sequentially}, one after another, over a \textbf{single communication channel} (one wire or one optical fibre, plus a ground/reference). The transmitter converts each byte (or word) into a stream of bits; the receiver reassembles the bits into bytes.
+\end{definition}
+
+Imagine a single-lane road: cars (bits) follow each other. To send the byte \texttt{10110010} (most significant bit first), the line takes the following logic levels over eight consecutive clock ticks:
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% Time axis
+\draw[->, thick] (0,0) -- (13,0) node[right] {Time $\rightarrow$};
+\foreach \i in {0,...,8} {
+  \draw (\i*1.5,0.1) -- (\i*1.5,-0.1) node[below] {\i};
+}
+% Signal line
+\draw[popblue, very thick] (0,1) -- (12,1);
+% Bit labels
+\foreach \i/\bit in {0/1, 1/0, 2/1, 3/1, 4/0, 5/0, 6/1, 7/0} {
+  \node[popblue] at (\i*1.5+0.75, 1.6) {\bit};
+}
+% Byte label
+\node[align=center] at (6, -1.2) {Byte \texttt{10110010} sent MSB first};
+% Wire representation
+\draw[popdark, thick] (-0.5, -2) -- (12.5, -2) node[right] {Single wire + ground};
+\end{tikzpicture}
+\legende{Serial transmission of one byte on a single line with a time axis.}
+\end{popfigure}
+
+\begin{exemplebox}[Common Serial Interfaces]
+\begin{itemize}
+\item \textbf{RS-232 (V.24)} — historic 9-pin or 25-pin D-sub connector; still used in industrial equipment, POS terminals, and some networking gear (console ports).
+\item \textbf{USB (Universal Serial Bus)} — ubiquitous on PCs, phones, printers; versions 1.1 to 4.0 (up to 80 Gbit/s). Uses differential pair (D+/D-) for noise immunity.
+\item \textbf{Ethernet (10/100/1000/10GBASE-T)} — twisted-pair cables (Cat5e, Cat6, Cat6a) carrying serial streams on each pair; full-duplex uses two pairs simultaneously.
+\item \textbf{SATA / PCI-Express} — internal high-speed serial buses replacing parallel ATA and parallel PCI.
+\end{itemize}
+\end{exemplebox}
+
+\begin{aretenir}[Advantages of Serial Transmission]
+\begin{itemize}
+\item \textbf{Cheaper cabling:} only one signal wire (+ ground) per direction; connectors are small.
+\item \textbf{Long-distance reliability:} no \cle{skew} (timing mismatch between wires) and minimal \cle{crosstalk} (electromagnetic coupling between adjacent wires).
+\item \textbf{Easy shielding:} a single twisted pair or coaxial cable is easy to shield (e.g., USB, HDMI, Ethernet).
+\item \textbf{Scalable speed:} modern serial links reach 10–100 Gbit/s by increasing clock frequency and using advanced encoding (8b/10b, 128b/130b, PAM-4).
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Disadvantages of Serial Transmission]
+\begin{itemize}
+\item \textbf{Lower raw throughput per wire:} at a given clock frequency, one wire carries one bit per cycle.
+\item \textbf{Requires serialisation/deserialisation (SerDes):} the transmitter must convert parallel bytes into a bit stream; the receiver must recover the clock and reassemble bytes. This adds latency and circuit complexity.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Parallel Transmission}
+
+\begin{definition}[Parallel Transmission]
+In \cle{parallel transmission}, multiple bits (typically 8, 16, 32 or 64) are sent \textbf{simultaneously}, each on its own dedicated wire. All bits of a word leave the transmitter at the same clock edge and (ideally) arrive together at the receiver.
+\end{definition}
+
+Think of an 8-lane highway: eight cars (bits) drive side by side. The same byte \texttt{10110010} appears on eight wires at the same instant:
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+% Wires
+\foreach \y in {0,...,7} {
+  \draw[popdark, thick] (0, \y*0.7) -- (6, \y*0.7);
+  \node[left] at (-0.3, \y*0.7) {D\y};
+}
+% Bits at time t0
+\foreach \y/\bit in {7/1, 6/0, 5/1, 4/1, 3/0, 2/0, 1/1, 0/0} {
+  \node[popblue, font=\bfseries] at (3, \y*0.7) {\bit};
+}
+% Time instant
+\draw[poporange, thick, dashed] (3, -0.3) -- (3, 5.2);
+\node[poporange, above] at (3, 5.2) {Single clock edge $t_0$};
+% Byte label
+\node[align=center] at (3, -1) {Byte \texttt{10110010} sent in parallel (D7=MSB)};
+% Cable representation
+\draw[popmuted, thick, rounded corners] (-0.8, -0.5) rectangle (6.8, 5.5);
+\node[popmuted, right] at (7, 2.5) {Thick multi-wire cable};
+\end{tikzpicture}
+\legende{Parallel transmission: 8 bits of the same byte travel simultaneously on 8 wires.}
+\end{popfigure}
+
+\begin{exemplebox}[Classic Parallel Interfaces]
+\begin{itemize}
+\item \textbf{Centronics / IEEE 1284 (LPT port)} — 8 data lines + control lines; used for dot-matrix and early laser printers. Cable length limited to $\approx$2–3 m.
+\item \textbf{Internal data buses:} ISA, EISA, PCI (32/64-bit), Parallel ATA (PATA/IDE, 16-bit), SCSI (8/16-bit wide).
+\item \textbf{Memory buses:} DDR SDRAM uses 64-bit (or 128-bit dual channel) parallel data paths between CPU and RAM.
+\end{itemize}
+\end{exemplebox}
+
+\begin{aretenir}[Advantages of Parallel Transmission]
+\begin{itemize}
+\item \textbf{High instantaneous throughput:} at the same clock frequency, an 8-bit parallel bus moves 8$\times$ more bits per cycle than a single serial lane.
+\item \textbf{Simple hardware interfacing:} no SerDes needed; the CPU or peripheral can read/write a whole word directly.
+\end{itemize}
+\end{aretenir}
+
+\begin{aretenir}[Disadvantages of Parallel Transmission]
+\begin{itemize}
+\item \textbf{Expensive, bulky cables:} each bit needs a wire; a 32-bit bus requires $\ge$32 signal lines + grounds + control $\rightarrow$ thick, heavy, costly cables (old SCSI cables were $\approx$1 cm diameter).
+\item \textbf{\cle{Skew}:} manufacturing tolerances make wires slightly different lengths $\rightarrow$ bits arrive at slightly different times. At high clock rates the receiver cannot reliably sample all bits simultaneously.
+\item \textbf{\cle{Crosstalk}:} adjacent wires capacitively/inductively couple; a transition on one wire induces noise on its neighbours. Worsens with frequency and cable length.
+\item \textbf{Short reach:} practical limit $\approx$0.5–3 m for external cables; longer distances require expensive active equalisation.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Comparison and Modern Trends}
+
+\begin{propriete}[Parallel vs. Serial: the Distance–Speed Trade-off]
+Over \textbf{short distances} (on a PCB, inside a chassis) parallel buses can be faster because they avoid SerDes overhead. Over \textbf{long distances} (external cables, backplanes, board-to-board) serial links dominate because skew and crosstalk make parallel signalling unreliable beyond a few metres. Modern high-speed interconnects (USB, SATA, PCIe, Ethernet, Thunderbolt, DisplayPort) are \textbf{serial}.
+\end{propriete}
+
+\begin{attention}[Common Mistake: “Parallel is Always Faster”]
+\textbf{Trap:} Students often claim “parallel is faster because it sends 8 bits at once”. \emph{This is false for modern external links.} At 10 Gbit/s, a serial lane outperforms an 8-bit parallel bus running at 100 MHz (800 Mbit/s) because the parallel bus cannot scale its clock frequency without severe skew/crosstalk. Serial links scale by increasing symbol rate and using efficient encoding (e.g., PCIe 5.0: 32 GT/s per lane $\approx$ 64 GB/s on a $\times$16 link). Always compare \textbf{aggregate throughput}, not just “bits per clock”.
+\end{attention}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Serial} & \textbf{Parallel} \\ \hline
+\textbf{Wires (data)} & 1 (or 1 differential pair) & 8, 16, 32, 64… \\ \hline
+\textbf{Cable cost/bulk} & Low (thin, flexible) & High (thick, stiff, expensive) \\ \hline
+\textbf{Max practical distance} & Metres to kilometres (fibre) & Centimetres to $\approx$3 m \\ \hline
+\textbf{Skew sensitivity} & None (single lane) & Severe at high frequency \\ \hline
+\textbf{Crosstalk} & Minimal (twisted pair) & Major limitation \\ \hline
+\textbf{Clock scaling} & Easy (SerDes handles high GHz) & Hard (PCB/cable physics) \\ \hline
+\textbf{Typical examples} & USB, SATA, PCIe, Ethernet, HDMI, Thunderbolt & LPT, PATA, PCI, ISA, SCSI, DDR RAM \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[Why Did USB, SATA and PCIe Go Serial?]
+Around 2000, parallel buses hit a \textbf{frequency wall}: PCI at 66 MHz, PATA at 133 MHz (UDMA/133). To double bandwidth they would have needed 133/266 MHz on 16/32 wires — skew and crosstalk made cables unreliable and PCBs unroutable. The solution: \textbf{serialise} the data, push the symbol rate into the GHz range (1.5–32 GT/s), and use \textbf{SerDes} with clock recovery. A single differential pair replaces 16–32 wires, cables become thin/cheap, and length reaches 1 m (USB) to 100 m (Ethernet). This is why your phone charges with a tiny USB-C cable while a 1990s printer needed a centimetre-thick cable.
+\end{savaistu}
+
+\courssub{Choosing Between Serial and Parallel: A Practical Method}
+
+\begin{methode}[Selecting the Transmission Mode for a Device or Link]
+\begin{enumerate}
+\item \textbf{Identify the distance:} PCB trace ($<$30 cm) $\rightarrow$ parallel possible; external cable ($>$0.5 m) $\rightarrow$ serial strongly preferred.
+\item \textbf{Determine required bandwidth:} if $<$100 MB/s and distance short, parallel may simplify design (e.g., LCD ribbon cable). If $>$1 Gbit/s or distance $>$1 m, serial is mandatory.
+\item \textbf{Check connector/cable constraints:} thin/flexible/cheap cable $\rightarrow$ serial; rugged industrial backplane with fixed length $\rightarrow$ parallel still seen (e.g., CompactPCI, VME).
+\item \textbf{Consider ecosystem:} use standard interfaces (USB, Ethernet, SATA, PCIe) rather than custom parallel designs — drivers, OS support, and connectors already exist.
+\item \textbf{Verify skew budget:} for parallel, calculate max wire-length difference $\Delta L$; if $\Delta L / v_{prop} > 0.1 \times T_{clk}$, skew will cause errors $\rightarrow$ go serial.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Design Choice: Connecting a Custom Sensor Board to a PC]
+\textbf{Statement:} You must connect a sensor board (sampling at 10 MS/s, 12-bit resolution) to a PC for real-time logging. The cable length is 2 m. The sensor board has an FPGA. Choose the transmission architecture and justify.
+
+\textbf{Solution:}
+\begin{enumerate}
+\item \textbf{Data rate:} $10^7\ \text{samples/s} \times 12\ \text{bits} = 120\ \text{Mbit/s}$ raw. Add framing $\approx$150 Mbit/s.
+\item \textbf{Distance:} 2 m $\rightarrow$ external cable.
+\item \textbf{Parallel option:} 12 data lines + clock + ground $\approx$15 wires. At 10 MHz clock, skew budget $\approx$1 ns. On a 2 m cable, length matching $\pm$15 cm is feasible but crosstalk on 12 single-ended lines at 10 MHz over 2 m is risky; connector would be large (DB-25 or custom).
+\item \textbf{Serial option:} Use FPGA SerDes (e.g., 1.25 Gbit/s 8b/10b encoding $\rightarrow$ 1 Gbit/s payload). One differential pair (TX) + one pair (RX) + ground $\rightarrow$ 5 wires. Standard connector: RJ-45 (Ethernet) or USB 3.0 (SuperSpeed). Cable: Cat5e/6 (cheap, 100 m reach). PC side: USB 3.0 or 1 GbE NIC — drivers exist.
+\item \textbf{Decision:} \textbf{High-speed serial (USB 3.0 / 1 GbE)}. Justification: meets bandwidth easily, robust over 2 m, thin cable, standard connectors, no custom driver needed.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exercice}[Practice: Serial vs. Parallel Scenarios]
+For each scenario, state whether serial or parallel transmission is more appropriate and give two reasons.
+\begin{enumerate}
+\item Internal connection between CPU and DDR5 RAM (distance $\approx$5 cm, bandwidth $\approx$50 GB/s).
+\item Link between a weather station on a roof and a logger in the office (distance 30 m, data rate 9600 bit/s).
+\item Connection between a graphics GPU and a monitor (distance 1.5 m, bandwidth 48 Gbit/s for 8K@60 Hz).
+\item Interface between a microcontroller and an 8-bit parallel ADC on the same PCB (distance 2 cm).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise: Serial vs. Parallel Scenarios]
+\begin{enumerate}
+\item \textbf{Parallel} (actually wide parallel: 64/128-bit bus). Reasons: extremely short distance (PCB traces), highest bandwidth required, skew controlled by careful PCB layout; SerDes overhead unacceptable for latency-sensitive memory access.
+\item \textbf{Serial} (e.g., RS-485 or LoRa). Reasons: long distance (30 m) makes parallel cabling expensive and skew/crosstalk unmanageable; low data rate allows simple UART serial link.
+\item \textbf{Serial} (DisplayPort / HDMI / USB-C Alt Mode). Reasons: 48 Gbit/s over 1.5 m impossible with parallel (skew, crosstalk, cable bulk); serial lanes (4$\times$12 Gbit/s) on thin cable with standard connector.
+\item \textbf{Parallel}. Reasons: very short distance (2 cm on same PCB), low frequency (typically $<$50 MHz), simple direct connection avoids SerDes complexity in the microcontroller.
+\end{enumerate}
+\end{corrige}
+
+\courssub{Summary}
+
+\begin{aretenir}[Key Points to Remember]
+\begin{itemize}
+\item \textbf{Serial:} one bit after another on one lane $\rightarrow$ cheap, long reach, scalable speed, needs SerDes.
+\item \textbf{Parallel:} multiple bits at once on multiple lanes $\rightarrow$ high instantaneous throughput, simple logic, but bulky cables, skew, crosstalk, short reach.
+\item \textbf{Modern rule:} external and high-speed links are serial (USB, SATA, PCIe, Ethernet, HDMI, Thunderbolt); parallel survives only inside the box (RAM, CPU cache, some LCD ribbons).
+\item \textbf{Exam trap:} never say “parallel is faster” without qualifying “over very short distances at moderate clock rates”. Always discuss skew, crosstalk and cable cost.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Synchronous and Asynchronous Transmission}
+
+In the previous section, we established that \textbf{serial transmission} sends bits one after another over a single line. This immediately raises a fundamental question: \emph{how does the receiver know exactly when one bit ends and the next one begins?} If the sender transmits a long stream of `1`s, for instance, the line stays at a high voltage level. Without a shared sense of time, the receiver might count 7 bits when 8 were sent, or 9 when 8 were sent. This is the \textbf{timing problem} (or synchronisation problem), and the two main strategies to solve it define the two modes we study here: \textbf{asynchronous} and \textbf{synchronous} transmission.
+
+\courssub{The Timing Problem in Serial Transmission}
+
+Imagine a teacher dictating a phone number: ``Two... three... seven... five...''. The pauses between digits act as delimiters. Now imagine the teacher says ``Two three seven five'' rapidly without pauses. The student hears ``2375'' but cannot tell if it was ``2, 3, 7, 5'' or ``23, 75'' or ``237, 5''. In data communication, the ``pauses'' or ``shared rhythm'' constitute the \textbf{synchronisation}.
+
+\begin{definition}[Synchronisation]
+Synchronisation is the process by which the receiver identifies the boundaries of each bit (bit synchronisation) and each group of bits, such as a character or frame (character/frame synchronisation), in the incoming signal stream.
+\end{definition}
+
+There are two fundamentally different approaches:
+\begin{itemize}
+    \item \textbf{Asynchronous Transmission:} Synchronisation is re-established at the start of \emph{each} character (or small block) using special framing bits. The transmitter and receiver clocks run independently but at the same nominal speed.
+    \item \textbf{Synchronous Transmission:} The transmitter and receiver clocks are locked together (synchronised) continuously, either by a separate clock line or by encoding the clock in the signal. Data is sent in large continuous blocks (frames) with special synchronisation patterns at the start.
+\end{itemize}
+
+\courssub{Asynchronous Transmission}
+
+This is the older, simpler mode, historically used for teletypes and later for PC serial ports (RS-232), keyboards, mice, and early modems.
+
+\begin{definition}[Asynchronous Transmission]
+\emph{Asynchronous transmission} (or start-stop transmission) is a mode where data is sent one character (typically 7 or 8 bits) at a time. Each character is framed by a \textbf{start bit} at the beginning and one or more \textbf{stop bits} at the end. The line returns to an idle state (mark state) between characters. The receiver uses the start bit to synchronise its clock for the duration of that single character only.
+\end{definition}
+
+\textbf{The Asynchronous Character Frame.}
+A typical asynchronous frame for 8-bit data (common in modern UARTs -- Universal Asynchronous Receiver/Transmitters) looks like this:
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    scale=0.85,
+    bit/.style={draw, minimum width=1.2cm, minimum height=0.8cm, anchor=south west, font=\small\ttfamily},
+    label/.style={anchor=north, font=\tiny, text width=1.2cm, align=center},
+    idle/.style={fill=popgreenL!50},
+    start/.style={fill=poporange!60},
+    data/.style={fill=popblueL!60},
+    parity/.style={fill=poppurple!60},
+    stop/.style={fill=poppink!60},
+    line/.style={thick, popdark}
+]
+% Idle line before
+\draw[line] (0,0) -- (-1.5,0);
+\node[label] at (-0.75, -0.4) {Idle (Mark)};
+
+% Frame bits
+% Start Bit (0)
+\node[bit, start, align=center] (b0) at (0,0){Start\\(0)};
+% Data Bits (LSB first usually)
+\foreach \i/\val in {1/D0, 2/D1, 3/D2, 4/D3, 5/D4, 6/D5, 7/D6, 8/D7} {
+    \node[bit, data] (b\i) at (\i*1.2, 0) {\val};
+}
+% Parity Bit
+\node[bit, parity] (b9) at (10.8, 0) {Parity};
+% Stop Bit(s) (1)
+\node[bit, stop, align=center] (b10) at (12.0, 0){Stop\\(1)};
+\node[bit, stop, align=center] (b11) at (13.2, 0){Stop\\(1)};
+
+% Idle after
+\draw[line] (14.4,0) -- (15.9,0);
+\node[label] at (15.15, -0.4) {Idle (Mark)};
+
+% Annotations
+\draw[decorate, decoration={brace, amplitude=5pt}, popdark] (0,-1.1) -- (1.2,-1.1) node[midway, below=6pt] {Start Bit};
+\draw[decorate, decoration={brace, amplitude=5pt}, popdark] (1.2,-1.1) -- (10.8,-1.1) node[midway, below=6pt] {8 Data Bits (LSB first)};
+\draw[decorate, decoration={brace, amplitude=5pt}, popdark] (10.8,-1.1) -- (12.0,-1.1) node[midway, below=6pt] {Parity Bit};
+\draw[decorate, decoration={brace, amplitude=5pt}, popdark] (12.0,-1.1) -- (14.4,-1.1) node[midway, below=6pt] {Stop Bits (1 or 2)};
+
+% Voltage level indication (conceptual)
+\draw[<->, popmuted] (-0.5, 1.5) -- (14.9, 1.5);
+\node[popmuted, font=\tiny] at (7.2, 1.8) {Time $\rightarrow$};
+\end{tikzpicture}
+\legende{Asynchronous character frame (8 data bits, 1 parity bit, 2 stop bits). The line is held at logic `1' (Mark) when idle. The Start bit (logic `0', Space) signals the beginning.}
+\end{popfigure}
+
+\begin{definition}[Start Bit, Stop Bit, Parity Bit]
+\begin{itemize}
+    \item \textbf{Start Bit:} Always a logic `0' (Space). It provides the falling edge (Mark-to-Space transition) that alerts the receiver: ``A character is coming!'' The receiver samples the line in the middle of this bit to confirm it is still `0', then uses its local clock to time the subsequent bits.
+    \item \textbf{Data Bits:} Usually 5 to 8 bits (ASCII uses 7 or 8). Transmitted \textbf{Least Significant Bit (LSB) first}.
+    \item \textbf{Parity Bit (Optional):} An extra bit for simple error detection. \textbf{Even parity}: total number of `1's (data + parity) is even. \textbf{Odd parity}: total number of `1's is odd. \textbf{Mark/Space parity}: parity bit always `1' or always `0' (rarely used for detection). \emph{No parity} is also common (often denoted as `N' in settings like 8N1).
+    \item \textbf{Stop Bit(s):} Always logic `1' (Mark). One, 1.5, or two stop bits. They guarantee the line returns to the Mark state, ensuring a distinct transition for the next Start bit. They also give the receiver processing time.
+\end{itemize}
+\end{definition}
+
+\begin{attention}[Common Mistake: ``Asynchronous means no timing'']
+\textbf{False.} ``Asynchronous'' means \emph{not synchronised continuously by a shared clock signal}. Each character \textbf{is} synchronised locally using the Start bit. The receiver \emph{must} know the agreed \textbf{baud rate} (bits per second) to time the sampling of the 8-10 subsequent bits accurately. If the receiver's clock drifts more than $\approx 5\%$ from the sender's, framing errors occur (the stop bit is sampled as `0').
+\end{attention}
+
+\textbf{Advantages of Asynchronous Transmission:}
+\begin{itemize}
+    \item \textbf{Simple hardware:} No need for complex clock recovery circuits (PLLs) or separate clock lines. A simple UART chip handles it.
+    \item \textbf{Cheap:} Low cost per interface.
+    \item \textbf{Flexible timing:} Gaps of arbitrary length (idle time) are allowed between characters. Perfect for human typing (keyboards) or bursty traffic.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item \textbf{High Overhead:} For 8 data bits, we typically add 1 start + 1 parity + 1 or 2 stop bits = 3 or 4 extra bits. That is \textbf{30\% to 40\% overhead}. Only 60--70\% of the line capacity carries actual information.
+    \item \textbf{Lower Speed:} The overhead limits effective throughput. Clock drift limits maximum reliable baud rate (typically $\le$ 115.2 kbps for standard UARTs, though higher is possible with good crystals).
+    \item \textbf{Not suitable for high-volume continuous streams:} Video, large file transfers, network backbones.
+\end{itemize}
+
+\begin{methode}[Computing Asynchronous Overhead and Efficiency]
+To find the percentage of useful data in an asynchronous frame:
+\begin{enumerate}
+    \item Determine total bits per frame: $N_{\text{total}} = 1 (\text{start}) + N_{\text{data}} + N_{\text{parity}} (0 \text{ or } 1) + N_{\text{stop}} (1, 1.5, \text{ or } 2)$.
+    \item Useful bits = $N_{\text{data}}$.
+    \item Efficiency $\eta = \dfrac{N_{\text{data}}}{N_{\text{total}}} \times 100\%$.
+    \item Overhead $= 100\% - \eta$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Asynchronous Overhead Calculation]
+A system uses asynchronous transmission with the following settings: \textbf{8 data bits, Even Parity, 2 Stop Bits} (often written as \texttt{8E2}). The line operates at \SI{9600}{baud} (bits per second).
+\begin{enumerate}
+    \item Draw the frame structure.
+    \item Calculate the total frame size in bits.
+    \item Calculate the useful data rate (throughput) in characters per second and in bits per second (bps).
+    \item What is the efficiency?
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item Frame: [Start(0)] [D0 D1 D2 D3 D4 D5 D6 D7] [Parity] [Stop(1)] [Stop(1)].
+    \item $N_{\text{total}} = 1 + 8 + 1 + 2 = \mathbf{12 \text{ bits}}$.
+    \item At \SI{9600}{baud}, 9600 bits are transmitted per second.
+        Characters per second $= \dfrac{9600 \text{ bits/s}}{12 \text{ bits/char}} = \mathbf{800 \text{ chars/s}}$.
+        Useful data rate $= 800 \text{ chars/s} \times 8 \text{ bits/char} = \mathbf{6400 \text{ bps}}$.
+    \item Efficiency $\eta = \dfrac{8}{12} \times 100\% = \mathbf{66.7\%}$.
+        Overhead $= 33.3\%$.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Synchronous Transmission}
+
+When we need to send large volumes of data (files, video, network packets) efficiently, the start/stop overhead of asynchronous transmission becomes unacceptable. Synchronous transmission solves this by sending data in large \textbf{blocks} (frames) and keeping the clocks locked together for the whole duration.
+
+\begin{definition}[Synchronous Transmission]
+\emph{Synchronous transmission} is a mode where data is sent as a continuous stream of bits grouped into large \textbf{frames} (or blocks). The transmitter and receiver clocks are \textbf{synchronised continuously}. There are no start/stop bits per character. Instead, the frame begins with a specific \textbf{synchronisation pattern} (preamble/sync characters) that allows the receiver to align its clock and identify the frame boundary.
+\end{definition}
+
+\textbf{How is Synchronisation Achieved?}
+\begin{enumerate}
+    \item \textbf{Separate Clock Line:} A dedicated wire carries the clock signal (e.g., RS-232 synchronous mode, SPI, I$^2$C). Simple but uses extra pins/wires.
+    \item \textbf{Embedded Clock (Self-Clocking Codes):} The data line itself carries timing information. Line codes like \textbf{Manchester} (used in Ethernet 10BASE-T) or \textbf{NRZI} with bit stuffing (HDLC, USB) guarantee enough transitions for a \textbf{Phase-Locked Loop (PLL)} at the receiver to extract the clock.
+    \item \textbf{Preamble / Sync Characters:} At the start of each frame, a known bit pattern (e.g., alternating `101010...' in Ethernet preamble, or `SYN' characters `00010110' in Bisync/HDLC) allows the receiver's PLL to lock onto the frequency and phase before the actual data arrives.
+\end{enumerate}
+
+\textbf{The Synchronous Frame Structure.}
+Unlike the character-by-character frame, a synchronous frame carries a payload of many bytes (hundreds or thousands).
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    scale=0.9,
+    field/.style={draw, minimum height=1cm, anchor=south west, font=\small\ttfamily, text width=2.2cm, align=center},
+    preamble/.style={fill=poporange!50},
+    header/.style={fill=popblueL!50},
+    data/.style={fill=popgreenL!50},
+    trailer/.style={fill=poppink!50},
+    flag/.style={fill=poppurple!50},
+    label/.style={anchor=north, font=\tiny, text width=2.2cm, align=center}
+]
+% Preamble / Sync
+\node[field, preamble, align=center] (f0) at (0,0){Preamble /\\ SYN Chars\\ (e.g. 7-8 bytes)};
+\node[label] at (1.1, -0.5) {Bit/Frame Sync};
+
+% Start Flag (HDLC style)
+\node[field, flag, align=center] (f1) at (2.2,0){Flag\\ (01111110)};
+\node[label] at (3.3, -0.5) {Frame Start};
+
+% Header
+\node[field, header, align=center] (f2) at (4.4,0){Header\\ (Addr, Ctrl,\\ Type/Length)};
+\node[label] at (5.5, -0.5) {Control Info};
+
+% Payload / Data
+\node[field, data, minimum width=5cm, align=center] (f3) at (6.6,0){Data Payload\\ (0 -- 1500+ bytes)};
+\node[label] at (9.1, -0.5) {User Data};
+
+% Trailer / FCS
+\node[field, trailer, align=center] (f4) at (11.6,0){FCS / CRC\\ (2-4 bytes)};
+\node[label] at (12.7, -0.5) {Error Check};
+
+% End Flag
+\node[field, flag, align=center] (f5) at (13.8,0){Flag\\ (01111110)};
+\node[label] at (14.9, -0.5) {Frame End};
+
+% Inter-frame gap / Idle
+\draw[thick, popmuted, dashed] (15.0, 0.5) -- (16.5, 0.5);
+\node[popmuted, font=\tiny, align=center] at (15.75, 0.8) {Inter-Frame\\Gap / Idle};
+\end{tikzpicture}
+\legende{Typical Synchronous Frame Structure (e.g., HDLC / Ethernet style). The Preamble/SYN chars establish bit synchronisation. Flags delimit the frame. Header contains addressing/control. FCS (Frame Check Sequence) provides robust error detection (CRC).}
+\end{popfigure}
+
+\textbf{Key Fields:}
+\begin{itemize}
+    \item \textbf{Preamble / SYN Characters:} Known pattern for clock recovery and frame boundary detection.
+    \item \textbf{Flag / Start Delimiter:} Unique pattern (e.g., `01111110' in HDLC) marking the exact start of the frame header. Bit stuffing ensures this pattern never appears in the data.
+    \item \textbf{Header:} Addresses (Source/Dest), Control info, Protocol Type, Length.
+    \item \textbf{Payload:} The actual user data (variable length, up to MTU -- Maximum Transmission Unit).
+    \item \textbf{FCS (Frame Check Sequence):} Usually a \textbf{CRC (Cyclic Redundancy Check)} (16-bit or 32-bit polynomial). Much more powerful than a single parity bit.
+    \item \textbf{End Flag / Closing Delimiter:} Marks end of frame.
+\end{itemize}
+
+\textbf{Advantages of Synchronous Transmission:}
+\begin{itemize}
+    \item \textbf{High Efficiency:} Overhead is fixed per frame (e.g., 20-40 bytes header+trailer) regardless of payload size. For a 1500-byte Ethernet frame, overhead $\approx 2.6\%$. Efficiency $> 97\%$.
+    \item \textbf{High Speed:} No per-character clock resynchronisation delay. Speeds reach Gbps/Tbps (Ethernet, Fibre Channel, SONET/SDH).
+    \item \textbf{Robust Error Detection:} CRC in trailer detects burst errors effectively.
+    \item \textbf{Continuous Stream:} Ideal for constant bit-rate traffic (voice, video) and bulk data.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item \textbf{Complex Hardware:} Requires PLLs, bit-stuffing logic, CRC engines, buffer memory for whole frames.
+    \item \textbf{Higher Cost:} More expensive interface chips (MAC controllers, SerDes).
+    \item \textbf{Latency for Small Data:} If you send 1 byte, you still pay the full frame overhead. Inefficient for very bursty, tiny messages (though modern protocols aggregate).
+    \item \textbf{Clock Recovery Failure:} Long runs of `0's or `1's in data can cause PLL drift $\rightarrow$ requires line coding (Manchester, 4B/5B, 8B/10B, 64B/66B) or bit stuffing.
+\end{itemize}
+
+\courssub{Comparison: Asynchronous vs. Synchronous Transmission}
+
+The following table summarises the key differences examinable at GCE A-Level.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Asynchronous (Start-Stop)} & \textbf{Synchronous} \\
+\hline
+\textbf{Basic Unit} & Character (5--8 bits) & Frame / Block (hundreds--thousands of bytes) \\
+\hline
+\textbf{Framing} & Start bit (0), Stop bit(s) (1) per character & Preamble/SYN + Flag at start; Flag/CRC at end per frame \\
+\hline
+\textbf{Clocking} & Local clocks at each end; re-synced per character by Start bit & Continuous synchronisation: shared clock line, embedded clock (PLL), or preamble \\
+\hline
+\textbf{Gaps Allowed?} & \textbf{Yes}, arbitrary idle time (Mark state) between characters & \textbf{No} (usually). Continuous stream within frame. Inter-frame gaps only. \\
+\hline
+\textbf{Overhead} & High: 2--4 bits per 5--8 data bits (\textbf{25--40\%}) & Low: Fixed header/trailer per frame (\textbf{$< 5\%$} for large frames) \\
+\hline
+\textbf{Error Detection} & Parity bit (1 bit, detects odd \# of errors only) & CRC / FCS (16/32 bits, detects burst errors, high probability) \\
+\hline
+\textbf{Speed / Throughput} & Low to Medium (typically $\le$ \SI{115.2}{kbps} standard, up to few Mbps) & High (Mbps to Tbps) \\
+\hline
+\textbf{Cost / Complexity} & Low (Simple UART) & High (PLL, Buffers, CRC Engine, Line Coding) \\
+\hline
+\textbf{Typical Uses} & Keyboards, Mice, RS-232/USB-Serial, GPS modules, Microcontroller debug (UART), Legacy Modems & Ethernet (LAN), Wi-Fi, USB (bulk/isoch), HDMI, SATA, Fibre Optics, Mobile Networks (4G/5G), CAN Bus \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{The Role of the Parity Bit (Exam Note)}
+
+While synchronous transmission uses powerful CRC, asynchronous transmission often relies on the \textbf{parity bit} for basic error detection. This is a favourite GCE short-question topic.
+
+\begin{propriete}[Parity Bit Mechanism]
+For a block of $n$ data bits, a parity bit $P$ is added to make the total number of `1's either \textbf{Even} or \textbf{Odd}.
+\begin{itemize}
+    \item \textbf{Even Parity:} $P = 1$ if number of `1's in data is odd; $P = 0$ if even. $\rightarrow$ Total `1's is Even.
+    \item \textbf{Odd Parity:} $P = 1$ if number of `1's in data is even; $P = 0$ if odd. $\rightarrow$ Total `1's is Odd.
+\end{itemize}
+\textbf{Detection Capability:} Detects \textbf{all single-bit errors} and \textbf{any odd number of bit errors}. \textbf{Fails} to detect an even number of bit errors (e.g., 2 bits flipped).
+\end{propriete}
+
+\begin{exemplebox}[Parity Bit Calculation]
+Transmit the 7-bit ASCII character `A' ($1000001_2$) using \textbf{Even Parity}.
+\begin{itemize}
+    \item Data bits: `1 0 0 0 0 0 1'. Number of `1's = 2 (Even).
+    \item Even Parity requires total `1's to be Even. Parity Bit $P = \mathbf{0}$.
+    \item Transmitted 8-bit code: \texttt{10000010} (often sent LSB first on line: 01000001).
+\end{itemize}
+If the receiver gets \texttt{10000110} (bit 1 flipped), count of `1's = 3 (Odd) $\rightarrow$ \textbf{Error Detected}.
+If the receiver gets \texttt{10000111} (bits 0 and 1 flipped), count of `1's = 4 (Even) $\rightarrow$ \textbf{Error NOT Detected}.
+\end{exemplebox}
+
+\courssub{Worked Examination Style Example}
+
+\begin{exoresolu}[GCE Style: Framing and Overhead]
+A microcontroller sends sensor readings to a PC via a UART link configured as \texttt{9600 8N1} (9600 baud, 8 data bits, No parity, 1 stop bit). Each reading is a 16-bit integer sent as two bytes (Low Byte first, then High Byte).
+\begin{enumerate}
+    \item Calculate the time taken to transmit \textbf{one} 16-bit reading.
+    \item Calculate the \textbf{useful data throughput} in bits per second (bps).
+    \item The designer proposes switching to a synchronous protocol (like SPI) at the same clock frequency (\SI{9600}{Hz} clock) sending the 16-bit reading in a single 16-bit frame with 8 bits of header/trailer overhead. Calculate the new useful throughput and the percentage improvement.
+\end{enumerate}
+\tcblower
+\textbf{Solution:}
+\begin{enumerate}
+    \item \textbf{UART Frame per byte:} 1 Start + 8 Data + 0 Parity + 1 Stop = \textbf{10 bits}.
+        Two bytes $\rightarrow$ 20 bits on the line.
+        Bit time $T_b = \frac{1}{9600} \approx \SI{104.17}{\mu s}$.
+        Time for one reading $= 20 \times T_b = \frac{20}{9600} \approx \mathbf{2.083 \text{ ms}}$.
+    \item Useful bits per reading = 16 bits.
+        Throughput $= \frac{16 \text{ bits}}{2.083 \text{ ms}} = \frac{16 \times 9600}{20} = \mathbf{7680 \text{ bps}}$.
+        (Alternatively: Efficiency $= 8/10 = 80\%$ per byte. $0.8 \times 9600 = 7680 \text{ bps}$).
+    \item \textbf{Synchronous Frame:} 16 Data + 8 Overhead = 24 bits total.
+        Clock = \SI{9600}{Hz} $\rightarrow$ 1 bit per clock $\rightarrow$ \SI{9600}{bps} line rate.
+        Time for frame $= \frac{24}{9600} = \SI{2.5}{ms}$.
+        Useful Throughput $= \frac{16 \text{ bits}}{2.5 \text{ ms}} = \mathbf{6400 \text{ bps}}$.
+        \textbf{Wait!} The synchronous throughput (6400 bps) is \textbf{lower} than asynchronous (7680 bps) here?
+        \textbf{Analysis:} The synchronous frame overhead (8 bits for 16 data = 50\%) is huge because the payload is tiny (2 bytes). Asynchronous overhead is fixed at 2 bits per 8 data (20\%). Synchronous wins only when payload $\gg$ overhead.
+        \textbf{Correction for typical exam intent:} Usually, synchronous frame overhead is fixed (e.g., 20 bytes) and payload is large (1500 bytes). If we assume a standard synchronous frame of 1500 bytes payload + 20 bytes overhead at \SI{9600}{bps}:
+        Throughput $\approx \frac{1500}{1520} \times 9600 \approx 9473 \text{ bps}$ (98.7\% efficiency).
+        \textbf{Lesson:} Synchronous efficiency dominates for \textbf{large blocks}. Asynchronous is better for \textbf{tiny, infrequent} messages.
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Summary and Key Points}
+
+\begin{aretenir}[Key Points for Revision]
+\begin{itemize}
+    \item \textbf{Timing Problem:} Receiver must know bit boundaries. Solved by Asynchronous (per character) or Synchronous (continuous) methods.
+    \item \textbf{Asynchronous (Start-Stop):} 1 Start bit (0), Data (LSB first), optional Parity, 1+ Stop bits (1). Idle line = Mark (1).
+    \item \textbf{Overhead Formula:} $\eta = \frac{\text{Data Bits}}{\text{Start} + \text{Data} + \text{Parity} + \text{Stop}}$. Typical $\approx 70\%$ efficiency.
+    \item \textbf{Synchronous:} Continuous bit stream. Clocks locked (PLL, separate clock, or preamble). Data in Frames (Preamble, Header, Payload, CRC, Flag).
+    \item \textbf{Efficiency:} Synchronous $> 95\%$ for large frames. Asynchronous $\approx 60-70\%$.
+    \item \textbf{Error Detection:} Async $\rightarrow$ Parity (weak, 1 bit). Sync $\rightarrow$ CRC/FCS (strong, 16/32 bits).
+    \item \textbf{Applications:} Async = Keyboards, UART, IoT sensors, Legacy. Sync = Ethernet, USB, Wi-Fi, Storage, Telecom Backbones.
+    \item \textbf{Exam Trap:} ``Asynchronous = no clock''. \textbf{Wrong.} It uses local clocks + start bit sync. ``Synchronous = separate clock wire''. \textbf{Not always} (often embedded clock).
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Cameroon Context: From Modems to Mobile Money]
+In the 1990s and early 2000s, Cameroonian cybercafés and early internet users relied on \textbf{dial-up modems} (V.90/V.92) over CAMTEL copper lines. These modems used \textbf{synchronous} transmission on the line side (trellis coded modulation, high efficiency) but presented an \textbf{asynchronous} RS-232/UART interface to the PC. The modem handled the complex conversion.
+Today, \textbf{Mobile Money (MTN MoMo, Orange Money)} uses USSD (Unstructured Supplementary Service Data) over GSM/3G/4G signalling channels. The air interface (Um) uses highly sophisticated \textbf{synchronous} framing (TDMA frames in GSM, OFDMA symbols in LTE) with strict timing advance synchronisation managed by the BTS. Your phone's SIM toolkit sends the USSD string asynchronously over the SIM-UART interface (SW1/SW2 status bytes), but the network transport is fully synchronous. Understanding both modes explains why your USSD request (*123\#) gets an instant structured response: the handset-to-SIM link is async (simple), the air interface is sync (fast, reliable, scheduled).
+\end{savaistu}
+
+\begin{exercice}[Practice Questions]
+\begin{enumerate}
+    \item A UART is configured as \texttt{115200 7E1} (7 data bits, Even Parity, 1 Stop Bit). Calculate the frame size, efficiency, and maximum ASCII characters per second.
+    \item Explain why a long cable run causes more errors in synchronous transmission than in asynchronous transmission at the same nominal baud rate, if the synchronous link uses a separate clock wire that is not length-matched to the data wire. (Hint: Skew).
+    \item An Ethernet frame (synchronous) has a preamble of 7 bytes, SFD of 1 byte, Header 14 bytes, Payload 1500 bytes, FCS 4 bytes. Calculate the overhead percentage.
+    \item \textbf{True/False with Justification:}
+    \begin{enumerate}
+        \item Asynchronous transmission does not require a clock at the receiver.
+        \item The Stop bit in asynchronous transmission is always logic `0'.
+        \item Synchronous transmission is always faster than asynchronous transmission.
+        \item Parity bit can detect all 2-bit errors.
+    \end{enumerate}
+    \item Describe the sequence of events at the receiver when a Start bit arrives in asynchronous mode (sampling, verification, data sampling).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\texttt{7E1}: 1 Start + 7 Data + 1 Parity + 1 Stop = \textbf{10 bits/frame}.
+Efficiency $= 7/10 = \mathbf{70\%}$.
+Baud = \SI{115200}{bps}. Char rate $= 115200 / 10 = \mathbf{11520 \text{ chars/s}}$.
+Useful throughput $= 11520 \times 7 = \mathbf{80640 \text{ bps}}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+Separate clock wire: Clock and Data travel parallel. If cable length differs or impedance differs, \textbf{propagation delay skew} occurs. At high speeds, the clock edge may arrive when the data bit is transitioning (setup/hold violation). Asynchronous (UART) uses \textbf{oversampling} (typically 16x baud rate) locally; it only needs the Start edge to align the sampling window. It is inherently more tolerant to cable delay variations because the clock is regenerated locally per character. Synchronous with separate clock requires tight skew control (source-synchronous or forwarded clock with matched traces).
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Total Frame = $7 + 1 + 14 + 1500 + 4 = 1526$ bytes.
+Overhead = $7 + 1 + 14 + 4 = 26$ bytes.
+Overhead \% $= \frac{26}{1526} \times 100\% \approx \mathbf{1.7\%}$.
+Efficiency $\approx \mathbf{98.3\%}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+\begin{enumerate}
+    \item \textbf{False.} Receiver needs a local clock (baud rate generator) running at same nominal frequency (usually 16x or 8x oversampling) to sample bits in the middle. Start bit only aligns the \emph{phase}.
+    \item \textbf{False.} Stop bit is always logic \textbf{`1'} (Mark state). Start bit is `0' (Space).
+    \item \textbf{False.} For very small data amounts (e.g., 1 byte), asynchronous (10 bits) can be more efficient than synchronous (e.g., 24+ bits frame overhead). Synchronous wins for sustained bulk transfer.
+    \item \textbf{False.} Parity detects \textbf{odd} number of errors (1, 3, 5...). It \textbf{misses} even number of errors (2, 4...).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5]
+\begin{enumerate}
+    \item Line is Idle (Mark/1). Receiver detects falling edge (1 $\to$ 0).
+    \item Receiver waits \textbf{1.5 bit periods} (or samples at 16x clock: waits 8 samples, then 16 samples) to sample the \textbf{middle of the Start bit}.
+    \item Verifies Start bit is still `0' (rejects noise spikes).
+    \item Then samples every \textbf{1 bit period} (16 clocks) for the 7/8 Data bits, Parity bit, Stop bit(s).
+    \item Checks Stop bit is `1' (Framing Error if `0').
+    \item Checks Parity (Parity Error if mismatch).
+    \item Assembles byte, pushes to FIFO/Register, raises interrupt/flag.
+    \item Returns to scanning for next falling edge.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Signal Types: Analog/Digital, Baseband/Broadband}
+
+In the previous section, we examined \emph{how} bits are timed on a link (synchronous vs. asynchronous). We now turn to the \emph{nature} of the signal itself that carries those bits over the physical medium. The choice between analog and digital signalling, and between baseband and broadband use of the medium, fundamentally determines the capacity, reach, and technology of a communication system — whether it is a LAN in a Yaoundé school, an ADSL line in Douala, or a fibre link connecting Cameroon to the world.
+
+\courssub{Analog and Digital Signals}
+
+\begin{definition}[Analog Signal]
+An \cle{analog signal} is a continuous electromagnetic wave whose amplitude, frequency, or phase varies smoothly over time to represent information. It can take an infinite number of values within a given range. Mathematically, it is a continuous function of time $s(t) \in \mathbb{R}$.
+\end{definition}
+
+\begin{definition}[Digital Signal]
+A \cle{digital signal} is a discrete-time, discrete-amplitude signal that assumes only a finite number of distinct levels (usually two: a high voltage for binary 1 and a low voltage for binary 0). It changes in discrete steps at specific time intervals determined by a clock. Mathematically, it is a sequence $s[n] \in \{0,1,\dots,M-1\}$.
+\end{definition}
+
+\begin{experience}[Observing the Difference]
+Imagine speaking into a traditional landline telephone handset (analog). Your voice creates continuous pressure waves in the air; the microphone converts these into a continuously varying electrical voltage. Now imagine typing a message on a computer connected to a LAN. The network card sends a stream of distinct voltage pulses: +5 V, 0 V, +5 V, 0 V… — a digital signal.
+\end{experience}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=1.1]
+    % Axes
+    \draw[->] (0,0) -- (10,0) node[right] {$t$ (time)};
+    \draw[->] (0,-2.5) -- (0,2.5) node[above] {Amplitude (V)};
+    % Analog sine wave
+    \draw[popblue, thick, domain=0:9.5, samples=200, smooth] plot (\x, {1.5*sin(deg(2*pi*\x/2))});
+    \node[popblue, align=center] at (5, 2.2) {Analog: continuous,\\ infinite values};
+    % Digital square wave (shifted down)
+    \draw[poporange, thick] (0,-0.5) -- (0.5,-0.5) -- (0.5,-2) -- (1.5,-2) -- (1.5,-0.5) -- (2.5,-0.5) -- (2.5,-2) -- (3.5,-2) -- (3.5,-0.5) -- (4.5,-0.5) -- (4.5,-2) -- (5.5,-2) -- (5.5,-0.5) -- (6.5,-0.5) -- (6.5,-2) -- (7.5,-2) -- (7.5,-0.5) -- (8.5,-0.5) -- (8.5,-2) -- (9.5,-2);
+    \node[poporange, align=center] at (5, -2.3) {Digital: discrete levels\\ (0 and 1)};
+    % Time markers
+    \foreach \x in {0,1,2,3,4,5,6,7,8,9} {
+        \draw[popmuted, thin] (\x,-2.5) -- (\x,2.5);
+    }
+\end{tikzpicture}
+\legende{Comparison of an analog sine wave (continuous) and a digital square wave (discrete levels).}
+\end{popfigure}
+
+\begin{propriete}[Noise Immunity and Regeneration]
+Digital signals are inherently more resistant to noise than analog signals.
+\begin{itemize}
+    \item \textbf{Analog:} Noise adds to the signal. Amplifying the signal amplifies the noise too. Over long distances, noise accumulates irreversibly.
+    \item \textbf{Digital:} A repeater (regenerator) detects the \emph{level} (0 or 1) and retransmits a clean, perfect copy. Noise is eliminated at each regeneration point, provided it hasn't flipped a bit (i.e., noise amplitude $<$ decision threshold).
+\end{itemize}
+\end{propriete}
+
+\begin{aretenir}[Why Digital Dominates Modern ICT]
+\begin{enumerate}
+    \item \textbf{Regeneration without loss:} Perfect copies over arbitrary distances.
+    \item \textbf{Encryption:} Easy to apply mathematical algorithms to bit streams.
+    \item \textbf{Compression:} Redundancy can be removed (e.g., MP3, ZIP, MPEG).
+    \item \textbf{Integration:} Voice, video, and data share the same infrastructure (convergence).
+    \item \textbf{Processing:} Computers natively process digital data; no conversion needed at endpoints.
+\end{enumerate}
+\end{aretenir}
+
+\courssub{Conversion Between Analog and Digital: The Modem and Codec}
+
+Most "last-mile" connections in Cameroon (historically telephone lines, still some radio links) use analog media. Computers are digital. A bridge is needed.
+
+\begin{definition}[Modem (Modulator–Demodulator)]
+A \cle{modem} is a device that converts digital data from a computer into an analog signal suitable for transmission over an analog medium (modulation), and converts incoming analog signals back into digital data (demodulation).
+\end{definition}
+
+\begin{definition}[Codec (Coder–Decoder)]
+A \cle{codec} converts analog signals (voice, video) into digital form (sampling, quantisation, encoding) and vice versa. Unlike a modem, a codec's primary purpose is analog-to-digital conversion for digital processing/storage, not transmission over an analog channel.
+\end{definition}
+
+\begin{methode}[How a Modem Works on a Telephone Line (PSTN)]
+\begin{enumerate}
+    \item \textbf{Outgoing (Modulation):} The digital bit stream (0/1) modulates a carrier wave (e.g., changing its frequency — FSK, phase — PSK, or amplitude/phase — QAM).
+    \item \textbf{Transmission:} The analog waveform travels over the copper telephone line (bandwidth $\approx$ 3.4 kHz, 300–3400 Hz).
+    \item \textbf{Incoming (Demodulation):} The receiving modem samples the analog wave, decides which symbol was sent, and outputs the corresponding bits.
+    \item \textbf{Handshaking:} Modems negotiate speed, modulation scheme, and error correction (e.g., ITU-T V.90, V.92 standards up to 56 kbps downstream / 48 kbps upstream).
+\end{enumerate}
+\end{methode}
+
+\begin{savaistu}[Cameroon Context: From Dial-up to Mobile Broadband]
+In the early 2000s, many Cameroonians accessed the Internet via \emph{dial-up modems} on CAMTEL lines (distinctive handshake sound!). Today, USB \emph{3G/4G modems} (MTN, Orange, Nexttel, Camtel) perform the same fundamental task — converting digital laptop data into analog radio waves — but using sophisticated OFDM/QAM modulation on licensed spectrum, achieving Mbps/Gbps instead of kbps. The device is still a "modem" (modulator-demodulator) even if marketed as a "dongle" or "MiFi".
+\end{savaistu}
+
+\courssub{Baseband vs. Broadband Transmission}
+
+Once we have a digital (or modulated analog) signal, we must decide how to place it on the shared medium.
+
+\begin{definition}[Baseband Transmission]
+\cle{Baseband transmission} uses the \textbf{entire bandwidth} of the medium to transmit a \textbf{single digital signal} (or a single channel). The signal occupies the spectrum from near DC (0 Hz) up to the maximum frequency the medium supports. No frequency translation (modulation onto a carrier) is performed; the digital pulses are placed directly on the line (possibly after line coding, e.g., NRZ, Manchester, MLT-3).
+\end{definition}
+
+\begin{definition}[Broadband Transmission]
+\cle{Broadband transmission} divides the medium's bandwidth into \textbf{multiple frequency channels}, each carrying a separate signal (usually analog-modulated onto a sub-carrier). Multiple communications occur simultaneously by \textbf{Frequency Division Multiplexing (FDM)}. Guard bands separate channels to prevent interference.
+\end{definition}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=1.0]
+    % Baseband
+    \begin{scope}[yshift=0]
+        \draw[popdark, thick] (0,0) rectangle (10,2);
+        \fill[popblue!30] (0,0) rectangle (10,2);
+        \node[popblue, font=\bfseries, align=center] at (5,1) {BASEBAND: One digital signal\\occupies the WHOLE bandwidth};
+        \draw[<->, popmuted] (0,-0.4) -- (10,-0.4) node[midway, below] {Full bandwidth (e.g., 100 MHz)};
+    \end{scope}
+    % Broadband
+    \begin{scope}[yshift=-3.5]
+        \draw[popdark, thick] (0,0) rectangle (10,2);
+        \foreach \i/\col in {0/popblue, 2.5/poporange, 5/popgreen, 7.5/poppurple} {
+            \fill[\col!40] (\i,0) rectangle (\i+2.2,2);
+            \node[\col, font=\bfseries, align=center] at (\i+1.1,1) {Ch \pgfmathparse{int(\i/2.5+1)}\pgfmathresult};
+        }
+        \node[popdark, font=\bfseries, align=center] at (5, -0.6) {BROADBAND: Multiple channels\\share the medium (FDM)};
+        \draw[<->, popmuted] (0,-1.2) -- (10,-1.2) node[midway, below] {Total bandwidth divided into sub-channels};
+    \end{scope}
+\end{tikzpicture}
+\legende{Baseband (single signal on whole medium) vs. Broadband (multiple frequency channels via FDM).}
+\end{popfigure}
+
+\begin{exemplebox}[Concrete Examples]
+\begin{itemize}
+    \item \textbf{Baseband:} Ethernet LAN (IEEE 802.3) — the cable carries only the Ethernet frames. Original 10BASE-T (Manchester), 100BASE-TX (MLT-3), 1000BASE-T (4D-PAM5 on 4 pairs). Simple, cheap, limited distance (100 m for copper).
+    \item \textbf{Broadband:}
+    \begin{itemize}
+        \item \textbf{Cable TV (CATV):} Dozens of TV channels + Internet (DOCSIS) on one coaxial cable. Each channel gets a 6–8 MHz slice.
+        \item \textbf{ADSL/VDSL (Digital Subscriber Line):} Telephone line split into: 0–4 kHz (voice), 25–138 kHz (upstream), 138 kHz–1.1 MHz (downstream) for ADSL; up to 30 MHz for VDSL2. A \emph{DSL modem} uses DMT-OFDM (hundreds of 4.3125 kHz sub-carriers) — a broadband technique.
+        \item \textbf{4G/5G Radio:} OFDMA divides the 5/10/20 MHz channel into hundreds of orthogonal sub-carriers.
+    \end{itemize}
+\end{itemize}
+\end{exemplebox}
+
+\begin{attention}[Common Mistake: "Broadband" $\neq$ "High Speed"]
+In everyday Cameroonian language, "broadband" is used as a synonym for "fast Internet" (e.g., "I have broadband at home"). \textbf{In the GCE exam, use the technical definition:} Broadband is a \emph{transmission technique} using FDM on a shared medium. A 1 Gbps Ethernet link is \textbf{baseband} (and very fast). A 56 kbps ADSL line is \textbf{broadband} (and slow by modern standards). Do not confuse the \emph{technique} with the \emph{performance}.
+\end{attention}
+
+\courssub{Line Coding (Baseband Encoding) — Essential for Baseband Transmission}
+
+In baseband transmission, raw binary bits cannot be sent directly as simple voltage levels (e.g., 0 V / +5 V) because of DC component issues, clock recovery, and bandwidth efficiency. \cle{Line coding} converts the bit stream into a signal suitable for the channel.
+
+\begin{definition}[Common Line Codes]
+\begin{itemize}
+    \item \textbf{NRZ-L (Non-Return-to-Zero Level):} 1 = high, 0 = low. Simple but has DC component and no clock transitions for long runs of 0s or 1s.
+    \item \textbf{NRZ-I (Invert on 1):} Transition on 1, no transition on 0. Better clock recovery, still has DC component.
+    \item \textbf{Manchester (used in 10BASE-T):} Transition in middle of bit: 1 = low-to-high, 0 = high-to-low. Self-clocking, no DC component, but doubles bandwidth (baud rate = 2 $\times$ bit rate).
+    \item \textbf{Differential Manchester:} Transition at start of bit for 0, no transition at start for 1; always transition in middle. Used in Token Ring.
+    \item \textbf{MLT-3 (Multi-Level Transmit 3, used in 100BASE-TX):} Three levels (+V, 0, -V). Cycles through levels on 1, stays on 0. Reduces maximum frequency (better for copper), no DC component.
+    \item \textbf{4B/5B, 8B/10B, 64B/66B:} Block codes that map $m$ data bits to $n$ channel bits ($n>m$) to guarantee transitions and DC balance. Used in Fast Ethernet, Gigabit Ethernet, PCIe, USB 3.0.
+\end{itemize}
+\end{definition}
+
+\begin{aretenir}[Key Line Code Properties for Exam]
+\begin{itemize}
+    \item \textbf{DC Balance:} Zero average voltage $\to$ allows transformer coupling (isolation) and prevents baseline wander.
+    \item \textbf{Self-clocking:} Guaranteed transitions $\to$ receiver can recover clock without separate clock line.
+    \item \textbf{Bandwidth Efficiency:} Ratio of bit rate to baud rate (symbol rate). Manchester = 0.5; MLT-3 $\approx$ 1; 4B/5B = 0.8; 64B/66B $\approx$ 0.97.
+    \item \textbf{Error Detection:} Some codes (e.g., 4B/5B) have invalid symbols $\to$ can detect errors.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Synthesis: Comparison of All Transmission Modes}
+
+GCE questions often ask: "Differentiate between …" or "Complete the table below." The following master table summarises the five dimensions studied in this chapter (Direction, Bit Arrangement, Timing, Signal Nature, Medium Usage).
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Dimension} & \textbf{Options} & \textbf{Key Characteristic} & \textbf{Typical Use Case} & \textbf{Exam Keywords} \\
+\hline
+\textbf{Direction of Flow} & Simplex & One way only & Radio broadcast, Keyboard $\to$ CPU & Unidirectional \\
+& Half-Duplex & Two ways, not simultaneous & Walkie-talkie, Legacy bus topology (CSMA/CD) & Turn-taking, Collision possible \\
+& Full-Duplex & Two ways, simultaneous & Telephone, Modern Ethernet (switched), Fibre & Simultaneous, Doubles throughput \\
+\hline
+\textbf{Bit Arrangement} & Serial & One bit after another on one line & Long distance, USB, SATA, Fibre, PCIe & Fewer wires, High frequency possible \\
+& Parallel & Multiple bits simultaneously on multiple lines & Short distance, Old printer port (Centronics), Internal bus (PCI) & Skew limits speed/distance \\
+\hline
+\textbf{Timing} & Asynchronous & Start/stop bits per character, no shared clock & Keyboard, Mouse, Serial ports (UART), Modems & Simple, Overhead (20–30\%) \\
+& Synchronous & Shared clock, blocks/frames, no start/stop & High-speed LAN, WAN, HDLC, PPP, USB bulk & Efficient, Needs clock recovery \\
+\hline
+\textbf{Signal Nature} & Analog & Continuous wave & Voice on PSTN, Radio, TV (analog) & Susceptible to noise \\
+& Digital & Discrete levels (0/1) & All modern ICT (LAN, Digital TV, Mobile) & Regenerable, Encryptable, Compressible \\
+\hline
+\textbf{Medium Usage} & Baseband & Entire medium for one digital signal & Ethernet LAN, USB, HDMI & Simple, Distance limited (copper) \\
+& Broadband & Medium split into frequency channels (FDM) & Cable TV, ADSL/VDSL, 4G/5G, DOCSIS & Multiple services, Longer reach on copper \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Answering "Differentiate" or "Compare" Questions in GCE]
+\begin{enumerate}
+    \item \textbf{Identify the dimension:} Direction? Bit arrangement? Timing? Signal type? Medium usage?
+    \item \textbf{State the two (or three) terms clearly.}
+    \item \textbf{Use a structured phrase:} "In \emph{Term A}, … whereas in \emph{Term B}, …"
+    \item \textbf{Give a concrete example for each.}
+    \item \textbf{If a table is asked:} Draw ruled columns: \emph{Feature | Term A | Term B}. Fill each row with a \emph{distinguishing feature}, not just definitions.
+\end{enumerate}
+\end{methode}
+
+\courssub{Link to Network Performance: Bandwidth, Bit Rate, and Capacity}
+
+\begin{aretenir}[Exam-Useful Extra: Transmission Modes $\to$ Performance Metrics]
+\begin{itemize}
+    \item \textbf{Bandwidth (Hz):} The range of frequencies the medium can carry. Fixed by physics (copper $\approx$ MHz, fibre $\approx$ THz). Unit: Hertz (Hz).
+    \item \textbf{Bit Rate (bps):} Number of bits transmitted per second. Depends on bandwidth \textbf{and} encoding efficiency (bits per symbol). Unit: bit/s (bps).
+    \item \textbf{Baud Rate (Symbols/s):} Number of signal changes per second. Bit rate = Baud rate $\times \log_2 M$ where $M$ = number of signal levels.
+    \item \textbf{Nyquist Limit (Noiseless Channel):} $C = 2B \log_2 M$ where $B$ = bandwidth (Hz), $M$ = signal levels. Maximum bit rate without ISI (Inter-Symbol Interference).
+    \item \textbf{Shannon Limit (Noisy Channel):} $C = B \log_2(1 + S/N)$ where $S/N$ = signal-to-noise ratio (linear, not dB). Ultimate theoretical capacity.
+    \item \textbf{Why it matters:}
+    \begin{itemize}
+        \item \textbf{Serial + Synchronous + Digital + Baseband} (e.g., 10 Gbps Ethernet) $\to$ High bit rate on short reach; uses high $M$ (PAM-4, PAM-16) and high $B$.
+        \item \textbf{Serial + Synchronous + Digital + Broadband} (e.g., ADSL, 4G) $\to$ Trades bandwidth for distance on noisy copper/radio; uses many sub-carriers (OFDM) with adaptive $M$ (QAM) per sub-carrier.
+        \item \textbf{Parallel} $\to$ Skew limits clock rate $\to$ abandoned for high-speed serial (PCIe, SATA, USB 3.0+).
+    \end{itemize}
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[GCE-Style Worked Question]
+\textbf{Question:} A school in Buea connects its administrative block to the computer lab 80 m away using UTP Cat 5e cable. They consider two options: (A) 100BASE-TX Ethernet (baseband) and (B) a VDSL2 modem pair (broadband) over the same cable. Compare the two options in terms of \textbf{signal type}, \textbf{medium usage}, \textbf{line coding / modulation}, and \textbf{maximum achievable bit rate}. Justify which is more suitable.
+
+\textbf{Solution:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Criterion} & \textbf{Option A: 100BASE-TX (Baseband)} & \textbf{Option B: VDSL2 (Broadband)} \\
+\hline
+Signal Type & Digital (3-level MLT-3 line code) & Digital modulated on many sub-carriers (DMT-OFDM with QAM) \\
+Medium Usage & Entire 100 MHz bandwidth for one 100 Mbps stream (full-duplex on 2 pairs) & Spectrum split into 4.3125 kHz sub-carriers (FDM), up to 30 MHz \\
+Line Coding / Modulation & MLT-3 (3 levels, self-clocking, no DC) + 4B/5B block code & DMT-OFDM: 4096 sub-carriers, adaptive QAM (up to 4096-QAM) \\
+Max Bit Rate (80 m) & 100 Mbps full-duplex (standard, deterministic) & Up to 100–200 Mbps aggregate (depends on profile, crosstalk, SNR) \\
+Complexity & Low (simple NICs, switch, auto-negotiation) & High (modems, DSLAM-like config, bit-loading algorithm) \\
+Latency & Very low ($<$ 1 ms) & Higher (interleaving, error correction, framing) \\
+Suitability & \textbf{Best choice:} Designed for LAN, plug-and-play, deterministic latency. & Overkill; designed for km-length telephone loops, not 80 m LAN. \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Conclusion:} Option A (100BASE-TX) is the correct technical choice for a LAN segment. Baseband Ethernet is standardised, cheaper, and provides deterministic performance. Broadband (VDSL) is engineered for long, noisy copper loops where baseband cannot reach due to attenuation and ISI.
+\end{exoresolu}
+
+\begin{exercice}[Practice Questions]
+\begin{enumerate}
+    \item Define \emph{analog signal} and \emph{digital signal}. Give one example of a natural analog signal and one example of a stored digital signal.
+    \item Explain the function of a modem. Why is it necessary for a computer to communicate over a traditional telephone line (PSTN)?
+    \item Distinguish between \emph{baseband} and \emph{broadband} transmission. Give one example of a technology using each.
+    \item A student says: "My 4G connection is broadband, so it must be faster than the school's baseband Ethernet." Identify the misconception and correct it using technical definitions.
+    \item \textbf{Table completion:} Copy and complete the table below.
+    \begin{center}
+    \begin{tabularx}{\linewidth}{|l|X|X|}
+    \hline
+    \rowcolor{popblueL}
+    \textbf{Feature} & \textbf{Baseband} & \textbf{Broadband} \\
+    \hline
+    Number of channels on medium & & \\
+    \hline
+    Type of signal typically carried & & \\
+    \hline
+    Multiplexing technique used & None (or TDM) & \\
+    \hline
+    Typical medium & UTP, Fibre & Coaxial, Telephone line, Radio spectrum \\
+    \hline
+    Example technology & & Cable TV (CATV), ADSL \\
+    \hline
+    \end{tabularx}
+    \end{center}
+    \item \textbf{Line coding:} Explain why NRZ-L is unsuitable for long cables without additional measures. Name two line codes that solve this problem and state how.
+    \item \textbf{Capacity calculation:} A baseband channel has a bandwidth of 3 MHz. Using the Nyquist formula, calculate the maximum bit rate if (a) binary signalling ($M=2$) is used, (b) 4-level signalling ($M=4$) is used. If the channel has a signal-to-noise ratio of 30 dB, what is the Shannon capacity?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 5 — Table Completion]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}
+\textbf{Feature} & \textbf{Baseband} & \textbf{Broadband} \\
+\hline
+Number of channels on medium & One (single digital stream) & Multiple (frequency division) \\
+\hline
+Type of signal typically carried & Digital (directly, after line coding) & Analog-modulated (per sub-channel) \\
+\hline
+Multiplexing technique used & None (or TDM for multiple users) & FDM (Frequency Division Multiplexing) \\
+\hline
+Typical medium & UTP, Fibre & Coaxial, Telephone line, Radio spectrum \\
+\hline
+Example technology & Ethernet (10/100/1000BASE-T), USB, HDMI & Cable TV (CATV), ADSL/VDSL, 4G/5G, DOCSIS \\
+\hline
+\end{tabularx}
+\end{center}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Line Coding]
+NRZ-L has a non-zero DC component (average voltage $\neq$ 0) and long sequences of 0s or 1s produce no transitions, causing loss of clock synchronisation and baseline wander. Two solutions:
+\begin{itemize}
+    \item \textbf{Manchester:} Forces a transition in the middle of every bit period $\to$ self-clocking, zero DC component. Trade-off: doubles required bandwidth.
+    \item \textbf{MLT-3 / 4B/5B:} MLT-3 uses three levels and transitions only on 1s, reducing max frequency; 4B/5B maps 4 data bits to 5 code bits guaranteeing transitions and DC balance. Used together in 100BASE-TX.
+\end{itemize}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Capacity Calculation]
+\begin{itemize}
+    \item (a) Nyquist, $M=2$: $C = 2 \times 3 \times 10^6 \times \log_2 2 = 6 \times 10^6$ bps = \textbf{6 Mbps}.
+    \item (b) Nyquist, $M=4$: $C = 2 \times 3 \times 10^6 \times \log_2 4 = 2 \times 3 \times 10^6 \times 2 = 12 \times 10^6$ bps = \textbf{12 Mbps}.
+    \item Shannon: $S/N = 30$ dB $\Rightarrow$ linear $S/N = 10^{30/10} = 1000$. $C = 3 \times 10^6 \times \log_2(1+1000) \approx 3 \times 10^6 \times 9.97 \approx$ \textbf{29.9 Mbps}.
+\end{itemize}
+Note: Shannon capacity is the ultimate limit; Nyquist gives the maximum symbol rate for a given bandwidth without ISI. Practical systems operate below Shannon.
+\end{corrige}
+
+\begin{attention}[Final Exam Checklist for This Chapter]
+\begin{itemize}
+    \item Can you draw and label an analog sine wave vs. a digital square wave?
+    \item Can you explain \emph{modulation} and \emph{demodulation} in your own words?
+    \item Can you distinguish between a \emph{modem} and a \emph{codec}?
+    \item Can you state the Nyquist and Shannon formulas and explain what each variable means (including units)?
+    \item Can you build a comparison table for \textbf{any pair} of modes from the five dimensions (Direction, Bits, Timing, Signal, Medium Usage)?
+    \item Do you know the Cameroonian context examples: CAMTEL PSTN $\to$ modem, MTN/Orange 4G $\to$ broadband (OFDM), School LAN $\to$ baseband Ethernet?
+    \item Can you explain why line coding is needed in baseband transmission and name at least two codes with their properties?
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Integration activity}
+
+\coursec{Integration Activity: Differentiating Modes of Data Transmission}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter on modes of data transmission. It places you in the role of an ICT consultant and asks you to \emph{mobilise together} all the notions studied in the lessons of this chapter, namely:
+
+\begin{itemize}
+\item the \cle{directional modes} of transmission: simplex, half-duplex and full-duplex;
+\item the \cle{serial} and \cle{parallel} modes of transmission;
+\item the \cle{synchronous} and \cle{asynchronous} modes of transmission;
+\item the types of \cle{signal}: analog versus digital, baseband versus broadband.
+\end{itemize}
+
+By the end of the activity, you should be able to:
+
+\begin{enumerate}
+\item analyse the communication needs of a real institution and identify the constraints of each equipment;
+\item choose, for each link, the appropriate mode(s) of data transmission;
+\item \emph{justify} each choice with precise technical arguments (speed, distance, cost, nature of the information exchanged);
+\item present and defend a coherent technical proposal in front of an audience, as required at the GCE Advanced Level.
+\end{enumerate}
+
+\begin{aretenir}[Skill being assessed]
+The examiner does not only want definitions. At Upper Sixth, you must be able to say \emph{which} mode fits \emph{which} situation, and \emph{why}. A correct answer without justification earns only part of the marks.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Designing the Communication Setup of Buea Heritage Secondary School}
+
+Buea Heritage Secondary School is a growing institution located in Buea, in the South West Region of Cameroon. The school has about 800 students and 45 staff members. The principal, Mrs.\ Eposi N., has just received a donation of equipment from a partner NGO and wants to modernise the school's communication infrastructure before the next academic year. She has contacted your class, through your ICT teacher, to help her make the right technical choices.
+
+The school must set up the following five communication links:
+
+\begin{enumerate}
+\item \textbf{The computer laboratory.} A new laboratory contains 40 desktop PCs that must all be connected to one central server located in the same building, about 30 metres from the furthest PC. Students will read and write files on the server, submit their practical work, and receive software from it. Communication must be fast, and data must flow in both directions simultaneously (a student downloads a tutorial while uploading an assignment).
+
+\item \textbf{The secretary's printer.} The secretary's office has an old but still functional dot-matrix printer connected to her desktop computer by a short multi-wire cable (about 1.5 metres). The printer receives characters from the computer and prints them; it only sends back simple status signals (paper out, ready). The secretary prints many short documents per day.
+
+\item \textbf{The CCTV camera system.} Four surveillance cameras will be installed at the school gate, the laboratory door, the staff room and the canteen. The cameras continuously send video images to a monitor in the security post. The security guard never sends data back to the cameras; he only watches the screen.
+
+\item \textbf{The Internet link.} The school subscribes to an Internet connection provided through the existing telephone line (an ADSL-type link from a national operator). A single telephone line must carry both ordinary voice telephone calls and the school's Internet traffic at the same time.
+
+\item \textbf{The security radios.} The two security guards (one at the gate, one patrolling the campus) communicate with portable two-way radios (walkie-talkies). When one guard speaks, he presses a button; the other listens and can only reply when the first one releases the button. They can never speak at the same time.
+\end{enumerate}
+
+The principal has a limited budget and wants every choice to be technically justified: she does not want to pay for an expensive technology where a simpler one is sufficient, nor to install a cheap solution that will fail.
+
+\courssub{Tasks}
+
+Work in groups of four. Answer the following questions in order; each question builds on the previous ones. Then prepare a 5-minute class presentation of your proposal.
+
+\begin{enumerate}
+\item \textbf{Direction of flow.} For each of the five links, state whether the transmission is \cle{simplex}, \cle{half-duplex} or \cle{full-duplex}. Justify each answer by referring to the direction(s) in which data actually flows in that situation.
+
+\item \textbf{Serial or parallel.} For the laboratory network and for the secretary's printer, state whether \cle{serial} or \cle{parallel} transmission is appropriate. Justify your choice using at least two arguments among: distance, number of wires, speed over distance, cost, and synchronisation problems between wires (skew).
+
+\item \textbf{Synchronous or asynchronous.} 
+\begin{enumerate}
+\item The laboratory server sends large files (several megabytes) to the PCs. Would you recommend synchronous or asynchronous transmission? Why?
+\item The secretary occasionally types a document while the printer prints character by character, at irregular intervals. Which mode suits this link? Why?
+\item Name the extra information that asynchronous transmission adds to each character, and explain its role.
+\end{enumerate}
+
+\item \textbf{Signal type.} 
+\begin{enumerate}
+\item For the laboratory network (a LAN inside one building), state whether transmission is \cle{baseband} or \cle{broadband}, and whether the signal is \cle{analog} or \cle{digital}.
+\item For the Internet link over the telephone line, explain why a \cle{modem} is needed, state whether the line carries analog or digital signals, and explain how the same line can carry voice and Internet traffic simultaneously (baseband or broadband?).
+\item The CCTV cameras send their video as a continuous electrical signal to the monitor. Is this signal analog or digital? Is the transmission baseband or broadband?
+\end{enumerate}
+
+\item \textbf{Synthesis table.} Copy and complete the justification table below (one row per link). Each cell must contain a choice \emph{and} a short justification.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Link} & \textbf{Directional mode} & \textbf{Serial / Parallel} & \textbf{Sync / Async} & \textbf{Signal type} \\
+\hline
+Lab PCs -- server & & & & \\
+\hline
+PC -- printer & & & & \\
+\hline
+CCTV cameras & & & & \\
+\hline
+Internet (ADSL) & & & & \\
+\hline
+Security radios & & & & \\
+\hline
+\end{tabularx}
+\end{center}
+
+\item \textbf{Critical thinking.} The principal asks: ``Why can't we simply use parallel cables everywhere, since parallel sends several bits at once and is therefore faster?'' Write a short paragraph (5--8 lines) answering her question, using the notions of the chapter.
+
+\item \textbf{Presentation.} Prepare a 5-minute oral presentation in which your group defends its five choices in front of the class (who plays the role of the principal and the school board). Be ready to answer questions.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Question 1 — Direction of flow.}
+
+\begin{itemize}
+\item \textbf{Lab PCs -- server: full-duplex.} Data flows in both directions \emph{at the same time}: a student downloads a file while the server receives another student's assignment. Modern Ethernet LANs are full-duplex.
+\item \textbf{PC -- printer: simplex (in practice).} The useful data (the characters to print) flows in one direction only, from the computer to the printer; only tiny status signals come back. The link is therefore treated as simplex.
+\item \textbf{CCTV cameras: simplex.} Video flows in one direction only, from the cameras to the monitor. The guard never transmits anything back. This is the classic example of simplex, like television broadcasting.
+\item \textbf{Internet (ADSL): full-duplex.} The school sends requests (uploads) and receives web pages (downloads) simultaneously, so the link must carry data in both directions at once.
+\item \textbf{Security radios: half-duplex.} Both guards can transmit and receive, but \emph{not at the same time}: one presses the button to speak while the other listens. The channel is shared and alternates direction.
+\end{itemize}
+
+\textbf{Question 2 — Serial or parallel.}
+
+\begin{itemize}
+\item \textbf{Laboratory network: serial transmission.} The distances reach 30 metres. Over such distances, parallel transmission suffers from \emph{skew} (bits travelling on different wires arrive at slightly different times) and from interference between many close wires; a multi-wire cable would also be expensive and bulky. Serial transmission sends bits one after another on a single line, remains reliable over long distances, and modern serial technologies (Ethernet) reach very high speeds.
+\item \textbf{Secretary's printer: parallel transmission.} The cable is very short (1.5 m), so skew is negligible, and sending 8 bits at once over 8 wires gives a good speed for a simple, cheap device. This is exactly the historical role of the parallel printer port.
+\end{itemize}
+
+\textbf{Question 3 — Synchronous or asynchronous.}
+
+\begin{enumerate}
+\item For the large files sent by the server, \textbf{synchronous transmission} is recommended: data is sent as a continuous stream of blocks framed by synchronisation information, with the clocks of sender and receiver kept in step. There is no start/stop overhead per character, so the transfer of large volumes is fast and efficient.
+\item For the printer receiving characters at irregular intervals (as the secretary's print jobs arrive), \textbf{asynchronous transmission} suits better: each character is sent independently, whenever it is ready, without a common clock.
+\item In asynchronous transmission, each character is framed by a \textbf{start bit} (which warns the receiver that a character is arriving and lets it synchronise) and one or two \textbf{stop bits} (which mark the end of the character); a parity bit for error checking is often added.
+\end{enumerate}
+
+\textbf{Question 4 — Signal type.}
+
+\begin{enumerate}
+\item The laboratory LAN uses \textbf{baseband} transmission: the whole capacity of the cable carries a single \textbf{digital} signal (the 0s and 1s of the computers), one transmission at a time.
+\item The telephone line was designed for \textbf{analog} voice signals, while computers produce digital data. The \textbf{modem} (modulator--demodulator) converts digital data into analog signals for transmission and back to digital at reception. The link is \textbf{broadband}: the line is divided into frequency bands, so voice calls (low frequencies) and Internet data (higher frequencies) travel on the same wire simultaneously without disturbing each other.
+\item The CCTV cameras produce a continuous electrical video signal: it is \textbf{analog}, sent in \textbf{baseband} (the cable carries only that one video signal per camera).
+\end{enumerate}
+
+\textbf{Question 5 — Completed synthesis table.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Link} & \textbf{Directional mode} & \textbf{Serial / Parallel} & \textbf{Sync / Async} & \textbf{Signal type} \\
+\hline
+Lab PCs -- server & Full-duplex: both directions at once & Serial: reliable over 30 m, cheap cabling & Synchronous: large files, no per-character overhead & Baseband, digital \\
+\hline
+PC -- printer & Simplex: data goes to the printer only & Parallel: very short cable, 8 bits at once & Asynchronous: characters arrive irregularly & Baseband, digital \\
+\hline
+CCTV cameras & Simplex: video one way only & Serial: one signal per cable & Synchronous: continuous video stream & Baseband, analog \\
+\hline
+Internet (ADSL) & Full-duplex: up- and download together & Serial: single telephone pair & Synchronous (broadband link) & Broadband, analog (modem needed) \\
+\hline
+Security radios & Half-duplex: both can speak, one at a time & Serial: one radio channel & Asynchronous: speech starts at any time & Analog radio signal \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Question 6 — Critical thinking (sample paragraph).}
+
+Parallel transmission sends several bits simultaneously, which is fast \emph{only over very short distances}. Over long cables, the bits on the different wires do not arrive exactly together (skew), the many parallel wires interfere with each other, and the cable becomes thick, fragile and expensive. That is why parallel transmission is reserved for very short links such as a printer cable, while all long-distance and high-speed modern links (Ethernet networks, USB, telephone lines) use serial transmission, which is reliable, cheap and — thanks to modern electronics — extremely fast even on a single line.
+
+\begin{attention}[Common mistakes to avoid in your presentation]
+\begin{itemize}
+\item Do not confuse \emph{half-duplex} (both directions, but one at a time) with \emph{simplex} (one direction only, ever).
+\item ``Parallel is faster'' is only true over short distances: always mention distance and skew in your justification.
+\item A modem is needed because the telephone line is analog and the computer is digital — say it explicitly.
+\item Every cell of your table must contain a \emph{justification}, not just a keyword.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Chapter ICT07: Differentiating Modes of Data Transmission}
+
+\courssub{Data Transmission and Direction of Flow}
+
+\begin{definition}[Transmission mode]
+A \cle{transmission mode} defines the direction of data flow between two communicating devices. Three modes exist: \cle{simplex}, \cle{half-duplex} and \cle{full-duplex}.
+\end{definition}
+
+\begin{propriete}[Characteristics of direction modes]
+\begin{itemize}
+\item \textbf{Simplex:} Data flows in \emph{one direction only}. The transmitter never receives; the receiver never sends. Example: radio broadcasting, keyboard $\to$ CPU.
+\item \textbf{Half-duplex:} Data flows in \emph{both directions but not simultaneously}. Devices take turns. Example: walkie-talkie, legacy Ethernet hub (CSMA/CD).
+\item \textbf{Full-duplex:} Data flows in \emph{both directions simultaneously}. Requires two independent channels (or frequency division). Example: telephone, modern switched Ethernet, fibre links.
+\end{itemize}
+\end{propriete}
+
+\begin{methode}[Recognising simplex, half-duplex and full-duplex]
+To classify a communication link according to the \cle{direction of flow} of data, proceed as follows:
+\begin{enumerate}
+\item Identify the \textbf{two devices} (or stations) that exchange data, and draw them as two blocks joined by an arrow.
+\item Ask the key question: \emph{can station B send data back to station A?}
+\begin{itemize}
+\item If \textbf{no}, data flows in one direction only $\Rightarrow$ \cle{simplex} transmission (e.g. radio broadcasting, keyboard to CPU).
+\item If \textbf{yes}, ask the second question: \emph{can both stations transmit at the same time?}
+\end{itemize}
+\item If both can transmit, but \textbf{not simultaneously} (they take turns) $\Rightarrow$ \cle{half-duplex} (e.g. walkie-talkies, old Ethernet hubs).
+\item If both can transmit \textbf{simultaneously} $\Rightarrow$ \cle{full-duplex} (e.g. telephone conversation, modern switched Ethernet).
+\item Conclude by naming the mode and justifying it with the simultaneity criterion, not merely with ``two-way'': half-duplex is also two-way, but not at the same time.
+\end{enumerate}
+\textbf{Reflex:} one-way = simplex; two-way alternated = half-duplex; two-way simultaneous = full-duplex.
+\end{methode}
+
+\begin{experience}[Classifying real communication systems]
+A cybercaf\'e in Bamenda uses the following equipment: (a) a radio receiver tuned to CRTV; (b) a walkie-talkie used by the security guard; (c) a telephone used to call a supplier in Douala; (d) a keyboard connected to a computer. For each case, state the mode of transmission (simplex, half-duplex or full-duplex) and justify your answer.
+\end{experience}
+
+\begin{exoresolu}[Classifying real communication systems]
+\textbf{Solution.} We apply the two-question method: can data flow back? If yes, can it flow back at the same time?
+
+\textbf{(a) Radio receiver tuned to CRTV.} The transmitter at the broadcasting station sends the signal; the receiver in the cybercaf\'e cannot send anything back to the station. Data flows in \textbf{one direction only}: this is a \cle{simplex} transmission.
+
+\textbf{(b) Walkie-talkie.} The guard can both speak and listen, so communication is two-way. However, the user must press a button to talk and release it to listen: the two parties \textbf{cannot transmit simultaneously}; they take turns. This is a \cle{half-duplex} transmission.
+
+\textbf{(c) Telephone call to Douala.} Both speakers can talk and hear each other \textbf{at the same time} (one can even interrupt the other). This is a \cle{full-duplex} transmission.
+
+\textbf{(d) Keyboard connected to a computer.} The keyboard sends key codes to the CPU; the CPU never sends data back to the keyboard through that line. Data flows in one direction only: \cle{simplex} transmission.
+
+\textbf{Summary table:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{System} & \textbf{Justification} & \textbf{Mode} \\
+\hline
+Radio receiver & One direction only & Simplex \\
+\hline
+Walkie-talkie & Two-way, alternated & Half-duplex \\
+\hline
+Telephone & Two-way, simultaneous & Full-duplex \\
+\hline
+Keyboard & One direction only & Simplex \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exoresolu}
+
+\begin{aretenir}[Direction modes summary]
+\begin{itemize}
+\item Simplex: 1 channel, 1 direction (e.g. sensor $\to$ monitor).
+\item Half-duplex: 1 channel shared, 2 directions alternating (e.g. walkie-talkie).
+\item Full-duplex: 2 channels (or FDD), 2 directions simultaneous (e.g. telephone, switched Ethernet).
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Common trap]
+Do not confuse \emph{half-duplex} with \emph{simplex} just because only one device transmits at a given instant. The defining feature of half-duplex is that \textbf{both} devices \emph{can} transmit, but not at the same time. Simplex devices have a fixed role: one only transmits, the other only receives.
+\end{attention}
+
+\courssub{Serial and Parallel Transmission}
+
+\begin{definition}[Serial and parallel transmission]
+In \cle{serial transmission}, bits are sent sequentially over a \textbf{single} data line. In \cle{parallel transmission}, multiple bits (usually 8, 16, 32 or 64) are sent simultaneously over \textbf{multiple} data lines.
+\end{definition}
+
+\begin{propriete}[Transmission time formulas]
+For a message of $N$ bits:
+\begin{itemize}
+\item \textbf{Serial} (bit rate $D$ on one line): $T_{\text{serial}} = \dfrac{N}{D}$.
+\item \textbf{Parallel} with $n$ lines each at bit rate $D$: $T_{\text{parallel}} = \dfrac{N}{n \times D}$.
+\end{itemize}
+Always convert file size to \textbf{bits} before dividing by a bit rate (1 byte = 8 bits).
+\end{propriete}
+
+\begin{methode}[Serial vs parallel: analysis and timing]
+To compare \cle{serial} and \cle{parallel} transmission and to compute transmission times:
+\begin{enumerate}
+\item Count the \textbf{number of data lines} (channels) used: one single line carrying bits one after another $\Rightarrow$ serial; several lines carrying several bits simultaneously (typically 8, 16 or 32) $\Rightarrow$ parallel.
+\item Write the \cle{bit rate} $D$ (in bit/s) or the number of bits sent per clock pulse.
+\item For a message of $N$ bits:
+\begin{itemize}
+\item Serial: $T_{\text{serial}} = \dfrac{N}{D}$ if $D$ is the bit rate of the single line.
+\item Parallel with $n$ lines, each at bit rate $D$: $T_{\text{parallel}} = \dfrac{N}{n \times D}$.
+\end{itemize}
+\item Remember the practical reflexes: parallel is faster over \textbf{short distances} (inside the computer, printer port) but suffers from \cle{crosstalk} and \emph{skew} (bits arriving out of step) over long distances; serial is cheaper, more reliable over long distances, and is used in networks (USB, Ethernet are serial despite their speed).
+\item Always convert units consistently: 1 byte = 8 bits; KB, MB must be converted to bits before dividing by a bit rate.
+\end{enumerate}
+\end{methode}
+
+\begin{experience}[Transmission time: serial vs parallel]
+A student in Buea wants to send a file of $4\,000$ bytes to a friend. (a) The file is sent through a serial link operating at $8\,000$ bit/s. Calculate the transmission time. (b) The same file is sent through a parallel link using 8 data lines, each operating at $8\,000$ bit/s. Calculate the new transmission time. (c) Despite this result, explain why modern high-speed connections such as USB use serial transmission.
+\end{experience}
+
+\begin{exoresolu}[Transmission time: serial vs parallel]
+\textbf{Solution.}
+
+\textbf{(a) Serial link.} First convert the file size to bits:
+\[ N = 4\,000 \text{ bytes} \times 8 \text{ bits/byte} = 32\,000 \text{ bits}. \]
+The transmission time on a single line at $D = 8\,000$ bit/s is:
+\[ T_{\text{serial}} = \frac{N}{D} = \frac{32\,000}{8\,000} = 4 \text{ s}. \]
+
+\textbf{(b) Parallel link with 8 lines.} Eight bits are sent simultaneously, one per line, so the effective rate is:
+\[ D_{\text{eff}} = 8 \times 8\,000 = 64\,000 \text{ bit/s}. \]
+Hence:
+\[ T_{\text{parallel}} = \frac{N}{D_{\text{eff}}} = \frac{32\,000}{64\,000} = 0.5 \text{ s}. \]
+The parallel link is therefore 8 times faster, as expected since 8 bits travel together.
+
+\textbf{(c) Why USB is serial.} Parallel transmission requires many wires (one per bit plus control lines), which makes cables thick, expensive and fragile. Over more than a few metres, the signals on the different lines do not arrive exactly together (\emph{skew}) and interfere with each other (\emph{crosstalk}), causing errors at high speed. Serial transmission uses only one data line: by improving electronics, very high bit rates can be achieved on that single line reliably and cheaply, even over longer distances. This is why USB, SATA and Ethernet are all serial technologies.
+\end{exoresolu}
+
+\begin{savaistu}[From parallel to serial in Cameroon]
+The old Centronics printer port (DB-25) was a classic 8-bit parallel interface. Modern Cameroonian cybercaf\'es and offices use USB (serial) for printers, scanners and flash drives. Even internal buses moved from parallel (PATA/IDE) to serial (SATA) for hard drives, and from parallel PCI to serial PCIe for expansion cards.
+\end{savaistu}
+
+\courssub{Synchronous and Asynchronous Transmission}
+
+\begin{definition}[Asynchronous transmission]
+\cle{Asynchronous transmission} sends data \textbf{character by character} (typically 7 or 8 bits). Each character is framed by a \textbf{start bit} (logic 0) and one or more \textbf{stop bits} (logic 1). No common clock is shared; the receiver resynchronises on each start bit. The line may stay idle (mark state) between characters.
+\end{definition}
+
+\begin{definition}[Synchronous transmission]
+\cle{Synchronous transmission} sends data in \textbf{continuous blocks} (frames) of many bytes. Transmitter and receiver are kept in step by a \textbf{common clock signal} or by special \textbf{synchronisation (SYN) characters} at the start of each block. No start/stop bits per character; idle time is filled with SYN characters.
+\end{definition}
+
+\begin{propriete}[Asynchronous frame structure and efficiency]
+A typical asynchronous frame contains:
+\[ \text{1 start bit} + n_{\text{data}} \text{ data bits} + n_{\text{parity}} \text{ parity bit (0 or 1)} + n_{\text{stop}} \text{ stop bit(s)}. \]
+Total bits per character: $n_{\text{total}} = 1 + n_{\text{data}} + n_{\text{parity}} + n_{\text{stop}}$.
+Efficiency (useful data ratio):
+\[ \eta = \frac{n_{\text{data}}}{n_{\text{total}}} \times 100\ \%. \]
+Characters per second at bit rate $D$:
+\[ \text{cps} = \frac{D}{n_{\text{total}}}. \]
+\end{propriete}
+
+\begin{methode}[Asynchronous frames and efficiency]
+To analyse \cle{asynchronous transmission} (character-by-character, with start and stop bits):
+\begin{enumerate}
+\item Recall the frame structure: \textbf{1 start bit} (always 0, warns the receiver), then the \textbf{data bits} (usually 7 or 8), optionally a \textbf{parity bit}, then \textbf{1 or 2 stop bits} (always 1).
+\item Count the \textbf{total bits per character}: $n_{\text{total}} = 1 \text{ (start)} + n_{\text{data}} + n_{\text{parity}} + n_{\text{stop}}$.
+\item The useful (data) bits are only $n_{\text{data}}$; the rest is \cle{overhead}. The efficiency is:
+\[ \eta = \frac{n_{\text{data}}}{n_{\text{total}}} \times 100\ \%. \]
+\item Number of characters per second = $\dfrac{D}{n_{\text{total}}}$ where $D$ is the line bit rate.
+\item Reflex: asynchronous transmission is simple and cheap but wasteful (about 20--30\% overhead); it suits slow, irregular traffic such as keyboards. \cle{Synchronous transmission} sends data in large blocks framed by synchronisation characters (SYN) and is more efficient for high volumes.
+\end{enumerate}
+\end{methode}
+
+\begin{experience}[Efficiency of an asynchronous link]
+A point-of-sale terminal in a Douala supermarket sends data asynchronously at $9\,600$ bit/s. Each character is coded on 8 data bits, framed by 1 start bit, 1 parity bit and 1 stop bit. (a) How many bits are transmitted per character? (b) Calculate the efficiency of the link. (c) How many characters are transmitted per second? (d) The terminal must print a receipt containing $1\,200$ characters. Calculate the transmission time. (e) Explain why a bank data centre transferring millions of records would prefer synchronous transmission.
+\end{experience}
+
+\begin{exoresolu}[Efficiency of an asynchronous link]
+\textbf{Solution.}
+
+\textbf{(a) Bits per character.}
+\[ n_{\text{total}} = 1 \text{ (start)} + 8 \text{ (data)} + 1 \text{ (parity)} + 1 \text{ (stop)} = 11 \text{ bits}. \]
+
+\textbf{(b) Efficiency.} Only the 8 data bits are useful:
+\[ \eta = \frac{8}{11} \times 100 \approx 72.7\ \%. \]
+About 27\% of the transmitted bits are overhead.
+
+\textbf{(c) Characters per second.}
+\[ \frac{D}{n_{\text{total}}} = \frac{9\,600}{11} \approx 872.7, \]
+so about \textbf{872 characters per second}.
+
+\textbf{(d) Time for $1\,200$ characters.} Total bits to transmit:
+\[ N = 1\,200 \times 11 = 13\,200 \text{ bits}. \]
+\[ T = \frac{N}{D} = \frac{13\,200}{9\,600} = 1.375 \text{ s}. \]
+
+\textbf{(e) Why synchronous for bulk transfer.} In asynchronous mode, every character carries 3 extra bits; for millions of records this overhead becomes enormous (here, nearly 27\% of the capacity is wasted). In synchronous transmission, data is sent in large blocks of hundreds or thousands of bytes, framed by only a few synchronisation (SYN) and control bytes, so the efficiency rises well above 95\%. Both devices must share a common clock, which makes the equipment more complex and expensive, but for a bank data centre the gain in throughput justifies the cost.
+\end{exoresolu}
+
+\begin{methode}[Structuring a comparison answer]
+When a GCE question asks to \emph{distinguish} or \emph{compare} synchronous and asynchronous transmission:
+\begin{enumerate}
+\item Define each mode in one sentence: \textbf{asynchronous} = data sent character by character, each character framed by start and stop bits, no common clock, idle gaps allowed; \textbf{synchronous} = data sent in continuous blocks, transmitter and receiver kept in step by a common clock or SYN characters.
+\item Compare along \textbf{fixed criteria}, in a table or parallel paragraphs: unit of transfer, synchronisation mechanism, overhead/efficiency, speed, cost of equipment, typical applications.
+\item Give at least one \textbf{concrete example} of each (keyboard/terminal links for asynchronous; high-speed links between routers or computers for synchronous).
+\item Conclude with a justified judgement: asynchronous = simple, cheap, suited to irregular low-volume traffic; synchronous = efficient, fast, suited to large volumes.
+\end{enumerate}
+\begin{attention}[Trap]
+Do not write that synchronous transmission ``has no overhead'': it has SYN and control bytes, but very few compared with the block size. Also, ``synchronous'' does not mean ``simultaneous'' — it refers to the shared clock.
+\end{attention}
+\end{methode}
+
+\begin{experience}[GCE-style comparison question]
+(a) Define synchronous and asynchronous data transmission. (b) Construct a table comparing the two modes under the following headings: unit of transfer, synchronisation, efficiency, cost, typical application. (c) A school in Yaound\'e connects its bursar's terminal to the administration server. Advise, with reasons, which mode is suitable for (i) the terminal keyboard link and (ii) the nightly backup of the whole database to a server in another town.
+\end{experience}
+
+\begin{exoresolu}[GCE-style comparison question]
+\textbf{Solution.}
+
+\textbf{(a) Definitions.} \emph{Asynchronous transmission} is a mode in which data is sent one character at a time, each character being framed by a start bit and one or more stop bits; the receiver resynchronises on each character and the line may remain idle between characters. \emph{Synchronous transmission} is a mode in which data is sent as a continuous stream of bits grouped into blocks (frames), the transmitter and receiver being kept in step by a common clock signal or by special synchronisation characters placed at the start of each block.
+
+\textbf{(b) Comparison table.}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Asynchronous} & \textbf{Synchronous} \\
+\hline
+Unit of transfer & One character (5--8 bits) & A block/frame of many bytes \\
+\hline
+Synchronisation & Start and stop bits on each character & Common clock or SYN characters per block \\
+\hline
+Efficiency & Low (20--30\% overhead) & High (small overhead relative to block) \\
+\hline
+Speed & Relatively low & High \\
+\hline
+Cost of equipment & Cheap and simple & More complex and expensive \\
+\hline
+Typical application & Keyboards, terminals, modems on slow lines & High-speed links between computers and routers \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{(c) Advice.} (i) For the \textbf{keyboard link}, keystrokes arrive irregularly, one character at a time, and volume is tiny: \emph{asynchronous} transmission is ideal because it is cheap, simple and tolerates idle gaps. (ii) For the \textbf{nightly backup} of a whole database, the volume is large and the transfer must be as fast as possible: \emph{synchronous} transmission is preferable because its high efficiency maximises throughput and reduces the backup time.
+\end{exoresolu}
+
+\begin{aretenir}[Synchronous vs asynchronous at a glance]
+\begin{itemize}
+\item \textbf{Asynchronous:} start/stop bits per character, no shared clock, low efficiency ($\sim$70\%), cheap UARTs, used for keyboards, mice, legacy serial ports (RS-232).
+\item \textbf{Synchronous:} block framing with SYN/flags, shared clock or embedded clock, high efficiency ($>$95\%), used for HDLC, PPP, Ethernet, fibre, mobile backhaul.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Bit Rate and Baud Rate}
+
+\begin{definition}[Bit rate and baud rate]
+The \cle{bit rate} $D$ (in bit/s) is the number of \textbf{data bits} transmitted per second. The \cle{baud rate} $R$ (in bauds) is the number of \textbf{signal changes} (symbols) per second on the line. If each signal change carries $v$ bits, then $D = R \times v$. For a signal with $L$ distinct levels, $v = \log_2 L$.
+\end{definition}
+
+\begin{propriete}[Relationship between bit rate and baud rate]
+\[ D = R \times \log_2 L \]
+where $L$ is the number of distinct signal levels (symbols).
+\begin{itemize}
+\item Binary signal ($L=2$): $\log_2 2 = 1 \Rightarrow D = R$.
+\item Multi-level signal ($L>2$): $D > R$ (e.g. $L=4 \Rightarrow D=2R$; $L=16 \Rightarrow D=4R$).
+\end{itemize}
+Transmission time for $N$ bits always uses \textbf{bit rate}: $T = N/D$.
+\end{propriete}
+
+\begin{methode}[Bit rate and baud rate]
+To handle questions mixing \cle{bit rate} and \cle{baud rate}:
+\begin{enumerate}
+\item Identify the \textbf{baud rate} $R$: the number of \emph{signal changes} (symbols) per second on the line, measured in bauds.
+\item Identify the \textbf{number of bits carried per signal change} $v$ (the valence): if the signal can take $L$ distinct levels, then $v = \log_2 L$ bits per symbol.
+\item Apply the key formula:
+\[ D = R \times \log_2 L \]
+where $D$ is the bit rate in bit/s.
+\item Reflex: if the signal has only 2 levels (binary signal), then $\log_2 2 = 1$ and $D = R$: bit rate and baud rate coincide. They differ only for multi-level signals.
+\item For transmission time, always use the \textbf{bit rate}: $T = \dfrac{N}{D}$.
+\end{enumerate}
+\end{methode}
+
+\begin{experience}[Bit rate of a multi-level line]
+A modem on a CAMTEL line transmits signals that can take $L = 8$ distinct voltage levels, at a rate of $2\,400$ signal changes per second. (a) State the baud rate of the line. (b) Calculate the bit rate $D$ of the line. (c) How long would it take to transmit a message of $14\,400$ bits on this line?
+\end{experience}
+
+\begin{exoresolu}[Bit rate of a multi-level line]
+\textbf{Solution.}
+
+\textbf{(a) Baud rate.} The baud rate is the number of signal changes per second, given directly:
+\[ R = 2\,400 \text{ bauds}. \]
+
+\textbf{(b) Bit rate.} Each signal change can carry $\log_2 L$ bits of information. With $L = 8$ levels:
+\[ \log_2 8 = 3 \text{ bits per signal change}, \]
+because $2^3 = 8$: three bits are needed to distinguish 8 different levels. Applying the formula:
+\[ D = R \times \log_2 L = 2\,400 \times 3 = 7\,200 \text{ bit/s}. \]
+Notice that the bit rate is three times the baud rate: the two quantities are \textbf{not} equal here because the signal is not binary.
+
+\textbf{(c) Transmission time.} Using the bit rate:
+\[ T = \frac{N}{D} = \frac{14\,400}{7\,200} = 2 \text{ s}. \]
+
+\textbf{Check:} in 2 seconds the line makes $2\,400 \times 2 = 4\,800$ signal changes, each carrying 3 bits, giving $4\,800 \times 3 = 14\,400$ bits, which matches the message size. The answer is consistent.
+\end{exoresolu}
+
+\begin{attention}[Exam trap]
+Never use baud rate to compute transmission time of a data file. Always convert to bit rate first using $D = R \log_2 L$. If the question gives ``2400 baud'' and ``8 levels'', the bit rate is 7200 bit/s, not 2400 bit/s.
+\end{attention}
+
+\courssub{Signal Types: Analog/Digital, Baseband/Broadband}
+
+\begin{definition}[Analog and digital signals]
+An \cle{analog signal} varies \emph{continuously} over time, taking infinitely many values (e.g. human voice, radio waves). A \cle{digital signal} takes only a \emph{finite set of discrete values} (usually two voltage levels representing 0 and 1).
+\end{definition}
+
+\begin{definition}[Baseband and broadband transmission]
+\cle{Baseband} transmission sends a \textbf{digital} signal directly onto the medium, using its \textbf{entire capacity} for a single channel (e.g. Ethernet LAN). \cle{Broadband} transmission divides the medium into \textbf{multiple frequency channels}, each carrying a modulated \textbf{analog} signal (e.g. cable TV, ADSL).
+\end{definition}
+
+\begin{propriete}[Conversion devices]
+\begin{itemize}
+\item \cle{Modem} (MOdulator/DEModulator): converts digital data $\leftrightarrow$ analog signal for transmission over analog lines (telephone, cable).
+\item \cle{Codec} (COder/DECoder): converts analog voice $\leftrightarrow$ digital bit stream (sampling, quantisation) for digital networks (mobile, VoIP).
+\item \cle{Repeater}: regenerates digital signals (baseband) to extend distance.
+\item \cle{Amplifier}: boosts analog signals (broadband) but also amplifies noise.
+\end{itemize}
+\end{propriete}
+
+\begin{methode}[Signal type identification]
+To classify a signal or a transmission medium:
+\begin{enumerate}
+\item \textbf{Analog or digital?} Look at the shape: a signal that varies \emph{continuously} over time (smooth wave, infinitely many values) is \cle{analog} (human voice, radio waves); a signal that takes only a \emph{finite set of discrete values} (usually two levels, 0 and 1) is \cle{digital} (computer data).
+\item Conversion reflexes: to send digital data on an analog line (telephone), use a \cle{modem} (modulation/demodulation); to carry analog voice on a digital network, use a \textbf{codec} (sampling, e.g. in mobile telephony).
+\item \textbf{Baseband or broadband?} Ask: does the signal use the \emph{whole capacity} of the medium for a single channel, sent directly without carrier? $\Rightarrow$ \cle{baseband} (digital signals on Ethernet LAN cables). Or is the medium \emph{divided into several frequency channels}, each carrying a modulated analog signal? $\Rightarrow$ \cle{broadband} (cable TV, ADSL, where many channels share one cable).
+\item Distance reflex: baseband digital signals weaken quickly (limited distance, need repeaters); broadband analog signals travel further with amplifiers.
+\end{enumerate}
+\end{methode}
+
+\begin{experience}[Identifying signal and transmission types]
+For each situation, state whether the transmission is analog or digital, and baseband or broadband where applicable, justifying each answer: (a) a computer in a school LAN sends frames directly onto the Ethernet cable, using the whole cable capacity; (b) a household in Yaound\'e receives cable television, where dozens of TV channels travel on the same coaxial cable at different frequencies; (c) the human voice entering a telephone microphone; (d) an MTN subscriber's voice carried inside the digital mobile network after conversion.
+\end{experience}
+
+\begin{exoresolu}[Identifying signal and transmission types]
+\textbf{Solution.}
+
+\textbf{(a) Ethernet frames on a LAN cable.} The frames are sequences of 0s and 1s coded as two voltage levels: the signal is \cle{digital}. It is sent directly onto the cable without any carrier frequency and uses the entire capacity of the medium for one channel: this is \cle{baseband} transmission.
+
+\textbf{(b) Cable television.} Each TV channel modulates its own carrier frequency, and many channels share the same coaxial cable simultaneously at different frequencies: the medium is divided into multiple frequency channels. This is \cle{broadband} transmission, and the signals are \cle{analog} (modulated carriers).
+
+\textbf{(c) Voice entering a microphone.} The sound pressure and the electrical signal produced vary continuously and smoothly over time, taking infinitely many values: this is an \cle{analog} signal.
+
+\textbf{(d) Voice inside the digital mobile network.} Before transmission over the network, the analog voice is sampled and coded into binary digits by a codec. Inside the network it therefore travels as a \cle{digital} signal, which is more resistant to noise and easier to regenerate with repeaters; it is converted back to analog form at the receiving end.
+
+\textbf{Key idea:} analog = continuous variation; digital = discrete levels; baseband = one digital channel using the whole medium; broadband = several analog channels sharing the medium by frequency division.
+\end{exoresolu}
+
+\begin{savaistu}[Cameroon context: CAMTEL, MTN, Orange]
+CAMTEL's fixed-line network historically used analog copper pairs (baseband voice). ADSL added broadband by splitting the line into voice (low frequency) and data (high frequency) channels. MTN and Orange Cameroon use digital mobile networks (GSM, 3G, 4G) where voice is coded by codecs (AMR, EVRC) into digital streams. Fibre-to-the-home (FTTH) deployed in Yaound\'e and Douala uses baseband digital transmission (GPON) over optical fibre.
+\end{savaistu}
+
+\courssub{Comprehensive Examination Problem}
+
+\begin{methode}[Tackling a multi-part GCE problem]
+For a long structured question mixing several notions of the chapter:
+\begin{enumerate}
+\item \textbf{Read fully first}, then answer part by part in the order given; GCE parts usually progress from definitions to calculations to justification.
+\item For definitions, give \textbf{one precise sentence} plus a \textbf{one-line example}.
+\item For calculations, \textbf{write the formula symbolically first}, then substitute values with units, then give the result with its unit and a short interpretation.
+\item For ``justify/advise'' parts, always link the property of the mode (direction, overhead, medium use) to the \textbf{need of the situation} (volume, speed, cost, distance).
+\item Finish with a consistency check: recompute roughly, or verify that the order of magnitude is plausible.
+\end{enumerate}
+\end{methode}
+
+\begin{experience}[Comprehensive GCE-style problem]
+An NGO in Bamenda connects two offices. Link A carries data from a sensor to a central computer only, one bit at a time, each sensor reading of 8 bits being framed by 1 start bit and 1 stop bit, at $1\,200$ bit/s. Link B connects the two office servers so that they exchange large files in both directions at the same time, in synchronous blocks of $1\,000$ bytes with 6 control bytes per block, at $128\,000$ bit/s.
+(a) State the direction mode of link A and of link B. (b) State whether link A is serial or parallel, and synchronous or asynchronous. (c) Calculate the time for link A to send 300 sensor readings. (d) Calculate the efficiency of link B and the time to transfer a file of $500\,000$ bytes. (e) The NGO hesitates between baseband and broadband for a future cable network carrying both Internet and TV. Advise them.
+\end{experience}
+
+\begin{exoresolu}[Comprehensive GCE-style problem]
+\textbf{Solution.}
+
+\textbf{(a) Direction modes.} Link A carries data from the sensor to the computer \emph{only}: one direction, so it is \cle{simplex}. Link B allows both servers to exchange files \emph{in both directions at the same time}: it is \cle{full-duplex}.
+
+\textbf{(b) Nature of link A.} Bits are sent \emph{one at a time} on a single line: it is a \cle{serial} transmission. Each 8-bit reading is framed by a start bit and a stop bit, with no common clock: it is \cle{asynchronous}.
+
+\textbf{(c) Time for 300 readings on link A.} Bits per reading:
+\[ n_{\text{total}} = 1 + 8 + 1 = 10 \text{ bits}. \]
+Total bits:
+\[ N = 300 \times 10 = 3\,000 \text{ bits}. \]
+Transmission time:
+\[ T = \frac{N}{D} = \frac{3\,000}{1\,200} = 2.5 \text{ s}. \]
+
+\textbf{(d) Link B: efficiency and file transfer time.} Each block carries $1\,000$ useful bytes out of $1\,000 + 6 = 1\,006$ transmitted bytes:
+\[ \eta = \frac{1\,000}{1\,006} \times 100 \approx 99.4\ \%. \]
+This confirms the high efficiency of synchronous transmission. Number of blocks needed for the file:
+\[ \frac{500\,000}{1\,000} = 500 \text{ blocks}. \]
+Total bytes transmitted, including control bytes:
+\[ 500 \times 1\,006 = 503\,000 \text{ bytes} = 503\,000 \times 8 = 4\,024\,000 \text{ bits}. \]
+Transfer time:
+\[ T = \frac{4\,024\,000}{128\,000} = 31.4375 \text{ s} \approx 31.4 \text{ s}. \]
+\emph{Consistency check:} the useful data alone is $500\,000 \times 8 = 4\,000\,000$ bits, which at $128\,000$ bit/s would take $31.25$ s; adding the small overhead gives a slightly larger time, $31.4$ s, which is coherent.
+
+\textbf{(e) Advice: baseband or broadband.} The NGO wants \emph{both Internet and TV} on the same cable, i.e. several services simultaneously. \cle{Broadband} transmission is the right choice: the cable's capacity is divided into several frequency channels, so TV channels and Internet data can travel at the same time without interfering, exactly as cable operators do. Baseband would suit a simple data-only LAN, but it offers only one channel using the whole medium and cannot carry the two services concurrently.
+\end{exoresolu}
+
+\begin{exercice}[Practice exercises]
+\begin{enumerate}
+\item A temperature sensor sends a reading every 5 seconds. Each reading is 12 bits, transmitted asynchronously with 1 start bit, 1 parity bit and 2 stop bits at 2400 bit/s. (a) How many bits per frame? (b) What is the line efficiency? (c) What percentage of the line capacity is actually used by this sensor?
+\item A microwave link operates at 1 Mbaud with 16-QAM (16 signal levels). (a) What is the bit rate? (b) How long to send a 2 MB file? (1 MB = $2^{20}$ bytes).
+\item Classify each as analog/digital and baseband/broadband: (i) VGA cable to a monitor; (ii) FM radio broadcast; (iii) ADSL line; (iv) HDMI cable.
+\item A full-duplex fibre link runs at 1 Gbit/s in each direction. A backup of 50 GB is sent from Server X to Server Y while a 10 GB database sync runs from Y to X. How long until both transfers finish? (Assume no overhead, 1 GB = $10^9$ bytes).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{(a)} Bits per frame = 1 start + 12 data + 1 parity + 2 stop = 16 bits.\\
+\textbf{(b)} Efficiency = $12/16 \times 100 = 75\%$.\\
+\textbf{(c)} Sensor sends one frame every 5 s $\Rightarrow$ average data rate = $12 \text{ bits} / 5 \text{ s} = 2.4 \text{ bit/s}$. Line capacity = 2400 bit/s. Utilisation = $2.4 / 2400 \times 100 = 0.1\%$.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+\textbf{(a)} $L=16 \Rightarrow \log_2 16 = 4$ bits/symbol. $D = 1 \times 10^6 \times 4 = 4 \text{ Mbit/s}$.\\
+\textbf{(b)} File = $2 \times 2^{20} \times 8 = 16\,777\,216$ bits. $T = 16\,777\,216 / 4\,000\,000 = 4.194 \text{ s}$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+\textbf{(i)} VGA: analog, baseband (separate RGB + sync on one cable, but each is analog baseband).\\
+\textbf{(ii)} FM radio: analog, broadband (multiple stations share spectrum by frequency division).\\
+\textbf{(iii)} ADSL: digital data modulated on analog carriers $\Rightarrow$ broadband (frequency division of voice and data channels).\\
+\textbf{(iv)} HDMI: digital, baseband (TMDS serial digital streams on multiple differential pairs, but each pair is baseband digital).
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+Full-duplex: both directions simultaneous. X$\to$Y: 50 GB = $50 \times 10^9 \times 8 = 400 \times 10^9$ bits at 1 Gbit/s = 400 s. Y$\to$X: 10 GB = $80 \times 10^9$ bits at 1 Gbit/s = 80 s. Since simultaneous, total time = max(400, 80) = \textbf{400 s} (6 min 40 s).
+\end{corrige}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item A transmission in which data flows in one direction only is called:
+\begin{enumerate}
+\item half-duplex \item simplex \item full-duplex \item serial
+\end{enumerate}
+\item In parallel transmission:
+\begin{enumerate}
+\item bits are sent one after another on a single wire
+\item several bits are sent simultaneously on several wires
+\item bits are grouped into frames with start and stop bits
+\item the clock signal is sent on a separate channel
+\end{enumerate}
+\item Asynchronous transmission is characterised by:
+\begin{enumerate}
+\item a shared clock between sender and receiver
+\item the absence of any extra control bits
+\item a start bit and a stop bit around each character
+\item the transmission of large blocks only
+\end{enumerate}
+\item A baseband transmission:
+\begin{enumerate}
+\item carries several signals at different frequencies on one medium
+\item uses the whole bandwidth of the medium for a single digital signal
+\item is always analog
+\item requires a radio antenna
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+State whether each statement is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item A walkie-talkie operates in full-duplex mode.
+\item Serial transmission is generally slower per wire but cheaper over long distances than parallel transmission.
+\item Synchronous transmission needs no clock agreement between sender and receiver.
+\item A modem converts digital signals into analog signals and vice versa.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two clear sentences:
+\begin{enumerate}
+\item data transmission;
+\item simplex transmission;
+\item full-duplex transmission;
+\item broadband transmission.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculation]
+A device transmits characters asynchronously. Each frame contains 1 start bit, 8 data bits, 1 parity bit and 1 stop bit.
+\begin{enumerate}
+\item How many bits does one complete frame contain?
+\item Calculate the percentage overhead (proportion of non-data bits) of this transmission.
+\item If the line transmits $9\,600$ bits per second, how many useful data bits are transmitted per second?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Printer cable]
+A school in Bamenda connects a printer to a computer using a cable that has 8 data wires side by side.
+\begin{enumerate}
+\item Identify the mode of transmission used between the computer and the printer.
+\item State two advantages and two disadvantages of this mode.
+\item Explain why USB printers have replaced this technology in most schools and offices.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Asynchronous frame]
+\begin{enumerate}
+\item Draw and label the frame of one character transmitted asynchronously with even parity, using the data bits $10110010$.
+\item Calculate the percentage overhead if each frame carries 8 data bits, 1 start bit, 1 parity bit and 1 stop bit.
+\item Give one common application of asynchronous transmission.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Comparison table]
+Copy and complete the following comparison table of synchronous and asynchronous transmission under the given headings.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Synchronous} & \textbf{Asynchronous} \\
+\hline
+Framing & & \\
+\hline
+Speed & & \\
+\hline
+Cost & & \\
+\hline
+One application & & \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exercice}
+
+\begin{exercice}[Analog or digital?]
+For each of the following situations, state whether the signal used is \textbf{analog} or \textbf{digital}, and justify briefly:
+\begin{enumerate}
+\item the sound produced by a loudspeaker connected to a radio;
+\item the data exchanged between a computer and a USB flash drive;
+\item the voice signal on an old telephone line before ADSL;
+\item the signal stored on a CD.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Modes of transmission in Cameroon — structured question]
+\begin{enumerate}
+\item Define the term \emph{mode of data transmission}. \hfill (2 marks)
+\item Differentiate between simplex, half-duplex and full-duplex transmission, stating clearly the direction of flow in each case. \hfill (6 marks)
+\item For each of the three modes, give one concrete example drawn from everyday life in Cameroon (for example radio broadcasting, walkie-talkies used by security guards, or a telephone conversation), and justify your choice. \hfill (6 marks)
+\item A cybercafé in Douala connects its computers to a switch. State the mode of transmission used on the Ethernet links and explain why this mode is suitable. \hfill (4 marks)
+\item Draw a labelled diagram showing the direction of data flow for each of the three modes. \hfill (6 marks)
+\end{enumerate}
+\hfill \textbf{(Total: 24 marks)}
+\end{exercice}
+
+\begin{exercice}[MTN home Internet — scenario question]
+MTN provides Internet to a home in Yaoundé through a telephone line that also carries TV channels at the same time.
+\begin{enumerate}
+\item State whether this transmission is baseband or broadband, and justify your answer. \hfill (4 marks)
+\item Explain the role of the modem in this setup. \hfill (4 marks)
+\item Distinguish between an analog signal and a digital signal, giving one example of each from this scenario. \hfill (4 marks)
+\item The line transmits data serially. Explain what serial transmission means and give one reason why it is preferred over parallel transmission for long distances. \hfill (4 marks)
+\item State two advantages that broadband transmission brings to this household. \hfill (4 marks)
+\end{enumerate}
+\hfill \textbf{(Total: 20 marks)}
+\end{exercice}
+
+\begin{exercice}[GCE Paper 1 style objective quiz]
+Answer all ten questions by choosing the single correct option (A, B, C or D).
+\begin{enumerate}
+\item Data transmission in which both parties can send and receive simultaneously is:
+\begin{enumerate}
+\item simplex \item half-duplex \item full-duplex \item multiplex
+\end{enumerate}
+\item The transmission mode best suited to very long distances because of its low cabling cost is:
+\begin{enumerate}
+\item parallel \item serial \item synchronous \item broadband
+\end{enumerate}
+\item In asynchronous transmission, each character is surrounded by:
+\begin{enumerate}
+\item a clock pulse and a checksum
+\item a start bit and a stop bit
+\item two parity bits
+\item a header and a trailer block
+\end{enumerate}
+\item Synchronous transmission is generally:
+\begin{enumerate}
+\item slower but cheaper than asynchronous transmission
+\item faster and used for large blocks of data
+\item impossible on serial lines
+\item always analog
+\end{enumerate}
+\item A signal that varies continuously over time is:
+\begin{enumerate}
+\item digital \item discrete \item analog \item binary
+\end{enumerate}
+\item Baseband transmission uses:
+\begin{enumerate}
+\item several frequency channels at once
+\item the entire bandwidth for one signal
+\item only radio waves
+\item only fiber optics
+\end{enumerate}
+\item An example of simplex transmission is:
+\begin{enumerate}
+\item a telephone call \item a walkie-talkie conversation \item CRTV radio broadcasting \item a WhatsApp voice call
+\end{enumerate}
+\item The device that converts digital computer signals into analog signals for a telephone line is a:
+\begin{enumerate}
+\item hub \item modem \item switch \item repeater
+\end{enumerate}
+\item If an asynchronous frame has 11 bits of which 8 are data bits, the percentage overhead is approximately:
+\begin{enumerate}
+\item $27.3\%$ \item $72.7\%$ \item $8\%$ \item $11\%$
+\end{enumerate}
+\item A cable carrying 8 bits at a time between a computer and a printer uses:
+\begin{enumerate}
+\item serial transmission \item parallel transmission \item simplex transmission \item broadband transmission
+\end{enumerate}
+\end{enumerate}
+\hfill \textbf{(1 mark each, Total: 10 marks)}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Exercises and Corrections on Modes of Data Transmission}
+
+\begin{corrige}[Exercise 1 — Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: (b) simplex.} In a \cle{simplex} transmission, data flows in one direction only, from the sender to the receiver (e.g. CRTV radio broadcasting). Half-duplex allows both directions but alternately, full-duplex allows both directions simultaneously, and serial refers to how bits are placed on the line, not to direction.
+\item \textbf{Answer: (b) several bits are sent simultaneously on several wires.} In \cle{parallel} transmission, each wire carries one bit, so a group of bits (e.g. 8 bits on 8 wires) is sent at the same time. Option (a) describes serial transmission and option (c) describes asynchronous framing.
+\item \textbf{Answer: (c) a start bit and a stop bit around each character.} \cle{Asynchronous} transmission has no shared clock; each character is framed by a start bit and one or more stop bits (often with a parity bit) so the receiver can resynchronise on every character.
+\item \textbf{Answer: (b) uses the whole bandwidth of the medium for a single digital signal.} In \cle{baseband} transmission (typical of Ethernet LANs), one digital signal occupies the entire capacity of the medium. Carrying several signals at different frequencies is the definition of broadband.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True or false]
+\begin{enumerate}
+\item \textbf{False.} A walkie-talkie operates in \cle{half-duplex} mode: the two users can both talk and listen, but not at the same time — each must press a button and wait for the other to finish.
+\item \textbf{True.} Serial transmission sends bits one after another on a single channel, so each wire carries fewer bits per second than a parallel bundle; but it needs only one or two wires, which makes cabling far cheaper and more reliable over long distances.
+\item \textbf{False.} \cle{Synchronous} transmission requires the sender and receiver to share the same clock (transmitted with the data or on a separate line) so that bits are sampled at exactly the right instants. It is asynchronous transmission that works without a shared clock.
+\item \textbf{True.} A \cle{modem} (MOdulator--DEModulator) converts the digital signals of a computer into analog signals suitable for a telephone line (modulation) and performs the reverse conversion on reception (demodulation).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Data transmission:} the process of sending data (in the form of electrical, electromagnetic or optical signals) from one device to another through a transmission medium such as a cable, optical fibre or radio waves.
+\item \textbf{Simplex transmission:} a mode of transmission in which data flows in one direction only; one device is always the sender and the other is always the receiver (e.g. television broadcasting).
+\item \textbf{Full-duplex transmission:} a mode of transmission in which data can flow in both directions at the same time, so that both devices can send and receive simultaneously (e.g. a telephone conversation).
+\item \textbf{Broadband transmission:} a mode of transmission in which the bandwidth of the medium is divided into several frequency channels, allowing multiple signals (data, voice, TV) to be carried simultaneously on the same medium, usually in analog form.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculation]
+\begin{enumerate}
+\item One complete frame contains:
+\[ 1 \text{ (start)} + 8 \text{ (data)} + 1 \text{ (parity)} + 1 \text{ (stop)} = 11 \text{ bits}. \]
+\item The non-data (control) bits are the start, parity and stop bits, i.e. $3$ bits out of $11$:
+\[ \text{Overhead} = \frac{3}{11} \times 100 \approx 27.3\%. \]
+\item Out of every $11$ bits transmitted, $8$ are useful data bits. Hence the useful bit rate is:
+\[ 9\,600 \times \frac{8}{11} \approx 6\,982\ \mathrm{bits/s} \]
+(about $873\ \mathrm{characters/s}$, since each character carries 8 data bits).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Printer cable]
+\begin{enumerate}
+\item The cable carries 8 bits at the same time on 8 data wires placed side by side: this is \cle{parallel transmission}.
+\item \textbf{Advantages:} (i) it is fast over short distances because a whole byte is transferred in one operation; (ii) it is simple to implement inside devices and for very short links. \textbf{Disadvantages:} (i) the cable is thick, heavy and expensive because it contains many wires; (ii) over long distances the bits on different wires arrive at slightly different times (skew) and the wires interfere with one another (crosstalk), so it is unreliable beyond a few metres.
+\item USB uses \cle{serial transmission}: bits are sent one after another on a single pair of wires. USB cables are therefore thinner, cheaper and more reliable, the connectors are small and standardised, and modern serial techniques achieve far higher speeds than the old parallel port. This is why USB printers have replaced parallel-port printers in schools and offices.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Asynchronous frame]
+\begin{enumerate}
+\item The data bits are $10110010$, which contain four 1s — an even number — so with \emph{even} parity the parity bit is $0$. The complete frame, in order of transmission, is:
+
+\begin{center}
+\begin{popfigure}
+\begin{tikzpicture}[x=1.05cm,y=0.85cm]
+\foreach \i/\b/\c in {0/0/poporange, 1/1/popblue, 2/0/popblue, 3/1/popblue, 4/1/popblue, 5/0/popblue, 6/0/popblue, 7/1/popblue, 8/0/popblue, 9/0/poppurple, 10/1/popgreen}{
+  \draw[fill=\c!25,draw=\c] (\i,0) rectangle (\i+1,1);
+  \node at (\i+0.5,0.5) {\textbf{\b}};
+}
+\node[align=center] at (0.5,-0.45) {\footnotesize start};
+\node[align=center] at (4.5,-0.45) {\footnotesize 8 data bits};
+\node[align=center] at (9.5,-0.45) {\footnotesize parity};
+\node[align=center] at (10.5,-0.45) {\footnotesize stop};
+\draw[->,thick,popdark] (0,1.35) -- (11,1.35) node[right]{\footnotesize time};
+\end{tikzpicture}
+\legende{Asynchronous frame for the character $10110010$ with even parity (parity bit $= 0$).}
+\end{popfigure}
+\end{center}
+
+\item The frame contains $1 + 8 + 1 + 1 = 11$ bits, of which $3$ are control bits:
+\[ \text{Overhead} = \frac{3}{11} \times 100 \approx 27.3\%. \]
+\item A common application of asynchronous transmission is the communication between a computer and a keyboard or a mouse, or between a computer and a modem on a serial (RS-232) port — situations where characters arrive irregularly, one at a time.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Comparison table]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Synchronous} & \textbf{Asynchronous} \\
+\hline
+Framing & Data sent in large blocks; sender and receiver share the same clock (clock sent with data or on a separate line) & Each character framed individually by a start bit and a stop bit (plus optional parity bit); no shared clock \\
+\hline
+Speed & High speed, little overhead, suitable for large volumes of data & Slower, because of the start, stop and parity bits added to every character \\
+\hline
+Cost & More expensive: requires precise clocking and more complex equipment & Cheap: simple equipment, no clock line needed \\
+\hline
+One application & Data transfer between a computer and a hard disk, or between network devices (e.g. high-speed links between switches) & Keyboard/mouse link, serial (RS-232) link between a computer and a modem \\
+\hline
+\end{tabularx}
+\end{center}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Analog or digital?]
+\begin{enumerate}
+\item \textbf{Analog.} The loudspeaker produces a sound wave that varies continuously with the music or voice; it is driven by a continuously varying electrical signal.
+\item \textbf{Digital.} The data exchanged between a computer and a USB flash drive consists of discrete binary values (0s and 1s) coded by two distinct voltage levels.
+\item \textbf{Analog.} On the traditional telephone network, the voice was carried as a continuously varying electrical current that reproduced the variations of the sound wave.
+\item \textbf{Digital.} A CD stores information as a succession of pits and lands read as two discrete states, i.e. as binary (digital) data.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — Modes of transmission in Cameroon (structured question)]
+\textbf{Indicative mark scheme and expected answers.}
+
+\begin{enumerate}
+\item \textbf{Definition (2 marks).} A mode of data transmission is the way in which data is organised and directed when it travels between two devices: it describes the direction of flow (simplex, half-duplex, full-duplex) and/or the way bits are placed on the medium (serial or parallel, synchronous or asynchronous). \emph{1 mark for mentioning the sending of data between devices; 1 mark for the idea of direction/organisation of the flow.}
+
+\item \textbf{Differentiation (6 marks — 2 per mode).}
+\begin{itemize}
+\item \textbf{Simplex:} data flows in \emph{one direction only}; one station is always the transmitter, the other always the receiver.
+\item \textbf{Half-duplex:} data flows in \emph{both directions, but alternately} — the two stations take turns to transmit; they cannot send at the same time.
+\item \textbf{Full-duplex:} data flows in \emph{both directions simultaneously}; each station can send and receive at the same time.
+\end{itemize}
+\emph{1 mark for the direction of flow, 1 mark for a clear explanation, in each case.}
+
+\item \textbf{Cameroonian examples (6 marks — 2 per example: 1 for the example, 1 for the justification).}
+\begin{itemize}
+\item \textbf{Simplex:} CRTV radio or television broadcasting — the station in Yaoundé transmits and the listeners' receivers can only receive; they cannot send data back on the same channel.
+\item \textbf{Half-duplex:} walkie-talkies used by security guards in a company in Douala — each guard must press the talk button and release it to let the colleague reply; communication is two-way but never simultaneous.
+\item \textbf{Full-duplex:} a telephone conversation between two subscribers on the MTN or Orange network — both speakers can talk and hear each other at the same time.
+\end{itemize}
+
+\item \textbf{Cybercafé in Douala (4 marks).} The Ethernet links between the computers and the switch operate in \cle{full-duplex} mode (2 marks): each computer can send data to the switch while simultaneously receiving data from it, because modern switched Ethernet uses separate wire pairs for each direction and there are no collisions on a switched link. This is suitable because it doubles the effective capacity of the link and gives fast, smooth Internet browsing for all the clients of the cybercafé (2 marks).
+
+\item \textbf{Diagrams (6 marks — 2 per correctly labelled diagram).}
+
+\begin{center}
+\begin{popfigure}
+\begin{tikzpicture}[>=stealth, thick]
+% Simplex
+\node[draw,rounded corners,fill=popblueL,minimum width=1.2cm] (a1) at (0,2.6) {A};
+\node[draw,rounded corners,fill=popblueL,minimum width=1.2cm] (b1) at (3,2.6) {B};
+\draw[->,popblue] (a1) -- (b1);
+\node at (1.5,3.15) {\footnotesize Simplex};
+% Half-duplex
+\node[draw,rounded corners,fill=popgreenL,minimum width=1.2cm] (a2) at (0,1.3) {A};
+\node[draw,rounded corners,fill=popgreenL,minimum width=1.2cm] (b2) at (3,1.3) {B};
+\draw[->,popgreen] (a2.30) -- (b2.150);
+\draw[->,popgreen,dashed] (b2.210) -- (a2.330);
+\node at (1.5,0.75) {\footnotesize Half-duplex (alternate)};
+% Full-duplex
+\node[draw,rounded corners,fill=poporange!25,minimum width=1.2cm] (a3) at (0,0) {A};
+\node[draw,rounded corners,fill=poporange!25,minimum width=1.2cm] (b3) at (3,0) {B};
+\draw[->,poporange] (a3.30) -- (b3.150);
+\draw[->,poporange] (b3.210) -- (a3.330);
+\node at (1.5,-0.55) {\footnotesize Full-duplex (simultaneous)};
+\end{tikzpicture}
+\legende{Direction of data flow: simplex (one way), half-duplex (both ways, alternately), full-duplex (both ways at once).}
+\end{popfigure}
+\end{center}
+\end{enumerate}
+\textbf{Examiner's expectations:} precise vocabulary (direction, simultaneously, alternately), justified examples, and clean labelled diagrams with arrows showing the direction of flow.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — MTN home Internet (scenario question)]
+\textbf{Indicative mark scheme and expected answers.}
+
+\begin{enumerate}
+\item \textbf{Baseband or broadband? (4 marks).} This is \cle{broadband} transmission (2 marks). Justification: the same telephone line carries several services at the same time — Internet data and TV channels — because the bandwidth of the line is divided into several frequency channels, each service occupying its own band of frequencies (2 marks). A baseband line could carry only one signal at a time.
+
+\item \textbf{Role of the modem (4 marks).} The computer produces digital signals, whereas the telephone line carries analog signals on its frequency channels. The modem \emph{modulates} the digital data from the computer into analog signals suitable for the line when sending (2 marks), and \emph{demodulates} the incoming analog signals back into digital data that the computer can understand when receiving (2 marks). (MOdulator--DEModulator.)
+
+\item \textbf{Analog vs digital (4 marks).} An \cle{analog} signal varies continuously over time and can take any value within a range (1 mark) — example here: the TV/voice-type signal travelling on the telephone line (1 mark). A \cle{digital} signal takes only discrete values, typically two levels representing 0 and 1 (1 mark) — example: the data exchanged between the computer and the modem inside the home (1 mark).
+
+\item \textbf{Serial transmission (4 marks).} In serial transmission, the bits of the data are sent one after another, in sequence, over a single communication channel (2 marks). It is preferred over parallel transmission for long distances because it requires only one or two wires, so the cable is much cheaper, and it avoids the problems of skew and crosstalk between many parallel wires, which makes it more reliable over long links such as the line from MTN to the home (2 marks).
+
+\item \textbf{Advantages of broadband for the household (4 marks — 2 per advantage).}
+\begin{itemize}
+\item Several services are received simultaneously on one line: the family can watch TV while someone browses the Internet.
+\item The single line is used more efficiently (higher total capacity), so the household pays for one connection instead of several separate lines.
+\end{itemize}
+\emph{Accept any two coherent advantages, e.g. higher data rates, sharing of the medium.}
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — GCE Paper 1 style objective quiz]
+\begin{enumerate}
+\item \textbf{(c) full-duplex.} Both parties can send and receive simultaneously (e.g. a telephone call).
+\item \textbf{(b) serial.} One channel only, so cabling is cheap and reliable over long distances.
+\item \textbf{(b) a start bit and a stop bit.} These bits frame each character and allow the receiver to resynchronise without a shared clock.
+\item \textbf{(b) faster and used for large blocks of data.} Synchronous transmission sends whole blocks with a shared clock, with very little overhead.
+\item \textbf{(c) analog.} An analog signal varies continuously over time; a digital signal takes discrete values.
+\item \textbf{(b) the entire bandwidth for one signal.} Baseband = one digital signal using the whole capacity of the medium.
+\item \textbf{(c) CRTV radio broadcasting.} The signal flows in one direction only, from the station to the receivers.
+\item \textbf{(b) modem.} It modulates digital data into analog signals and demodulates on reception.
+\item \textbf{(a) $27.3\%$.} Overhead $= \dfrac{11 - 8}{11} \times 100 = \dfrac{3}{11} \times 100 \approx 27.3\%$.
+\item \textbf{(b) parallel transmission.} Eight bits carried at the same time on eight wires is the definition of parallel transmission.
+\end{enumerate}
+\textbf{Mark scheme:} 1 mark per correct option, no negative marking. \textbf{Examiner's expectations:} candidates must master the precise definitions of the direction modes (simplex/half-duplex/full-duplex), the bit organisation modes (serial/parallel, synchronous/asynchronous) and the signal types (analog/digital, baseband/broadband), and be able to compute a simple percentage overhead.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap, grow cyclic, every node/.style={concept},
+  root concept/.append style={concept color=popink, font=\bfseries, text=white, minimum size=3.1cm},
+  level 1 concept/.append style={level distance=3.6cm, sibling angle=60, font=\small\bfseries, minimum size=2.2cm},
+  level 2 concept/.append style={level distance=2.3cm, font=\scriptsize, minimum size=1.5cm},
+  text=white]
+\node[root concept]{Modes of Data Transmission}
+  child[concept color=popblue]{ node {Direction of Flow}
+    child[concept color=popblue!70]{ node {Simplex} }
+    child[concept color=popblue!70]{ node {Half-duplex} }
+    child[concept color=popblue!70]{ node {Full-duplex} }
+  }
+  child[concept color=poporange]{ node {Serial vs Parallel}
+    child[concept color=poporange!70]{ node {Serial: 1 line} }
+    child[concept color=poporange!70]{ node {Parallel: many lines} }
+  }
+  child[concept color=popgreen]{ node {Synchronous}
+    child[concept color=popgreen!70]{ node {Shared clock} }
+    child[concept color=popgreen!70]{ node {Blocks of data} }
+  }
+  child[concept color=poppurple]{ node {Asynchronous}
+    child[concept color=poppurple!70]{ node {Start/stop bits} }
+    child[concept color=poppurple!70]{ node {Char by char} }
+  }
+  child[concept color=popgold]{ node {Signal Type}
+    child[concept color=popgold!70]{ node {Analog} }
+    child[concept color=popgold!70]{ node {Digital} }
+  }
+  child[concept color=poppink]{ node {Bandwidth Use}
+    child[concept color=poppink!70]{ node {Baseband} }
+    child[concept color=poppink!70]{ node {Broadband} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: the six ways of classifying data transmission.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item \cle{Data transmission}: the transfer of data (bits) between two devices over a \cle{transmission medium} (cable, fibre, radio waves).
+\item \cle{Simplex}: data flows in \textbf{one direction only} (keyboard $\to$ CPU, FM radio broadcast).
+\item \cle{Half-duplex}: data flows in \textbf{both directions, but one at a time} (walkie-talkie, CB radio).
+\item \cle{Full-duplex}: data flows in \textbf{both directions simultaneously} (telephone call, modern Ethernet).
+\item \cle{Serial transmission}: bits are sent \textbf{one after another} on a single line (USB, RS-232, fibre links).
+\item \cle{Parallel transmission}: several bits are sent \textbf{simultaneously} on several lines (old printer port, internal data bus).
+\item \cle{Synchronous transmission}: data sent as \textbf{blocks/frames} timed by a \textbf{common clock}; no start/stop bits; fast and efficient.
+\item \cle{Asynchronous transmission}: data sent \textbf{character by character}, each framed by a \textbf{start bit} (0), a \textbf{stop bit} (1) and optionally a \textbf{parity bit}; no shared clock.
+\item \cle{Analog signal}: \textbf{continuous} wave varying smoothly (voice, radio).
+\item \cle{Digital signal}: \textbf{discrete} signal with two levels (0 and 1); more resistant to noise.
+\item \cle{Baseband}: the \textbf{whole bandwidth} of the medium carries a \textbf{single digital signal} (Ethernet LANs).
+\item \cle{Broadband}: bandwidth is \textbf{divided into channels} carrying several analog signals simultaneously (cable TV, DSL).
+\end{itemize}
+
+\textbf{Comparisons to master (classic GCE tables)}
+\begin{itemize}
+\item Serial: cheap, reliable over \textbf{long distances}, slower per line but immune to \cle{skew}. Parallel: fast over \textbf{short distances} only, expensive, suffers from skew and crosstalk.
+\item Synchronous: high speed, less overhead, needs clock synchronisation and buffers. Asynchronous: simple and cheap, but start/stop bits add about $20\ \%$ overhead; suited to irregular, low-volume data (keyboard).
+\item Analog: continuous, degraded by noise. Digital: discrete values, easy to regenerate with \textbf{repeaters}, easy to encrypt and compress.
+\end{itemize}
+
+\textbf{Methods}
+\begin{itemize}
+\item To identify a mode, ask three questions: \emph{How many directions at once?} (simplex/half/full), \emph{How many lines?} (serial/parallel), \emph{Is there a clock or start/stop bits?} (synchronous/asynchronous).
+\item To compute asynchronous efficiency: $\eta = \dfrac{\text{data bits}}{\text{total bits sent}}$. Example: 7 data bits + 1 start + 1 parity + 1 stop $= 10$ bits, so $\eta = 7/10 = 70\ \%$.
+\item Match the example to the mode: telephone $\to$ full-duplex; walkie-talkie $\to$ half-duplex; radio broadcast $\to$ simplex; USB $\to$ serial; Ethernet $\to$ baseband; cable TV $\to$ broadband.
+\end{itemize}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Confusing \textbf{half-duplex} with \textbf{full-duplex}: half-duplex is two-way but \emph{not at the same time}.
+\item Believing parallel is always faster: over long distances skew makes serial (e.g.\ USB, SATA) superior.
+\item Saying asynchronous means ``no timing at all'': sender and receiver must still agree on the \textbf{bit rate} (baud rate).
+\item Mixing up the two axes: \emph{analog/digital} describes the \textbf{signal}; \emph{baseband/broadband} describes the \textbf{use of bandwidth}.
+\item Writing that broadband means ``fast internet'' in this context: here it is a \textbf{signalling technique} (multiple channels on one medium).
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Definitions must be precise and complete: for half-duplex always add ``\emph{but not simultaneously}''.
+\item In ``differentiate'' questions, give a \textbf{criterion of comparison}, then contrast both modes (a small table earns full marks).
+\item Always support a definition with one \textbf{concrete example} (keyboard, telephone, walkie-talkie, Ethernet, cable TV).
+\item Sketches score marks: one line with bits in series vs several lines with bits side by side; a frame with start/data/parity/stop bits.
+\item Expect a scenario question (e.g.\ a bank's branches in Douala and Yaound\'e): justify your choice of mode by distance, cost, speed and reliability.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
