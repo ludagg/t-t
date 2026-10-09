@@ -446,8 +446,9 @@ def us_fix(body):
     body = repair_damage(body)
     body = node_lists_fix(body)
     body = texttt_safe(body)
-    if "step/.style" in body:   # le style « step » entre en conflit avec la clé TikZ step
-        body = re.sub(r"(?<![\w/])step(?=/\.style|\s*[,\]])", lambda _m: "stepnode", body)
+    for nm in ("step", "cloud", "diamond", "ellipse", "circle", "rectangle", "star", "cylinder", "signal", "trapezium", "chip"):
+        if nm + "/.style" in body:   # un style qui porte le nom d'une forme/clé TikZ (récursion ou conflit)
+            body = re.sub(r"((?:^[ \t]*|[\[,][ \t]*))" + nm + r"(?=/\.style|[ \t]*[,\]])", lambda m: m.group(1) + nm + "node", body, flags=re.M)
     body = re.sub(r"(?<=/)\^(?=[\\\w\[(])", lambda _m: "\\textasciicircum{}", body)   # regex /^...$/ dans le texte
     body = re.sub(r"^(\s*(?:\\item\s+)?)\\(texttt|textbf|emph|textit)[ \t]+(?=[^{\s\\])([^\n]*\})[ \t]*(\\\\)?[ \t]*$", lambda m: m.group(1) + "\\" + m.group(2) + "{" + m.group(3) + (m.group(4) or "") if m.group(3).count("}") > m.group(3).count("{") else m.group(0), body, flags=re.M)   # \texttt sans accolade ouvrante
     body = re.sub(r"(?<!\\)#", lambda _m: "\\#", body)          # # nu (C#, #hashtag) -> \#
