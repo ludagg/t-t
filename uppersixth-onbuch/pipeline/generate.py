@@ -420,10 +420,33 @@ def node_lists_fix(body):
     return "".join(out)
 
 
+_TT = re.compile(r"\\texttt\{((?:\\\\|\\[{}]|\\[^{}\\]|[^{}\\]|\{[^{}]*\})*)\}")
+_TT_OK = ("textbackslash", "textasciicircum", "textasciitilde", "ldots", "dots", "textquotedbl", "textless", "textgreater", "textbar", "textunderscore")
+
+
+def texttt_safe(body):
+    """Contenu littéral (code, regex, chemins) dans \\texttt{} : échappe \\, $, accolades imbriquées, ^, ~."""
+    def one(m):
+        c = m.group(1)
+        c = re.sub(r"(?<!\\)(?<!textbackslash)(?<!textasciicircum)(?<!textasciitilde)\{([^{}]*)\}", lambda k: "\\{" + k.group(1) + "\\}", c)   # {8} -> \{8\}
+        c = re.sub(r"(?<!\\)\$", lambda _k: "\\$", c)
+        c = re.sub(r"(?<![\\\w])\^", lambda _k: "\\textasciicircum{}", c)
+        c = re.sub(r"(?<!\\)~", lambda _k: "\\textasciitilde{}", c)
+        def bs(k):
+            word = k.group(1)
+            return k.group(0) if word in _TT_OK else "\\textbackslash{}" + word
+        c = re.sub(r"(?<!\\)\\([A-Za-z]+)(?![A-Za-z])", bs, c)
+        return "\\texttt{" + c + "}"
+    return _TT.sub(one, body)
+
+
 def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
     body = node_lists_fix(body)
+    body = texttt_safe(body)
+    if "step/.style" in body:   # le style « step » entre en conflit avec la clé TikZ step
+        body = re.sub(r"(?<![\w/])step(?=/\.style|\s*[,\]])", lambda _m: "stepnode", body)
     body = re.sub(r"(?<=/)\^(?=[\\\w\[(])", lambda _m: "\\textasciicircum{}", body)   # regex /^...$/ dans le texte
     body = re.sub(r"^(\s*(?:\\item\s+)?)\\(texttt|textbf|emph|textit)[ \t]+(?=[^{\s\\])([^\n]*\})[ \t]*(\\\\)?[ \t]*$", lambda m: m.group(1) + "\\" + m.group(2) + "{" + m.group(3) + (m.group(4) or "") if m.group(3).count("}") > m.group(3).count("{") else m.group(0), body, flags=re.M)   # \texttt sans accolade ouvrante
     body = re.sub(r"(?<!\\)#", lambda _m: "\\#", body)          # # nu (C#, #hashtag) -> \#
