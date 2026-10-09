@@ -436,6 +436,7 @@ def texttt_safe(body):
             word = k.group(1)
             return k.group(0) if word in _TT_OK else "\\textbackslash{}" + word
         c = re.sub(r"(?<!\\)\\([A-Za-z]+)(?![A-Za-z])", bs, c)
+        c = re.sub(r"(?<!\\)\\(?=[\[\]()./:|<>+*?!@=\-])", lambda _k: "\\textbackslash{}", c)   # \[ \] \( ... littéraux
         return "\\texttt{" + c + "}"
     return _TT.sub(one, body)
 
@@ -522,6 +523,7 @@ def us_fix(body):
     body = re.sub(r"(pop[A-Za-z]+)\s+/", r"\1/", body)
     body = re.sub(r"/\s+(pop[A-Za-z]+)", r"/\1", body)
     body = re.sub(r"\{(pop[A-Za-z]+)\s+\}", r"{\1}", body)
+    body = re.sub(r"(/pop[A-Za-z]+)\s+(?=[,}])", r"\1", body)       # dernier élément d'une liste \foreach suivi d'un saut de ligne
 
     def _wrap(m):
         env, head, inner = m.group(1), m.group(2) or "", m.group(3)
