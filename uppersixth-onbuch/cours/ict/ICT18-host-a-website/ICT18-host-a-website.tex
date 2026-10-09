@@ -1,0 +1,2165 @@
+% Host a website — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT18-host-a-website.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{18}
+\newcommand{\DOCTITRE}{Host a website}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Host a website}{ICT}{Upper Sixth}{Upper Sixth — ICT}{18}{2 periods}{This chapter explains how a finished website is published on the Internet: choosing a domain name and a hosting plan, uploading files to a web server, and administering the hosted site. It also introduces Content Management Systems (CMS) such as WordPress, Joomla and Drupal, which allow websites to be created and updated without writing code.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define website hosting and distinguish a web server from a web browser.
+\item By the end of this chapter I can explain the role of a domain name and of the DNS in making a website reachable.
+\item By the end of this chapter I can compare the main types of hosting (shared, dedicated, VPS, cloud, free hosting) and choose one for a given situation.
+\item By the end of this chapter I can list the criteria for selecting a good web host (storage, bandwidth, uptime, support, price).
+\item By the end of this chapter I can describe the steps for publishing a website: registering a domain, subscribing to a host, and uploading files with FTP.
+\item By the end of this chapter I can define a Content Management System and name at least three popular CMS.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Website Hosting: Concepts and Infrastructure
+\item Publishing and Administering a Hosted Website
+\item Content Management Systems (CMS): Principles and Architecture
+\item Installing and Managing a CMS (WordPress Case Study) and Integration
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define website hosting and distinguish a web server from a web browser.
+\item By the end of this chapter I can explain the role of a domain name and of the DNS in making a website reachable.
+\item By the end of this chapter I can compare the main types of hosting (shared, dedicated, VPS, cloud, free hosting) and choose one for a given situation.
+\item By the end of this chapter I can list the criteria for selecting a good web host (storage, bandwidth, uptime, support, price).
+\item By the end of this chapter I can describe the steps for publishing a website: registering a domain, subscribing to a host, and uploading files with FTP.
+\item By the end of this chapter I can define a Content Management System and name at least three popular CMS.
+\item By the end of this chapter I can describe the architecture of a CMS (front-end, back-end, database) and the roles of themes, plugins and users.
+\item By the end of this chapter I can outline the installation and basic administration of a CMS such as WordPress.
+\item By the end of this chapter I can compare hand-coded websites and CMS-based websites and justify a choice for a given project.
+\item By the end of this chapter I can apply good practices for maintaining and securing a hosted website.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Notion of the Internet, the World Wide Web, websites, web pages and URLs (Lower Sixth).
+\item Basic HTML/CSS knowledge: structure of a simple web page and website files (Lower Sixth, chapter on website creation).
+\item Client–server model and the role of servers in a network (Lower Sixth, networks chapter).
+\item File and folder management, and use of the Internet for research and downloads.
+\item Elementary notions of databases (data stored in tables) useful for understanding how a CMS works.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Web Hosting Fundamentals}
+
+A young entrepreneur in Bamenda has just designed a beautiful website for her cassava-flour business: photos of her products, prices in FCFA, an order form. She proudly sends the address to her customers\ldots{} but when they type it, nothing appears. The site exists only on her laptop: the moment she shuts it down, the site disappears from the world. Meanwhile, a cybercafé owner in Douala pays a foreign company every month to keep his school-results portal online, without really knowing what he is paying for. Why does a website need a ``home'' on the Internet, who provides it, and how much should it cost? This section answers these questions: it takes you from a finished website sitting on your hard disk to a live site that anyone, anywhere, can visit at any time.
+
+\courssub{What is Web Hosting?}
+
+\textbf{Observation.} When you visit \emph{www.google.com} at 2 a.m., the page appears instantly. Someone's machine somewhere is switched on, connected to the Internet, and waiting to answer your request at any hour. Your laptop cannot play that role for your business site: it goes to sleep, loses connection, and has no permanent address on the Internet.
+
+\begin{definition}[Web hosting]
+\cle{Web hosting} is the service of storing the files of a website (HTML pages, images, scripts, databases) on a \cle{server} --- a powerful computer permanently connected to the Internet --- so that the site remains accessible to any visitor, \textbf{24 hours a day, 7 days a week}. The company that rents out space and resources on its servers is called a \cle{web host} or \cle{hosting provider}.
+\end{definition}
+
+\begin{definition}[Web server]
+A \cle{web server} is (1) a computer with large storage, high processing power and a permanent high-speed Internet connection, and (2) the software running on it (e.g.\ \emph{Apache}, \emph{Nginx}) whose job is to receive requests for web pages and send the corresponding files back to the visitor's browser.
+\end{definition}
+
+\begin{savaistu}[Did you know?]
+A single professional server can host thousands of small websites at the same time. That is why hosting a small site can cost only a few thousand FCFA per year: you are sharing one very powerful machine with many other customers, just as tenants share one building in Bonabéri.
+\end{savaistu}
+
+\courssub{Clients, Servers and the HTTP Exchange}
+
+\textbf{Observation.} Type an address in your browser and press Enter: within a second, a page appears. Behind that simple gesture, several machines may have exchanged messages. Understanding this dialogue is essential for the GCE, where you are often asked to ``describe what happens when a user requests a web page''.
+
+The \cle{client} is the visitor's device and its browser (Chrome, Firefox\ldots). The \cle{server} holds the website. They communicate using the protocol \cle{HTTP} (\emph{HyperText Transfer Protocol}), or its secure version \cle{HTTPS}, in which the exchanged data are encrypted via \cle{SSL/TLS}.
+
+\begin{methode}[What happens when a page is requested]
+\begin{enumerate}
+\item The user types a \textbf{domain name} (e.g.\ \emph{www.mysite.cm}) in the browser.
+\item The browser asks a \textbf{DNS server} to translate the name into the \textbf{IP address} of the web server (e.g.\ $192.0.2.15$).
+\item The browser sends an \textbf{HTTP(S) request} to that IP address, asking for the page.
+\item The web server finds the files (and runs any scripts, reads the database), then sends back an \textbf{HTTP response} containing the page.
+\item The browser interprets the HTML/CSS and \textbf{displays} the page.
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth, node distance=1.6cm]
+\node[draw, rounded corners, fill=popblueL, minimum width=2.6cm, minimum height=1cm, align=center] (client) {\textbf{Client}\\ browser};
+\node[draw, rounded corners, fill=popgreenL, minimum width=2.6cm, minimum height=1cm, align=center, right=3.2cm of client] (dns) {\textbf{DNS server}\\ name $\to$ IP};
+\node[draw, rounded corners, fill=popblueL, minimum width=2.8cm, minimum height=1cm, align=center, right=3.2cm of dns] (server) {\textbf{Web server}\\ site files};
+\draw[->, thick, popblue] (client.north) .. controls +(0.6,1.1) and +(-0.6,1.1) .. node[above, align=center]{1. What is the IP\\ of www.mysite.cm?} (dns.north);
+\draw[->, thick, popblue] (dns.south) .. controls +(-0.6,-1.1) and +(0.6,-1.1) .. node[below, align=center]{2. IP = 192.0.2.15} (client.south);
+\draw[->, thick, poporange] (client.east) .. controls +(1.2,0.6) and +(-1.2,0.6) .. node[above, align=center]{3. HTTP request:\\ give me the page} (server.north west);
+\draw[->, thick, poporange] (server.south west) .. controls +(-1.2,-0.6) and +(1.2,-0.6) .. node[below, align=center]{4. HTTP response:\\ HTML + images} (client.south east);
+\end{tikzpicture}
+\end{center}
+\legende{The client--server exchange: the browser resolves the name through the DNS, then requests the page from the web server, which returns the files.}
+\end{popfigure}
+
+\begin{attention}[Common mistake]
+Do not confuse the \textbf{Internet} and the \textbf{Web}. The Internet is the global network of connected machines (the infrastructure); the Web is one \emph{service} running on it, based on web servers and HTTP. E-mail and mobile money apps use the Internet without using the Web.
+\end{attention}
+
+\courssub{Domain Names and the DNS}
+
+\textbf{Observation.} ``Visit us at 41.202.219.60'' --- nobody would remember that. ``Visit us at \emph{makossa-shop.cm}'' --- easy. Human beings remember names; machines route traffic using numbers. A bridge between the two is needed.
+
+\begin{definition}[Domain name and DNS]
+A \cle{domain name} is a readable, unique address identifying a website, made of a \textbf{name} chosen by the owner and an \textbf{extension} (\emph{Top-Level Domain}, TLD): \emph{.com}, \emph{.org}, \emph{.net}, or a national extension such as \emph{.cm} for Cameroon. The \cle{DNS} (\emph{Domain Name System}) is the worldwide distributed directory that translates domain names into the IP addresses of the servers hosting the sites.
+\end{definition}
+
+A full address is read from right to left: in \emph{www.ubuea.cm}, \emph{.cm} is the national TLD, \emph{ubuea} is the registered domain, and \emph{www} is a sub-domain pointing to the web service.
+
+\textbf{Registering a domain name.} A domain name is not bought forever: it is \emph{rented} from an accredited \cle{registrar} for an annual fee (commonly from about $5\,000$ to $15\,000$ FCFA per year for classic extensions). The \emph{.cm} national domain is managed in Cameroon under the authority of \cle{ANTIC} (\emph{Agence Nationale des Technologies de l'Information et de la Communication}), with local registrars selling \emph{.cm} names --- a way to keep this digital resource under national control. If the annual fee is not paid, the name expires and can be taken by someone else.
+
+\begin{exemplebox}[Choosing a name]
+For her cassava-flour business, our entrepreneur compares \emph{ngon-flour.com} (international image) and \emph{ngon-flour.cm} (clearly Cameroonian, builds local trust, supports the national domain). She registers the \emph{.cm} name with a local registrar and pays yearly by mobile money.
+\end{exemplebox}
+
+\courssub{Types of Hosting}
+
+Not all hosting is equal. The right choice depends on the size of the site, the expected traffic, the budget and the level of control needed.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\rowcolor{popblueL} \textbf{Type} & \textbf{Principle} & \textbf{Advantages} & \textbf{Limits} \\ \hline
+\textbf{Free hosting} & Provider hosts your site at no cost, often on a sub-domain (\emph{mysite.host.com}) & Zero cost; good for learning & Adverts inserted on your pages; low bandwidth and disk space; no own domain; weak support \\ \hline
+\textbf{Shared hosting} & Many sites share one server and its resources & Cheap (roughly $10\,000$--$40\,000$ FCFA/year); easy to manage & Performance suffers if ``neighbours'' consume too much; little control \\ \hline
+\textbf{VPS} (Virtual Private Server) & One physical server is divided into isolated virtual machines, each with guaranteed resources & Good performance; root control; moderate price & Requires some administration skills \\ \hline
+\textbf{Dedicated server} & A whole physical machine is rented for you alone & Maximum power and control & Expensive; you manage everything (security, updates) \\ \hline
+\textbf{Cloud hosting} & Resources drawn from a pool of servers; scales on demand & Very high availability; pay for what you use & Billing can be unpredictable; needs technical knowledge \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth, scale=1.0]
+\draw[->, thick] (0,0) -- (9.4,0) node[below left]{\textbf{Cost and power} $\rightarrow$};
+\draw[->, thick] (0,0) -- (0,4.6) node[above, align=center]{\textbf{Control /}\\ \textbf{flexibility}};
+\foreach \x/\name in {1.4/{Shared}, 3.8/{VPS}, 6.2/{Dedicated}, 8.6/{Cloud}}{
+  \draw[dashed, gray] (\x,0) -- (\x,4.2);
+  \node[below] at (\x,0) {\name};
+}
+\node[draw, rounded corners, fill=popgreenL, align=center, minimum width=1.9cm] at (1.4,1.0) {low cost\\ low control};
+\node[draw, rounded corners, fill=popblueL, align=center, minimum width=1.9cm] at (3.8,2.2) {balanced\\ offer};
+\node[draw, rounded corners, fill=popblueL, align=center, minimum width=1.9cm] at (6.2,3.5) {full control\\ high price};
+\node[draw, rounded corners, fill=popgreenL, align=center, minimum width=1.9cm] at (8.6,2.9) {scalable\\ on demand};
+\end{tikzpicture}
+\end{center}
+\legende{Positioning of the four main hosting types along the axes of cost/power and control. Shared hosting suits beginners; dedicated and cloud suit large projects.}
+\end{popfigure}
+
+\courssub{Key Hosting Features to Compare}
+
+When two offers look similar, compare them feature by feature:
+
+\begin{itemize}
+\item \textbf{Disk space}: how many gigabytes your files and databases may occupy.
+\item \textbf{Bandwidth}: the volume of data transferred per month; a busy site with many images consumes a lot.
+\item \textbf{Uptime}: the percentage of time the server is operational (serious hosts announce $99.9\,\%$ or more).
+\item \textbf{E-mail accounts}: professional addresses such as \emph{contact@mysite.cm}.
+\item \textbf{Databases}: number and type (e.g.\ MySQL) available --- essential for dynamic sites and CMS.
+\item \textbf{Technical support}: availability (24/7?), language, response time.
+\item \textbf{Control panel}: e.g.\ cPanel, Plesk --- simplifies management of files, databases, e-mail, SSL certificates.
+\item \textbf{Backup policy}: automatic daily/weekly backups and easy restore.
+\end{itemize}
+
+\begin{methode}[Choosing a hosting plan adapted to a project]
+\begin{enumerate}
+\item \textbf{Estimate the needs}: size of files, expected monthly visitors, need for a database, number of e-mail addresses.
+\item \textbf{Fix a budget} in FCFA per year, including the domain name.
+\item \textbf{Compare at least three offers} in a table: disk space, bandwidth, uptime, databases, support, price.
+\item \textbf{Check payment methods} usable from Cameroon (mobile money, local bank card) and renewal conditions.
+\item \textbf{Start small} (shared hosting) and choose a provider that lets you \emph{upgrade} to VPS or cloud later without migrating by hand.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Free hosting is not professional hosting]
+A frequent exam trap: free hosting usually forces a \textbf{sub-domain} (\emph{mysite.freehost.com}), inserts \textbf{advertising} you do not control, offers \textbf{very low bandwidth} and \textbf{no guaranteed uptime}, and may delete an inactive site. It is fine for practising, never for a business. A professional site needs its own domain name and a paid plan, however modest.
+\end{attention}
+
+\courssub{Local vs Remote Hosting: Test Before You Publish}
+
+\textbf{Observation.} A tailor in Bafoussam does not sew a suit directly on the customer: he assembles it in the workshop, adjusts it, and only then delivers it. A website deserves the same care.
+
+A \cle{local server} reproduces a web server on your own computer, using packages such as \cle{XAMPP} or \cle{WAMP} (Apache + MySQL/MariaDB + PHP). You build and test the whole site offline --- pages, forms, database --- at the address \emph{http://localhost}, visible to you alone. When everything works, you upload the files to the \cle{remote server} (the real host) using an \textbf{FTP client} such as FileZilla (or SFTP/SCP for security), and the site goes live. Testing locally first avoids showing broken pages to your customers and is faster, since no Internet connection is needed.
+
+\begin{exoresolu}[Comparing two hosting offers (GCE-style)]
+A school in Yaoundé wants to host its results portal: about $2$ GB of files, a MySQL database, $5$ e-mail addresses, moderate traffic. Offer A: $1$ GB disk, $1$ database, $3$ e-mail accounts, uptime $99\,\%$, $12\,000$ FCFA/year. Offer B: $10$ GB disk, $5$ databases, $20$ e-mail accounts, uptime $99.9\,\%$, $25\,000$ FCFA/year. Which offer do you recommend? Justify with a comparison table.
+\tcblower
+\textbf{Solution.} Build the comparison table first:
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL} \textbf{Feature} & \textbf{Offer A} & \textbf{Offer B} \\ \hline
+Disk space & $1$ GB (too small) & $10$ GB (sufficient) \\ \hline
+Databases & $1$ & $5$ \\ \hline
+E-mail accounts & $3$ (too few) & $20$ \\ \hline
+Uptime & $99\,\%$ & $99.9\,\%$ \\ \hline
+Price & $12\,000$ FCFA/yr & $25\,000$ FCFA/yr \\ \hline
+\end{tabularx}
+\end{center}
+\textbf{Recommendation: Offer B.} Offer A fails on two essential requirements: its $1$ GB of disk space is below the $2$ GB needed, and its $3$ e-mail accounts are below the $5$ required. Offer B satisfies every requirement with margin for growth and a better uptime, for a moderate extra cost. \emph{Exam tip: always justify a hosting choice by matching each requirement of the project to a feature of the offer --- never answer on price alone.}
+\end{exoresolu}
+
+\begin{exercice}[Your turn]
+A church choir in Buea wants a simple site (photos, announcements, one e-mail address, low traffic, budget $15\,000$ FCFA/year). (a) Which type of hosting do you recommend and why? (b) Should they start by testing on XAMPP? Justify. (c) Propose a domain name and explain the role of the DNS when a member visits it.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) \textbf{Shared hosting}: the site is small, traffic is low, the budget is limited, and no advanced control is needed; free hosting is rejected because of adverts, the forced sub-domain and the absence of guarantees. (b) \textbf{Yes}: building and testing the site locally with XAMPP first is free, fast, and avoids publishing unfinished pages; once validated, the files are uploaded by FTP to the remote server. (c) Example: \emph{bueachoir.cm}. When a member types this name, the browser queries the DNS, which returns the IP address of the host's server; the browser then sends an HTTP request to that server and displays the returned page.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Web hosting = storing a site's files on a server connected 24/7 so that anyone can access them.
+\item The browser (client) uses the \textbf{DNS} to find the server's IP address, then exchanges with it via \textbf{HTTP/HTTPS}.
+\item A domain name (name + extension, e.g.\ \emph{.cm} managed under ANTIC's authority) is \emph{rented} yearly from a registrar.
+\item Hosting types, from cheapest to most powerful: free $\to$ shared $\to$ VPS $\to$ dedicated $\to$ cloud.
+\item Compare offers on disk space, bandwidth, uptime, e-mail, databases, control panel, backup and support --- and match them to the project's needs.
+\item Always test locally (XAMPP/WAMP) before publishing to the remote server by FTP/SFTP.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Publishing a Website Online}
+
+In the previous section, we learnt what web hosting is, the different types of hosting (shared, VPS, dedicated, cloud), and how to choose a hosting provider. You now know \emph{where} your website will live. But a website sitting on your computer in Yaoundé is invisible to the world: nobody can admire it, and no customer can use it. The natural next question is therefore: \textbf{how do we move the site from our machine to the server so that anyone, anywhere, can open it in a browser?} That journey — from a folder on your laptop to a live address such as \texttt{www.myschool.cm} — is called \cle{deployment} or \cle{publishing}, and it is the subject of this section.
+
+\courssub{The Complete Deployment Workflow}
+
+Publishing a website is not a single action but a \textbf{sequence of steps}, each depending on the previous one. Skipping a step (for example, uploading files before linking the domain) is a classic source of confusion for beginners.
+
+\begin{definition}[Deployment]
+\cle{Deployment} (or publishing) is the process of transferring a finished website from a local development computer to a web server, and configuring everything (domain name, files, security) so that the site becomes publicly accessible on the Internet.
+\end{definition}
+
+The complete workflow can be summarised in five stages:
+
+\begin{enumerate}
+\item \textbf{Finish and test the site locally.} Open every page on your own machine, click every link, and check every image \emph{before} uploading. Errors are far easier to fix offline.
+\item \textbf{Choose a hosting provider and a hosting plan.} This was covered in Section 1: you rent disk space and bandwidth on a server that runs 24 hours a day.
+\item \textbf{Register a domain name and link it to the hosting account.} The domain (e.g. \texttt{collegebilingue.cm}) is the human-friendly address; the hosting account is where the files physically reside.
+\item \textbf{Upload the website files} to the server, usually with FTP/SFTP, into the correct root folder.
+\item \textbf{Test the live site} on several devices and browsers, then maintain and update it.
+\end{enumerate}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.55cm,
+  stage/.style={rectangle, rounded corners=3pt, draw=popblue, fill=popblueL, thick, minimum width=3.4cm, minimum height=0.9cm, align=center, font=\small},
+  arrow/.style={-{Stealth[length=2.5mm]}, thick, popdark}
+]
+\node[stage, align=center] (s1){\textbf{1. Finish site}\\local folder on PC};
+\node[stage, right=of s1, align=center] (s2){\textbf{2. Choose host}\\rent server space};
+\node[stage, right=of s2, align=center] (s3){\textbf{3. Link domain}\\DNS / nameservers};
+\node[stage, below=0.8cm of s3, align=center] (s4){\textbf{4. Upload files}\\FTP / SFTP client};
+\node[stage, left=of s4, align=center] (s5){\textbf{5. Test online}\\devices \& browsers};
+\node[stage, left=of s5, draw=popgreen, fill=popgreenL, align=center] (s6){\textbf{Live website}\\www.example.cm};
+\draw[arrow] (s1) -- (s2);
+\draw[arrow] (s2) -- (s3);
+\draw[arrow] (s3) -- (s4);
+\draw[arrow] (s4) -- (s5);
+\draw[arrow] (s5) -- (s6);
+\end{tikzpicture}
+\end{center}
+\legende{The five-stage deployment workflow, from a local folder to a live website.}
+\end{popfigure}
+
+\begin{aretenir}[The golden rule of deployment]
+Always keep a \textbf{complete local copy} of your website. The server copy is the \emph{publication}; the local copy is the \emph{master}. If the server fails or a file is deleted by mistake, you can re-upload everything within minutes.
+\end{aretenir}
+
+\courssub{Uploading Files with FTP and SFTP}
+
+Once you have a hosting account, the provider gives you a \textbf{space on a remote server}. How do you transfer your files there? You cannot simply copy and paste as between two folders on your own disk — the server is a remote machine, possibly in Douala, Paris or elsewhere. You need a \textbf{file transfer protocol}.
+
+\begin{definition}[FTP, SFTP and FTP client]
+\cle{FTP} (File Transfer Protocol) is a standard network protocol used to transfer files between a local computer and a remote server over a network. \cle{SFTP} (Secure FTP / SSH File Transfer Protocol) does the same job but \textbf{encrypts} both the password and the data, so it should always be preferred when available. An \cle{FTP client} is application software (for example \textbf{FileZilla}, WinSCP or Cyberduck) that lets a user connect to a server with FTP/SFTP and transfer files through a graphical drag-and-drop interface.
+\end{definition}
+
+To connect, an FTP client needs exactly four pieces of information, all supplied by your hosting provider (usually in a welcome email or in the control panel):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\rowcolor{popblueL} \textbf{Field} & \textbf{Meaning} \\ \hline
+\textbf{Host} & The server address, e.g. \texttt{ftp.example.cm} or an IP address. \\ \hline
+\textbf{Username} & Your FTP account name, e.g. \texttt{user123}. \\ \hline
+\textbf{Password} & The secret password for that FTP account. \\ \hline
+\textbf{Port} & The communication door: \textbf{21} for FTP, \textbf{22} for SFTP. \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Uploading a website with FileZilla, step by step]
+\begin{enumerate}
+\item \textbf{Install FileZilla Client} (free software) from its official website and launch it.
+\item In the \textbf{Quickconnect} bar at the top, enter the \textbf{Host}, \textbf{Username}, \textbf{Password} and \textbf{Port} (21 for FTP, 22 for SFTP) given by your host, then click \emph{Quickconnect}.
+\item The window splits in two: the \textbf{left pane} shows your \emph{local} folders (your computer); the \textbf{right pane} shows the \emph{remote} server.
+\item On the right pane, double-click to open the root folder, usually named \texttt{public\_html} or \texttt{www}.
+\item On the left pane, open your website folder. \textbf{Select the contents} (all files and sub-folders, \emph{not} the parent folder itself) and drag them into the right pane — or right-click and choose \emph{Upload}.
+\item Wait for the transfer queue at the bottom to finish with \textbf{no failed transfers}. If some files fail, right-click the failed list and choose \emph{Reset and requeue}.
+\item Open a browser, type your domain name, and check that the site appears.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[FTP sends passwords in plain text]
+Classic FTP transmits your username and password \textbf{unencrypted}: anyone intercepting the traffic (for example on a public Wi-Fi network) could read them. Whenever your host offers it, choose \textbf{SFTP on port 22} in FileZilla. Many Cameroonian resellers and international hosts enable SFTP by default.
+\end{attention}
+
+\courssub{Organising Files on the Server}
+
+A web server does not display your whole hosting account to visitors. It only serves the contents of one special folder called the \cle{document root}.
+
+\begin{definition}[Document root and entry page]
+The \cle{document root} (commonly named \texttt{public\_html}, \texttt{www} or \texttt{htdocs}) is the folder on the server whose contents are publicly visible through the domain name. The \cle{entry page} is the file the server sends automatically when a visitor types the domain without specifying a file — by convention \texttt{index.html} (or \texttt{index.php}).
+\end{definition}
+
+This is why typing \texttt{www.example.cm} shows your homepage even though nobody typed a file name: the server silently looks for \texttt{index.html} inside \texttt{public\_html} and serves it. If no index file exists, visitors may see an ugly directory listing or an error.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  grow=right,
+  level 1/.style={sibling distance=1.35cm, level distance=3.1cm},
+  level 2/.style={sibling distance=0.8cm, level distance=2.9cm},
+  folder/.style={rectangle, draw=popblue, fill=popblueL, rounded corners=2pt, thick, font=\small\ttfamily, inner sep=3pt},
+  file/.style={rectangle, draw=popmuted, fill=white, rounded corners=2pt, font=\small\ttfamily, inner sep=3pt},
+  edge from parent/.style={draw=popmuted, thick}
+]
+\node[folder] {public\_html/}
+  child { node[file] {logo.png} edge from parent node[above, font=\scriptsize, pos=0.6] {} }
+  child { node[folder] {images/}
+    child { node[file] {photo1.jpg} }
+  }
+  child { node[folder] {css/}
+    child { node[file] {style.css} }
+  }
+  child { node[file, draw=popgreen, fill=popgreenL] {index.html} };
+\end{tikzpicture}
+\end{center}
+\legende{A typical server folder structure: the document root \texttt{public\_html} contains the entry page \texttt{index.html} plus organised sub-folders for styles and images.}
+\end{popfigure}
+
+Two organising principles follow directly:
+
+\begin{itemize}
+\item \textbf{Mirror your local structure.} If your local site has \texttt{css/style.css} and \texttt{images/logo.png}, the server must have exactly the same sub-folders inside \texttt{public\_html}. Uploading everything flat into one folder breaks the links.
+\item \textbf{Use relative paths.} Inside \texttt{index.html}, write \texttt{src="images/logo.png"} (relative to the page), never a path tied to your own machine.
+\end{itemize}
+
+\begin{attention}[Common mistake: absolute paths break everything online]
+A beginner writes in the HTML: \texttt{<img src="C:\textbackslash Users\textbackslash Amina\textbackslash Desktop\textbackslash site\textbackslash images\textbackslash logo.png">}. On Amina's computer the picture displays perfectly, so she uploads the site confidently. Online, the image is \textbf{broken}: the server has no drive \texttt{C:} and no user called Amina. The fix is to use a \textbf{relative path}: \texttt{<img src="images/logo.png">}. Always test with the site folder moved to a different location — if links still work, your paths are truly relative.
+\end{attention}
+
+\begin{attention}[File names are case-sensitive on most servers]
+Most web servers run Linux, where the file system is \textbf{case-sensitive}: \texttt{Image.PNG}, \texttt{image.png} and \texttt{IMAGE.png} are three \emph{different} files. Windows, on which most students build their sites, treats them as the same file — so the error stays hidden until the site goes live. \textbf{Good practice:} name all files in lowercase, without spaces or accents (use \texttt{photo-lycee.jpg}, not \texttt{Photo Lycée.JPG}), and make sure the HTML references match the file names \emph{exactly}.
+\end{attention}
+
+\courssub{Linking a Domain Name to the Hosting Account}
+
+Your host stores your files on a server identified by an \textbf{IP address} such as \texttt{196.200.48.10}. Nobody wants to type numbers, so we use a \cle{domain name}. The bridge between the two is the \textbf{DNS} (Domain Name System), the Internet's phone book.
+
+\begin{definition}[DNS, nameservers and propagation]
+The \cle{DNS} (Domain Name System) is the global distributed system that translates human-readable domain names into the IP addresses of servers. \cle{Nameservers} are the specific DNS servers declared as authoritative for a domain (e.g. \texttt{ns1.myhost.com}). \cle{Propagation} is the delay — from a few minutes up to about 24--48 hours — needed for a DNS change to be copied to DNS servers all over the world.
+\end{definition}
+
+In practice there are two common ways to link a domain to hosting:
+
+\begin{enumerate}
+\item \textbf{Change the nameservers} at the domain registrar to those given by your host (simplest: the host then manages all DNS records for you).
+\item \textbf{Edit DNS records} manually: create an \textbf{A record} pointing the domain to the server's IP address (and optionally a \texttt{CNAME} record for \texttt{www}).
+\end{enumerate}
+
+\begin{exemplebox}[Why a new site "doesn't work yet"]
+A school in Bamenda registers \texttt{goshencollege.cm} on Monday morning and immediately points it to the new hosting account. The ICT teacher tests it at noon: the old page (or an error) still appears. Nothing is broken — the DNS change is still \textbf{propagating}. Some networks (a CAMTEL line at school, an MTN mobile connection at home) update their DNS caches at different times, so the site may work on one device and not another for several hours. By Tuesday, the domain resolves correctly everywhere.
+\end{exemplebox}
+
+\courssub{Testing the Live Website}
+
+Uploading is not the finish line. A site that worked locally can still fail online because of paths, case sensitivity, permissions or slow connections. Systematic testing is part of the deployment workflow.
+
+\begin{methode}[Testing and debugging a newly hosted website]
+\begin{enumerate}
+\item \textbf{Open the domain in a browser} and confirm the homepage (\texttt{index.html}) loads without typing a file name.
+\item \textbf{Click every link and menu item.} Note any \emph{404 Not Found} errors — usually a wrong file name, wrong case, or a file uploaded to the wrong folder.
+\item \textbf{Check every image.} A broken image icon almost always means an absolute path or a case mismatch (\texttt{Logo.PNG} vs \texttt{logo.png}).
+\item \textbf{Test all forms} (contact form, registration): submit real data and verify the email arrives or the data is recorded.
+\item \textbf{Test on several browsers} (Chrome, Firefox, Edge) and \textbf{several devices} (a laptop and a smartphone). In Cameroon, most visitors will use a phone on a mobile network, so also check that pages load acceptably on a slow connection.
+\item \textbf{Check the browser console} (press F12, tab \emph{Console} or \emph{Network}) to see exactly which file failed to load and why.
+\item \textbf{Fix locally, then re-upload only the corrected files} — never edit files directly on the server as your only copy.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Diagnosing a broken page after upload]
+\textbf{Statement.} Marie uploads her school's website with FileZilla into \texttt{public\_html}. Locally everything worked. Online, the homepage loads but (a) the school logo does not appear, (b) the "About us" link gives \emph{404 Not Found}, and (c) the page has no styling at all. The files on the server include \texttt{LOGO.PNG}, \texttt{about-us.html} and a folder \texttt{CSS} containing \texttt{style.css}. Identify the cause of each problem and give the correction.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{(a) Broken logo.} The HTML contains \texttt{<img src="images/logo.png">} but the file on the server is named \texttt{LOGO.PNG}. The Linux server is case-sensitive, so \texttt{logo.png} does not exist. \emph{Fix:} rename the file to \texttt{logo.png} (all lowercase) and re-upload, or change the HTML to match the exact name — lowercase file names being the better habit.
+\item \textbf{(b) 404 on "About us".} The link probably points to \texttt{about.html} while the real file is \texttt{about-us.html} (or the file was uploaded outside \texttt{public\_html}). \emph{Fix:} make the link target and the file name identical, and confirm the file sits in the document root.
+\item \textbf{(c) No styling.} The HTML references \texttt{href="css/style.css"} but the folder on the server is \texttt{CSS} in capitals — again a case mismatch. \emph{Fix:} rename the folder to \texttt{css} and re-upload.
+\end{itemize}
+\textbf{Lesson:} after every upload, open the browser console (F12) — it would have listed all three failed requests with their exact URLs, pointing straight to the case-sensitivity problem.
+\end{exoresolu}
+
+\courssub{Updating a Hosted Site Safely}
+
+A website is never finished: term dates change, new photos arrive, prices are updated. Updating means \textbf{replacing files on the server} — and doing it without losing anything.
+
+\begin{propriete}[Safe update procedure]
+A safe update always follows the order: \textbf{edit locally $\rightarrow$ test locally $\rightarrow$ back up $\rightarrow$ upload}. The local folder remains the master copy; the server only ever receives tested files. (Not examinable as a proof, but expected as good practice in practical questions.)
+\end{propriete}
+
+Concretely, with FileZilla you simply re-upload the modified files; the client asks whether to \emph{overwrite} the existing versions — confirm only for the files you actually changed. Before any \textbf{major} update, download a full copy of the server folder (or export from the hosting control panel) so you can roll back if something goes wrong.
+
+\begin{attention}[Never let the server be your only copy]
+Hard disks fail, accounts get hacked, and students sometimes delete the wrong folder in FileZilla's right pane. If the only copy of the site was on the server, it is gone. Keep at least \textbf{two local backups} (for example, one on the school computer and one on an external drive or cloud storage), dated so you know which is newest.
+\end{attention}
+
+\courssub{Going Further: SSL Certificates and HTTPS (GCE focus)}
+
+When you test your live site, look at the address bar: does it show \texttt{http://} or \texttt{https://}, with a small padlock? That difference matters, and the GCE expects you to understand it.
+
+\begin{definition}[SSL certificate and HTTPS]
+An \cle{SSL certificate} (more precisely SSL/TLS) is a digital certificate installed on a server that (i) \textbf{authenticates} the website's identity and (ii) enables \textbf{encryption} of the data exchanged between the visitor's browser and the server. When a certificate is active, the site is reached through \cle{HTTPS} (HTTP Secure) and browsers display a padlock. Without it, data — including passwords and mobile money details — travels in readable plain text.
+\end{definition}
+
+\begin{savaistu}[Why hosts provide SSL — and why it matters in Cameroon]
+Most hosting providers now include a \textbf{free SSL certificate} (commonly via Let's Encrypt) that can be activated in one click from the control panel. This is essential for any site handling logins or payments: a Cameroonian e-commerce page accepting MTN Mobile Money or Orange Money, or a school portal where parents enter details, must encrypt that traffic. Browsers such as Chrome even mark plain \texttt{http} sites as \emph{Not secure}, which frightens visitors away.
+\end{savaistu}
+
+\begin{exercice}[Putting it all together]
+Your school's ICT club has finished a four-page website in a local folder \texttt{schoolsite} containing \texttt{index.html}, \texttt{about.html}, \texttt{CSS/main.css} and \texttt{Images/gate.JPG}. The school buys hosting and the domain \texttt{www.myschool.cm}.
+\begin{enumerate}
+\item List, in order, the five deployment stages the club must follow.
+\item State the four connection details FileZilla needs, and the recommended port for a secure transfer.
+\item Identify \textbf{two} problems hidden in the file names above that may appear once the site is online, and correct them.
+\item After uploading, the domain still shows the host's parking page. Give one likely explanation and say what the club should do.
+\item The club wants a padlock in the address bar. What must they activate, and why?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise: Putting it all together]
+\begin{enumerate}
+\item Finish and test locally; choose the hosting plan; register/link the domain (DNS); upload the files into \texttt{public\_html}; test the live site on several devices and browsers.
+\item Host (server address), username, password, and port — port \textbf{22} for SFTP, which encrypts the credentials and data.
+\item (i) Folders \texttt{CSS} and \texttt{Images} are capitalised while links are probably written in lowercase — on a case-sensitive Linux server the style sheet and image will fail; rename them \texttt{css} and \texttt{images}. (ii) \texttt{gate.JPG} has an uppercase extension; the HTML must match it exactly, or better, rename it \texttt{gate.jpg}.
+\item The DNS change is still \textbf{propagating}; the club should wait (up to 24--48 hours) and test again, possibly from a different network.
+\item They must activate the \textbf{SSL certificate} (usually free in the hosting control panel) so the site is served over \textbf{HTTPS}, encrypting data between visitors and the server and authenticating the site.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Section summary]
+\begin{itemize}
+\item Deployment follows five stages: finish locally, choose a host, link the domain, upload files, test online.
+\item \textbf{FTP/SFTP} transfer files to the server; an \textbf{FTP client} such as FileZilla needs a host, username, password and port (21 for FTP, 22 for SFTP — prefer SFTP).
+\item Files go into the document root (\texttt{public\_html}/\texttt{www}); \texttt{index.html} is the automatic entry page; always use \textbf{relative paths} and \textbf{lowercase file names}.
+\item A domain is linked to hosting through \textbf{nameservers or DNS records}; \textbf{propagation} can take up to 48 hours.
+\item Test links, images, forms, browsers and devices; fix locally, keep backups, and re-upload only changed files.
+\item An \textbf{SSL certificate} enables \textbf{HTTPS}: encryption plus authentication — indispensable for any serious site.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Content Management Systems (CMS): Principles and Architecture}
+
+In the previous section, we saw how to publish a website on a hosting server and how to administer it: uploading files with FTP, managing e-mail accounts, monitoring disk space and bandwidth. Everything we uploaded, however, consisted of \emph{static files} written by hand, page after page, in HTML and CSS. This raises a practical question. Imagine the principal of a secondary school in Bamenda who wants to publish exam timetables every week, or a trader in Douala who wants to add new products to her online catalogue every day. Must they learn HTML? Must they call (and pay) a webmaster for every small change? The answer is \textbf{no}, thanks to a family of software called \cle{Content Management Systems}. This section explains what a CMS is, why CMSs exist, how they are built internally, and what their strengths and weaknesses are.
+
+\courssub{What is a CMS and why does it exist?}
+
+Let us start from a concrete observation. A hand-coded site of 50 pages contains the same header, the same menu and the same footer copied 50 times. If the school logo changes, the webmaster must edit 50 files. Worse, the \emph{content} (the text of an announcement) is mixed with the \emph{presentation} (colours, fonts, layout) inside the same files. A teacher who only wants to fix a spelling mistake in an announcement risks breaking the layout by deleting the wrong tag.
+
+The solution invented by software engineers is to \textbf{separate content from presentation}: store the content in a database, store the presentation in templates, and let a program assemble them automatically. That program is a CMS.
+
+\begin{definition}[Content Management System (CMS)]
+A \cle{Content Management System} (CMS) is a software application, installed on a web server, that allows users to \textbf{create, edit, organise and publish web content through a graphical interface} (usually in a browser), \textbf{without writing code for each page}. The CMS stores content in a database and generates the pages automatically by combining that content with presentation templates called \emph{themes}.
+\end{definition}
+
+\begin{exemplebox}[Who uses a CMS, and why?]
+\begin{itemize}
+\item A \textbf{journalist} at a news site in Yaound\'e publishes articles from a simple form: title, body, photo, ``Publish'' button. She never sees HTML.
+\item A \textbf{trader} adds products, prices and stock levels to his online shop himself, at any hour, without paying a developer.
+\item A \textbf{school} updates its announcements page weekly; the secretary does it from the administration panel in five minutes.
+\end{itemize}
+In each case, the CMS gives publishing power to \emph{non-programmers}, which is precisely why CMSs were invented.
+\end{exemplebox}
+
+\begin{savaistu}[A large share of the web runs on CMSs]
+A very large proportion of the world's websites --- blogs, company sites, news portals, government sites, online shops --- is built with a CMS rather than hand-coded. Many Cameroonian institutions, businesses and blogs use WordPress because it is free, well documented and supported by most hosting companies, including local ones.
+\end{savaistu}
+
+\courssub{Popular CMSs and their typical uses}
+
+Not all CMSs target the same kind of site. The table below summarises the most famous ones.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL}\textbf{CMS} & \textbf{Typical uses} & \textbf{Main characteristics} \\
+\hline
+\rowcolors{1}{popblueL}{white}
+\textbf{WordPress} & Blogs, company showcase sites, school sites, news sites & The most popular CMS worldwide; very easy to learn; huge library of themes and plugins \\
+\hline
+\textbf{Joomla} & Portals, community sites, association sites & More structured than WordPress; finer user management; steeper learning curve \\
+\hline
+\textbf{Drupal} & Large portals, institutional and government sites & Very powerful and flexible; aimed at experienced developers \\
+\hline
+\textbf{PrestaShop} & Online shops (e-commerce) & Specialised in catalogues, carts, payments and orders \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{aretenir}[Exam essentials]
+For the GCE, memorise at least \textbf{three} CMS names with their typical use: \cle{WordPress} (blogs and company sites), \cle{Joomla} and \cle{Drupal} (portals and community sites). Know also that \cle{PrestaShop} is an e-commerce-oriented tool.
+\end{aretenir}
+
+\courssub{Architecture of a CMS: front-end, back-end and database}
+
+Every CMS, whatever its name, is organised around \textbf{three components} that communicate with each other.
+
+\begin{definition}[Front-end, back-end and database]
+In a CMS:
+\begin{itemize}
+\item the \cle{front-end} is the public part of the site: the pages that \textbf{visitors} see in their browser;
+\item the \cle{back-end} (or \emph{administration dashboard}) is the private part, protected by a login and password, through which \textbf{editors} create and organise content (write articles, upload images, manage menus and users);
+\item the \cle{database} is where the CMS \textbf{stores all the content}: article texts, page titles, user accounts, comments, settings. The files of the theme and the uploaded images complete it on the server's disk.
+\end{itemize}
+\end{definition}
+
+The flow of information is simple to picture. An editor writes an article in the back-end; the CMS saves it in the database. When a visitor requests the page, the CMS fetches the article from the database, injects it into the theme, and sends the finished HTML page to the visitor's browser.
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  font=\small,
+  box/.style={draw=popblue, thick, rounded corners=2pt, fill=popblueL, align=center, text width=3.1cm, minimum height=1.1cm},
+  person/.style={draw=popdark, thick, rounded corners=2pt, fill=white, align=center, text width=2.2cm, minimum height=0.9cm},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark}
+]
+\node[person, align=center] (editor) at (0,3.2){\textbf{Editor}\\(logged in)};
+\node[box, align=center] (backend) at (4.6,3.2){\textbf{Back-end}\\administration dashboard};
+\node[box, align=center] (db) at (4.6,0){\textbf{Database}\\articles, users, settings};
+\node[box, align=center] (theme) at (9.2,3.2){\textbf{Theme}\\(templates)};
+\node[box, align=center] (frontend) at (9.2,0){\textbf{Front-end}\\generated HTML page};
+\node[person, align=center] (visitor) at (13.6,0){\textbf{Visitor}\\(browser)};
+
+\draw[arr] (editor) -- node[above, font=\scriptsize]{writes content} (backend);
+\draw[arr] (backend) -- node[right, font=\scriptsize]{stores} (db);
+\draw[arr] (visitor) -- node[above, font=\scriptsize]{requests page} (frontend);
+\draw[arr] (db) -- node[above, font=\scriptsize]{content fetched} (frontend);
+\draw[arr] (theme) -- node[right, font=\scriptsize]{layout applied} (frontend);
+\draw[arr, poporange] (frontend.east) -- node[above, font=\scriptsize]{page sent} (visitor.west);
+\end{tikzpicture}
+\legende{Architecture of a CMS: the editor writes through the back-end into the database; the front-end page is built on request by combining the theme with the database content.}
+\end{popfigure}
+
+\courssub{Dynamic pages versus static pages}
+
+This architecture has a fundamental consequence: the pages of a CMS site \textbf{do not exist as files} before someone asks for them. They are \emph{generated on demand}.
+
+\begin{propriete}[Dynamic generation of pages]
+In a CMS, \textbf{content is stored in a database and pages are generated dynamically} at each request: the CMS executes a program (usually written in PHP) that reads the content from the database, merges it with the theme, and produces the HTML sent to the browser. In contrast, a \textbf{static site} serves \textbf{fixed HTML files} that were written in advance and are sent to every visitor exactly as they are stored on the disk.
+\end{propriete}
+
+\begin{exemplebox}[The same announcement, two ways]
+\textbf{Static site:} to publish a new announcement, the webmaster opens a text editor, writes a new HTML file by copying an old page, edits the text, uploads it by FTP, and updates the menu in every other page. Time needed: perhaps 30 minutes, and a mistake can break the menu.
+
+\textbf{CMS site:} the secretary logs into the dashboard, clicks \emph{New post}, types the announcement, clicks \emph{Publish}. The CMS stores it in the database, and the announcement immediately appears on the home page, in the menu and in the archives --- all generated automatically. Time needed: 5 minutes, no code, no risk to the layout.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  font=\small,
+  head/.style={draw=popdark, thick, fill=popblueL, align=center, text width=6.6cm, minimum height=0.8cm},
+  cell/.style={draw=popline, align=left, text width=6.6cm, minimum height=1.05cm, inner sep=4pt}
+]
+\node[head] (h1) at (0,0) {\textbf{Static hand-coded site}};
+\node[head] (h2) at (7.4,0) {\textbf{CMS-based dynamic site}};
+\node[cell, anchor=north] (a1) at (0,-0.45) {Pages are fixed HTML files written one by one};
+\node[cell, anchor=north] (b1) at (7.4,-0.45) {Pages are generated on request from a database};
+\node[cell, anchor=north] (a2) at (0,-1.65) {Updating requires editing code and re-uploading};
+\node[cell, anchor=north] (b2) at (7.4,-1.65) {Updating is done in a dashboard, no code needed};
+\node[cell, anchor=north] (a3) at (0,-2.85) {Content and presentation are mixed in the files};
+\node[cell, anchor=north] (b3) at (7.4,-2.85) {Content (database) and presentation (theme) are separated};
+\node[cell, anchor=north] (a4) at (0,-4.05) {Very fast and light; no database attack possible};
+\node[cell, anchor=north] (b4) at (7.4,-4.05) {Heavier; needs updates and security monitoring};
+\end{tikzpicture}
+\legende{Comparison between a static hand-coded site and a CMS-based dynamic site.}
+\end{popfigure}
+
+\courssub{Themes, plugins, users and roles}
+
+Three mechanisms make a CMS both powerful and safe to hand over to non-specialists.
+
+\textbf{Themes (templates).} A \cle{theme} is a set of template files that control the \emph{appearance} of the whole site: colours, fonts, layout, position of menus. Because content and presentation are separated, changing the theme instantly changes the look of \emph{every} page \textbf{without touching the content}. A school can switch from a blue theme to a green theme in one click; all 200 articles keep their text and photos.
+
+\textbf{Plugins (extensions, modules).} A \cle{plugin} is a small additional program that adds a feature to the CMS \textbf{without programming}: contact forms, photo galleries, security firewalls, search-engine optimisation (SEO) tools, backup tools, online payment. In WordPress, installing a plugin takes a few clicks from the dashboard.
+
+\textbf{Users and roles.} A CMS manages several user accounts, each with a \cle{role} that defines what the user is allowed to do. Typical roles in WordPress are:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL}\textbf{Role} & \textbf{Main rights} \\
+\hline
+\rowcolors{1}{popblueL}{white}
+\textbf{Administrator} & Full control: settings, themes, plugins, users, all content \\
+\hline
+\textbf{Editor} & Can publish, modify and delete \emph{any} article, including other people's \\
+\hline
+\textbf{Author} & Can write, publish and modify only \emph{their own} articles \\
+\hline
+\textbf{Subscriber} & Can only read, manage their profile, and sometimes comment \\
+\hline
+\end{tabularx}
+\end{center}
+
+The guiding principle is the \emph{principle of least privilege}: \textbf{give each user only the rights they need}, nothing more. A student who submits articles should be an \emph{author}, never an \emph{administrator}: one wrong click by an administrator can delete the whole site.
+
+\begin{attention}[Common mistake: plugin fever]
+A frequent beginner's mistake is to install \textbf{many unnecessary plugins} because they are free and easy to add. Each plugin adds code that \textbf{slows the site down}, and each poorly maintained plugin is a \textbf{potential security hole} that attackers can exploit. Install only the plugins you truly need, choose well-known and regularly updated ones, and delete the rest.
+\end{attention}
+
+\courssub{Advantages and limits of a CMS}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|X|}
+\hline
+\rowcolor{popblueL}\textbf{Advantages} & \textbf{Limits} \\
+\hline
+\rowcolors{1}{popgreenL}{white}
+Very fast creation of a complete site (hours instead of weeks) & Dependence on regular updates of the CMS, theme and plugins \\
+\hline
+Easy updates by non-programmers through the dashboard & Heavier and often slower than a static site (database, PHP) \\
+\hline
+Thousands of themes and plugins available, mostly free & Popular CMSs are prime targets for attacks (brute force, plugin flaws) \\
+\hline
+Multi-user work with controlled roles & Less total freedom than hand-coding; some designs are hard to achieve \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Choosing between hand-coding and a CMS]
+Before building a site, ask four questions:
+\begin{enumerate}
+\item \textbf{Who will update the site?} If non-programmers must publish content, choose a CMS.
+\item \textbf{How often will it change?} Frequent updates (news, products, announcements) call for a CMS; a page that never changes can be static.
+\item \textbf{What is the budget?} A CMS reduces development and maintenance costs dramatically.
+\item \textbf{Which features are required?} A blog, a portal or a shop: a CMS (WordPress, Joomla, PrestaShop) covers them. A tiny one-page showcase with extreme performance needs may justify static HTML.
+\end{enumerate}
+If most answers point to regular updates by non-specialists, the CMS wins.
+\end{methode}
+
+\begin{exoresolu}[Static site or CMS?]
+\textbf{Statement.} The bilingual high school of a town in the West Region wants a website showing: (i) a fixed presentation page of the school, (ii) exam results and timetables updated every week by the secretary, (iii) a photo gallery of school events, (iv) a contact form. The school has no computer scientist on staff and a small budget. Advise the school: static site or CMS? Justify with two advantages, and state two precautions to take.
+\tcblower
+\textbf{Solution.} A \textbf{CMS} (for example WordPress) is the right choice, because:
+\begin{itemize}
+\item \emph{Who updates and how often:} the secretary, a non-programmer, must publish results and timetables \emph{every week}. The dashboard lets her do it without code --- this is the decisive argument.
+\item \emph{Features:} the photo gallery and the contact form are provided by free plugins, with no development cost, which suits the small budget.
+\end{itemize}
+Precautions:
+\begin{enumerate}
+\item Apply updates of the CMS, theme and plugins regularly, and install only strictly necessary plugins, to limit security holes (popular CMSs are frequent attack targets).
+\item Give the secretary the role of \emph{editor} or \emph{author} only --- not administrator --- so that a mistake cannot destroy the site (principle of least privilege), and schedule regular backups.
+\end{enumerate}
+\end{exoresolu}
+
+\begin{exercice}[Check your understanding]
+\begin{enumerate}
+\item Define a CMS and name its three main components.
+\item Name three CMS and give the typical use of each.
+\item State two advantages and two limitations of using a CMS.
+\item Explain, in three sentences, how a CMS builds the page a visitor sees.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item A CMS is software that allows creating, editing, organising and publishing web content through a graphical interface without writing code for each page. Its three components are the \emph{front-end} (public pages), the \emph{back-end} (administration dashboard) and the \emph{database} (content storage).
+\item WordPress (blogs, company sites), Joomla (portals, community sites), Drupal (large institutional portals); PrestaShop is also acceptable for e-commerce.
+\item Advantages: fast site creation; easy updates by non-programmers (also: free themes/plugins, multi-user roles). Limitations: dependence on updates; heaviness/slowness; exposure to security attacks targeting popular CMSs.
+\item The visitor's browser requests a page; the CMS program fetches the corresponding content from the database; it merges this content with the theme templates and sends the generated HTML page to the browser.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[GCE exam tip]
+For the Advanced Level paper, you must be able to: \textbf{name at least three CMS} (WordPress, Joomla, Drupal --- plus PrestaShop for e-commerce), \textbf{describe the architecture} (front-end, back-end, database), \textbf{contrast dynamic and static pages}, and \textbf{state two advantages and two limitations} of a CMS. These four items are the classic questions on this lesson.
+\end{aretenir}
+
+Now that the principles and architecture of a CMS are clear, the next step is entirely practical: installing and managing a real CMS --- WordPress --- on a hosting account, and carrying out the integration activities of this chapter.
+
+\coursec{Managing, Securing and Maintaining a CMS Website}
+
+In the previous section we discovered what a \cle{Content Management System} (CMS) is and how platforms such as WordPress, Joomla or Drupal allow anyone to build a website without writing code. But installing a CMS is only the beginning. A school website that is never updated, a business site hacked because of a weak password, or a blog lost forever because nobody made a backup — these are real situations that happen every day, including here in Cameroon. In this section we learn the daily craft of the \cle{webmaster}: creating and organising content, customising appearance, extending the site with plugins, managing users, securing the site and maintaining it over time.
+
+\courssub{Creating Content: Pages, Posts, Categories and Tags}
+
+\textbf{Observation.} Look at the website of a typical Cameroonian school. Some information never changes: ``About the school'', ``Contact us'', ``Admission requirements''. Other information is dated and flows like news: ``GCE results released'', ``Sports day on 15 March'', ``Holiday announcement''. A CMS separates these two kinds of content into \cle{pages} and \cle{posts}.
+
+\begin{definition}[Page and Post]
+A \textbf{page} is a \emph{static} piece of content: it stands outside the chronological flow and is usually reachable from the main menu (e.g.\ ``Home'', ``About us'', ``Contact''). A \textbf{post} is a \emph{dated} article that appears in reverse chronological order on the blog or news page, and that can be classified with \textbf{categories} (broad groups, e.g.\ ``Announcements'', ``Sports'') and \textbf{tags} (precise keywords, e.g.\ ``GCE'', ``Form Five'').
+\end{definition}
+
+\begin{attention}[Page or Post?]
+A very common exam trap: ``Contact us'' must be a \emph{page} (permanent, in the menu), while ``Inter-class football results'' is a \emph{post} (dated news). Remember: pages are \textbf{timeless}, posts are \textbf{timely}. Categories are few and hierarchical; tags are many and flat.
+\end{attention}
+
+\textbf{Inserting images and media.} In WordPress, the editor (block editor) lets you insert an \emph{Image} block, upload a photo from your computer or phone, and add \emph{alternative text} (a short description read by screen readers and shown if the image fails to load). Videos, audio and documents (PDF) are inserted the same way. Always compress images before uploading: a $5\ \mathrm{MB}$ photo from a phone camera slows the page enormously for a visitor browsing on a mobile connection in Bamenda or Maroua.
+
+\begin{methode}[Creating a page, a post and a menu in WordPress]
+\textbf{To create a page:}
+\begin{enumerate}
+\item Log in to the dashboard (\texttt{.../wp-admin}).
+\item Click \textbf{Pages $\rightarrow$ Add New}.
+\item Type the title (e.g.\ ``Contact Us'') and the content; insert images if needed.
+\item Click \textbf{Publish}.
+\end{enumerate}
+\textbf{To create a post:}
+\begin{enumerate}
+\item Click \textbf{Posts $\rightarrow$ Add New}.
+\item Write the title and the article.
+\item In the right panel, choose or create a \textbf{Category} and add \textbf{Tags}.
+\item Optionally set a \emph{featured image}, then click \textbf{Publish}.
+\end{enumerate}
+\textbf{To build a menu:}
+\begin{enumerate}
+\item Go to \textbf{Appearance $\rightarrow$ Menus} (or the Site Editor for block themes).
+\item Create a menu, tick the pages to add, and drag them into order (drag slightly to the right to make a \emph{sub-item}).
+\item Assign the menu to a location (e.g.\ ``Primary menu'') and click \textbf{Save Menu}.
+\end{enumerate}
+\end{methode}
+
+\courssub{Building Navigation and the Site Map}
+
+A menu is the visitor's map. Good navigation follows two rules: \textbf{few top-level entries} (5 to 7 maximum) and \textbf{logical grouping} (related pages under a common parent). Before building menus, sketch the \cle{site map} (tree of pages) on paper:
+
+\begin{center}
+Home $\bullet$ About us (History, Staff) $\bullet$ Academics (Departments, Timetable) $\bullet$ News $\bullet$ Contact
+\end{center}
+
+Internal links (from one page to another) help visitors \emph{and} search engines understand the structure of the site. A page that no menu and no link points to is called an \emph{orphan page} — visitors will never find it.
+
+\courssub{Customising Appearance: Themes, Colours, Logo, Widgets}
+
+\begin{definition}[Theme and Widget]
+A \textbf{theme} is a collection of templates and style sheets that controls the \emph{appearance} (layout, colours, fonts) of a CMS website without changing its content. A \textbf{widget} is a small self-contained block of content or functionality (search box, calendar, list of recent posts, social-media links) that the administrator places in predefined areas of the theme such as the \emph{sidebar} or the \emph{footer}.
+\end{definition}
+
+In WordPress, customisation is done through \textbf{Appearance $\rightarrow$ Themes} (to choose and install a theme) and \textbf{Appearance $\rightarrow$ Customize} (or the Site Editor) to upload the \emph{logo}, set the \emph{site title and tagline}, adjust \emph{colours} and manage \emph{widgets}. Changing the theme never deletes your pages and posts — it only changes how they are displayed.
+
+\begin{attention}[Theme vs Plugin]
+A \textbf{theme} controls how the site \emph{looks}; a \textbf{plugin} controls what the site \emph{does}. Installing a gallery \emph{plugin} adds a feature; installing a new \emph{theme} changes the design. Examiners love this distinction.
+\end{attention}
+
+\courssub{Extending Functionality with Plugins}
+
+\begin{definition}[Plugin]
+A \textbf{plugin} is an add-on software module that extends the functionality of a CMS without modifying its core files. Examples: contact forms, image galleries, SEO (Search Engine Optimisation) tools, security scanners, backup tools.
+\end{definition}
+
+Typical plugins for a school or business site:
+\begin{itemize}
+\item \textbf{Contact form} (e.g.\ Contact Form 7, WPForms): lets visitors send messages without exposing your email address.
+\item \textbf{Image gallery} (e.g.\ NextGEN): displays photo albums of school events.
+\item \textbf{SEO tool} (e.g.\ Yoast SEO): helps each page be better understood and ranked by Google.
+\end{itemize}
+
+\begin{attention}[The danger of too many plugins]
+Every plugin is extra code written by a third party. Installing too many plugins (1) \emph{slows down} the site, (2) multiplies \emph{security holes} if a plugin is abandoned by its author, and (3) risks \emph{conflicts} between plugins that can crash the site. Rule of thumb: install only what you truly need, from reputable sources, and delete (not just deactivate) what you no longer use.
+\end{attention}
+
+\courssub{User Management: Roles and Permissions}
+
+A CMS allows several people to work on the same site with \emph{different powers}. This is the principle of \cle{least privilege}: give each user only the permissions needed for their job. WordPress defines a hierarchy of \textbf{roles}:
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  role/.style={rectangle, rounded corners=3pt, draw=popblue, fill=popblueL, thick, minimum width=3.6cm, minimum height=0.9cm, font=\small\bfseries, text=popink},
+  desc/.style={font=\scriptsize, text=popmuted, align=left, text width=5.6cm},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark}]
+\node[role] (admin) at (0,0) {Administrator};
+\node[role] (editor) at (0,-1.6) {Editor};
+\node[role] (author) at (0,-3.2) {Author};
+\node[role] (sub) at (0,-4.8) {Subscriber};
+\draw[arr] (admin) -- (editor);
+\draw[arr] (editor) -- (author);
+\draw[arr] (author) -- (sub);
+\node[desc, right=0.5cm of admin] {Full control: settings, themes, plugins, users, all content.};
+\node[desc, right=0.5cm of editor] {Publishes, edits and deletes \emph{anyone's} posts and pages; moderates comments.};
+\node[desc, right=0.5cm of author] {Writes, publishes and edits \emph{own} posts only.};
+\node[desc, right=0.5cm of sub] {Can only read and manage own profile; post comments.};
+\end{tikzpicture}
+\end{center}
+\legende{Hierarchy of WordPress user roles: permissions decrease from Administrator down to Subscriber.}
+\end{popfigure}
+
+\begin{exemplebox}[Staff accounts for a school website]
+For the website of GBHS Bamenda, the principal's secretary is \textbf{Administrator}, the discipline master who approves announcements is \textbf{Editor}, each club patron is an \textbf{Author} writing about their club, and students register as \textbf{Subscribers} to comment. If a club patron's password is stolen, the attacker can only damage that patron's articles — not the whole site.
+\end{exemplebox}
+
+\courssub{Security Basics}
+
+A CMS site is a target: automated robots constantly scan the web for weak WordPress installations to deface them or use them to send spam. Four habits protect you:
+
+\begin{enumerate}
+\item \textbf{Strong credentials.} Never use \texttt{admin} as a username (robots try it first) and never use weak passwords such as \texttt{123456} or \texttt{password}. Use long passwords mixing letters, digits and symbols, and different passwords for different accounts.
+\item \textbf{Limit administrator accounts.} Keep one or two administrators only; give everyone else a lower role.
+\item \textbf{Update everything.} Apply updates to the CMS core, themes and plugins as soon as they are released — most updates patch security holes.
+\item \textbf{Use HTTPS.} Install an SSL/TLS certificate so traffic is encrypted (padlock in the browser); hosts and services such as Let's Encrypt provide certificates, and HTTPS is essential for any login or payment page (think of a site accepting MTN Mobile Money payments).
+\end{enumerate}
+
+\begin{attention}[Security warning]
+Using \texttt{admin} as the administrator username, reusing a weak password, or ignoring update notifications are the three most common causes of hacked CMS websites. An out-of-date plugin is an open door. Update \emph{before} you are attacked, and always back up before a major update.
+\end{attention}
+
+\begin{savaistu}[Cameroon's cybersecurity landscape]
+The \cle{ANTIC} (Agence Nationale des Technologies de l'Information et de la Communication) is Cameroon's regulatory body for cybersecurity. It manages the \texttt{.cm} domain, issues security alerts, and promotes best practices. For a professional website hosted in Cameroon, registering a \texttt{.cm} domain and following ANTIC guidelines (strong authentication, regular updates, HTTPS) strengthens trust and legal compliance. Many hosting providers (CAMTEL, MTN, Orange, and private firms) offer integrated SSL certificates and automated backups.
+\end{savaistu}
+
+\courssub{Maintenance: Backups, Restoration, Broken Links}
+
+\textbf{Why back up?} Hardware fails, updates break sites, hackers strike. A \cle{backup} is your insurance. A complete CMS backup has \emph{two} parts: the \textbf{files} (CMS core, theme, plugins, uploaded images) and the \textbf{database} (posts, pages, users, settings — usually MySQL/MariaDB). Backing up only the files loses all your articles; backing up only the database loses all your photos.
+
+\begin{methode}[Backing up and restoring a CMS website]
+\textbf{Backup (manual method):}
+\begin{enumerate}
+\item Export the database: in \emph{phpMyAdmin}, select the site's database, click \textbf{Export $\rightarrow$ Quick (SQL)} and download the \texttt{.sql} file.
+\item Copy the files: with an FTP client (e.g.\ FileZilla) or the hosting file manager, download the whole site folder (for WordPress, especially \texttt{wp-content}).
+\item Store copies in at least two places (e.g.\ external drive + cloud storage) and date them (e.g.\ \texttt{backup-2025-06-15}).
+\end{enumerate}
+\textbf{Restore:}
+\begin{enumerate}
+\item Upload the saved files back to the server (overwrite the damaged ones).
+\item In phpMyAdmin, \textbf{Import} the saved \texttt{.sql} file into the database.
+\item Check \texttt{wp-config.php} (database name, user, password) and test the site thoroughly.
+\end{enumerate}
+Plugins (e.g.\ UpdraftPlus, BackWPup) can automate scheduled backups — but always verify that a backup can actually be restored.
+\end{methode}
+
+\begin{experience}[Guided backup and restore drill]
+\textbf{Objective:} Practise a full backup/restore cycle on a local WordPress installation (e.g.\ using XAMPP or LocalWP).\\
+\textbf{Steps:}
+\begin{enumerate}
+\item Install WordPress locally; create two pages, three posts, upload an image, install one plugin.
+\item Perform a manual backup: export the database via phpMyAdmin, copy the \texttt{wp-content} folder via file explorer.
+\item Simulate disaster: delete the \texttt{wp-content/uploads} folder and drop the database tables.
+\item Restore: recreate the database, import the \texttt{.sql} file, copy back \texttt{wp-content}, verify the site works.
+\item Document the time taken and any issues encountered.
+\end{enumerate}
+\textbf{Learning outcome:} Understand that a backup is only valid if restoration has been tested.
+\end{experience}
+
+\textbf{Checking broken links.} Over time, pages you link to disappear or move; visitors then meet the dreaded ``404 Not Found''. Regularly click through the site or use a broken-link checker (plugin or online tool), and repair or remove dead links — they frustrate visitors and hurt your search ranking.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  stepnode/.style={circle, draw=popgreen, fill=popgreenL, very thick, minimum size=1.5cm, font=\small\bfseries, text=popink},
+  arr/.style={-{Stealth[length=3mm]}, very thick, poporange},
+  lab/.style={font=\scriptsize, text=popmuted, align=center, text width=2.6cm}]
+\node[stepnode] (u) at (90:2.2cm) {Update};
+\node[stepnode] (b) at (0:2.2cm) {Backup};
+\node[stepnode] (t) at (-90:2.2cm) {Test};
+\node[stepnode] (m) at (180:2.2cm) {Monitor};
+\draw[arr, bend left=25] (u) to (b);
+\draw[arr, bend left=25] (b) to (t);
+\draw[arr, bend left=25] (t) to (m);
+\draw[arr, bend left=25] (m) to (u);
+\node[lab] at (90:3.6cm) {CMS core, themes, plugins};
+\node[lab] at (0:3.9cm) {files + database, before and after changes};
+\node[lab] at (-90:3.6cm) {pages, forms, links, speed};
+\node[lab] at (180:3.9cm) {uptime, security alerts, comments};
+\end{tikzpicture}
+\end{center}
+\legende{The website maintenance cycle: a continuous routine, not a one-time event.}
+\end{popfigure}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Pages = timeless content; posts = dated news with categories and tags.
+\item Menus and a clear site map guide visitors; avoid orphan pages.
+\item Theme = appearance; plugin = functionality; widget = small block in a sidebar/footer.
+\item Apply least privilege: Administrator $>$ Editor $>$ Author $>$ Subscriber.
+\item Security: strong unique passwords, few admins, regular updates, HTTPS.
+\item Maintenance cycle: update $\rightarrow$ backup $\rightarrow$ test $\rightarrow$ monitor. A backup = files \textbf{and} database.
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Choosing roles and a maintenance plan]
+\textbf{Statement.} A Yaoundé restaurant's website is managed by the owner, a communications officer who publishes the weekly menu, and a web agency that installed the site. (a) Assign a WordPress role to each person and justify. (b) The site was hacked through an out-of-date gallery plugin. State three measures that would have prevented or limited the damage.
+\tcblower
+\textbf{Solution.} (a) The \emph{web agency} keeps the \textbf{Administrator} account (they manage themes, plugins and updates); the \emph{owner} may also be Administrator but is better given \textbf{Editor} to avoid accidental damage to settings; the \emph{communications officer} is an \textbf{Author}, able to publish the weekly menu post without touching other content. (b) Prevention: (1) update the CMS, theme and plugins regularly — the plugin flaw would have been patched; (2) use strong passwords and avoid the username \texttt{admin}, limiting administrator accounts; (3) keep recent backups of files \emph{and} database so the site can be restored quickly after cleaning. Removing unused plugins and enforcing HTTPS add further protection.
+\end{exoresolu}
+
+\begin{exercice}[Pages, posts and plugins]
+Your school's website needs: a permanent ``Admission requirements'' document, dated news about the prize-giving day, a contact form, and a photo gallery. For each need, state whether you would use a \emph{page}, a \emph{post} or a \emph{plugin}, and justify in one sentence.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+``Admission requirements'' $\rightarrow$ \textbf{page}: permanent information that belongs in the main menu. Prize-giving news $\rightarrow$ \textbf{post}: dated news item, classified in a category such as ``Events''. Contact form $\rightarrow$ \textbf{plugin}: it adds a functionality the CMS does not provide by default. Photo gallery $\rightarrow$ \textbf{plugin} (gallery type): it extends the CMS with album management; the photos themselves are then inserted in a page or post.
+\end{corrige}
+
+\courssub{Integration Activities: From Knowledge to a Real Project}
+
+Everything in this chapter now comes together in the \cle{integration activity}: in teams, you will plan, host and manage a complete website — for example a site for a school club, a local business or a community association. Each team will choose a hosting solution (shared hosting, VPS, or cloud), register a domain name (e.g.\ \texttt{.cm}, \texttt{.com}), install a CMS (WordPress recommended), create pages and posts, build menus, select and customise a theme, add two or three well-chosen plugins, define user roles for team members, and set up a backup routine. The activity is assessed not only on the final site but on the \emph{process}: division of roles, security choices and maintenance plan — exactly the skills of this section. Your website is no longer just pages on a screen: it is a living system that you now know how to keep alive, beautiful and safe.
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter \emph{Host a website}. Its purpose is to make you \cle{mobilise}, in one realistic project, all the competences developed in the chapter:
+
+\begin{itemize}
+\item distinguish the main \cle{hosting types} (shared, VPS, dedicated, cloud, free hosting) and select one with a \textbf{justified} argument;
+\item choose and register a coherent \cle{domain name} with an appropriate extension (\texttt{.com}, \texttt{.org}, \texttt{.cm});
+\item \cle{publish} a website: transfer files by \textbf{FTP} (FileZilla) or deploy on a local server (\textbf{XAMPP}), respecting the folder structure and the entry point (\texttt{index.html});
+\item install and configure a \cle{CMS} (WordPress): database, theme, menu, plugin, pages and posts;
+\item manage \cle{user roles} (administrator, editor, author) and demonstrate the editorial workflow;
+\item design a basic \cle{maintenance and security plan}: backups, updates, strong passwords, renewal of hosting and domain.
+\end{itemize}
+
+By the end of the activity, your team must be able to \textbf{defend every technical choice orally}, exactly as a webmaster would before a school principal or a client. In the GCE Advanced Level examination, this is precisely the kind of reasoning expected: not only \emph{what} you choose, but \emph{why}, with figures and constraints to support the choice.
+
+\courssub{Situation}
+
+\textbf{Put GBHS Mfoundi Online.}\par
+
+The Government Bilingual High School (GBHS) Mfoundi, Yaoundé, has about 2\,400 students. Until now, all announcements (examination timetables, fees, sports events, results of the FENASCO games) are written on a paper notice board near the gate. Parents who live in other regions, or abroad, complain that they never receive information in time. The Principal, Mrs.\ Ngo Bell, has therefore decided to create the school's first website.
+
+A Form Five student, during the long holiday, already designed a small \textbf{static website} of three pages in HTML/CSS, saved on the computer of the ICT laboratory:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{File} & \textbf{Content} \\
+\hline
+\texttt{index.html} & Home page: school name, motto, photo of the main building, welcome message. \\
+\hline
+\texttt{about.html} & History of the school, list of departments, staff directory. \\
+\hline
+\texttt{news.html} & Latest announcements (typed by hand in the HTML code). \\
+\hline
+\texttt{style.css} and \texttt{images/} & Style sheet and 6 photos (about $4\ \mathrm{MB}$ in total). \\
+\hline
+\end{tabularx}
+\end{center}
+
+The Principal gives your team (the ``Web Club'' of Upper Sixth) the following data and constraints:
+
+\begin{itemize}
+\item \textbf{Budget:} at most \textbf{35\,000 FCFA per year}, all inclusive (hosting + domain name).
+\item The site must be reachable \textbf{24 hours a day}, including during holidays, and must load correctly on the smartphones of parents (many connect through mobile data, so pages must stay light).
+\item The \textbf{news page must be updated at least once a week} by Mr.\ Fotso, the Vice-Principal in charge of communication, \emph{who does not know HTML}. He must be able to publish announcements himself, from any computer, without touching the code.
+\item Mrs.\ Ngo Bell keeps the \textbf{full control} of the site (she must be able to change anything, including Mr.\ Fotso's account).
+\item The ICT laboratory has computers with \textbf{XAMPP} installed and an Internet connection; the school also has the FileZilla client.
+\item Expected traffic is modest: a few hundred visits per day at most, and the whole site should stay below $500\ \mathrm{MB}$.
+\end{itemize}
+
+Indicative market data (to be used in your justification):
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Option} & \textbf{Approx.\ yearly cost} & \textbf{Characteristics} \\
+\hline
+Free hosting (free plan of a free host) & 0 FCFA & Forced subdomain (\texttt{gbhsmfoundi.freehost.com}), advertising banners, limited disk, no guaranteed support. \\
+\hline
+Shared hosting & 15\,000--30\,000 FCFA & Your site shares one server with many others; cPanel, FTP access, one-click WordPress installer, a few GB of disk, e-mail accounts. \\
+\hline
+VPS & from 90\,000 FCFA & A virtual private server, full control, but you administer everything yourself. \\
+\hline
+Dedicated server & from 600\,000 FCFA & A whole physical machine for you alone. \\
+\hline
+Domain name \texttt{.com} or \texttt{.org} & about 6\,000--8\,000 FCFA/year & Renewable every year. \\
+\hline
+Domain name \texttt{.cm} & about 15\,000--25\,000 FCFA/year & Cameroonian extension, managed under the authority of ANTIC. \\
+\hline
+\end{tabularx}
+\end{center}
+
+Your team must take the site from the laboratory computer to a \textbf{live, manageable online website}, and present your work to the Principal.
+
+\courssub{Tasks}
+
+Work in teams of 3 or 4. Answer every question \textbf{in writing}; your answers form the report you will defend.
+
+\textbf{Part A — Choosing the hosting and the domain name}
+
+\begin{enumerate}
+\item List the four hosting options of the table. For each one, give \textbf{one advantage} and \textbf{one limitation} for GBHS Mfoundi's situation.
+\item Eliminate the options that do not fit the constraints, justifying each elimination by a \emph{precise} argument (budget, skills required, traffic).
+\item Choose the hosting type you recommend and justify it with at least \textbf{three arguments} linked to the data of the situation.
+\item Propose a domain name with its extension (for example \texttt{gbhsmfoundi.org} or \texttt{gbhsmfoundi.cm}). Justify the choice of the name (short, memorable, unambiguous) and of the extension. Compute the \textbf{total yearly cost} and check that it respects the budget.
+\item Explain, in three or four sentences, what happens technically between the moment a parent types your domain name in a browser and the moment the home page appears (mention the \cle{DNS} and the web server).
+\end{enumerate}
+
+\textbf{Part B — Publishing the static site}
+
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item Draw the \textbf{folder structure} you will upload to the server (or place in \texttt{htdocs} under XAMPP). Which file must be at the root, and why?
+\item Describe the steps to transfer the site with \textbf{FileZilla}: which four pieces of information are needed to connect, and in which remote folder (for example \texttt{public\_html}) are the files placed?
+\item Alternatively, describe how you deploy the site on \textbf{XAMPP} in the laboratory: where do you copy the files, which service must be started, and which address do you type in the browser to test the site?
+\item Give a \textbf{checklist of five tests} to perform after publication (links, images, home page by default, display on a phone, etc.).
+\end{enumerate}
+
+\textbf{Part C — Rebuilding with a CMS}
+
+\begin{enumerate}
+\setcounter{enumi}{9}
+\item Explain why a CMS is needed for the news page (use the constraint about Mr.\ Fotso). What problem of the static site does the CMS solve?
+\item Describe the installation of \textbf{WordPress}: either locally under XAMPP (creation of a MySQL database with \texttt{phpMyAdmin}, download of WordPress, configuration of \texttt{wp-config.php}) or with the \textbf{one-click installer} of the shared host.
+\item Rebuild the \texttt{news.html} page as CMS content: state whether you use a \emph{page} or \emph{posts}, choose a \textbf{theme} adapted to a school, and build a \textbf{menu} containing at least Home, About and News.
+\item Install \textbf{one plugin} and justify it (for example a backup plugin, a contact-form plugin, or a security plugin).
+\end{enumerate}
+
+\textbf{Part D — Users and roles}
+
+\begin{enumerate}
+\setcounter{enumi}{13}
+\item Create two accounts: one for Mrs.\ Ngo Bell and one for Mr.\ Fotso. Which \textbf{WordPress role} do you assign to each, and why?
+\item Demonstrate the editorial workflow: Mr.\ Fotso logs in, publishes a new announcement (``Holiday classes start on 5 August''), and the news appears on the site without any HTML editing. Note the exact steps.
+\item Why is it dangerous to give Mr.\ Fotso the Administrator role? Give two concrete risks.
+\end{enumerate}
+
+\textbf{Part E — Maintenance, security and peer review}
+
+\begin{enumerate}
+\setcounter{enumi}{16}
+\item Write a \textbf{one-page maintenance and security plan} covering: backup frequency and storage location, updates of WordPress/theme/plugins, password policy, and the renewal dates of the hosting and the domain name.
+\item Exchange your site with another team and \textbf{peer-review} it with this checklist: (a) home page reachable; (b) all internal links work; (c) hosting choice justified within budget; (d) two accounts with correct roles; (e) a backup plan exists. Award one point per item.
+\item Class discussion: compare the \textbf{static version} and the \textbf{CMS version}. For each, give two advantages and two drawbacks observed during the activity.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A.} The free hosting is eliminated: it imposes a subdomain and advertising banners, which harms the image of a public school, and offers no guarantee of availability. The VPS (from 90\,000 FCFA) and the dedicated server (from 600\,000 FCFA) exceed the budget of 35\,000 FCFA and require system-administration skills the school does not have. We therefore choose \textbf{shared hosting} at about 25\,000 FCFA/year: (1) it fits the budget together with a domain; (2) the expected traffic (a few hundred visits per day, less than $500\ \mathrm{MB}$ of data) is far below what shared hosting supports; (3) it provides cPanel, FTP access and a one-click WordPress installer, so no server administration is needed.
+
+Domain name: \texttt{gbhsmfoundi.org} (about 7\,000 FCFA/year). The name is short, contains the school's identity and its quarter, and \texttt{.org} suits a non-commercial institution; \texttt{.cm} would also be excellent (it affirms the Cameroonian identity and is managed under the authority of ANTIC) but costs more. Total: about \textbf{32\,000 FCFA/year} $\leq$ 35\,000 FCFA. \textbf{Budget respected.}
+
+When a parent types \texttt{gbhsmfoundi.org}, the browser asks a \cle{DNS server} to translate the name into the \textbf{IP address} of the web server; the browser then sends an HTTP request to that server, which returns \texttt{index.html}, and the page is displayed.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[node distance=1.6cm, >=stealth,
+box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=2.6cm, align=center, minimum height=1cm, font=\small}]
+\node[box] (browser) {Parent's browser};
+\node[box, right=2.2cm of browser] (dns) {DNS server};
+\node[box, right=2.2cm of dns] (web) {Web server (host)};
+\draw[->, thick, popdark] (browser) -- node[above, font=\scriptsize, align=center]{1. What is the IP of\\ \texttt{gbhsmfoundi.org}?} (dns);
+\draw[->, thick, popdark] (dns) -- node[above, font=\scriptsize, align=center]{2. IP address\\ returned} (browser.east |- dns.west) ;
+\draw[->, thick, poporange] (browser.north east) to[bend left=25] node[above, font=\scriptsize]{3. HTTP request} (web.north west);
+\draw[->, thick, poporange] (web.south west) to[bend left=25] node[below, font=\scriptsize]{4. \texttt{index.html} + images} (browser.south east);
+\end{tikzpicture}
+\end{center}
+\legende{From the domain name to the displayed page: DNS resolution, then the HTTP exchange with the web server.}
+\end{popfigure}
+
+\textbf{Part B.} Folder structure uploaded to \texttt{public\_html} (or copied into \texttt{C:\textbackslash xampp\textbackslash htdocs\textbackslash gbhsmfoundi}):
+
+\begin{center}
+\begin{tabular}{l}
+\texttt{index.html} \quad (must be at the root: it is the default page served)\\
+\texttt{about.html}\\
+\texttt{news.html}\\
+\texttt{style.css}\\
+\texttt{images/ (6 photos)}\\
+\end{tabular}
+\end{center}
+
+With FileZilla we enter the \textbf{host} (FTP address), the \textbf{username}, the \textbf{password} and the \textbf{port} (21), provided by the host; we then drag the local files into the remote \texttt{public\_html} folder. Under XAMPP, we start the \textbf{Apache} service from the control panel and test with \texttt{http://localhost/gbhsmfoundi}. Post-publication checklist: home page loads by default; the three internal links work; all images display; the CSS is applied; the pages are readable on a smartphone screen.
+
+\textbf{Part C.} In the static site, every announcement requires editing HTML code and re-uploading the file by FTP, which Mr.\ Fotso cannot do. A CMS separates \emph{content} from \emph{code}: announcements are typed in a web interface and stored in a database. Under XAMPP we create a database \texttt{gbhs\_db} in \texttt{phpMyAdmin}, copy WordPress into \texttt{htdocs}, run the installer and give the database name, the user \texttt{root} and its password. We publish the announcements as \textbf{posts} (they are dated and listed automatically, unlike static \emph{pages}), choose a clean responsive theme, and build the menu \emph{Home -- About -- News}. We install a \textbf{backup plugin} (of the UpdraftPlus type) so that the site can be restored after any incident.
+
+\textbf{Part D.} Mrs.\ Ngo Bell receives the \textbf{Administrator} role (full control: users, themes, plugins, settings). Mr.\ Fotso receives the \textbf{Editor} role: he can create, publish and modify posts and pages, but cannot touch plugins, themes or user accounts. Demonstration: Mr.\ Fotso logs in at \texttt{/wp-admin}, clicks \emph{Posts $\rightarrow$ Add New}, types the announcement, clicks \emph{Publish}; the news appears immediately on the News page. Giving him Administrator rights would be dangerous: he could by mistake delete the site or deactivate a security plugin, and if his password were stolen, an attacker would control everything.
+
+\textbf{Part E.} Maintenance plan: automatic backup of files and database \textbf{every week}, with one copy kept outside the server (USB disk in the Principal's office or cloud storage); WordPress, theme and plugin updates applied \textbf{once a month}; strong passwords of at least 12 characters, different per account, changed each term; calendar reminders one month before the renewal dates of the hosting and of \texttt{gbhsmfoundi.org}, because an expired domain makes the site unreachable and can be lost. In the class discussion, the static version appears faster and simpler but painful to update, while the CMS version is easy to update by non-technicians but requires maintenance (updates, backups, security) --- the essential trade-off of this chapter.
+
+\begin{aretenir}[What this activity proves you can do]
+Choose a hosting type with a costed justification; register a coherent domain name; publish a site by FTP or on XAMPP with \texttt{index.html} at the root; install WordPress with its MySQL database; separate content from code using posts, a theme, a menu and a plugin; assign the principle of \cle{least privilege} through user roles; and plan backups, updates and renewals. These are exactly the competences assessed in the chapter \emph{Host a website}.
+\end{aretenir}
+
+\begin{attention}[Common mistakes to avoid]
+Uploading the files into the wrong remote folder (the site then shows an error or a directory listing); forgetting \texttt{index.html} at the root; giving everyone the Administrator role; choosing a domain name with hyphens and numbers that nobody remembers; and above all \textbf{forgetting the yearly renewals} --- hosting and domain names are \emph{rented}, never bought for life.
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1: Choosing a hosting plan for a given website}
+
+\begin{methode}[Selecting the right type of web hosting]
+To choose a hosting solution for a website, proceed methodically:
+\begin{enumerate}
+\item \textbf{Estimate the needs:} expected number of visitors per month, size of the files (text, images, videos), need for a database (dynamic site) or not (static site), need for a specific technology (PHP, Python, Node.js).
+\item \textbf{Match needs to the hosting type:}
+\begin{itemize}
+\item \emph{Shared hosting}: many sites on one server; cheap, easy, suitable for small sites (school club site, personal blog).
+\item \emph{VPS (Virtual Private Server)}: a virtual machine with dedicated resources; more control, for medium traffic sites.
+\item \emph{Dedicated server}: a whole physical machine; expensive, for high-traffic platforms.
+\item \emph{Cloud hosting}: resources scale on demand; for sites with variable or unpredictable traffic.
+\end{itemize}
+\item \textbf{Check the essential criteria:} storage space, monthly bandwidth, uptime guarantee (aim at $99.9\%$), support for PHP/MySQL if a CMS is planned, SSL certificate availability, quality of technical support, price in FCFA and renewal conditions.
+\item \textbf{Compare at least two offers} in a table before deciding, and justify the final choice in one or two sentences.
+\end{enumerate}
+\textbf{Reflex:} at the GCE, always \emph{justify} the choice by linking each need to a characteristic of the hosting type.
+\end{methode}
+
+\begin{exoresolu}[Choosing hosting for a school website]
+The Government Bilingual High School of Bafoussam wants to publish a website presenting the school, with news articles updated weekly by a teacher, a photo gallery, and a contact form. About 500 visitors per month are expected. The budget is limited. Three offers are available: (A) shared hosting with PHP/MySQL, 10 GB storage, SSL included, 15\,000 FCFA/year; (B) dedicated server, 500 GB, 600\,000 FCFA/year; (C) VPS, 80 GB, 120\,000 FCFA/year. Which offer do you recommend? Justify your answer.
+\tcblower
+\textbf{Step 1 — Analyse the needs.}
+\begin{itemize}
+\item Traffic: about 500 visitors/month $\Rightarrow$ very low traffic.
+\item Content: text, photos, a contact form, weekly updates $\Rightarrow$ a dynamic site with a database (a CMS such as WordPress will be used), so PHP and MySQL are required.
+\item Storage: news articles and a photo gallery fit easily in a few gigabytes.
+\item Budget: limited (a public school).
+\end{itemize}
+\textbf{Step 2 — Evaluate each offer.}
+\begin{itemize}
+\item Offer B (dedicated server): far too powerful and far too expensive (600\,000 FCFA/year) for 500 visitors/month. Rejected.
+\item Offer C (VPS): technically suitable, but 120\,000 FCFA/year is high for the school's budget, and a VPS requires server administration skills the school may not have.
+\item Offer A (shared hosting): provides PHP/MySQL (so a CMS can run), 10 GB is largely enough, SSL secures the contact form, and the price (15\,000 FCFA/year) fits the budget.
+\end{itemize}
+\textbf{Step 3 — Conclusion.} Offer A (shared hosting) is recommended: it satisfies all technical needs (PHP/MySQL, storage, SSL) at the lowest cost, and its administration is simple enough for a teacher to manage.
+\end{exoresolu}
+
+\courssub{Method 2: Registering a domain name and linking it to hosting}
+
+\begin{methode}[Registering a domain name and pointing it to a server]
+\begin{enumerate}
+\item \textbf{Choose the name:} short, easy to spell, related to the organisation; choose the extension (\texttt{.com}, \texttt{.org}, or the national ccTLD \texttt{.cm} for Cameroon).
+\item \textbf{Check availability} using the search tool of a registrar (an accredited company that sells domain names).
+\item \textbf{Register and pay} the annual fee; keep the registrar account credentials safe.
+\item \textbf{Link the domain to the hosting server} by editing the DNS records at the registrar:
+\begin{itemize}
+\item either set the \emph{name servers} (NS records) given by the host, e.g. \texttt{ns1.host.com};
+\item or create an \emph{A record} pointing the domain to the server IP address, e.g. \texttt{197.149.10.25}.
+\end{itemize}
+\item \textbf{Wait for DNS propagation} (a few minutes to 48 hours), then test by typing the domain in a browser.
+\end{enumerate}
+\textbf{Key idea:} the DNS (Domain Name System) is the ``telephone directory'' of the Internet: it translates the human-readable name into the server IP address.
+\end{methode}
+
+\begin{exoresolu}[Understanding the role of DNS]
+Ama registers the domain \texttt{amashop.cm} for her online shop in Douala. Her web host tells her that the site files are on a server with IP address \texttt{102.130.40.15}. (a) Explain why visitors cannot yet reach her site by typing \texttt{amashop.cm}. (b) Describe exactly what Ama must configure. (c) After the change, a friend in Yaoundé still sees the old page while Ama sees the new site. Explain.
+\tcblower
+\textbf{(a)} A domain name alone does not contain any website. Browsers need an IP address to contact a server. Since no DNS record yet associates \texttt{amashop.cm} with \texttt{102.130.40.15}, the browser cannot resolve the name and displays an error such as ``server not found''.
+
+\textbf{(b)} Ama must log in to her registrar's control panel, open the DNS management (or ``DNS zone'') page for \texttt{amashop.cm}, and create an \textbf{A record}: host \texttt{@} (or the bare domain) pointing to \texttt{102.130.40.15}. She may also add a \texttt{www} record (A record or CNAME) so that \texttt{www.amashop.cm} also works. Alternatively, if the host provided name servers, she replaces the registrar's name servers with the host's NS records.
+
+\textbf{(c)} This is a \textbf{DNS propagation} effect. DNS resolvers (at ISPs such as MTN or Orange) cache previous answers for a duration called the TTL (Time To Live). Ama's resolver has already picked up the new record, while her friend's resolver still serves the old cached answer. Once the TTL expires everywhere (up to 48 hours), all users will see the new site.
+\end{exoresolu}
+
+\courssub{Method 3: Publishing a static website with FTP}
+
+\begin{methode}[Uploading a site with an FTP client (e.g. FileZilla)]
+\begin{enumerate}
+\item \textbf{Collect the connection credentials} sent by the host: FTP host (e.g. \texttt{ftp.mysite.cm}), username, password, port (21 for FTP, 22 for SFTP).
+\item \textbf{Open the FTP client} and enter these credentials in the Quickconnect bar; prefer \textbf{SFTP} when available because it encrypts the connection.
+\item \textbf{Identify the two panes:} left = local computer (your site folder), right = remote server.
+\item \textbf{Open the web root directory} on the server, usually named \texttt{public\_html}, \texttt{www} or \texttt{htdocs}. Files placed elsewhere are not visible on the web.
+\item \textbf{Upload} the site files (drag and drop from left to right), keeping the folder structure identical.
+\item \textbf{Verify} that the home page file is named \texttt{index.html} (or \texttt{index.php}) and is directly inside the web root.
+\item \textbf{Test} the site in a browser and check every link and image.
+\end{enumerate}
+\textbf{Reflex:} a broken image after upload almost always means a wrong path or a case mismatch (\texttt{Photo.JPG} $\neq$ \texttt{photo.jpg} on Linux servers).
+\end{methode}
+
+\begin{exoresolu}[Diagnosing an FTP publication problem]
+Ngong has built a site with this local structure: a folder \texttt{monsite} containing \texttt{index.html}, \texttt{about.html}, and a subfolder \texttt{images} with \texttt{logo.png}. In \texttt{index.html} he wrote \texttt{<img src="images/logo.png">}. He connects with FileZilla and drags the \emph{contents} of \texttt{monsite} into \texttt{public\_html}. (a) The home page displays but the logo does not appear. Give two possible causes. (b) When he types his domain, the browser shows a directory listing instead of the home page. What happened and how can he fix it?
+\tcblower
+\textbf{(a) Logo not displayed:}
+\begin{itemize}
+\item \emph{Cause 1 — case sensitivity:} the file on disk may be named \texttt{Logo.png} or \texttt{logo.PNG} while the HTML references \texttt{logo.png}. Windows ignores case, but the Linux server does not, so the file is ``not found''. Fix: rename the file exactly to \texttt{logo.png} (all lowercase) and re-upload.
+\item \emph{Cause 2 — wrong path / incomplete upload:} the \texttt{images} folder may not have been transferred, or was uploaded outside \texttt{public\_html}. Fix: check the remote pane, upload the \texttt{images} folder into \texttt{public\_html}, and refresh with Ctrl+F5 to bypass the browser cache.
+\end{itemize}
+\textbf{(b) Directory listing instead of the home page:} the server looks for a default file named \texttt{index.html} in the web root. If Ngong accidentally uploaded the whole \texttt{monsite} \emph{folder} into \texttt{public\_html}, the file sits at \texttt{public\_html/monsite/index.html} and no \texttt{index.html} exists at the root, so the server lists the files. Fix: move \texttt{index.html}, \texttt{about.html} and \texttt{images} directly into \texttt{public\_html} (or upload the \emph{contents} of the folder, not the folder itself). The site then loads at the domain root.
+\end{exoresolu}
+
+\courssub{Method 4: Installing a CMS (WordPress) on a hosting account}
+
+\begin{methode}[Installing WordPress manually in 5 steps]
+\begin{enumerate}
+\item \textbf{Create a MySQL database} in the hosting control panel (cPanel): note the database name, the database user, its password, and the host (usually \texttt{localhost}).
+\item \textbf{Download WordPress} from the official site \texttt{wordpress.org} and unzip the archive on your computer.
+\item \textbf{Upload the WordPress files} by FTP into the web root (\texttt{public\_html}).
+\item \textbf{Configure \texttt{wp-config.php}} (rename \texttt{wp-config-sample.php}) with the four database credentials.
+\item \textbf{Run the installer} by visiting the domain in a browser: choose the language, enter the site title, create the \emph{administrator} account (strong password, never ``admin'' as username), and finish.
+\end{enumerate}
+\textbf{Shortcut:} most hosts offer a \emph{one-click installer} (Softaculous in cPanel) which performs steps 1--4 automatically. \textbf{Reflex:} after installation, delete the default content and set the permalinks (Settings $\rightarrow$ Permalinks $\rightarrow$ ``Post name'').
+\end{methode}
+
+\begin{exoresolu}[Explaining the CMS architecture]
+The cooperative of cocoa farmers of Penja wants a site where members publish market prices without writing any code. A student proposes WordPress. (a) Explain what a CMS is and why it suits this project. (b) The installer asks for a ``database name, user, password, host''. Why does a CMS need a database, unlike the static site of Method 3? (c) During installation, the error ``Error establishing a database connection'' appears. List three possible causes.
+\tcblower
+\textbf{(a)} A CMS (Content Management System) is a web application that allows creating, editing, organising and publishing web content through a graphical administration interface, \emph{without writing HTML code}. It suits the cooperative because farmers can log in, click ``Add post'', type the day's cocoa price and publish — the CMS generates the pages automatically. It also manages user accounts, so each member can have limited rights (e.g. \emph{Author}).
+
+\textbf{(b)} A static site stores everything in fixed HTML files. A CMS \emph{separates content from presentation}: articles, pages, users, comments and settings are stored as records in a MySQL database, while the design lives in theme files (PHP templates). When a visitor requests a page, the CMS reads the content from the database, injects it into the template and sends the generated HTML to the browser. Hence the installer must know which database to use and how to authenticate to it.
+
+\textbf{(c)} Possible causes of ``Error establishing a database connection'':
+\begin{enumerate}
+\item a \textbf{typing error} in \texttt{wp-config.php} (wrong database name, user or password);
+\item the \textbf{database user has not been granted privileges} on that database (in cPanel, the user must be \emph{added} to the database with ``All Privileges'');
+\item the \textbf{database server is down} or the host value is wrong (rarely different from \texttt{localhost}, but some hosts use a specific server name).
+\end{enumerate}
+Fix: re-check the four credentials in cPanel, correct \texttt{wp-config.php}, and reload the page.
+\end{exoresolu}
+
+\courssub{Method 5: Building and organising content in a CMS}
+
+\begin{methode}[Creating a clear site structure in WordPress]
+\begin{enumerate}
+\item \textbf{Distinguish Pages from Posts:} \emph{Pages} for permanent content (Home, About, Contact); \emph{Posts} for dated news, organised with \emph{categories} and \emph{tags}.
+\item \textbf{Create the pages} (Dashboard $\rightarrow$ Pages $\rightarrow$ Add New) using the block editor: title, text blocks, images, buttons.
+\item \textbf{Build the navigation menu} (Appearance $\rightarrow$ Menus): add the pages, order them by drag-and-drop, assign the menu to the ``Primary'' location.
+\item \textbf{Set the home page} (Settings $\rightarrow$ Reading): choose ``A static page'' and select your Home page; optionally set a Posts page for the news.
+\item \textbf{Choose and customise a theme} (Appearance $\rightarrow$ Themes $\rightarrow$ Customize): colours, logo, header image — never edit theme files directly.
+\item \textbf{Add functionality with plugins} only when needed (contact form, security, backup); every extra plugin is a potential security risk.
+\end{enumerate}
+\textbf{Reflex:} click \emph{Preview} before \emph{Publish}, and test the menu on a phone (responsive check).
+\end{methode}
+
+\begin{exoresolu}[Structuring a restaurant website]
+A restaurant in Bamenda, ``Taste of the North-West'', wants a site with: a welcome page, the menu of dishes, a page about the chef, a contact page with a form, and a ``News'' section where weekly special offers are published. Using WordPress, describe precisely how you would organise this content (pages, posts, categories, menus, home page setting).
+\tcblower
+\textbf{Pages (static content):} create four pages: \emph{Home} (welcome text and photo), \emph{Our Menu} (list of dishes with prices in FCFA), \emph{The Chef} (biography), \emph{Contact} (text + contact form provided by a plugin such as Contact Form 7).
+
+\textbf{Posts (dynamic content):} weekly special offers are \emph{posts}, not pages, because they are dated and regularly added. Create one category \emph{Special Offers} (and optionally tags like \emph{vegetarian}, \emph{weekend}) so visitors can filter the news.
+
+\textbf{Menu:} in Appearance $\rightarrow$ Menus, create a menu ``Main'' containing: Home, Our Menu, The Chef, News, Contact — in that order — and assign it to the Primary location. The ``News'' item links to the category page or the Posts page.
+
+\textbf{Home page setting:} in Settings $\rightarrow$ Reading, select ``A static page'', set \emph{Homepage} = Home and \emph{Posts page} = a new empty page called \emph{News}. WordPress then lists the special-offer posts automatically on the News page.
+
+\textbf{Result:} the owner updates offers by simply adding a post in the \emph{Special Offers} category; no page or menu needs to be touched, and the site structure remains clean.
+\end{exoresolu}
+
+\courssub{Method 6: Securing and maintaining a CMS website}
+
+\begin{methode}[Routine security and maintenance checklist]
+\begin{enumerate}
+\item \textbf{Update everything} promptly: CMS core, theme and plugins (Dashboard $\rightarrow$ Updates). Most CMS hacks exploit known, already-patched flaws.
+\item \textbf{Use strong authentication:} unique administrator username (never \texttt{admin}), long password, and two-factor authentication if available; give other users the \emph{minimum} role needed.
+\item \textbf{Activate HTTPS} with an SSL/TLS certificate (often free via Let's Encrypt) and force redirection from \texttt{http} to \texttt{https}.
+\item \textbf{Back up regularly} (files + database), e.g. weekly, and store a copy \emph{off the server} (local disk or cloud). Test a restore occasionally.
+\item \textbf{Install a security plugin} (firewall, login-attempt limiting, malware scan) and delete unused themes and plugins.
+\item \textbf{Monitor:} check uptime, broken links and suspicious accounts or files.
+\end{enumerate}
+\textbf{Key formula idea:} security = \emph{prevention} (updates, strong passwords, HTTPS) + \emph{detection} (monitoring) + \emph{recovery} (backups).
+\end{methode}
+
+\begin{exoresolu}[Responding to a hacked website]
+The website of a Yaoundé NGO, built with WordPress two years ago and never updated, suddenly redirects visitors to a suspicious gambling page. The administrator also notices a new user account she never created. (a) Identify two likely causes of the attack. (b) Describe, in order, the recovery steps. (c) State three measures to prevent a recurrence.
+\tcblower
+\textbf{(a) Likely causes:} (1) an \emph{outdated} WordPress core, theme or plugin containing a known vulnerability that attackers exploited; (2) a \emph{weak or compromised administrator password} (brute-force attack on the login page), which allowed the creation of the rogue account and the injection of the malicious redirection code.
+
+\textbf{(b) Recovery steps, in order:}
+\begin{enumerate}
+\item Take the site offline or into maintenance mode to protect visitors.
+\item Change \emph{all} passwords: hosting account, FTP, database, and all CMS users.
+\item Delete the unknown user account.
+\item Restore the site from the most recent \emph{clean} backup (files and database) — this is why regular backups are vital.
+\item If no clean backup exists, reinstall WordPress core files fresh, scan and clean the database and \texttt{wp-content} folder with a security tool.
+\item Update the core, theme and all plugins to their latest versions; remove anything unused.
+\item Check \texttt{wp-config.php} and \texttt{.htaccess} for injected code, then bring the site back online and monitor it.
+\end{enumerate}
+\textbf{(c) Prevention:} enable automatic updates; enforce strong passwords and two-factor authentication and limit login attempts; schedule automatic weekly backups stored off-site; keep an SSL certificate active and a security plugin (firewall) running.
+\end{exoresolu}
+
+\courssub{Method 7: Evaluating the cost and performance of a hosted site}
+
+\begin{methode}[Computing bandwidth, storage and cost]
+\begin{enumerate}
+\item \textbf{Estimate the average page weight} $p$ (in MB): sum of HTML, CSS, scripts and images of a typical page.
+\item \textbf{Monthly bandwidth} $B = p \times v \times n$, where $v$ = number of visitors per month and $n$ = average number of pages viewed per visitor. Convert units carefully: 1 GB $= 1024$ MB (binary convention used by most hosting control panels).
+\item \textbf{Compare} $B$ with the plan's monthly bandwidth and the total file size with the storage quota; keep a safety margin (at least $30\%$).
+\item \textbf{Total annual cost} = hosting fee + domain renewal + SSL (if not free) + optional paid themes/plugins.
+\item \textbf{Decide} whether an upgrade is needed when usage approaches about $70$--$80\%$ of the quota.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Bandwidth and cost calculation]
+A photographer in Limbe hosts his portfolio on a plan offering 20 GB of bandwidth per month and 5 GB of storage at 25\,000 FCFA/year, with the domain \texttt{.cm} at 9\,000 FCFA/year. His average page weighs 2.5 MB, the site files occupy 1.2 GB, and he expects 2\,000 visitors per month, each viewing 6 pages. (a) Compute the monthly bandwidth consumed. (b) Is the plan sufficient? (c) Compute the total annual cost. (d) Traffic doubles after a TV report: what happens?
+\tcblower
+\textbf{(a)} Apply the formula $B = p \times v \times n$:
+\begin{align*}
+B &= 2.5\ \text{MB} \times 2000 \times 6 = 30\,000\ \text{MB}\\
+B &= \dfrac{30\,000}{1024} \approx 29.3\ \text{GB per month}.
+\end{align*}
+\textbf{(b)} The plan offers only 20 GB/month, but the site needs about 29.3 GB: the plan is \textbf{not sufficient}. Storage is fine (1.2 GB $<$ 5 GB), but bandwidth would be exceeded; the host would suspend the site or charge extra. He must choose a plan with at least $29.3 \times 1.3 \approx 38$ GB/month (with the $30\%$ safety margin).
+
+\textbf{(c)} Total annual cost $= 25\,000 + 9\,000 = 34\,000$ FCFA/year (SSL assumed included; otherwise add its price).
+
+\textbf{(d)} If traffic doubles: $B = 2.5 \times 4000 \times 6 = 60\,000$ MB $\approx 58.6$ GB/month, nearly three times the quota. The site would become unavailable mid-month — precisely when the TV report brings new visitors. Lesson: for sites expecting sudden growth, choose a scalable (cloud) plan or a host that allows instant bandwidth upgrades.
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item Web hosting consists in:
+\begin{enumerate}
+\item writing the HTML code of a website;
+\item storing the files of a website on a server permanently connected to the Internet so that they can be accessed at any time;
+\item buying a computer for the school;
+\item registering a business name at the trade register.
+\end{enumerate}
+\item The DNS (Domain Name System) is used to:
+\begin{enumerate}
+\item translate a domain name into an IP address;
+\item encrypt passwords;
+\item compress images;
+\item create email accounts.
+\end{enumerate}
+\item In most shared hosting accounts, the files of a website must be placed in the folder:
+\begin{enumerate}
+\item \textbf{Documents}; \item \textbf{public\_html}; \item \textbf{Windows}; \item \textbf{Downloads}.
+\end{enumerate}
+\item In WordPress, a \cle{plugin} is:
+\begin{enumerate}
+\item a file that changes the visual appearance of the site;
+\item an extension that adds a new functionality to the site;
+\item a registered visitor of the site;
+\item a type of domain name.
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false]
+Say whether each statement is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item A domain name and web hosting are the same service.
+\item With shared hosting, several websites share the resources of the same physical server.
+\item Once a CMS website is online, it never needs to be updated again.
+\item The protocol used by FileZilla to transfer website files to a server is FTP (or its secure variant SFTP).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in one or two clear sentences, giving an example where possible:
+\begin{enumerate}
+\item web hosting;
+\item domain name;
+\item DNS;
+\item CMS (Content Management System);
+\item theme (in a CMS).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Quick calculations]
+A small business in Bamenda wants to host its website.
+\begin{enumerate}
+\item Its files occupy $4.2\ \mathrm{GB}$. A hosting plan offers $10\ \mathrm{GB}$ of disk space. What percentage of the space will be used?
+\item The site receives on average $1\,000$ visitors per day, each visitor downloading about $2\ \mathrm{MB}$ of data. Estimate the monthly bandwidth consumed (take $30$ days), giving your answer in GB.
+\item A hosting company offers a plan at $15\,000$ FCFA per year, or $1\,500$ FCFA per month. Which option is cheaper over one year, and by how much?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[The journey of a request]
+Define \cle{web hosting}, \cle{domain name} and \cle{DNS}, then explain, as an ordered list of steps, the journey of a request when a user in Yaoundé types \textbf{www.example.cm} in a browser until the web page is displayed.
+\end{exercice}
+
+\begin{exercice}[Choosing a hosting plan]
+A secondary school wants a website with $5\ \mathrm{GB}$ of files and about $1\,000$ visitors per day. Compare \cle{shared hosting} and \cle{VPS hosting} using at least three criteria (cost, performance, administration skills required, scalability), then recommend one solution for the school and justify your choice.
+\end{exercice}
+
+\begin{exercice}[Publishing with FileZilla]
+List in order the steps to publish a hand-coded HTML website online using the FileZilla FTP client (from obtaining the hosting credentials to checking the site in a browser), and state the purpose of the \textbf{public\_html} folder.
+\end{exercice}
+
+\begin{exercice}[Broken images]
+A student has uploaded her website, but her images do not display online although they worked perfectly on her own computer. Identify two likely causes of this problem (think of file paths, file names and case sensitivity) and propose a correction for each cause.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[CMS or hand-coding?] (10 marks)
+\begin{enumerate}
+\item Give four advantages of using a CMS such as WordPress instead of coding a website by hand in HTML/CSS. \hfill (4 marks)
+\item Give two situations in which hand-coding a website may still be preferable to using a CMS, justifying each one. \hfill (4 marks)
+\item Distinguish, with one example each, between a \cle{theme} and a \cle{plugin} in WordPress. \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[The hacked shop website] (12 marks)
+Mr. Tamba owns a shop in Douala. His WordPress website was hacked. The investigation shows that he used the login \textbf{admin} with the password \textbf{12345}, that he had never updated WordPress, its theme or its plugins since installation two years ago, and that he had no backup.
+\begin{enumerate}
+\item Identify three mistakes made by Mr. Tamba. \hfill (3 marks)
+\item For each mistake, state the good practice that would have prevented the attack or limited its consequences. \hfill (6 marks)
+\item Explain why regular backups are essential for a CMS website, and name one way of making a backup in WordPress. \hfill (3 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Practical task: managing a local WordPress site] (18 marks)
+Your school has installed WordPress locally (using XAMPP or WAMP) for the students' club website. Describe precisely the steps you would follow to:
+\begin{enumerate}
+\item create a \textbf{page} entitled ``About the club'' and explain the difference between a \cle{page} and a \cle{post}; \hfill (5 marks)
+\item create a \textbf{post} entitled ``Science Fair 2025'' and assign it to a new category ``Events''; \hfill (4 marks)
+\item create a navigation \textbf{menu} containing the page and the category, and place it in the site's main menu location; \hfill (4 marks)
+\item create a new \textbf{user} account with the role \emph{Editor}, and state what this role is allowed to do compared with an Administrator; \hfill (3 marks)
+\item perform a full \textbf{backup} of the site (files and database). \hfill (2 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 --- Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: b.} Web hosting consists \emph{of} storing the files of a website on a server permanently connected to the Internet, so that any visitor can access them at any time. Writing the HTML code (a) is \emph{web development}, not hosting; buying a computer (c) and registering a business name (d) are unrelated to hosting.
+\item \textbf{Answer: a.} The DNS (Domain Name System) translates a human-readable domain name such as \textbf{www.example.cm} into the IP address of the server that hosts the site. Encryption (b), compression (c) and email account creation (d) are distinct services.
+\item \textbf{Answer: b.} On most shared hosting accounts (typically managed with cPanel), the public files of the website must be placed in the \textbf{public\_html} folder (the \emph{document root}). \textbf{Documents}, \textbf{Windows} and \textbf{Downloads} are folders of a personal computer, not of a web server.
+\item \textbf{Answer: b.} In WordPress, a \cle{plugin} is an extension that adds a new functionality to the site (contact form, online shop, backup, security, etc.). A file that changes the visual appearance (a) is a \cle{theme}.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True or false]
+\begin{enumerate}
+\item \textbf{False.} A domain name is the address of the site (e.g. \textbf{www.myschool.cm}), while web hosting is the storage space on a server where the files are kept. They are two distinct services, often bought separately, even if some companies sell them as a bundle.
+\item \textbf{True.} In shared hosting, the resources of one physical server (CPU, RAM, disk, bandwidth) are divided among many customer accounts, which is precisely why this solution is inexpensive.
+\item \textbf{False.} A CMS website \emph{must} be updated regularly (CMS core, theme, plugins) to patch security vulnerabilities and fix bugs. A site that is never updated becomes an easy target for attackers.
+\item \textbf{True.} FileZilla is an FTP client: it transfers files between the local computer and the remote server using the FTP protocol, or preferably its secure variant SFTP (SSH File Transfer Protocol), which encrypts both commands and data.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Definitions]
+\begin{enumerate}
+\item \textbf{Web hosting:} the service consisting in storing the files of a website on a server permanently connected to the Internet, so that the site is accessible at any time. Example: renting a shared hosting plan from a provider to publish a school website.
+\item \textbf{Domain name:} the unique, human-readable address that identifies a website on the Internet. Example: \textbf{www.minsante.gov.cm}. It must be registered (rented) from an accredited registrar.
+\item \textbf{DNS (Domain Name System):} the worldwide distributed directory service that translates a domain name into the IP address of the corresponding server. Example: it converts \textbf{www.example.cm} into an address such as $196.200.10.5$.
+\item \textbf{CMS (Content Management System):} software that allows one to create, publish and manage the content of a website through a graphical administration interface, without writing all the code by hand. Examples: WordPress, Joomla, Drupal.
+\item \textbf{Theme (in a CMS):} a set of template and style files that controls the visual appearance (layout, colours, fonts) of the site, without changing its content. Example: the ``Astra'' or ``Twenty Twenty-Four'' themes in WordPress.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Quick calculations]
+\begin{enumerate}
+\item Percentage of disk space used:
+\[ \frac{4.2}{10}\times 100 = 42\ \% \]
+The business will use \textbf{42\,\%} of the offered disk space.
+\item Daily bandwidth: $1\,000 \times 2\ \mathrm{MB} = 2\,000\ \mathrm{MB} = 2\ \mathrm{GB}$ per day.
+Monthly bandwidth (30 days): $2 \times 30 = 60\ \mathrm{GB}$.
+The site consumes about \textbf{60 GB of bandwidth per month}.
+\item Cost of the monthly option over one year: $1\,500 \times 12 = 18\,000$ FCFA.
+The yearly plan costs $15\,000$ FCFA, so the \textbf{yearly plan is cheaper} by
+\[ 18\,000 - 15\,000 = 3\,000\ \text{FCFA}. \]
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 --- The journey of a request]
+\textbf{Definitions.}
+\begin{itemize}
+\item \cle{Web hosting}: the service of storing a website's files on a server permanently connected to the Internet so that they are accessible at all times.
+\item \cle{Domain name}: the unique, human-readable address of a website, e.g. \textbf{www.example.cm}.
+\item \cle{DNS}: the Domain Name System, the distributed directory that translates a domain name into the IP address of the hosting server.
+\end{itemize}
+\textbf{Journey of the request (ordered steps):}
+\begin{enumerate}
+\item The user in Yaoundé types \textbf{www.example.cm} in the browser and presses Enter.
+\item The browser asks a DNS resolver (often provided by the ISP, e.g. CAMTEL or MTN Cameroon) to resolve the domain name.
+\item The DNS resolver returns the IP address of the server hosting the site (after a recursive query through the DNS hierarchy if necessary).
+\item The browser opens a TCP connection to that IP address on port 80 (HTTP) or 443 (HTTPS). If HTTPS, a TLS handshake secures the channel.
+\item The browser sends an HTTP(S) GET request for the resource (e.g. \texttt{/}).
+\item The web server receives the request, processes it (serves static files, executes PHP, queries the database if the site is dynamic) and sends back the HTTP response (HTML, CSS, JS, images).
+\item The browser receives the files, parses and renders them, and displays the web page to the user.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- Choosing a hosting plan]
+\textbf{Comparison of shared hosting and VPS hosting:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Shared hosting} & \textbf{VPS hosting} \\
+\hline
+Cost & Very cheap (a few thousand FCFA per year) & Much more expensive (often 5 to 10 times more) \\
+\hline
+Performance & Resources shared with many other sites; sufficient for a small site & Dedicated resources (CPU, RAM); faster and more stable \\
+\hline
+Administration skills & Very simple: control panel (cPanel), no server knowledge needed & Requires system administration skills (Linux, security, configuration) \\
+\hline
+Scalability & Limited; one must migrate if the site grows a lot & Easy to increase resources (vertical scaling) as the site grows \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{Recommendation.} For a school website of $5\ \mathrm{GB}$ with about $1\,000$ visitors per day, \textbf{shared hosting} is recommended. Justification: the traffic and storage needs are modest and well within the limits of a shared plan; the school probably has no system administrator, so the simple cPanel interface is ideal; and the low cost respects a school budget. A VPS would be justified only if the traffic grew considerably or if specific server software (custom modules, non-standard ports) had to be installed.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Publishing with FileZilla]
+\textbf{Steps to publish a hand-coded HTML website with FileZilla:}
+\begin{enumerate}
+\item Obtain the FTP/SFTP credentials from the hosting provider: \textbf{host} (server address, e.g. \texttt{ftp.example.cm} or the server IP), \textbf{username}, \textbf{password} and \textbf{port} (usually 21 for FTP, 22 for SFTP). Prefer SFTP for security.
+\item Install and open FileZilla. Enter the credentials in the Quickconnect bar (Host, Username, Password, Port) and click \textbf{Quickconnect}, or save them in the \textbf{Site Manager} (\texttt{Ctrl+S}) for future use.
+\item The window shows the \textbf{Local site} (your computer) on the left and the \textbf{Remote site} (server) on the right. On the remote side, navigate to the \textbf{public\_html} folder (sometimes named \texttt{www} or \texttt{htdocs}).
+\item On the local side, select all the website files and folders (ensure \textbf{index.html} or \texttt{index.php} is present as the home page) and drag them into \textbf{public\_html} to upload. Use binary transfer mode (default).
+\item Wait until the transfer queue is empty. Check the \textbf{Failed transfers} tab; if any, right-click and choose \textbf{Reset and requeue}.
+\item Open a browser, type the domain name of the site and verify that pages, links, images and CSS display correctly. Clear browser cache if necessary.
+\end{enumerate}
+\textbf{Purpose of \texttt{public\_html}:} it is the \emph{document root} (web root) of the hosting account, i.e. the folder whose content is publicly accessible via the domain name. Any file placed outside it (e.g. in the home directory) is not served by the web server and cannot be reached through a URL.
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- Broken images]
+\textbf{Cause 1: Absolute local paths.} The HTML code contains paths pointing to the developer's own computer, e.g. \texttt{C:\textbackslash Users\textbackslash Amina\textbackslash Pictures\textbackslash logo.png} or \texttt{file:///C:/...}. These paths do not exist on the server.
+\emph{Correction:} Use \emph{relative paths} (relative to the HTML file), e.g. \texttt{images/logo.png}, and upload the \texttt{images} folder together with the site.
+
+\textbf{Cause 2: Case sensitivity of file names.} Windows (local) is case-insensitive (\texttt{Logo.PNG} = \texttt{logo.png}), but Linux servers (remote) are case-sensitive. A mismatch between the \texttt{src} attribute and the actual file name causes a 404 error.
+\emph{Correction:} Make the file names in the HTML code match \emph{exactly} the real file names (same capitalisation, same extension). Best practice: name all files in lower case, without spaces or accents (e.g. \texttt{school-logo.png}).
+
+\textbf{Other common causes:} the \texttt{images} folder was not uploaded at all; the image files were moved/renamed after the links were written; the file permissions on the server prevent reading (should be 644 for files, 755 for folders).
+\end{corrige}
+
+\begin{corrige}[Exercise 9 --- CMS or hand-coding? (10 marks)]
+\textbf{a) Four advantages of a CMS (1 mark each, any four):}
+\begin{itemize}
+\item No advanced programming knowledge required: content is created and edited through a graphical interface (WYSIWYG or block editor).
+\item Fast creation and updating of pages and articles (a page is published in minutes).
+\item Thousands of ready-made themes and plugins add design and functionality at little or no cost.
+\item Multi-user collaboration with defined roles (Administrator, Editor, Author, Contributor, Subscriber).
+\item Built-in tools: media library, menu management, comments, search, SEO-friendly URLs, responsive design.
+\item Separation of content and presentation: change the theme without rewriting content.
+\end{itemize}
+
+\textbf{b) Two situations where hand-coding is preferable (2 marks each: 1 for the situation, 1 for the justification):}
+\begin{itemize}
+\item \emph{Very small static site} (e.g. a one-page site for an event, a simple portfolio): a CMS with its database and PHP overhead would be unnecessarily heavy; a few optimised HTML/CSS/JS files are lighter, faster, cheaper to host (static hosting possible), and have a smaller attack surface.
+\item \emph{Learning and full control}: a student learning web development, or a project needing highly specific, optimised behaviour (e.g. a custom web application, a game, a data visualisation), benefits from hand-coding, which gives total control over every line of code, performance, and avoids the ongoing security maintenance a CMS requires.
+\end{itemize}
+(Also acceptable: maximum performance for a high-traffic static site; hosting environment without PHP/MySQL support; regulatory requirement for zero third-party code.)
+
+\textbf{c) Theme vs plugin (1 mark each):} a \cle{theme} controls the \emph{appearance} of the site (layout, colours, fonts, template structure) --- example: installing the ``Astra'' theme to change the design; a \cle{plugin} adds a \emph{functionality} (features, business logic) --- example: installing ``Contact Form 7'' to add a contact form, or ``WooCommerce'' to add an online shop.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- The hacked shop website (12 marks)]
+\textbf{a) Three mistakes (1 mark each):}
+\begin{enumerate}
+\item Weak credentials: the default username \textbf{admin} and the trivial password \textbf{12345} are the first combinations tried by automated brute-force and dictionary attacks.
+\item No updates: WordPress core, theme and plugins were never updated for two years, leaving known security vulnerabilities (CVEs) unpatched and exploitable.
+\item No backup: there was no recent copy of the files and database stored off-site to restore the site after the compromise.
+\end{enumerate}
+
+\textbf{b) Good practices (2 marks each: 1 for the practice, 1 for the explanation):}
+\begin{enumerate}
+\item Use a \textbf{unique username} (not ``admin'') and a \textbf{strong password} (long, mixing upper/lower case, digits, symbols; ideally generated by a password manager): this makes brute-force and dictionary attacks computationally infeasible.
+\item \textbf{Update regularly} the CMS core, the theme and all plugins (enable auto-updates for minor releases, test major updates on a staging site): updates patch the security holes that hackers exploit, so an up-to-date site closes the doors used by the attack.
+\item Make \textbf{regular automated backups} (files + database) stored \emph{outside} the server (cloud storage, another server, local download): even if the site is destroyed or ransomwared, it can be restored quickly to a clean state, limiting downtime and data loss.
+\end{enumerate}
+
+\textbf{c) Importance of backups (2 marks) and one method (1 mark):} A CMS site depends on many moving parts (core, theme, plugins, database, uploads) that can fail or be compromised (hacking, bad update, server hardware failure, human error). A recent, verified, off-site backup is the \emph{only} guarantee of restoring the site quickly to a known good state, avoiding the loss of content, customer data, SEO rankings and the cost of rebuilding from scratch. \emph{One reliable method:} install a backup plugin such as \textbf{UpdraftPlus}, \textbf{BackupBuddy} or \textbf{Duplicator}, configure it to back up both files and database on a schedule (daily/weekly), and send the archives to remote storage (Google Drive, Dropbox, Amazon S3, FTP/SFTP). (Also acceptable: manual export of the database via phpMyAdmin + download of the \texttt{wp-content} folder via SFTP, performed regularly.)
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Practical task: managing a local WordPress site (18 marks)]
+\textbf{a) Creating the page (5 marks).} Steps: log in to the dashboard (\texttt{http://localhost/monsite/wp-admin}); in the left menu choose \textbf{Pages $\rightarrow$ Add New}; type the title ``About the club''; write the content using the block editor (Gutenberg); click \textbf{Publish} (twice to confirm). (3 marks for the steps.)
+\emph{Difference page/post (2 marks):} a \cle{page} holds static, timeless content (About, Contact, Legal) and is hierarchical (parent/child) but not classified by categories or dates; a \cle{post} is a dated article that appears in the blog feed (reverse chronological order) and can be organised into categories and tags.
+
+\textbf{b) Creating the post (4 marks).} Choose \textbf{Posts $\rightarrow$ Add New}; type the title ``Science Fair 2025'' and write the content; in the right sidebar \textbf{Categories} panel, click \textbf{Add New Category}, type ``Events'' and press Enter; tick the ``Events'' checkbox; click \textbf{Publish}.
+
+\textbf{c) Creating the menu (4 marks).} Go to \textbf{Appearance $\rightarrow$ Menus}; click \textbf{Create a new menu}, give it a name (e.g. ``Main Menu'') and click \textbf{Create Menu}; in the left panels (\textbf{Pages}, \textbf{Posts}, \textbf{Categories}, \textbf{Custom Links}), tick the page ``About the club'' and the category ``Events'' and click \textbf{Add to Menu}; arrange the items by drag-and-drop (create sub-items by indenting); in \textbf{Menu Settings} (or \textbf{Manage Locations} tab), tick the display location ``Primary Menu'' / ``Main Menu'' / ``Header Menu'' (exact name depends on the active theme); click \textbf{Save Menu}.
+
+\textbf{d) Creating the Editor user (3 marks).} Go to \textbf{Users $\rightarrow$ Add New}; fill in \textbf{Username}, \textbf{Email}, and a \textbf{strong password} (or let WordPress generate one); in the \textbf{Role} drop-down list, select \textbf{Editor}; click \textbf{Add New User}. (2 marks.)
+\emph{Rights of an Editor (1 mark):} An Editor can create, edit, publish and delete \emph{any} posts and pages (including those of other users), manage categories and tags, and moderate comments. An Editor \textbf{cannot} manage site settings (General, Writing, Reading, Discussion, Permalinks), install/update/delete themes or plugins, manage users (add/remove/change roles), or update the WordPress core --- only an Administrator can do that.
+
+\textbf{e) Full backup (2 marks).} A complete backup of a WordPress site requires \emph{both} parts:
+\begin{enumerate}
+\item \textbf{Files:} copy the entire WordPress installation folder (e.g. \texttt{C:\textbackslash xampp\textbackslash htdocs\textbackslash monsite} or \texttt{/opt/lampp/htdocs/monsite}), which contains \texttt{wp-content} (themes, plugins, uploads), \texttt{wp-config.php}, \texttt{.htaccess}, etc.
+\item \textbf{Database:} open \textbf{phpMyAdmin} (\texttt{http://localhost/phpmyadmin}), select the site's database (e.g. \texttt{monsite\_db}), click the \textbf{Export} tab, choose \textbf{Quick} export method, \textbf{SQL} format, and click \textbf{Go} to download the \texttt{.sql} file.
+\end{enumerate}
+(Also fully acceptable: using a backup plugin like UpdraftPlus configured to back up both files and database to a remote destination, then downloading the backup archive for safekeeping.)
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, font=\small}, concept color=popblue, text=white, level 1/.append style={level distance=3.6cm, sibling angle=60}, level 2/.append style={level distance=2.2cm, font=\scriptsize}]
+\node[concept, font=\small\bfseries] {Hosting a Website}
+  child[concept color=poporange] { node {Web Hosting Fundamentals}
+    child { node {Host, server, web space} }
+    child { node {Shared, VPS, dedicated, cloud} }
+    child { node {Domain name \& DNS} }
+  }
+  child[concept color=popgreen] { node {Publishing a Website}
+    child { node {FTP / FileZilla} }
+    child { node {index.html, folders} }
+    child { node {Testing online} }
+  }
+  child[concept color=poppurple] { node {Content Management Systems}
+    child { node {Definition of a CMS} }
+    child { node {WordPress, Joomla, Drupal} }
+    child { node {Local install: WAMP} }
+  }
+  child[concept color=poppink] { node {CMS Architecture}
+    child { node {Front-end / back-end} }
+    child { node {Themes, plugins} }
+    child { node {Database (MySQL)} }
+  }
+  child[concept color=popgold] { node {Managing \& Securing}
+    child { node {Users \& roles} }
+    child { node {Updates, backups} }
+    child { node {Passwords, HTTPS} }
+  }
+  child[concept color=popdark] { node {Integration Activities}
+    child { node {Plan, build, publish} }
+    child { node {Evaluate \& maintain} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: from hosting fundamentals to publishing, CMS use, security and integration.}
+\end{popfigure}
+
+\begin{aretenir}[Summary Sheet — Key Definitions]
+\begin{itemize}
+\item \cle{Web hosting}: service that stores a website's files on a \cle{web server} connected permanently to the Internet, so that the pages are accessible at any time (24/7) through a browser.
+\item \cle{Web server}: a computer (hardware plus server software such as Apache or Nginx) that receives HTTP requests from browsers and delivers web pages in response.
+\item \cle{Domain name}: human-readable address (e.g. \texttt{www.myschool.cm}) registered with a \cle{registrar} and linked to the server's IP address through the \cle{DNS} (Domain Name System), which translates names into IP addresses.
+\item \cle{Hosting types}: \textbf{shared} hosting (many sites on one server, cheap, limited performance), \textbf{VPS} (Virtual Private Server: isolated resources on a shared machine), \textbf{dedicated} hosting (a whole physical server for one client), \textbf{cloud} hosting (flexible, scalable resources billed on demand).
+\item \cle{FTP} (File Transfer Protocol): protocol used to transfer website files from a local computer to the remote server; common client software: \textbf{FileZilla}. \cle{SFTP} is its secure (encrypted) variant.
+\item \cle{CMS} (Content Management System): software (e.g. WordPress, Joomla, Drupal) that allows creating, editing, organising and publishing web content through a graphical interface \emph{without writing all the code by hand}.
+\item \cle{Front-end}: the public part of the site seen by visitors; \cle{back-end} (dashboard or administration panel): the protected area used by the administrator to manage content, appearance and users.
+\item \cle{Theme} (template): controls the site's appearance (layout, colours, fonts); \cle{plugin} (extension): adds functionality (contact form, photo gallery, security, online payment).
+\item \cle{Database} (usually MySQL/MariaDB): stores the CMS's content, users and settings; the CMS builds pages \emph{dynamically} from it each time a visitor requests them.
+\item \cle{Backup}: a safety copy of the site's files \emph{and} its database, kept separately so the site can be restored after a failure or an attack.
+\end{itemize}
+\end{aretenir}
+
+\begin{methode}[Publishing a Static Website via FTP]
+\begin{enumerate}
+\item Choose a \textbf{web host} and a hosting plan suited to the site's size and traffic.
+\item Register a \textbf{domain name} (or point an existing one to the host's servers via the DNS settings).
+\item Open the FTP client (e.g. FileZilla) and connect using the \textbf{host address}, \textbf{username}, \textbf{password} and \textbf{port} (21 for FTP, 22 for SFTP) supplied by the host.
+\item Upload the website files into the \textbf{web root} folder, usually named \texttt{public\_html} or \texttt{www}.
+\item Check that the home page is named \texttt{index.html} (or \texttt{index.php}) so the server displays it by default.
+\item Test the site by typing the full URL in a browser and checking every page, link and image.
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Installing a CMS Locally (WAMP/XAMPP)]
+\begin{enumerate}
+\item Install a local server package such as \textbf{WAMP} or \textbf{XAMPP} (which bundle Apache, MySQL/MariaDB and PHP).
+\item Start the \textbf{Apache} and \textbf{MySQL} services.
+\item Open \textbf{phpMyAdmin} in the browser and create a new empty \textbf{database} for the site.
+\item Copy the CMS files (e.g. the WordPress folder) into the local web folder (\texttt{www} or \texttt{htdocs}).
+\item Run the CMS \textbf{installer} by opening the folder's address in the browser (e.g. \texttt{localhost/mysite}).
+\item Enter the database name, user and password, then configure the \textbf{site title} and the \textbf{administrator account} (username and strong password).
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Securing and Maintaining a CMS Website]
+\begin{enumerate}
+\item Use \textbf{strong, unique passwords} and never keep the default ``admin'' username.
+\item Create user accounts with the \textbf{minimum role} needed (subscriber, editor, administrator) and limit the number of administrators.
+\item Apply \textbf{updates} regularly: CMS core, themes and plugins — most attacks exploit outdated components.
+\item Install an \textbf{SSL certificate} so the site uses \textbf{HTTPS} (encrypted connection, padlock in the browser).
+\item Make regular \textbf{backups} of both the files and the database, and keep a copy outside the server.
+\item \textbf{Remove unused} themes and plugins: every extra component is a potential security hole.
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Integration Approach — From Idea to Published Site]
+\begin{enumerate}
+\item \textbf{Analyse the needs}: purpose of the site, target audience, content, budget.
+\item \textbf{Choose the tool}: hand-coded static site (HTML/CSS) for a small showcase, or a CMS for frequently updated content.
+\item \textbf{Choose the hosting} type and register the domain name.
+\item \textbf{Design and build} the site (structure, pages, navigation, theme).
+\item \textbf{Publish} the site (FTP upload or online CMS installation).
+\item \textbf{Test} thoroughly (links, display on phone and computer, loading speed).
+\item \textbf{Maintain and evaluate}: updates, backups, security checks, visitor feedback.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common Mistakes to Avoid]
+\begin{itemize}
+\item Confusing the \emph{domain name} (the address) with the \emph{hosting} (the storage space): \textbf{both} are needed for a site to be reachable.
+\item Forgetting that the home page must be named \texttt{index.html} (or \texttt{index.php}); otherwise visitors see a directory listing or an error page.
+\item Uploading files into the wrong folder instead of the web root (\texttt{public\_html} / \texttt{www}).
+\item Keeping the default ``admin'' username or using weak passwords — the first cause of hacked CMS sites.
+\item Never updating the CMS, themes or plugins, and neglecting to back up \emph{before} an update.
+\item Believing a CMS needs no database: WordPress-type CMSs are \emph{dynamic} and require MySQL/MariaDB to store content.
+\item Thinking a published site is finished forever: a website requires continuous \textbf{maintenance} (updates, backups, security).
+\end{itemize}
+\end{attention}
+
+\begin{aretenir}[GCE Examination Tips]
+\begin{itemize}
+\item Be able to \emph{compare} hosting types in a table (cost, performance, control, administration) and to \emph{justify} a choice for a given scenario (school website, e-commerce shop, personal blog).
+\item Know the \emph{ordered steps} of publishing via FTP and of a local CMS installation — these are classic structured questions.
+\item Define a CMS precisely and name at least two examples, with one advantage (fast creation, no deep coding required) and one drawback (security updates needed, less flexibility than hand-coding).
+\item For integration activities, present a clear plan: needs, tools, hosting choice, publication, security and maintenance. Examiners reward \emph{method and justification}, not mere description.
+\item Link to practice: hosting a school or business site in Cameroon (for example with a \texttt{.cm} domain name) is an excellent contextual example to quote.
+\end{itemize}
+\end{aretenir}
+
+\findecours
+
+\end{document}
