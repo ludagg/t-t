@@ -1,0 +1,3288 @@
+% Analysing digital logic systems — Computer Science Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic CSC05-analysing-digital-logic-systems.tex
+\newcommand{\DOCMATIERE}{Computer Science}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Computer Science}
+\newcommand{\DOCLECON}{5}
+\newcommand{\DOCTITRE}{Analysing digital logic systems}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Analysing digital logic systems}{Computer Science}{Upper Sixth}{Upper Sixth — Computer Science}{5}{3 periods}{This chapter equips learners with the algebraic tools needed to analyse, simplify and compare digital logic systems. From Boolean identities to Karnaugh maps, students learn to minimise logic expressions and justify that a simplified circuit is equivalent to the original — a core skill for the GCE Advanced Level paper.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can state and apply the fundamental laws and theorems of Boolean algebra (commutative, associative, distributive, absorption, De Morgan's).
+\item By the end of this chapter I can prove the equivalence of two logic expressions using algebraic manipulation or truth tables.
+\item By the end of this chapter I can convert any logic expression into Sum-of-Products (SOP) and Product-of-Sums (POS) standard forms.
+\item By the end of this chapter I can write the canonical (minterm/maxterm) form of a function from its truth table.
+\item By the end of this chapter I can simplify a Boolean expression algebraically and verify the result.
+\item By the end of this chapter I can simplify functions of 2, 3 and 4 variables using Karnaugh maps, including don't-care conditions.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Boolean Algebra: Variables, Operations and Fundamental Laws
+\item Algebraic Simplification and Standard Forms (SOP \& POS)
+\item Karnaugh Map Minimisation
+\item Analysing and Designing Complete Logic Systems
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can state and apply the fundamental laws and theorems of Boolean algebra (commutative, associative, distributive, absorption, De Morgan's).
+\item By the end of this chapter I can prove the equivalence of two logic expressions using algebraic manipulation or truth tables.
+\item By the end of this chapter I can convert any logic expression into Sum-of-Products (SOP) and Product-of-Sums (POS) standard forms.
+\item By the end of this chapter I can write the canonical (minterm/maxterm) form of a function from its truth table.
+\item By the end of this chapter I can simplify a Boolean expression algebraically and verify the result.
+\item By the end of this chapter I can simplify functions of 2, 3 and 4 variables using Karnaugh maps, including don't-care conditions.
+\item By the end of this chapter I can implement a minimised expression using basic gates and using NAND-only or NOR-only gates.
+\item By the end of this chapter I can analyse a real-world control problem, model it with a truth table, minimise the logic and propose a circuit.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Logic gates (AND, OR, NOT, NAND, NOR, XOR) and their truth tables (Lower Sixth).
+\item Binary number system and binary variables taking values 0 and 1.
+\item Reading and constructing truth tables for combinational circuits.
+\item Deriving a logic expression from a simple circuit diagram.
+\item Basic algebraic manipulation (factorisation, expansion) from Ordinary Level mathematics.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Boolean Algebra: Variables, Operations and Fundamental Laws}
+
+\textbf{Opening situation.} In Douala, a water-tank controller must switch on the pump only when the tank is low \emph{and} the ENEO supply is present, or when a manual override button is pressed. The technician's first circuit uses six gates where three would do. Every extra gate costs money, consumes power and adds a point of failure. How can we be sure two different circuits do exactly the same job? And how can we systematically find the simplest one? Boolean algebra, the mathematics of 0 and 1 invented by George Boole, gives us the tools to answer these questions rigorously — the same tools used to design the chips inside every phone in Cameroon.
+
+\courssub{Boolean Variables and Constants}
+
+\begin{definition}[Boolean algebra and Boolean variable]
+A \cle{Boolean algebra} is a mathematical structure defined on a set containing exactly two elements, written $0$ and $1$, together with three operations: complement (NOT), logical sum (OR) and logical product (AND). A \cle{Boolean variable} is a quantity that can take only one of the two values $0$ or $1$. The values $0$ and $1$ are called the \cle{Boolean constants}.
+\end{definition}
+
+In digital electronics, these two values correspond to physical voltage levels: $0$ corresponds to the \cle{LOW} level (near $0\ \mathrm{V}$, meaning \emph{false}, \emph{off}, \emph{absent}) and $1$ corresponds to the \cle{HIGH} level (near the supply voltage, e.g. $5\ \mathrm{V}$, meaning \emph{true}, \emph{on}, \emph{present}). In our pump example, we can define three input variables: $L=1$ if the tank is low, $E=1$ if ENEO power is present, $M=1$ if the manual override is pressed; and one output $P=1$ when the pump must run. The whole behaviour of the controller is then a Boolean equation.
+
+\begin{attention}[0 and 1 are not ordinary numbers]
+In Boolean algebra, $1+1=1$, not $2$. The symbols $0$ and $1$ are \emph{states}, not quantities. Never apply the rules of ordinary arithmetic to Boolean expressions.
+\end{attention}
+
+\courssub{The Three Basic Operations}
+
+\begin{definition}[Basic operations]
+Let $A$ and $B$ be Boolean variables.
+\begin{itemize}
+\item The \cle{complement} (NOT) of $A$, written $A'$ (also $\bar{A}$ or $\neg A$), is $1$ when $A=0$ and $0$ when $A=1$.
+\item The \cle{logical sum} (OR), written $A+B$, is $1$ if \emph{at least one} of $A$, $B$ is $1$.
+\item The \cle{logical product} (AND), written $A\cdot B$ or simply $AB$, is $1$ only if \emph{both} $A$ and $B$ are $1$.
+\end{itemize}
+\end{definition}
+
+Each operation is completely defined by its \cle{truth table}, which lists the output for every possible combination of inputs:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $A'$ \\
+\hline
+0 & 1 \\
+\hline
+1 & 0 \\
+\hline
+\end{tabular}
+\qquad
+\begin{tabular}{|cc|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $A+B$ & $A\cdot B$ \\
+\hline
+0 & 0 & 0 & 0 \\
+\hline
+0 & 1 & 1 & 0 \\
+\hline
+1 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{aretenir}[Order of precedence]
+When several operations appear in one expression, evaluate them in this order: \textbf{parentheses first, then NOT, then AND, then OR}. Thus $A + B\cdot C$ means $A + (B\cdot C)$, and $AB'$ means $A\cdot(B')$, never $(AB)'$.
+\end{aretenir}
+
+Each operation is realised physically by a \cle{logic gate}. The figure below shows the standard symbols with their Boolean notation.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1, every node/.style={font=\small}]
+% NOT gate
+\draw[thick, popblue] (0,0) -- (0,1) -- (1.1,0.5) -- cycle;
+\draw[thick, popblue, fill=white] (1.22,0.5) circle (0.12);
+\draw[thick] (-0.7,0.5) -- (0,0.5);
+\draw[thick] (1.34,0.5) -- (2.0,0.5);
+\node[left] at (-0.7,0.5) {$A$};
+\node[right] at (2.0,0.5) {$A'$};
+\node[below, popdark] at (0.55,-0.15) {NOT};
+% AND gate
+\begin{scope}[xshift=3.6cm]
+\draw[thick, popgreen] (0,0) -- (0,1) -- (0.5,1) arc (90:-90:0.5) -- (0,0);
+\draw[thick] (-0.7,0.78) -- (0,0.78);
+\draw[thick] (-0.7,0.22) -- (0,0.22);
+\draw[thick] (1.0,0.5) -- (1.7,0.5);
+\node[left] at (-0.7,0.78) {$A$};
+\node[left] at (-0.7,0.22) {$B$};
+\node[right] at (1.7,0.5) {$A\cdot B$};
+\node[below, popdark] at (0.5,-0.15) {AND};
+\end{scope}
+% OR gate
+\begin{scope}[xshift=7.6cm]
+\draw[thick, poporange] (0,0) .. controls (0.25,0.2) and (0.25,0.8) .. (0,1);
+\draw[thick, poporange] (0,0) .. controls (0.5,0.05) and (0.9,0.2) .. (1.15,0.5);
+\draw[thick, poporange] (0,1) .. controls (0.5,0.95) and (0.9,0.8) .. (1.15,0.5);
+\draw[thick] (-0.7,0.78) -- (0.08,0.78);
+\draw[thick] (-0.7,0.22) -- (0.08,0.22);
+\draw[thick] (1.15,0.5) -- (1.85,0.5);
+\node[left] at (-0.7,0.78) {$A$};
+\node[left] at (-0.7,0.22) {$B$};
+\node[right] at (1.85,0.5) {$A+B$};
+\node[below, popdark] at (0.55,-0.15) {OR};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Gate symbols for NOT, AND and OR with their Boolean notation.}
+\end{popfigure}
+
+\begin{exemplebox}[The pump controller as a Boolean expression]
+The pump must run when (tank low AND ENEO present) OR (manual override). With $L$, $E$, $M$ as defined above:
+\[ P = L\cdot E + M. \]
+This single expression replaces any verbal description and can be analysed, proved and simplified using the laws below.
+\end{exemplebox}
+
+\courssub{Postulates of Boolean Algebra}
+
+The \cle{postulates} are the starting rules, accepted without proof, from which all theorems are derived. Each comes in a dual pair: one form built around OR and the constant $0$, the other around AND and the constant $1$.
+
+\begin{propriete}[Fundamental postulates]
+For any Boolean variable $A$:
+\begin{itemize}
+\item \textbf{Identity elements:} $A+0=A$ and $A\cdot 1 = A$.
+\item \textbf{Domination:} $A+1=1$ and $A\cdot 0 = 0$.
+\item \textbf{Idempotence:} $A+A=A$ and $A\cdot A = A$.
+\item \textbf{Complement laws:} $A+A'=1$ and $A\cdot A' = 0$.
+\item \textbf{Involution:} $(A')' = A$.
+\end{itemize}
+Each is verified by perfect induction, i.e. by checking the two cases $A=0$ and $A=1$ in a truth table.
+\end{propriete}
+
+\begin{exemplebox}[Verifying domination by perfect induction]
+For $A+1=1$: if $A=0$, then $0+1=1$; if $A=1$, then $1+1=1$. The identity holds in all cases, so it is proved. Similarly $A\cdot 0=0$: $0\cdot 0 = 0$ and $1\cdot 0 = 0$.
+\end{exemplebox}
+
+\courssub{Commutative, Associative and Distributive Laws}
+
+\begin{propriete}[Laws of combination]
+For all Boolean variables $A$, $B$, $C$:
+\begin{itemize}
+\item \textbf{Commutativity:} $A+B=B+A$ and $A\cdot B = B\cdot A$.
+\item \textbf{Associativity:} $(A+B)+C = A+(B+C)$ and $(A\cdot B)\cdot C = A\cdot(B\cdot C)$.
+\item \textbf{Distributivity of AND over OR:} $A(B+C) = AB + AC$.
+\item \textbf{Distributivity of OR over AND:} $A+BC = (A+B)(A+C)$.
+\end{itemize}
+\end{propriete}
+
+The first distributive law looks like ordinary algebra; the \emph{second} does not, and it is specific to Boolean algebra. It is one of the most useful tools in simplification, so we prove it in full.
+
+\begin{exoresolu}[Proving the second distributive law]
+Prove that $A+BC = (A+B)(A+C)$.
+\tcblower
+Expand the right-hand side using the first distributive law:
+\begin{align*}
+(A+B)(A+C) &= AA + AC + BA + BC \\
+&= A + AC + AB + BC && \text{(idempotence } AA=A\text{)}\\
+&= A(1+C+B) + BC && \text{(factorising)}\\
+&= A\cdot 1 + BC && \text{(domination } 1+C+B=1\text{)}\\
+&= A + BC && \text{(identity } A\cdot 1 = A\text{).}
+\end{align*}
+Hence $A+BC=(A+B)(A+C)$. A truth-table check over the 8 combinations of $(A,B,C)$ confirms the result.
+\end{exoresolu}
+
+\begin{attention}[Trap: distributing as in ordinary algebra]
+A very common mistake is to write $A+BC = (A+B)C$. This is \textbf{false}: take $A=1$, $B=0$, $C=0$: the left side gives $1+0=1$ but the right side gives $(1+0)\cdot 0 = 0$. The correct second distributive law is $A+BC=(A+B)(A+C)$ — the $A$ is duplicated and combined with \emph{each} term of the product. Do not import habits from ordinary arithmetic.
+\end{attention}
+
+\courssub{Absorption and Redundancy Theorems}
+
+\begin{propriete}[Absorption and redundancy]
+For all Boolean variables $A$, $B$:
+\begin{itemize}
+\item \textbf{Absorption (sum form):} $A + AB = A$.
+\item \textbf{Absorption (product form):} $A(A+B) = A$.
+\item \textbf{Redundancy theorem:} $A + A'B = A + B$, and dually $A(A'+B) = AB$.
+\end{itemize}
+\end{propriete}
+
+\textbf{Proofs (examinable).} For absorption:
+\[ A + AB = A(1+B) = A\cdot 1 = A. \]
+\[ A(A+B) = AA + AB = A + AB = A. \]
+For redundancy, using the second distributive law:
+\[ A + A'B = (A+A')(A+B) = 1\cdot(A+B) = A+B. \]
+
+Intuitively, absorption says that if $A$ alone already makes the expression true, adding ``$A$ and something'' brings nothing new. Redundancy says that in $A+A'B$, the $A'$ is useless: the term only matters when $A=0$, in which case $B$ alone decides.
+
+\begin{exemplebox}[Simplifying with absorption and redundancy]
+Simplify $F = X + XY + X'Z$.
+\[ F = X + X'Z \quad \text{(absorption removes } XY\text{)} = X + Z \quad \text{(redundancy).} \]
+A three-gate circuit collapses to a single OR gate — exactly the kind of saving our Douala technician needs.
+\end{exemplebox}
+
+\courssub{De Morgan's Theorems}
+
+\begin{propriete}[De Morgan's theorems]
+For all Boolean variables $A$ and $B$:
+\[ (A+B)' = A'\cdot B' \qquad\text{and}\qquad (A\cdot B)' = A' + B'. \]
+Generalised to $n$ variables: the complement of a sum is the product of the complements, and the complement of a product is the sum of the complements:
+\[ (X_1+X_2+\dots+X_n)' = X_1'\cdot X_2'\cdots X_n', \qquad (X_1 X_2 \cdots X_n)' = X_1' + X_2' + \dots + X_n'. \]
+(Proof by truth table below; examinable.)
+\end{propriete}
+
+\begin{exemplebox}[Proof of $(A+B)' = A'\cdot B'$ by perfect induction]
+\begin{center}
+\begin{tabular}{|cc|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $A+B$ & $(A+B)'$ & $A'$ & $B'$ & $A'\cdot B'$ \\
+\hline
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+\hline
+0 & 1 & 1 & 0 & 1 & 0 & 0 \\
+\hline
+1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+\hline
+1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+The columns $(A+B)'$ and $A'\cdot B'$ are identical for all four combinations, so the two expressions are equal. The same method proves $(AB)' = A'+B'$.
+\end{exemplebox}
+
+Graphically, De Morgan's theorems mean that \emph{pushing the inversion bubble} through a gate changes AND into OR and vice versa. A NAND gate (AND with inverted output) is identical to an OR gate with inverted inputs (``negative-OR''); a NOR gate is identical to an AND gate with inverted inputs (``negative-AND'').
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1, every node/.style={font=\small}]
+% NAND
+\draw[thick, poppurple] (0,0) -- (0,1) -- (0.5,1) arc (90:-90:0.5) -- (0,0);
+\draw[thick, poppurple, fill=white] (1.12,0.5) circle (0.12);
+\draw[thick] (-0.6,0.78) -- (0,0.78);
+\draw[thick] (-0.6,0.22) -- (0,0.22);
+\draw[thick] (1.24,0.5) -- (1.8,0.5);
+\node[right] at (1.8,0.5) {$(AB)'$};
+\node[below, popdark] at (0.55,-0.15) {NAND};
+\node at (2.9,0.5) {$\equiv$};
+% negative-OR
+\begin{scope}[xshift=4.1cm]
+\draw[thick, poporange] (0,0) .. controls (0.25,0.2) and (0.25,0.8) .. (0,1);
+\draw[thick, poporange] (0,0) .. controls (0.5,0.05) and (0.9,0.2) .. (1.15,0.5);
+\draw[thick, poporange] (0,1) .. controls (0.5,0.95) and (0.9,0.8) .. (1.15,0.5);
+\draw[thick, poporange, fill=white] (-0.12,0.78) circle (0.12);
+\draw[thick, poporange, fill=white] (-0.12,0.22) circle (0.12);
+\draw[thick] (-0.7,0.78) -- (-0.24,0.78);
+\draw[thick] (-0.7,0.22) -- (-0.24,0.22);
+\draw[thick] (1.15,0.5) -- (1.75,0.5);
+\node[right] at (1.75,0.5) {$A'+B'$};
+\node[below, popdark] at (0.55,-0.15) {negative-OR};
+\end{scope}
+% NOR
+\begin{scope}[yshift=-2.3cm]
+\draw[thick, poporange] (0,0) .. controls (0.25,0.2) and (0.25,0.8) .. (0,1);
+\draw[thick, poporange] (0,0) .. controls (0.5,0.05) and (0.9,0.2) .. (1.15,0.5);
+\draw[thick, poporange] (0,1) .. controls (0.5,0.95) and (0.9,0.8) .. (1.15,0.5);
+\draw[thick, poporange, fill=white] (1.27,0.5) circle (0.12);
+\draw[thick] (-0.6,0.78) -- (0.08,0.78);
+\draw[thick] (-0.6,0.22) -- (0.08,0.22);
+\draw[thick] (1.39,0.5) -- (1.95,0.5);
+\node[right] at (1.95,0.5) {$(A+B)'$};
+\node[below, popdark] at (0.55,-0.15) {NOR};
+\node at (2.9,0.5) {$\equiv$};
+\end{scope}
+% negative-AND
+\begin{scope}[xshift=4.1cm, yshift=-2.3cm]
+\draw[thick, poppurple] (0,0) -- (0,1) -- (0.5,1) arc (90:-90:0.5) -- (0,0);
+\draw[thick, poppurple, fill=white] (-0.12,0.78) circle (0.12);
+\draw[thick, poppurple, fill=white] (-0.12,0.22) circle (0.12);
+\draw[thick] (-0.7,0.78) -- (-0.24,0.78);
+\draw[thick] (-0.7,0.22) -- (-0.24,0.22);
+\draw[thick] (1.0,0.5) -- (1.6,0.5);
+\node[right] at (1.6,0.5) {$A'\cdot B'$};
+\node[below, popdark] at (0.5,-0.15) {negative-AND};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Bubble pushing: De Morgan's theorem swaps the gate type and moves the inversion bubbles.}
+\end{popfigure}
+
+\begin{attention}[$A'B'$ is NOT the complement of $AB$]
+The complement of $AB$ is $(AB)' = A' + B'$, not $A'B'$. Check with $A=1$, $B=0$: $(AB)' = (0)' = 1$, but $A'B' = 0\cdot 1 = 0$. When complementing a product (or a sum), you must apply De Morgan: complement \emph{each} variable \emph{and} change the operation. Similarly $(A+B)' = A'B'$, never $A'+B'$.
+\end{attention}
+
+\courssub{The Principle of Duality}
+
+\begin{definition}[Dual of an identity]
+The \cle{dual} of a Boolean identity is obtained by interchanging everywhere: $+$ with $\cdot$, and $0$ with $1$ (variables and complements stay unchanged).
+\end{definition}
+
+\begin{propriete}[Principle of duality]
+If a Boolean identity is true, its dual is also true. This is because every postulate comes in a dual pair, so any proof can be mirrored step by step.
+\end{propriete}
+
+\begin{exemplebox}[Using duality]
+From $A+AB=A$ (proved above), duality immediately gives $A(A+B)=A$ with no new proof. From $A+A'B=A+B$ we get $A(A'+B)=AB$.
+\end{exemplebox}
+
+\begin{aretenir}[Summary of postulates and laws in dual pairs]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Name} & \textbf{OR form} & \textbf{AND form (dual)} \\
+\hline
+Identity & $A+0=A$ & $A\cdot 1 = A$ \\
+\hline
+Domination & $A+1=1$ & $A\cdot 0 = 0$ \\
+\hline
+Idempotence & $A+A=A$ & $A\cdot A = A$ \\
+\hline
+Complement & $A+A'=1$ & $A\cdot A' = 0$ \\
+\hline
+Involution & \multicolumn{2}{c|}{$(A')' = A$} \\
+\hline
+Commutativity & $A+B=B+A$ & $AB=BA$ \\
+\hline
+Associativity & $(A+B)+C=A+(B+C)$ & $(AB)C=A(BC)$ \\
+\hline
+Distributivity & $A+BC=(A+B)(A+C)$ & $A(B+C)=AB+AC$ \\
+\hline
+Absorption & $A+AB=A$ & $A(A+B)=A$ \\
+\hline
+Redundancy & $A+A'B=A+B$ & $A(A'+B)=AB$ \\
+\hline
+De Morgan & $(A+B)'=A'\cdot B'$ & $(A\cdot B)'=A'+B'$ \\
+\hline
+\end{tabularx}
+\end{center}
+\end{aretenir}
+
+\courssub{Proving Equivalence of Two Expressions}
+
+There are two great methods to prove that two Boolean expressions are equal.
+
+\begin{methode}[Verifying equivalence by perfect induction (truth table)]
+\begin{enumerate}
+\item List all $2^n$ combinations of the $n$ input variables.
+\item Evaluate the first expression for every combination, step by step (one column per sub-expression).
+\item Evaluate the second expression in the same table.
+\item Compare the two final columns: if they are identical in \emph{every} row, the expressions are equivalent; a single differing row proves they are not.
+\end{enumerate}
+\end{methode}
+
+The second method is \cle{algebraic derivation}: starting from one expression, apply the postulates and theorems above until the other expression is obtained. This is faster for skilled students and is the basis of circuit minimisation, which we develop in the next section.
+
+\begin{exoresolu}[Two circuits, one job]
+The Douala technician's circuit implements $F = M + LE + LEM'$; a colleague proposes $G = M + LE$. Show the two circuits do exactly the same job.
+\tcblower
+\textbf{Algebraic proof.} Factor the last two terms of $F$:
+\[ F = M + LE(1 + M') = M + LE\cdot 1 = M + LE = G, \]
+using domination ($1+M'=1$) and identity. So the term $LEM'$ is useless and one AND gate can be removed.
+\textbf{Truth-table check.} With three variables there are $2^3=8$ rows:
+\begin{center}
+\begin{tabular}{|ccc|c|c|c|}
+\hline
+\rowcolor{popblueL} $L$ & $E$ & $M$ & $LE$ & $LEM'$ & $F=M+LE+LEM'$ \\
+\hline
+0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 1 \\
+0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & 0 & 1 \\
+1 & 0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 & 0 & 1 \\
+1 & 1 & 0 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+The column of $F$ equals $M$ OR $LE$ in every row, confirming $F=G$. The simpler circuit is cheaper, consumes less power and has fewer points of failure.
+\end{exoresolu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Prove by perfect induction that $A(A+B)=A$.
+\item Simplify algebraically, justifying each step: $F = AB + AB' + A'B$.
+\item Using De Morgan, write the complement of $G = (A+B')(C+D)$ as a sum of products of complemented variables.
+\item Give the dual of the identity $A + A'B = A + B$ and verify it for $A=0$, $B=1$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} If $A=0$: $0(0+B)=0$. If $A=1$: $1(1+B)=1$. Both cases give $A$, so $A(A+B)=A$.
+\textbf{2.} $F = A(B+B') + A'B = A\cdot 1 + A'B = A + A'B = A+B$ (complement law, identity, then redundancy).
+\textbf{3.} $G' = (A+B')' + (C+D)' = A'B + C'D'$.
+\textbf{4.} Dual: $A(A'+B)=AB$. For $A=0$, $B=1$: left side $0(1+1)=0$; right side $0\cdot 1 = 0$. Verified.
+\end{corrige}
+
+\begin{savaistu}[George Boole and Claude Shannon]
+George Boole published his ``algebra of logic'' in 1854 as pure mathematics, with no machine in mind. Almost a century later, Claude Shannon showed that Boolean algebra describes exactly the behaviour of switching circuits — giving birth to digital electronics. Every processor in every phone used in Cameroon today is, at its heart, billions of tiny switches obeying the laws you have just learned.
+\end{savaistu}
+
+\coursec{Algebraic Simplification and Standard Forms (SOP \& POS)}
+
+In the previous section we established the vocabulary and the fundamental laws of Boolean algebra: variables, the three basic operations (NOT, AND, OR), and the identities such as $X+1=1$, $X\cdot X'=0$, absorption and De Morgan's theorems. Those laws are not just abstract curiosities. They are the \emph{tools} that allow us to transform a logic expression into an equivalent one that is cheaper to build. This section shows you how to use them strategically, and introduces the two \emph{standard forms} — SOP and POS — in which any Boolean function can be written, together with the canonical (minterm/maxterm) forms that come directly from a truth table.
+
+\courssub{Why Simplify a Boolean Expression?}
+
+Imagine a technician in Douala who must build the control circuit for a water pump. The specification gives the expression
+\[ F = AB + AB' + A'BC . \]
+Built \emph{as written}, this needs three AND gates (one with 3 inputs), one 3-input OR gate and two inverters. But a few lines of algebra give
+\[ F = A(B+B') + A'BC = A + A'BC = A + BC , \]
+which needs only \textbf{one} AND gate and \textbf{one} OR gate — and no inverter at all. The two circuits produce \emph{exactly the same outputs for every input combination}, yet the second one is:
+
+\begin{itemize}
+\item \textbf{cheaper}: fewer integrated circuits to buy;
+\item \textbf{lower power}: fewer gates switching means less energy consumed and less heat;
+\item \textbf{more reliable}: every gate and every solder joint is a potential point of failure; fewer components means fewer failures;
+\item \textbf{faster}: fewer gate levels between input and output means a shorter propagation delay.
+\end{itemize}
+
+\begin{aretenir}[The goal of simplification]
+Two expressions are \cle{equivalent} if they have the same truth table. Simplification means finding an equivalent expression with the \textbf{fewest possible literals and terms}, because each literal corresponds to a gate input and each term to a gate.
+\end{aretenir}
+
+\courssub{Strategy of Algebraic Simplification}
+
+There is no automatic recipe, but experienced designers repeatedly use the same four moves:
+
+\begin{enumerate}
+\item \textbf{Expand} (distribute) to expose common factors: $X(Y+Z)=XY+XZ$.
+\item \textbf{Factorise} to apply $X+X'=1$: $AB+AB'=A(B+B')=A$.
+\item \textbf{Apply absorption laws}: $X+XY=X$ and $X+X'Y=X+Y$.
+\item \textbf{Eliminate redundant terms} with the consensus theorem (below).
+\end{enumerate}
+
+\begin{exemplebox}[Step-by-step simplification]
+Simplify $F = A'B + A'BC + AB'$.
+\begin{align*}
+F &= A'B + A'BC + AB' &\\
+&= A'B(1+C) + AB' & \text{(factorise } A'B\text{)}\\
+&= A'B + AB' & (1+C=1)\\
+&\ \text{no further reduction: } F = A'B + AB'.&
+\end{align*}
+Check with $A=0,B=1,C=0$: original gives $1+0+0=1$; simplified gives $1+0=1$. \checkmark
+\end{exemplebox}
+
+\begin{exemplebox}[Using $X+X'Y=X+Y$]
+Simplify $F = A + A'B$.
+\[ F = A + A'B = (A+A')(A+B) = 1\cdot(A+B) = A+B. \]
+One OR gate replaces an inverter, an AND gate and an OR gate.
+\end{exemplebox}
+
+\courssub{The Consensus Theorem}
+
+Some terms in an expression are \emph{redundant}: they add no new $1$s to the truth table. The consensus theorem identifies them.
+
+\begin{propriete}[Consensus theorem — proof examinable]
+\[ AB + A'C + BC = AB + A'C . \]
+The term $BC$ is called the \cle{consensus term} of $AB$ and $A'C$; it is redundant. Dual form: $(A+B)(A'+C)(B+C)=(A+B)(A'+C)$.
+\end{propriete}
+
+\textbf{Proof.} Starting from the left-hand side:
+\begin{align*}
+AB + A'C + BC &= AB + A'C + BC(A+A') & (A+A'=1)\\
+&= AB + A'C + ABC + A'BC & \text{(distribution)}\\
+&= AB(1+C) + A'C(1+B) & \text{(factorisation)}\\
+&= AB + A'C & (1+X=1). \quad \blacksquare
+\end{align*}
+
+\begin{exemplebox}[Applying consensus]
+Simplify $F = AB + A'C + BC$.
+Here $AB$ contains $A$ and $A'C$ contains $A'$; the consensus of these two terms is $BC$, which is present. Therefore
+\[ F = AB + A'C. \]
+A whole AND gate and one input of the OR gate are saved.
+\end{exemplebox}
+
+\begin{attention}[Do not remove the wrong term]
+Consensus removes the term that contains \emph{neither} the complemented nor the uncomplemented variable of the other two terms. In $AB+A'C+BC$ you may remove $BC$, \textbf{never} $AB$ or $A'C$. When in doubt, verify with a truth table.
+\end{attention}
+
+\courssub{Literals, Product Terms, Sum Terms: SOP and POS}
+
+\begin{definition}[Literal, product term, sum term]
+A \cle{literal} is a Boolean variable or its complement: $A$, $B'$, $C$ are literals.\\
+A \cle{product term} is a single literal or an AND of literals: $AB'C$.\\
+A \cle{sum term} is a single literal or an OR of literals: $A+B'+C$.
+\end{definition}
+
+\begin{definition}[SOP and POS]
+An expression is in \cle{SOP} (Sum Of Products) form if it is an OR of one or more product terms:
+\[ F = AB + A'C + B' . \]
+It is in \cle{POS} (Product Of Sums) form if it is an AND of one or more sum terms:
+\[ F = (A+B)(A'+C)(B'+C) . \]
+An expression such as $(AB+C)(A+D)$ is \emph{neither} SOP nor POS.
+\end{definition}
+
+SOP expressions map naturally onto a \textbf{two-level AND–OR circuit}: a first level of AND gates (one per product term) feeding a single OR gate. POS expressions map onto an OR–AND circuit. Two levels means a short propagation delay, which is why these forms dominate practical design.
+
+\courssub{Minterms and Maxterms}
+
+\begin{definition}[Minterm and maxterm]
+For $n$ variables, a \cle{minterm} $m_i$ is a product term in which \textbf{every} variable appears exactly once, complemented or not. A minterm equals $1$ for \emph{exactly one} row of the truth table.\\
+A \cle{maxterm} $M_i$ is a sum term in which every variable appears exactly once. A maxterm equals $0$ for \emph{exactly one} row.\\
+\textbf{Numbering convention}: with the variables in a declared order (e.g.\ $A,B,C$ with $A$ most significant), read the row as a binary number where a \emph{plain} variable is $1$ and a \emph{complemented} variable is $0$; the decimal value is the index $i$. Note that $M_i = m_i'$ (De Morgan).
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\rowcolors{2}{popblueL}{white}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $C$ & Row $i$ & Minterm $m_i$ & Maxterm $M_i$ \\
+\hline
+0 & 0 & 0 & 0 & $A'B'C'$ & $A+B+C$ \\
+0 & 0 & 1 & 1 & $A'B'C$ & $A+B+C'$ \\
+0 & 1 & 0 & 2 & $A'BC'$ & $A+B'+C$ \\
+0 & 1 & 1 & 3 & $A'BC$ & $A+B'+C'$ \\
+1 & 0 & 0 & 4 & $AB'C'$ & $A'+B+C$ \\
+1 & 0 & 1 & 5 & $AB'C$ & $A'+B+C'$ \\
+1 & 1 & 0 & 6 & $ABC'$ & $A'+B'+C$ \\
+1 & 1 & 1 & 7 & $ABC$ & $A'+B'+C'$ \\
+\hline
+\end{tabular}
+\end{center}
+\legende{Minterms and maxterms for three variables $A,B,C$ ($A$ most significant).}
+\end{popfigure}
+
+For two variables $A,B$ the minterms are $m_0=A'B'$, $m_1=A'B$, $m_2=AB'$, $m_3=AB$. With $n$ variables there are exactly $2^n$ minterms and $2^n$ maxterms.
+
+\begin{attention}[Variable order matters!]
+The numbering $m_i$ is only meaningful if the \textbf{order of the variables is stated}. With order $(A,B,C)$, $A'BC$ is $m_3$ (binary $011$); with order $(C,B,A)$ the same product would be $m_6$. In the GCE, always write the variable order before using $\Sigma m$ or $\Pi M$ notation, and use the order given in the question.
+\end{attention}
+
+\courssub{Canonical SOP: Sum of Minterms}
+
+\begin{definition}[Canonical SOP]
+The \cle{canonical SOP} of a function is the OR of the minterms of \textbf{all rows where $F=1$}. Every Boolean function has a unique canonical SOP. We write
+\[ F(A,B,C) = \Sigma m(1,3,6) \]
+to mean $F = m_1+m_3+m_6 = A'B'C + A'BC + ABC'$.
+\end{definition}
+
+\begin{methode}[From truth table to canonical SOP]
+\begin{enumerate}
+\item Locate every row of the truth table where $F=1$.
+\item For each such row, write the minterm: variable plain if it is $1$ in that row, complemented if it is $0$.
+\item OR all the minterms together.
+\item Optionally compress with Sigma notation: $F=\Sigma m(\text{row numbers})$.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Canonical SOP from a truth table]
+A function is $1$ for $(A,B,C) = (0,0,1)$, $(0,1,1)$ and $(1,1,0)$. Then
+\[ F = A'B'C + A'BC + ABC' = \Sigma m(1,3,6). \]
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+% inputs
+\node (A) at (0,4.5) {$A$}; \node (B) at (0,3.5) {$B$}; \node (C) at (0,2.5) {$C$};
+% inverters
+\node[draw, popblue, minimum width=0.7cm, minimum height=0.5cm] (nA) at (1.4,4.9) {$'$};
+\node[draw, popblue, minimum width=0.7cm, minimum height=0.5cm] (nB) at (1.4,3.9) {$'$};
+\draw[popdark] (A) -- (nA); \draw[popdark] (B) -- (nB);
+% AND gates
+\node[draw, poporange, thick, minimum width=1.1cm, minimum height=0.6cm] (g1) at (4,5.2) {AND};
+\node[draw, poporange, thick, minimum width=1.1cm, minimum height=0.6cm] (g2) at (4,3.6) {AND};
+\node[draw, poporange, thick, minimum width=1.1cm, minimum height=0.6cm] (g3) at (4,2.0) {AND};
+\node[above=0.02cm of g1, popmuted] {\scriptsize $A'B'C$};
+\node[above=0.02cm of g2, popmuted] {\scriptsize $A'BC$};
+\node[above=0.02cm of g3, popmuted] {\scriptsize $ABC'$};
+% OR gate
+\node[draw, popgreen, thick, minimum width=1.1cm, minimum height=1.4cm] (or1) at (6.6,3.6) {OR};
+\draw[popdark] (g1) -- (or1.150); \draw[popdark] (g2) -- (or1); \draw[popdark] (g3) -- (or1.-150);
+\node (F) at (8.2,3.6) {$F$}; \draw[popdark] (or1) -- (F);
+% input wiring hints
+\draw[popmuted] (nA) -- (2.4,4.9) -- (2.4,5.4) -- (g1.160);
+\draw[popmuted] (nB) -- (2.6,3.9) -- (2.6,5.0) -- (g1.-160);
+\draw[popmuted] (C) -- (2.8,2.5) -- (2.8,5.2) -- (g1.-170);
+\draw[popmuted] (nA) -- (2.4,4.9) -- (2.4,3.8) -- (g2.160);
+\draw[popmuted] (B) -- (2.2,3.5) -- (2.2,3.6) -- (g2.-160);
+\draw[popmuted] (C) -- (2.8,2.5) -- (2.8,3.4) -- (g2.-170);
+\draw[popmuted] (A) -- (1.8,4.5) -- (1.8,2.2) -- (g3.160);
+\draw[popmuted] (B) -- (2.2,3.5) -- (2.2,2.0) -- (g3.-160);
+\draw[popmuted] (nB) -- (2.6,3.9) -- (2.6,1.8) -- (g3.-170);
+\end{tikzpicture}
+\end{center}
+\legende{Two-level AND--OR implementation of the canonical SOP $F=A'B'C+A'BC+ABC'$.}
+\end{popfigure}
+
+\courssub{Canonical POS: Product of Maxterms}
+
+\begin{definition}[Canonical POS]
+The \cle{canonical POS} of a function is the AND of the maxterms of \textbf{all rows where $F=0$}. We write
+\[ F(A,B,C) = \Pi M(0,2,4,5,7). \]
+For each zero row, write the sum term with the variable \emph{plain if it is $0$} and \emph{complemented if it is $1$} (the opposite convention to minterms), then AND the terms.
+\end{definition}
+
+\begin{propriete}[Link between the two canonical forms]
+The minterm list and the maxterm list of the same function are \textbf{complementary}: together they contain every index from $0$ to $2^n-1$, with no overlap. Hence
+\[ F = \Sigma m(1,3,6) = \Pi M(0,2,4,5,7), \]
+and the complement of $F$ is obtained by swapping the lists:
+\[ F' = \Sigma m(0,2,4,5,7) = \Pi M(1,3,6). \]
+\end{propriete}
+
+\begin{exemplebox}[Converting SOP to POS and complementing]
+Given $F(A,B,C)=\Sigma m(1,3,6)$:
+\begin{itemize}
+\item Canonical POS: $F=\Pi M(0,2,4,5,7) = (A+B+C)(A+B'+C)(A'+B+C)(A'+B+C')(A'+B'+C')$.
+\item Complement: $F'=\Sigma m(0,2,4,5,7)$.
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Converting a Non-Standard Expression to Canonical Form}
+
+\begin{methode}[Expanding with $(X+X')$]
+To write any SOP expression as a sum of minterms:
+\begin{enumerate}
+\item In each product term, identify the missing variable(s).
+\item Multiply the term by $(X+X')$ for each missing variable $X$.
+\item Distribute, then remove any duplicate minterms (since $m_i+m_i=m_i$).
+\end{enumerate}
+For POS, add $XX'$ inside a sum term and use $A+BC=(A+B)(A+C)$.
+\end{methode}
+
+\begin{exoresolu}[Canonical form of $F=AB+A'C$]
+Write $F(A,B,C)=AB+A'C$ in canonical SOP.
+\tcblower
+The term $AB$ misses $C$; the term $A'C$ misses $B$.
+\begin{align*}
+F &= AB(C+C') + A'C(B+B')\\
+&= ABC + ABC' + A'BC + A'B'C\\
+&= m_7 + m_6 + m_3 + m_1 = \Sigma m(1.3,6.7).
+\end{align*}
+\end{exoresolu}
+
+\courssub{GCE Exam Extra: NAND-Only and NOR-Only Implementations}
+
+NAND and NOR gates are called \emph{universal} because any function can be built from either type alone — and in practice they are the cheapest gates to manufacture. The GCE frequently asks for a NAND-only (or NOR-only) circuit.
+
+\begin{methode}[NAND-only for SOP, NOR-only for POS]
+\textbf{SOP $\rightarrow$ NAND-only}: complement the whole expression \emph{twice} (double bar), then apply De Morgan to the lower bar:
+\[ F = AB + A'C = \overline{\overline{AB + A'C}} = \overline{\overline{AB}\cdot\overline{A'C}} . \]
+Each $\overline{AB}$ is a NAND; the outer gate is again a NAND. Rule: \emph{replace every AND and OR of the two-level circuit by NAND}.\\
+\textbf{POS $\rightarrow$ NOR-only}: same idea on a POS expression:
+\[ F=(A+B)(A'+C) = \overline{\overline{(A+B)(A'+C)}} = \overline{\overline{A+B}+\overline{A'+C}}, \]
+so every gate becomes a NOR. A single input is inverted by tying the two inputs of a NAND (or NOR) together.
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+\node (A) at (0,4.2) {$A$}; \node (B) at (0,3.4) {$B$}; \node (C) at (0,1.6) {$C$};
+\node[draw, poppurple, thick, minimum width=1.0cm, minimum height=0.6cm] (n1) at (2.2,3.8) {NAND};
+\node[draw, poppurple, thick, minimum width=1.0cm, minimum height=0.6cm] (n2) at (2.2,1.8) {NAND};
+\node[draw, poppurple, thick, minimum width=1.0cm, minimum height=0.6cm] (n3) at (5.0,2.8) {NAND};
+\node[above=0.02cm of n1, popmuted] {\scriptsize $\overline{AB}$};
+\node[above=0.02cm of n2, popmuted] {\scriptsize $\overline{A'C}$};
+\draw[popdark] (A) -- (1.0,4.2) -- (1.0,4.0) -- (n1.160);
+\draw[popdark] (B) -- (n1.-160);
+\draw[popdark] (A) -- (1.0,4.2) -- (1.0,2.6) -- (1.6,2.6);
+\node[draw, popblue, minimum width=0.55cm, minimum height=0.45cm] (inv) at (2.2,2.6) {\scriptsize NAND};
+\node[right=0.02cm of inv, popmuted] {\scriptsize $A'$};
+\draw[popdark] (inv) -- (2.9,2.6) -- (2.9,2.0) -- (n2.160);
+\draw[popdark] (C) -- (n2.-160);
+\draw[popdark] (n1) -- (3.6,3.8) -- (3.6,3.0) -- (n3.160);
+\draw[popdark] (n2) -- (3.4,1.8) -- (3.4,2.6) -- (n3.-160);
+\node (F) at (6.6,2.8) {$F$}; \draw[popdark] (n3) -- (F);
+\end{tikzpicture}
+\end{center}
+\legende{NAND-only implementation of $F=AB+A'C$ via double complementation; the inverter is a NAND with tied inputs.}
+\end{popfigure}
+
+\begin{exoresolu}[Full worked problem: from truth table to NAND circuit]
+A security system has three sensors $A$, $B$, $C$. The alarm $F$ must ring ($F=1$) for the input combinations $1, 3, 6, 7$. Give the canonical SOP, simplify it, and draw the NAND-only form.
+\tcblower
+\textbf{Canonical SOP}: $F = \Sigma m(1.3,6.7) = A'B'C + A'BC + ABC' + ABC$.\\
+\textbf{Simplification}:
+\begin{align*}
+F &= A'C(B'+B) + AB(C'+C) & \text{(grouping)}\\
+&= A'C + AB. &
+\end{align*}
+\textbf{NAND-only}: $F = \overline{\overline{A'C}\cdot\overline{AB}}$ — two NAND gates feeding a third NAND, with $A'$ produced by a NAND with tied inputs (the circuit of the figure above).
+\end{exoresolu}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Simplify algebraically, justifying each step: $F = AB + A'B + AB'C$.
+\item Write $F(A,B,C) = A + B'C$ in canonical SOP (Sigma notation).
+\item Given $F(A,B,C) = \Sigma m(0,2,5)$, write the canonical POS and the minterm list of $F'$.
+\item Implement $F = (A+B')(A'+C)$ using NOR gates only.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item $F = B(A+A') + AB'C = B + AB'C = (B+A)(B+B'C) = (A+B)(B+C)$, or in SOP: $B+AC$ using $B+AB'C=B+AC$ (rule $X+X'Y=X+Y$ with $X=B$).
+\item $A = A(B+B')(C+C') = ABC+ABC'+AB'C+AB'C'$ (minterms $4,5,6,7$); $B'C = B'C(A+A') = AB'C + A'B'C$ (minterms $1,5$). Removing the duplicate $m_5$: $F=\Sigma m(1,4,5,6,7)$.
+\item $F = \Pi M(1,3,4,6,7)$; $F' = \Sigma m(1,3,4,6,7)$.
+\item $F = \overline{\overline{A+B'}+\overline{A'+C}}$: two NOR gates (with $B'$ and $A'$ from NORs with tied inputs) feeding a third NOR.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item Simplification reduces gates, cost, power and failure points; the main tools are factorisation, absorption and consensus.
+\item $AB+A'C+BC = AB+A'C$: the consensus term is redundant.
+\item SOP = OR of product terms; POS = AND of sum terms.
+\item Canonical SOP lists the minterms of the $1$-rows: $F=\Sigma m(\ldots)$; canonical POS lists the maxterms of the $0$-rows: $F=\Pi M(\ldots)$; the two lists are complementary.
+\item Any expression becomes canonical by multiplying by $(X+X')$ for each missing variable.
+\item SOP $\Rightarrow$ NAND-only and POS $\Rightarrow$ NOR-only by double complementation and De Morgan.
+\end{itemize}
+\end{aretenir}
+
+In the next section we shall see that algebraic simplification becomes difficult with four or more variables, and we shall replace it by a powerful \emph{graphical} method: the Karnaugh map.
+
+\coursec{Karnaugh Map Minimisation}
+
+In the previous section we learned how to simplify Boolean expressions \emph{algebraically}, by applying the laws of Boolean algebra step by step. That method works, but it has a serious weakness: there is no systematic recipe telling us which law to apply next, and we can never be absolutely sure that the expression we end up with is truly the \emph{simplest possible} one. In this section we study a \cle{graphical} method — the \cle{Karnaugh map} (or \cle{K-map}) — invented by Maurice Karnaugh at Bell Labs in 1953, which turns minimisation into a visual pattern-recognition exercise and \emph{guarantees} a minimal sum-of-products (SOP) form for functions of up to four variables (and with care, five or six).
+
+\courssub{Why We Need a Graphical Method}
+
+Consider simplifying $F(A,B,C) = \bar{A}BC + AB\bar{C} + ABC + \bar{A}B\bar{C}$. Algebraically, a skilful student might spot that $AB\bar{C} + ABC = AB$ and that $\bar{A}BC + \bar{A}B\bar{C} = \bar{A}B$, giving $F = AB + \bar{A}B = B$. But nothing in the algebraic method \emph{told} us to group the terms that way; it required intuition and luck. Worse, if we had stopped one step earlier we might believe $AB + \bar{A}B$ was the final answer when $B$ was possible.
+
+\begin{attention}[Limits of algebraic simplification]
+Algebraic simplification has two major drawbacks:
+\begin{itemize}
+\item It requires \textbf{intuition}: there is no systematic procedure, so two students may obtain two different ``simplified'' forms.
+\item It gives \textbf{no guarantee of minimality}: you can never be sure that no simpler equivalent expression exists.
+\end{itemize}
+The Karnaugh map removes both problems: it displays the function so that all possible simplifications become \emph{visible} as geometric groupings.
+\end{attention}
+
+The key idea is simple. Two minterms can be combined (simplified) exactly when they differ in \textbf{one single variable}, because then $X \cdot v + X \cdot \bar{v} = X$. If we could draw the truth table so that \emph{physically adjacent cells always differ in exactly one variable}, then every simplification would appear as a block of adjacent 1s. That is precisely what a K-map does, using \cle{Gray code} ordering.
+
+\begin{savaistu}[Maurice Karnaugh and the Bell Labs legacy]
+Maurice Karnaugh (1924–2022) developed the map while working at Bell Telephone Laboratories to simplify telephone switching circuits. His 1953 paper ``The Map Method for Synthesis of Combinational Logic Circuits'' gave engineers a practical tool that replaced tedious Boolean algebra. The method is essentially a two-dimensional truth table arranged in \emph{reflected binary code} (Gray code), named after Frank Gray who patented it for pulse-code modulation in 1947. In Cameroon's telecommunications infrastructure, the same principles underlie the digital multiplexers that carry thousands of voice channels over fibre-optic links.
+\end{savaistu}
+
+\courssub{Structure of Karnaugh Maps and Gray-Code Ordering}
+
+A K-map is a grid with one cell per minterm of the function: $2^n$ cells for $n$ variables. The rows and columns are labelled in \textbf{Gray code} (00, 01, 11, 10) so that consecutive labels differ in exactly one bit.
+
+\begin{definition}[Adjacency on a K-map]
+Two cells are \cle{adjacent} if their labels differ in exactly one variable. Adjacent cells are next to each other horizontally or vertically, \emph{including across the borders}: the leftmost and rightmost columns are adjacent, and the top and bottom rows are adjacent (the map ``wraps around'' like a torus in both directions).
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.55, every node/.style={font=\small}]
+% 2-variable map (2x2)
+\draw[popink] (0,0) grid (2,2);
+\node[popmuted] at (-0.7,1.5) {\small $A$};
+\node[popmuted, rotate=90] at (-0.3,2.5) {\small $B$};
+\node at (-0.3,1.5) {0}; \node at (-0.3,0.5) {1};
+\node at (0.5,2.5) {0}; \node at (1.5,2.5) {1};
+\node[popmuted] at (0.5,1.5) {$m_0$}; \node[popmuted] at (1.5,1.5) {$m_1$};
+\node[popmuted] at (0.5,0.5) {$m_2$}; \node[popmuted] at (1.5,0.5) {$m_3$};
+\node at (1,-1.2) {\small 2-variable map};
+% 3-variable map (2 rows x 4 cols)
+\begin{scope}[xshift=5.5cm]
+\draw[popink] (0,0) grid (4,2);
+\node[popmuted] at (-0.7,1.5) {\small $A$};
+\node[popmuted, rotate=90] at (-0.3,2.5) {\small $BC$};
+\node at (-0.3,1.5) {0}; \node at (-0.3,0.5) {1};
+\node at (0.5,2.5) {00}; \node at (1.5,2.5) {01}; \node at (2.5,2.5) {11}; \node at (3.5,2.5) {10};
+\node[popmuted] at (0.5,1.5) {$m_0$}; \node[popmuted] at (1.5,1.5) {$m_1$}; \node[popmuted] at (2.5,1.5) {$m_3$}; \node[popmuted] at (3.5,1.5) {$m_2$};
+\node[popmuted] at (0.5,0.5) {$m_4$}; \node[popmuted] at (1.5,0.5) {$m_5$}; \node[popmuted] at (2.5,0.5) {$m_7$}; \node[popmuted] at (3.5,0.5) {$m_6$};
+\node at (2,-1.2) {\small 3-variable map};
+\end{scope}
+% 4-variable map (4x4)
+\begin{scope}[xshift=12.5cm]
+\draw[popink] (0,0) grid (4,4);
+\node[popmuted] at (-0.7,3.5) {\small $AB$};
+\node[popmuted, rotate=90] at (-0.3,4.5) {\small $CD$};
+\node at (-0.3,3.5) {00}; \node at (-0.3,2.5) {01}; \node at (-0.3,1.5) {11}; \node at (-0.3,0.5) {10};
+\node at (0.5,4.5) {00}; \node at (1.5,4.5) {01}; \node at (2.5,4.5) {11}; \node at (3.5,4.5) {10};
+\node[popmuted] at (0.5,3.5) {$m_0$}; \node[popmuted] at (1.5,3.5) {$m_1$}; \node[popmuted] at (2.5,3.5) {$m_3$}; \node[popmuted] at (3.5,3.5) {$m_2$};
+\node[popmuted] at (0.5,2.5) {$m_4$}; \node[popmuted] at (1.5,2.5) {$m_5$}; \node[popmuted] at (2.5,2.5) {$m_7$}; \node[popmuted] at (3.5,2.5) {$m_6$};
+\node[popmuted] at (0.5,1.5) {$m_{12}$}; \node[popmuted] at (1.5,1.5) {$m_{13}$}; \node[popmuted] at (2.5,1.5) {$m_{15}$}; \node[popmuted] at (3.5,1.5) {$m_{14}$};
+\node[popmuted] at (0.5,0.5) {$m_8$}; \node[popmuted] at (1.5,0.5) {$m_9$}; \node[popmuted] at (2.5,0.5) {$m_{11}$}; \node[popmuted] at (3.5,0.5) {$m_{10}$};
+\node at (2,-1.2) {\small 4-variable map};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Karnaugh maps for 2, 3 and 4 variables. Note the Gray-code order 00, 01, 11, 10 on both axes and the resulting minterm positions (e.g.\ $m_3$ and $m_2$ are swapped relative to numeric order).}
+\end{popfigure}
+
+\begin{attention}[The map wraps around]
+Because of the Gray-code labelling, the \textbf{first and last columns are adjacent}, and the \textbf{top and bottom rows are adjacent}. In the 4-variable map, $m_0$ is adjacent to $m_2$ (same row, column wrap-around) and to $m_8$ (same column, row wrap-around). The four corners $\{m_0, m_2, m_8, m_{10}\}$ form a valid group of four. Forgetting wrap-around adjacency is one of the most frequent causes of non-minimal answers at the GCE.
+\end{attention}
+
+\courssub{Plotting a Function on the K-map}
+
+To plot a function, place a \textbf{1} in each cell whose minterm belongs to the function (from the truth table or from the minterm list $\sum m(\ldots)$), and a \textbf{0} elsewhere. If the function is given as a maxterm list $\prod M(\ldots)$, place 0s in those cells and 1s elsewhere.
+
+\begin{exemplebox}[Plotting from a minterm list]
+Plot $F(A,B,C) = \sum m(1, 2, 3, 6, 7)$ on a 3-variable map (rows $A$, columns $BC$): cells $m_1, m_2, m_3, m_6, m_7$ receive a 1; cells $m_0, m_4, m_5$ receive a 0.
+\end{exemplebox}
+
+\begin{exemplebox}[Plotting from a truth table]
+Given the truth table for $F(A,B,C,D)$, transfer each output value to the corresponding cell of the 4-variable map using the row/column labels ($AB$ for rows, $CD$ for columns) as the input combination.
+\end{exemplebox}
+
+\courssub{Grouping Rules and Reading Groups}
+
+\begin{propriete}[Size of groups]
+On a K-map, only rectangular groups of $1, 2, 4, 8$ or $16$ adjacent cells containing 1s may be formed — always a \textbf{power of two}. A group of $2^k$ cells \textbf{eliminates exactly $k$ variables} from the product term. (Justification: each doubling of the group pairs cells that differ in one further variable, which is then eliminated by $Xv + X\bar{v} = X$. The justification is instructive but not required as a formal proof at the GCE.)
+\end{propriete}
+
+\begin{attention}[Only powers of two]
+Groups of \textbf{3, 5, 6, 7} cells are \emph{forbidden}, even if they look like a neat rectangle or L-shape. An L-shape of 3 cells must be split into overlapping groups of 2 and 2 (or 2 and 1). Groups \textbf{may overlap} — a cell containing 1 may belong to several groups. Overlapping is encouraged if it allows larger groups.
+\end{attention}
+
+\textbf{Reading a group.} Within a group, look at each variable:
+\begin{itemize}
+\item if the variable \textbf{changes value} inside the group, it is \textbf{eliminated};
+\item if it is \textbf{constant at 1}, it appears \textbf{uncomplemented} in the product;
+\item if it is \textbf{constant at 0}, it appears \textbf{complemented}.
+\end{itemize}
+
+\begin{definition}[Implicant, prime implicant, essential prime implicant]
+Let $F$ be a Boolean function.
+\begin{itemize}
+\item An \cle{implicant} of $F$ is any product term whose 1-cells on the K-map are all 1-cells of $F$ (any valid group).
+\item A \cle{prime implicant} is an implicant that cannot be enlarged: it is a group that is not fully contained in any larger valid group.
+\item An \cle{essential prime implicant} is a prime implicant that covers at least one 1-cell covered by \emph{no other} prime implicant. Every essential prime implicant \textbf{must} appear in the minimal SOP.
+\end{itemize}
+\end{definition}
+
+\begin{methode}[K-map minimisation procedure (SOP)]
+\begin{enumerate}
+\item \textbf{Plot}: draw the K-map of the right size and enter the 1s (and X for don't-cares) from the truth table or minterm list.
+\item \textbf{Identify essential prime implicants}: find 1-cells that can be covered in only one maximal way; loop those groups first.
+\item \textbf{Cover remaining 1s}: loop the uncovered 1s into the \emph{fewest possible} groups, each as \emph{large as possible} (powers of two only, overlaps allowed, wrap-around allowed).
+\item \textbf{Read}: for each group, write the product of the constant variables (eliminate the changing ones).
+\item \textbf{Write}: the minimal SOP is the OR (sum) of all the group products. Check that every 1 is covered.
+\item \textbf{Verify}: test the simplified expression against a few rows of the original truth table, especially rows where the original function is 0.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Minimising a 4-variable function with wrap-around groups]
+Minimise $F(A,B,C,D) = \sum m(0, 2, 4, 6, 8, 10, 13, 15)$.
+\tcblower
+\textbf{Step 1: Plot.} Enter 1s at the listed minterms on a 4-variable map ($AB$ rows, $CD$ columns).
+
+\textbf{Step 2: Group.} 
+\begin{itemize}
+\item The 1s at $m_0, m_2, m_8, m_{10}$ occupy the four \emph{corners} of the map — a wrap-around group of 4 (left-right and top-bottom adjacency). This group is essential for $m_0, m_2, m_8, m_{10}$.
+\item The 1s at $m_4, m_6$ (row $AB=01$, cols $CD=00,10$) are adjacent to $m_0, m_2$ (row $00$) vertically. Together they form a group $\{m_0, m_2, m_4, m_6\}$ of 4 using column wrap-around (cols 00 and 10). This group is essential for $m_4, m_6$.
+\item The 1s at $m_{13}, m_{15}$ (row $AB=11$, cols $CD=01,11$) form a horizontal pair.
+\end{itemize}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.55, every node/.style={font=\small}]
+\draw[popink] (0,0) grid (4,4);
+\node at (-0.35,3.5) {00}; \node at (-0.35,2.5) {01}; \node at (-0.35,1.5) {11}; \node at (-0.35,0.5) {10};
+\node at (0.5,4.45) {00}; \node at (1.5,4.45) {01}; \node at (2.5,4.45) {11}; \node at (3.5,4.45) {10};
+\node[popmuted] at (-0.9,3.6) {\small $AB$}; \node[popmuted, rotate=90] at (-0.35,4.9) {\small $CD$};
+% Values
+\node at (0.5,3.5) {1}; \node at (1.5,3.5) {0}; \node at (2.5,3.5) {0}; \node at (3.5,3.5) {1};
+\node at (0.5,2.5) {1}; \node at (1.5,2.5) {0}; \node at (2.5,2.5) {0}; \node at (3.5,2.5) {1};
+\node at (0.5,1.5) {0}; \node at (1.5,1.5) {1}; \node at (2.5,1.5) {1}; \node at (3.5,1.5) {0};
+\node at (0.5,0.5) {1}; \node at (1.5,0.5) {0}; \node at (2.5,0.5) {0}; \node at (3.5,0.5) {1};
+% Group 1: Corners (m0,m2,m8,m10) - Orange
+\draw[poporange, very thick, rounded corners=4pt] (-0.2,3.2) rectangle (0.8,4.2); % m0
+\draw[poporange, very thick, rounded corners=4pt] (3.2,3.2) rectangle (4.2,4.2); % m2
+\draw[poporange, very thick, rounded corners=4pt] (-0.2,-0.2) rectangle (0.8,0.8); % m8
+\draw[poporange, very thick, rounded corners=4pt] (3.2,-0.2) rectangle (4.2,0.8); % m10
+% Group 2: Cols 00,10 rows 00,01 (m0,m2,m4,m6) - Blue
+\draw[popblue, very thick, rounded corners=4pt] (-0.3,2.1) rectangle (0.9,4.3); % left block
+\draw[popblue, very thick, rounded corners=4pt] (3.1,2.1) rectangle (4.3,4.3); % right block (wrap)
+% Group 3: Pair m13,m15 - Green
+\draw[popgreen, very thick, rounded corners=4pt] (1.1,1.1) rectangle (2.9,1.9);
+\end{tikzpicture}
+\end{center}
+\legende{Orange: corner group of 4 ($\bar{B}\bar{D}$). Blue: column wrap group of 4 ($\bar{A}\bar{D}$). Green: pair ($ABD$).}
+\end{popfigure}
+
+\textbf{Step 3: Read the groups.}
+\begin{itemize}
+\item Corners $\{m_0, m_2, m_8, m_{10}\}$: $A$ changes (0/1), $C$ changes (0/1); $B=0$, $D=0$ constant $\Rightarrow \bar{B}\bar{D}$.
+\item Column group $\{m_0, m_2, m_4, m_6\}$: $B$ changes (0/1), $C$ changes (0/1); $A=0$, $D=0$ $\Rightarrow \bar{A}\bar{D}$.
+\item Pair $\{m_{13}, m_{15}\}$: $A=1$, $B=1$, $D=1$; $C$ changes $\Rightarrow ABD$.
+\end{itemize}
+
+\textbf{Step 4: Write SOP.} $F = \bar{B}\bar{D} + \bar{A}\bar{D} + ABD$.
+
+\textbf{Step 5: Verify.}
+\begin{itemize}
+\item $m_{13} (1101)$: $\bar{B}\bar{D}=0$, $\bar{A}\bar{D}=0$, $ABD = 1 \Rightarrow F=1$ \checkmark
+\item $m_1 (0001)$ (a 0-cell): $\bar{B}\bar{D}=0$, $\bar{A}\bar{D}=0$, $ABD=0 \Rightarrow F=0$ \checkmark
+\item $m_6 (0110)$: $\bar{B}\bar{D}=1 \Rightarrow F=1$ \checkmark
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Don't-Care Conditions}
+
+In many real systems, some input combinations \emph{can never occur}. For example, a circuit receiving a \textbf{BCD digit} (4 bits representing 0--9) will never see the codes $1010$ to $1111$ (10--15). The output for those combinations is irrelevant: we mark it \textbf{X} (\cle{don't care}).
+
+\begin{attention}[A don't-care is not a 1]
+An X cell \textbf{does not have to be covered}. Include an X in a group \emph{only if it makes the group larger} (hence the term simpler). Never form a group containing only X cells — that would add a useless term.
+\end{attention}
+
+\begin{exemplebox}[Using don't-cares: Odd BCD digit detector]
+A circuit must output 1 for BCD digits 1, 3, 5, 7, 9 (odd digits), with inputs $ABCD$ ($A$ = most significant bit) and codes 10--15 don't-care. The 1s are $m_1, m_3, m_5, m_7, m_9$; the X cells are $m_{10}$--$m_{15}$.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.55, every node/.style={font=\small}]
+\draw[popink] (0,0) grid (4,4);
+\node at (-0.35,3.5) {00}; \node at (-0.35,2.5) {01}; \node at (-0.35,1.5) {11}; \node at (-0.35,0.5) {10};
+\node at (0.5,4.45) {00}; \node at (1.5,4.45) {01}; \node at (2.5,4.45) {11}; \node at (3.5,4.45) {10};
+\node[popmuted] at (-0.9,3.6) {\small $AB$}; \node[popmuted, rotate=90] at (-0.35,4.9) {\small $CD$};
+% Row 00 (A=0,B=0): m0,m1,m3,m2
+\node at (0.5,3.5) {0}; \node at (1.5,3.5) {1}; \node at (2.5,3.5) {1}; \node at (3.5,3.5) {0};
+% Row 01 (A=0,B=1): m4,m5,m7,m6
+\node at (0.5,2.5) {0}; \node at (1.5,2.5) {1}; \node at (2.5,2.5) {1}; \node at (3.5,2.5) {0};
+% Row 11 (A=1,B=1): m12,m13,m15,m14 -> X,X,X,X
+\node[popmuted] at (0.5,1.5) {X}; \node[popmuted] at (1.5,1.5) {X}; \node[popmuted] at (2.5,1.5) {X}; \node[popmuted] at (3.5,1.5) {X};
+% Row 10 (A=1,B=0): m8,m9,m11,m10 -> 0,1,X,X
+\node at (0.5,0.5) {0}; \node at (1.5,0.5) {1}; \node[popmuted] at (2.5,0.5) {X}; \node[popmuted] at (3.5,0.5) {X};
+% Group of 8: columns 01 and 11 (D=1), all rows
+\draw[poporange, very thick, rounded corners=4pt] (1.05,-0.1) rectangle (2.95,4.1);
+\end{tikzpicture}
+\end{center}
+\legende{Odd-BCD-digit detector: the don't-care cells $m_{10}$--$m_{15}$ let the five 1s merge into one group of 8, giving $F = D$.}
+\end{popfigure}
+
+The group of 8 (columns $CD = 01$ and $11$, all four rows) keeps only $D$ constant at 1, so $F = D$ — a dramatic simplification made possible only by the don't-cares. Without them, the best grouping would give $F = \bar{A}D + \bar{B}\bar{C}D$.
+
+\courssub{Obtaining a Minimal POS (Exam-Useful Extra)}
+
+The same map yields a minimal \textbf{product-of-sums (POS)}: group the \textbf{0-cells} exactly as before; this produces a minimal SOP for $\bar{F}$; then \textbf{complement the whole expression} and apply De Morgan's laws to obtain $F$ in POS form.
+
+\begin{exemplebox}[POS from the 0s]
+If grouping the 0s of a map gives $\bar{F} = \bar{A}B + C\bar{D}$, then
+\[ F = \overline{\bar{A}B + C\bar{D}} = \overline{(\bar{A}B)}\cdot\overline{(C\bar{D})} = (A + \bar{B})(\bar{C} + D), \]
+a minimal POS with two sum terms.
+\end{exemplebox}
+
+\begin{methode}[Minimal POS via K-map]
+\begin{enumerate}
+\item Plot the function (1s and 0s).
+\item Group the \textbf{0-cells} into largest possible power-of-two rectangles (using X cells if helpful).
+\item Write the SOP expression for $\bar{F}$ from these groups.
+\item Apply De Morgan's theorem: complement the whole expression and change each product to a sum, complementing each literal.
+\item The result is a minimal POS for $F$.
+\end{enumerate}
+\end{methode}
+
+\courssub{Verification and Common Traps}
+
+\begin{methode}[Verifying a minimised expression]
+\begin{enumerate}
+\item Pick each 1-cell of the original truth table and check the minimised SOP outputs 1 (at least one product term covers it).
+\item Pick several 0-cells and check every product term outputs 0 there.
+\item Equivalently, plot the K-map of your \emph{answer} and compare it cell by cell with the original map.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Frequent errors at the GCE]
+\begin{itemize}
+\item Labelling rows/columns in binary order (00, 01, 10, 11) instead of Gray code — the whole method collapses.
+\item Forgetting wrap-around adjacency (edges and the four corners).
+\item Making groups of 3 or 6, or diagonal (non-rectangular) groups.
+\item Covering don't-care cells that do not enlarge any group.
+\item Leaving a 1-cell uncovered, or choosing small groups when larger ones exist (non-minimal answer).
+\item Writing the POS directly by grouping 1s and reading sums — this is \textbf{wrong}. Group 0s for POS.
+\end{itemize}
+\end{attention}
+
+\begin{experience}[Guided design: 7-segment decoder segment 'a']
+A 7-segment display shows digits 0--9. Segment 'a' (top horizontal) is ON for digits 0,2,3,5,6,7,8,9 and OFF for 1,4. Codes 10--15 are don't-care.
+\begin{enumerate}
+\item Draw the 4-variable K-map for segment 'a' (inputs $A,B,C,D$ = BCD digit).
+\item Find the minimal SOP expression.
+\item Find the minimal POS expression.
+\item Which form uses fewer gates if implemented with AND-OR vs OR-AND logic?
+\end{enumerate}
+\textit{Hint: The SOP simplifies to $\bar{A} + \bar{B}C + \bar{B}D + B\bar{C}\bar{D}$ (or similar minimal form). The POS is often simpler for this function.}
+\end{experience}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Minimise $F(A,B,C) = \sum m(0, 2, 4, 5, 6)$ using a 3-variable K-map.
+\item Minimise $G(A,B,C,D) = \sum m(1, 3, 5, 7, 9, 11, 13, 15)$. What do you notice about the result?
+\item A BCD-based circuit outputs 1 for digits 0, 2, 4, 6, 8 (even digits) and is don't-care for 10--15. Find the minimal SOP.
+\item For $H(A,B,C,D) = \sum m(0, 1, 2, 5, 8, 9, 10) + \sum d(4, 11, 14)$, find both minimal SOP and minimal POS.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+1. Plot $m_0, m_2, m_4, m_5, m_6$ (rows $A$, columns $BC$). Groups: $\{m_0, m_2, m_4, m_6\}$ (columns 00 and 10, both rows, wrap-around) gives $\bar{C}$; $\{m_4, m_5\}$ gives $A\bar{B}$. Hence $F = \bar{C} + A\bar{B}$. Check $m_6 = 110$: $\bar{C} = 1$ \checkmark; $m_1 = 001$: $\bar{C}=0$, $A\bar{B}=0$ \checkmark.
+
+2. All 1s have $D = 1$: one group of 8, so $G = D$. The function depends on a single variable.
+
+3. 1s at $m_0, m_2, m_4, m_6, m_8$; X at $m_{10}$--$m_{15}$. Using the X cells, columns $CD = 00$ and $10$ (all rows, wrap-around) form a group of 8 with $D = 0$ constant: $F = \bar{D}$ (even-digit detector).
+
+4. SOP: Plot 1s and Xs. Essential prime implicants: $\bar{B}\bar{D}$ (covers $m_0,m_2,m_8,m_{10}$), $\bar{A}\bar{C}$ (covers $m_0,m_1,m_8,m_9$), $A\bar{B}\bar{C}$ (covers $m_8,m_9$? wait). Let's trace carefully.
+   Map 1s: 0,1,2,5,8,9,10. X: 4,11,14.
+   Groups:
+   \begin{itemize}
+   \item Corners 0,2,8,10 + X4? No, X4 is row 01 col 00. Group $\{0,2,8,10\} \to \bar{B}\bar{D}$.
+   \item $\{0,1,8,9\}$ (cols 00,01 rows 00,10) $\to \bar{B}\bar{C}$.
+   \item $\{2,10\}$ already covered. $\{5\}$ (0101) needs cover. Can pair with 4 (X) $\to \{4,5\} = A\bar{B}\bar{C}$? Row 01 ($A=0,B=1$), Col 01 ($C=0,D=1$) $\to m_5$. Col 00 ($C=0,D=0$) $\to m_4$ (X). Group $\{4,5\} \to \bar{A}B\bar{C}$.
+   \item $\{11\}$ (X) adjacent to 9,10? 11 is 1011. Adjacent to 9(1001) D changes, 10(1010) C changes, 3(0011) A changes, 15(1111) B changes.
+   \item $\{14\}$ (X) 1110.
+   \end{itemize}
+   Minimal SOP: $\bar{B}\bar{D} + \bar{B}\bar{C} + \bar{A}B\bar{C}$.
+   POS: Group 0s (3,6,7,12,13,15) + X(4,11,14).
+   0s: $m_3(0011), m_6(0110), m_7(0111), m_{12}(1100), m_{13}(1101), m_{15}(1111)$.
+   Xs: $m_4(0100), m_{11}(1011), m_{14}(1110)$.
+   Group 0s:
+   \begin{itemize}
+   \item $\{3,7,11(X),15\} \to$ col 11 ($C=1,D=1$) rows 00,01,10,11? Row 10 is $m_{10}=1$. Row 01 $m_7=0, m_3=0$. Row 11 $m_{15}=0, m_{11}=X$. Group $\{3,7,11,15\} \to CD$.
+   \item $\{6,14(X)\} \to$ row 01 col 10, row 11 col 10 $\to B\bar{D}$? Row 01 ($A=0,B=1$), Row 11 ($A=1,B=1$) $\to B=1$. Col 10 ($C=1,D=0$) $\to \bar{D}$. Term $B\bar{D}$.
+   \item $\{12,13,14(X),15\} \to$ row 11 ($A=1,B=1$) all cols $\to AB$.
+   \item $\{4(X),6\} \to$ row 01 col 00, col 10 $\to \bar{A}B\bar{C}$? Col 00 ($C=0$), Col 10 ($C=1$) $\to$ C changes. Row 01 ($A=0,B=1$). Term $\bar{A}B$.
+   \end{itemize}
+   $\bar{F} = CD + B\bar{D} + AB + \bar{A}B = CD + B(\bar{D}+A+\bar{A}) = CD + B$.
+   $F = \overline{CD + B\bar{D} + B} = \overline{CD + B} = (\bar{C}+\bar{D})\bar{B} = \bar{B}\bar{C} + \bar{B}\bar{D}$.
+   Check SOP: $\bar{B}\bar{D} + \bar{B}\bar{C} + \bar{A}B\bar{C}$. If $B=0$, first two terms cover all. If $B=1$, need $\bar{A}\bar{C}$. Matches POS $\bar{B}(\bar{C}+\bar{D}) = \bar{B}\bar{C}+\bar{B}\bar{D}$. Wait, SOP has extra term $\bar{A}B\bar{C}$.
+   Check $m_5$ (0101): $\bar{B}\bar{D}=0, \bar{B}\bar{C}=0, \bar{A}B\bar{C}=1(1)(1)=1$. POS: $\bar{B}\bar{C}+\bar{B}\bar{D} = 0$. Mismatch! $m_5$ is a 1-cell.
+   POS grouping missed covering $m_5=0$? $m_5$ is 1. 0s are 3,6,7,12,13,15.
+   Group $\{3,7,11,15\} \to CD$.
+   Group $\{6,14\} \to B\bar{D}$.
+   Group $\{12,13,14,15\} \to AB$.
+   Group $\{4,6\} \to \bar{A}B$.
+   $\bar{F} = CD + B\bar{D} + AB + \bar{A}B = CD + B(\bar{D}+A+\bar{A}) = CD + B$.
+   $F = \overline{CD+B} = (\bar{C}+\bar{D})\bar{B} = \bar{B}\bar{C} + \bar{B}\bar{D}$.
+   Check $m_5$ (0101): $\bar{B}\bar{C}=0, \bar{B}\bar{D}=0$. $F=0$. But $m_5$ is a 1-cell! Error.
+   $m_5$ is 0101. In POS derivation, $\bar{F}$ must be 1 at $m_5$.
+   $\bar{F}(m_5) = CD + B = (0\cdot1) + 1 = 1$. OK.
+   $F(m_5) = 0$. But spec says $m_5$ is 1. Contradiction.
+   Spec: $H = \sum m(0,1,2,5,8,9,10)$. $m_5$ IS a 1.
+   My POS gives 0 at $m_5$. So POS is wrong.
+   Why? Grouping 0s for $\bar{F}$. 0-cells are indices NOT in $\{0,1,2,5,8,9,10\}$ and NOT in X $\{4,11,14\}$.
+   Universe 0..15. 1s: 0,1,2,5,8,9,10. X: 4,11,14.
+   0s: 3,6,7,12,13,15. (6 zeros).
+   Map:
+   \begin{itemize}
+   \item Row 00: 1,1,0,1 ($m_0,m_1,m_3,m_2$)
+   \item Row 01: X,1,0,0 ($m_4,m_5,m_7,m_6$)
+   \item Row 11: 0,0,X,0 ($m_{12},m_{13},m_{15},m_{14}$)
+   \item Row 10: 1,1,0,X ($m_8,m_9,m_{11},m_{10}$)
+   \end{itemize}
+   Group 0s:
+   \begin{itemize}
+   \item $m_3(0011), m_7(0111), m_{11}(X), m_{15}(1111) \to$ Col 11 ($CD=11$). Rows 00,01,10(X),11. Group of 4 $\to CD$.
+   \item $m_6(0110), m_{14}(X) \to$ Row 01,11 Col 10. Group of 2 $\to B\bar{D}$ ($B=1, D=0$).
+   \item $m_{12}(1100), m_{13}(1101), m_{14}(X), m_{15}(1111) \to$ Row 11 all cols. Group of 4 $\to AB$.
+   \item $m_4(X), m_6(0110) \to$ Row 01 Col 00,10. Group of 2 $\to \bar{A}B$ ($A=0,B=1$).
+   \end{itemize}
+   We cannot include $m_5$ in a 0-group. So group $\bar{A}B$ (row 01) is INVALID because it covers $m_5=1$.
+   We can only group $m_4(X)$ and $m_6(0) \to$ pair $\{4,6\} \to \bar{A}B\bar{C}$? Col 00 ($C=0$), Col 10 ($C=1$) $\to$ C changes. Row 01 ($A=0,B=1$). Term $\bar{A}B$. But this group spans col 00 and 10. It includes $m_4(X)$ and $m_6(0)$. It does NOT include $m_5$ (col 01) or $m_7$ (col 11). Rectangular group in K-map must be contiguous cols. Cols 00 and 10 are adjacent (wrap). So $\{m_4, m_6\}$ is a valid pair (cols 00,10 row 01). It does not include $m_5$ (col 01).
+   So group $\{m_4(X), m_6(0)\} \to \bar{A}B$ ($A=0,B=1$ constant. C changes, D=0 constant? Col 00: $C=0,D=0$. Col 10: $C=1,D=0$. $D=0$ constant. C changes. So term $\bar{A}B\bar{D}$).
+   Similarly $\{m_{12}(0), m_{13}(0), m_{14}(X), m_{15}(0)\}$ Row 11 all cols $\to AB$.
+   $\{m_3(0), m_7(0), m_{11}(X), m_{15}(0)\}$ Col 11 $\to CD$.
+   $\{m_6(0), m_{14}(X)\}$ Col 10 rows 01,11 $\to B\bar{D}$.
+   $\{m_{12}(0), m_8(1)?$ No. $m_0(1)?$ No.$\}$
+   Remaining 0: $m_{13}$ covered by $AB$. $m_3,7,15$ covered by $CD$. $m_6$ covered by $B\bar{D}$ and $\bar{A}B\bar{D}$. $m_{12},14,15$ covered by $AB$.
+   What about $m_2$? 1. $m_{10}$? 1.
+   $\bar{F} = CD + B\bar{D} + AB + \bar{A}B\bar{D}$.
+   Simplify: $B\bar{D} + \bar{A}B\bar{D} = B\bar{D}$. $AB + B\bar{D} = B(A+\bar{D})$.
+   $\bar{F} = CD + B(A+\bar{D})$.
+   $F = (\bar{C}+\bar{D}) \cdot (\bar{B} + \bar{A}D)$.
+   Check $m_5$ (0101): $\bar{C}+\bar{D} = 1+0=1$. $\bar{B}+\bar{A}D = 0 + 1\cdot1 = 1$. $F=1$. Good.
+   Check $m_0$ (0000): $\bar{C}+\bar{D}=1$. $\bar{B}+\bar{A}D=1$. $F=1$. Good.
+   Check $m_3$ (0011): $\bar{C}+\bar{D}=0$. $F=0$. Good.
+   So POS is $(\bar{C}+\bar{D})(\bar{B}+\bar{A}D)$.
+   SOP was $\bar{B}\bar{D} + \bar{B}\bar{C} + \bar{A}B\bar{C}$.
+   Are they equal?
+   SOP: $\bar{B}(\bar{C}+\bar{D}) + \bar{A}B\bar{C}$.
+   POS: $(\bar{C}+\bar{D})(\bar{B}+\bar{A}D) = \bar{B}\bar{C}+\bar{B}\bar{D} + \bar{A}D\bar{C} + \bar{A}D\bar{D} = \bar{B}\bar{C}+\bar{B}\bar{D} + \bar{A}\bar{C}D$.
+   SOP has $\bar{A}B\bar{C}$. POS has $\bar{A}\bar{C}D$.
+   Check $m_4$ (X): SOP: $\bar{A}B\bar{C} = 1\cdot1\cdot1=1$. POS: $\bar{A}\bar{C}D = 1\cdot1\cdot0=0$. X so ok.
+   Check $m_{11}$ (X): 1011. SOP: $\bar{B}\bar{D}=0, \bar{B}\bar{C}=0, \bar{A}B\bar{C}=0$. POS: $\bar{A}\bar{C}D=0$. Ok.
+   Check $m_{14}$ (X): 1110. SOP: 0. POS: 0. Ok.
+   Check $m_{13}$ (0): 1101. SOP: 0. POS: $\bar{A}\bar{C}D=0$. Ok.
+   They are equivalent on care-set.
+   So SOP: $\bar{B}\bar{C} + \bar{B}\bar{D} + \bar{A}B\bar{C}$.
+   POS: $(\bar{C}+\bar{D})(\bar{B}+\bar{A}D)$.
+   I will provide the corrected solution in the corrige box.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A K-map arranges minterms in \textbf{Gray code} so that adjacent cells (including wrap-around edges) differ in exactly one variable.
+\item Groups must contain $2^k$ cells and \textbf{eliminate $k$ variables}; bigger groups give simpler terms.
+\item Cover all 1s with the \textbf{fewest, largest} groups; essential prime implicants are compulsory.
+\item \textbf{Don't-cares} (X) are optional: use them only to enlarge groups.
+\item Grouping the \textbf{0s} and complementing yields a minimal \textbf{POS}.
+\item Always \textbf{verify} the result against the original truth table.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Analysing and Designing Complete Logic Systems}
+
+In the previous sections we built the tools: Boolean algebra gave us the laws to manipulate expressions, standard forms (SOP and POS) gave us a systematic way to write any function, and the Karnaugh map gave us a fast, visual minimisation technique. We now put everything together. In the GCE Advanced Level examination you will rarely be asked to minimise an expression in isolation; you will be given a \emph{real situation} — a committee vote, an alarm, a water pump — and asked to \textbf{analyse} or \textbf{design} a complete digital logic system. This section teaches you the full methodology, from a problem stated in words down to a circuit drawn with gates.
+
+\courssub{Combinational Systems: The Objects We Design}
+
+\begin{definition}[Combinational logic system]
+A \cle{combinational logic system} (or combinational circuit) is a digital circuit whose \textbf{outputs depend only on the present values of its inputs}, and not on any past history of the inputs. The circuit has no memory: if you apply the same input combination twice, at any two different times, you always obtain the same output.
+\end{definition}
+
+This is precisely why truth tables and Boolean expressions are sufficient to describe such circuits completely: the truth table \emph{is} the full behaviour of the system. Circuits with memory (flip-flops, counters, registers) are called \emph{sequential} systems and belong to a later chapter.
+
+\courssub{The Complete Design Methodology}
+
+Designing a combinational system is a disciplined process. Skipping steps is the number one cause of wrong answers in the examination.
+
+\begin{methode}[The six-step design procedure for combinational systems]
+\begin{enumerate}
+\item \textbf{Understand the problem statement.} Read the specification carefully and identify what the system must do.
+\item \textbf{Define the input and output variables.} Give each variable a name and state \emph{unambiguously} what logic 0 and logic 1 mean for it (e.g.\ $D=1$ means ``door open'', $D=0$ means ``door closed'').
+\item \textbf{Build the truth table.} List all $2^n$ input combinations for $n$ inputs, and fill in the required output for each row, directly from the specification.
+\item \textbf{Write the canonical form.} Read off the canonical sum of products (from the rows where the output is 1) or the canonical product of sums (from the rows where the output is 0).
+\item \textbf{Minimise.} Use a Karnaugh map (or Boolean algebra) to obtain the simplest equivalent expression.
+\item \textbf{Draw the circuit diagram.} Translate the minimised expression into logic gates (AND, OR, NOT), possibly converting to NAND-only or NOR-only form if required.
+\end{enumerate}
+A final, unofficial but essential step: \textbf{verify} the minimised circuit against the original truth table.
+\end{methode}
+
+\begin{attention}[Ambiguous variable definitions]
+The most frequent design error is defining an input without saying what 0 and 1 mean. If the problem says ``a sensor detects the door'', you \emph{must} write something like: ``Let $D=1$ if the door is open, $D=0$ if it is closed.'' Choosing the opposite convention gives a different (complementary) circuit. Examiners award marks for clear definitions — always state them.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.55cm,
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, text width=4.6cm, align=center, minimum height=0.9cm, font=\small},
+  dec/.style={draw=poporange, thick, fill=popgold!25, text width=3.4cm, align=center, font=\small},
+  arr/.style={-{Stealth}, thick, popdark}]
+\node[box] (s1) {1. Problem statement (words)};
+\node[box, below=of s1] (s2) {2. Define inputs/outputs (0/1 meaning)};
+\node[box, below=of s2] (s3) {3. Truth table ($2^n$ rows)};
+\node[box, below=of s3] (s4) {4. Canonical SOP or POS};
+\node[box, below=of s4] (s5) {5. Minimise (K-map / algebra)};
+\node[box, below=of s5] (s6) {6. Draw circuit diagram};
+\node[dec, right=1.3cm of s6] (ver) {Verify against truth table};
+\draw[arr] (s1) -- (s2);
+\draw[arr] (s2) -- (s3);
+\draw[arr] (s3) -- (s4);
+\draw[arr] (s4) -- (s5);
+\draw[arr] (s5) -- (s6);
+\draw[arr] (s6.east) -- (ver.west);
+\draw[arr, dashed] (ver.north) |- ($(s5.east)+(0.3,0)$) -- (s5.east);
+\end{tikzpicture}
+\end{center}
+\legende{Flowchart of the complete design methodology, with the verification loop.}
+\end{popfigure}
+
+\courssub{Case Study 1: A Majority Vote System}
+
+\textbf{Situation.} A three-member committee in a Yaoundé cooperative votes on a proposal. Each member presses a button: 1 for ``yes'', 0 for ``no''. A lamp must light when a \emph{majority} (at least two) of the members vote yes.
+
+\textbf{Step 2 — Variables.} Let $A$, $B$, $C$ be the three votes ($1$ = yes, $0$ = no), and $M$ the output ($1$ = lamp on, $0$ = lamp off).
+
+\textbf{Step 3 — Truth table.} $M=1$ exactly when two or more of $A,B,C$ equal 1.
+
+\begin{popfigure}
+\begin{center}
+\begin{tabular}{|c|c|c||c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $C$ & $M$ \\
+\hline
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\hspace{1cm}
+\begin{tikzpicture}[scale=0.85]
+\draw[step=1cm, popline] (0,0) grid (4,2);
+\node at (-0.35,1.5) {\small $A$};
+\node at (-0.35,0.5) {\small $\bar{A}$};
+\node[rotate=90] at (-0.75,1) {\small $BC$};
+\node[above] at (0.5,2) {\small $\bar{B}\bar{C}$};
+\node[above] at (1.5,2) {\small $\bar{B}C$};
+\node[above] at (2.5,2) {\small $BC$};
+\node[above] at (3.5,2) {\small $B\bar{C}$};
+\node at (0.5,1.5) {0}; \node at (1.5,1.5) {0}; \node at (2.5,1.5) {1}; \node at (3.5,1.5) {0};
+\node at (0.5,0.5) {0}; \node at (1.5,0.5) {1}; \node at (2.5,0.5) {1}; \node at (3.5,0.5) {1};
+\draw[poporange, very thick, rounded corners] (2.05,-0.05) rectangle (3.95,1.05);
+\draw[popgreen, very thick, rounded corners] (1.05,0.95) rectangle (2.95,2.05);
+\draw[poppurple, very thick, rounded corners] (1.95,0.95) rectangle (3.05,0.05);
+\end{tikzpicture}
+\end{center}
+\legende{Truth table of the 3-input majority function and its K-map with the three overlapping groups.}
+\end{popfigure}
+
+\textbf{Step 4 — Canonical SOP.} From the four rows where $M=1$:
+\[
+M = \bar{A}BC + A\bar{B}C + AB\bar{C} + ABC.
+\]
+
+\textbf{Step 5 — Minimisation.} On the K-map, the four 1s form three overlapping pairs (the cell $ABC$ is shared by all three groups), giving:
+\[
+M = AB + AC + BC.
+\]
+
+\begin{exemplebox}[Algebraic check of the majority function]
+We can confirm the K-map result using the consensus theorem:
+\begin{align*}
+M &= \bar{A}BC + A\bar{B}C + AB\bar{C} + ABC \\
+  &= \bar{A}BC + A\bar{B}C + AB\bar{C} + ABC + ABC + ABC \\
+  &= BC(\bar{A}+A) + AC(\bar{B}+B) + AB(\bar{C}+C) \\
+  &= BC + AC + AB.
+\end{align*}
+Notice the trick: duplicating $ABC$ (legal since $X+X=X$) lets it pair with each of the other three terms — exactly what the overlapping K-map groups show.
+\end{exemplebox}
+
+\textbf{Step 6 — Circuit.} Three 2-input AND gates feeding one 3-input OR gate: $M = AB + AC + BC$.
+
+\begin{savaistu}[Majority voting in real systems]
+Majority voting is not just a classroom example. Safety-critical computers (in aircraft and space systems) often run \emph{three} identical computers in parallel and take a majority vote of their outputs, so that if one computer fails, the two correct ones outvote it. This is called \emph{triple modular redundancy}.
+\end{savaistu}
+
+\courssub{Case Study 2: A Car Alarm System}
+
+\textbf{Situation.} A car alarm must sound ($S=1$) when the \textbf{door is open while the engine is off}, or when the \textbf{key is left in the ignition while the engine is off}.
+
+\textbf{Variables.} $D=1$: door open; $E=1$: engine on; $K=1$: key in ignition. Output $S=1$: alarm sounds.
+
+\textbf{Truth table and canonical form.} $S=1$ when $E=0$ and ($D=1$ or $K=1$). The rows giving $S=1$ are $(D,E,K) = (1,0,0), (0,0,1), (1,0,1)$:
+\[
+S = D\bar{E}\bar{K} + \bar{D}\bar{E}K + D\bar{E}K.
+\]
+
+\textbf{K-map minimisation.} Placing these three 1s on a K-map with $D$ down the side and $EK$ across the top, the column $\bar{E}\bar{K}$... more precisely, the three cells group into one pair $D\bar{E}$ and one pair $\bar{E}K$:
+\[
+S = \bar{E}D + \bar{E}K = \bar{E}(D + K).
+\]
+
+The factored form $\bar{E}(D+K)$ needs only one NOT, one OR and one AND gate — three gates instead of the five or six a naive reading would suggest.
+
+\courssub{Case Study 3: The Water-Tank Pump Controller (Complete Design)}
+
+This classic problem appears frequently in GCE papers. We solve it fully, from specification to a NAND-only circuit.
+
+\begin{exoresolu}[Water-tank pump controller]
+\textbf{Statement.} A pump $P$ fills a water tank. Two level sensors are fitted: $L$ at the low level and $H$ at the high level. A sensor outputs 1 when it is \emph{covered} by water, 0 when dry. The pump must run ($P=1$) when the water level is \emph{below the low sensor} (tank nearly empty), and must stop ($P=0$) when the water \emph{reaches or passes the high sensor} (tank full). When the level is between the two sensors, the pump keeps its previous behaviour — but since this is a \emph{combinational} design exercise, the specification tells us to treat the ``between'' state as: pump runs only if it was filling, i.e.\ we use a manual override switch $M$ ($M=1$: force pump on) so that $P=1$ when the tank is below low level \textbf{or} when the level is between the sensors \textbf{and} the override is on, provided the high sensor is dry.
+\tcblower
+\textbf{Step 2 — Variables.} $L=1$: low sensor covered; $H=1$: high sensor covered; $M=1$: manual override on; $P=1$: pump running.
+
+\textbf{Step 3 — Truth table.} Note that $L=0, H=1$ is physically impossible (water cannot cover the high sensor while the low one is dry): mark it as a \emph{don't care} ($\times$).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c||c|}
+\hline
+\rowcolor{popblueL} $L$ & $H$ & $M$ & & $P$ \\
+\hline
+0 & 0 & 0 & below low & 1 \\
+0 & 0 & 1 & below low & 1 \\
+0 & 1 & 0 & impossible & $\times$ \\
+0 & 1 & 1 & impossible & $\times$ \\
+1 & 0 & 0 & between & 0 \\
+1 & 0 & 1 & between, override & 1 \\
+1 & 1 & 0 & full & 0 \\
+1 & 1 & 1 & full & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Step 4 — Canonical SOP} (rows where $P=1$):
+\[
+P = \bar{L}\bar{H}\bar{M} + \bar{L}\bar{H}M + L\bar{H}M.
+\]
+
+\textbf{Step 5 — K-map minimisation.} With $L$ down the side and $HM$ across the top (order $00, 01, 11, 10$), the 1s are at $\bar{L}\bar{H}\bar{M}$, $\bar{L}\bar{H}M$, $L\bar{H}M$, with don't cares in the row $\bar{L}H\cdot$. Grouping:
+\begin{itemize}
+\item The pair $\{\bar{L}\bar{H}\bar{M}, \bar{L}\bar{H}M\}$ gives $\bar{L}\bar{H}$.
+\item The pair $\{\bar{L}\bar{H}M, L\bar{H}M\}$ gives $\bar{H}M$.
+\end{itemize}
+\[
+P = \bar{L}\bar{H} + \bar{H}M = \bar{H}(\bar{L} + M).
+\]
+
+\textbf{Interpretation.} The pump runs when the tank is not full ($\bar{H}$) \emph{and} either the water is below the low sensor ($\bar{L}$) or the override is on ($M$). This matches the specification exactly.
+
+\textbf{Step 6a — Basic-gate circuit.} One NOT for $H$, one NOT for $L$, one OR ($\bar{L}+M$), one AND.
+
+\textbf{Step 6b — NAND-only circuit.} Using double complementation and De Morgan:
+\[
+P = \bar{H}(\bar{L}+M) = \overline{\overline{\bar{H}(\bar{L}+M)}} = \overline{\overline{\bar{H}} + \overline{\bar{L}+M}}.
+\]
+A cleaner NAND-only route uses the SOP form $P = \bar{L}\bar{H} + \bar{H}M$:
+\[
+P = \overline{\overline{\bar{L}\bar{H}} \cdot \overline{\bar{H}M}},
+\]
+which is a two-level NAND structure: two NAND gates producing $\overline{\bar{L}\bar{H}}$ and $\overline{\bar{H}M}$, feeding a final NAND gate (with $\bar{L}$ and $\bar{H}$ obtained from NAND gates with tied inputs acting as NOT gates).
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=0.92, every node/.style={font=\small}]
+% Basic gates version
+\node at (-1.4,4.6) {\textbf{Basic gates}};
+\node (L) at (0,5) {$L$};
+\node (H) at (0,4) {$H$};
+\node (M) at (0,3) {$M$};
+\node[draw, popblue, thick, circle, inner sep=1.5pt] (nL) at (1,5) {};
+\node[draw, popblue, thick, circle, inner sep=1.5pt] (nH) at (1,4) {};
+\node at (1.35,5) {$\bar{L}$};
+\node at (1.35,4) {$\bar{H}$};
+\node[draw, popblue, thick, minimum width=0.9cm, minimum height=0.7cm] (or1) at (2.6,4.5) {OR};
+\node[draw, popblue, thick, minimum width=0.9cm, minimum height=0.7cm] (and1) at (4.4,4.4) {AND};
+\node at (5.5,4.4) {$P$};
+\draw[popdark, thick] (L) -- (nL);
+\draw[popdark, thick] (H) -- (nH);
+\draw[popdark, thick] (nL) -- (1.7,5) |- (or1.150);
+\draw[popdark, thick] (M) -- (1.7,3) |- (or1.210);
+\draw[popdark, thick] (or1) -- (and1.150);
+\draw[popdark, thick] (nH) -- (1.6,4) |- (3.4,3.9) -- (and1.210);
+\draw[popdark, thick] (and1) -- (5.2,4.4);
+% NAND-only version
+\node at (-1.4,1.2) {\textbf{NAND only}};
+\node (L2) at (0,2) {$L$};
+\node (H2) at (0,1) {$H$};
+\node (M2) at (0,0) {$M$};
+\node[draw, poporange, thick, minimum width=0.9cm, minimum height=0.6cm] (g1) at (1.4,2.3) {NAND};
+\node[draw, poporange, thick, minimum width=0.9cm, minimum height=0.6cm] (g2) at (1.4,0.7) {NAND};
+\node[draw, poporange, thick, minimum width=0.9cm, minimum height=0.6cm] (g3) at (3.1,1.9) {NAND};
+\node[draw, poporange, thick, minimum width=0.9cm, minimum height=0.6cm] (g4) at (3.1,0.4) {NAND};
+\node[draw, poporange, thick, minimum width=0.9cm, minimum height=0.6cm] (g5) at (4.7,1.2) {NAND};
+\node at (5.8,1.2) {$P$};
+\draw[popdark, thick] (L2) -- (0.6,2) |- (g1.150);
+\draw[popdark, thick] (0.6,2) |- (g1.210);
+\draw[popdark, thick] (H2) -- (0.5,1) |- (g2.150);
+\draw[popdark, thick] (0.5,1) |- (g2.210);
+\draw[popdark, thick] (g1) -- (2.3,2.3) |- (g3.150);
+\draw[popdark, thick] (g2) -- (2.2,0.7) |- (g3.210);
+\draw[popdark, thick] (g2) -- (2.2,0.7) |- (g4.150);
+\draw[popdark, thick] (M2) -- (2.4,0) |- (g4.210);
+\draw[popdark, thick] (g3) -- (g5.150);
+\draw[popdark, thick] (g4) -- (g5.210);
+\draw[popdark, thick] (g5) -- (5.5,1.2);
+\end{tikzpicture}
+\end{center}
+\legende{Water-tank pump controller: basic-gate version $P=\bar{H}(\bar{L}+M)$ (top) and NAND-only version $P=\overline{\overline{\bar{L}\bar{H}}\cdot\overline{\bar{H}M}}$ (bottom). Tied NAND inputs act as NOT gates.}
+\end{popfigure}
+
+\begin{attention}[Verify the minimised circuit]
+A minimised expression is worthless if it no longer matches the specification. After minimising, pick at least two or three input combinations — especially the ones that produced the output 1 — and check them against the original truth table. In the pump example, test $LHM = 000$ (must give $P=1$) and $LHM = 110$ (must give $P=0$). Don't-care rows are the only rows allowed to differ.
+\end{attention}
+
+\courssub{Analysing an Existing Circuit}
+
+Analysis is the reverse of design: you are \emph{given} the circuit and must find out what it does.
+
+\begin{methode}[Analysing a combinational circuit]
+\begin{enumerate}
+\item Label the output of every gate with its expression, working from inputs to outputs.
+\item Write the final output as a Boolean expression in the input variables.
+\item Build the truth table of this expression (evaluate it for all $2^n$ input combinations).
+\item Minimise the expression (K-map or algebra).
+\item If the minimised form is simpler than the original circuit, propose a cheaper equivalent circuit and \emph{prove} equivalence by showing both give the same minimised expression (or the same truth table).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Analysing and improving a circuit]
+\textbf{Statement.} A circuit implements $F = AB + A\bar{B} + \bar{A}B$ using three AND gates, two NOT gates and one 3-input OR gate (6 gates). Analyse it and propose a cheaper equivalent.
+\tcblower
+\textbf{Step 1–2.} The expression is already given: $F = AB + A\bar{B} + \bar{A}B$.
+
+\textbf{Step 3 — Truth table.} Evaluating for the four combinations of $(A,B)$: $(0,0)\to 0$, $(0,1)\to 1$, $(1,0)\to 1$, $(1,1)\to 1$.
+
+\textbf{Step 4 — Minimise.}
+\begin{align*}
+F &= AB + A\bar{B} + \bar{A}B = A(B+\bar{B}) + \bar{A}B = A + \bar{A}B = A + B,
+\end{align*}
+using the absorption law $X + \bar{X}Y = X + Y$.
+
+\textbf{Step 5 — Cheaper circuit.} $F = A + B$ is a single OR gate. The original 6-gate circuit was simply an over-complicated OR gate! Both have the same truth table, so they are functionally equivalent.
+\end{exoresolu}
+
+\begin{methode}[Proving two circuits equivalent]
+Two circuits are \cle{functionally equivalent} if they produce the same output for every input combination. To prove equivalence:
+\begin{enumerate}
+\item \textbf{Method A (truth tables):} build the truth table of each circuit; if the output columns are identical, the circuits are equivalent. This always works but is long for many inputs.
+\item \textbf{Method B (minimisation):} derive each circuit's expression and minimise both (K-map or Boolean algebra). If both reduce to the \emph{same minimal expression}, the circuits are equivalent.
+\end{enumerate}
+In the exam, state clearly which method you use and show the two identical final results.
+\end{methode}
+
+\courssub{Technology Note: Does Minimisation Still Matter?}
+
+\begin{savaistu}[From SSI chips to programmable logic]
+In the 1970s, engineers built circuits from \cle{SSI} (Small-Scale Integration) chips such as the 7400 series, each containing a handful of gates. Every gate saved meant a cheaper, cooler, more reliable board — minimisation was essential. Today, designers often use \cle{programmable logic devices} (PLDs, FPGAs) where the circuit is described in a hardware description language and a software tool performs the minimisation automatically. So why learn K-maps? Because the \emph{reasoning} is unchanged: you must still define variables precisely, build correct truth tables, and understand what the tool is doing — and GCE examiners test exactly that understanding. Minimisation also builds the logical thinking needed for algorithm design later in your studies.
+\end{savaistu}
+
+\courssub{Common Examination Pitfalls}
+
+\begin{attention}[Frequent errors in analysis and design questions]
+\begin{itemize}
+\item \textbf{Mislabelling K-map axes.} The columns/rows must follow Gray code order $00, 01, 11, 10$ — \emph{not} binary counting order $00, 01, 10, 11$. A wrong order makes valid groups look scattered.
+\item \textbf{Dropping literals.} When a variable appears both complemented and uncomplemented inside a group, it is eliminated; students often keep it by mistake. Each group of $2^k$ cells eliminates exactly $k$ variables.
+\item \textbf{Forgetting to verify.} Always substitute a few input combinations back into the original truth table or specification. Two minutes of checking saves the whole question.
+\item \textbf{Ignoring don't cares.} Physically impossible combinations (like $\bar{L}H$ in the pump problem) should be marked $\times$ and used \emph{only if they enlarge a group}.
+\item \textbf{Ambiguous 0/1 definitions.} Repeat of the golden rule: state what 0 and 1 mean for every variable before drawing the truth table.
+\end{itemize}
+\end{attention}
+
+\begin{exercice}[Design a security light]
+A security light $L$ for a house in Bamenda must turn on when it is dark ($D=1$) \emph{and} motion is detected ($M=1$), or when the manual switch $S$ is on ($S=1$) regardless of the other conditions. Define your variables, build the truth table, write the canonical SOP, minimise with a K-map, and draw the final circuit.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Variables: $D=1$ dark, $M=1$ motion detected, $S=1$ manual switch on; $L=1$ light on.
+
+From the specification, $L=1$ whenever $S=1$ (4 rows) or when $D=1$ and $M=1$ with $S=0$ (1 row). Canonical SOP:
+\[
+L = \bar{S}DM + S\bar{D}\bar{M} + S\bar{D}M + SD\bar{M} + SDM.
+\]
+K-map (rows $S$, columns $DM$ in order $00,01,11,10$): the entire row $S=1$ is a group of four giving $S$; the cell $\bar{S}DM$ groups with $SDM$ giving $DM$. Hence
+\[
+L = S + DM.
+\]
+Circuit: one AND gate ($DM$) feeding one OR gate with $S$. Verification: $DMS = 110$ gives $L = 0 + 1\cdot 1 = 1$ \checkmark; $DMS=000$ gives $L=0$ \checkmark.
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item A \cle{combinational system} has outputs depending only on present inputs; its truth table fully describes it.
+\item Follow the six-step design procedure: problem $\to$ variables (with 0/1 meanings) $\to$ truth table $\to$ canonical form $\to$ minimisation $\to$ circuit — then \textbf{verify}.
+\item To analyse a circuit: derive its expression, tabulate it, minimise, and propose a cheaper equivalent.
+\item Two circuits are equivalent if they share the same truth table or minimise to the same expression.
+\item Classic patterns to recognise: majority vote ($AB+AC+BC$), alarm conditions (factorised forms like $\bar{E}(D+K)$), and controllers with don't-care states (pump problem) leading to NAND-only implementations.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity is a complete worked activity where you must:
+\begin{itemize}
+\item define variables and build the full truth table;
+\item write the canonical SOP and simplify algebraically using Boolean laws;
+\item confirm the simplification with a 4-variable K-map;
+\item draw the circuit with basic gates, then convert it to NAND-only;
+\item compare gate counts and justify the cheapest reliable solution.
+\end{itemize}
+
+\courssub{Situation}
+
+You are the project team of the OnBuch+ app. Your mission is to design an automatic water-pump controller for a school in Yaoundé. The school's water pump must start (P=1) when the tank level is low (L=1) and ENEO power is available (E=1), or when the watchman presses a manual override (M=1) and power is available; however a safety float (S=1, tank full) must always stop the pump. In teams, students: (1) define variables and build the full truth table; (2) write the canonical SOP; (3) simplify algebraically using the laws of Section 1; (4) confirm with a 4-variable K-map; (5) draw the circuit with basic gates, then convert it to NAND-only; (6) compare gate counts and justify the cheapest reliable solution. Groups present and cross-verify each other's truth tables.
+
+\courssub{Tasks}
+
+\begin{itemize}
+\item \textbf{Task 1:} Define the four input variables $L$, $E$, $M$, $S$ and the output $P$, stating clearly what the values 0 and 1 mean for each.
+\item \textbf{Task 2:} Translate the statement into a first Boolean expression for $P$, then build the complete 16-row truth table.
+\item \textbf{Task 3:} Extract the canonical sum-of-products (SOP) form of $P$ from the truth table and list the minterms.
+\item \textbf{Task 4:} Simplify the canonical SOP algebraically, justifying each step by the name of the Boolean law used.
+\item \textbf{Task 5:} Plot $P$ on a 4-variable Karnaugh map, group the 1s, and confirm the minimal expression.
+\item \textbf{Task 6:} Draw the logic circuit of the minimal expression using basic gates (NOT, AND, OR).
+\item \textbf{Task 7:} Convert the circuit to a NAND-only implementation using De Morgan's theorem.
+\item \textbf{Task 8:} Count the gates in both implementations, compare the costs, and justify the cheapest reliable solution. Then cross-verify your truth table with another group.
+\end{itemize}
+
+\courssub{Model answer}
+
+\textbf{Task 1: definition of the variables.}\par
+We choose four Boolean inputs and one output, all active-high:
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Variable} & \textbf{Meaning} \\
+\hline
+$L$ & $L=1$: tank level is low; $L=0$: level is not low \\
+\hline
+$E$ & $E=1$: ENEO power available; $E=0$: power cut \\
+\hline
+$M$ & $M=1$: watchman presses the manual override; $M=0$: not pressed \\
+\hline
+$S$ & $S=1$: safety float up (tank full); $S=0$: tank not full \\
+\hline
+$P$ & $P=1$: pump runs; $P=0$: pump stopped \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Task 2: first expression and truth table.}\par
+The statement gives: the pump runs when ($L$ AND $E$) OR ($M$ AND $E$), but the safety float must always stop it, i.e.\ the whole condition is valid only when $S=0$:
+\[ P = \overline{S}\cdot\big(L\cdot E + M\cdot E\big). \]
+The full truth table is:
+\begin{center}
+\begin{tabular}{|cccc|c|}
+\hline
+\rowcolor{popblueL} $L$ & $E$ & $M$ & $S$ & $P$ \\
+\hline
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 1 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 1 & 0 \\
+0 & 1 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 0 \\
+1 & 0 & 1 & 1 & 0 \\
+1 & 1 & 0 & 0 & 1 \\
+1 & 1 & 0 & 1 & 0 \\
+1 & 1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+Note that whenever $S=1$ (tank full), $P=0$ for every combination of the other inputs: the safety condition dominates, exactly as required.
+
+\textbf{Task 3: canonical SOP.}\par
+Reading the rows where $P=1$ (rows 6, 13 and 15), the canonical sum of products is:
+\[ P = \overline{L}EM\overline{S} + LE\overline{M}\,\overline{S} + LEM\overline{S} = \sum m(6,12,14) \]
+with the variable order $(L,E,M,S)$.
+
+\textbf{Task 4: algebraic simplification.}\par
+\begin{align*}
+P &= \overline{L}EM\overline{S} + LE\overline{M}\,\overline{S} + LEM\overline{S} && \text{canonical SOP}\\
+  &= \overline{L}EM\overline{S} + LEM\overline{S} + LEM\overline{S} + LE\overline{M}\,\overline{S} && \text{idempotence } X+X=X\\
+  &= EM\overline{S}(\overline{L}+L) + LE\overline{S}(M+\overline{M}) && \text{factorisation (distributivity)}\\
+  &= EM\overline{S}\cdot 1 + LE\overline{S}\cdot 1 && \text{complement law } X+\overline{X}=1\\
+  &= EM\overline{S} + LE\overline{S} && \text{identity } X\cdot 1 = X\\
+  &= E\overline{S}(M+L) && \text{factorisation (distributivity)}
+\end{align*}
+Hence the minimal form:
+\[ \boxed{P = E\cdot\overline{S}\cdot(L+M)} \]
+This matches the common-sense reading: power must be available, the tank must not be full, and either the level is low or the watchman overrides.
+
+\textbf{Task 5: Karnaugh map confirmation.}\par
+Using rows $LE$ and columns $MS$ in Gray-code order:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} $LE\backslash MS$ & 00 & 01 & 11 & 10 \\
+\hline
+00 & 0 & 0 & 0 & 0 \\
+01 & 0 & 0 & 0 & 0 \\
+11 & 1 & 0 & 0 & 1 \\
+10 & 1 & 0 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+Groupings:
+\begin{itemize}
+\item the four 1s in columns $MS=00$ and $MS=10$ (i.e.\ $S=0$) with $E=1$ and $L=1$ give the term $LE\overline{S}$;
+\item the 1s at $(LE=11, MS=10)$ and $(LE=01, MS=10)$ share $E=1$, $M=1$, $S=0$: pairing the cell $m(6)$ with $m(14)$ gives $EM\overline{S}$.
+\end{itemize}
+So the K-map gives $P = LE\overline{S} + EM\overline{S} = E\overline{S}(L+M)$, confirming the algebraic result.
+
+\textbf{Task 6: circuit with basic gates.}\par
+The minimal expression needs: one NOT gate (for $\overline{S}$), one OR gate ($L+M$), and one 3-input AND gate (or two 2-input AND gates) combining $E$, $\overline{S}$ and $(L+M)$.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1, every node/.style={font=\small}]
+\node (L) at (0,2.4) {$L$};
+\node (M) at (0,1.6) {$M$};
+\node (E) at (0,0.6) {$E$};
+\node (S) at (0,-0.4) {$S$};
+\node[draw, popblue, minimum width=1cm, minimum height=0.7cm] (or1) at (2,2) {OR};
+\node[draw, poppurple, minimum width=0.9cm, minimum height=0.6cm] (not1) at (2,-0.4) {NOT};
+\node[draw, popgreen, minimum width=1.1cm, minimum height=1.1cm] (and1) at (4.3,1) {AND};
+\node (P) at (6,1) {$P$};
+\draw (L.east) -- (or1.160);
+\draw (M.east) -- (or1.200);
+\draw (S.east) -- (not1.west);
+\draw (or1.east) -- (and1.150);
+\draw (E.east) -- (1.2,0.6) -- (1.2,1) -- (and1.west);
+\draw (not1.east) -- (3, -0.4) -- (3,0.6) -- (and1.210);
+\draw (and1.east) -- (P.west);
+\end{tikzpicture}
+\end{center}
+\legende{Minimal circuit: $P = E\cdot\overline{S}\cdot(L+M)$ with basic gates.}
+\end{popfigure}
+
+\textbf{Task 7: NAND-only conversion.}\par
+Apply De Morgan's theorem. Start from $P = E\overline{S}(L+M)$. Replace the OR by its NAND--NOT form:
+\[ L+M = \overline{\overline{L}\cdot\overline{M}} = \overline{\overline{L\cdot L}\cdot\overline{M\cdot M}} \]
+so a 2-input NAND with both inputs tied together acts as a NOT. Then:
+\[ P = \overline{\overline{E\overline{S}(L+M)}} = \overline{\overline{E}\, +\, S\, +\, \overline{(L+M)}} \]
+but the cleanest construction is the direct two-level NAND transformation: complement each input of the final AND and use a NAND:
+\[ P = \overline{\overline{E\cdot\overline{S}\cdot(L+M)}} = \mathrm{NAND}\big(\overline{E},\ S,\ \overline{L+M}\big). \]
+Concretely the NAND-only circuit uses:
+\begin{itemize}
+\item one NAND as inverter for $S$ (inputs tied): gives $\overline{S}$;
+\item one NAND for $\overline{L\cdot M}$, then one NAND as inverter: gives $L+M$;
+\item one 3-input NAND with inputs $\overline{E}$ (from a NAND-inverter on $E$), $S$, and $\overline{L+M}$: its output is $P$.
+\end{itemize}
+In total: 6 two-input NAND gates (counting the 3-input NAND as two 2-input equivalents).
+
+\textbf{Task 8: comparison and justification.}\par
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Basic gates} & \textbf{NAND-only} \\
+\hline
+Gate count & 1 NOT + 1 OR + 1 AND (3 gates, 3 different IC types) & 6 NAND gates (one single IC type) \\
+\hline
+Canonical SOP circuit & 3 NOT + 3 AND(4-in) + 1 OR(3-in): far more gates & even larger after conversion \\
+\hline
+Reliability / maintenance & needs several IC families in stock & one IC family (e.g.\ quad NAND), easy to replace in Yaoundé \\
+\hline
+Cost & low & lowest in practice: one chip can host all gates \\
+\hline
+\end{tabularx}
+\end{center}
+The minimised basic-gate circuit uses the fewest gates, but the NAND-only version uses a single type of integrated circuit: a single quad-NAND chip is enough, which is cheaper to buy, easier to maintain and more reliable for a school. This is the solution we recommend.
+
+\begin{attention}[Cross-verification]
+When groups compare truth tables, the most frequent error is a row where $S=1$ but $P$ was left at 1. Remember: the safety float must \emph{always} stop the pump, so the whole column $S=1$ must give $P=0$. Another classic mistake is forgetting that the K-map columns follow Gray code ($00, 01, 11, 10$), not binary order.
+\end{attention}
+
+\begin{aretenir}[Design method to remember]
+\begin{enumerate}
+\item Define variables and their active levels.
+\item Build the truth table from the statement.
+\item Write the canonical SOP.
+\item Simplify by Boolean algebra \emph{and} by K-map; both must agree.
+\item Draw the circuit, convert to NAND-only if required, and justify the final technological choice.
+\end{enumerate}
+\end{aretenir}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Analysing digital logic systems}
+
+\courssub{Boolean Algebra: Variables, Operations and Fundamental Laws}
+
+\begin{definition}[Boolean variable, literal and expression]
+A \textbf{Boolean variable} takes only two values: \cle{0} (FALSE, LOW, 0 V) or \cle{1} (TRUE, HIGH, V\textsubscript{CC}). A \textbf{literal} is a variable or its complement (e.g. $A$, $\bar{A}$). A \textbf{Boolean expression} combines literals with the three basic operations:
+\begin{itemize}
+\item \textbf{AND} (conjunction): written $A\cdot B$ or $AB$; output 1 iff all inputs are 1.
+\item \textbf{OR} (disjunction): written $A+B$; output 1 iff at least one input is 1.
+\item \textbf{NOT} (complementation): written $\bar{A}$ or $A'$; output is the opposite of the input.
+\end{itemize}
+\end{definition}
+
+\begin{propriete}[Fundamental laws of Boolean algebra]
+The following identities hold for all $A,B\in\{0,1\}$. \textbf{All are examinable} and must be quoted by name in algebraic proofs.
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Law} & \textbf{OR form} & \textbf{AND form} \\
+\hline
+Identity & $A+0=A$ & $A\cdot 1=A$ \\
+Null (Domination) & $A+1=1$ & $A\cdot 0=0$ \\
+Idempotence & $A+A=A$ & $A\cdot A=A$ \\
+Complement & $A+\bar{A}=1$ & $A\cdot\bar{A}=0$ \\
+Involution & $\overline{\bar{A}}=A$ & --- \\
+Commutativity & $A+B=B+A$ & $A\cdot B=B\cdot A$ \\
+Associativity & $(A+B)+C=A+(B+C)$ & $(AB)C=A(BC)$ \\
+Distributivity & $A+(BC)=(A+B)(A+C)$ & $A(B+C)=AB+AC$ \\
+Absorption & $A+AB=A$ & $A(A+B)=A$ \\
+Redundancy (Consensus) & $A+\bar{A}B=A+B$ & $A(\bar{A}+B)=AB$ \\
+De Morgan & $\overline{A+B}=\bar{A}\bar{B}$ & $\overline{AB}=\bar{A}+\bar{B}$ \\
+\hline
+\end{tabularx}
+\end{center}
+\end{propriete}
+
+\begin{aretenir}[Duality principle]
+Every Boolean identity remains valid if you swap $+$ with $\cdot$, $0$ with $1$, and leave variables unchanged. The two columns in the table above are duals of each other.
+\end{aretenir}
+
+\begin{methode}[Proving a Boolean identity algebraically]
+\begin{enumerate}
+\item \textbf{List the laws} you intend to use (the toolbox above).
+\item \textbf{Start from the more complex side} (usually the side with more literals or bars).
+\item \textbf{Transform step by step}: write each new line directly under the previous one.
+\item \textbf{Justify every line} by naming the law used — GCE marks are awarded for named laws.
+\item \textbf{Useful reflexes}: duplicate a term ($X=X+X$); expand with $X=X(Y+\bar{Y})$; factorise common factors.
+\item \textbf{Optional check}: evaluate both sides on one or two rows of a truth table.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Proving the redundancy theorem]
+Prove, using only the basic laws, that $A+\bar{A}B=A+B$. State the law at each step.
+\tcblower
+Start from the left-hand side (more complex):
+\begin{align*}
+A+\bar{A}B &= A\cdot 1+\bar{A}B && \text{(Identity: } A=A\cdot 1\text{)}\\
+&= A(B+\bar{B})+\bar{A}B && \text{(Complement: } 1=B+\bar{B}\text{)}\\
+&= AB+A\bar{B}+\bar{A}B && \text{(Distributivity)}\\
+&= AB+AB+A\bar{B}+\bar{A}B && \text{(Idempotence: } AB=AB+AB\text{)}\\
+&= (AB+A\bar{B})+(AB+\bar{A}B) && \text{(Associativity)}\\
+&= A(B+\bar{B})+B(A+\bar{A}) && \text{(Distributivity, factoring)}\\
+&= A\cdot 1+B\cdot 1 && \text{(Complement)}\\
+&= A+B && \text{(Identity)}
+\end{align*}
+Hence $A+\bar{A}B=A+B$. \textbf{Check}: if $A=1$, both sides $=1$; if $A=0$, both sides $=B$. Identity holds.
+\end{exoresolu}
+
+\begin{attention}[Common traps in algebraic proofs]
+\begin{itemize}
+\item \textbf{Do not} write $A+B=A$ (false unless $B=0$). Absorption is $A+AB=A$, not $A+B=A$.
+\item \textbf{De Morgan}: $\overline{A+B}=\bar{A}\bar{B}$ (bar breaks, sign changes). A frequent error is $\overline{A+B}=\bar{A}+\bar{B}$.
+\item \textbf{Distributivity} has two forms: $A(B+C)=AB+AC$ (like algebra) AND $A+BC=(A+B)(A+C)$ (unlike algebra). Learn both.
+\item \textbf{Justification}: ``Simplifying'' is not a law name. Write ``Absorption'', ``Distributivity'', etc.
+\end{itemize}
+\end{attention}
+
+\begin{methode}[Algebraic simplification of a sum-of-products]
+\begin{enumerate}
+\item \textbf{Apply De Morgan first} to push bars down to single variables.
+\item \textbf{Multiply out} only when necessary; prefer factorising common literals.
+\item \textbf{Hunt for patterns}:
+      \begin{itemize}
+      \item $X+\bar{X}=1$ (complement)
+      \item $X+XY=X$ (absorption)
+      \item $X+\bar{X}Y=X+Y$ (redundancy)
+      \item $XY+X\bar{Y}=X$ (combining)
+      \end{itemize}
+\item \textbf{Consensus theorem}: $XY+\bar{X}Z+YZ=XY+\bar{X}Z$ (the term $YZ$ is redundant).
+\item \textbf{Count literals} before and after: a good simplification strictly reduces the literal count.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Simplifying an alarm expression]
+A school laboratory alarm in Bamenda is described by
+\[ F=A\bar{B}C+A\bar{B}\bar{C}+ABC+\bar{A}BC. \]
+Simplify $F$ fully, naming each law, and state the gate count of the simplified circuit.
+\tcblower
+Group terms sharing common factors:
+\begin{align*}
+F &= A\bar{B}C+A\bar{B}\bar{C}+ABC+\bar{A}BC\\
+&= A\bar{B}(C+\bar{C})+BC(A+\bar{A}) && \text{(Distributivity)}\\
+&= A\bar{B}\cdot 1+BC\cdot 1 && \text{(Complement)}\\
+&= A\bar{B}+BC && \text{(Identity)}
+\end{align*}
+\textbf{Simplified expression:} $F=A\bar{B}+BC$.
+\textbf{Gate count:} 1 NOT ($\bar{B}$), 2 two-input ANDs, 1 two-input OR = \textbf{4 gates}.
+Original needed 4 three-input ANDs, 1 three-input OR, and inverters $\to$ much larger.
+\textbf{Interpretation:} Alarm sounds if ($A$ active AND $B$ inactive) OR ($B$ AND $C$ both active).
+\end{exoresolu}
+
+\begin{savaistu}[Claude Shannon and the birth of digital design]
+In 1937, Claude Shannon's master's thesis \emph{A Symbolic Analysis of Relay and Switching Circuits} proved that Boolean algebra could model electrical switching circuits. This founded modern digital design. In Cameroon, the first digital telephone exchanges (e.g. Camtel's E10B switches in the 1990s) relied directly on this theory.
+\end{savaistu}
+
+\courssub{Standard Forms and Logic Minimisation}
+
+\begin{definition}[Minterm, Maxterm, Canonical SOP and POS]
+For $n$ variables, a \textbf{minterm} $m_i$ is a product of all $n$ literals (each variable appears once, complemented if 0, uncomplemented if 1 in row $i$). A \textbf{maxterm} $M_i$ is a sum of all $n$ literals (complemented if 1, uncomplemented if 0 in row $i$).
+\begin{itemize}
+\item \textbf{Canonical SOP (Sum of Products)}: $F=\Sigma m(\text{indices where }F=1)$ = OR of minterms.
+\item \textbf{Canonical POS (Product of Sums)}: $F=\Pi M(\text{indices where }F=0)$ = AND of maxterms.
+\end{itemize}
+\end{definition}
+
+\begin{methode}[From specification to truth table and canonical SOP]
+\begin{enumerate}
+\item Identify inputs/outputs; assign letters.
+\item List all $2^n$ combinations in binary counting order ($000, 001, \dots$).
+\item Fill output column from the problem statement.
+\item Select rows where output $=1$.
+\item For each selected row, write the minterm (variable if 1, $\bar{\text{variable}}$ if 0).
+\item OR the minterms $\to$ canonical SOP.
+\item For canonical POS: select rows where output $=0$, write maxterms (variable if 0, $\bar{\text{variable}}$ if 1), AND them.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Majority vote of three teachers]
+Three teachers $A,B,C$ vote; decision $F=1$ if at least two vote yes. Give truth table and canonical SOP.
+\tcblower
+$2^3=8$ combinations. $F=1$ for rows with two or three 1s:
+\begin{center}
+\begin{tabular}{|ccc|c|c|}
+\hline
+\rowcolor{popblueL} $A$ & $B$ & $C$ & $F$ & minterm \\
+\hline
+0 & 0 & 0 & 0 & --- \\
+0 & 0 & 1 & 0 & --- \\
+0 & 1 & 0 & 0 & --- \\
+0 & 1 & 1 & 1 & $\bar{A}BC$ \\
+1 & 0 & 0 & 0 & --- \\
+1 & 0 & 1 & 1 & $A\bar{B}C$ \\
+1 & 1 & 0 & 1 & $AB\bar{C}$ \\
+1 & 1 & 1 & 1 & $ABC$ \\
+\hline
+\end{tabular}
+\end{center}
+Canonical SOP: $F=\bar{A}BC+A\bar{B}C+AB\bar{C}+ABC = \Sigma m(3.5,6.7)$.
+(Simplifies to $AB+AC+BC$, shown later.)
+\end{exoresolu}
+
+\begin{methode}[Converting between SOP, POS and $\Sigma$/$\Pi$ notation]
+\begin{enumerate}
+\item Number truth table rows by binary value ($ABC=101_2=5$).
+\item \textbf{SOP}: $F=\Sigma m(\text{list of indices with }F=1)$. Write each minterm.
+\item \textbf{POS}: $F=\Pi M(\text{list of indices with }F=0)$. Write each maxterm (complement if bit=1).
+\item \textbf{Check}: $\Sigma$ indices $\cup$ $\Pi$ indices $= \{0,1,\dots,2^n-1\}$ (disjoint, complete).
+\item To expand a non-canonical term (e.g. $AB$) into minterms: multiply by $(C+\bar{C})$ for each missing variable.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[SOP and POS from $\Sigma$ notation]
+Given $F(A,B,C)=\Sigma m(1.3,5.6)$. Write canonical SOP and canonical POS.
+\tcblower
+\textbf{Canonical SOP.} Convert indices to 3-bit binary; 1 $\to$ variable, 0 $\to$ complement:
+\begin{align*}
+m_1=001 &\to \bar{A}\bar{B}C, \quad m_3=011 \to \bar{A}BC,\\
+m_5=101 &\to A\bar{B}C, \quad m_6=110 \to AB\bar{C}.
+\end{align*}
+$F=\bar{A}\bar{B}C+\bar{A}BC+A\bar{B}C+AB\bar{C}$.
+
+\textbf{Canonical POS.} Zero rows: $\{0,2,4,7\}$ (complement of $\{1,3,5,6\}$). Maxterm: complement if bit=1.
+\begin{align*}
+M_0=000 &\to (A+B+C), \quad M_2=010 \to (A+\bar{B}+C),\\
+M_4=100 &\to (\bar{A}+B+C), \quad M_7=111 \to (\bar{A}+\bar{B}+\bar{C}).
+\end{align*}
+$F=(A+B+C)(A+\bar{B}+C)(\bar{A}+B+C)(\bar{A}+\bar{B}+\bar{C})$.
+\end{exoresolu}
+
+\begin{attention}[Minterm vs Maxterm convention]
+\begin{itemize}
+\item \textbf{Minterm} ($m_i$): variable appears \textbf{uncomplemented} if its value is \textbf{1}, \textbf{complemented} if \textbf{0}.
+\item \textbf{Maxterm} ($M_i$): variable appears \textbf{complemented} if its value is \textbf{1}, \textbf{uncomplemented} if \textbf{0}.
+\item Mnemonic: ``Maxterm is the \emph{opposite} of minterm''.
+\end{itemize}
+\end{attention}
+
+\begin{methode}[Karnaugh map minimisation (up to 4 variables)]
+\begin{enumerate}
+\item \textbf{Choose map size}: 2 var $\to 2\times2$; 3 var $\to 2\times4$; 4 var $\to 4\times4$.
+\item \textbf{Label axes in Gray code}: 00, 01, 11, 10 (only one bit changes between neighbours).
+\item \textbf{Place 1s} from truth table / minterm list; 0s or blanks elsewhere.
+\item \textbf{Group 1s} in rectangles of size $1,2,4,8,\dots$ (powers of two).
+      \begin{itemize}
+      \item Map wraps: left$\leftrightarrow$right, top$\leftrightarrow$bottom, four corners (4-var).
+      \item Make groups \textbf{as large as possible}; use \textbf{as few groups as possible}.
+      \item Every 1 must be covered; overlapping allowed.
+      \end{itemize}
+\item \textbf{Read each group}: keep variables that \textbf{do not change} inside the group.
+      Write uncomplemented if fixed at 1, complemented if fixed at 0.
+\item \textbf{OR the group terms} $\to$ minimal SOP.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[K-map minimisation of majority function]
+Minimise $F(A,B,C)=\bar{A}BC+A\bar{B}C+AB\bar{C}+ABC$ using a K-map.
+\tcblower
+Place 1s at indices 3,5,6,7 (rows $011,101,110,111$) on a 3-var map ($A$ rows, $BC$ columns Gray code).
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.95]
+% Grid
+\draw[popline] (0,0) grid (4,2);
+% Row labels (A)
+\node[left=2pt, popmuted] at (0,1.5) {$A=0$};
+\node[left=2pt, popmuted] at (0,0.5) {$A=1$};
+% Column labels (BC)
+\node[above=2pt, popmuted] at (0.5,2) {00};
+\node[above=2pt, popmuted] at (1.5,2) {01};
+\node[above=2pt, popmuted] at (2.5,2) {11};
+\node[above=2pt, popmuted] at (3.5,2) {10};
+\node[above left=2pt, popmuted] at (0,2) {$BC$};
+% Cell values (minterm indices / 1s)
+\node at (0.5,1.5) {0}; \node at (1.5,1.5) {0}; \node at (2.5,1.5) {1}; \node at (3.5,1.5) {0};
+\node at (0.5,0.5) {0}; \node at (1.5,0.5) {1}; \node at (2.5,0.5) {1}; \node at (3.5,0.5) {1};
+% Groups
+% Group 1: BC (column 11, both rows) -> vertical pair at x=2..3
+\draw[poporange, very thick, rounded corners=3pt] (2.05,0.1) rectangle (3.95,1.9);
+% Group 2: AC (row A=1, cols 01 and 11) -> horizontal pair bottom row x=1..3
+\draw[popblue, very thick, rounded corners=3pt] (1.05,0.1) rectangle (2.95,0.9);
+% Group 3: AB (row A=1, cols 11 and 10) -> horizontal pair bottom row x=2..4
+\draw[popgreen, very thick, rounded corners=3pt] (2.05,0.1) rectangle (3.95,0.9);
+% Legend for groups
+\node[poporange, right] at (4.1,1.5) {Group 1: $BC$};
+\node[popblue, right] at (4.1,0.9) {Group 2: $AC$};
+\node[popgreen, right] at (4.1,0.3) {Group 3: $AB$};
+\end{tikzpicture}
+\legende{K-map of majority function $F(A,B,C)$ with three optimal groups of two.}
+\end{popfigure}
+
+\textbf{Reading groups:}
+\begin{itemize}
+\item Orange (column $BC=11$, both $A$): $A$ changes, $B=1,C=1$ fixed $\to BC$.
+\item Blue (row $A=1$, columns $01,11$): $B$ changes, $A=1,C=1$ fixed $\to AC$.
+\item Green (row $A=1$, columns $11,10$): $C$ changes, $A=1,B=1$ fixed $\to AB$.
+\end{itemize}
+\textbf{Minimal SOP:} $F=AB+AC+BC$.
+\textbf{Gain:} 4 minterms $\times$ 3 literals $\to$ 3 terms $\times$ 2 literals. Circuit: 3 two-input ANDs + 1 three-input OR (vs 4 three-input ANDs + 1 four-input OR).
+\end{exoresolu}
+
+\begin{experience}[Don't-care conditions (X) in K-maps]
+Some input combinations never occur (e.g. BCD codes 1010--1111). Mark these \textbf{X} in the K-map. Treat X as 1 \emph{only if} it helps enlarge a group; otherwise treat as 0. This yields even simpler circuits. \textbf{Examinable} for 4-variable maps.
+\end{experience}
+
+\begin{exercice}[Practice: Algebraic simplification and K-map]
+\begin{enumerate}
+\item Simplify $F=A\bar{B}\bar{C}+\bar{A}B\bar{C}+\bar{A}\bar{B}C+ABC$ using Boolean laws. Name each law.
+\item Use a K-map to minimise $F(A,B,C,D)=\Sigma m(0,1,2,5,8,9,10)$.
+\item A function is $F=\Pi M(0.3,4.7)$. Write the canonical SOP and minimise it with a K-map.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{align*}
+F &= A\bar{B}\bar{C}+\bar{A}B\bar{C}+\bar{A}\bar{B}C+ABC \\
+  &= \bar{C}(A\bar{B}+\bar{A}B) + C(\bar{A}\bar{B}+AB) \quad \text{(Distributivity)} \\
+  &= \bar{C}(A\oplus B) + C(\overline{A\oplus B}) \quad \text{(XOR pattern)} \\
+  &= A\oplus B\oplus C \quad \text{(Parity function)}
+\end{align*}
+Minimal SOP requires 3 two-input XOR gates (or 4 ANDs + 3 ORs + 3 NOTs if only AND/OR/NOT allowed).
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+K-map (4 var, $AB$ rows, $CD$ cols Gray code). 1s at 0,1,2,5,8,9,10.
+Groups: (0.1,8.9) $\to \bar{B}\bar{D}$; (0.2,8.10) $\to \bar{A}\bar{C}$; (1,5) $\to \bar{A}\bar{B}C$? Wait.
+Better grouping:
+Quad (0.1,8.9): $A$ changes, $B=0$, $C$ changes, $D=0$? No.
+Rows: 00,01,11,10. Cols: 00,01,11,10.
+Indices: 0(0000), 1(0001), 2(0010), 5(0101), 8(1000), 9(1001), 10(1010).
+Map:
+\begin{center}
+\begin{tabular}{|c|cccc|}
+\hline
+\rowcolor{popblueL} \textbf{CD $\backslash$ AB} & \textbf{00} & \textbf{01} & \textbf{11} & \textbf{10} \\
+\hline
+\textbf{00} & 1 & 0 & 0 & 1 \\
+\textbf{01} & 1 & 1 & 0 & 0 \\
+\textbf{11} & 0 & 0 & 0 & 0 \\
+\textbf{10} & 1 & 0 & 0 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+Groups:
+\begin{itemize}
+\item Corners (0.2,8.10): $\bar{B}\bar{D}$ (B=0, D=0).
+\item Top row pair (0,1): $\bar{A}\bar{B}\bar{C}$.
+\item Bottom row pair (8,9): $A\bar{B}\bar{C}$.
+\item Pair (1,5): $\bar{A}\bar{C}D$? 1(0001), 5(0101) $\to \bar{A}\bar{C}D$.
+\end{itemize}
+Minimal: $\bar{B}\bar{D} + \bar{A}\bar{B}\bar{C} + A\bar{B}\bar{C} + \bar{A}\bar{C}D$? No, $\bar{A}\bar{B}\bar{C}+A\bar{B}\bar{C} = \bar{B}\bar{C}$.
+So $F = \bar{B}\bar{D} + \bar{B}\bar{C} + \bar{A}\bar{C}D$.
+Check literals: 2+2+3 = 7.
+Alternative: Pair (0,8) $\to \bar{B}\bar{C}\bar{D}$, Pair (2,10) $\to \bar{B}C\bar{D}$ $\to \bar{B}\bar{D}$.
+Pair (0,1) $\to \bar{A}\bar{B}\bar{C}$, Pair (8,9) $\to A\bar{B}\bar{C}$ $\to \bar{B}\bar{C}$.
+Pair (1,5) $\to \bar{A}\bar{C}D$.
+Result: $F = \bar{B}\bar{D} + \bar{B}\bar{C} + \bar{A}\bar{C}D$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+$F=\Pi M(0.3,4.7) \implies F=\Sigma m(1.2,5.6)$.
+Minterms: $1(001)=\bar{A}\bar{B}C$, $2(010)=\bar{A}B\bar{C}$, $5(101)=A\bar{B}C$, $6(110)=AB\bar{C}$.
+$F=\bar{A}\bar{B}C+\bar{A}B\bar{C}+A\bar{B}C+AB\bar{C}$.
+K-map (3 var): 1s at 1,2,5,6.
+Groups: (1,5) vertical $\to \bar{B}C$; (2,6) vertical $\to B\bar{C}$.
+Minimal SOP: $F=\bar{B}C+B\bar{C} = B\oplus C$.
+\end{corrige}
+
+\courssub{Analysing and Designing Complete Logic Systems}
+
+\begin{methode}[Analysing a given logic circuit]
+\begin{enumerate}
+\item \textbf{Label every gate output} with its Boolean expression, working from inputs forward.
+\item \textbf{Combine} to obtain the global output function $F$.
+\item \textbf{Simplify} $F$ (laws or K-map).
+\item \textbf{Build truth table} if required, using the simplified expression (faster, fewer errors).
+\item \textbf{Interpret}: describe in words what the circuit does; identify enable/inhibit signals.
+\item \textbf{Redraw} the minimal equivalent circuit if asked.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Analysing a two-level AND-OR circuit]
+Circuit: inputs $A,B,C$. $G_1$=AND($A,B$); $G_2$=AND($A,\bar{C}$); $G_3$=OR($G_1,G_2$). Find $F$, simplify, describe function, draw cheaper circuit.
+\tcblower
+\textbf{Step 1 -- Gate expressions:} $G_1=AB$, \quad $G_2=A\bar{C}$.
+\textbf{Step 2 -- Global function:} $F=G_1+G_2=AB+A\bar{C}$.
+\textbf{Step 3 -- Simplify:} $F=A(B+\bar{C})$ \quad (Distributivity).
+\textbf{Step 4 -- Interpretation:} $A$ is an \textbf{enable} signal. Output is 1 iff $A=1$ AND ($B=1$ OR $C=0$). If $A=0$, output forced to 0.
+\textbf{Step 5 -- Cheaper circuit:} 1 NOT ($C$), 1 OR ($B+\bar{C}$), 1 AND (with $A$) = \textbf{3 gates}, 2 levels delay. Original: 1 NOT, 2 ANDs, 1 OR = 4 gates, 2 levels.
+\end{exoresolu}
+
+\begin{methode}[Full design flow: specification $\to$ minimal circuit]
+\begin{enumerate}
+\item \textbf{Analyse specification}: list inputs, outputs, derive truth table.
+\item \textbf{Extract SOP}: OR of minterms for rows where output $=1$.
+\item \textbf{Minimise}: K-map (preferred for 3--4 variables) or Boolean laws.
+\item \textbf{Draw circuit}: NOT gates first (for complemented literals), then AND gates (one per product term), then one OR gate (SOP) -- or dual for POS.
+\item \textbf{Verify}: test 2--3 input combinations against original truth table.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Water-pump controller for a school tank]
+A school in Douala has a tank with sensors: $H$ (High level, 1=full), $L$ (Low level, 1=supply empty), $P$ (Pressure, 1=available). Pump $M$ runs ($M=1$) when tank \emph{not} full ($H=0$) AND pressure available ($P=1$), but \textbf{never} when supply empty ($L=1$). Design minimal circuit.
+\tcblower
+\textbf{Step 1 -- Truth table.} $M=1$ only for $H=0, L=0, P=1$ (row 1).
+\begin{center}
+\begin{tabular}{|ccc|c|}
+\hline
+\rowcolor{popblueL} $H$ & $L$ & $P$ & $M$ \\
+\hline
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & \textbf{1} \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{Step 2 -- SOP:} Single minterm $m_1 = \bar{H}\bar{L}P$. $M=\bar{H}\bar{L}P$.
+\textbf{Step 3 -- Minimisation:} Only one 1 in K-map $\to$ already minimal.
+\textbf{Step 4 -- Circuit (using TikZ):}
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0, >=stealth]
+% Inputs
+\node[left] (H) at (0,2.5) {$H$};
+\node[left] (L) at (0,1.5) {$L$};
+\node[left] (P) at (0,0.5) {$P$};
+% NOT gates: rectangle with label and inversion bubble
+\node[draw, popink, thick, minimum width=10mm, minimum height=6mm] (nH) at (2,2.5) {NOT};
+\node[draw, popink, thick, minimum width=10mm, minimum height=6mm] (nL) at (2,1.5) {NOT};
+% Inversion bubbles on output of NOT gates
+\draw[popink, thick, fill=white] (nH.east) circle (2pt);
+\draw[popink, thick, fill=white] (nL.east) circle (2pt);
+% AND gate
+\node[draw, popblue, thick, minimum width=12mm, minimum height=14mm, rounded corners=2pt] (AND) at (5,1.5) {3-input AND};
+% Connections
+\draw[popink] (H) -- (nH.west);
+\draw[popink] (L) -- (nL.west);
+\draw[popink] (nH.east) -- (AND.west |- nH.east);
+\draw[popink] (nL.east) -- (AND.west |- nL.east);
+\draw[popink] (P) -- ++(2.5,0) |- (AND.west |- P);
+% Output
+\draw[popink] (AND.east) -- ++(1.5,0) node[right] {$M$};
+\end{tikzpicture}
+\legende{Minimal pump controller: two inverters and one 3-input AND gate.}
+\end{popfigure}
+\textbf{Step 5 -- Verification:}
+\begin{itemize}
+\item $H=0,L=0,P=1$: $\bar{H}\bar{L}P=1\cdot1\cdot1=1$ (pump runs \checkmark).
+\item $L=1$ (empty supply): $\bar{L}=0 \Rightarrow M=0$ (safety \checkmark).
+\item $H=1$ (tank full): $\bar{H}=0 \Rightarrow M=0$ (no overflow \checkmark).
+\end{itemize}
+Design meets spec with absolute minimum hardware (3 gates).
+\end{exoresolu}
+
+\begin{attention}[Design traps in GCE exams]
+\begin{itemize}
+\item \textbf{Forgetting inverters}: every complemented literal in the SOP needs a NOT gate (unless input is available in both polarities).
+\item \textbf{Fan-in limits}: if the spec says ``2-input gates only'', a 3-input AND must be built from two 2-input ANDs. Count gates accordingly.
+\item \textbf{Don't-cares}: if the spec says ``input combination X never occurs'', put X in K-map and use it to enlarge groups.
+\item \textbf{Verification}: always test the \emph{simplified} expression on the \emph{original} truth table rows, not just the K-map.
+\end{itemize}
+\end{attention}
+
+\begin{savaistu}[Integration Activity (Lesson 17) -- Typical GCE Task]
+A past GCE question asked: ``A security system has sensors $A$ (door), $B$ (window), $C$ (motion). Alarm $Z$ sounds if door OR window opens while system armed ($S=1$), OR if motion detected while armed. Design the minimal circuit.''
+\textbf{Approach:} 1) Truth table (4 inputs $S,A,B,C$). 2) SOP. 3) 4-var K-map. 4) Circuit. 5) Verify. This integrates Lessons 15 \& 16.
+\end{savaistu}
+
+\begin{exercice}[Integration: Security system design]
+A security system has four inputs: $S$ (system armed), $D$ (door sensor), $W$ (window sensor), $M$ (motion sensor). The alarm $A$ sounds ($A=1$) when the system is armed ($S=1$) AND (door open $D=1$ OR window open $W=1$ OR motion detected $M=1$).
+\begin{enumerate}
+\item Write the truth table for $A(S,D,W,M)$.
+\item Derive the canonical SOP expression.
+\item Minimise $A$ using a 4-variable K-map.
+\item Draw the minimal circuit using 2-input gates only (AND, OR, NOT).
+\item How many gates are needed?
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Security system design]
+\textbf{1. Truth table:} $A=1$ when $S=1$ and ($D+W+M=1$). Rows 8--15 have $S=1$. Among those, $A=0$ only for $D=W=M=0$ (row 8). So $A=1$ for rows 9,10,11,12,13,14,15 ($\Sigma m(9,10,11,12,13,14,15)$).
+\textbf{2. Canonical SOP:} 7 minterms of 4 literals each.
+\textbf{3. K-map minimisation:} 4-var map ($S,D$ rows; $W,M$ cols). The seven 1s form a block of 8 minus the $S=1,D=W=M=0$ cell.
+Groups:
+- $S=1$ row (8 cells) minus one $\to$ not rectangular.
+- Better: Group the 1s.
+  Actually, $A = S \cdot (D+W+M)$.
+  K-map confirms: One group of 4 for $SD$? No.
+  $A = S(D+W+M) = SD + SW + SM$.
+  Check K-map: $SD$ covers rows where $S=1,D=1$ (4 cells: 12,13,14,15).
+  $SW$ covers $S=1,W=1$ (4 cells: 10,11,14,15).
+  $SM$ covers $S=1,M=1$ (4 cells: 9,11,13,15).
+  Union covers all 7 minterms. Minimal SOP: $A = SD + SW + SM$.
+\textbf{4. Circuit (2-input gates only):}
+  - 3 AND gates: $G_1=SD$, $G_2=SW$, $G_3=SM$.
+  - 2 OR gates: $G_4=G_1+G_2$, $G_5=G_4+G_3$.
+  - Total: \textbf{5 gates} (3 AND, 2 OR). No NOT gates needed.
+\textbf{5. Gate count:} 5 gates.
+\end{corrige}
+
+\begin{aretenir}[Chapter summary -- CSC05]
+\begin{itemize}
+\item \textbf{Boolean Algebra}: 10 fundamental laws (Identity, Null, Idempotence, Complement, Involution, Commutativity, Associativity, Distributivity, Absorption, De Morgan). Duality principle.
+\item \textbf{Standard Forms}: Minterm (product, 1=uncomplemented), Maxterm (sum, 1=complemented). Canonical SOP ($\Sigma m$), Canonical POS ($\Pi M$). Conversion via truth table indices.
+\item \textbf{Minimisation}: Algebraic (laws, patterns, consensus) and Karnaugh Maps (Gray code, power-of-2 rectangles, wrapping, largest groups, fewest groups, don't-cares).
+\item \textbf{Analysis}: Label gates $\to$ global expression $\to$ simplify $\to$ truth table $\to$ interpretation.
+\item \textbf{Design}: Spec $\to$ Truth table $\to$ SOP $\to$ K-map $\to$ Circuit (NOT $\to$ AND $\to$ OR) $\to$ Verify.
+\item \textbf{Exam skills}: Name every law, draw K-maps with Gray code, count gates/literals, verify designs.
+\end{itemize}
+\end{aretenir}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Boolean laws]
+Which of the following expressions is equivalent to \(A + \overline{A}B\)?
+\begin{enumerate}
+\item \(A + B\)
+\item \(A \cdot B\)
+\item \(\overline{A} + B\)
+\item \(A \oplus B\)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False with justification]
+State whether each statement is true or false. Justify your answer using Boolean algebra laws.
+\begin{enumerate}
+\item \(\overline{A + B} = \overline{A} \cdot \overline{B}\)
+\item \(A \cdot (B + C) = A \cdot B + C\)
+\item \(A + \overline{A} = 1\)
+\item \(A \oplus B = \overline{A}B + A\overline{B}\)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define the following terms in the context of Boolean algebra:
+\begin{enumerate}
+\item Minterm
+\item Maxterm
+\item Canonical Sum of Products (SOP)
+\item Don't-care condition
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+Given \(A = 1\), \(B = 0\), \(C = 1\), evaluate the following expressions:
+\begin{enumerate}
+\item \(F_1 = A \cdot \overline{B} + C\)
+\item \(F_2 = \overline{(A + B)} \cdot C\)
+\item \(F_3 = A \oplus B \oplus C\)
+\item \(F_4 = (A + B) \cdot (\overline{A} + C)\)
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Algebraic proof and truth table]
+Prove algebraically that \(A + \overline{A}B = A + B\). Then verify the identity by constructing a complete truth table.
+\end{exercice}
+
+\begin{exercice}[Complement and SOP using De Morgan]
+Using De Morgan's theorems, find the complement of \(F = (A + \overline{B}C)(D + \overline{E})\). Express the complement as a Sum of Products (SOP).
+\end{exercice}
+
+\begin{exercice}[Canonical forms and algebraic simplification]
+Given the truth table below for a 3-variable function \(F(A,B,C)\):
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+A & B & C & F \\
+\hline
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+\item Write the canonical SOP and canonical POS expressions for \(F\).
+\item Simplify \(F\) algebraically to a minimal SOP form.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Karnaugh map minimisation and circuit]
+Minimise the 4-variable function \(F(A,B,C,D) = \sum m(0,2,5,7,8,10,13,15)\) using a Karnaugh map. Draw the resulting logic circuit using AND, OR, and NOT gates.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[BCD function with don't-cares -- 12 marks]
+A BCD-based function is defined as \(F(A,B,C,D) = \sum m(1.3,7.9) + d(10,11,12,13,14,15)\), where \(d\) denotes don't-care conditions.
+\begin{enumerate}
+\item Plot the function on a 4-variable Karnaugh map, clearly indicating the don't-care cells.
+\item Obtain a minimal SOP expression for \(F\) by exploiting the don't-care conditions.
+\item Draw the logic circuit for the minimal expression using only NAND gates.
+\item How many gates are saved compared to an implementation using the canonical SOP (without don't-cares)?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Circuit equivalence -- 10 marks]
+Two logic circuits are given by the following Boolean expressions:
+\[
+F_1 = \overline{A}B + A\overline{B}C + ABC
+\]
+\[
+F_2 = (A + B)(\overline{A} + \overline{B} + C)
+\]
+\begin{enumerate}
+\item Simplify \(F_1\) and \(F_2\) algebraically to their minimal SOP forms.
+\item Show that the two circuits are equivalent by proving that their minimal forms are identical.
+\item Draw the circuit for the minimal expression using only NOR gates.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Security light system -- 15 marks]
+A security light turns on if it is night AND (motion is detected OR the manual switch is on).
+Let the inputs be:
+\(N\) = night (1 if night, 0 otherwise),
+\(M\) = motion detected (1 if detected, 0 otherwise),
+\(S\) = manual switch (1 if on, 0 if off).
+The output \(L\) = light on (1 if on, 0 if off).
+\begin{enumerate}
+\item Write the Boolean expression for \(L\) in terms of \(N, M, S\).
+\item Construct the truth table for \(L\).
+\item Minimise the expression using a Karnaugh map.
+\item Implement the minimised expression using only NAND gates. Draw the circuit.
+\item If the manual switch is faulty and always reads 1 (on), simplify the expression for this faulty condition and state whether the light will ever turn off at night.
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 — MCQ: Boolean laws]
+The expression \(A + \overline{A}B\) can be simplified using the \textbf{absorption law} (also called the \emph{redundancy law}):
+\[
+A + \overline{A}B = (A + \overline{A})(A + B) = 1 \cdot (A + B) = A + B.
+\]
+Alternatively, using distribution: \(A + \overline{A}B = A(1 + B) + \overline{A}B = A + AB + \overline{A}B = A + B(A + \overline{A}) = A + B\).
+
+Thus the equivalent expression is \(A + B\), which corresponds to \textbf{option 1}.
+\end{corrige}
+
+\begin{corrige}[Exercise 2 — True/False with justification]
+\begin{enumerate}
+\item \textbf{True.} \(\overline{A + B} = \overline{A} \cdot \overline{B}\) is \textbf{De Morgan's first theorem}.
+\item \textbf{False.} \(A \cdot (B + C) = A \cdot B + A \cdot C\) by the distributive law. The given expression \(A \cdot B + C\) is missing the factor \(A\) on \(C\). Counterexample: \(A=0, B=0, C=1\) gives LHS \(=0\), RHS \(=1\).
+\item \textbf{True.} \(A + \overline{A} = 1\) is the \textbf{complement law}.
+\item \textbf{True.} \(A \oplus B = \overline{A}B + A\overline{B}\) is the definition of the \textbf{XOR} (exclusive OR) operation.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 — Definitions]
+\begin{enumerate}
+\item \textbf{Minterm:} A product term in which each of the \(n\) variables appears exactly once, either in its true or complemented form. For \(n\) variables there are \(2^n\) minterms. A minterm evaluates to 1 for exactly one combination of the variables.
+\item \textbf{Maxterm:} A sum term in which each of the \(n\) variables appears exactly once, either in its true or complemented form. For \(n\) variables there are \(2^n\) maxterms. A maxterm evaluates to 0 for exactly one combination of the variables.
+\item \textbf{Canonical Sum of Products (SOP):} A Boolean expression written as a sum (OR) of minterms. It is the logical OR of all minterms for which the function output is 1. Also called \emph{minterm expansion} or \emph{standard SOP}.
+\item \textbf{Don't-care condition:} An input combination for which the output value is unspecified (can be either 0 or 1) because that combination never occurs in practice or its output does not affect the system. Don't-care conditions are denoted by \(d\) or \(X\) and can be used to simplify logic expressions further.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 — Direct calculations]
+Given \(A = 1\), \(B = 0\), \(C = 1\):
+\begin{enumerate}
+\item \(F_1 = A \cdot \overline{B} + C = 1 \cdot \overline{0} + 1 = 1 \cdot 1 + 1 = 1 + 1 = \mathbf{1}\).
+\item \(F_2 = \overline{(A + B)} \cdot C = \overline{(1 + 0)} \cdot 1 = \overline{1} \cdot 1 = 0 \cdot 1 = \mathbf{0}\).
+\item \(F_3 = A \oplus B \oplus C\). Compute stepwise: \(A \oplus B = 1 \oplus 0 = 1\). Then \(1 \oplus C = 1 \oplus 1 = \mathbf{0}\).
+\item \(F_4 = (A + B) \cdot (\overline{A} + C) = (1 + 0) \cdot (\overline{1} + 1) = 1 \cdot (0 + 1) = 1 \cdot 1 = \mathbf{1}\).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 — Algebraic proof and truth table]
+\textbf{Algebraic proof:}
+\[
+\begin{aligned}
+A + \overline{A}B &= (A + \overline{A})(A + B) && \text{(Distributive law: } X + YZ = (X+Y)(X+Z)\text{)} \\
+&= 1 \cdot (A + B) && \text{(Complement law: } A + \overline{A} = 1\text{)} \\
+&= A + B && \text{(Identity law: } 1 \cdot X = X\text{)}.
+\end{aligned}
+\]
+
+\textbf{Truth table verification:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+A & B & \(\overline{A}\) & \(\overline{A}B\) & \(A + \overline{A}B\) & \(A + B\) \\
+\hline
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+The columns for \(A + \overline{A}B\) and \(A + B\) are identical, confirming the identity.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 — Complement and SOP using De Morgan]
+Given \(F = (A + \overline{B}C)(D + \overline{E})\).
+
+The complement \(\overline{F}\) is obtained by applying De Morgan's theorems:
+\[
+\begin{aligned}
+\overline{F} &= \overline{(A + \overline{B}C)(D + \overline{E})} \\
+&= \overline{A + \overline{B}C} + \overline{D + \overline{E}} && \text{(De Morgan: } \overline{XY} = \overline{X} + \overline{Y}\text{)} \\
+&= \overline{A} \cdot \overline{\overline{B}C} + \overline{D} \cdot \overline{\overline{E}} && \text{(De Morgan: } \overline{X+Y} = \overline{X}\,\overline{Y}\text{)} \\
+&= \overline{A} \cdot (\overline{\overline{B}} + \overline{C}) + \overline{D} \cdot E && \text{(De Morgan on } \overline{\overline{B}C}\text{)} \\
+&= \overline{A} \cdot (B + \overline{C}) + \overline{D}E && \text{(Double complement: } \overline{\overline{B}} = B\text{)} \\
+&= \overline{A}B + \overline{A}\,\overline{C} + \overline{D}E.
+\end{aligned}
+\]
+The final expression \(\overline{F} = \overline{A}B + \overline{A}\,\overline{C} + \overline{D}E\) is a \textbf{Sum of Products (SOP)}.
+\end{corrige}
+
+\begin{corrige}[Exercise 7 — Canonical forms and algebraic simplification]
+\textbf{Truth table:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+A & B & C & F \\
+\hline
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 1 \\
+0 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 0 \\
+1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+\item \textbf{Canonical SOP (minterms where F=1):} Rows 0, 2, 3, 5, 7 (minterm indices \(m_0, m_2, m_3, m_5, m_7\)).
+\[
+F = \overline{A}\,\overline{B}\,\overline{C} + \overline{A}B\,\overline{C} + \overline{A}BC + A\,\overline{B}C + ABC.
+\]
+\textbf{Canonical POS (maxterms where F=0):} Rows 1, 4, 6 (maxterms \(M_1, M_4, M_6\)).
+\[
+F = (A + B + \overline{C})(\overline{A} + B + C)(\overline{A} + \overline{B} + C).
+\]
+
+\item \textbf{Algebraic simplification to minimal SOP:}
+\[
+\begin{aligned}
+F &= \overline{A}\,\overline{B}\,\overline{C} + \overline{A}B\,\overline{C} + \overline{A}BC + A\,\overline{B}C + ABC \\
+&= \overline{A}\,\overline{C}(\overline{B} + B) + \overline{A}BC + AC(\overline{B} + B) && \text{(group terms)} \\
+&= \overline{A}\,\overline{C} \cdot 1 + \overline{A}BC + AC \cdot 1 \\
+&= \overline{A}\,\overline{C} + \overline{A}BC + AC.
+\end{aligned}
+\]
+Now factor \(\overline{A}\) from the first two terms:
+\[
+\overline{A}\,\overline{C} + \overline{A}BC = \overline{A}(\overline{C} + BC) = \overline{A}(\overline{C} + B) \quad \text{(by absorption: } \overline{C} + BC = \overline{C} + B\text{)}.
+\]
+Thus
+\[
+F = \overline{A}(\overline{C} + B) + AC = \overline{A}\,\overline{C} + \overline{A}B + AC.
+\]
+This is a minimal SOP (3 product terms, 6 literals). No further reduction is possible.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 — Karnaugh map minimisation and circuit]
+The function is \(F(A,B,C,D) = \sum m(0,2,5,7,8,10,13,15)\).
+
+\textbf{Karnaugh map (4 variables):}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=0.9]
+% K-map matrix
+\matrix (kmap) [matrix of nodes, 
+    nodes={minimum size=0.85cm, anchor=center, draw, font=\small},
+    column sep=-\pgflinewidth, row sep=-\pgflinewidth,
+    column 1/.style={nodes={draw=none, minimum width=1.2cm}},
+    row 1/.style={nodes={draw=none, minimum height=0.7cm}}
+] {
+    & 00 & 01 & 11 & 10 \\
+00 & 1 & 0 & 0 & 1 \\
+01 & 0 & 1 & 1 & 0 \\
+11 & 0 & 1 & 1 & 0 \\
+10 & 1 & 0 & 0 & 1 \\
+};
+% Labels
+\node[above=0.15cm of kmap-1-3, font=\small\bfseries] {CD};
+\node[left=0.15cm of kmap-2-1, font=\small\bfseries] {AB};
+% Group 1: four corners
+\draw[popblue, thick, rounded corners=3pt] 
+    (kmap-2-2.north west) rectangle (kmap-2-5.north east)
+    (kmap-5-2.south west) rectangle (kmap-5-5.south east);
+% Actually draw a single rectangle wrapping top and bottom rows? Better: two separate rectangles for clarity.
+% Let's draw two rectangles: one for top row corners, one for bottom row corners.
+% But standard grouping shows a single group covering four corners. We'll draw a dashed line connecting them or two rectangles.
+% Simpler: draw rectangles around the two groups.
+% Group 1 (corners): cells (2,2), (2,5), (5,2), (5,5)
+\draw[popblue, thick, rounded corners=2pt] (kmap-2-2.north west) -- (kmap-2-2.north east) -- (kmap-2-5.north east) -- (kmap-2-5.north west) -- cycle; % top edge? No.
+% Let's just draw two rectangles: top row corners and bottom row corners.
+\draw[popblue, thick, rounded corners=2pt] (kmap-2-2.north west) rectangle (kmap-2-2.south east);
+\draw[popblue, thick, rounded corners=2pt] (kmap-2-5.north west) rectangle (kmap-2-5.south east);
+\draw[popblue, thick, rounded corners=2pt] (kmap-5-2.north west) rectangle (kmap-5-2.south east);
+\draw[popblue, thick, rounded corners=2pt] (kmap-5-5.north west) rectangle (kmap-5-5.south east);
+% Group 2: middle four (3,3), (3,4), (4,3), (4,4)
+\draw[poporange, thick, rounded corners=2pt] (kmap-3-3.north west) rectangle (kmap-4-4.south east);
+% Annotations
+\node[popblue, above=0.2cm of kmap-1-3, xshift=-1.2cm, font=\small] {\textbf{Group 1:} \(\overline{B}\,\overline{D}\)};
+\node[poporange, below=0.2cm of kmap-5-3, xshift=1.2cm, font=\small] {\textbf{Group 2:} \(BD\)};
+\end{tikzpicture}
+\legende{K-map for \(F(A,B,C,D) = \sum m(0,2,5,7,8,10,13,15)\) with groupings}
+\end{popfigure}
+
+\textbf{Grouping:}
+\begin{itemize}
+\item Group 1 (blue): The four corners (m0, m2, m8, m10) \(\rightarrow\) \(\overline{B}\,\overline{D}\) (A and C change, B=0, D=0).
+\item Group 2 (orange): The middle four cells (m5, m7, m13, m15) \(\rightarrow\) \(BD\) (A and C change, B=1, D=1).
+\end{itemize}
+No other groups needed. The minimal SOP is:
+\[
+F = \overline{B}\,\overline{D} + BD.
+\]
+
+\textbf{Logic circuit (AND, OR, NOT):}
+
+\begin{popfigure}
+\centering
+% (figure ou tableau supprimé : erreur de compilation)
+\legende{Logic circuit for \(F = \overline{B}\,\overline{D} + BD\)}
+\end{popfigure}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 — BCD function with don't-cares -- 12 marks]
+The function is \(F(A,B,C,D) = \sum m(1.3,7.9) + d(10,11,12,13,14,15)\). (Note: the original notation ``1.3,7.9'' is interpreted as minterms 1, 3, 7, 9.)
+
+\textbf{1. Karnaugh map with don't-cares:}
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=0.9]
+\matrix (kmap) [matrix of nodes, 
+    nodes={minimum size=0.85cm, anchor=center, draw, font=\small},
+    column sep=-\pgflinewidth, row sep=-\pgflinewidth,
+    column 1/.style={nodes={draw=none, minimum width=1.2cm}},
+    row 1/.style={nodes={draw=none, minimum height=0.7cm}}
+] {
+    & 00 & 01 & 11 & 10 \\
+00 & 0 & 1 & 1 & 0 \\
+01 & 0 & 0 & 1 & 0 \\
+11 & X & X & X & X \\
+10 & 0 & 1 & X & X \\
+};
+\node[above=0.15cm of kmap-1-3, font=\small\bfseries] {CD};
+\node[left=0.15cm of kmap-2-1, font=\small\bfseries] {AB};
+% Group 1: minterms 1,3,9,11 (cells (2,3), (2,4), (5,3), (5,4)? Wait indices: row2=00, row3=01, row4=11, row5=10. col2=00, col3=01, col4=11, col5=10.
+% m1: (2,3), m3: (2,4), m9: (5,3), m11: (5,4) -> rectangle covering (2,3)-(2,4) and (5,3)-(5,4) but not contiguous in matrix. Actually they form a 2x2 square wrapping top/bottom? No, rows 2 and 5 are not adjacent. In K-map, row 00 and 10 are adjacent (Gray code). So cells (2,3), (2,4), (5,3), (5,4) form a valid 4-cell group wrapping vertically.
+\draw[popblue, thick, rounded corners=2pt] (kmap-2-3.north west) rectangle (kmap-2-4.south east);
+\draw[popblue, thick, rounded corners=2pt] (kmap-5-3.north west) rectangle (kmap-5-4.south east);
+% Group 2: column CD=11 (col4): cells (2,4), (3,4), (4,4), (5,4) -> m3, m7, m11, m15.
+\draw[poporange, thick, rounded corners=2pt] (kmap-2-4.north west) rectangle (kmap-5-4.south east);
+% Annotations
+\node[popblue, above=0.2cm of kmap-1-3, xshift=-1.5cm, font=\small] {\textbf{Group 1:} \(\overline{B}D\)};
+\node[poporange, right=0.2cm of kmap-3-5, font=\small] {\textbf{Group 2:} \(CD\)};
+\end{tikzpicture}
+\legende{K-map for \(F = \sum m(1.3,7.9) + d(10,11,12,13,14,15)\) with optimal groupings}
+\end{popfigure}
+
+\textbf{2. Minimal SOP using don't-cares:}
+We form the following prime implicants by treating X as 1 where helpful:
+\begin{itemize}
+\item Group 1 (blue): Minterms 1 (0001), 3 (0011), 9 (1001), 11 (1011) — using don't-care 11. These share B=0, D=1 \(\rightarrow\) \(\overline{B}D\).
+\item Group 2 (orange): Minterms 3 (0011), 7 (0111), 11 (1011), 15 (1111) — using don't-cares 11, 15. These share C=1, D=1 \(\rightarrow\) \(CD\).
+\end{itemize}
+All minterms (1, 3, 7, 9) are covered. The minimal SOP is:
+\[
+F = \overline{B}D + CD.
+\]
+
+\textbf{3. Logic circuit using only NAND gates:}
+We implement \(F = \overline{B}D + CD\) using NAND-NAND logic (AND-OR equivalent to NAND-NAND).
+\[
+F = \overline{\overline{\overline{B}D} \cdot \overline{CD}}.
+\]
+Circuit:
+\begin{itemize}
+\item Generate \(\overline{B}\) using a NAND gate as inverter (inputs B and B).
+\item First NAND: inputs \(\overline{B}\) and D \(\rightarrow\) output \(\overline{\overline{B}D}\).
+\item Second NAND: inputs C and D \(\rightarrow\) output \(\overline{CD}\).
+\item Third NAND: inputs from first and second NAND outputs \(\rightarrow\) final output F.
+\end{itemize}
+
+% (figure ou tableau supprimé : erreur de compilation)
+
+\textbf{4. Gate count comparison:}
+\begin{itemize}
+\item \textbf{Canonical SOP (without don't-cares):} Minterms 1,3,7,9. Each minterm is a 4-input AND (or 3 two-input AND gates per minterm). 4 minterms \(\rightarrow\) 12 two-input AND gates + 3 two-input OR gates to combine + inverters for complemented literals. Roughly 15-20 gates.
+\item \textbf{Minimal SOP with don't-cares:} \(F = \overline{B}D + CD\). Using NAND-only as above: 1 inverter (NAND as NOT) + 3 NAND gates = \textbf{4 NAND gates}.
+\item \textbf{Gates saved:} Approximately 11-16 gates saved. The minimal implementation is drastically smaller.
+\end{itemize}
+
+\textbf{Mark scheme (indicative):}
+\begin{itemize}
+\item Correct K-map with don't-cares: 2 marks
+\item Correct minimal SOP: 3 marks
+\item Correct NAND-only circuit: 4 marks
+\item Gate count comparison with reasoning: 3 marks
+\end{itemize}
+\textbf{Examiner expectations:} Clear K-map labelling, correct grouping using don't-cares, minimal expression, proper NAND gate conversion (using De Morgan), and a realistic gate count estimate.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 — Circuit equivalence -- 10 marks]
+Given:
+\[
+F_1 = \overline{A}B + A\overline{B}C + ABC, \qquad
+F_2 = (A + B)(\overline{A} + \overline{B} + C).
+\]
+
+\textbf{1. Simplify \(F_1\) to minimal SOP:}
+\[
+\begin{aligned}
+F_1 &= \overline{A}B + A\overline{B}C + ABC \\
+&= \overline{A}B + AC(\overline{B} + B) \\
+&= \overline{A}B + AC \cdot 1 \\
+&= \overline{A}B + AC.
+\end{aligned}
+\]
+
+\textbf{2. Simplify \(F_2\) to minimal SOP:}
+\[
+\begin{aligned}
+F_2 &= (A + B)(\overline{A} + \overline{B} + C) \\
+&= A(\overline{A} + \overline{B} + C) + B(\overline{A} + \overline{B} + C) \quad \text{(Distributive)} \\
+&= A\overline{A} + A\overline{B} + AC + B\overline{A} + B\overline{B} + BC \\
+&= 0 + A\overline{B} + AC + \overline{A}B + 0 + BC \\
+&= \overline{A}B + A\overline{B} + AC + BC.
+\end{aligned}
+\]
+Now simplify using the consensus theorem or a truth table. The consensus of \(A\overline{B}\) and \(BC\) is \(AC\), and the consensus of \(\overline{A}B\) and \(AC\) is \(BC\). Both \(A\overline{B}\) and \(BC\) are redundant when \(\overline{A}B + AC\) is present. Verification by truth table:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+A & B & C & \(\overline{A}B+AC\) & \(A\overline{B}+\overline{A}B+AC+BC\) & Equal? \\
+\hline
+0 & 0 & 0 & 0 & 0 & Y \\
+0 & 0 & 1 & 0 & 0 & Y \\
+0 & 1 & 0 & 1 & 1 & Y \\
+0 & 1 & 1 & 1 & 1 & Y \\
+1 & 0 & 0 & 0 & 0 & Y \\
+1 & 0 & 1 & 1 & 1 & Y \\
+1 & 1 & 0 & 0 & 0 & Y \\
+1 & 1 & 1 & 1 & 1 & Y \\
+\hline
+\end{tabular}
+\end{center}
+Both reduce to the same minimal SOP:
+\[
+F = \overline{A}B + AC.
+\]
+
+\textbf{3. Circuit using only NOR gates:}
+We have \(F = \overline{A}B + AC\). Using De Morgan:
+\[
+F = \overline{\overline{\overline{A}B + AC}} = \overline{(\overline{\overline{A}B}) \cdot (\overline{AC})} = \overline{(A+\overline{B})(\overline{A}+\overline{C})}.
+\]
+Implement \(\overline{F} = (A+\overline{B})(\overline{A}+\overline{C})\) with NOR-NOR logic, then invert.
+\begin{enumerate}
+\item Generate \(\overline{A}, \overline{B}, \overline{C}\) using NOR gates as inverters (inputs tied together).
+\item NOR1: inputs \(A, \overline{B}\) \(\rightarrow\) \(\overline{A+\overline{B}}\).
+\item NOR2: inputs \(\overline{A}, \overline{C}\) \(\rightarrow\) \(\overline{\overline{A}+\overline{C}}\).
+\item NOR3: inputs from NOR1 and NOR2 \(\rightarrow\) \(\overline{\overline{A+\overline{B}} + \overline{\overline{A}+\overline{C}}} = (A+\overline{B})(\overline{A}+\overline{C}) = \overline{F}\).
+\item NOR4: inverter on NOR3 output \(\rightarrow\) \(F\).
+\end{enumerate}
+Total: 7 NOR gates (3 inverters + 4 logic).
+
+\begin{popfigure}
+\centering
+% (figure ou tableau supprimé : erreur de compilation)
+\legende{NOR-only circuit for \(F = \overline{A}B + AC\) (7 NOR gates)}
+\end{popfigure}
+
+\textbf{Mark scheme (indicative):}
+\begin{itemize}
+\item Simplification of \(F_1\): 2 marks
+\item Simplification of \(F_2\): 3 marks
+\item Proof of equivalence (showing both reduce to same minimal SOP): 2 marks
+\item Correct NOR-only circuit: 3 marks
+\end{itemize}
+\textbf{Examiner expectations:} Clear algebraic steps, recognition of consensus/redundancy, correct conversion to NOR logic (using double complement or POS form), neat circuit diagram with labelled gates.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 — Security light system -- 15 marks]
+\textbf{1. Boolean expression:}
+The light turns on if it is night AND (motion detected OR manual switch on).
+\[
+L = N \cdot (M + S).
+\]
+
+\textbf{2. Truth table:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+N & M & S & L \\
+\hline
+0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 1 & 0 \\
+1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Karnaugh map minimisation:}
+K-map for 3 variables (N, M, S). Rows: N, Columns: MS (00.01,11.10).
+
+\begin{popfigure}
+\centering
+\begin{tikzpicture}[scale=0.9]
+\matrix (kmap) [matrix of nodes, 
+    nodes={minimum size=0.85cm, anchor=center, draw, font=\small},
+    column sep=-\pgflinewidth, row sep=-\pgflinewidth,
+    column 1/.style={nodes={draw=none, minimum width=1cm}},
+    row 1/.style={nodes={draw=none, minimum height=0.7cm}}
+] {
+    & 00 & 01 & 11 & 10 \\
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 & 1 \\
+};
+\node[above=0.15cm of kmap-1-3, font=\small\bfseries] {MS};
+\node[left=0.15cm of kmap-2-1, font=\small\bfseries] {N};
+% Group the three 1's in bottom row
+\draw[popblue, thick, rounded corners=2pt] (kmap-3-3.north west) rectangle (kmap-3-5.south east);
+\node[popblue, below=0.2cm of kmap-3-3, font=\small] {\textbf{Group:} \(M+S\)};
+\end{tikzpicture}
+\legende{K-map for security light system}
+\end{popfigure}
+
+Group the three 1's in the bottom row (N=1, MS=01,11,10) \(\rightarrow\) \(M+S\) (since only MS=00 is missing). So minimal expression:
+\[
+L = N(M+S).
+\]
+This is already minimal (same as original).
+
+\textbf{4. Implementation using only NAND gates:}
+Convert to SOP: \(L = NM + NS\). NAND-NAND implementation:
+\[
+L = \overline{\overline{NM} \cdot \overline{NS}}.
+\]
+\begin{enumerate}
+\item NAND1: inputs N, M \(\rightarrow\) \(\overline{NM}\).
+\item NAND2: inputs N, S \(\rightarrow\) \(\overline{NS}\).
+\item NAND3: inputs from NAND1 and NAND2 \(\rightarrow\) \(\overline{\overline{NM} \cdot \overline{NS}} = NM + NS = N(M+S)\).
+\end{enumerate}
+This uses 3 NAND gates (no separate inverters needed).
+
+% (figure ou tableau supprimé : erreur de compilation)
+
+\textbf{5. Faulty switch condition (S always 1):}
+Substitute \(S = 1\) into the minimal expression:
+\[
+L = N(M + 1) = N \cdot 1 = N.
+\]
+So the light turns on whenever it is night (\(N=1\)), regardless of motion. The light will \textbf{never turn off at night} (since \(L = N\), when \(N=1\), \(L=1\) always). During the day (\(N=0\)), the light is off.
+
+\textbf{Mark scheme (indicative):}
+\begin{itemize}
+\item Boolean expression: 2 marks
+\item Truth table: 2 marks
+\item K-map and minimisation: 3 marks
+\item NAND-only circuit: 4 marks
+\item Faulty switch analysis: 4 marks
+\end{itemize}
+\textbf{Examiner expectations:} Correct interpretation of the problem statement, complete truth table, proper K-map grouping, efficient NAND implementation (using SOP form), and clear analysis of the faulty condition with a logical conclusion.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap,
+  grow cyclic,
+  every node/.style={concept, font=\small, align=center},
+  root concept/.append style={concept color=popblue, font=\bfseries\small, text=white},
+  level 1/.append style={level distance=3.4cm, sibling angle=60},
+  level 1 concept/.append style={font=\scriptsize, text=white},
+  level 2/.append style={level distance=2.2cm},
+  level 2 concept/.append style={font=\tiny, text=black},
+]
+\node[root concept]{Analysing Digital Logic Systems}
+  child[concept color=poporange]{ node {Boolean Algebra Basics}
+    child[concept color=popblueL]{ node {AND, OR, NOT, XOR} }
+    child[concept color=popblueL]{ node {Truth tables} }
+  }
+  child[concept color=popgreen]{ node {Fundamental Laws}
+    child[concept color=popgreenL]{ node {De Morgan} }
+    child[concept color=popgreenL]{ node {Absorption, Duality} }
+  }
+  child[concept color=poppurple]{ node {Standard Forms}
+    child[concept color=popblueL]{ node {SOP: minterms} }
+    child[concept color=popblueL]{ node {POS: maxterms} }
+  }
+  child[concept color=poppink]{ node {Algebraic Simplification}
+    child[concept color=popblueL]{ node {Apply laws step by step} }
+  }
+  child[concept color=popgold]{ node {Karnaugh Maps}
+    child[concept color=popblueL]{ node {Groups of 1, 2, 4, 8} }
+    child[concept color=popblueL]{ node {Gray code order} }
+  }
+  child[concept color=popblue]{ node {System Design}
+    child[concept color=popblueL]{ node {Spec $\to$ table $\to$ circuit} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: from Boolean laws to complete logic system design.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item A \cle{Boolean variable} takes only two values: $0$ (false, LOW) or $1$ (true, HIGH). A \cle{Boolean function} $F(A,B,C,\dots)$ associates an output in $\{0,1\}$ to each combination of its input variables.
+\item \cle{Boolean operations}: AND ($A\cdot B$, also written $AB$), OR ($A+B$), NOT ($\bar{A}$); derived gates: NAND ($\overline{A\cdot B}$), NOR ($\overline{A+B}$), XOR ($A\oplus B = \bar{A}B + A\bar{B}$, output $1$ when the inputs differ), XNOR ($\overline{A\oplus B}$, output $1$ when the inputs are equal).
+\item A \cle{truth table} lists the output of a function for all $2^n$ input combinations of $n$ variables (e.g. $8$ rows for $3$ variables, $16$ rows for $4$ variables).
+\item A \cle{literal} is a variable or its complement ($A$ or $\bar{A}$). A \cle{minterm} is a product (AND) containing every variable exactly once, complemented or not; a \cle{maxterm} is a sum (OR) containing every variable exactly once. With $n$ variables there are $2^n$ minterms $m_0,\dots,m_{2^n-1}$ and $2^n$ maxterms $M_0,\dots,M_{2^n-1}$, numbered by the binary value of the row.
+\item \cle{SOP} (Sum of Products): OR of AND terms, e.g. $F=\bar{A}B+AC$. \cle{POS} (Product of Sums): AND of OR terms, e.g. $F=(A+B)(\bar{B}+C)$.
+\item \cle{Canonical form}: every term contains all the variables. Canonical SOP is the OR of the minterms where $F=1$, written $F=\Sigma m(\dots)$; canonical POS is the AND of the maxterms where $F=0$, written $F=\Pi M(\dots)$.
+\item A \cle{Karnaugh map} (K-map) is a graphical truth table whose rows and columns are labelled in \cle{Gray code} so that two adjacent cells differ by exactly one variable.
+\item An \cle{implicant} is a group of adjacent 1-cells; a \cle{prime implicant} cannot be enlarged; an \cle{essential prime implicant} covers at least one 1-cell that no other prime implicant covers.
+\end{itemize}
+
+\textbf{Laws and theorems to know}
+\begin{itemize}
+\item Identity: $A+0=A$, $A\cdot 1=A$; Domination (annulment): $A+1=1$, $A\cdot 0=0$.
+\item Idempotence: $A+A=A$, $A\cdot A=A$; Complement: $A+\bar{A}=1$, $A\cdot\bar{A}=0$; Involution (double negation): $\bar{\bar{A}}=A$.
+\item Commutative: $A+B=B+A$, $AB=BA$; Associative: $(A+B)+C=A+(B+C)$, $(AB)C=A(BC)$.
+\item Distributive: $A(B+C)=AB+AC$ and $A+BC=(A+B)(A+C)$ (the second form has no analogue in ordinary algebra --- learn it).
+\item Absorption: $A+AB=A$; $A(A+B)=A$; and the very useful variant $A+\bar{A}B=A+B$ (provable by distributivity: $A+\bar{A}B=(A+\bar{A})(A+B)=1\cdot(A+B)$).
+\item Consensus: $AB+\bar{A}C+BC=AB+\bar{A}C$ (the term $BC$ is redundant).
+\item \cle{De Morgan's theorems}: $\overline{A+B}=\bar{A}\cdot\bar{B}$ and $\overline{A\cdot B}=\bar{A}+\bar{B}$, extendable to any number of variables: the complement of a sum is the product of the complements, and vice versa.
+\item \cle{Duality principle}: in any valid identity, swapping every $+$ with $\cdot$ and every $0$ with $1$ gives another valid identity (e.g. $A+0=A$ dualises to $A\cdot 1=A$).
+\item Complement of a function: $\bar{F}$ is given by the minterms where $F=0$; equivalently $F=\Sigma m(\text{1-cells})=\Pi M(\text{0-cells})$, and the indices satisfy $\Sigma m(\text{list})=\Pi M(\text{complementary list})$.
+\item NAND and NOR are \cle{universal gates}: any Boolean function can be built from NAND gates alone (or NOR gates alone), using De Morgan to convert SOP into NAND--NAND form.
+\end{itemize}
+
+\textbf{Methods}
+\begin{enumerate}
+\item \textbf{Algebraic simplification}: expand products if needed, factor common literals, then apply absorption, the complement law ($X+\bar{X}=1$), idempotence (a term may be duplicated: $A=A+A$) and De Morgan. Justify \emph{every} step by naming the law used.
+\item \textbf{Truth table $\to$ canonical SOP}: for each row where $F=1$, write the minterm (a variable appears complemented if its value is $0$ in that row, uncomplemented if it is $1$), then OR all the minterms. For canonical POS, take the rows where $F=0$ and write the maxterm of each (a variable appears complemented if its value is $1$), then AND them.
+\item \textbf{K-map minimisation (SOP)}: (a) draw the map with Gray-coded labels $00,01,11,10$; (b) plot the 1s (plot the 0s instead to obtain a POS result); (c) group the 1s into rectangles of $1,2,4,8$ cells (powers of 2 only), as large as possible, remembering that opposite edges are adjacent (wrap-around); (d) cover every 1, selecting all essential prime implicants first; (e) each group yields one product term containing only the literals whose value does not change inside the group; (f) OR the terms.
+\item \textbf{Designing a logic system}: read the specification $\to$ identify the inputs and outputs $\to$ build the truth table $\to$ derive the canonical expression $\to$ minimise it (algebraically or by K-map) $\to$ draw the circuit with logic gates $\to$ verify the circuit against the truth table for a few input combinations.
+\end{enumerate}
+
+\textbf{Worked micro-example (verification habit)}
+\begin{itemize}
+\item Simplify $F=\bar{A}B+AB$. By distributivity $F=B(\bar{A}+A)$; by complement $F=B\cdot 1=B$. Check with the table: $F=1$ exactly when $B=1$ (rows $AB=01$ and $11$), so $F=B$ is confirmed.
+\end{itemize}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Writing $\overline{A+B}=\bar{A}+\bar{B}$: De Morgan \emph{changes the operator} --- the correct form is $\overline{A+B}=\bar{A}\cdot\bar{B}$.
+\item Ordering K-map columns as $00,01,10,11$ (binary counting) instead of the Gray code order $00,01,11,10$; with the wrong order, adjacency is lost and groupings become invalid.
+\item Forgetting that K-map edges wrap around: the first and last columns (and rows) are adjacent, so e.g. cells in columns $00$ and $10$ can be grouped.
+\item Making groups of 3, 5 or 6 cells: only powers of 2 ($1,2,4,8,16$) are allowed.
+\item Confusing minterm and maxterm conventions: for a minterm, complement the variable when its value is $0$; for a maxterm, complement it when its value is $1$.
+\item Reading a K-map group term with a variable that changes value inside the group: such a variable must be eliminated, not kept.
+\item Leaving an expression ``simplified'' while it still contains a redundant consensus term or a term absorbable by $A+AB=A$.
+\item Mixing up XOR and OR: $A\oplus B=1$ requires the inputs to \emph{differ}, whereas $A+B=1$ also holds when both are $1$.
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Always show each simplification step with the law named beside it: method marks are awarded even if the final answer slips.
+\item Check a simplified result by testing one or two input combinations against the truth table --- a one-minute check that catches most errors.
+\item In K-map questions, draw the map neatly with Gray-coded labels, circle the groups clearly, and state the product term corresponding to each group before writing the final sum.
+\item If asked for the cheapest or fastest circuit, count gates and gate inputs: minimisation reduces both the component cost and the propagation delay.
+\item When the question imposes NAND-only (or NOR-only) implementation, take the minimal SOP and apply De Morgan twice rather than redesigning from scratch.
+\item Manage time: a 4-variable K-map should take under five minutes with practice; memorise the Gray code order $00,01,11,10$ so you never hesitate.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}
