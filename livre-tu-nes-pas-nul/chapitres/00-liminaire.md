@@ -6,7 +6,7 @@ Ludovic A.
 
 ---
 
-⟦À COMPLÉTER PAR LUDOVIC : la dédicace, si tu en veux une — à qui, en une ligne⟧
+*À la ministre des Enseignements secondaires.*
 
 ---
 

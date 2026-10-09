@@ -66,6 +66,12 @@ def conv(path):
         para.append(s.strip())
     flush(); flushq()
     return "\n".join(out)
+def dedicace():
+    t=(ROOT/"chapitres"/"00-liminaire.md").read_text(encoding="utf-8")
+    parts=re.split(r"\n---\n",t)
+    d=parts[1].strip() if len(parts)>2 else ""
+    if not d or "⟦" in d: return ""
+    return r"\thispagestyle{empty}\vspace*{0.3\textheight}\begin{flushright}\itshape "+esc(d.strip("*").strip())+r"\end{flushright}\vfill\cleardoublepage"+"\n"
 def front():
     return r"""
 \begin{titlepage}\centering\vspace*{3cm}
@@ -73,7 +79,7 @@ def front():
 {\large\itshape Ce que tes notes ne prouvent pas\par}\vspace{2.2cm}
 {\Large Ludovic A.\par}\vfill{\small manuscrit — version de travail\par}\end{titlepage}
 \thispagestyle{empty}\cleardoublepage
-\thispagestyle{empty}\vspace*{\fill}\begin{center}\itshape On a écrit un mot sur toi.\\Ce n’était pas ton nom.\end{center}\vspace*{\fill}\cleardoublepage
+"""+dedicace()+r"""\thispagestyle{empty}\vspace*{\fill}\begin{center}\itshape On a écrit un mot sur toi.\\Ce n’était pas ton nom.\end{center}\vspace*{\fill}\cleardoublepage
 """
 TEX=r"""\documentclass[10.5pt,twoside,openright]{book}
 \usepackage[a5paper,inner=19mm,outer=15mm,top=20mm,bottom=22mm]{geometry}
