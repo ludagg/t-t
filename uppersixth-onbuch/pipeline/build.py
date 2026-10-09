@@ -35,6 +35,8 @@ SERIES_NOMS = {"US": "Upper Sixth"}
 
 def esc(s):
     """Échappe un texte brut issu du plan (hors segments $...$)."""
+    s = re.sub(r"(?<!\\)\$(?=\d)", lambda _m: "\x00", s)      # « $10,000 » : dollar, pas une formule
+    s = s.replace("\\$", "\x00")
     parts = re.split(r"(\$[^$]*\$)", s)
     out = []
     for i, p in enumerate(parts):
@@ -46,7 +48,7 @@ def esc(s):
                 p = p.replace(c, "\\" + c)
             p = p.replace("^", "\\^{}").replace("~", "\\~{}")
             out.append(p)
-    return "".join(out)
+    return "".join(out).replace("\x00", "\\$")
 
 
 def items(lst):
