@@ -435,6 +435,23 @@ def us_fix(body):
         return re.sub(r"\.out\)", lambda _k: ".output)", t)
     body = re.sub(r"\\begin\{tikzpicture\}.*?\\end\{tikzpicture\}", _gates, body, flags=re.S)
     body = re.sub(r"(?<=[\d(])%(?=[ \t]?[A-Za-z)\d])", lambda _m: "\\%", body)   # % de prose non échappé : (% GDP), 50%x
+    body = re.sub(r"\\og\s*", lambda _m: "``", body)                       # \og ... \fg (guillemets français)
+    body = re.sub(r"\s*\\fg\b\s*", lambda _m: "''", body)
+    body = re.sub(r"\\(begin|end)\{(\w+)>", lambda m: "\\" + m.group(1) + "{" + m.group(2) + "}", body)   # \end{exemplebox>
+    def _lonely_items(text):   # \item sans liste -> itemize
+        L, out, depth, opened = text.split("\n"), [], 0, False
+        for l in L:
+            st = l.strip()
+            if st.startswith("\\item") and depth == 0 and not opened:
+                out.append("\\begin{itemize}"); opened = True
+            elif opened and depth == 0 and (not st or st.startswith("\\end{") or st.startswith("\\tcblower") or (st.startswith("\\begin{") and not st.startswith("\\begin{itemize}") and not st.startswith("\\begin{enumerate}"))):
+                out.append("\\end{itemize}"); opened = False
+            depth += len(re.findall(r"\\begin\{(?:itemize|enumerate|description)\}", l)) - len(re.findall(r"\\end\{(?:itemize|enumerate|description)\}", l))
+            out.append(l)
+        if opened:
+            out.append("\\end{itemize}")
+        return "\n".join(out)
+    body = _lonely_items(body)
     body = re.sub(r"\\clip\[[^\]\n]*\]", lambda _m: "\\clip", body)   # \clip n'accepte pas d'options
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
     body = re.sub(r"\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
@@ -1018,6 +1035,9 @@ def degenerate(t):
         return "caractères d'un autre alphabet"
     if re.search(r"(?:\.[a-z]){6}", t):
         return "charabia"
+    for env in ("exercice", "corrige", "exoresolu", "definition", "propriete", "methode", "exemplebox", "aretenir", "attention"):
+        if t.count("\\begin{%s}" % env) != t.count("\\end{%s}" % env):
+            return "bloc tronqué (environnement %s non fermé)" % env
     if "\\begin{}" in t or "\u0308" in t or "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
         return "marqueurs parasites"
     for l in t.splitlines():
