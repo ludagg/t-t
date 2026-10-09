@@ -390,9 +390,40 @@ def amp_fix(body):
     return "".join(out)
 
 
+def node_lists_fix(body):
+    """Liste (itemize/enumerate) dans un nœud TikZ sans largeur de texte -> ajoute text width."""
+    out, pos = [], 0
+    for m in re.finditer(r"\\node\[([^\]]*)\]", body):
+        if m.start() < pos:
+            continue
+        j = body.find("{", m.end())
+        if j < 0 or ";" in body[m.end():j]:
+            continue
+        depth, k = 0, j
+        while k < len(body):
+            c = body[k]
+            if c == "\\":
+                k += 2
+                continue
+            if c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            k += 1
+        content = body[j:k]
+        if re.search(r"\\begin\{(itemize|enumerate)\}", content) and "text width" not in m.group(1):
+            out.append(body[pos:m.start(1)] + "text width=11cm, align=left, " + m.group(1))
+            pos = m.end(1)
+    out.append(body[pos:])
+    return "".join(out)
+
+
 def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
+    body = node_lists_fix(body)
     body = re.sub(r"\$\$(\\[A-Za-z]+)\$\$", lambda m: "$" + m.group(1) + "$", body)     # $$\rightarrow$$ (dégât ancien)
     body = re.sub(r"(\\(?:textbf|textit|emph)\{[^{}\n]*?)(\\begin\{)", lambda m: m.group(1) + "}" + m.group(2), body)   # accolade non fermée avant un \begin
     body = ce_fix(body)
