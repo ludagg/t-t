@@ -40,9 +40,7 @@ Pendant ces sept jours, occupe-toi de ton corps comme d’un animal qu’on aime
 
 Il arrive qu’après un échec la tristesse change de nature : la nuit ne finit plus, et une idée vient, celle de disparaître, de se faire du mal, de ne plus être là. Si cette idée vient, même une fois, même chassée aussitôt en se retournant sur la natte, alors ce soir même, sans attendre demain, tu en parles à quelqu’un. À ta mère, à ton père, à un adulte de confiance, à un médecin, à un centre de santé. Tu n’as pas besoin de trouver les bons mots ; « j’ai des pensées qui me font peur » suffit.
 
-⟦À COMPLÉTER PAR LUDOVIC : une ligne d'écoute, un service ou une structure d'aide psychologique vérifiés au Cameroun, avec le contact exact à jour⟧
-
-Et si tu ne sais pas vers qui aller, tu peux m’écrire ou m’appeler : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site. Je ne suis ni médecin ni psychologue, et je ne remplace aucun de ceux-là. Mais tu n’auras pas à chercher seule, et je t’aiderai à trouver quelqu’un de qualifié près de chez toi.
+Et si tu ne sais pas vers qui aller, tu peux m’écrire ou m’appeler : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site. Je ne suis ni médecin ni psychologue, et je ne remplace aucun de ceux-là. Mais tu n’auras pas à chercher seule : je te mettrai en contact avec quelqu’un de qualifié.
 
 À ce point, la méthode et le courage n’ont plus rien à faire. C’est l’affaire du soin, et le soin se confie à d’autres que soi. Ton père passe ses journées dans un centre de santé : il sait mieux que moi que ces pensées-là se soignent, et qu’on n’en a pas honte.
 

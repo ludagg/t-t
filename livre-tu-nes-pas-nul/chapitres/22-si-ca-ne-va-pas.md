@@ -10,8 +10,6 @@ Tu n’as pas besoin de trouver les bons mots. « Ça ne va pas, et je ne sais 
 
 Et si le danger est immédiat, si tu sens que tu pourrais te faire du mal ce soir, fais-toi accompagner tout de suite : réveille quelqu’un dans la maison, ou va vers le centre de santé le plus proche.
 
-⟦À COMPLÉTER PAR LUDOVIC : numéros et adresses d'aide psychologique fiables au Cameroun et en Afrique francophone, vérifiés par toi⟧
-
-Tu peux aussi joindre l’auteur de ce livre : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site. Ce n’est ni un service d’urgence ni un service de soin : si le danger est immédiat, va d’abord vers l’adulte ou le centre de santé le plus proche. Mais si tu ne sais pas vers qui aller, écris, et on cherchera ensemble.
+Tu peux aussi joindre l’auteur de ce livre : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site. Ce n’est ni un service d’urgence ni un service de soin : si le danger est immédiat, va d’abord vers l’adulte ou le centre de santé le plus proche. Mais si tu ne sais pas vers qui aller, écris ou appelle : je te mettrai en contact avec quelqu’un de qualifié.
 
 Tu peux montrer cette page à quelqu’un, plutôt que de tout expliquer. C’est aussi à cela qu’elle sert.
