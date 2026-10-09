@@ -51,25 +51,28 @@ def finalize():
 
 
 def llm_repair(ref):
-    """Réparation automatique par le modèle (6 essais), puis suppression du bloc fautif en dernier recours."""
+    """Réparation déterministe (règles autofix, puis suppression de la ligne/du bloc fautif) : aucun appel au modèle."""
     lid, name = ref.split("/")
     d = g.BUILD / lid
-    body = g.autofix((d / f"{name}.rev.tex").read_text())
-    ok, _, _ = g.compile_check(body)
-    if not ok:
-        body, ok = g.compile_fix(body, ref, tries=6)
-        if ok:
-            body = g.autofix(body)
+    ok = False
+    cands = [f for f in (f"{name}.rev.tex", f"{name}.tex") if (d / f).exists() and not g.degenerate((d / f).read_text())]
+    for drop_ in (False, True):          # d'abord sans rien supprimer (relecture puis brut), ensuite avec suppression
+        for src in cands:
+            body = g.autofix((d / src).read_text())
             ok, _, _ = g.compile_check(body)
-    if not ok:
-        body, ok = g.drop_fault(body)
+            if not ok and drop_:
+                body, ok = g.drop_fault(body)
+            if ok:
+                break
+        if ok:
+            break
     if ok and not g.degenerate(body):
         (d / f"{name}.rev.tex").write_text(body)
         (d / f"{name}.ok.tex").write_text(body)
         (d / f"{name}.err").unlink(missing_ok=True)
-        print(f"✔ {ref} réparé")
+        print(f"✔ {ref} corrigé")
     else:
-        print(f"✗ {ref} : réparation impossible")
+        print(f"✗ {ref} : correction impossible")
 
 
 def drop(ref):

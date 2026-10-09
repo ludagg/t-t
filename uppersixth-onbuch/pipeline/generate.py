@@ -363,11 +363,34 @@ def repair_damage(body):
     return body
 
 
+_AMP_PROT = re.compile("|".join([
+    r"\\begin\{(tabular\*?|tabularx|array|align\*?|aligned|alignedat|gather\*?|multline\*?|matrix|pmatrix|bmatrix|vmatrix|cases|split|eqnarray\*?|tikzpicture|axis)\}.*?\\end\{\1\}",
+    r"\$\$.*?\$\$", r"\$[^$]*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
+    r"\\ce" + _BR, r"\\[&_^%#$]", r"%[^\n]*",
+]), re.S)
+
+
+def amp_fix(body):
+    """& nu hors tableau/alignement -> \\&."""
+    if len(re.findall(r"(?<!\\)\$", body)) % 2:
+        return body
+    out, pos = [], 0
+    for m in _AMP_PROT.finditer(body):
+        out.append(re.sub(r"(?<!\\)&", lambda _k: "\\&", body[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(re.sub(r"(?<!\\)&", lambda _k: "\\&", body[pos:]))
+    return "".join(out)
+
+
 def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
+    body = re.sub(r"\$\$(\\[A-Za-z]+)\$\$", lambda m: "$" + m.group(1) + "$", body)     # $$\rightarrow$$ (dégât ancien)
+    body = re.sub(r"(\\(?:textbf|textit|emph)\{[^{}\n]*?)(\\begin\{)", lambda m: m.group(1) + "}" + m.group(2), body)   # accolade non fermée avant un \begin
     body = ce_fix(body)
     body = text_scripts_fix(body)
+    body = amp_fix(body)
     def _fmt(m):  # ^ / _ dans \textbf/\emph/\textit (y compris dans les nœuds TikZ)
         inner = m.group(2)[1:-1]
         if "$" in inner or "\\" in inner:
@@ -992,8 +1015,9 @@ def degenerate(t):
     return None
 
 
-def drop_fault(body, tries=4):
-    """Dernier recours : supprime le bloc fautif (figure, tableau) pour que le reste du texte compile."""
+def drop_fault(body, tries=8):
+    """Correction déterministe de dernier recours (sans modèle) : supprime la ligne fautive, ou à défaut le bloc
+    (figure, tableau, paragraphe) qui la contient, pourvu que \\begin/\\end restent équilibrés."""
     for _ in range(tries):
         ok, err, line = compile_check(body)
         if ok:
@@ -1001,11 +1025,15 @@ def drop_fault(body, tries=4):
         if line is None:
             return body, False
         lines = body.splitlines()
-        a, b = fault_span(lines, line)
-        frag = "\n".join(lines[a:b])
-        if not re.search(r"\\begin\{(popfigure|tikzpicture|tabularx|tabular|center|axis)\}", frag):
-            return body, False
-        lines[a:b] = ["% (figure ou tableau supprimé : erreur de compilation)"]
+        txt = lines[line - 1]
+        if not re.search(r"\\(begin|end)\{", txt) and txt.strip() and not txt.strip().startswith("%"):
+            lines[line - 1] = "% (ligne supprimée : erreur de compilation)"
+        else:
+            a, b = fault_span(lines, line)
+            frag = "\n".join(lines[a:b])
+            if len(re.findall(r"\\begin\{", frag)) != len(re.findall(r"\\end\{", frag)):
+                return body, False
+            lines[a:b] = ["% (bloc supprimé : erreur de compilation)"]
         body = "\n".join(lines)
     ok, _, _ = compile_check(body)
     return body, ok
@@ -1058,7 +1086,7 @@ Do not shorten the content: the final version must be at least as rich. Reply on
         rev_f.write_text(rev)
     body = autofix(rev_f.read_text())
     ok, err, line = compile_check(body)
-    if not ok and os.environ.get("LLM_FIX", "1") == "1":
+    if not ok and os.environ.get("LLM_FIX", "0") == "1":
         log(f"  ↻ réparation par le modèle {L['id']}/{name}")
         body2, ok2 = compile_fix(body, f"{L['id']}/{name}", tries=4)
         if ok2 and not degenerate(body2):
