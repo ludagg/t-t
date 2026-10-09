@@ -1,0 +1,2083 @@
+% Description of peripheral device control mechanism — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT09-description-of-peripheral-device-control-mechanism.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{9}
+\newcommand{\DOCTITRE}{Description of peripheral device control mechanism}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Description of peripheral device control mechanism}{ICT}{Upper Sixth}{Upper Sixth — ICT}{9}{1 periods}{This chapter explains how the processor controls peripheral devices: the role of device controllers and drivers, and the three great control mechanisms — programmed I/O (polling), interrupt-driven I/O and Direct Memory Access (DMA). It equips the learner to compare these techniques and to relate them to the everyday behaviour of a computer system.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can define a peripheral device and classify peripherals as input, output, storage and communication devices.
+\item By the end of this chapter I can explain why the CPU cannot manage peripherals directly and needs control mechanisms.
+\item By the end of this chapter I can describe the role and structure of a device controller (interface adapter).
+\item By the end of this chapter I can explain the function of a device driver in the operating system.
+\item By the end of this chapter I can describe the programmed I/O (polling) mechanism, its steps and its limitations.
+\item By the end of this chapter I can describe the interrupt-driven I/O mechanism and the role of the Interrupt Service Routine (ISR).
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Peripherals, Controllers and the Need for Control Mechanisms
+\item Programmed I/O (Polling)
+\item Interrupt-Driven I/O
+\item Direct Memory Access (DMA) and Comparison of Mechanisms
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can define a peripheral device and classify peripherals as input, output, storage and communication devices.
+\item By the end of this chapter I can explain why the CPU cannot manage peripherals directly and needs control mechanisms.
+\item By the end of this chapter I can describe the role and structure of a device controller (interface adapter).
+\item By the end of this chapter I can explain the function of a device driver in the operating system.
+\item By the end of this chapter I can describe the programmed I/O (polling) mechanism, its steps and its limitations.
+\item By the end of this chapter I can describe the interrupt-driven I/O mechanism and the role of the Interrupt Service Routine (ISR).
+\item By the end of this chapter I can describe Direct Memory Access (DMA) and the role of the DMA controller.
+\item By the end of this chapter I can compare polling, interrupts and DMA in terms of CPU involvement, speed and suitable applications.
+\item By the end of this chapter I can identify the control mechanism used in common real-life situations (printing, disk transfer, keyboard input).
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Structure and functioning of a computer: CPU, memory, buses (Lower Sixth)
+\item Von Neumann architecture and the fetch–decode–execute cycle
+\item Input/output units and examples of peripheral devices
+\item Basic role of the operating system as resource manager
+\item Notion of data transfer over address, data and control buses
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Peripherals, Controllers and the Need for Control Mechanisms}
+
+At a busy cybercafé in Buea, the attendant prints an exam paper, copies files from a USB flash drive, and answers a WhatsApp call on the same computer — all at once. How does a single CPU manage the keyboard, printer, disk and network card without losing a single keystroke or mixing up the printout? Why does the computer sometimes \emph{freeze} when a faulty flash drive is inserted? The answer lies in the mechanisms the processor uses to control peripheral devices. This chapter unveils how the CPU communicates with, supervises and synchronises all the devices connected to it.
+
+\courssub{What Is a Peripheral Device?}
+
+\begin{definition}[Peripheral Device]
+A \cle{peripheral device} (or simply \cle{peripheral}) is any hardware component connected to a computer system that expands its capabilities but is \emph{not} part of the core architecture (CPU, main memory, motherboard chipset). Peripherals communicate with the CPU through a standardised interface and are typically located outside the main system unit, though some (like internal hard disks or graphics cards) reside inside the case.
+\end{definition}
+
+Peripherals are classified by the direction of data flow relative to the computer:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Category} & \textbf{Description} & \textbf{Cameroonian Examples} \\ \hline
+\textbf{Input} & Send data \emph{to} the computer. & Keyboard, mouse, scanner (scanning GCE registration forms), microphone (recording voice notes for WhatsApp), webcam. \\ \hline
+\textbf{Output} & Receive data \emph{from} the computer. & Monitor (viewing results on \texttt{www.gceboard.cm}), printer (printing admission letters), speakers, projector. \\ \hline
+\textbf{Input/Output (Storage)} & Both send and receive data; retain data without power. & USB flash drive (carrying past questions), external hard disk, SSD, SD card (in a camera covering Mount Cameroon). \\ \hline
+\textbf{Communication} & Exchange data with \emph{other} systems/networks. & Modem (MTN/Orange 4G router), Network Interface Card (NIC), Bluetooth adapter, Wi-Fi dongle. \\ \hline
+\end{tabularx}
+\end{center}
+
+\courssub{The Speed Mismatch Problem}
+
+The fundamental challenge in peripheral control is the enormous speed gap between the CPU and peripheral devices.
+
+\begin{itemize}
+    \item \textbf{CPU speed:} Modern processors run at \SIrange{2}{4}{GHz} — one clock cycle every \SI{0.25}{ns} to \SI{0.5}{ns}. Instructions execute in nanoseconds.
+    \item \textbf{Peripheral speed:} Mechanical devices (printers, disks) operate in \emph{milliseconds} (\SI{e-3}{s}). Even fast serial interfaces (USB 3.0, SATA) transfer data in microseconds (\SI{e-6}{s}) per block.
+\end{itemize}
+
+\[
+\text{Speed ratio} \approx \frac{\SI{1}{ms}}{\SI{1}{ns}} = 10^6
+\]
+
+The CPU is roughly \textbf{one million times faster} than a typical peripheral. If the CPU managed a device directly — waiting for a printer to finish a line before sending the next — it would spend 99.9999\% of its time \emph{idle}, a colossal waste of processing power.
+
+\begin{savaistu}[The Professor and the Photocopier]
+Imagine a professor (CPU) who can read a page in one second. He sends a 100-page document to a slow photocopier (peripheral) that takes 10 seconds per page. If the professor stands by the machine waiting for each page to finish before feeding the next, he wastes 1000 seconds doing nothing. A smart professor gives the job to an assistant (controller) and returns to research while the copier works.
+\end{savaistu}
+
+\courssub{Diversity of Peripherals and the Need for Standardised Interfaces}
+
+Beyond speed, peripherals differ wildly in:
+\begin{itemize}
+    \item \textbf{Data format:} Parallel (old printer port) vs. serial (USB, SATA); ASCII text vs. raw binary blocks.
+    \item \textbf{Voltage levels:} TTL (\SI{5}{V}/\SI{3.3}{V}), RS-232 (\SI{\pm 12}{V}), USB differential (\SI{\pm 400}{mV}).
+    \item \textbf{Protocols:} Handshaking signals (STROBE, ACK, BUSY), packet framing (USB), error correction (Wi-Fi).
+\end{itemize}
+
+The CPU cannot possibly speak every language. We need a \textbf{hardware intermediary} that presents a \emph{uniform, simple interface} to the system bus (address, data, control lines) while handling the device-specific electrical and protocol details on the other side. That intermediary is the \cle{device controller}.
+
+\courssub{The Device Controller (Interface Adapter)}
+
+\begin{definition}[Device Controller / Interface Adapter]
+A \cle{device controller} (also called an \cle{interface adapter}) is an electronic circuit — a chip or a small printed circuit board — that sits between the \cle{system bus} and a \cle{peripheral device}. Its role is to:
+\begin{enumerate}
+    \item Translate bus signals (voltage, timing, width) into device signals.
+    \item Buffer data to absorb speed differences.
+    \item Report device state (ready, error) to the CPU.
+    \item Execute commands (read, write, reset) issued by the CPU.
+\end{enumerate}
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    box/.style={draw=popdark, thick, rounded corners, fill=white, minimum height=1.2cm, text width=2.2cm, align=center, font=\small},
+    bus/.style={draw=popblue, very thick, -{Stealth[length=3mm]}},
+    reg/.style={draw=poporange, fill=poporange!10, rounded corners, minimum height=0.7cm, text width=1.8cm, align=center, font=\small\ttfamily},
+    node distance=1.2cm and 1.5cm
+]
+\node[box] (cpu) {CPU};
+\node[box, right=of cpu, align=center] (bus){System Bus\\(Address, Data, Control)};
+\node[box, right=of bus, fill=popblueL] (ctrl) {Device Controller};
+\node[box, right=of ctrl, fill=popgreenL] (dev) {Peripheral Device};
+
+% Registers inside controller
+\node[reg, above=0.2cm of ctrl.north east, anchor=south west, xshift=-1.9cm] (dr) {Data Register};
+\node[reg, right=0.3cm of dr] (sr) {Status Register};
+\node[reg, right=0.3cm of sr] (cr) {Control Register};
+
+% Connections
+\draw[bus] (cpu) -- node[above, font=\tiny] {Address / Control} (bus);
+\draw[bus, <->] (bus) -- node[above, font=\tiny] {Data Bus} (ctrl);
+\draw[bus, <->] (ctrl) -- node[above, font=\tiny] {Device Cable} (dev);
+
+% Internal connections (conceptual)
+\draw[popmuted, dashed] (dr.south) -- ++(0,-0.3) -| (ctrl.north);
+\draw[popmuted, dashed] (sr.south) -- ++(0,-0.3) -| (ctrl.north);
+\draw[popmuted, dashed] (cr.south) -- ++(0,-0.3) -| (ctrl.north);
+
+% Labels - avoid calc library
+\node[font=\tiny, text=popdark, align=center] at (5.5, 2.8) {Controller Internal Registers};
+\end{tikzpicture}
+\legende{Block diagram: CPU — System Bus — Device Controller (with its three registers) — Peripheral.}
+\end{popfigure}
+
+\courssub{Internal Structure of a Controller}
+
+Every controller contains at least three registers, each mapped to a unique \cle{I/O port address} (or memory address in memory-mapped I/O):
+
+\begin{description}
+    \item[\cle{Data Register (DR)}] Holds the byte/word being transferred. \textbf{Read/Write} by CPU. Example: the ASCII code of a character to print.
+    \item[\cle{Status Register (SR)}] Contains \emph{flags} reflecting the device state. \textbf{Read-only} for CPU. Typical bits:
+    \begin{itemize}
+        \item Bit 0: \texttt{BUSY} (1 = device working, 0 = idle).
+        \item Bit 1: \texttt{READY} / \texttt{DATA\_VALID} (1 = data available in DR).
+        \item Bit 2: \texttt{ERROR} (1 = paper jam, CRC error, etc.).
+    \end{itemize}
+    \item[\cle{Control Register (CR)}] Receives \emph{commands} from the CPU. \textbf{Write-only} for CPU. Typical bits:
+    \begin{itemize}
+        \item Bit 0: \texttt{START} / \texttt{READ\_WRITE} (trigger transfer).
+        \item Bit 1: \texttt{INT\_ENABLE} (allow device to request interrupt).
+        \item Bit 2: \texttt{RESET} (re-initialise device).
+    \end{itemize}
+\end{description}
+
+\begin{methode}[Identifying the Role of Each Controller Register]
+When analysing a controller description or exam question:
+\begin{enumerate}
+    \item \textbf{Data Register:} Its content \emph{changes with the actual information} being moved (characters, pixels, sectors). It is the only register whose value is \emph{meaningful to the application}.
+    \item \textbf{Status Register:} You \emph{read} it to \emph{ask a question} (``Are you ready?'', ``Did an error occur?''). Its bits are \emph{flags}, not data values.
+    \item \textbf{Control Register:} You \emph{write} to it to \emph{give an order} (``Start printing'', ``Enable interrupt''). Its bits are \emph{command triggers}.
+\end{enumerate}
+\textbf{Mnemonic:} \textbf{D}ata = \textbf{D}elivery; \textbf{S}tatus = \textbf{S}py (read only); \textbf{C}ontrol = \textbf{C}ommand (write only).
+\end{methode}
+
+\courssub{The Device Driver: The Software Layer}
+
+Hardware alone is not enough. The operating system needs a standard way to ask ``write this block'' without knowing whether the target is an HP LaserJet, an Epson inkjet, or a network printer.
+
+\begin{definition}[Device Driver]
+A \cle{device driver} is a \emph{system software} module (part of the OS kernel or loadable) that translates \cle{generic, device-independent I/O requests} from the operating system into \cle{device-specific command sequences} written into the controller's registers. It knows the exact register layout, command codes, timing requirements and error codes of one specific device model or family.
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+    layer/.style={draw=popdark, thick, rounded corners, fill=white, minimum height=1.1cm, text width=2.8cm, align=center, font=\small},
+    arrow/.style={-{Stealth[length=2.5mm]}, thick, popblue},
+    node distance=0.8cm
+]
+\node[layer, fill=poppink!20, align=center] (app){User Application\\(e.g. LibreOffice Writer)};
+\node[layer, fill=popblueL, below=of app, align=center] (os){Operating System Kernel\\(I/O Subsystem: \texttt{write()}, \texttt{read()})};
+\node[layer, fill=poporange!20, below=of os, align=center] (drv){Device Driver\\(e.g. \texttt{hp\_laserjet\_driver.ko})};
+\node[layer, fill=popgreenL, below=of drv, align=center] (ctrl){Device Controller Registers\\(Data, Status, Control @ Port Addresses)};
+\node[layer, fill=popgold!20, below=of ctrl, align=center] (dev){Physical Peripheral\\(HP LaserJet Pro MFP)};
+
+\draw[arrow] (app) -- node[right, font=\tiny, text=popdark] {System Call} (os);
+\draw[arrow] (os) -- node[right, font=\tiny, text=popdark] {Generic Request} (drv);
+\draw[arrow] (drv) -- node[right, font=\tiny, text=popdark] {Register Writes/Reads} (ctrl);
+\draw[arrow] (ctrl) -- node[right, font=\tiny, text=popdark] {Electrical Signals} (dev);
+\end{tikzpicture}
+\legende{Layered software/hardware stack: Application $\to$ OS $\to$ Driver $\to$ Controller $\to$ Device.}
+\end{popfigure}
+
+\begin{exemplebox}[Why Does Every Printer Need Its Own Driver?]
+An HP LaserJet understands \cle{PCL (Printer Command Language)}; an Epson understands \cle{ESC/P}. The OS sends a generic \texttt{print\_page(buffer)} request. The HP driver converts the buffer into PCL escape sequences, writes them byte-by-byte into the controller's Data Register, sets the Control Register \texttt{START} bit, and polls the Status Register \texttt{BUSY} bit. The Epson driver does the same but emits ESC/P codes. Without the correct driver, the printer receives gibberish.
+\end{exemplebox}
+
+\begin{attention}[Driver vs. Controller — Classic Exam Trap]
+\begin{itemize}
+    \item \textbf{Device Controller} = \textbf{Hardware} (silicon chip, PCB). Physically connected to the bus and the device cable. \emph{Cannot be downloaded.}
+    \item \textbf{Device Driver} = \textbf{Software} (file \texttt{.sys}, \texttt{.ko}, \texttt{.inf}). Stored on disk, loaded into RAM by the OS. \emph{Can be updated/downloaded.}
+\end{itemize}
+\textbf{Wrong:} ``I installed the controller from the CD.'' \quad \textbf{Right:} ``I installed the \emph{driver} from the CD.''
+\end{attention}
+
+\courssub{Overview of the Three Control Mechanisms}
+
+Now that we have the hardware (controller) and the low-level software (driver), how does the CPU actually orchestrate the transfer? Three mechanisms exist, differing in \emph{CPU involvement} and \emph{efficiency}:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\rowcolor{popblueL}
+\textbf{Mechanism} & \textbf{CPU Role} & \textbf{Efficiency} & \textbf{Typical Use} \\ \hline
+\textbf{1. Programmed I/O (Polling)} & CPU \emph{actively loops}, reading Status Register until device is ready. & Very low (CPU wasted). & Simple, slow devices; boot loaders; tiny microcontrollers. \\ \hline
+\textbf{2. Interrupt-Driven I/O} & CPU \emph{does other work}; device sends \cle{interrupt request (IRQ)} when ready. CPU runs \cle{ISR (Interrupt Service Routine)}. & High for slow/sporadic devices. & Keyboard, mouse, serial ports, network packets, printer ``job done''. \\ \hline
+\textbf{3. Direct Memory Access (DMA)} & CPU \emph{sets up} transfer (address, count, direction), then \emph{disengages}. DMA controller moves data directly between device and RAM. & Highest for bulk transfers. & Disk I/O (SATA/NVMe), USB 3.0, sound cards, GPU frame buffers. \\ \hline
+\end{tabularx}
+\end{center}
+
+The rest of this chapter explores each mechanism in depth, with timing diagrams, interrupt vector tables and DMA controller registers.
+
+\begin{aretenir}[Key Points of Section 1]
+\begin{itemize}
+\item A \textbf{peripheral} extends the computer; classified as Input, Output, Storage (I/O) or Communication.
+\item The \textbf{speed mismatch} (CPU ns vs device ms) makes direct CPU control impossible.
+\item The \textbf{device controller} (hardware) bridges the bus and the device; it contains \textbf{Data}, \textbf{Status} and \textbf{Control} registers mapped to \textbf{I/O port addresses}.
+\item The \textbf{device driver} (software) translates OS generic calls into controller-specific register operations.
+\item Three control mechanisms exist: \textbf{Programmed I/O}, \textbf{Interrupt-Driven I/O}, \textbf{DMA} — increasing in efficiency and hardware complexity.
+\end{itemize}
+\end{aretenir}
+
+\begin{exoresolu}[Identifying Controller Registers in a Scenario]
+\textbf{Statement:} A temperature sensor controller has three 8-bit registers at port addresses \texttt{0x300}, \texttt{0x301}, \texttt{0x302}. The driver code reads:
+\begin{center}
+\begin{tabular}{l}
+\texttt{while ((inb(0x301) \& 0x01) == 0) ; // wait}\\
+\texttt{char temp = inb(0x300);}\\
+\texttt{outb(0x302, 0x04); // start next conversion}
+\end{tabular}
+\end{center}
+Identify which port is the Data, Status and Control Register. Justify.
+
+\tcblower
+\textbf{Detailed Solution:}
+\begin{enumerate}
+    \item \texttt{inb(0x301) \& 0x01} reads a register and tests bit 0 in a loop (``wait while bit 0 is 0''). This is \textbf{polling a status flag} (e.g., \texttt{READY} or \texttt{BUSY}). $\Rightarrow$ \textbf{Port 0x301 = Status Register (Read-only)}.
+    \item \texttt{inb(0x300)} reads a value into variable \texttt{temp}. This value \emph{is the measured temperature} --- the actual data. $\Rightarrow$ \textbf{Port 0x300 = Data Register (Read-only for input device)}.
+    \item \texttt{outb(0x302, 0x04)} writes the constant \texttt{0x04} (binary \texttt{00000100}) to a register. This \emph{commands} the device (bit 2 set = \texttt{START\_CONVERSION}). $\Rightarrow$ \textbf{Port 0x302 = Control Register (Write-only)}.
+\end{enumerate}
+\textbf{Answer:} 0x300 = Data Register, 0x301 = Status Register, 0x302 = Control Register.
+\end{exoresolu}
+
+\coursec{Programmed I/O (Polling)}
+
+In the previous section we saw that every peripheral device is attached to the system through a \cle{controller} (or device interface) which exposes a small set of \cle{registers} to the CPU: a \textbf{status register} (readable, tells whether the device is ready, busy or in error), a \textbf{data register} (where the data to be transferred is placed or read), and a \textbf{command register} (writable, used to start an operation). We also saw that the fundamental question of input/output management is: \emph{who does the work of the transfer, and how does the CPU know when the device is ready?} The simplest possible answer to that question is the subject of this section: let the CPU do \emph{everything}, and let it \emph{ask} the device, again and again, whether it is ready. This mechanism is called \cle{programmed I/O}, and its waiting technique is called \cle{polling} or \cle{busy-waiting}.
+
+\courssub{Intuition: the shopkeeper who keeps checking the door}
+
+Imagine a photocopy shop in Buea. The shopkeeper must deliver a document to a customer who said: ``I will knock when I arrive.'' Two strategies are possible. In the first, the shopkeeper stops all other work, stands at the door, opens it every few seconds and asks ``Are you there?'' until the customer finally arrives. In the second, the shopkeeper continues serving other customers and simply reacts when the knock comes. The first strategy is \textbf{polling}: simple, requiring no bell or doorbell (no extra hardware), but the shopkeeper's time is entirely wasted while waiting. The second strategy is the \emph{interrupt-driven} approach we shall study in the next section.
+
+A computer behaves exactly like the first shopkeeper when it uses programmed I/O: the CPU executes a small loop that reads the device's status register over and over --- ``ready? ready? ready?'' --- until the device finally answers ``yes''. During all that time, the CPU can do \emph{nothing else}.
+
+\begin{definition}[Programmed I/O, polling, busy-waiting]
+\cle{Programmed I/O} is a peripheral control mechanism in which the \textbf{CPU executes the entire data transfer itself}, word by word, by explicitly reading and writing the registers of the device controller, under the control of an I/O program.
+
+\cle{Polling} (also called \cle{busy-waiting}) is the waiting technique used in programmed I/O: the CPU \textbf{repeatedly reads the status register} of the controller in a loop until the ``ready'' flag indicates that the device can accept (or supply) the next unit of data. While polling, the CPU is \emph{busy doing nothing useful} --- hence the name busy-waiting.
+\end{definition}
+
+\courssub{The polling loop: principle and flowchart}
+
+The heart of programmed I/O is a very short loop with three logical steps:
+
+\begin{enumerate}
+\item \textbf{Read} the status register of the controller.
+\item \textbf{Test} the ready bit. If the device is \emph{not} ready, go back to step 1 (this is the waiting loop).
+\item When the device \emph{is} ready, \textbf{transfer} one unit of data (one byte or one word) by writing to (or reading from) the data register, then possibly write to the command register to signal the transfer. If more data remains, go back to step 1 for the next unit.
+\end{enumerate}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[node distance=0.9cm, >=stealth, thick]
+\node[draw=popblue, fill=popblueL, rounded corners, text width=3.4cm, align=center] (start) {\textbf{Start}: CPU needs to send/receive data};
+\node[draw=popink, fill=white, rounded corners, text width=3.6cm, align=center, below=of start] (read) {Read \textbf{status register} of controller};
+\node[draw=poporange, fill=white, diamond, aspect=2.2, align=center, below=of read] (test) {Device \textbf{ready}?};
+\node[draw=popgreen, fill=popgreenL, rounded corners, text width=3.8cm, align=center, below=of test, yshift=-0.3cm] (transfer) {Transfer one word via \textbf{data register}; signal via command register};
+\node[draw=popink, fill=white, diamond, aspect=2.2, align=center, below=of transfer] (more) {More data?};
+\node[draw=popdark, fill=white, rounded corners, below=of more] (end) {\textbf{End}: transfer complete};
+\draw[->] (start) -- (read);
+\draw[->] (read) -- (test);
+\draw[->] (test) -- node[right]{yes} (transfer);
+\draw[->] (test.east) -- node[above]{no} ++(2.2,0) |- (read.east);
+\draw[->] (transfer) -- (more);
+\draw[->] (more) -- node[right]{no} (end);
+\draw[->] (more.west) -- node[above]{yes} ++(-2.2,0) |- (read.west);
+\end{tikzpicture}
+\end{center}
+\legende{Flowchart of the polling loop in programmed I/O. The ``no'' branch from the ready test is the busy-waiting loop: the CPU consumes time without doing useful work.}
+\end{popfigure}
+
+\begin{propriete}[Total CPU involvement]
+In programmed I/O, the CPU is involved in \textbf{100\,\% of the transfer}: it executes one instruction (or more) for \emph{every} status check and for \emph{every} word transferred. No data ever moves between memory and the device without passing through the CPU, and no waiting happens without consuming CPU cycles. (This property is directly examinable: it is the basis of the comparison with interrupt-driven I/O and DMA.)
+\end{propriete}
+
+\courssub{Worked scenario: printing a character by polling}
+
+Let us follow, step by step, what happens when a program prints the single character \texttt{'A'} on a printer using programmed I/O. Suppose the printer controller has a status register whose bit 0 is the \emph{ready} flag (1 = printer can accept a character, 0 = busy).
+
+\begin{methode}[Describing a programmed I/O transfer step by step]
+To describe any programmed I/O transfer in an examination, always follow these numbered steps:
+\begin{enumerate}
+\item \textbf{Initialise}: the CPU writes a command into the command register if the device must be prepared (e.g. select the printer).
+\item \textbf{Poll}: the CPU reads the status register and tests the ready bit.
+\item \textbf{Wait if busy}: if the device is not ready, repeat step 2 (busy-waiting loop).
+\item \textbf{Transfer}: when ready, the CPU writes one byte/word into the data register (output) or reads one byte/word from it (input).
+\item \textbf{Signal}: the CPU writes to the command register to tell the controller to act on the data (e.g. ``print the character'').
+\item \textbf{Repeat}: if more data remains, return to step 2 for the next unit; otherwise the transfer is complete.
+\end{enumerate}
+\end{methode}
+
+\begin{exemplebox}[Printing \texttt{'A'} by polling]
+\begin{enumerate}
+\item The CPU reads the printer status register: ready bit $= 0$ (the printer is still finishing the previous line). The CPU loops: read, test, read, test\ldots\ perhaps \emph{millions} of times.
+\item After some milliseconds, the ready bit becomes $1$.
+\item The CPU writes the code of \texttt{'A'} (65 in ASCII) into the data register.
+\item The CPU writes ``print'' into the command register; the controller clears the ready bit and starts printing.
+\item To print the next character, the CPU returns to step 1.
+\end{enumerate}
+A full page of about 3\,000 characters therefore requires 3\,000 polling loops, each possibly containing thousands of useless status reads.
+\end{exemplebox}
+
+\courssub{Where the CPU time goes: a timeline}
+
+The inefficiency of polling becomes striking when we compare the speed of the CPU with the speed of a mechanical device. A modern CPU executes billions of instructions per second, while a printer may print only a few hundred characters per second. Almost all the transfer time is therefore spent \emph{waiting}.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, >=stealth]
+\draw[->, thick] (0,0) -- (12.5,0) node[right]{time};
+\draw[fill=poporange!40, draw=poporange] (0,0) rectangle (0.6,0.7);
+\node[below, text width=1.6cm, align=center] at (0.3,0) {poll: not ready};
+\draw[fill=poporange!40, draw=poporange] (0.6,0) rectangle (3.4,0.7);
+\node[below, text width=2.6cm, align=center] at (2.0,0) {busy-waiting loop (CPU wasted)};
+\draw[fill=poporange!40, draw=poporange] (3.4,0) rectangle (8.2,0.7);
+\node[below, text width=3.2cm, align=center] at (5.8,0) {still polling\ldots\ thousands of status reads};
+\draw[fill=popgreen!40, draw=popgreen] (8.2,0) rectangle (8.7,0.7);
+\node[below, text width=1.8cm, align=center] at (8.45,0) {write data};
+\draw[fill=popblue!40, draw=popblue] (8.7,0) rectangle (9.0,0.7);
+\node[below, text width=1.6cm, align=center] at (8.85,-0.9) {signal};
+\draw[fill=poporange!40, draw=poporange] (9.0,0) rectangle (12.2,0.7);
+\node[below, text width=2.8cm, align=center] at (10.6,0) {poll again for next character};
+\draw[decorate, decoration={brace, amplitude=5pt}, thick, popdark] (0,0.85) -- (8.2,0.85);
+\node[above, popdark] at (4.1,1.15) {CPU wasted (about 99.9\,\% of the time)};
+\draw[decorate, decoration={brace, amplitude=5pt}, thick, popgreen] (8.2,-1.7) -- (9.0,-1.7);
+\node[below, popgreen] at (8.6,-2.0) {useful work};
+\end{tikzpicture}
+\end{center}
+\legende{Timeline of one character printed by polling. The useful work (writing the data and signalling) is a tiny fraction of the total time; the rest is busy-waiting.}
+\end{popfigure}
+
+\begin{exoresolu}[CPU time wasted by polling]
+A CPU executes $10^{9}$ instructions per second. A printer accepts one character every $5\ \mathrm{ms}$. Printing one character by polling requires: one status read + test every loop iteration (2 instructions per iteration), and 10 useful instructions to write the data and signal once the device is ready. Estimate the number of instructions executed to print one character, and the percentage that is wasted.
+\tcblower
+\textbf{Solution.} During $5\ \mathrm{ms} = 5 \times 10^{-3}\ \mathrm{s}$, the CPU can execute
+\[
+N = 10^{9} \times 5 \times 10^{-3} = 5 \times 10^{6} \text{ instructions.}
+\]
+Almost all of these are polling iterations: about $\dfrac{5 \times 10^{6}}{2} = 2.5 \times 10^{6}$ loop iterations of 2 instructions each, plus the 10 useful instructions at the end. The wasted fraction is
+\[
+\frac{5 \times 10^{6} - 10}{5 \times 10^{6}} \approx 99.9998\ \%.
+\]
+\textbf{Conclusion:} virtually \emph{all} the CPU time is consumed by the waiting loop. With interrupt-driven I/O or DMA, these 5 million instruction slots could have been used to run other programs.
+\end{exoresolu}
+
+\courssub{Advantages and disadvantages of programmed I/O}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Aspect} & \textbf{Explanation} \\
+\hline
+Advantage: simplicity & The I/O program is a short loop; easy to write, easy to understand, easy to debug. \\
+\hline
+Advantage: no extra hardware & No interrupt controller, no DMA controller is needed; the cheapest possible design. \\
+\hline
+Advantage: predictability & The CPU controls every instant of the transfer; timing is fully deterministic, which matters in some real-time systems. \\
+\hline
+Disadvantage: wasted CPU time & The busy-waiting loop consumes CPU cycles that could serve other programs; catastrophic with slow devices (printers, keyboards, disks). \\
+\hline
+Disadvantage: poor multitasking & While polling one device, the CPU cannot run other processes; the whole machine appears to ``freeze''. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{savaistu}[The ``frozen'' computer]
+When an old computer seems to freeze completely while printing, or when a simple program stops responding while reading from a slow device, you are very often observing the symptom of busy-waiting: the CPU is trapped in a polling loop and cannot even update the screen or react to the mouse. Modern operating systems avoid this for slow devices by using interrupts and DMA --- which is exactly the subject of the next sections.
+\end{savaistu}
+
+\courssub{When is polling acceptable?}
+
+Polling is not a ``bad'' mechanism; it is simply a mechanism whose cost must match the situation. It remains the right choice in several typical cases:
+
+\begin{itemize}
+\item \textbf{Very fast devices}: if the device is almost always ready (e.g. a high-speed device register on the same board), the loop exits immediately and polling is cheaper than managing interrupts.
+\item \textbf{Simple embedded systems}: a microwave oven controller or a simple sensor reader has only one task; there is nothing else for the CPU to do, so wasting its time costs nothing.
+\item \textbf{Critical real-time loops}: when a reaction must occur within a guaranteed, extremely short delay (e.g. an emergency stop on a machine), polling gives a deterministic response, whereas interrupts introduce small, variable delays.
+\item \textbf{Boot code and diagnostics}: before an operating system is loaded, firmware often uses polling because interrupt mechanisms are not yet configured.
+\end{itemize}
+
+\begin{attention}[Common mistake: ``polling is wrong'']
+Do not write in an examination that polling is an ``incorrect'' or ``useless'' mechanism. Polling is \emph{correct} --- the data is transferred reliably --- it is simply \textbf{inefficient for slow devices and multitasking environments}. For fast devices, dedicated embedded systems and hard real-time constraints, polling is often the \emph{best} choice. The examinable skill is to \emph{justify} the choice of mechanism according to the device speed and the system context, not to condemn polling absolutely.
+\end{attention}
+
+\begin{exercice}[Analysing a polling situation]
+A point-of-sale terminal in a Douala supermarket reads barcodes with a scanner. The scanner controller has a status register (bit 0 = ``a code has been scanned'') and a data register.
+\begin{enumerate}
+\item Describe, in numbered steps, how the terminal reads one barcode using programmed I/O.
+\item Give one reason why polling is acceptable here, and one situation in which it would become a problem.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\textbf{1.} Steps of the transfer:
+\begin{enumerate}
+\item The CPU reads the scanner status register.
+\item If bit 0 is 0 (no code scanned), the CPU loops back to step 1 (busy-waiting).
+\item When bit 0 is 1, the CPU reads the barcode value from the data register.
+\item The CPU writes to the command register to acknowledge and reset the scanner.
+\item The CPU returns to step 1 to wait for the next product.
+\end{enumerate}
+\textbf{2.} Polling is acceptable because the terminal has essentially one task (scanning products), so the waiting time is not wasted on other work. It becomes a problem if the same terminal must simultaneously process mobile money payments, update stock over the network and run a display: while trapped in the polling loop, the CPU would delay all these other activities, and an interrupt-driven design would then be preferable.
+\end{corrige}
+
+\begin{aretenir}[Key points on programmed I/O]
+\begin{itemize}
+\item In \cle{programmed I/O}, the CPU performs the whole transfer itself, word by word, through the controller's status, data and command registers.
+\item \cle{Polling} (busy-waiting) is the loop in which the CPU repeatedly reads the status register until the device is ready.
+\item The CPU is involved in 100\,\% of the transfer; with slow devices, the overwhelming majority of its time is wasted in the waiting loop.
+\item Advantages: simplicity, no extra hardware, deterministic timing. Disadvantages: wasted CPU time, incompatible with efficient multitasking.
+\item Polling remains appropriate for very fast devices, simple embedded systems and critical real-time loops --- it is inefficient, not ``wrong''.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Interrupt-Driven I/O}
+
+In the previous section we studied \cle{programmed I/O} (polling): the CPU repeatedly reads the status register of a device controller in a loop, asking ``Are you ready?'' until the device answers ``Yes''. This mechanism is simple and reliable, but it has a fundamental weakness: while a slow device (a keyboard, a printer, a disk) prepares its data, the CPU spends \emph{all} its time asking the same useless question. A processor capable of executing billions of instructions per second ends up waiting for a human typist who presses perhaps five keys per second. This is an enormous waste of processing power.
+
+The natural question is: why should the CPU keep asking? In everyday life, you do not stand in front of your phone waiting for a WhatsApp message; you continue your work, and the phone \emph{rings} when the message arrives. Interrupt-driven I/O applies exactly this idea to the machine: instead of the CPU polling the device, the \emph{device notifies the CPU} when it needs attention. This section defines the interrupt, describes the hardware that carries it, traces the complete treatment of an interrupt step by step, and evaluates the strengths and limits of the mechanism.
+
+\courssub{The Idea of an Interrupt}
+
+\begin{definition}[Interrupt]
+An \cle{interrupt} is a \textbf{hardware signal} sent by a device controller to the CPU to request its attention. When the CPU accepts the interrupt, it \textbf{suspends} the program it is currently executing, executes a special routine that services the device, and then \textbf{resumes} the suspended program exactly where it left off.
+\end{definition}
+
+The signal travels on a dedicated wire called the \cle{IRQ} line (\emph{Interrupt ReQuest}). Each device controller is connected to an IRQ line. Because a computer has many devices (keyboard, mouse, timer, disk, network card) but the CPU has very few interrupt pins, the IRQ lines are not connected directly to the processor: they pass through an \cle{interrupt controller}, historically the \textbf{PIC} (\emph{Programmable Interrupt Controller}, the Intel 8259) and today the \textbf{APIC} (\emph{Advanced Programmable Interrupt Controller}) found in modern multi-core machines.
+
+The interrupt controller plays the role of an intelligent receptionist:
+\begin{itemize}
+\item it \textbf{collects} requests from all the devices;
+\item it \textbf{arbitrates} between simultaneous requests according to \textbf{priorities} (for example, the timer or a disk error is more urgent than a keyboard key);
+\item it \textbf{identifies} the requesting device to the CPU by supplying an \emph{interrupt number};
+\item it can \textbf{mask} (block) selected interrupts when the operating system decides they must wait.
+\end{itemize}
+
+\begin{definition}[Interrupt Service Routine (ISR)]
+An \cle{Interrupt Service Routine} (\cle{ISR}), also called an \emph{interrupt handler}, is a small program, part of the operating system, whose job is to \textbf{service one particular interrupt}: read the data from the device controller, acknowledge the interrupt, and store the data where the system expects it.
+\end{definition}
+
+\courssub{How the CPU Treats an Interrupt: Context Saving}
+
+The CPU cannot simply abandon the running program: that program is using registers, the accumulator, the program counter, and status flags. If the ISR modified them freely, the suspended program would resume with corrupted values and produce wrong results. The treatment of an interrupt therefore follows a strict protocol, built around the idea of the \cle{context}: the set of register values (program counter, status register, general registers) that completely describes the state of the running program at the instant of the interruption.
+
+\begin{methode}[Tracing the treatment of an interrupt]
+To describe, step by step, how an interrupt is handled from the device signal to the resumption of the program:
+\begin{enumerate}
+\item \textbf{Request.} The device controller raises its IRQ line; the interrupt controller forwards the request, with the interrupt number, to the CPU.
+\item \textbf{Completion of the current instruction.} The CPU does \emph{not} stop in the middle of an instruction: it finishes the instruction in progress, then checks the interrupt signal.
+\item \textbf{Masking check.} If that interrupt is masked (disabled), the CPU ignores it for the moment; otherwise it accepts it.
+\item \textbf{Context saving.} The CPU saves the \emph{context} of the running program --- at least the program counter and the status register, usually also the general registers --- on the \textbf{stack}.
+\item \textbf{Locating the ISR.} Using the interrupt number, the CPU looks up the address of the corresponding ISR in the \emph{interrupt vector table} and jumps to it.
+\item \textbf{Servicing.} The ISR executes: it reads or writes the device data and \emph{acknowledges} the interrupt at the controller so that the request line is released.
+\item \textbf{Context restoring.} The saved registers are popped back from the stack.
+\item \textbf{Resumption.} The CPU continues the suspended program from the exact instruction where it was interrupted. The program ``notices nothing''.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[The CPU never stops working]
+A very common mistake is to write that ``when an interrupt occurs, the CPU stops working''. This is false. The CPU \textbf{suspends} the current program, \textbf{services} the device by executing the ISR (it is still working!), and then \textbf{resumes} the program. An interrupt is a \emph{change of task}, not a shutdown. Two other frequent confusions: the CPU finishes its \emph{current instruction} before reacting --- it does not abandon an instruction halfway; and the interrupt is generated by the \emph{device controller}, not by the CPU itself.
+\end{attention}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth]
+% lifelines
+\draw[thick, popblue] (0,0) node[above, text=popblue]{\textbf{Device controller}} -- (0,-8.6);
+\draw[thick, poporange] (7,0) node[above, text=poporange]{\textbf{CPU}} -- (7,-8.6);
+% CPU activity blocks
+\fill[popgreenL] (6.75,-0.4) rectangle (7.25,-2.2);
+\node[right, text=popdark] at (7.35,-1.3) {running program A};
+\fill[popblueL] (6.75,-3.0) rectangle (7.25,-5.6);
+\node[right, text=popdark] at (7.35,-4.3) {executing the ISR};
+\fill[popgreenL] (6.75,-6.4) rectangle (7.25,-8.4);
+\node[right, text=popdark] at (7.35,-7.4) {program A resumed};
+% messages
+\draw[->, thick, poppurple] (0,-1.0) -- (6.7,-1.6) node[midway, above, sloped, text=poppurple]{IRQ raised (data ready)};
+\draw[->, thick, popdark] (7,-2.2) -- (7,-2.9) node[midway, right, text width=4.6cm]{finish current instruction, save context on stack};
+\draw[->, thick, popdark] (7,-5.6) -- (7,-6.3) node[midway, right, text width=4.6cm]{restore context from stack};
+\draw[->, dashed, popmuted] (0,-4.3) -- (6.7,-4.3) node[midway, above, text=popmuted]{data read by ISR};
+% device side note
+\fill[popgold!25] (-0.25,-2.6) rectangle (0.25,-7.6);
+\node[left, text=popdark, text width=3.4cm, align=right] at (-0.4,-5.1) {device continues its own work independently};
+\end{tikzpicture}
+\legende{Sequence of an interrupt-driven transfer: the device raises the IRQ, the CPU finishes its current instruction, saves the context, executes the ISR, then resumes the interrupted program.}
+\end{popfigure}
+
+\courssub{Worked Scenario: the Keyboard}
+
+\begin{exemplebox}[A key is pressed]
+Imagine a student typing an essay in a word processor. Between two keystrokes, the CPU is busy reformatting the paragraph, checking spelling, updating the display --- useful work. Here is what happens when the student presses the letter ``A'':
+\begin{enumerate}
+\item The keyboard controller detects the key press, stores the scan code in its data register, and raises its IRQ line (historically IRQ1).
+\item The interrupt controller forwards the request to the CPU with the keyboard's interrupt number.
+\item The CPU finishes its current instruction, then saves the context of the word processor on the stack.
+\item It consults the interrupt vector table, finds the address of the keyboard ISR, and jumps to it.
+\item The keyboard ISR reads the scan code from the controller's data register, translates it, places the character ``A'' into the keyboard buffer of the operating system, and acknowledges the interrupt.
+\item The context is restored; the CPU resumes the word processor, which will find ``A'' in the buffer and display it.
+\end{enumerate}
+The whole service takes a few microseconds. If the student types five characters per second, the CPU is disturbed for a negligible fraction of its time --- compare this with polling, where it would have asked ``any key?'' \emph{millions of times per second} for nothing.
+\end{exemplebox}
+
+\courssub{The Interrupt Vector Table, Masking and Priorities}
+
+Each device raises a different interrupt, and each interrupt needs its own ISR. How does the CPU know \emph{where} the correct ISR is located in memory? It uses a data structure set up by the operating system at boot time.
+
+\begin{definition}[Interrupt Vector Table]
+The \cle{interrupt vector table} is a table in memory, initialised by the operating system, in which entry number $n$ contains the \textbf{address of the ISR} associated with interrupt number $n$. When interrupt $n$ occurs, the CPU uses $n$ as an index into the table, reads the address stored there, and jumps to it.
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[font=\small, >=stealth]
+% table
+\draw[thick, popblue] (0,0) rectangle (3.6,-4.6);
+\foreach \y/\lab in {-0.6/{0: divide error}, -1.4/{1: timer (IRQ0)}, -2.2/{2: keyboard (IRQ1)}, -3.0/{3: disk (IRQ14)}, -3.8/{4: network card}}{
+  \draw[popline] (0,\y) -- (3.6,\y);
+  \node[anchor=west, text=popdark] at (0.1,\y+0.3) {\lab};
+}
+\node[above, text=popblue] at (1.8,0.1) {\textbf{Interrupt vector table}};
+% ISRs
+\node[draw, thick, poporange, fill=poporange!12, minimum width=3.4cm, minimum height=0.8cm] (isrt) at (8.6,-1.4) {timer ISR};
+\node[draw, thick, poporange, fill=poporange!12, minimum width=3.4cm, minimum height=0.8cm] (isrk) at (8.6,-2.6) {keyboard ISR};
+\node[draw, thick, poporange, fill=poporange!12, minimum width=3.4cm, minimum height=0.8cm] (isrd) at (8.6,-3.8) {disk ISR};
+% arrows
+\draw[->, thick, poppurple] (3.6,-1.1) -- (isrt.west);
+\draw[->, thick, poppurple] (3.6,-1.9) -- (isrk.west);
+\draw[->, thick, poppurple] (3.6,-2.7) -- (isrd.west);
+\node[text=popmuted, align=center] at (8.6,-4.7) {each entry points\\ to one handler};
+\end{tikzpicture}
+\legende{The interrupt vector table: the interrupt number indexes the table, and each entry holds the address of the corresponding ISR (timer, keyboard, disk, \ldots).}
+\end{popfigure}
+
+Two refinements make the mechanism usable in a real system:
+
+\textbf{Masking.} Each interrupt source can be \emph{masked} (disabled) by setting a bit in a \cle{mask register}, either in the CPU or in the interrupt controller. A masked interrupt is not lost forever: it remains pending and is treated when unmasked. This is essential when the operating system executes a critical section of code that must not be disturbed. A few interrupts, called \emph{non-maskable interrupts} (NMI), such as a memory hardware failure, can never be masked.
+
+\textbf{Priorities.} When several devices request attention at the same time, the interrupt controller serves them in order of \cle{priority}: a high-priority interrupt (timer, disk error) is treated before a low-priority one (keyboard). In many systems, a high-priority interrupt can even interrupt the ISR of a low-priority one --- this is called \emph{nested interrupts}.
+
+\courssub{Advantages and Limitations}
+
+\begin{propriete}[What interrupt-driven I/O achieves --- and what it does not]
+Interrupt-driven I/O \textbf{frees the CPU during the device operation}: while the device prepares its data, the CPU executes other programs, and it is only called upon when the device is ready. However, the CPU \textbf{remains involved in each transfer}: for every unit of data (every key, every byte or word), an interrupt occurs and the CPU must execute the ISR to move the data itself. (This property is qualitative; no proof is examinable, but you must be able to justify both halves with examples.)
+\end{propriete}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Advantages} & \textbf{Disadvantages} \\
+\hline
+No busy waiting: the CPU does useful work while the device is busy. & \textbf{Context-switching overhead}: saving and restoring registers costs time on every interrupt. \\
+\hline
+The device is serviced quickly after becoming ready (good responsiveness). & The CPU still performs every data transfer itself, instruction by instruction. \\
+\hline
+Several devices coexist thanks to priorities and masking. & With very fast devices, interrupts arrive so often that the CPU spends all its time entering and leaving ISRs: this is an \emph{interrupt storm} (or \emph{live-lock}). \\
+\hline
+\end{tabularx}
+\end{center}
+
+The last disadvantage is crucial. For a keyboard (a few events per second), interrupts are perfect. For a gigabit network card receiving hundreds of thousands of small packets per second, the overhead of one context switch per packet becomes unbearable: the CPU does nothing but save and restore registers. This is precisely the limitation that motivates the next mechanism of the chapter, \cle{Direct Memory Access} (DMA), in which the controller transfers whole blocks of data to memory \emph{without} the CPU and interrupts it only once, at the end of the block.
+
+\begin{savaistu}[Software interrupts and exceptions (exam extra)]
+Not all interrupts come from hardware. A \textbf{software interrupt} is triggered deliberately by an instruction (for example a \emph{system call}, when a program asks the operating system to read a file); an \textbf{exception} is triggered automatically by an abnormal event detected during execution (division by zero, page fault, invalid instruction). The three categories share the same machinery --- vector table, context saving, handler --- but their \emph{causes} differ. In the GCE, if you are asked to define an interrupt in this chapter, speak of the \emph{hardware} interrupt sent by a device controller, and mention the other two only to show you can distinguish them.
+\end{savaistu}
+
+\begin{exoresolu}[Polling or interrupts?]
+A point-of-sale terminal in a Douala supermarket reads barcodes with a scanner (a few items per minute) and drives a receipt printer. The designer hesitates between programmed I/O and interrupt-driven I/O for the scanner. Advise him, with two arguments.
+\tcblower
+\textbf{Advice: interrupt-driven I/O.}
+\begin{itemize}
+\item \textbf{Argument 1 (CPU utilisation).} Barcodes arrive rarely and unpredictably. With polling, the CPU would waste most of its time reading the scanner's status register and finding ``not ready''. With interrupts, the CPU serves customers' computations (totals, stock updates) and is only disturbed when a barcode actually arrives.
+\item \textbf{Argument 2 (responsiveness without waste).} When the cashier scans an item, the scanner controller raises an IRQ; the CPU suspends its task, the ISR reads the code, and the program resumes. The item is registered immediately, with no polling loop and no wasted cycles.
+\end{itemize}
+Note that the volume of data is tiny (one code per scan), so the context-switch overhead is negligible: the classic disadvantage of interrupts does not apply here.
+\end{exoresolu}
+
+\begin{exercice}[Analysing an interrupt-driven system]
+A computer receives data from a temperature sensor that produces one reading every second, and from a high-speed camera that produces $200\,000$ small frames per second.
+\begin{enumerate}
+\item Explain, step by step, what happens when the sensor has a reading ready.
+\item Which device is well suited to interrupt-driven I/O, and which is not? Justify using the expression ``interrupt storm''.
+\item Suggest a more appropriate mechanism for the camera.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item The sensor's controller stores the reading in its data register and raises its IRQ line; the interrupt controller forwards the request with the interrupt number; the CPU finishes its current instruction, saves the context of the running program on the stack, uses the interrupt vector table to find the sensor's ISR, and jumps to it; the ISR reads the data register, stores the value in memory and acknowledges the interrupt; the context is restored and the suspended program resumes.
+\item The sensor (one interrupt per second) is perfectly suited: the overhead is negligible and the CPU stays free between readings. The camera is not: at $200\,000$ interrupts per second, the CPU would spend nearly all its time saving and restoring contexts instead of processing images --- an \emph{interrupt storm}.
+\item Direct Memory Access (DMA): the camera's controller transfers whole blocks of frames directly into memory and interrupts the CPU only once per block, drastically reducing the number of interrupts.
+\end{enumerate}
+\end{corrige}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item An \cle{interrupt} is a hardware signal sent by a device controller (via the IRQ line and the interrupt controller) to request the CPU's attention.
+\item The CPU finishes its current instruction, \textbf{saves the context}, executes the \cle{ISR} found through the \cle{interrupt vector table}, then \textbf{restores the context} and resumes the program.
+\item The interrupt controller (PIC/APIC) manages several devices through \textbf{masking} and \textbf{priorities}.
+\item Interrupt-driven I/O \textbf{frees the CPU during the device operation} but keeps it involved in \textbf{each transfer}; the context-switch overhead makes it unsuitable for very fast devices (interrupt storms) --- hence DMA, studied next.
+\item Distinguish hardware interrupts from \emph{software interrupts} (system calls) and \emph{exceptions} (division by zero, page fault).
+\end{itemize}
+\end{aretenir}
+
+\coursec{Direct Memory Access (DMA) and Comparison of Mechanisms}
+
+In the previous section we saw that \cle{interrupt-driven I/O} frees the CPU from the wasteful waiting loop of polling: the peripheral raises an interrupt when it is ready, and the CPU serves it only at that moment. This is an enormous improvement for slow devices such as keyboards and mice. But let us now push the reasoning one step further with a concrete situation.
+
+\begin{experience}[The cost of copying a file]
+Suppose you copy a $4\ \mathrm{GB}$ video file from an external hard disk to the internal SSD of a computer in your school's computer laboratory. With interrupt-driven I/O, the disk controller raises an interrupt for \emph{every small unit of data} (a few bytes or a few words) it has ready. The CPU must stop its current work, save its context, run the interrupt service routine, move the data, restore the context, and resume — millions of times. Even if each interrupt costs only a few microseconds of overhead, the accumulated cost becomes enormous: the CPU spends a large fraction of its time simply \emph{carrying data from the disk to memory}, instead of running user programs. For large block transfers, even interrupts cost too much CPU time.
+\end{experience}
+
+This observation motivates the third and most powerful control mechanism: \cle{Direct Memory Access}.
+
+\courssub{Definition and Principle of DMA}
+
+\begin{definition}[Direct Memory Access (DMA)]
+\cle{Direct Memory Access (DMA)} is a peripheral control mechanism in which data is transferred \textbf{directly between a peripheral device and main memory, without passing through the CPU}. The CPU only \emph{initiates} the transfer (by programming a dedicated circuit) and is \emph{notified once at the end} (by a single interrupt). During the whole block transfer, the CPU is free to execute other programs.
+\end{definition}
+
+The intuition is simple. Polling is like a head teacher who walks to the photocopy room every minute to ask ``Are the copies ready?'' Interrupt-driven I/O is like telling the photocopy operator ``Call me each time one page is ready'' — better, but the head teacher is still interrupted for every single page. DMA is like saying: ``Here is the stack of originals, here is where the copies must be placed, there are 500 pages — call me \emph{only when everything is finished}.'' The head teacher delegates the whole job and works on something else in the meantime.
+
+\courssub{The DMA Controller (DMAC)}
+
+DMA is made possible by a specialised hardware circuit called the \cle{DMA controller}.
+
+\begin{definition}[DMA controller and cycle stealing]
+The \cle{DMA controller (DMAC)} is a hardware circuit that manages a data transfer between a peripheral and main memory on behalf of the CPU. It contains in particular:
+\begin{itemize}
+\item an \textbf{address register} holding the source/destination address in memory (automatically incremented after each unit transferred);
+\item a \textbf{transfer counter} holding the number of data units still to be transferred (automatically decremented);
+\item a \textbf{control register} holding the transfer mode and direction (read from device or write to device), programmed by the CPU;
+\item \textbf{bus control signals} (bus request / bus grant) allowing it to take control of the system bus — a capability called \cle{bus mastering}.
+\end{itemize}
+\cle{Cycle stealing} is the technique by which the DMAC temporarily takes control of the system bus to transfer one unit of data, typically during bus cycles that the CPU is not using, and then gives the bus back. The DMAC ``steals'' bus cycles from the CPU, which may be slightly slowed down but is never stopped.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth,
+  box/.style={draw=popblue, thick, rounded corners, fill=popblueL, minimum width=3.2cm, minimum height=1.1cm, align=center}]
+  \node[box] (cpu) at (0,2.6) {\textbf{CPU}};
+  \node[box, fill=popgreenL, draw=popgreen, align=center] (dmac) at (0,0){\textbf{DMA controller}\\address, counter, control};
+  \node[box, align=center] (disk) at (-4.6,0){\textbf{Disk controller}\\(peripheral)};
+  \node[box, align=center] (mem) at (4.6,0){\textbf{Main memory}\\(RAM)};
+  \draw[very thick, popdark] (-4.6,-1.15) -- (4.6,-1.15) node[midway, below, popmuted]{\footnotesize system bus (data, address, control)};
+  \draw[thick, popdark] (disk.south) -- (-4.6,-1.15);
+  \draw[thick, popdark] (dmac.south) -- (0,-1.15);
+  \draw[thick, popdark] (mem.south) -- (4.6,-1.15);
+  \draw[<->, thick, poporange] (cpu.south) -- (dmac.north) node[midway, right, align=left, text=popdark]{\footnotesize 1. program DMAC\\ \footnotesize 4. end interrupt};
+  \draw[<->, thick, popgreen] (disk) -- (dmac) node[midway, above, text=popdark]{\footnotesize 2. data};
+  \draw[<->, thick, popgreen] (dmac) -- (mem) node[midway, above, text=popdark]{\footnotesize 3. data};
+\end{tikzpicture}
+\end{center}
+\legende{Block diagram of a DMA transfer: data flows directly between the disk controller and memory through the DMAC; the CPU intervenes only at the start (programming) and at the end (one interrupt).}
+\end{popfigure}
+
+\courssub{Step-by-Step DMA Scenario}
+
+\begin{methode}[How a DMA transfer proceeds]
+A typical DMA transfer (for example, reading a block from disk into RAM) unfolds as follows:
+\begin{enumerate}
+\item \textbf{Programming the DMAC.} The CPU writes into the DMAC's registers: the memory address where data must be placed, the number of bytes to transfer, and the direction of transfer. The CPU also instructs the disk controller to prepare the data.
+\item \textbf{Delegation.} The CPU is now free: it continues executing other programs while the transfer runs.
+\item \textbf{Block transfer by cycle stealing.} For each unit of data, the DMAC requests the bus (bus request), receives the grant, transfers the data directly between the disk controller and memory, increments its address register and decrements its counter, then releases the bus.
+\item \textbf{Completion.} When the counter reaches zero, the whole block has been transferred.
+\item \textbf{Final interrupt.} The DMAC raises \emph{one single interrupt} to inform the CPU that the transfer is complete. The CPU verifies the status and continues.
+\end{enumerate}
+\end{methode}
+
+\begin{propriete}[CPU involvement under DMA]
+Under DMA, the CPU's involvement in a transfer is reduced to two moments only: the \textbf{initialisation} of the DMAC (programming addresses, count and mode) and the treatment of the \textbf{single final interrupt}. All the intermediate data movements are performed by the DMAC without any CPU intervention. (This property is directly examinable; be able to state and justify it.)
+\end{propriete}
+
+\begin{attention}[DMA does not mean ``no CPU at all'']
+A very common mistake in the GCE examination is to write that ``DMA transfers data without the CPU'' and conclude that the CPU plays \emph{no role whatsoever}. This is false. Without the CPU, the DMAC would not know \emph{where} to read, \emph{where} to write, or \emph{how much} to transfer. The CPU must \textbf{configure} the DMAC before the transfer and \textbf{supervise} its completion (checking for errors via the final interrupt). The correct statement is: DMA transfers data \emph{without passing through the CPU's registers and without executing CPU instructions for each data unit} — but the CPU initiates and supervises the operation.
+\end{attention}
+
+\courssub{Typical Users of DMA}
+
+DMA is used by all peripherals that move \textbf{large blocks of data at high speed}:
+\begin{itemize}
+\item \textbf{Hard disks and SSDs}: loading programs and files into RAM (e.g. opening a large spreadsheet);
+\item \textbf{Sound cards}: streaming continuous audio to or from memory without gaps;
+\item \textbf{Graphics cards}: moving images and textures between RAM and video memory;
+\item \textbf{Network cards}: transferring received packets directly into memory buffers — essential when, for example, a server of a mobile money platform handles thousands of transactions per second.
+\end{itemize}
+
+\courssub{Comparative Synthesis: Polling, Interrupts and DMA}
+
+\begin{exemplebox}[The same transfer under the three mechanisms]
+Consider transferring a $64\ \mathrm{KB}$ block from disk to RAM. Under \textbf{polling}, the CPU loops continuously, testing the disk status register: it is $100\ \%$ busy for the whole duration. Under \textbf{interrupt-driven I/O}, the CPU is interrupted for each small unit of data (say every 4 bytes, i.e. $16\,384$ interrupts): it can do other work between interrupts, but each interrupt costs context saving and restoring. Under \textbf{DMA}, the CPU programs the DMAC once, works freely during the transfer, and receives \emph{one} interrupt at the end.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\footnotesize, >=stealth]
+  % time axis
+  \draw[->, thick] (0,0) -- (10.6,0) node[right]{time};
+  % Polling row
+  \node[left, align=right] at (-0.2,2.4) {\textbf{Polling}};
+  \fill[poporange!80] (0,2.1) rectangle (9.6,2.7);
+  \node at (4.8,2.4) {CPU $100\ \%$ busy testing the device};
+  % Interrupts row
+  \node[left, align=right] at (-0.2,1.3) {\textbf{Interrupts}};
+  \foreach \x in {0,0.6,1.2,1.8,2.4,3.0,3.6,4.2,4.8,5.4,6.0,6.6,7.2,7.8,8.4,9.0}
+    \fill[poporange!80] (\x,1.0) rectangle (\x+0.22,1.6);
+  \node[popmuted] at (4.8,0.75) {many short CPU interventions (one per data unit)};
+  % DMA row
+  \node[left, align=right] at (-0.2,0.0) {\textbf{DMA}};
+  \fill[poporange!80] (0,-0.3) rectangle (0.5,0.3);
+  \fill[poporange!80] (9.1,-0.3) rectangle (9.6,0.3);
+  \draw[<->, popgreen, thick] (0.5,-0.45) -- (9.1,-0.45) node[midway, below, text=popdark]{CPU free: DMAC transfers the block by cycle stealing};
+  \node[popmuted, anchor=west] at (0.0,0.55) {\tiny init};
+  \node[popmuted, anchor=east] at (9.6,0.55) {\tiny 1 interrupt};
+\end{tikzpicture}
+\end{center}
+\legende{CPU occupation (orange) for the same block transfer under polling, interrupt-driven I/O and DMA. Under DMA the CPU is occupied only at the beginning and at the end.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Programmed I/O (polling)} & \textbf{Interrupt-driven I/O} & \textbf{DMA} \\
+\hline
+CPU involvement & Continuous: CPU tests the device in a loop & One interrupt per data unit & Initialisation + one final interrupt only \\
+\hline
+CPU availability & None during the transfer & Partial (works between interrupts) & Almost total during the transfer \\
+\hline
+Transfer speed & Slow, limited by the testing loop & Moderate, limited by interrupt overhead & High, at bus speed \\
+\hline
+Hardware cost & Very low (no extra hardware) & Low (interrupt controller) & Higher (DMA controller, bus mastering) \\
+\hline
+Suitable devices & Very slow, simple devices (keyboard in simple systems, sensors) & Slow to medium devices (keyboard, mouse, serial ports, printer) & Fast block devices (disks, SSDs, sound, graphics, network cards) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{methode}[Choosing the appropriate control mechanism for a device]
+To answer an exam question asking which mechanism suits a given device, reason as follows:
+\begin{enumerate}
+\item Estimate the \textbf{volume of data} and the \textbf{speed} of the device: a few occasional bytes, or large continuous blocks?
+\item If the device is very slow and produces rare data (a key press), \textbf{polling or interrupts} suffice; polling only if the system is extremely simple and has nothing else to do.
+\item If the device produces data at unpredictable times and the CPU has other work, choose \textbf{interrupt-driven I/O}.
+\item If the device transfers \textbf{large blocks at high speed} (disk, sound, video, network), choose \textbf{DMA}.
+\item Justify your answer in terms of \textbf{CPU time saved} and \textbf{hardware cost}.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Choosing and justifying a mechanism]
+A school in Bamenda acquires (a) a mouse, (b) an SSD used to load the operating system, and (c) a temperature sensor read once per second by a small dedicated controller that does nothing else. For each device, state the most appropriate control mechanism and justify your choice.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{(a) Mouse — interrupt-driven I/O.} The mouse produces small amounts of data at unpredictable times. Polling would waste CPU time between movements; DMA is unjustified for a few bytes. Interrupts let the CPU work and react immediately when the mouse moves.
+\item \textbf{(b) SSD — DMA.} Loading the OS means transferring very large blocks at high speed. Interrupt-per-unit would generate millions of interrupts; DMA transfers the blocks directly to RAM and raises a single interrupt per block, freeing the CPU.
+\item \textbf{(c) Temperature sensor — programmed I/O (polling).} The controller has no other task, so waiting in a loop costs nothing; the data rate (one value per second) is extremely low and no extra hardware (interrupt line or DMAC) is needed, which minimises cost.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Exam Extra: Buffered I/O and Spooling}
+
+\begin{savaistu}[Beyond the hardware: buffering and spooling]
+The three mechanisms above are \emph{hardware} mechanisms. Operating systems build \emph{software} techniques on top of them. With \cle{buffered I/O}, data is temporarily stored in a memory area called a \textbf{buffer} so that a fast producer and a slow consumer can work at their own pace. \cle{Spooling} (Simultaneous Peripheral Operations On-Line) generalises this idea: jobs for a slow device are queued on disk and sent one after another. The classic example is the \textbf{print spooler}: when several students in a cybercaf\'e in Yaound\'e print their documents at the same time, the operating system stores the jobs in a queue and feeds the printer progressively, while the users continue working. Expect occasional exam questions linking spooling to interrupt-driven I/O, since the printer signals the end of each job by an interrupt.
+\end{savaistu}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item DMA transfers data \textbf{directly between a peripheral and memory}, without passing through the CPU.
+\item The \textbf{DMAC} holds the memory address, the transfer counter and the control information, and takes control of the bus (\textbf{bus mastering}) by \textbf{cycle stealing}.
+\item The CPU only \textbf{programs the DMAC} at the start and receives \textbf{one interrupt} at the end.
+\item DMA is essential for fast block devices: disks, SSDs, sound, graphics and network cards.
+\item Polling $=$ simple but CPU-wasting; interrupts $=$ efficient for slow unpredictable devices; DMA $=$ best for large fast transfers, at higher hardware cost.
+\item Buffering and spooling are OS techniques built on top of these hardware mechanisms.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Mechanisms under the microscope]
+A network card receives $1\ \mathrm{MB}$ of data per second on average. (a) Explain why polling is unsuitable. (b) Explain why interrupt-driven I/O with one interrupt per byte would be unsuitable. (c) Describe how DMA solves the problem, stating precisely the role of the CPU.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) Under polling the CPU would loop permanently testing the network card, wasting nearly all its time and risking to miss incoming data while busy elsewhere. (b) One interrupt per byte means about one million interrupts per second; each interrupt costs context saving, execution of the service routine and context restoring, so the overhead alone would saturate the CPU. (c) With DMA, the CPU programs the DMAC (memory buffer address, byte count, direction), then continues other work; the DMAC transfers the received data directly into memory by cycle stealing and raises a single interrupt when the buffer is full. The CPU's role is limited to initialising the transfer and processing the completed buffer on the final interrupt.
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+By the end of this integration activity, you should be able to:
+
+\begin{itemize}
+\item \textbf{Analyse} the behaviour of real peripheral devices (keyboard, printer, hard disk, mouse) and \textbf{identify} the I/O control mechanism most likely used by each of them: \cle{programmed I/O (polling)}, \cle{interrupt-driven I/O} or \cle{Direct Memory Access (DMA)}.
+\item \textbf{Justify} your diagnosis using two rigorous arguments: the degree of \cle{CPU involvement} and the \cle{speed} (data rate) of the peripheral.
+\item \textbf{Represent} each mechanism by a clear transfer diagram showing the CPU, memory, controller and device.
+\item \textbf{Propose and defend} a technical solution to a real performance problem (a printer that blocks the whole computer), by changing the control mechanism.
+\item \textbf{Communicate} your findings in a one-page diagnostic report, as a technician would do for a school administration.
+\end{itemize}
+
+This activity mobilises all the competences of the chapter: it is not enough to recite definitions --- you must \emph{use} them to explain observable facts and to make justified engineering decisions.
+
+\courssub{Situation}
+
+\textbf{Diagnosing the computer room of GBHS Bamenda.}\par\medskip
+
+The Government Bilingual High School Bamenda has a computer room with 25 identical desktop computers used for ICT practicals and for the secretariat. Each machine has a 3.0 GHz processor, 4 GB of RAM, a 500 GB internal hard disk, a USB keyboard, an optical USB mouse, and runs a standard operating system. One old dot-matrix printer, connected to the secretary's computer, is shared by the whole room.
+
+The ICT teacher, Mr.\ Ndi, has collected the following complaints and observations during the first term:
+
+\begin{itemize}
+\item \textbf{Observation A --- the keyboard.} Students type exercises in a text editor. Even the fastest typist in Upper Sixth produces at most about 10 characters per second. Typing never slows the computer down, and no character is ever lost, even when the CPU is busy compiling a program at the same time.
+\item \textbf{Observation B --- the dot-matrix printer.} Whenever the secretary prints a 30-page report, her computer becomes \emph{completely unusable}: the mouse pointer freezes, no window responds, and she must wait until printing ends. The printer is slow (about 100 characters per second) and the printing of one page takes several minutes. The printer manual states that it has \emph{no internal buffer memory} and that the computer sends each character ``under direct control of the CPU''.
+\item \textbf{Observation C --- the hard disk.} A student copies a 2 GB video file from one partition of the hard disk to another. The transfer runs at about 100 MB/s and lasts roughly 20 seconds. During the copy, the student continues to type a document and scroll in a web page \emph{without any noticeable slowdown}. The CPU usage shown by the task manager stays below 10\% during the whole copy.
+\item \textbf{Observation D --- the mouse.} Students move the mouse constantly. The pointer follows instantly, and clicks are never missed, even while the hard disk copy of Observation C is running.
+\end{itemize}
+
+Mr.\ Ndi asks your class, as future computer scientists, to prepare a \textbf{diagnostic report} explaining \emph{why} each device behaves as it does, in terms of the three peripheral control mechanisms studied in this chapter, and to propose a solution for the printer problem. The school administration will use your report to decide whether to buy a new printer or to reconfigure the existing one.
+
+\begin{methode}[How to diagnose a control mechanism]
+When you must identify which mechanism a device uses, proceed in this order:
+\begin{enumerate}
+\item \textbf{Estimate the data rate} of the device (characters/s, MB/s) and compare it with the CPU speed.
+\item \textbf{Ask who moves the data}: the CPU itself in a loop (polling), the CPU only when signalled (interrupt-driven I/O), or a dedicated controller (DMA).
+\item \textbf{Check the symptoms}: a frozen computer during transfer suggests polling; a responsive computer with low CPU usage during a fast transfer suggests DMA.
+\item \textbf{Conclude} by matching your evidence to one of the three mechanisms and justify it explicitly.
+\end{enumerate}
+\end{methode}
+
+\courssub{Tasks}
+
+Work in groups of three or four. Answer the following questions in order; each one builds on the previous.
+
+\begin{enumerate}
+\item \textbf{Recall.} For each of the three control mechanisms (programmed I/O, interrupt-driven I/O, DMA), state in two or three sentences: (i) who controls the transfer, (ii) what the CPU does during the transfer, (iii) for which category of device it is appropriate.
+\item \textbf{Diagnose the keyboard (Observation A).} Which mechanism is used? Justify by comparing the keyboard's data rate (about 10 characters/s) with the CPU's speed, and by explaining why no character is lost even when the CPU is busy.
+\item \textbf{Diagnose the printer (Observation B).} The manual says each character is sent ``under direct control of the CPU'' and the printer has no buffer. Which mechanism is this? Using the figures given (100 characters/s, a 30-page document), explain precisely why the whole computer freezes during printing.
+\item \textbf{Diagnose the hard disk (Observation C).} Which mechanism explains that a 2 GB copy at 100 MB/s runs while the CPU usage stays below 10\%? Describe the role of the DMA controller, the bus, and the single interrupt at the end of the transfer.
+\item \textbf{Diagnose the mouse (Observation D).} Which mechanism guarantees that clicks are never missed, even during the disk copy? Why would pure polling be risky here?
+\item \textbf{Draw.} For \emph{each} of the four devices, draw the transfer diagram corresponding to its mechanism: show the CPU, the main memory, the device controller (and the DMA controller where relevant), the data path and the interrupt line.
+\item \textbf{Propose a fix.} The administration hesitates between two solutions for the printer: (S1) replace it by a modern printer with a large internal buffer and interrupt-driven (or DMA) transfer; (S2) keep the printer but change the way the operating system sends data, using interrupts and a software buffer (spooling). For each solution, explain the mechanism after the fix, the effect on the secretary's computer, and one advantage and one drawback. Conclude with a justified recommendation.
+\item \textbf{Report.} Assemble your answers into a one-page diagnostic report addressed to the principal: a short table summarising the four diagnoses, one diagram, and your recommendation for the printer.
+\end{enumerate}
+
+\begin{attention}[Common traps to avoid]
+\begin{itemize}
+\item Do not say ``the printer is slow, so it uses polling'' as a definition: polling is a \emph{mechanism}, not a consequence of slowness. The correct argument is that the CPU \emph{actively waits} for the device, so a slow device \emph{under polling} monopolises the CPU.
+\item DMA does not mean ``no CPU at all'': the CPU \emph{initiates} the transfer and is \emph{interrupted at the end}; only the data movement itself is handled by the DMA controller.
+\item Interrupt-driven I/O still consumes CPU time for every unit of data transferred; for a very fast device (100 MB/s), interrupt-per-byte would be impossible --- that is exactly why DMA exists.
+\item Do not confuse the \emph{device controller} (the electronic interface attached to one device) with the \emph{DMA controller} (which manages block transfers over the bus); a DMA controller is a specialised controller that can take charge of the system bus.
+\end{itemize}
+\end{attention}
+
+\courssub{Model answer}
+
+\textbf{Question 1 --- Summary of the three mechanisms.}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Mechanism} & \textbf{Who controls} & \textbf{CPU during transfer} & \textbf{Appropriate for} \\
+\hline
+Programmed I/O (polling) & CPU executes a loop that repeatedly tests the device status register and moves each data word itself. & Fully busy: it waits actively and transfers every word. & Very simple, slow devices; predictable transfers. \\
+\hline
+Interrupt-driven I/O & CPU starts the operation; the controller signals with an interrupt when ready; the ISR transfers the data. & Free between interrupts; busy only in short interrupt service routines. & Slow, unpredictable, event-driven devices (keyboard, mouse). \\
+\hline
+DMA & DMA controller moves whole blocks directly between device and memory; CPU only configures and is interrupted at the end. & Almost free: one interrupt per block, not per word. & Fast devices transferring large blocks (disk, sound, network). \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Question 2 --- Keyboard: interrupt-driven I/O.} A keyboard produces at most about 10 characters per second, at unpredictable instants. Polling would waste CPU cycles testing a device that is almost always idle, and a polling loop busy elsewhere could miss a keystroke. With interrupt-driven I/O, the keyboard controller raises an \cle{interrupt request} at each key press; the CPU suspends its current work for a few microseconds, the interrupt service routine reads the scan code into a buffer, and normal work resumes. This explains Observation A perfectly: zero characters lost, zero perceptible slowdown, even while compiling.
+
+\textbf{Question 3 --- Printer: programmed I/O (polling).} ``Each character sent under direct control of the CPU'' with no buffer is the signature of \cle{programmed I/O}: for every character, the CPU loops reading the printer's status register until ``ready'', then writes the character. At 100 characters/s, each character keeps the CPU waiting about $1/100 = 0.01$ s --- an eternity for a 3.0 GHz processor, which executes about $3 \times 10^{9}$ clock cycles per second, i.e.\ roughly $3 \times 10^{7}$ clock cycles wasted per character. A 30-page report contains tens of thousands of characters, so the CPU spends essentially \emph{all} its time waiting for the printer: the mouse pointer freezes and no window responds. The computer is not broken; it is \emph{busy waiting}.
+
+\textbf{Question 4 --- Hard disk: DMA.} Copying 2 GB at 100 MB/s means about $2 \times 10^{9}$ bytes moved in 20 s, i.e.\ about $10^{8}$ bytes per second. Interrupt-per-byte would require $10^{8}$ interrupts per second --- physically impossible, since servicing one interrupt already costs thousands of clock cycles. Instead, the CPU programs the \cle{DMA controller} (source address, destination address, byte count) and continues other work; the controller takes charge of the bus and moves the data directly between the disk buffer and memory, using \cle{cycle stealing} when the CPU also needs the bus. Only at the end of each block does the controller raise a single interrupt. Hence CPU usage below 10\% and a perfectly responsive machine: Observation C is a textbook case of DMA.
+
+\textbf{Question 5 --- Mouse: interrupt-driven I/O.} Mouse movements and clicks are unpredictable, low-volume events that must be serviced \emph{immediately} for the pointer to feel responsive. Each movement or click generates an interrupt; the ISR updates the pointer position or queues the click. Pure polling would risk missing a fast click if the polling interval were too long, or wasting CPU time if it were too short. Interrupts give both responsiveness and efficiency, even during the DMA disk copy, because DMA leaves the CPU free to service interrupts.
+
+\textbf{Question 6 --- Diagrams.} The three configurations are summarised below. The keyboard and the mouse both correspond to diagram (b); the printer to diagram (a); the hard disk to diagram (c).
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth, node distance=0.4cm,
+box/.style={draw=popblue, thick, rounded corners, fill=popblueL, minimum width=2.2cm, minimum height=0.9cm, align=center}]
+% Polling
+\node[box] (cpu1) at (0,0) {CPU};
+\node[box] (mem1) at (3.4,0) {Memory};
+\node[box] (dev1) at (6.8,0) {Printer ctrl};
+\draw[<->, thick, popdark] (cpu1) -- (mem1);
+\draw[<->, thick, poporange] (cpu1) -- (dev1) node[midway, above, popdark]{CPU loops: status? data};
+\node[popdark, align=center] at (3.4,-1.1) {(a) Polling: CPU moves every word};
+% Interrupt
+\node[box] (cpu2) at (0,-2.6) {CPU};
+\node[box] (mem2) at (3.4,-2.6) {Memory};
+\node[box] (dev2) at (6.8,-2.6) {Keyboard ctrl};
+\draw[<->, thick, popdark] (cpu2) -- (mem2);
+\draw[<->, thick, popdark] (mem2) -- (dev2);
+\draw[->, thick, poporange, dashed] (dev2.north) .. controls (5,-1.6) and (2,-1.6) .. (cpu2.north) node[midway, above, popdark]{IRQ on key press};
+\node[popdark, align=center] at (3.4,-3.7) {(b) Interrupt-driven I/O};
+% DMA
+\node[box] (cpu3) at (0,-5.2) {CPU};
+\node[box] (dma3) at (3.4,-5.2) {DMA ctrl};
+\node[box] (mem3) at (6.8,-5.2) {Memory};
+\node[box] (dev3) at (3.4,-6.6) {Disk ctrl};
+\draw[<->, thick, popdark] (cpu3) -- (dma3);
+\draw[<->, thick, popgreen] (dma3) -- (mem3) node[midway, above, popdark]{block transfer};
+\draw[<->, thick, popgreen] (dma3) -- (dev3);
+\draw[->, thick, poporange, dashed] (dma3.west) .. controls (1.5,-6.2) .. (cpu3.south) node[midway, left, popdark]{IRQ at end};
+\node[popdark, align=center] at (3.4,-7.6) {(c) DMA: controller moves the block};
+\end{tikzpicture}
+\end{center}
+\legende{Transfer diagrams for the three control mechanisms. Solid arrows are data paths; dashed arrows are interrupt request (IRQ) lines.}
+\end{popfigure}
+
+\textbf{Question 7 --- Fixing the printer.}
+\begin{itemize}
+\item \textbf{S1 (new printer with buffer + interrupt/DMA transfer).} The computer writes a whole page into the printer's buffer at high speed, the printer signals readiness by interrupt, and the CPU is free between transfers. The secretary's computer stays responsive. \emph{Advantage:} definitive, fast, also better print quality. \emph{Drawback:} cost of new equipment.
+\item \textbf{S2 (spooling + interrupt-driven output).} The operating system copies the document into a software buffer on disk (the \cle{spool}), returns control immediately, and a background process sends characters to the printer as it becomes ready, using interrupts. \emph{Advantage:} no hardware cost. \emph{Drawback:} printing remains slow (100 characters/s) and needs a driver supporting interrupts.
+\end{itemize}
+\textbf{Recommendation:} adopt S2 immediately as a zero-cost fix, and plan S1 in the next budget, since the old printer's speed will remain a bottleneck for a whole school.
+
+\textbf{Question 8 --- Report.} The one-page report contains the summary table below, diagram (c), and the recommendation above.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Device} & \textbf{Mechanism} & \textbf{Key evidence} \\
+\hline
+Keyboard & Interrupt-driven I/O & Very slow (10 char/s), unpredictable; no character lost while CPU busy. \\
+\hline
+Printer & Programmed I/O (polling) & CPU sends each character directly; no buffer; computer frozen during printing. \\
+\hline
+Hard disk & DMA & 100 MB/s block transfer with CPU usage below 10\%. \\
+\hline
+Mouse & Interrupt-driven I/O & Instant response, clicks never missed, even during disk copy. \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{exercice}[Going further]
+The school buys a network card that receives data at 100 Mbit/s. Explain why programmed I/O and even interrupt-per-byte I/O are unsuitable, and describe the mechanism the card must use.
+\end{exercice}
+
+\begin{corrige}[Going further]
+At 100 Mbit/s, a byte (8 bits) arrives every $8 \times 10^{-8}$ s: the CPU can neither poll fast enough nor service an interrupt per byte, since each interrupt service routine alone costs far more than $8 \times 10^{-8}$ s. The card must use \cle{DMA}: its controller assembles incoming data into packets in an internal buffer, then transfers whole packets directly into main memory, raising one interrupt per packet (or per batch of packets). The CPU only processes complete packets, keeping the system responsive.
+\end{corrige}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Method 1 --- Identifying the control mechanism used in a given situation}
+
+\begin{methode}[Recognising polling, interrupt-driven I/O and DMA]
+To identify which peripheral control mechanism is described in an exercise or a real system, proceed as follows:
+\begin{enumerate}
+\item \textbf{Ask: who initiates and supervises the transfer?} If the CPU repeatedly \emph{tests a status flag} in a loop until the device is ready, it is \cle{programmed I/O} (polling).
+\item \textbf{Ask: does the device signal the CPU?} If the peripheral raises an \emph{interrupt request line} (IRQ) and the CPU suspends its current program to run an \emph{interrupt service routine} (ISR), it is \cle{interrupt-driven I/O}.
+\item \textbf{Ask: who moves the data?} If a special circuit, the \emph{DMA controller} (DMAC), transfers data \emph{directly between the device and main memory} while the CPU only starts and ends the operation, it is \cle{DMA}.
+\item \textbf{Check the size and speed of the transfer:} small, slow, unpredictable transfers (keyboard, mouse) suggest polling or interrupts; large, fast, block transfers (disk, sound card, network interface) suggest DMA.
+\item \textbf{Conclude in one sentence} naming the mechanism and justifying it with one observable clue from the statement.
+\end{enumerate}
+\textbf{Reflex:} polling = CPU waits and wastes time; interrupt = device calls the CPU; DMA = a third party (DMAC) does the moving.
+\end{methode}
+
+\begin{exoresolu}[Identifying mechanisms in a Cameroonian cybercaf\'e]
+In a cybercaf\'e in Buea, the system administrator observes the following: (a) when a customer presses a key, the keyboard controller sends a signal that makes the CPU momentarily leave the word processor to read the character; (b) when a 500~MB video file is copied from an external hard disk to the internal drive, the CPU remains almost free and customers can keep working; (c) a small program controlling a temperature sensor checks the sensor's status register every second in a loop. For each case, name the I/O control mechanism and justify.
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+\item \textbf{Case (a) --- keyboard:} The device \emph{signals} the CPU, which suspends its current task and executes a service routine to read the character. This is \textbf{interrupt-driven I/O}. Justification: the CPU does not loop waiting; the peripheral initiates the contact via an interrupt request.
+\item \textbf{Case (b) --- disk copy of 500~MB:} The transfer is large and the CPU stays free, meaning a \emph{DMA controller} moves the data directly between the disk controller and main memory. This is \textbf{Direct Memory Access (DMA)}. Justification: the CPU only configures the transfer (source, destination, length) and is interrupted once at the end; the bulk transfer does not occupy it.
+\item \textbf{Case (c) --- temperature sensor:} The program \emph{repeatedly tests a status register} in a loop until data is ready. This is \textbf{programmed I/O (polling)}. Justification: the CPU itself initiates and supervises every step and wastes cycles between checks.
+\end{enumerate}
+\textbf{Conclusion:} (a) interrupt-driven I/O, (b) DMA, (c) polling.
+\end{exoresolu}
+
+\courssub{Method 2 --- Describing the steps of programmed I/O (polling)}
+
+\begin{methode}[Writing the polling sequence]
+When asked to \emph{describe} or \emph{draw the flowchart of} programmed I/O:
+\begin{enumerate}
+\item The CPU \textbf{issues a command} to the device controller (e.g. ``read a byte'').
+\item The CPU \textbf{reads the status register} of the controller.
+\item \textbf{Test the ready/busy flag:} if the device is \emph{busy}, loop back to step 2 (this waiting loop is the weakness of polling).
+\item When the flag shows \emph{ready}, the CPU \textbf{transfers one data unit} (byte/word) between the controller's data register and memory (or a CPU register).
+\item \textbf{Repeat} steps 2--4 for each unit until the whole block is transferred, then check for errors and terminate.
+\end{enumerate}
+\textbf{Key idea to remember:} the CPU is \emph{fully occupied} during the whole transfer; polling is simple and needs no extra hardware, but it wastes CPU time --- acceptable only for very simple or dedicated systems.
+\end{methode}
+
+\begin{exoresolu}[Polling a printer]
+A dot-matrix printer controller has a status register whose bit 0 is 1 when the printer is ready to accept a character, and 0 when it is busy. A program must print the 4-character word ``EXAM''. (a) Write, in numbered steps or pseudocode, the polling algorithm. (b) State two disadvantages of this method for a busy school computer room.
+\tcblower
+\textbf{Solution.}\\
+\textbf{(a) Polling algorithm:}
+\begin{enumerate}
+\item For each character $c$ of ``EXAM'' (E, X, A, M):
+\begin{enumerate}
+\item Read the printer's status register.
+\item Test bit 0: if it equals 0 (busy), go back to step (i) --- the CPU waits in the loop.
+\item If bit 0 equals 1 (ready), write $c$ into the printer's data register; the controller prints it and clears the ready flag.
+\end{enumerate}
+\item After the last character, check the error bits of the status register; report any fault, else end.
+\end{enumerate}
+Pseudocode:
+\begin{center}
+\begin{tabular}{l}
+FOR each character c in ``EXAM''\\
+\quad REPEAT read STATUS UNTIL (STATUS AND 1) = 1\\
+\quad WRITE c to DATA register\\
+CHECK errors; STOP\\
+\end{tabular}
+\end{center}
+\textbf{(b) Disadvantages:}
+\begin{itemize}
+\item The CPU is \textbf{blocked in the waiting loop} while the slow printer is busy: it cannot serve other users or programs, so the whole computer room slows down.
+\item CPU time (and therefore electrical energy) is \textbf{wasted} on useless status tests; the method does not scale when several peripherals are connected.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{Method 3 --- Describing the interrupt-driven I/O sequence}
+
+\begin{methode}[Writing the interrupt sequence]
+To describe interrupt-driven I/O, always mention these steps in order:
+\begin{enumerate}
+\item The CPU \textbf{starts the device} with a command, then \textbf{continues executing another program} (no waiting loop).
+\item When ready, the device controller raises an \textbf{interrupt request (IRQ)} on an interrupt line.
+\item At the end of the current instruction, the CPU \textbf{detects the interrupt}, \textbf{saves the context} (program counter, status register, general-purpose registers) on the stack.
+\item The CPU uses the \textbf{interrupt vector} to find and execute the \textbf{ISR} (Interrupt Service Routine), which performs the data transfer.
+\item On the \texttt{return from interrupt} instruction, the context is \textbf{restored} and the interrupted program \textbf{resumes} exactly where it stopped.
+\end{enumerate}
+\textbf{Reflexes:} interrupts can be \emph{maskable} (can be disabled by software) or \emph{non-maskable} (NMI, for critical events like power failure); several devices are managed with \emph{priorities} and \emph{vectoring}. The CPU is free \emph{between} interrupts but still executes every byte/word transfer itself.
+\end{methode}
+
+\begin{exoresolu}[Interrupt-driven keyboard handling]
+A student types on a keyboard at an average speed of 4 characters per second while the computer compiles a program. Each character typed triggers an interrupt whose service routine takes $20\ \mu\mathrm{s}$. (a) Explain, step by step, what happens in the machine when a key is pressed. (b) Calculate the fraction of CPU time consumed by keyboard interrupts. (c) Conclude on the suitability of interrupts for this device.
+\tcblower
+\textbf{Solution.}\\
+\textbf{(a) Sequence of events:}
+\begin{enumerate}
+\item The CPU is executing the compiler. The keyboard controller was previously enabled to interrupt (its interrupt mask bit is set).
+\item A key is pressed: the controller stores the scan code in its data register and raises an IRQ line.
+\item After finishing the current machine instruction, the CPU acknowledges the interrupt, pushes the program counter and status register onto the stack (context saving).
+\item The interrupt vector gives the address of the keyboard ISR; the ISR reads the scan code from the controller's data register, converts it to ASCII, and places the character in a keyboard buffer.
+\item The ISR ends with a return-from-interrupt (RTI/IRET): the saved context is popped and the compiler continues as if nothing had happened.
+\end{enumerate}
+\textbf{(b) Fraction of CPU time:}\\
+Interrupts per second: $4$. Time per interrupt: $20\ \mu\mathrm{s} = 20\times 10^{-6}\ \mathrm{s}$.
+\[
+\text{CPU fraction} = 4 \times 20\times 10^{-6} = 8\times 10^{-5} = 0.00008 = 0.008\ \%.
+\]
+\textbf{(c) Conclusion:} Only $0.008\ \%$ of CPU time is used: interrupt-driven I/O is \emph{perfectly suited} to slow, unpredictable devices like keyboards, because the CPU remains almost entirely free for useful work and no polling loop is wasted.
+\end{exoresolu}
+
+\courssub{Method 4 --- Computing CPU overhead of polling}
+
+\begin{methode}[Quantifying the cost of polling]
+To compute how much CPU time polling wastes:
+\begin{enumerate}
+\item Identify the \textbf{device data rate} $D$ (bytes/s) and the \textbf{time of one poll} $t_p$ (a status read + test + branch).
+\item Compute the \textbf{number of polls per second}: if the CPU polls exactly once per data unit, $N = \dfrac{D}{s}$ where $s$ is the size of one data unit; if the statement gives a fixed polling frequency $f$, then $N = f$.
+\item CPU time per second: $T = N \times t_p$; express as a percentage: $\dfrac{T}{1\ \mathrm{s}}\times 100\ \%$.
+\item Compare with the useful work: conclude whether polling is acceptable.
+\end{enumerate}
+\textbf{Key formulas:} $N = \dfrac{D}{s}$ (polls needed per second); overhead $\% = N \times t_p \times 100\ \%$ (with $t_p$ in seconds).
+\end{methode}
+
+\begin{exoresolu}[Cost of polling a serial link]
+A serial port receives data at $9\,600$ bits/s, organised in bytes of 8 bits (ignore start/stop bits). To read it by polling, the CPU executes a status check taking $2\ \mu\mathrm{s}$. Assume the CPU polls exactly once per received byte, plus it polls at a fixed rate of $100\,000$ polls per second to be sure not to miss data. (a) Compute the byte rate. (b) Compute the percentage of CPU time used by polling at $100\,000$ polls/s. (c) Comment.
+\tcblower
+\textbf{Solution.}\\
+\textbf{(a) Byte rate:}
+\[
+D = \frac{9\,600\ \text{bits/s}}{8\ \text{bits/byte}} = 1\,200\ \text{bytes/s}.
+\]
+\textbf{(b) CPU percentage with fixed polling rate:}\\
+Number of polls per second: $N = 100\,000$. Time per poll: $t_p = 2\ \mu\mathrm{s} = 2\times 10^{-6}\ \mathrm{s}$.
+\[
+T = N \times t_p = 100\,000 \times 2\times 10^{-6} = 0.2\ \mathrm{s\ per\ second}.
+\]
+\[
+\text{Overhead} = \frac{0.2}{1}\times 100\ \% = 20\ \%.
+\]
+\textbf{(c) Comment:} Although the useful data represents only $1\,200$ bytes/s (needing at best $1\,200$ useful polls, i.e. $0.24\ \%$ of CPU), the blind fixed-rate polling consumes $20\ \%$ of the CPU --- nearly all of it testing a device that has nothing to deliver. This illustrates the fundamental weakness of programmed I/O: \emph{the CPU pays for waiting, not for transferring}. An interrupt-driven design would reduce the cost to about $1\,200 \times t_{\text{ISR}}$ per second, i.e. a fraction of a percent.
+\end{exoresolu}
+
+\courssub{Method 5 --- Describing and computing a DMA transfer}
+
+\begin{methode}[DMA sequence and transfer-time calculations]
+\textbf{Sequence to describe:}
+\begin{enumerate}
+\item The CPU \textbf{programs the DMA controller}: source/destination addresses, number of bytes, direction, then issues the start command to the device.
+\item The DMAC requests the bus; the CPU \textbf{grants it} (bus grant) and the DMAC performs the transfer \textbf{directly between device and memory}, often by \emph{cycle stealing} (using bus cycles while the CPU is not using them) or in \emph{burst mode}.
+\item When the count reaches zero, the DMAC sends \textbf{one single interrupt} to the CPU to signal completion.
+\end{enumerate}
+\textbf{Calculations:}
+\begin{itemize}
+\item Transfer time (device side): $T = \dfrac{\text{block size}}{\text{device rate}}$.
+\item CPU involvement: only the setup time $t_{\text{setup}}$ plus one end-of-transfer ISR $t_{\text{ISR}}$, whatever the block size.
+\item Compare with interrupt-driven I/O: one ISR \emph{per unit transferred}.
+\end{itemize}
+\end{methode}
+
+\begin{exoresolu}[DMA versus interrupts for a disk block]
+A hard disk transfers a block of $64\ \mathrm{KB}$ ($1\ \mathrm{KB} = 1\,024$ bytes) to RAM at a sustained rate of $20\ \mathrm{MB/s}$ ($1\ \mathrm{MB} = 1\,024\ \mathrm{KB}$). With interrupt-driven I/O, each 4-byte word transferred costs one interrupt of $5\ \mu\mathrm{s}$. With DMA, setup takes $10\ \mu\mathrm{s}$ and the final interrupt takes $5\ \mu\mathrm{s}$. (a) Describe the DMA transfer step by step. (b) Compute the CPU time used by each method. (c) Compute the transfer duration on the device side and conclude.
+\tcblower
+\textbf{Solution.}\\
+\textbf{(a) DMA steps:}
+\begin{enumerate}
+\item The CPU writes into the DMAC registers: memory address of the buffer, count $= 64\ \mathrm{KB}$, direction ``disk $\rightarrow$ memory'', then commands the disk to read.
+\item The disk controller signals the DMAC when data is available; the DMAC takes control of the system bus (cycle stealing) and moves the words directly into RAM, incrementing the address and decrementing the counter.
+\item The CPU continues executing other programs whenever it does not need the bus.
+\item When the counter reaches 0, the DMAC raises one interrupt; the ISR checks status and informs the operating system that the block is ready.
+\end{enumerate}
+\textbf{(b) CPU time:}\\
+Number of words: $\dfrac{64\times 1\,024\ \text{bytes}}{4\ \text{bytes/word}} = 16\,384$ words.
+\begin{itemize}
+\item Interrupt-driven I/O: $16\,384 \times 5\ \mu\mathrm{s} = 81\,920\ \mu\mathrm{s} \approx 81.9\ \mathrm{ms}$ of CPU time.
+\item DMA: $10\ \mu\mathrm{s} + 5\ \mu\mathrm{s} = 15\ \mu\mathrm{s}$ of CPU time.
+\end{itemize}
+\textbf{(c) Transfer duration:}
+\[
+T = \frac{64\ \mathrm{KB}}{20\ \mathrm{MB/s}} = \frac{64}{20\times 1\,024}\ \mathrm{s} \approx 3.125\ \mathrm{ms}.
+\]
+\textbf{Conclusion:} The disk delivers the block in about $3.1\ \mathrm{ms}$, but interrupt-driven I/O would need $81.9\ \mathrm{ms}$ of CPU service --- the CPU \emph{cannot even keep up} with the disk, and the transfer would be slowed down. DMA uses only $15\ \mu\mathrm{s}$ of CPU time, so the transfer runs at full device speed and the CPU remains free. This is why DMA is mandatory for fast block devices.
+\end{exoresolu}
+
+\courssub{Method 6 --- Choosing the appropriate mechanism for a device}
+
+\begin{methode}[Justifying the choice of a control mechanism]
+To answer ``which mechanism is most appropriate and why?'':
+\begin{enumerate}
+\item Estimate the \textbf{data volume per transfer} and the \textbf{device speed}.
+\item Estimate the \textbf{predictability} of arrivals (regular stream vs. random events).
+\item Apply the decision rule:
+\begin{itemize}
+\item \emph{Very simple system, single task, slow device} $\rightarrow$ polling (simplest hardware/software).
+\item \emph{Slow device, unpredictable events, small units} (keyboard, mouse, serial port) $\rightarrow$ interrupt-driven I/O.
+\item \emph{Fast device, large blocks} (disk, SSD, sound card, network card, graphics) $\rightarrow$ DMA, usually combined with one interrupt at the end.
+\end{itemize}
+\item Justify with a \textbf{quantitative argument} (CPU overhead) whenever possible.
+\end{enumerate}
+\textbf{Reflex:} in real computers the three mechanisms \emph{coexist}; the OS chooses per device.
+\end{methode}
+
+\begin{exoresolu}[Equipping a school server in Yaound\'e]
+A school server in Yaound\'e manages: (i) a console keyboard used occasionally by the administrator; (ii) a network card receiving bursts of $1\ \mathrm{MB}$ files from 40 student computers; (iii) a small microcontroller-based fire alarm sensor that must be checked regularly and whose reading program is the only task of its dedicated microcontroller. For each device, choose a control mechanism and justify.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \textbf{(i) Console keyboard --- interrupt-driven I/O.} Keystrokes are rare, small (1 byte) and unpredictable. Polling would waste CPU permanently; DMA is pointless for single bytes. An interrupt per keystroke costs a few microseconds only when a key is actually pressed.
+\item \textbf{(ii) Network card receiving $1\ \mathrm{MB}$ files --- DMA (with a completion interrupt).} The transfers are large blocks arriving at high speed. Interrupt-per-word would generate hundreds of thousands of interrupts per file and saturate the CPU; DMA moves each file directly into memory buffers while the CPU keeps serving the 40 students, and one interrupt per completed buffer suffices.
+\item \textbf{(iii) Fire alarm sensor on a dedicated microcontroller --- programmed I/O (polling).} The microcontroller has a single task, so ``wasting'' its time in a polling loop costs nothing: there is no other work to do. Polling is the simplest and most predictable solution, and the regular checking matches a periodic sensor reading. (An interrupt on the alarm line can be added for the emergency event itself.)
+\end{itemize}
+\textbf{Conclusion:} the choice always balances \emph{transfer size}, \emph{device speed}, \emph{event predictability} and \emph{CPU availability}; there is no universally best mechanism.
+\end{exoresolu}
+
+\courssub{Method 7 --- Comparing the three mechanisms in an examination table or essay}
+
+\begin{methode}[Building a rigorous comparison]
+When asked to compare programmed I/O, interrupt-driven I/O and DMA:
+\begin{enumerate}
+\item Compare along \textbf{fixed criteria}: who initiates the transfer, who moves the data, CPU involvement, hardware cost, complexity, typical devices, reaction speed.
+\item Give \textbf{one advantage and one limitation} for each mechanism.
+\item Finish with a \textbf{synthesis sentence}: modern systems combine all three (e.g. DMA for the disk, interrupts for the keyboard, polling inside some drivers).
+\end{enumerate}
+\textbf{Key ideas:} polling wastes CPU in waiting loops; interrupts remove the waiting but the CPU still moves every unit; DMA frees the CPU from the transfer itself at the price of an extra controller and bus arbitration.
+\end{methode}
+
+\begin{exoresolu}[GCE-style comparison question]
+(a) Construct a table comparing programmed I/O, interrupt-driven I/O and DMA according to: initiator of the transfer, data mover, CPU utilisation, hardware complexity, and typical applications. (b) State one advantage and one disadvantage of each mechanism. (c) Explain why a modern smartphone uses all three mechanisms simultaneously.
+\tcblower
+\textbf{Solution.}\\
+\textbf{(a) Comparison table:}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Programmed I/O} & \textbf{Interrupt-driven} & \textbf{DMA} \\
+\hline
+Initiator & CPU (polls status) & Device (IRQ) & CPU starts, DMAC runs \\
+\hline
+Data mover & CPU & CPU (in the ISR) & DMA controller \\
+\hline
+CPU utilisation & Very high (waiting loop) & Low between events & Negligible (setup + end) \\
+\hline
+Hardware complexity & Minimal & Interrupt controller & DMAC + bus arbitration \\
+\hline
+Typical uses & Simple embedded systems & Keyboard, mouse, serial & Disk, network, sound, GPU \\
+\hline
+\end{tabularx}
+\end{center}
+\textbf{(b) Advantage / disadvantage:}
+\begin{itemize}
+\item Programmed I/O: \emph{advantage} --- simplest, no extra hardware, fully predictable timing; \emph{disadvantage} --- CPU is blocked and wastes time while the device is busy.
+\item Interrupt-driven I/O: \emph{advantage} --- CPU does useful work until the device calls, good reactivity; \emph{disadvantage} --- one interrupt per data unit, so overhead explodes for fast block devices, and context saving costs time.
+\item DMA: \emph{advantage} --- fastest bulk transfer, CPU almost totally free; \emph{disadvantage} --- extra hardware (DMAC), bus contention with the CPU, more complex to program.
+\end{itemize}
+\textbf{(c) Smartphone:} A smartphone is a multi-device system with heterogeneous needs: its \emph{touchscreen and keypad} generate rare, unpredictable events handled by \textbf{interrupts}; its \emph{flash storage, camera and mobile network (4G/5G modem)} move large data blocks using \textbf{DMA} so that applications stay responsive; and some \emph{simple drivers or boot code} use \textbf{polling} loops where a dedicated task waits on a status flag. Combining the three mechanisms lets each peripheral be served with the best trade-off between CPU load, speed and hardware cost.
+\end{exoresolu}
+
+\begin{attention}[Frequent mistakes at the GCE]
+\begin{itemize}
+\item Confusing \emph{who initiates} with \emph{who transfers}: in DMA the CPU \emph{initiates} but the DMAC \emph{transfers}.
+\item Saying interrupts ``cost nothing'': every interrupt costs a context save/restore and an ISR execution.
+\item Forgetting that polling is not ``wrong'': it is the right choice for dedicated single-task systems.
+\item Mixing units in calculations: always convert $\mu\mathrm{s}$ to seconds and KB to bytes ($1\ \mathrm{KB}=1\,024$ bytes) before computing percentages.
+\end{itemize}
+\end{attention}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple-choice quiz]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item During \cle{programmed I/O (polling)}, the CPU repeatedly reads which element of the device controller?
+\begin{enumerate}
+\item the data buffer register
+\item the status register
+\item the instruction register of the CPU
+\item the memory address register (MAR)
+\end{enumerate}
+\item At the end of a block transfer, the DMA controller signals the CPU by raising:
+\begin{enumerate}
+\item a clock pulse
+\item a bus request
+\item an interrupt request (IRQ)
+\item a parity bit
+\end{enumerate}
+\item The software component that translates operating system commands into commands understood by a specific peripheral is:
+\begin{enumerate}
+\item the compiler
+\item the device driver
+\item the bootstrap loader
+\item the interrupt vector
+\end{enumerate}
+\item Which mechanism transfers data between a peripheral and main memory \emph{without} passing each word through the CPU?
+\begin{enumerate}
+\item polling
+\item interrupt-driven I/O
+\item DMA
+\item spooling
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false --- justify]
+State whether each statement is true or false, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item In polling, the CPU can execute other useful programs while it waits for a slow peripheral to become ready.
+\item A device controller is a hardware circuit, whereas a device driver is software.
+\item In interrupt-driven I/O, the peripheral itself informs the CPU when it needs attention.
+\item DMA is the cheapest control mechanism to implement in terms of hardware.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in at most three lines:
+\begin{enumerate}
+\item peripheral device;
+\item device controller (interface);
+\item interrupt service routine (ISR);
+\item bus mastering (cycle stealing) in DMA.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculation]
+A keyboard produces one character every $200\ \mathrm{ms}$ on average. The CPU executes $2 \times 10^{9}$ instructions per second, and checking the keyboard status register by polling costs $5$ instructions per check, performed every $1\ \mathrm{ms}$.
+\begin{enumerate}
+\item How many status checks does the CPU perform between two successive keystrokes?
+\item How many instructions are consumed by polling between two keystrokes?
+\item What fraction of the CPU time is used by polling, and what fraction of the checks is unsuccessful? Comment.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Sequencing a DMA transfer]
+The steps of a DMA block transfer from a hard disk to main memory are given below in disorder:
+\begin{enumerate}
+\item[a.] The DMAC raises an interrupt to signal the end of the transfer.
+\item[b.] The CPU programs the DMAC with the source address, the destination address and the number of words.
+\item[c.] The DMAC transfers the data block directly to memory, stealing bus cycles.
+\item[d.] The CPU initiates the disk read command and switches to another task.
+\item[e.] The CPU verifies the transfer status and resumes normal control of the bus.
+\end{enumerate}
+Copy these steps in the correct chronological order and justify each position in one sentence.
+\end{exercice}
+
+\begin{exercice}[Completing a comparison table]
+Copy and complete the following table comparing the three I/O control mechanisms. For the last row, give \textbf{two} suitable example devices for each mechanism (think of a keyboard, a mouse, a printer, a hard disk, a network card, a flash drive).
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Polling} & \textbf{Interrupt-driven I/O} & \textbf{DMA} \\
+\hline CPU involvement during transfer & & & \\
+\hline Relative speed for large blocks & & & \\
+\hline Hardware cost / complexity & & & \\
+\hline Two example devices & & & \\
+\hline
+\end{tabularx}
+\end{center}
+\end{exercice}
+
+\begin{exercice}[Scenario analysis: the frozen computer]
+Manka'a inserts a faulty USB flash drive into her computer in Bamenda. Immediately, the mouse pointer stops moving and the whole machine appears frozen for several seconds.
+\begin{enumerate}
+\item Which I/O control mechanism is most likely involved in this behaviour?
+\item Explain, step by step, why the CPU is blocked and cannot serve other peripherals.
+\item Suggest one hardware or software feature that would prevent a single faulty device from freezing the whole system.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Choosing the right mechanism]
+For each of the following situations, state the most appropriate control mechanism (polling, interrupt-driven I/O or DMA) and justify your choice:
+\begin{enumerate}
+\item a point-of-sale terminal in a Douala supermarket reading keys pressed by the cashier;
+\item copying a $4\ \mathrm{GB}$ video file from an external hard disk to the internal disk;
+\item a simple washing-machine microcontroller checking every millisecond whether the door is closed;
+\item a network interface card receiving a continuous stream of packets at high speed.
+\end{enumerate}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question: from key press to memory (10 marks)]
+\begin{enumerate}
+\item Define the terms \emph{device controller} and \emph{device driver}, clearly stating for each one whether it is hardware or software. \textbf{(4 marks)}
+\item Using a clearly labelled diagram, explain how a character typed on a keyboard reaches main memory using \emph{interrupt-driven I/O}. Your answer must mention: the status and data registers of the controller, the interrupt request line, the interrupt service routine, and the role of the device driver. \textbf{(6 marks)}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Essay: a compromise between polling and DMA (15 marks)]
+``Interrupt-driven I/O is a compromise between programmed I/O (polling) and Direct Memory Access.''
+
+Discuss this statement. Your essay should:
+\begin{enumerate}
+\item briefly recall the operating principle of each of the three mechanisms;
+\item present \textbf{two advantages} and \textbf{one limitation} of each mechanism;
+\item conclude by justifying why modern personal computers use all three mechanisms simultaneously, illustrating with concrete devices (keyboard, printer, hard disk, network card).
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Problem: performance study of a data transfer (15 marks)]
+A cybercaf\'e in Yaound\'e backs up $64\ \mathrm{MB}$ of data from a hard disk to memory every evening. Take $1\ \mathrm{MB} = 2^{20}$ bytes. The disk controller delivers data in words of $4$ bytes. The CPU executes instructions at $10^{9}$ instructions per second.
+\begin{enumerate}
+\item Compute the number of words to be transferred. \textbf{(2 marks)}
+\item With programmed I/O, transferring each word costs the CPU $40$ instructions (status check plus data movement). Calculate the total CPU time needed for the backup. \textbf{(4 marks)}
+\item With interrupt-driven I/O, each word still costs $40$ instructions, but an overhead of $20$ instructions per interrupt is added. Calculate the new total CPU time and comment. \textbf{(4 marks)}
+\item With DMA, the CPU only spends $5\,000$ instructions to program the DMAC and $2\,000$ instructions to handle the single end-of-transfer interrupt. Calculate the CPU time used and the percentage of CPU time saved compared with polling. \textbf{(5 marks)}
+\end{enumerate}
+\end{exercice}
+
+
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 --- Multiple-choice quiz]
+\begin{enumerate}
+\item \textbf{(b)} the status register. Polling consists precisely in looping on the ready/busy flag of the controller's status register until the device signals that it is ready.
+\item \textbf{(c)} an interrupt request (IRQ). The DMAC interrupts the CPU only once, when the whole block has been transferred (word count $= 0$).
+\item \textbf{(b)} the device driver. It is the software layer between the operating system and the hardware controller, translating generic OS commands into device-specific orders.
+\item \textbf{(c)} DMA. The DMA controller moves data directly between the peripheral and memory, becoming temporary bus master, so words never transit through the CPU.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True or false --- justify]
+\begin{enumerate}
+\item \textbf{False.} In polling the CPU is stuck in a waiting loop, repeatedly testing the status flag; it performs no useful work while the device is not ready. This is called \emph{busy waiting}.
+\item \textbf{True.} The controller (interface adapter) is an electronic circuit placed between the system bus and the device; the driver is a program executed by the CPU, usually part of the operating system.
+\item \textbf{True.} The controller raises an interrupt request line; the CPU suspends its current task, saves its context and runs the interrupt service routine before resuming.
+\item \textbf{False.} DMA requires an additional hardware component, the DMA controller (DMAC), capable of bus mastering; it is the most complex and most expensive of the three mechanisms. Polling is the cheapest.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Definitions]
+\begin{enumerate}
+\item \textbf{Peripheral device:} any external equipment connected to the computer to perform input (keyboard), output (printer), storage (disk) or communication (network card).
+\item \textbf{Device controller:} the hardware interface circuit between a peripheral and the system bus; it holds status, control and data registers and supervises the physical operation of the device.
+\item \textbf{Interrupt service routine (ISR):} the section of code (supplied by the device driver) executed by the CPU in response to an interrupt, in order to service the requesting device before normal execution resumes.
+\item \textbf{Bus mastering (cycle stealing):} the DMAC temporarily takes control of the system bus to transfer words directly between the device and memory, ``stealing'' bus cycles from the CPU, which simply waits when it needs the bus.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Direct calculation]
+\begin{enumerate}
+\item Between two keystrokes, the number of status checks is
+\[ \frac{\SI{200}{ms}}{\SI{1}{ms}} = 200 \text{ checks}. \]
+\item Instructions consumed by polling between two keystrokes:
+\[ 200 \times 5 = 1\,000 \text{ instructions}. \]
+\item In $\SI{200}{ms} = \SI{0.2}{s}$ the CPU could execute
+\[ 2\times10^{9} \times 0.2 = 4\times10^{8} \text{ instructions}. \]
+The fraction of CPU time used by polling is therefore
+\[ \frac{1\,000}{4\times10^{8}} = 2.5\times10^{-6} \approx 0.00025\ \%. \]
+Out of $200$ checks, only the last one finds a character, so the fraction of unsuccessful checks is
+\[ \frac{199}{200} = 99.5\ \%. \]
+\textbf{Comment:} polling a very slow device wastes almost all the checks ($99.5\ \%$ find nothing), even though the absolute CPU cost remains small here because the keyboard is so slow. With several devices polled frequently, or with a faster device, the waste becomes significant --- this is exactly why interrupts were invented.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 --- Sequencing a DMA transfer]
+Correct chronological order: \textbf{b, d, c, a, e}.
+\begin{enumerate}
+\item \textbf{b} first: nothing can start before the DMAC knows the source address, the destination address and the word count.
+\item \textbf{d} next: once the DMAC is programmed, the CPU launches the disk read command and is free to schedule another process.
+\item \textbf{c} then: the DMAC, now bus master, moves the block directly into memory by cycle stealing, without involving the CPU.
+\item \textbf{a} then: when the word count reaches zero, the DMAC raises the end-of-transfer interrupt to inform the CPU.
+\item \textbf{e} last: the CPU runs the ISR, checks the controller's status register for possible errors and takes back full control of the bus.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- Completing a comparison table]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Polling} & \textbf{Interrupt-driven I/O} & \textbf{DMA} \\
+\hline CPU involvement during transfer & Total: CPU tests the status flag and moves every word itself & Partial: CPU moves each word but only when interrupted & Minimal: CPU only programs the DMAC and handles the final interrupt \\
+\hline Relative speed for large blocks & Very slow (busy waiting) & Medium (one interrupt per word or per small unit) & Fast (block moved at bus speed) \\
+\hline Hardware cost / complexity & Lowest: a simple status flag suffices & Medium: interrupt line and controller logic needed & Highest: a DMA controller with bus mastering is required \\
+\hline Two example devices & Simple sensors, washing-machine door switch & Keyboard, mouse & Hard disk, network card \\
+\hline
+\end{tabularx}
+\end{center}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Scenario analysis: the frozen computer]
+\begin{enumerate}
+\item The symptoms point to \cle{programmed I/O (polling)}: the driver is busy-waiting for the faulty device to signal ``ready''.
+\item Step by step: the operating system issues a command to the flash drive; the driver enters a polling loop on the controller's status register; the faulty device never sets the ready flag; the CPU keeps executing the test loop at high priority and therefore cannot schedule the mouse driver or any other task, so the whole machine appears frozen even though the CPU is working at full speed.
+\item Possible remedies (any one accepted): a \textbf{timeout} in the driver (after a fixed delay the device is declared failed and the loop is abandoned); using \textbf{interrupt-driven I/O} instead of polling so the CPU remains free while waiting; at hardware level, a \textbf{watchdog timer} that resets a controller which does not respond.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- Choosing the right mechanism]
+\begin{enumerate}
+\item \textbf{Interrupt-driven I/O}: key presses are rare and unpredictable; the CPU must stay free for billing and stock tasks between presses, and the cost of one interrupt per key is negligible.
+\item \textbf{DMA}: a $\SI{4}{GB}$ file is a huge block transfer; DMA moves it at bus speed and frees the CPU completely, whereas polling or per-word interrupts would monopolise it.
+\item \textbf{Polling}: the microcontroller has nothing else to do, the check is extremely cheap and the response must be immediate and deterministic; a simple test loop is ideal and avoids the complexity of interrupt hardware.
+\item \textbf{DMA} (combined with interrupts): packets arrive in large volumes at high speed; per-word interrupts would saturate the CPU, so the network card writes packets straight to memory by DMA and interrupts only once per packet or per buffer.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 9 --- Structured question: from key press to memory]
+\textbf{Examiner's expectations and mark scheme (10 marks).}
+\begin{enumerate}
+\item \textbf{Device controller (2 marks):} the electronic \emph{hardware} interface circuit between the peripheral and the system bus (1 mark for ``hardware''); it contains status, control and data registers and physically operates the device (1 mark). \textbf{Device driver (2 marks):} the \emph{software} program, part of the operating system (1 mark for ``software''); it translates OS requests into commands for the controller and contains the interrupt service routine (1 mark).
+\item \textbf{Diagram and explanation (6 marks):} award 2 marks for a clear labelled diagram showing keyboard $\rightarrow$ controller (with \textbf{status register} and \textbf{data register}) $\rightarrow$ \textbf{IRQ line} $\rightarrow$ CPU $\rightarrow$ memory; then 1 mark for each of the following steps: the key code is placed in the data register and the status flag is set; the controller raises the IRQ line; the CPU suspends its task, saves its context and runs the ISR supplied by the device driver; the ISR reads the data register, stores the character in a memory buffer, and the CPU restores its context and resumes the interrupted program.
+\end{enumerate}
+\textbf{Common mistakes:} Candidates often swap ``controller'' and ``driver'' (the controller is hardware, the driver is software), forget to mention the saving/restoring of the CPU context, or draw the data flowing through the CPU registers without naming the controller's data register.
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- Essay: a compromise between polling and DMA]
+\textbf{Marking guide (15 marks).}
+\begin{enumerate}
+\item \textbf{Principles (about 5 marks).} Polling: the CPU loops on the status flag and moves every word itself (busy waiting). Interrupt-driven I/O: the device raises an IRQ when ready; the CPU runs an ISR that moves the word, then resumes its work. DMA: the CPU programs a DMAC which transfers the whole block directly to memory by bus mastering, interrupting only at the end.
+\item \textbf{Advantages and limitations (about 6 marks: 1 mark per valid point).} Polling --- advantages: very simple and cheap hardware, predictable response time; limitation: wastes CPU time in busy waiting. Interrupt-driven I/O --- advantages: CPU free between events, well suited to slow unpredictable devices; limitation: one interrupt per word is costly for fast devices because of context-saving overhead. DMA --- advantages: fastest for large blocks, CPU almost totally free; limitation: requires extra hardware (DMAC) and is overkill for single characters.
+\item \textbf{Conclusion (about 4 marks).} A modern personal computer uses all three mechanisms simultaneously: polling inside simple embedded controllers, interrupts for the keyboard and mouse, DMA for the hard disk and the network card. Each mechanism is used where its cost/performance balance is optimal, which confirms that interrupt-driven I/O is indeed the intermediate compromise between the simplicity of polling and the power of DMA.
+\end{enumerate}
+\textbf{Examiner's expectations:} a structured essay (introduction, development, conclusion), correct technical vocabulary (\emph{status register}, \emph{IRQ}, \emph{ISR}, \emph{bus mastering}, \emph{cycle stealing}) and at least three concrete devices correctly matched to mechanisms.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Problem: performance study of a data transfer]
+\begin{enumerate}
+\item \textbf{(2 marks)} Number of bytes: $64 \times 2^{20} = 67\,108\,864$ bytes. Number of $4$-byte words:
+\[ N = \frac{67\,108\,864}{4} = 16\,777\,216 \text{ words} \approx 1.678\times10^{7} \text{ words}. \]
+\item \textbf{(4 marks)} Polling: $40$ instructions per word, hence
+\[ 40 \times 16\,777\,216 = 6.71\times10^{8} \text{ instructions}, \qquad t = \frac{6.71\times10^{8}}{10^{9}} \approx \SI{0.671}{s}. \]
+\item \textbf{(4 marks)} Interrupt-driven I/O: $40 + 20 = 60$ instructions per word, hence
+\[ 60 \times 16\,777\,216 \approx 1.007\times10^{9} \text{ instructions}, \qquad t \approx \SI{1.007}{s}. \]
+\textbf{Comment:} for a fast block device, interrupt-driven I/O is even \emph{slower} than polling for the CPU, because the per-interrupt overhead (saving and restoring the context) exceeds the cost of the polling loop; its advantage --- a free CPU between events --- disappears when the device is always ready.
+\item \textbf{(5 marks)} DMA: $5\,000 + 2\,000 = 7\,000$ instructions in total, hence
+\[ t = \frac{7\,000}{10^{9}} = \SI{7}{\mu s}. \]
+Percentage of CPU time saved compared with polling:
+\[ \frac{0.671 - 7\times10^{-6}}{0.671} \times 100 \approx 99.999\ \%. \]
+The CPU is essentially free during the whole backup: this is why DMA is the standard mechanism for disk and network transfers.
+\end{enumerate}
+\textbf{Examiner's expectations:} correct conversion of $\SI{64}{MB}$ using $2^{20}$ (not $10^{6}$), explicit formulas before numerical answers, units on every time result, and a relevant comment for part (c).
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, text=white, font=\small},
+  root concept/.append style={concept color=popdark, font=\bfseries\small, minimum size=3.1cm},
+  level 1/.append style={level distance=3.4cm, sibling angle=60},
+  level 2/.append style={level distance=2.2cm, sibling angle=45, font=\scriptsize}]
+\node[root concept]{Peripheral Control Mechanisms}
+  child[concept color=popblue]{ node {Peripherals \& Controllers}
+    child[concept color=popblue!80]{ node {I/O ports, device controller} }
+    child[concept color=popblue!80]{ node {Status / control / data registers} }
+  }
+  child[concept color=poporange]{ node {Programmed I/O (Polling)}
+    child[concept color=poporange!80]{ node {CPU checks status in a loop} }
+    child[concept color=poporange!80]{ node {Simple but wastes CPU time} }
+  }
+  child[concept color=popgreen]{ node {Interrupt-Driven I/O}
+    child[concept color=popgreen!80]{ node {Device signals CPU (IRQ)} }
+    child[concept color=popgreen!80]{ node {ISR, context save/restore} }
+  }
+  child[concept color=poppurple]{ node {DMA}
+    child[concept color=poppurple!80]{ node {DMA controller moves blocks} }
+    child[concept color=poppurple!80]{ node {One interrupt per block} }
+  }
+  child[concept color=poppink]{ node {Comparison}
+    child[concept color=poppink!80]{ node {Speed vs CPU overhead} }
+    child[concept color=poppink!80]{ node {Match mechanism to device} }
+  }
+  child[concept color=popgold]{ node {Applications}
+    child[concept color=popgold!80]{ node {Keyboard, printer, disk, network} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: peripheral device control mechanisms.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions.}
+\begin{itemize}
+\item A \cle{peripheral} (I/O device) is any hardware unit connected to the computer to input, output or store data: keyboard, mouse, printer, disk, screen, network card, modem.
+\item A \cle{device controller} (interface/adapter) is the electronic circuit between the bus and the peripheral; it holds \cle{registers}: \textbf{data register}, \textbf{status register} (busy, ready, error) and \textbf{control register} (commands from the CPU).
+\item An \cle{I/O port} is the addressable point through which the CPU reads/writes these registers (port-mapped I/O or memory-mapped I/O).
+\item A \cle{control mechanism} is the strategy used to synchronise data transfer between the fast CPU and slow peripherals.
+\item An \cle{interrupt} is a hardware signal (IRQ) sent by a device to attract the CPU's attention; the CPU suspends its current work, saves its context, runs the \cle{Interrupt Service Routine} (ISR) located via the \cle{interrupt vector table}, then restores the context and resumes.
+\item \cle{DMA} (Direct Memory Access): a dedicated \cle{DMA controller} transfers a whole block of data directly between memory and the device, without passing through the CPU, and interrupts the CPU only once at the end.
+\end{itemize}
+
+\textbf{The three mechanisms to know.}
+\begin{itemize}
+\item \textbf{Programmed I/O (polling):} the CPU repeatedly reads the status register in a loop until the device is ready, then transfers the data itself. Simple, no extra hardware, but the CPU wastes time waiting (busy waiting). Suitable for very simple, predictable systems.
+\item \textbf{Interrupt-driven I/O:} the CPU does other work; the device raises an IRQ when ready. The CPU responds via the ISR. Efficient for slow, unpredictable devices (keyboard, mouse). Overhead: context saving/restoring at every interrupt.
+\item \textbf{DMA:} the CPU initialises the DMA controller (source/destination address, byte count, direction); the controller transfers the block using \emph{cycle stealing} on the bus; one interrupt signals completion. Best for fast block devices: hard disk, sound card, network card.
+\end{itemize}
+
+\textbf{Comparison table (learn it).}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+\hline
+\rowcolor{popblueL} Criterion & Polling & Interrupt & DMA \\
+\hline
+CPU involvement & Total & Per data item & Start and end only \\
+\hline
+CPU efficiency & Very low & Good & Excellent \\
+\hline
+Hardware cost & None & Interrupt controller & DMA controller \\
+\hline
+Best for & Simple devices & Slow devices & Fast block transfers \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Methods.}
+\begin{itemize}
+\item To analyse a polling sequence: read status register $\rightarrow$ test ready bit $\rightarrow$ if not ready, loop back; if ready, transfer data $\rightarrow$ repeat.
+\item To describe an interrupt: device raises IRQ $\rightarrow$ CPU finishes current instruction $\rightarrow$ saves PC and registers $\rightarrow$ jumps to ISR via vector table $\rightarrow$ services device $\rightarrow$ restores context $\rightarrow$ resumes.
+\item To justify a choice of mechanism, always argue from: device speed, data volume, CPU availability and hardware cost.
+\end{itemize}
+
+\textbf{Common mistakes.}
+\begin{itemize}
+\item Confusing the \emph{controller} (hardware circuit) with the \emph{driver} (software).
+\item Saying DMA needs ``no CPU at all'': the CPU must still \emph{configure} the transfer and is interrupted at the end.
+\item Believing interrupts make polling disappear: the ISR itself may use programmed I/O to move the data.
+\item Forgetting that polling wastes CPU time even when the device is not ready (busy waiting).
+\item Mixing up the roles of the status register (device $\rightarrow$ CPU) and the control register (CPU $\rightarrow$ device).
+\end{itemize}
+
+\textbf{GCE tips.}
+\begin{itemize}
+\item Typical questions: ``Define interrupt'', ``Distinguish polling from interrupt-driven I/O'', ``Explain the steps of a DMA transfer'', ``Give one advantage and one disadvantage of each mechanism''.
+\item Always support a comparison with a clear table or a step-numbered sequence; examiners reward structure.
+\item Use concrete examples: keyboard (interrupt), printer (interrupt/polling), hard disk and network card (DMA) — e.g. a modem handling a mobile-money transaction at an MTN or Orange kiosk relies on interrupt-driven I/O.
+\item Define every keyword you use (IRQ, ISR, vector, cycle stealing) before using it in an argument.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

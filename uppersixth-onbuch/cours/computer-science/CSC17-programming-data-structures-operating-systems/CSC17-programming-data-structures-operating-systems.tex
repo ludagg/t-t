@@ -1,0 +1,3176 @@
+% Programming, data structures & operating systems — Computer Science Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic CSC17-programming-data-structures-operating-systems.tex
+\newcommand{\DOCMATIERE}{Computer Science}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — Computer Science}
+\newcommand{\DOCLECON}{17}
+\newcommand{\DOCTITRE}{Programming, data structures \& operating systems}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Programming, data structures \& operating systems}{Computer Science}{Upper Sixth}{Upper Sixth — Computer Science}{17}{4 periods}{This chapter consolidates Advanced Level Computer Science by linking three pillars: C programming, data structures, and operating systems. Students design and code a data indexing and search module in C, then build a CPU and memory allocation simulator that reproduces the core decisions of a real operating system.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can declare and manipulate fundamental C types, pointers, arrays, strings and structures.
+\item By the end of this chapter I can implement and trace linear data structures (arrays, linked lists, stacks, queues) in C.
+\item By the end of this chapter I can implement and compare linear search and binary search, and analyse their complexity.
+\item By the end of this chapter I can build a simple index (key → record) to speed up data retrieval in a file-based application.
+\item By the end of this chapter I can explain the role and main functions of an operating system (process, memory, file and device management).
+\item By the end of this chapter I can describe process states and apply CPU scheduling algorithms (FCFS, SJF, Round Robin) by hand and in code.
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item C Programming Foundations for Data Manipulation
+\item Data Structures, Searching and Indexing
+\item Operating Systems and System Software
+\item Hands-on Projects: Indexing Module and OS Simulator
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can declare and manipulate fundamental C types, pointers, arrays, strings and structures.
+\item By the end of this chapter I can implement and trace linear data structures (arrays, linked lists, stacks, queues) in C.
+\item By the end of this chapter I can implement and compare linear search and binary search, and analyse their complexity.
+\item By the end of this chapter I can build a simple index (key → record) to speed up data retrieval in a file-based application.
+\item By the end of this chapter I can explain the role and main functions of an operating system (process, memory, file and device management).
+\item By the end of this chapter I can describe process states and apply CPU scheduling algorithms (FCFS, SJF, Round Robin) by hand and in code.
+\item By the end of this chapter I can simulate contiguous memory allocation strategies (first-fit, best-fit, worst-fit).
+\item By the end of this chapter I can design, code, compile, test and document a complete modular C project suitable for the GCE practical examination.
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Algorithmics from Lower Sixth: variables, control structures (if, while, for), subprograms and pseudocode.
+\item Basic programming notions: compilation vs interpretation, source code, syntax and logic errors.
+\item Number systems and data representation (binary, hexadecimal, memory units: byte, KB, MB).
+\item Notion of software classification: system software vs application software (Form 5 / Lower Sixth).
+\item File handling basics: opening, reading and writing a text file.
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{C Programming Foundations for Data Manipulation}
+
+Every evening, the registrar of a large secondary school in Yaoundé searches through thousands of student records to produce transcripts before the GCE registration deadline — a task that takes hours when data is stored carelessly, but seconds when it is properly indexed. Meanwhile, the school's single computer lab must run a browser, a C compiler and a printer queue at the same time without freezing. How does a program organise data in memory so that searching is fast? And how does the operating system fairly share the CPU and RAM between competing programs? This chapter answers both questions by combining C programming, data structures and operating system concepts into two hands-on projects. We begin with the tool that makes everything else possible: the \cle{C language}.
+
+\courssub{The C Language in the GCE Context}
+
+\textbf{Why C?}\par
+C is a \cle{compiled language}: the whole source text is translated once into machine code by a \emph{compiler}, producing an executable file that runs directly on the processor. This contrasts with interpreted languages, where each line is translated at run time. Compilation makes C programs fast — exactly what we need when searching thousands of student records — and gives the programmer direct control over memory, which is why operating systems themselves are written in C.
+
+\begin{definition}[C program]
+A \cle{C program} is a text file (conventionally with the extension \texttt{.c}) containing instructions written in the C language, which must be translated by a compiler into an executable binary file before it can run.
+\end{definition}
+
+\textbf{Structure of a C program.} Every C program follows the same skeleton:
+
+\begin{itemize}
+\item \texttt{\#include <stdio.h>} \hspace{1em} // preprocessor directive: import standard input/output library
+\item \texttt{int main(void) \{} \hspace{1em} // entry point of the program
+\item \texttt{~~~~int age = 17;} \hspace{1em} // statement: declaration + initialisation
+\item \texttt{~~~~printf("Age = \%d\textbackslash n", age);}
+\item \texttt{~~~~return 0;} \hspace{1em} // 0 signals success to the operating system
+\item \texttt{\}}
+\end{itemize}
+
+Three ingredients appear here. \cle{Preprocessor directives} (lines starting with \texttt{\#}) are handled \emph{before} compilation: \texttt{\#include} literally inserts the content of a header file. The function \texttt{main} is where execution always begins. \cle{Statements} are the individual orders, each terminated by a semicolon.
+
+\textbf{The compilation chain.} Turning \texttt{source.c} into a running program involves several stages, usually driven by a single command such as \texttt{gcc source.c -o program}:
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  stage/.style={draw=popblue, fill=popblueL, rounded corners=2pt, minimum width=2.5cm, minimum height=0.9cm, align=center, font=\small},
+  file/.style={draw=popdark, fill=white, rounded corners=2pt, minimum width=2.2cm, minimum height=0.9cm, align=center, font=\small},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark}]
+\node[file] (src) at (0,0) {source.c};
+\node[stage] (pre) at (3.4,0) {Preprocessor};
+\node[stage] (comp) at (6.8,0) {Compiler};
+\node[file] (obj) at (10.2,0) {source.o};
+\node[stage] (link) at (13.4,0) {Linker};
+\node[file] (exe) at (16.4,0) {program};
+\draw[arr] (src) -- (pre);
+\draw[arr] (pre) -- (comp);
+\draw[arr] (comp) -- (obj);
+\draw[arr] (obj) -- (link);
+\draw[arr] (link) -- (exe);
+\node[below=0.15cm of pre, font=\scriptsize, text=popmuted, align=center] {expands \#include};
+\node[below=0.15cm of comp, font=\scriptsize, text=popmuted, align=center] {checks syntax,\\ translates to machine code};
+\node[below=0.15cm of link, font=\scriptsize, text=popmuted, align=center] {joins object files\\ and libraries};
+\end{tikzpicture}
+\end{center}
+\legende{The C compilation chain: preprocessing, compiling to an object file, then linking into an executable.}
+\end{popfigure}
+
+\begin{methode}[Compiling and debugging a C program]
+\begin{enumerate}
+\item Compile with warnings enabled: \texttt{gcc -Wall source.c -o program}.
+\item Read the \textbf{first} error message only; later errors are often consequences of the first.
+\item Fix that error, recompile, repeat until compilation succeeds.
+\item Run the program with test data whose expected result you know.
+\item If the output is wrong, insert \texttt{printf} \emph{traces} showing the values of key variables at strategic points to locate the logic error, then remove the traces.
+\end{enumerate}
+\end{methode}
+
+\courssub{Types, Input/Output and Operators}
+
+\textbf{Fundamental types.} C offers a small set of basic types:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Type} & \textbf{Meaning} & \textbf{Example} \\
+\hline
+\texttt{int} & whole number & \texttt{int students = 45;} \\
+\hline
+\texttt{float} & real number (single precision) & \texttt{float mark = 13.5f;} \\
+\hline
+\texttt{double} & real number (double precision) & \texttt{double pi = 3.1415926535;} \\
+\hline
+\texttt{char} & single character & \texttt{char grade = 'A';} \\
+\hline
+\end{tabularx}
+\end{center}
+
+A \cle{constant} is declared with \texttt{const} (e.g. \texttt{const int MAX = 100;}) or with \texttt{\#define MAX 100}; its value cannot change during execution.
+
+\textbf{Formatted input/output.} \texttt{printf} writes to the screen and \texttt{scanf} reads from the keyboard; both use \emph{format specifiers}: \texttt{\%d} for \texttt{int}, \texttt{\%f} for \texttt{float}/\texttt{double} (printing), \texttt{\%lf} for \texttt{double} in \texttt{scanf}, \texttt{\%c} for \texttt{char}, \texttt{\%s} for strings.
+
+\begin{itemize}
+\item \texttt{int age;}
+\item \texttt{printf("Enter age: ");}
+\item \texttt{scanf("\%d", \&age);} \hspace{1em} // note the \& : scanf needs the ADDRESS
+\item \texttt{printf("You are \%d years old.\textbackslash n", age);}
+\end{itemize}
+
+\begin{attention}[scanf without \&]
+A very common mistake is writing \texttt{scanf("\%d", age);} without the \texttt{\&} operator on a non-pointer variable. \texttt{scanf} then writes the typed value to a meaningless memory location, which usually causes a \emph{segmentation fault} (the program crashes). Always pass \texttt{\&variable} for \texttt{int}, \texttt{float}, \texttt{double} and \texttt{char}.
+\end{attention}
+
+\textbf{Operators and casting.} Besides \texttt{+ - * /}, the operator \texttt{\%} gives the remainder of integer division (\texttt{17 \% 5} is $2$). Beware: dividing two \texttt{int} values discards the fractional part, so \texttt{7 / 2} is $3$, not $3.5$. A \cle{cast} forces a conversion: \texttt{(float)7 / 2} gives $3.5$.
+
+\begin{attention}[= versus ==]
+In an \texttt{if} condition, \texttt{=} is \emph{assignment} while \texttt{==} is \emph{comparison}. Writing \texttt{if (mark = 10)} assigns $10$ to \texttt{mark} and the condition is always true; the compiler may not even complain. Always write \texttt{if (mark == 10)}.
+\end{attention}
+
+\courssub{Control Structures in C}
+
+C provides the decision structures \texttt{if}/\texttt{else} and \texttt{switch}, and the loops \texttt{while}, \texttt{do}-\texttt{while} and \texttt{for}. Conditions use the comparison operators \texttt{==}, \texttt{!=}, \texttt{<}, \texttt{<=}, \texttt{>}, \texttt{>=} and the logical operators \texttt{\&\&} (AND), \texttt{||} (OR), \texttt{!} (NOT).
+
+\begin{itemize}
+\item \texttt{// Appreciation of a GCE mark out of 20}
+\item \texttt{if (mark >= 16)~~~~~~printf("Excellent");}
+\item \texttt{else if (mark >= 10) printf("Pass");}
+\item \texttt{else~~~~~~~~~~~~~~~~printf("Fail");}
+\end{itemize}
+
+A counted loop that prints the multiplication table of 7:
+
+\begin{itemize}
+\item \texttt{int i;}
+\item \texttt{for (i = 1; i <= 10; i++) \{}
+\item \texttt{~~~~printf("7 x \%d = \%d\textbackslash n", i, 7 * i);}
+\item \texttt{\}}
+\end{itemize}
+
+Use \texttt{while} when the number of repetitions is unknown (e.g. reading until the user types $-1$), \texttt{do}-\texttt{while} when the body must run at least once (e.g. re-asking until input is valid), and \texttt{for} when a counter is natural. Always \emph{indent} the body of each block: indentation is what makes nested structures readable and is expected in examination answers.
+
+\courssub{Functions and Modular Decomposition}
+
+A \cle{function} is a named, reusable block of code that receives \emph{parameters} and may \emph{return} a value. Decomposing a problem into functions is the heart of good program design: the registrar's program might have \texttt{readRecords()}, \texttt{searchByMatricule()} and \texttt{printTranscript()}.
+
+\begin{itemize}
+\item \texttt{// Declaration (prototype), usually placed before main}
+\item \texttt{float average(float a, float b);}
+\item \texttt{}
+\item \texttt{// Definition}
+\item \texttt{float average(float a, float b) \{}
+\item \texttt{~~~~return (a + b) / 2.0f;}
+\item \texttt{\}}
+\end{itemize}
+
+By default, C passes parameters \cle{by value}: the function receives a \emph{copy}, so it cannot modify the caller's variable. To let a function modify a variable, we pass its \emph{address} — this is where pointers come in.
+
+\courssub{Arrays and Strings}
+
+An \cle{array} stores a fixed number of elements of the same type in contiguous memory; indexing starts at $0$.
+
+\begin{itemize}
+\item \texttt{float marks[5] = \{12.5f, 9.0f, 15.0f, 11.0f, 14.5f\};}
+\item \texttt{marks[0] = 13.0f;} \hspace{1em} // first element
+\item \texttt{int grid[3][4];} \hspace{1em} // 2D array: 3 rows, 4 columns
+\end{itemize}
+
+A \cle{string} in C is simply an array of \texttt{char} terminated by the special character \texttt{'\textbackslash 0'}. The library \texttt{string.h} provides essential tools: \texttt{strlen(s)} returns the length (without the terminator), \texttt{strcpy(dest, src)} copies a string, and \texttt{strcmp(a, b)} returns $0$ when the strings are equal (negative/positive otherwise).
+
+\begin{attention}[Strings are not compared with ==]
+\texttt{if (name == "Etoundi")} compares \emph{addresses}, not contents. Always use \texttt{if (strcmp(name, "Etoundi") == 0)}.
+\end{attention}
+
+\courssub{Pointers and Dynamic Memory}
+
+Every variable lives somewhere in memory, at a numeric \emph{address}. The operator \texttt{\&} gives the address of a variable; the operator \texttt{*} accesses the value stored at an address.
+
+\begin{definition}[Pointer]
+A \cle{pointer} is a variable whose value is the memory address of another variable. If \texttt{p} points to \texttt{x}, then \texttt{*p} (dereferencing) is exactly \texttt{x}.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  cell/.style={draw=popdark, minimum width=2.4cm, minimum height=1cm, align=center},
+  lab/.style={font=\small\itshape, text=popmuted},
+  arr/.style={-{Stealth[length=2.5mm]}, very thick, poporange}]
+\node[cell, fill=popblueL] (x) at (0,0) {\texttt{int x = 42}};
+\node[lab, above=0.05cm of x] {address \texttt{0x7ffc1004}};
+\node[cell, fill=popgreenL] (p) at (6.5,0) {\texttt{int *p}};
+\node[lab, above=0.05cm of p] {address \texttt{0x7ffc1008}};
+\node[below=0.05cm of p, font=\small, align=center] {holds \texttt{0x7ffc1004}};
+\draw[arr] (p.west) .. controls (3,-1.4) .. (x.south);
+\node[font=\small, text=poporange] at (3.2,-1.5) {\texttt{p = \&x;}};
+\node[font=\small, text=popmuted, align=center] at (3.2,1.1) {\texttt{*p} is 42};
+\end{tikzpicture}
+\end{center}
+\legende{Boxes-and-arrows view of memory: the pointer \texttt{p} stores the address of \texttt{x}; dereferencing \texttt{*p} reaches the value 42.}
+\end{popfigure}
+
+\textbf{Passing by reference.} To swap two variables, the function must receive their addresses:
+
+\begin{itemize}
+\item \texttt{void swap(int *a, int *b) \{}
+\item \texttt{~~~~int tmp = *a;  *a = *b;  *b = tmp;}
+\item \texttt{\}}
+\item \texttt{// call:  swap(\&x, \&y);}
+\end{itemize}
+
+\textbf{Pointer arithmetic.} If \texttt{p} points to an element of an array, \texttt{p + 1} points to the \emph{next} element (C automatically multiplies by the element size). This is why arrays and pointers are closely related: \texttt{marks[i]} is equivalent to \texttt{*(marks + i)}.
+
+\textbf{Dynamic allocation.} When the number of records is unknown at compile time, we request memory at run time:
+
+\begin{itemize}
+\item \texttt{\#include <stdlib.h>}
+\item \texttt{int *tab = malloc(n * sizeof(int));} \hspace{1em} // n integers on the heap
+\item \texttt{if (tab == NULL) \{ /* allocation failed */ \}}
+\item \texttt{/* ... use tab ... */}
+\item \texttt{free(tab);} \hspace{1em} // give the memory back
+\end{itemize}
+
+\begin{propriete}[Rule of dynamic memory]
+Every block of memory obtained with \texttt{malloc} must be released \textbf{exactly once} with \texttt{free}. Forgetting \texttt{free} causes a \emph{memory leak} (the program consumes more and more RAM); calling \texttt{free} twice, or using the pointer after \texttt{free}, causes undefined behaviour and crashes.
+\end{propriete}
+
+\courssub{Structures: Modelling a Record}
+
+A student is not a single number: it is a matricule, a name and several marks. C lets us group these \emph{fields} under one name.
+
+\begin{definition}[Structure]
+A \cle{structure} (\texttt{struct}) groups several fields of different types under one name to represent a record. Each field is accessed with the dot operator (\texttt{record.field}), or with \texttt{->} through a pointer.
+\end{definition}
+
+\begin{itemize}
+\item \texttt{typedef struct \{}
+\item \texttt{~~~~char matricule[12];}
+\item \texttt{~~~~char name[40];}
+\item \texttt{~~~~float marks[3];}
+\item \texttt{\} Student;}
+\item \texttt{}
+\item \texttt{Student s;}
+\item \texttt{strcpy(s.matricule, "GCE2025-001");}
+\item \texttt{strcpy(s.name, "Ngo Bell");}
+\item \texttt{s.marks[0] = 15.5f;}
+\end{itemize}
+
+The \texttt{typedef} keyword gives the structure a short alias, so we write \texttt{Student s;} instead of \texttt{struct Student s;}. An \emph{array of structures} then models the whole class: \texttt{Student class[60];} — and \texttt{class[i].marks[j]} is the mark $j$ of student $i$. This is exactly the data model our indexing project will use.
+
+\courssub{Data Structures in C: Beyond Arrays}
+
+Arrays provide fast random access but have fixed size and costly insertion/deletion. For dynamic collections we use \cle{linked structures} built from structures and pointers.
+
+\begin{definition}[Singly linked list]
+A \cle{singly linked list} is a sequence of \emph{nodes}, each containing a data field and a pointer to the next node. The list is accessed through a pointer to the first node (\texttt{head}); the last node points to \texttt{NULL}.
+\end{definition}
+
+\begin{itemize}
+\item \texttt{typedef struct Node \{}
+\item \texttt{~~~~Student data;} \hspace{1em} // any payload
+\item \texttt{~~~~struct Node *next;}
+\item \texttt{\} Node;}
+\item \texttt{Node *head = NULL;}
+\end{itemize}
+
+\textbf{Basic operations on a singly linked list:}
+
+\begin{methode}[Insert a new node at the front of a list]
+\begin{enumerate}
+\item Allocate a new node: \texttt{Node *newNode = malloc(sizeof(Node));}
+\item Check \texttt{newNode != NULL}.
+\item Fill the data field: \texttt{newNode->data = studentRecord;}
+\item Link it: \texttt{newNode->next = head;}
+\item Update head: \texttt{head = newNode;}
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Traverse and print a list]
+\begin{enumerate}
+\item Set \texttt{Node *current = head;}
+\item While \texttt{current != NULL}:
+  \begin{itemize}
+  \item Process \texttt{current->data}
+  \item Advance: \texttt{current = current->next;}
+  \end{itemize}
+\end{enumerate}
+\end{methode}
+
+\begin{methode}[Free an entire list]
+\begin{enumerate}
+\item While \texttt{head != NULL}:
+  \begin{itemize}
+  \item \texttt{Node *tmp = head;}
+  \item \texttt{head = head->next;}
+  \item \texttt{free(tmp);}
+  \end{itemize}
+\end{enumerate}
+\end{methode}
+
+\textbf{Stacks and queues.} A \cle{stack} (LIFO) supports \texttt{push} (insert at front) and \texttt{pop} (remove from front). A \cle{queue} (FIFO) supports \texttt{enqueue} (insert at rear) and \texttt{dequeue} (remove from front). Both can be implemented with linked lists or with arrays (circular buffer for queues).
+
+\begin{exemplebox}[Stack using a linked list]
+\texttt{push} is exactly the front-insertion method above. \texttt{pop} removes the head node and returns its data:
+\begin{itemize}
+\item \texttt{Student pop(Node **head) \{}
+\item \texttt{~~~~if (*head == NULL) return emptyStudent;}
+\item \texttt{~~~~Node *tmp = *head;}
+\item \texttt{~~~~Student data = tmp->data;}
+\item \texttt{~~~~*head = tmp->next;}
+\item \texttt{~~~~free(tmp);}
+\item \texttt{~~~~return data;}
+\item \texttt{\}}
+\end{itemize}
+\end{exemplebox}
+
+\textbf{Binary trees.} A \cle{binary tree} node contains data and two pointers (\texttt{left}, \texttt{right}). A \cle{binary search tree (BST)} maintains the invariant: all keys in the left subtree are smaller, all keys in the right subtree are larger. This enables $O(\log n)$ average-case search, insertion and deletion.
+
+\begin{definition}[Binary search tree node]
+\begin{itemize}
+\item \texttt{typedef struct TreeNode \{}
+\item \texttt{~~~~Student data;}
+\item \texttt{~~~~struct TreeNode *left, *right;}
+\item \texttt{\} TreeNode;}
+\end{itemize}
+\end{definition}
+
+\courssub{Searching and Sorting Algorithms}
+
+Efficient data retrieval requires understanding algorithmic complexity.
+
+\begin{propriete}[Linear search]
+Scans elements sequentially. Time complexity: $O(n)$ worst case. Works on any array or linked list, sorted or not.
+\end{propriete}
+
+\begin{propriete}[Binary search]
+Requires a \emph{sorted} array. Repeatedly halves the search interval. Time complexity: $O(\log n)$. Not directly applicable to linked lists (no random access).
+\end{propriete}
+
+\begin{methode}[Binary search on a sorted array of Student by matricule]
+\begin{enumerate}
+\item Set \texttt{low = 0}, \texttt{high = n - 1}.
+\item While \texttt{low <= high}:
+  \begin{itemize}
+  \item \texttt{mid = (low + high) / 2;}
+  \item \texttt{cmp = strcmp(key, arr[mid].matricule);}
+  \item If \texttt{cmp == 0} return \texttt{mid};
+  \item Else if \texttt{cmp < 0} \texttt{high = mid - 1};
+  \item Else \texttt{low = mid + 1};
+  \end{itemize}
+\item Return \texttt{-1} (not found).
+\end{enumerate}
+\end{methode}
+
+\begin{propriete}[Sorting algorithms for GCE]
+\begin{itemize}
+\item \textbf{Bubble sort}: $O(n^2)$, simple, stable. Repeatedly swaps adjacent out-of-order pairs.
+\item \textbf{Selection sort}: $O(n^2)$, finds minimum and swaps to front.
+\item \textbf{Insertion sort}: $O(n^2)$ worst, $O(n)$ best (already sorted), stable, good for small/nearly-sorted data.
+\item \textbf{Quick sort}: $O(n \log n)$ average, $O(n^2)$ worst, in-place, not stable.
+\item \textbf{Merge sort}: $O(n \log n)$ worst, stable, requires $O(n)$ extra space.
+\end{itemize}
+\end{propriete}
+
+\begin{exemplebox}[Insertion sort on an array of Student by average mark]
+\begin{itemize}
+\item \texttt{void insertionSort(Student a[], int n) \{}
+\item \texttt{~~~~int i, j;}
+\item \texttt{~~~~Student key;}
+\item \texttt{~~~~for (i = 1; i < n; i++) \{}
+\item \texttt{~~~~~~~~key = a[i];}
+\item \texttt{~~~~~~~~j = i - 1;}
+\item \texttt{~~~~~~~~while (j >= 0 \&\& average(a[j]) > average(key)) \{}
+\item \texttt{~~~~~~~~~~~~a[j + 1] = a[j];}
+\item \texttt{~~~~~~~~~~~~j--;}
+\item \texttt{~~~~~~~~\}}
+\item \texttt{~~~~~~~~a[j + 1] = key;}
+\item \texttt{~~~~\}}
+\item \texttt{\}}
+\end{itemize}
+\end{exemplebox}
+
+\courssub{Text File Handling}
+
+Data typed into arrays disappears when the program ends. To store records \emph{persistently}, we write them to a text file.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Mode (fopen)} & \textbf{Effect} \\
+\hline
+\texttt{"r"} & read; fails if the file does not exist \\
+\hline
+\texttt{"w"} & write; creates the file, \textbf{erases} any previous content \\
+\hline
+\texttt{"a"} & append; writes at the end, keeps previous content \\
+\hline
+\texttt{"r+"} & read and write; file must exist \\
+\hline
+\texttt{"w+"} & read and write; creates or truncates \\
+\hline
+\texttt{"a+"} & read and append \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{itemize}
+\item \texttt{FILE *f = fopen("students.txt", "a");}
+\item \texttt{if (f == NULL) \{ printf("Cannot open file"); return 1; \}}
+\item \texttt{fprintf(f, "\%s \%s \%.2f\textbackslash n", s.matricule, s.name, s.marks[0]);}
+\item \texttt{fclose(f);} \hspace{1em} // always close!
+\end{itemize}
+
+Reading back uses \texttt{fscanf(f, "\%s \%s \%f", ...)} in a loop until it returns \texttt{EOF}. Always check that \texttt{fopen} did not return \texttt{NULL}, and always \texttt{fclose} the file so buffered data is actually written to disk.
+
+\begin{exoresolu}[Average of the best students]
+Statement. Write a C program that reads the marks of $n$ students (with $n$ given by the user), stores them in a dynamically allocated array, and prints the class average and the highest mark.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \texttt{\#include <stdio.h>}
+\item \texttt{\#include <stdlib.h>}
+\item \texttt{int main(void) \{}
+\item \texttt{~~~~int n, i;}
+\item \texttt{~~~~float *marks, sum = 0.0f, max;}
+\item \texttt{~~~~printf("Number of students: ");}
+\item \texttt{~~~~scanf("\%d", \&n);}
+\item \texttt{~~~~marks = malloc(n * sizeof(float));}
+\item \texttt{~~~~if (marks == NULL) return 1;}
+\item \texttt{~~~~for (i = 0; i < n; i++) \{}
+\item \texttt{~~~~~~~~printf("Mark \%d: ", i + 1);}
+\item \texttt{~~~~~~~~scanf("\%f", \&marks[i]);}
+\item \texttt{~~~~\}}
+\item \texttt{~~~~max = marks[0];}
+\item \texttt{~~~~for (i = 0; i < n; i++) \{}
+\item \texttt{~~~~~~~~sum += marks[i];}
+\item \texttt{~~~~~~~~if (marks[i] > max) max = marks[i];}
+\item \texttt{~~~~\}}
+\item \texttt{~~~~printf("Average = \%.2f, Best = \%.2f\textbackslash n", sum / n, max);}
+\item \texttt{~~~~free(marks);}
+\item \texttt{~~~~return 0;}
+\item \texttt{\}}
+\end{itemize}
+Note the essential habits shown here: \texttt{\&} in every \texttt{scanf}, the \texttt{NULL} check after \texttt{malloc}, and the matching \texttt{free} before the program ends.
+\end{exoresolu}
+
+\begin{exoresolu}[Binary search on a sorted array of structures]
+Statement. Given an array \texttt{Student class[100]} sorted by \texttt{matricule}, write a function \texttt{int findStudent(Student class[], int n, char *target)} that returns the index of the student with matricule \texttt{target}, or \texttt{-1} if not found.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item \texttt{int findStudent(Student class[], int n, char *target) \{}
+\item \texttt{~~~~int low = 0, high = n - 1, mid, cmp;}
+\item \texttt{~~~~while (low <= high) \{}
+\item \texttt{~~~~~~~~mid = (low + high) / 2;}
+\item \texttt{~~~~~~~~cmp = strcmp(target, class[mid].matricule);}
+\item \texttt{~~~~~~~~if (cmp == 0) return mid;}
+\item \texttt{~~~~~~~~else if (cmp < 0) high = mid - 1;}
+\item \texttt{~~~~~~~~else low = mid + 1;}
+\item \texttt{~~~~\}}
+\item \texttt{~~~~return -1;}
+\item \texttt{\}}
+\end{itemize}
+This runs in $O(\log n)$ time. Precondition: the array \textbf{must} be sorted by \texttt{matricule} using the same string ordering as \texttt{strcmp}.
+\end{exoresolu}
+
+\begin{exercice}[Student record file]
+Using the \texttt{Student} structure defined above, write a program that: (a) asks the user for the matricule, name and three marks of one student; (b) appends the record to \texttt{students.txt}; (c) then reopens the file in read mode and displays all records stored so far, each with its average mark.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+Sketch of the solution. Declare \texttt{Student s;}. Read the fields with \texttt{scanf("\%s", s.matricule);} (arrays already behave as addresses, so no \texttt{\&} for strings) and \texttt{scanf("\%f", \&s.marks[i]);}. Open the file with \texttt{fopen("students.txt", "a")}, write with \texttt{fprintf(f, "\%s \%s \%f \%f \%f\textbackslash n", ...)} and \texttt{fclose(f)}. Reopen with \texttt{"r"} and loop \texttt{while (fscanf(f, "\%s \%s \%f \%f \%f", m, nm, \&a, \&b, \&c) == 5)}, printing each record and \texttt{(a+b+c)/3.0f}. Close the file. Common pitfalls: forgetting \texttt{\&} on the marks, comparing names with \texttt{==}, and omitting \texttt{fclose}.
+\end{corrige}
+
+\begin{exercice}[Linked list of students]
+Write a program that builds a singly linked list of \texttt{Student} records by repeatedly asking the user for a matricule, name and three marks (stop when matricule is \texttt{"END"}). Then traverse the list and print every student whose average mark is $\ge 10$. Finally, free the entire list.
+\end{exercice}
+
+\begin{corrige}[Exercise 2]
+Define \texttt{Node} with \texttt{Student data} and \texttt{Node *next}. Use \texttt{Node *head = NULL;}. Loop: read matricule into a buffer; if \texttt{strcmp(buf, "END") == 0} break; else allocate node, copy data, insert at front (\texttt{newNode->next = head; head = newNode;}). Traversal: \texttt{for (Node *p = head; p != NULL; p = p->next)} compute average, if $\ge 10$ print. Freeing: \texttt{while (head) \{ Node *tmp = head; head = head->next; free(tmp); \}}. Key points: check \texttt{malloc} return, use \texttt{strcpy} for strings, remember \texttt{free}.
+\end{corrige}
+
+\begin{aretenir}[Key points of this section]
+\begin{itemize}
+\item C is compiled: \texttt{source.c} $\rightarrow$ preprocessor $\rightarrow$ compiler $\rightarrow$ object file $\rightarrow$ linker $\rightarrow$ executable.
+\item Use \texttt{printf}/\texttt{scanf} with the right format specifiers, and never forget \texttt{\&} in \texttt{scanf} for non-pointer variables.
+\item Distinguish \texttt{=} (assignment) from \texttt{==} (comparison); compare strings with \texttt{strcmp}.
+\item Functions receive copies (passing by value); pass addresses (pointers) to let a function modify a variable.
+\item A pointer stores an address; \texttt{malloc} obtains dynamic memory and every \texttt{malloc} needs exactly one \texttt{free}.
+\item \texttt{struct} (with \texttt{typedef}) models a record; arrays of structures model a whole class; text files (\texttt{fopen}, \texttt{fprintf}, \texttt{fscanf}, \texttt{fclose}) make records persistent.
+\item Linked lists allow dynamic size and efficient insertion/deletion; stacks (LIFO) and queues (FIFO) are specialised list disciplines.
+\item Binary search trees provide $O(\log n)$ average search/insert/delete when balanced.
+\item Linear search $O(n)$ works everywhere; binary search $O(\log n)$ requires sorted array with random access.
+\item Insertion sort is simple and efficient for small/nearly-sorted data; merge sort guarantees $O(n \log n)$; quick sort is fast in practice but $O(n^2)$ worst case.
+\end{itemize}
+\end{aretenir}
+
+\coursec{Data Structures, Searching and Indexing}
+
+In the previous section we learned how to write C programs that manipulate data: variables, arrays, loops, functions, structures and dynamic memory allocation. But knowing the \emph{language} is not enough. Imagine the registry of a school in Yaoundé holding the records of 10\,000 students. If the records are simply thrown into memory in any order, finding one student may require examining all 10\,000 records. If, however, the data is \emph{organised} intelligently, the same search can take a handful of steps. \textbf{How} data is organised in memory is often more important than the program that processes it. This is the subject of data structures.
+
+\courssub{Abstract Data Types and Classification of Data Structures}
+
+\begin{definition}[Data structure]
+A \cle{data structure} is a way of organising data in memory so that operations such as \textbf{insert}, \textbf{delete} and \textbf{search} can be performed efficiently.
+\end{definition}
+
+It is essential to distinguish two levels of description:
+
+\begin{itemize}
+\item An \cle{abstract data type} (ADT) describes \emph{what} a structure does: the data it holds and the operations allowed (for example ``a stack: you may push, pop, read the top''). It says nothing about \emph{how} this is realised in memory.
+\item A \cle{concrete implementation} describes \emph{how} the ADT is realised in a programming language, for example a stack implemented with a C array and an integer \texttt{top}, or with a linked list.
+\end{itemize}
+
+The same ADT can have several implementations, each with different performance characteristics. Data structures are classified along two main axes:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{Category} & \textbf{Examples} \\
+\hline
+Shape & Linear (elements in a sequence) & array, linked list, stack, queue \\
+\hline
+Shape & Non-linear (branching or network) & tree, graph \\
+\hline
+Memory & Static (size fixed at creation) & C array \\
+\hline
+Memory & Dynamic (grows/shrinks at run time) & linked list, dynamic stack, queue \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Arrays Revisited: the Static Structure}
+
+You already know the C array: \texttt{int marks[50];} reserves one contiguous block of 50 integers. Its great strength is \cle{direct access} (or random access): since all cells are identical and contiguous, the address of \texttt{marks[i]} is computed immediately as $\text{base} + i \times \text{sizeof(int)}$, so reading or writing any element takes constant time, written $O(1)$, whatever the position.
+
+Its weakness is that the size is \textbf{fixed} once and for all at compile time (for static arrays) or at allocation (for VLAs/malloc'd blocks, but still fixed for the lifetime of that block). If your school admits a 51st student, an array declared for 50 cannot grow without reallocation and copying; and inserting an element in the \emph{middle} forces you to shift all the following elements one cell to the right — up to $n$ moves.
+
+\courssub{Singly Linked Lists in C}
+
+A \cle{singly linked list} solves the size problem: each element (a \cle{node}) is allocated separately (typically with \texttt{malloc}) and stores, next to its data, the \emph{address of the next node}. The nodes no longer need to be contiguous in memory.
+
+\begin{exemplebox}[Node structure in C]
+\begin{itemize}
+\item \texttt{struct Node \{}
+\item \texttt{\quad int data;}
+\item \texttt{\quad struct Node *next;}
+\item \texttt{\};}
+\end{itemize}
+The whole list is reachable from a single pointer \texttt{head} to the first node; the last node has \texttt{next = NULL}.
+\end{exemplebox}
+
+\textbf{Traversal.} Start at \texttt{head}, follow \texttt{next} until \texttt{NULL}:
+\begin{itemize}
+\item \texttt{struct Node *p = head;}
+\item \texttt{while (p != NULL) \{}
+\item \texttt{\quad printf("\%d ", p->data);}
+\item \texttt{\quad p = p->next;}
+\item \texttt{\}}
+\end{itemize}
+
+\textbf{Insertion at head} (the cheapest insertion, $O(1)$):
+\begin{enumerate}
+\item Allocate the new node and fill its data field.
+\item Set \texttt{new->next = head;} (the new node points to the old first node).
+\item Set \texttt{head = new;} (the list now starts at the new node).
+\end{enumerate}
+
+\textbf{Insertion at tail} requires walking to the last node, then setting \texttt{last->next = new;} and \texttt{new->next = NULL;} — an $O(n)$ operation unless a \texttt{tail} pointer is maintained.
+
+\textbf{Deletion} of a node (given a pointer to the node to delete, or searching by value) requires making the \emph{previous} node point to the \emph{next} one, then freeing the removed node. Special care is needed if the node to delete is the head.
+
+\begin{exemplebox}[Deleting a node by value (iterative)]
+\begin{itemize}
+\item \texttt{struct Node *curr = head, *prev = NULL;}
+\item \texttt{while (curr != NULL \&\& curr->data != val) \{}
+\item \texttt{\quad prev = curr;}
+\item \texttt{\quad curr = curr->next;}
+\item \texttt{\}}
+\item \texttt{if (curr == NULL) return; // not found}
+\item \texttt{if (prev == NULL) head = curr->next; // deleting head}
+\item \texttt{else prev->next = curr->next;}
+\item \texttt{free(curr);}
+\end{itemize}
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  node/.style={draw=popblue, thick, minimum height=0.8cm, minimum width=1.1cm},
+  ptr/.style={draw=popblue, thick, minimum height=0.8cm, minimum width=0.8cm},
+  lab/.style={font=\footnotesize\itshape, text=popmuted},
+  arr/.style={->, thick, popblue}]
+% head pointer
+\node[lab] (hl) at (-1.6,0.4) {head};
+\node[ptr] (h) at (-0.8,0) {};
+% node 1
+\node[node] (d1) at (1.0,0) {12};
+\node[ptr, anchor=west] (p1) at (d1.east) {};
+% node 2
+\node[node] (d2) at (3.6,0) {7};
+\node[ptr, anchor=west] (p2) at (d2.east) {};
+% node 3
+\node[node] (d3) at (6.2,0) {25};
+\node[ptr, anchor=west] (p3) at (d3.east) {};
+\node[lab] at (7.5,-0.55) {NULL};
+\draw[arr] (h) -- (d1.west);
+\draw[arr] (p1.center) -- (d2.west);
+\draw[arr] (p2.center) -- (d3.west);
+\draw[arr, popblue] (p3.center) -- ++(0.3,0.1);
+\draw[arr, popblue] (p3.center) -- ++(0.3,-0.1);
+% new node below
+\node[node, fill=popgreenL] (dn) at (2.3,-1.9) {40};
+\node[ptr, anchor=west, fill=popgreenL] (pn) at (dn.east) {};
+\node[lab, text=popgreen] at (2.7,-2.6) {new node to insert after 12};
+\draw[arr, popgreen, dashed] (p1.center) .. controls (1.9,-1.0) .. (dn.north);
+\draw[arr, popgreen, dashed] (pn.east) .. controls (4.3,-1.6) .. (d2.south);
+\end{tikzpicture}
+\end{center}
+\legende{A singly linked list (12 $\to$ 7 $\to$ 25 $\to$ NULL). Dashed arrows: inserting node 40 after 12 only redirects two pointers — no data is moved.}
+\end{popfigure}
+
+\begin{attention}[Losing the head pointer]
+A classic fatal error: writing \texttt{head = new;} \emph{before} \texttt{new->next = head;}. The address of the old first node is then overwritten and lost forever: the whole list becomes unreachable (a \emph{memory leak}). Always link the new node to the old list \textbf{first}, then move \texttt{head}.
+\end{attention}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Operation} & \textbf{Array} & \textbf{Linked list} \\
+\hline
+Access element $i$ & $O(1)$ direct & $O(n)$ walk from head \\
+\hline
+Insert/delete at head & $O(n)$ (shifting) & $O(1)$ \\
+\hline
+Insert/delete at tail & $O(1)$ (if space) & $O(n)$ without tail pointer, $O(1)$ with \\
+\hline
+Size & fixed at declaration & grows/shrinks freely \\
+\hline
+Memory overhead & none (compact) & one pointer per node \\
+\hline
+\end{tabularx}
+\end{center}
+
+\courssub{Stacks (LIFO) and Queues (FIFO)}
+
+A \cle{stack} is a linear ADT where insertions and removals happen at the same end, the \emph{top}: \textbf{L}ast \textbf{I}n, \textbf{F}irst \textbf{O}ut, like a pile of plates. Its core operations are:
+\begin{itemize}
+\item \texttt{push(x)}: add \texttt{x} on top.
+\item \texttt{pop()}: remove and return the top element (error if empty).
+\item \texttt{top()} or \texttt{peek()}: read the top without removing.
+\end{itemize}
+Applications: evaluating arithmetic expressions, the \emph{undo} button of a text editor, and the \textbf{function call stack} — every time a C function calls another, the return address and local variables are pushed, and popped on return.
+
+A \cle{queue} is a linear ADT where insertions happen at the \emph{rear} (or \emph{back}) and removals at the \emph{front}: \textbf{F}irst \textbf{I}n, \textbf{F}irst \textbf{O}ut, like a line of customers at a bank in Douala. Its core operations are:
+\begin{itemize}
+\item \texttt{enqueue(x)}: add \texttt{x} at the rear.
+\item \texttt{dequeue()}: remove and return the front element (error if empty).
+\item \texttt{front()}: read the front without removing.
+\end{itemize}
+Applications: the printer queue (documents print in arrival order) and the \textbf{ready queue} of processes waiting for the CPU — a bridge to the operating systems part of this chapter.
+
+\begin{propriete}[Stack and Queue Implementations]
+Both ADTs can be implemented with arrays (static, fixed capacity) or linked lists (dynamic, unbounded).
+\begin{itemize}
+\item \textbf{Array-based stack:} keep an integer \texttt{top} (index of next free slot). \texttt{push} increments \texttt{top}, \texttt{pop} decrements. $O(1)$ for all ops.
+\item \textbf{Array-based queue:} use a \emph{circular buffer} with indices \texttt{front} and \texttt{rear} (modulo capacity) to avoid shifting elements. $O(1)$ for all ops.
+\item \textbf{Linked-list stack:} \texttt{push} = insert at head, \texttt{pop} = delete at head. $O(1)$.
+\item \textbf{Linked-list queue:} maintain both \texttt{head} and \texttt{tail} pointers. \texttt{enqueue} at tail, \texttt{dequeue} at head. $O(1)$.
+\end{itemize}
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, cell/.style={draw=popblue, thick, minimum width=0.9cm, minimum height=0.7cm}]
+% STACK
+\node[font=\bfseries] at (1.35,2.6) {Stack (push 5, push 9, pop)};
+\node[cell] at (0.9,0) {3};
+\node[cell] at (1.8,0) {5};
+\node[cell, fill=popgreenL] at (2.7,0) {9};
+\draw[->, very thick, popgreen] (2.7,1.2) -- (2.7,0.45) node[midway, right, font=\footnotesize]{push 9};
+\draw[->, very thick, poporange] (3.6,0.35) -- (4.6,0.35) node[midway, above, font=\footnotesize]{pop $\to$ 9};
+% QUEUE
+\begin{scope}[xshift=7.2cm]
+\node[font=\bfseries] at (1.8,2.6) {Queue (enqueue 5, enqueue 9, dequeue)};
+\node[cell, fill=poporange!25] at (0,0) {3};
+\node[cell] at (0.9,0) {5};
+\node[cell, fill=popgreenL] at (1.8,0) {9};
+\draw[->, very thick, popgreen] (2.9,0.35) -- (2.35,0.35) node[midway, above, font=\footnotesize]{enqueue};
+\draw[->, very thick, poporange] (-0.45,0.35) -- (-1.35,0.35) node[midway, above, font=\footnotesize]{dequeue $\to$ 3};
+\node[font=\footnotesize\itshape, text=popmuted] at (0,-0.7) {front};
+\node[font=\footnotesize\itshape, text=popmuted] at (1.8,-0.7) {rear};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+\legende{Stack: both operations at the top. Queue: enter at the rear, leave at the front.}
+\end{popfigure}
+
+\begin{methode}[Choosing the right linear structure]
+\begin{enumerate}
+\item Need direct access by position and the size is known/fixed? $\to$ \textbf{Array}.
+\item Frequent insertions/deletions, unknown or highly variable size? $\to$ \textbf{Linked list}.
+\item Last-in-first-out behaviour (undo, function calls, expression evaluation)? $\to$ \textbf{Stack}.
+\item First-in-first-out behaviour (waiting lines, print spooler, CPU ready queue)? $\to$ \textbf{Queue}.
+\end{enumerate}
+\end{methode}
+
+\courssub{Searching: Linear Search and Binary Search}
+
+\textbf{Linear search} examines the elements one by one from the first until the target is found or the array is exhausted. It works on \emph{any} array, sorted or not.
+
+\begin{exemplebox}[Linear search in C]
+\begin{itemize}
+\item \texttt{int linear\_search(int a[], int n, int key) \{}
+\item \texttt{\quad for (int i = 0; i < n; i++)}
+\item \texttt{\quad\quad if (a[i] == key) return i;}
+\item \texttt{\quad return -1; // not found}
+\item \texttt{\}}
+\end{itemize}
+\end{exemplebox}
+
+\begin{exemplebox}[Trace of linear search]
+Search 7 in \texttt{[4, 9, 7, 2]}: compare with 4 (no), with 9 (no), with 7 (yes) $\to$ 3 comparisons. Searching an absent value costs $n$ comparisons: linear search is $O(n)$ in the worst case.
+\end{exemplebox}
+
+\textbf{Binary search} exploits \emph{sorted} data (ascending order assumed): compare the key with the middle element; if it is smaller, discard the right half, otherwise discard the left half, and repeat on the remaining half.
+
+\begin{propriete}[Binary search]
+Binary search requires \textbf{sorted data} and performs at most $\lfloor \log_2 n \rfloor + 1$ comparisons: it is $O(\log n)$. Indeed each comparison halves the search interval, and an interval of size $n$ can be halved at most $\log_2 n$ times before reaching size 1.
+\end{propriete}
+
+\begin{methode}[Binary search algorithm (iterative)]
+\begin{enumerate}
+\item Set \texttt{low = 0}, \texttt{high = n-1}.
+\item While \texttt{low <= high}:
+  \begin{enumerate}
+  \item \texttt{mid = low + (high - low) / 2} (avoids overflow).
+  \item If \texttt{a[mid] == key} return \texttt{mid}.
+  \item Else if \texttt{a[mid] < key} set \texttt{low = mid + 1}.
+  \item Else set \texttt{high = mid - 1}.
+  \end{enumerate}
+\item Return -1 (not found).
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Trace of binary search]
+Search 23 in the sorted array \texttt{[3, 7, 12, 19, 23, 31, 45]} ($n = 7$).
+\tcblower
+\begin{enumerate}
+\item low $=0$, high $=6$, mid $=3$: $a[3]=19 < 23$ $\to$ keep the right half (low $=4$).
+\item low $=4$, high $=6$, mid $=5$: $a[5]=31 > 23$ $\to$ keep the left half (high $=4$).
+\item low $=4$, high $=4$, mid $=4$: $a[4]=23$ $\to$ found at index 4.
+\end{enumerate}
+Only \textbf{3 comparisons}, and indeed $\lfloor \log_2 7 \rfloor + 1 = 3$. A linear search would have needed 5 comparisons.
+\end{exoresolu}
+
+\begin{attention}[Binary search on unsorted data]
+If the array is not sorted, binary search does \emph{not} crash: it silently discards the half that may contain the key and returns ``not found'' or a wrong position — with no error message. Always check (or establish) the sorting precondition first.
+\end{attention}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, bar width=14pt, width=0.85\linewidth, height=6.2cm,
+    symbolic x coords={10,100,1000,10000}, xtick=data,
+    xlabel={$n$ (number of elements)}, ylabel={comparisons (worst case)},
+    ymin=0, ymax=11000,
+    legend style={at={(0.02,0.98)}, anchor=north west, font=\footnotesize},
+    nodes near coords, every node near coord/.append style={font=\scriptsize, rotate=90, anchor=west},
+]
+\addplot[fill=poporange] coordinates {(10,10) (100,100) (1000,1000) (10000,10000)};
+\addplot[fill=popblue] coordinates {(10,4) (100,7) (1000,10) (10000,14)};
+\legend{Linear $O(n)$, Binary $O(\log n)$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Worst-case comparisons: linear search grows with $n$, binary search grows extraordinarily slowly (14 comparisons for 10\,000 elements!).}
+\end{popfigure}
+
+\courssub{Sorting as a Support for Searching}
+
+Since binary search is so fast, it pays to \textbf{sort} data first if we need to perform many searches. Two classical $O(n^2)$ sorting algorithms are examinable for the GCE Advanced Level.
+
+\textbf{Selection sort.} Repeatedly find the smallest element of the unsorted part and swap it into its final position at the beginning of the unsorted part.
+
+\begin{exemplebox}[Selection sort in C]
+\begin{itemize}
+\item \texttt{void selection\_sort(int a[], int n) \{}
+\item \texttt{\quad for (int i = 0; i < n-1; i++) \{}
+\item \texttt{\quad\quad int min = i;}
+\item \texttt{\quad\quad for (int j = i+1; j < n; j++)}
+\item \texttt{\quad\quad\quad if (a[j] < a[min]) min = j;}
+\item \texttt{\quad\quad // swap a[i] and a[min]}
+\item \texttt{\quad\quad int tmp = a[i]; a[i] = a[min]; a[min] = tmp;}
+\item \texttt{\quad \}}
+\item \texttt{\}}
+\end{itemize}
+\end{exemplebox}
+
+\textbf{Bubble sort.} Repeatedly scan the array, swapping any two adjacent elements that are in the wrong order; the largest values ``bubble up'' to the end. An optimisation stops early if a pass performs no swaps.
+
+\begin{exemplebox}[Bubble sort in C (optimised)]
+\begin{itemize}
+\item \texttt{void bubble\_sort(int a[], int n) \{}
+\item \texttt{\quad for (int i = 0; i < n-1; i++) \{}
+\item \texttt{\quad\quad int swapped = 0;}
+\item \texttt{\quad\quad for (int j = 0; j < n-1-i; j++)}
+\item \texttt{\quad\quad\quad if (a[j] > a[j+1]) \{}
+\item \texttt{\quad\quad\quad\quad int tmp = a[j]; a[j] = a[j+1]; a[j+1] = tmp;}
+\item \texttt{\quad\quad\quad\quad swapped = 1;}
+\item \texttt{\quad\quad\quad \}}
+\item \texttt{\quad\quad if (!swapped) break; // array already sorted}
+\item \texttt{\quad \}}
+\item \texttt{\}}
+\end{itemize}
+\end{exemplebox}
+
+Both perform about $\frac{n(n-1)}{2}$ comparisons in the worst case, hence $O(n^2)$: acceptable for a class list (e.g. $n \le 100$), slow for a national database. The winning strategy for repeated searches is: \emph{sort once} ($O(n^2)$ with these algorithms, or $O(n \log n)$ with more advanced ones like QuickSort/MergeSort), \emph{then} enjoy binary search at $O(\log n)$ per query.
+
+\courssub{Indexing: from Key to Address}
+
+Even sorted, a large file stored on disk is costly to scan: each disk access is thousands of times slower than a memory access. The solution used by every real database is the \cle{index}.
+
+\begin{definition}[Index]
+An \cle{index} is an auxiliary table associating each \textbf{search key} with the \textbf{physical position} (address, byte offset, or record number) of the corresponding record in the data file: key $\to$ address.
+\end{definition}
+
+The index is small enough to be kept entirely in main memory (or at least its upper levels), allowing binary search (or hashing) on the index itself. Once the address is found, a single direct disk access retrieves the full record.
+
+\begin{exemplebox}[A matricule index for a student file]
+The file \texttt{students.dat} stores records in arrival order (unsorted). We build a small sorted index in memory:
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Matricule (key)} & \textbf{Record position (offset)} \\
+\hline
+6C001 & 3 \\
+\hline
+6C014 & 0 \\
+\hline
+6C027 & 2 \\
+\hline
+6C033 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+To retrieve student 6C027: binary-search the small index (4 entries $\to$ 2 comparisons), obtain position 2, then perform \textbf{one single disk seek/read} directly to that record — instead of scanning the whole file sequentially.
+\end{exemplebox}
+
+\begin{savaistu}[Hashing — GCE enrichment]
+A \cle{hash function} computes the storage position \emph{directly} from the key, without any search: for example $\text{hash}(\text{key}) = \text{key} \bmod \text{table\_size}$. With a table of size 10, key 6C027 (numeric part 6027) maps to slot $6027 \bmod 10 = 7$. Two different keys may land on the same slot: this is a \cle{collision}, handled for example by \emph{chaining} (a linked list per slot) or \emph{open addressing} (probing for the next free slot). Hashing gives average-case access close to $O(1)$ and powers student information systems, mobile-money databases, and compiler symbol tables used daily in Cameroon.
+\end{savaistu}
+
+\begin{aretenir}[Key points for the examination]
+\begin{itemize}
+\item A data structure organises data so that insert, delete and search are efficient; distinguish the ADT (\emph{what}) from the implementation (\emph{how}).
+\item Array: $O(1)$ access, fixed size. Linked list: dynamic size, $O(1)$ head insertion, $O(n)$ access — never lose \texttt{head} (memory leak).
+\item Stack = LIFO (push/pop); queue = FIFO (enqueue/dequeue, e.g.\ the CPU ready queue). Both can be array-based (circular buffer for queue) or linked.
+\item Linear search $O(n)$ on any data; binary search $O(\log n)$ but \textbf{only on sorted data} — verify the precondition!
+\item Selection and bubble sort are $O(n^2)$; sorting once enables fast repeated binary searches.
+\item An index maps key $\to$ address and retrieves a record in one disk access; hashing computes the address directly (watch for collisions).
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Choosing and tracing]
+\begin{enumerate}
+\item A school canteen serves pupils strictly in arrival order. Which ADT models the waiting line, and why?
+\item Trace binary search for the key 8 in the sorted array \texttt{[1, 3, 5, 8, 11, 13]}. Show the values of \texttt{low}, \texttt{high}, \texttt{mid} and the comparison at each step. How many comparisons?
+\item Give one reason why a linked list is preferable to an array for a music playlist where songs are constantly added and removed at arbitrary positions.
+\item A file contains 1\,000\,000 sorted records. Estimate the maximum number of comparisons needed to find a record using binary search on an in-memory index. (Hint: $\log_2 10^6 \approx 20$).
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item A \textbf{queue} (FIFO): the first pupil to arrive is the first served — \texttt{enqueue} at the rear, \texttt{dequeue} at the front.
+\item Step 1: low=0, high=5, mid=2 $\to$ a[2]=5 < 8 $\to$ low=3. \\
+      Step 2: low=3, high=5, mid=4 $\to$ a[4]=11 > 8 $\to$ high=3. \\
+      Step 3: low=3, high=3, mid=3 $\to$ a[3]=8 $\to$ found. \textbf{3 comparisons}.
+\item Insertions and removals at known positions cost $O(1)$ pointer changes (no shifting of subsequent elements), and the list grows or shrinks freely without reallocation, unlike a fixed-size array or a dynamic array where insertion in the middle is $O(n)$.
+\item $\lfloor \log_2 1\,000\,000 \rfloor + 1 \approx 20$ comparisons maximum.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Operating Systems and System Software}
+
+In the previous section we saw how data structures such as arrays, linked lists, trees and hash tables allow us to organise and retrieve information efficiently.  An operating system (OS) is the \emph{master organiser} of the whole computer: it decides which program gets the CPU, where data lives in memory, how files are stored on disk, and how devices communicate.  Understanding the OS is therefore the natural next step after mastering data structures — the OS itself uses those very structures (process tables, page tables, directory trees, index blocks) to provide the services that every application relies on.
+
+\courssub{What is an Operating System?}
+
+\begin{definition}[Operating System]
+An \cle{operating system} is system software that manages the hardware resources of a computer (CPU, memory, I/O devices, storage) and provides a stable, abstract interface for application programs and users.  It acts as a \textbf{resource manager} (it allocates CPU time, memory and devices fairly), a \textbf{control program} (it controls the execution of programs to prevent errors and improper use) and an \textbf{extended/virtual machine} (it hides the messy details of the hardware behind simple services such as files and windows).
+\end{definition}
+
+\begin{aretenir}[Key Roles of an OS]
+\begin{itemize}
+  \item \textbf{Process management} – creation, scheduling, synchronisation, termination.
+  \item \textbf{Memory management} – allocation, protection, virtual memory.
+  \item \textbf{File management} – naming, organisation, access control, allocation methods.
+  \item \textbf{Device management} – drivers, buffering, spooling.
+  \item \textbf{Security \& protection} – user authentication, access rights.
+  \item \textbf{User interface} – command line (CLI), graphical (GUI), system calls.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Operating Systems around Us]
+In Cameroonian schools, cybercafés and offices you will most often meet \textbf{Microsoft Windows} (proprietary, GUI‑centric), \textbf{Linux} distributions such as Ubuntu or Debian (open source, dominant on servers and for software development), and \textbf{Android} (Linux‑based, on smartphones and tablets).  All three illustrate exactly the same OS concepts studied here; only the policy details and interfaces differ.
+\end{savaistu}
+
+\courssub{System Software vs Application Software}
+
+\begin{definition}[System Software]
+\cle{System software} consists of the OS kernel, utility programs (disk formatter, backup tools, antivirus), device drivers, and language processors (compilers, linkers, loaders).  It runs with high privilege and directly controls the hardware on behalf of all other programs.
+\end{definition}
+
+\begin{definition}[Application Software]
+\cle{Application software} solves user‑level problems (word processors, spreadsheets, browsers, games).  It runs in \emph{user mode} and requests services from the OS through \cle{system calls} (e.g., \texttt{open}, \texttt{read}, \texttt{write}).
+\end{definition}
+
+The \cle{kernel} is the core of the OS: it implements process scheduling, memory management, interrupt handling and the system‑call interface.  Utility programs and drivers extend the kernel's functionality without being part of the kernel proper.  This separation is what allows the same kernel to serve thousands of different applications.
+
+\courssub{Process Management}
+
+\begin{definition}[Process]
+A \cle{process} is a program in execution together with its data, stack, heap and execution context (register values, program counter).  A \emph{program} is a passive file on disk; a process is the active entity that the OS schedules.  Running the same program twice creates two distinct processes.
+\end{definition}
+
+\begin{aretenir}[Process States and Transitions]
+A process moves through the following states:
+\begin{itemize}
+  \item \textbf{New} – being created (PCB allocated).
+  \item \textbf{Ready} – waiting for the CPU.
+  \item \textbf{Running} – currently executing on a CPU core.
+  \item \textbf{Blocked / Waiting} – waiting for an event (I/O completion, signal).
+  \item \textbf{Terminated} – finished; resources released, exit status stored.
+\end{itemize}
+Transitions: \emph{New $\to$ Ready} (admission), \emph{Ready $\to$ Running} (dispatch), \emph{Running $\to$ Ready} (preemption / time‑slice expiry), \emph{Running $\to$ Blocked} (I/O request, wait), \emph{Blocked $\to$ Ready} (event occurs), \emph{Running $\to$ Terminated} (exit or kill).
+\end{aretenir}
+
+\begin{popfigure}
+\begin{tikzpicture}[>=stealth, node distance=2.4cm, every node/.style={font=\small}]
+  \node[draw, rounded corners, fill=popblueL] (new) {New};
+  \node[draw, rounded corners, fill=popgreenL, right of=new] (ready) {Ready};
+  \node[draw, rounded corners, fill=poporange, right of=ready] (running) {Running};
+  \node[draw, rounded corners, fill=poppink, below of=running, node distance=1.8cm] (blocked) {Blocked};
+  \node[draw, rounded corners, fill=popmuted, right of=running] (term) {Terminated};
+
+  \draw[->, thick] (new) -- node[above] {admit} (ready);
+  \draw[->, thick] (ready) -- node[above] {dispatch} (running);
+  \draw[->, thick] (running) to[bend left=25] node[above] {preempt} (ready);
+  \draw[->, thick] (running) -- node[right] {I/O request} (blocked);
+  \draw[->, thick] (blocked) to[bend right=15] node[below] {event done} (ready);
+  \draw[->, thick] (running) -- node[above] {exit} (term);
+\end{tikzpicture}
+\legende{Process state‑transition diagram.  Note that a blocked process can never go directly to Running: it must first return to Ready and wait for the scheduler.}
+\end{popfigure}
+
+\begin{attention}[Classic Exam Trap]
+A process in the \textbf{Blocked} state cannot be dispatched directly to \textbf{Running}.  When its event completes it moves to \textbf{Ready} and joins the queue like every other ready process.  Drawing a Blocked $\to$ Running arrow in the state diagram is a frequent error.
+\end{attention}
+
+\begin{definition}[Process Control Block (PCB)]
+The \cle{PCB} (or Task Control Block) is the OS data structure that stores all information needed to manage a process.  Typical fields:
+\begin{itemize}
+  \item \textbf{PID} – unique process identifier.
+  \item \textbf{State} – new, ready, running, blocked, terminated.
+  \item \textbf{Program Counter (PC)} – address of the next instruction.
+  \item \textbf{CPU registers} – accumulator, index registers, stack pointer, status flags.
+  \item \textbf{Memory management info} – base/limit registers or page‑table pointer.
+  \item \textbf{Accounting info} – CPU time used, time limits, user ID.
+  \item \textbf{I/O status} – list of open files and allocated devices.
+\end{itemize}
+When the CPU switches from one process to another (a \cle{context switch}), the OS saves the running process's context into its PCB and reloads the context of the newly dispatched process from its own PCB.
+\end{definition}
+
+\courssub{CPU Scheduling}
+
+The \cle{scheduler} decides which ready process obtains the CPU.  Its goals include \textbf{fairness}, \textbf{CPU utilisation}, \textbf{throughput} (processes completed per unit time), \textbf{turnaround time} (completion $-$ arrival), \textbf{waiting time} (turnaround $-$ burst) and \textbf{response time} (first response $-$ arrival).
+
+\begin{aretenir}[Scheduling Terminology]
+\begin{itemize}
+  \item \textbf{Burst time} – CPU time the process needs.
+  \item \textbf{Arrival time} – when the process enters the ready queue.
+  \item \textbf{Preemptive} algorithm – the OS may take the CPU away (e.g., Round Robin).
+  \item \textbf{Non‑preemptive} algorithm – a running process keeps the CPU until it finishes or blocks (e.g., FCFS, basic SJF).
+\end{itemize}
+\end{aretenir}
+
+We study three classic algorithms by hand, drawing \cle{Gantt charts} to visualise the timeline.
+
+\begin{methode}[Solving a Scheduling Exercise]
+\begin{enumerate}
+  \item List all processes with arrival time and burst time.
+  \item Apply the algorithm's rule to decide the execution order; draw the Gantt chart.
+  \item For each process compute:
+        \begin{itemize}
+          \item \textbf{Completion time (CT)} – end of its last CPU burst.
+          \item \textbf{Turnaround time (TAT)} $=$ CT $-$ Arrival.
+          \item \textbf{Waiting time (WT)} $=$ TAT $-$ Burst.
+        \end{itemize}
+  \item Average WT and average TAT are the sums divided by the number of processes.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common Mistake]
+In GCE questions, \textbf{turnaround time} and \textbf{waiting time} are often confused.  Remember: \emph{turnaround = total time spent in the system (waiting + execution)}; \emph{waiting = time spent only in the ready queue}.  Always compute both explicitly in a table.
+\end{attention}
+
+\textbf{First‑Come First‑Served (FCFS).}  Non‑preemptive; processes run strictly in arrival order.  Simple to implement (a FIFO queue), but it suffers from the \emph{convoy effect}: one long process makes many short processes wait behind it, raising the average waiting time.
+
+\textbf{Shortest Job First (SJF).}  Chooses the ready process with the smallest next CPU burst.  The non‑preemptive version lets the chosen process run to completion; the preemptive version is called \emph{Shortest Remaining Time First} (SRTF).
+
+\begin{propriete}[Optimality of SJF]
+For a given set of processes with known burst times, \textbf{SJF yields the minimum average waiting time} among all scheduling algorithms.  Intuition (exchange argument): if a long job runs before a shorter one, swapping them reduces the waiting time of the shorter job by more than it increases that of the longer one, so any non‑SJF order can be improved.  (The justification is examinable; a formal proof is not required.)
+\end{propriete}
+
+\textbf{Round Robin (RR).}  Preemptive; each process receives a fixed \cle{time quantum} $q$.  If its burst exceeds $q$, the process is preempted and placed at the tail of the ready queue.  RR is designed for time‑sharing systems: a small $q$ gives good response time but increases context‑switch overhead; a very large $q$ degenerates into FCFS.
+
+\begin{exoresolu}[Round Robin Scheduling Example]
+\textbf{Statement:} Three processes arrive at time 0 with burst times: $P_1=6$, $P_2=4$, $P_3=2$ (all in ms).  Time quantum $q=2$.  Draw the Gantt chart and compute the average waiting and turnaround times.
+\tcblower
+\textbf{Solution.}  The ready queue evolves as follows: $P_1$ runs (0–2), $P_2$ runs (2–4), $P_3$ runs (4–6) and finishes, $P_1$ resumes (6–8), $P_2$ resumes (8–10) and finishes, $P_1$ resumes (10–12) and finishes.
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.75, font=\small]
+  \draw[->] (0,0) -- (13,0) node[right] {Time (ms)};
+  \foreach \x in {0,2,4,6,8,10,12}
+    \draw (\x,0.12) -- (\x,-0.12) node[below] {\x};
+  \fill[popblue]   (0,0.4)  rectangle (2,1.4);  \node at (1,0.9)   {$P_1$};
+  \fill[poporange] (2,0.4)  rectangle (4,1.4);  \node at (3,0.9)   {$P_2$};
+  \fill[popgreen]  (4,0.4)  rectangle (6,1.4);  \node at (5,0.9)   {$P_3$};
+  \fill[popblue]   (6,0.4)  rectangle (8,1.4);  \node at (7,0.9)   {$P_1$};
+  \fill[poporange] (8,0.4)  rectangle (10,1.4); \node at (9,0.9)   {$P_2$};
+  \fill[popblue]   (10,0.4) rectangle (12,1.4); \node at (11,0.9)  {$P_1$};
+  \draw (0,0.4) rectangle (12,1.4);
+\end{tikzpicture}
+\legende{Gantt chart for Round Robin with $q=2$.}
+\end{popfigure}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{popblueL}
+Process & Arrival & Burst & CT & TAT $=$ CT $-$ Arr & WT $=$ TAT $-$ Burst \\ \hline
+$P_1$ & 0 & 6 & 12 & 12 & 6 \\ \hline
+$P_2$ & 0 & 4 & 10 & 10 & 6 \\ \hline
+$P_3$ & 0 & 2 & 6  & 6  & 4 \\ \hline
+\end{tabular}
+\end{center}
+Average waiting time $= (6+6+4)/3 = 5.33$ ms.  Average turnaround time $= (12+10+6)/3 = 9.33$ ms.
+\end{exoresolu}
+
+\courssub{Memory Management}
+
+\begin{definition}[Logical vs Physical Address]
+A \cle{logical address} (also called virtual address) is generated by the CPU when a program executes; a \cle{physical address} is the actual location in RAM.  The Memory Management Unit (MMU) translates logical addresses into physical addresses at run time, so a program does not need to know where it is loaded.
+\end{definition}
+
+In \cle{contiguous allocation}, each process occupies a single contiguous block of physical memory.  The OS maintains a list of free \cle{partitions} (holes).  Two fragmentation problems arise:
+\begin{itemize}
+  \item \textbf{Internal fragmentation} – the allocated partition is larger than the request; the leftover space inside the partition is wasted.
+  \item \textbf{External fragmentation} – free memory is split into many small holes; the total free space may be sufficient for a request, but no single hole is large enough.
+\end{itemize}
+
+\begin{definition}[External Fragmentation]
+\cle{External fragmentation} occurs when free memory is divided into small non‑contiguous holes that cannot satisfy a large request, even though the sum of the hole sizes is sufficient.  It can be reduced by \emph{compaction} (moving processes together), which is expensive, or avoided entirely by paging.
+\end{definition}
+
+\textbf{Placement strategies.}  When a process of size $s$ arrives, the OS selects a hole according to one of these policies:
+\begin{itemize}
+  \item \textbf{First‑fit} – the first hole of size $\ge s$ (fast; tends to leave large holes at the high end of memory).
+  \item \textbf{Best‑fit} – the smallest hole of size $\ge s$ (minimises the leftover fragment, but creates many tiny, unusable holes).
+  \item \textbf{Worst‑fit} – the largest hole (leaves a large remainder, but consumes the biggest holes quickly).
+\end{itemize}
+
+\begin{exemplebox}[First‑fit vs Best‑fit vs Worst‑fit]
+Memory contains free holes of sizes 100, 50, 30 KB (in address order).  A process $P$ of 25 KB arrives.
+\begin{itemize}
+  \item \textbf{First‑fit} takes the 100 KB hole $\to$ remaining holes: 75, 50, 30.
+  \item \textbf{Best‑fit} takes the 30 KB hole $\to$ remaining holes: 100, 50, 5.
+  \item \textbf{Worst‑fit} takes the 100 KB hole $\to$ remaining holes: 75, 50, 30.
+\end{itemize}
+Best‑fit leaves a 5 KB hole that is almost useless — a typical source of external fragmentation.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.85, font=\small]
+  % Before
+  \node[left] at (0,3.5) {Before};
+  \draw[fill=popgreenL] (0,3) rectangle (4,4);  \node at (2,3.5) {Hole 100 KB};
+  \draw[fill=popblueL]  (4,3) rectangle (6,4);  \node at (5,3.5) {$P_A$};
+  \draw[fill=popgreenL] (6,3) rectangle (8,4);  \node at (7,3.5) {Hole 50};
+  \draw[fill=popblueL]  (8,3) rectangle (9,4);  \node at (8.5,3.5) {$P_B$};
+  \draw[fill=popgreenL] (9,3) rectangle (10,4); \node at (9.5,3.5) {30};
+  % First-fit
+  \node[left] at (0,1.5) {First‑fit};
+  \draw[fill=poporange] (0,1) rectangle (1,2);  \node at (0.5,1.5) {$P$};
+  \draw[fill=popgreenL] (1,1) rectangle (4,2);  \node at (2.5,1.5) {Hole 75};
+  \draw[fill=popblueL]  (4,1) rectangle (6,2);  \node at (5,1.5) {$P_A$};
+  \draw[fill=popgreenL] (6,1) rectangle (8,2);  \node at (7,1.5) {Hole 50};
+  \draw[fill=popblueL]  (8,1) rectangle (9,2);  \node at (8.5,1.5) {$P_B$};
+  \draw[fill=popgreenL] (9,1) rectangle (10,2); \node at (9.5,1.5) {30};
+  % Best-fit
+  \node[left] at (0,-0.5) {Best‑fit};
+  \draw[fill=popgreenL] (0,-1) rectangle (4,0);  \node at (2,-0.5) {Hole 100 KB};
+  \draw[fill=popblueL]  (4,-1) rectangle (6,0);  \node at (5,-0.5) {$P_A$};
+  \draw[fill=popgreenL] (6,-1) rectangle (8,0);  \node at (7,-0.5) {Hole 50};
+  \draw[fill=popblueL]  (8,-1) rectangle (9,0);  \node at (8.5,-0.5) {$P_B$};
+  \draw[fill=poporange] (9,-1) rectangle (9.83,0); \node at (9.4,-0.5) {$P$};
+  \draw[fill=popgreenL] (9.83,-1) rectangle (10,0);
+\end{tikzpicture}
+\legende{Placement of a 25 KB process $P$.  First‑fit splits the first adequate hole (100 KB $\to$ 25 + 75).  Best‑fit splits the smallest adequate hole (30 KB $\to$ 25 + 5), leaving a tiny 5 KB fragment.}
+\end{popfigure}
+
+\begin{savaistu}[Modern Solution – Paging]
+Modern OSs (Linux, Windows, Android) use \cle{paging}: physical memory is divided into fixed‑size \emph{frames} (commonly 4 KB) and each process into \emph{pages} of the same size.  A \emph{page table} maps logical pages to physical frames, so a process no longer needs contiguous memory: external fragmentation disappears.  This is an enrichment remark — for the GCE you must know that paging is the standard answer to the fragmentation problem.
+\end{savaistu}
+
+\courssub{File Management}
+
+A \cle{file system} organises data on secondary storage (HDD, SSD, flash) into named files and directories.  The OS provides system calls for create, open, read, write, close, delete, and directory operations.
+
+\begin{aretenir}[File Allocation Methods]
+\begin{itemize}
+  \item \textbf{Contiguous} – the file occupies consecutive blocks; simple and fast for sequential access, but suffers external fragmentation and makes file growth difficult.
+  \item \textbf{Linked} – each block contains a pointer to the next; no external fragmentation, but random access is slow (one must follow the chain of links).
+  \item \textbf{Indexed} – an \emph{index block} holds pointers to all the blocks of the file; supports direct (random) access and easy growth.  This is the disk‑level counterpart of the indexing module built in the C project (Lesson 95): a B‑tree or hash index on disk.
+\end{itemize}
+\end{aretenir}
+
+Directories map human‑readable names to file metadata (inode number, attributes).  A hierarchical (tree) directory structure is standard; each directory is itself a file containing \texttt{(name, inode)} pairs.
+
+\courssub{Deadlocks (Brief Overview)}
+
+A \cle{deadlock} is a permanent blocking of a set of processes, each waiting for a resource held by another process in the set.  Four \textbf{necessary conditions} (Coffman conditions) must hold simultaneously:
+\begin{enumerate}
+  \item \textbf{Mutual exclusion} – at least one resource is non‑shareable.
+  \item \textbf{Hold and wait} – a process holds resources while requesting others.
+  \item \textbf{No preemption} – resources cannot be forcibly taken away.
+  \item \textbf{Circular wait} – a cycle of processes $P_1 \to P_2 \to \dots \to P_n \to P_1$, each waiting for a resource held by the next.
+\end{enumerate}
+
+\begin{aretenir}[Deadlock Handling Strategies]
+\begin{itemize}
+  \item \textbf{Prevention} – design the system so that at least one condition can never hold (e.g., require all resources at once to break Hold‑and‑Wait).
+  \item \textbf{Avoidance} – make dynamic decisions (e.g., the Banker's algorithm) to keep the system in a \emph{safe state}.
+  \item \textbf{Detection \& recovery} – allow deadlocks, periodically detect cycles in the resource‑allocation graph, then abort or preempt processes.
+  \item \textbf{Ostrich algorithm} – ignore the problem (used by many general‑purpose OSs because deadlocks are rare and prevention is costly).
+\end{itemize}
+\end{aretenir}
+
+\courssub{Summary and Key Points}
+
+\begin{aretenir}[Essential Takeaways for the GCE]
+\begin{itemize}
+  \item OS = resource manager + control program + virtual machine; kernel, utilities, drivers.
+  \item Process = active program; the PCB holds its context; the state diagram (with correct transitions) is examinable.
+  \item Scheduling: FCFS (simple, convoy effect), SJF (optimal average waiting time), RR (time quantum, good response time).  Always draw the Gantt chart first, then compute CT, TAT, WT.
+  \item Memory: logical vs physical addresses; contiguous allocation leads to internal/external fragmentation; first‑fit / best‑fit / worst‑fit; paging eliminates external fragmentation.
+  \item File allocation: contiguous, linked, indexed (linked to the indexing project of Lesson 95).
+  \item Deadlock: four necessary conditions; prevention, avoidance, detection \& recovery.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice Exercise]
+\textbf{1.} Five processes arrive at time 0 with burst times (ms): $P_1=10$, $P_2=1$, $P_3=2$, $P_4=1$, $P_5=5$.  Draw the Gantt chart and compute the average waiting time for (a) FCFS (order $P_1,\dots,P_5$), (b) non‑preemptive SJF, (c) RR with $q=1$.\par
+\textbf{2.} A memory has free holes of sizes 40, 20, 60, 30 KB (in address order).  A process of 25 KB arrives.  Give the resulting hole list after (a) first‑fit, (b) best‑fit, (c) worst‑fit.  In which case(s) would a later 50 KB request fail even though more than 50 KB is free in total?\par
+\textbf{3.} Explain why indexed allocation is preferred for a database file that requires frequent random record access.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) FCFS order $P_1,P_2,P_3,P_4,P_5$: completion times $10,11,13,14,19$; waiting times $0,10,11,13,14$; average WT $= 48/5 = 9.6$ ms.\par
+(b) SJF order $P_2,P_4,P_3,P_5,P_1$: completion times $1,2,4,9,19$; waiting times $0,1,2,4,9$; average WT $= 16/5 = 3.2$ ms.\par
+(c) RR with $q=1$: execution sequence $P_1,P_2,P_3,P_4,P_5,P_1,P_3,P_5,P_1,P_5,P_1,P_5,P_1,P_5$, then $P_1$ alone for its last 5 quanta (total 19 quanta).  Completion times: $P_2=2$, $P_4=4$, $P_3=7$, $P_5=14$, $P_1=19$.  Waiting times: $P_1=9$, $P_2=1$, $P_3=5$, $P_4=3$, $P_5=9$; average WT $= 27/5 = 5.4$ ms.
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+(a) First‑fit uses the 40 KB hole $\to$ splits into 25 KB allocated + 15 KB free.  New holes: 15, 20, 60, 30.\par
+(b) Best‑fit uses the 30 KB hole $\to$ splits into 25 KB allocated + 5 KB free.  New holes: 40, 20, 60, 5.\par
+(c) Worst‑fit uses the 60 KB hole $\to$ splits into 25 KB allocated + 35 KB free.  New holes: 40, 20, 35, 30.\par
+In all three cases the total free space is 125 KB but scattered.  A 50 KB request fails in cases (b) and (c) (largest holes 40 KB), although 125 KB is free: this is exactly external fragmentation.  In case (a) the 60 KB hole still satisfies the request.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Indexed allocation stores all block pointers of the file in an index block (or a B‑tree).  Random access to record $k$ requires only one index lookup plus one data‑block read — $O(1)$ with a flat index, $O(\log n)$ with a B‑tree.  Contiguous allocation makes file growth painful (reallocation and copying), while linked allocation forces traversal of $k$ links for record $k$.  Hence indexed allocation — the same idea as the indexing module of Lesson 95 — is the natural choice for database files.
+\end{corrige}
+
+\coursec{Hands-on Projects: Indexing Module and OS Simulator}
+
+In the previous section we studied operating systems from the outside: what scheduling, memory management and system software \emph{do}. In this final section we roll up our sleeves and \emph{build}. You will develop two complete C projects that bring together everything learnt in this chapter: a \cle{data indexing and search module} (which uses structures, files, sorting and searching) and a \cle{CPU and memory allocation simulator} (which imitates the scheduler and the memory manager of a real operating system). These are exactly the kind of projects examiners expect at the GCE Advanced Level practical examination: modest in size, but rigorously analysed, modular, tested and documented.
+
+\courssub{Project Methodology: From Idea to Working Program}
+
+A project is not ``a lot of code typed quickly''. A project is a \emph{process}. Professional programmers --- and GCE examiners --- follow the same stages:
+
+\begin{enumerate}
+\item \textbf{Analysis.} Before writing a single line, answer three questions: What are the \cle{inputs} (data the program receives)? What are the \cle{outputs} (results it must produce)? What \cle{processing} transforms inputs into outputs? Write the answers on paper.
+\item \textbf{Modular design.} Decompose the problem into \cle{modules}, one module per feature. In C, each module typically lives in its own file: a \emph{header file} (\texttt{.h}) containing structure definitions and function prototypes, and an \emph{implementation file} (\texttt{.c}) containing the function bodies. The \texttt{main()} function should only orchestrate the modules, usually through a menu.
+\item \textbf{Coding.} Implement the modules one at a time, in a sensible order (data structures first, then input/output, then processing, then the menu).
+\item \textbf{Testing.} Execute the program against a written \cle{test plan} and compare actual results with expected results.
+\item \textbf{Documentation.} Write the report: problem statement, design choices, code listing, test results, difficulties encountered.
+\end{enumerate}
+
+\begin{methode}[Developing a project in stages]
+\begin{enumerate}
+\item Choose the \emph{smallest useful feature} (for example: ``read the records from the file and display them'').
+\item Make it work \emph{completely}: it compiles, it runs, it is tested.
+\item Save a backup copy of this working version (for example \texttt{project\_v1.c}) before touching anything.
+\item Add the \emph{next} feature, test again, back up again (\texttt{project\_v2.c}), and so on.
+\item If a new feature breaks the program, you can always return to the last working backup instead of starting from zero.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common mistake: everything in main()]
+Writing all the code inside \texttt{main()} produces a single block of hundreds of lines that is \emph{impossible to debug}: you cannot test one feature in isolation, you cannot reuse code, and a single error hides among unrelated instructions. Decompose into functions: one function per task (\texttt{addRecord}, \texttt{sortRecords}, \texttt{binarySearch}, \ldots). A good rule of thumb: no function should be longer than one screen.
+\end{attention}
+
+\begin{methode}[Building a test plan]
+For \emph{each} feature of the project, build a small table with three families of cases:
+\begin{enumerate}
+\item \textbf{Normal cases}: typical, expected input (e.g.\ search for a matricule that exists).
+\item \textbf{Boundary cases}: input at the limits (e.g.\ empty file, first or last record, table completely full).
+\item \textbf{Error cases}: invalid input (e.g.\ letters where a number is expected, a menu choice outside the range).
+\end{enumerate}
+For every case, write the \emph{expected result} \textbf{before} running the program; then run it and compare. A feature is ``finished'' only when all its cases pass.
+\end{methode}
+
+\courssub{Project 1: Data Indexing \& Search Module}
+
+\textbf{Specification.} A school (think of a college in Bamenda or Yaoundé) keeps its students' results in a text file. Each line of the file contains one record: \emph{matricule} (a unique integer), \emph{name}, \emph{class} and \emph{average}. Example file \texttt{students.txt}:
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\rowcolor{popblueL} \textbf{Matricule} & \textbf{Name} & \textbf{Class} & \textbf{Average} \\
+\hline
+1023 & Amina Bello & Tle C & 14.50 \\
+\hline
+1017 & John Tabi & Tle C & 11.25 \\
+\hline
+1042 & Marie Ngo & Tle D & 15.75 \\
+\hline
+\end{tabular}
+\end{center}
+
+The program must offer a menu allowing the user to: \textbf{add} a record, \textbf{display} all records, \textbf{sort} the records by matricule, \textbf{build an index array} (an array of positions in matricule order), \textbf{search by matricule} using \emph{binary search} on the sorted index, and \textbf{search by name} using \emph{linear search}.
+
+\textbf{Design decisions.} The natural data structure is a \emph{structure}:
+
+\begin{itemize}
+\item \texttt{typedef struct \{}
+\item \texttt{    int matricule;}
+\item \texttt{    char name[40];}
+\item \texttt{    char className[10];}
+\item \texttt{    float average;}
+\item \texttt{\} Student;}
+\end{itemize}
+
+We choose an \emph{array of structures} rather than a linked list. Why? The number of students is bounded and known approximately; arrays give direct access by position, which binary search \emph{requires} (binary search on a linked list is useless because reaching the middle element costs a full traversal). A linked list would be preferable only if insertions and deletions in the middle were very frequent --- not our case here.
+
+The \cle{index array} is a second array \texttt{index[]} where \texttt{index[i]} holds the \emph{position} of the $i$-th student in matricule order. Sorting the index instead of the records avoids moving whole structures in memory --- this is exactly the principle of index files used by real database systems.
+
+The interface is \emph{menu-driven}: a loop displays the options, reads the choice, and a \texttt{switch} statement dispatches to the right function.
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=popblue, thick, rounded corners=2pt, fill=popblueL, minimum width=3.4cm, minimum height=0.9cm, align=center, font=\small},
+  arr/.style={-{Stealth[length=2.5mm]}, thick, popdark}]
+\node[box, fill=popgreenL, draw=popgreen, align=center] (main) at (0,0){\textbf{Main menu module}\\ \texttt{main()} + \texttt{switch}};
+\node[box, align=center] (rec) at (-5.4,-2.2){\textbf{Record module}\\ add, display};
+\node[box, align=center] (idx) at (-1.8,-2.2){\textbf{Index module}\\ sort, build index};
+\node[box, align=center] (srch) at (1.8,-2.2){\textbf{Search module}\\ binary, linear};
+\node[box, align=center] (file) at (5.4,-2.2){\textbf{File module}\\ load, save};
+\draw[arr] (main) -- (rec);
+\draw[arr] (main) -- (idx);
+\draw[arr] (main) -- (srch);
+\draw[arr] (main) -- (file);
+\draw[arr, dashed, poppurple] (idx) -- (srch) node[midway, above, font=\scriptsize, text=poppurple]{sorted index};
+\end{tikzpicture}
+\end{center}
+\legende{Modular architecture of Project 1: the main menu delegates every task to a specialised module; the search module relies on the index built by the index module.}
+\end{popfigure}
+
+\textbf{Testing Project 1.} The boundary and error cases are decisive:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+\hline
+\rowcolor{popblueL} \textbf{Feature} & \textbf{Case} & \textbf{Expected result} \\
+\hline
+Load & File does not exist & Start with an empty table, no crash \\
+\hline
+Add & Duplicate matricule & Refuse the record with a clear message \\
+\hline
+Add & Average $= -5$ or $25$ & Reject: average must be in $[0, 20]$ \\
+\hline
+Binary search & Matricule present (first, middle, last) & Record displayed \\
+\hline
+Binary search & Matricule absent & ``Not found'' message \\
+\hline
+Linear search & Empty table & ``Not found'' message, no crash \\
+\hline
+Menu & User types a letter & Menu re-displayed, no infinite loop \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[Validating user input]
+\texttt{scanf} leaves unread characters in the keyboard buffer when the user types a letter instead of a number, which often causes an infinite menu loop. Always check the return value of \texttt{scanf} (it returns the number of items successfully read) and flush the buffer on failure. Never trust the user: validate ranges (average between 0 and 20, menu choice between 1 and 7) \emph{before} using the value.
+\end{attention}
+
+\courssub{Project 2: CPU \& Memory Allocation Simulator}
+
+\begin{definition}[Simulator]
+A \cle{simulator} is a program that \emph{imitates the behaviour of a real system} in order to study it \emph{without using the real system}. A flight simulator trains pilots without an aeroplane; our CPU simulator lets us compare scheduling algorithms without modifying a real operating system.
+\end{definition}
+
+\textbf{Specification.} The program reads from a text file a list of processes, each described by: \emph{PID} (process identifier), \emph{arrival time}, \emph{burst time} (CPU time needed) and \emph{memory size}. It must then:
+
+\begin{enumerate}
+\item Simulate \textbf{FCFS} (First-Come, First-Served) and \textbf{Round Robin} (with a quantum $q$ given by the user) scheduling;
+\item Display the \textbf{Gantt chart} in text mode;
+\item Compute and display the \textbf{average waiting time} and \textbf{average turnaround time};
+\item Simulate a \textbf{fixed-size memory} divided into partitions, allocating each process with \textbf{first-fit} and then \textbf{best-fit}, and display the \textbf{memory map} and the \textbf{fragmentation} after each allocation.
+\end{enumerate}
+
+\textbf{Data structures.} Each process is described by a \emph{Process Control Block} (PCB), exactly as in a real OS:
+
+\begin{itemize}
+\item \texttt{typedef struct \{}
+\item \texttt{    int pid, arrival, burst, remaining, memSize;}
+\item \texttt{    int waiting, turnaround, done;}
+\item \texttt{\} PCB;}
+\end{itemize}
+
+The field \texttt{remaining} (burst time still to execute) is essential for Round Robin. The \cle{ready queue} can be implemented as a \emph{linked list} (easy insertion/removal) or as a \emph{circular array} (simpler, fixed size): both are acceptable; justify your choice in the report. Memory partitions are an array of structures \texttt{\{start, size, free, pid\}}.
+
+\begin{attention}[Common mistake in Round Robin]
+The most frequent error is to \emph{forget to re-queue} a process whose burst is not finished when its quantum expires. Correct behaviour: when a process has consumed its quantum and \texttt{remaining > 0}, it leaves the CPU and goes to the \emph{back} of the ready queue; newly arrived processes during that quantum must join the queue \emph{before} it. Forgetting the re-queue silently turns Round Robin into FCFS --- and all your average times become wrong.
+\end{attention}
+
+\begin{exoresolu}[FCFS and Round Robin on the same data]
+Three processes: P1 (arrival 0, burst 8), P2 (arrival 1, burst 4), P3 (arrival 2, burst 2). Compute the average waiting time with FCFS and with Round Robin ($q = 3$).
+\tcblower
+\textbf{FCFS.} Order of arrival: P1, P2, P3. Gantt: P1 runs $[0,8]$, P2 runs $[8,12]$, P3 runs $[12,14]$.
+\begin{align*}
+W_1 &= 0, \quad W_2 = 8 - 1 = 7, \quad W_3 = 12 - 2 = 10\\
+\bar{W} &= \frac{0 + 7 + 10}{3} = \frac{17}{3} \approx 5.67
+\end{align*}
+\textbf{Round Robin, $q=3$.} Timeline: P1 $[0,3]$ (rem.\ 5), P2 $[3,6]$ (rem.\ 1), P3 $[6,8]$ (finished), P1 $[8,11]$ (rem.\ 2), P2 $[11,12]$ (finished), P1 $[12,14]$ (finished).
+\begin{align*}
+W_1 &= (14 - 0 - 8) = 6, \quad W_2 = (12 - 1 - 4) = 7, \quad W_3 = (8 - 2 - 2) = 4\\
+\bar{W} &= \frac{6 + 7 + 4}{3} = \frac{17}{3} \approx 5.67
+\end{align*}
+(Recall: waiting time $=$ completion $-$ arrival $-$ burst.) Here the averages coincide, but the \emph{response time} of the short process P3 is much better under Round Robin (it first runs at time 6 instead of 12) --- a point worth discussing in the report.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\ttfamily\scriptsize]
+\fill[popink] (0,0) rectangle (13.2,6.6);
+\node[text=popgreen, anchor=west] at (0.2,6.2) {=== CPU SCHEDULING SIMULATOR ===};
+\node[text=white, anchor=west] at (0.2,5.6) {Algorithm: Round Robin (q=3)};
+\node[text=white, anchor=west] at (0.2,5.0) {Gantt chart:};
+\foreach \x/\lbl/\clr in {0.2/P1/popblue, 2.3/P2/poporange, 4.4/P3/popgreen, 6.5/P1/popblue, 8.6/P2/poporange, 9.9/P1/popblue}{
+  \fill[\clr] (\x,3.9) rectangle (\x+2.0,4.7);
+  \node[text=white] at (\x+1.0,4.3) {\lbl};
+}
+\foreach \x/\tim in {0.2/0, 2.3/3, 4.4/6, 6.5/8, 8.6/11, 9.9/12, 12.0/14}{
+  \node[text=white, anchor=north] at (\x,3.85) {\tim};
+}
+\node[text=white, anchor=west] at (0.2,3.2) {Average waiting time    = 5.67};
+\node[text=white, anchor=west] at (0.2,2.7) {Average turnaround time = 9.00};
+\node[text=popgreen, anchor=west] at (0.2,2.0) {=== MEMORY MAP (best-fit) ===};
+\fill[popblue] (0.2,1.1) rectangle (3.2,1.7); \node[text=white] at (1.7,1.4) {P1 100K};
+\fill[popmuted] (3.2,1.1) rectangle (5.7,1.7); \node[text=white] at (4.45,1.4) {free 50K};
+\fill[poporange] (5.7,1.1) rectangle (9.2,1.7); \node[text=white] at (7.45,1.4) {P2 200K};
+\fill[popmuted] (9.2,1.1) rectangle (13.0,1.7); \node[text=white] at (11.1,1.4) {free 250K};
+\node[text=white, anchor=west] at (0.2,0.6) {External fragmentation: 300K in 2 holes};
+\end{tikzpicture}
+\end{center}
+\legende{Mock console output of the simulator: text-mode Gantt chart with time markers, average times, and memory map showing allocated partitions, free holes and external fragmentation.}
+\end{popfigure}
+
+\textbf{Memory allocation.} With \emph{first-fit}, each process is placed in the \emph{first} free hole large enough; with \emph{best-fit}, in the \emph{smallest} hole large enough. After each allocation, print the memory map (as in the figure) and compute the \cle{external fragmentation}: the total free memory scattered in holes too small or too dispersed to be used. Running both strategies on the \emph{same} data and comparing fragmentation is an excellent discussion point for the oral defence.
+
+\courssub{Presentation and Evaluation}
+
+The \cle{project report} should contain, in order: the problem statement (in your own words), the analysis (inputs / outputs / processing), the design decisions with their \emph{justifications} (why an array, why binary search, why a circular queue), the commented code listing, the test plan with its results, and an honest conclusion (difficulties, possible improvements). For the oral defence, rehearse a five-minute demonstration: compile, run on the examiner's data, explain one function of your choice.
+
+\begin{aretenir}[GCE exam tip]
+In the practical paper, marks are awarded for: \textbf{correct compilation}, \textbf{correct results on the examiner's test data}, \textbf{readability} (meaningful names, indentation) and \textbf{comments} explaining each module --- \emph{not} for program length. A short, clear, correct program always scores higher than a long, obscure one. Test with the examiner's perspective in mind: empty file, absent key, extreme values.
+\end{aretenir}
+
+\begin{exercice}[Consolidation]
+\begin{enumerate}
+\item Write the test plan (normal, boundary, error cases) for the \emph{sort by matricule} feature of Project 1.
+\item For the processes P1 (arrival 0, burst 5), P2 (arrival 1, burst 3), P3 (arrival 2, burst 6), draw the Gantt chart and compute the average waiting time for FCFS and for Round Robin with $q = 2$.
+\item Memory has holes of 100K, 500K, 200K and 300K (in that order). A process of 212K arrives. Where is it placed with first-fit? With best-fit? Justify.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Consolidation]
+\textbf{1.} Normal: several unsorted records $\to$ ascending matricule order. Boundary: single record (unchanged); already sorted file; two records. Error: empty table $\to$ message, no crash; duplicate matricules should have been refused at insertion.
+\textbf{2.} FCFS: P1 $[0,5]$, P2 $[5,8]$, P3 $[8,14]$; $W = (0 + 4 + 6)/3 = 10/3 \approx 3.33$. RR ($q=2$): P1 $[0,2]$, P2 $[2,4]$, P3 $[4,6]$, P1 $[6,8]$, P2 $[8,9]$, P3 $[9,11]$, P1 $[11,12]$, P3 $[12,14]$; completions 12, 9, 14; $W = ((12-0-5) + (9-1-3) + (14-2-6))/3 = (7+5+6)/3 = 6$.
+\textbf{3.} First-fit: the 500K hole (first hole $\geq 212$K), leaving 288K. Best-fit: the 300K hole (smallest hole $\geq 212$K), leaving 88K --- best-fit wastes less \emph{on this allocation}.
+\end{corrige}
+
+\begin{savaistu}[Why simulators matter]
+Before a new scheduling algorithm is ever installed in a real operating system, it is tested for months on simulators fed with recorded workloads. The same idea is used in Cameroon and worldwide to simulate traffic in Douala, the spread of epidemics, or the level of the Sanaga river behind a dam: when experimenting on the real system is too costly, too slow or too dangerous, we simulate. Your modest Project 2 uses exactly the same scientific method.
+\end{savaistu}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter by mobilising, in a single realistic project, all the competences developed in Lessons 93 to 96. At the end of the activity, you should be able to:
+
+\begin{itemize}
+\item design a \cle{structure} in C to model real-world data (a student record) and store a collection of records in a \cle{file};
+\item implement a \cle{sorting algorithm} and build an \cle{index} on a key field (the matricule);
+\item code \cle{linear search} and \cle{binary search}, count their comparisons and compare their efficiency experimentally;
+\item model the workload of a real computer as a set of \cle{processes} and simulate \cle{FCFS} and \cle{Round Robin} scheduling, by hand and with a C program;
+\item interpret performance measures (average waiting time, average turnaround time) and justify a technical recommendation in a short written report.
+\end{itemize}
+
+\begin{aretenir}[Skills mobilised]
+C programming (structures, files, functions), data structures (arrays, index tables), searching and sorting, process scheduling (FCFS, Round Robin), performance analysis, teamwork and scientific writing.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Digitalising the Registrar's Office of Government High School Nkol-Eton.}\par
+
+Government High School Nkol-Eton, in the Yaound\'e area, has about 1200 students. Until now, the registrar's office keeps student records (matricule, name, class, fees status) in large paper registers. Finding one student's file can take several minutes, and errors are frequent during the examination period.
+
+The Principal has bought \textbf{one single computer} for the office and asks your Computer Science club to help in two ways:
+
+\begin{enumerate}
+\item \textbf{Build a prototype records program in C.} The program must store student records, sort them, build an index on the matricule, and answer queries of the form: ``give me the record of student with matricule $M$''.
+\item \textbf{Explain the slowdowns of the office computer.} The secretary complains that the machine ``freezes'' when she runs several tasks together. The club must model the workload as processes, simulate the CPU scheduler, and recommend a scheduling policy and a time quantum.
+\end{enumerate}
+
+\textbf{Data for Part A (records program).} For the prototype, use the following 8 sample records (the real system will hold 1200; your code must therefore be efficient). The records are initially stored \emph{in arrival order}, \emph{not} sorted by matricule.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Matricule} & \textbf{Name} & \textbf{Class} & \textbf{Fees paid (FCFA)} \\
+\hline
+GHS-1042 & Amina Bello & Tle C & 50000 \\
+\hline
+GHS-1017 & Ndi Che & Tle A & 50000 \\
+\hline
+GHS-1088 & Fotso Larissa & Tle D & 25000 \\
+\hline
+GHS-1005 & Etoundi Paul & Tle C & 50000 \\
+\hline
+GHS-1063 & Kamga Brice & Tle A & 0 \\
+\hline
+GHS-1030 & Mbappe Sonia & Tle D & 50000 \\
+\hline
+GHS-1091 & Tchoupo Eric & Tle C & 25000 \\
+\hline
+GHS-1024 & Ngassa Claire & Tle A & 50000 \\
+\hline
+\end{tabularx}
+\end{center}
+
+For simplicity in C, store the numeric part of the matricule only (e.g. $1042$) as an integer key.
+
+\textbf{Data for Part B (scheduling simulation).} At a typical busy moment, four programs run on the office computer:
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Process} & \textbf{Arrival time (ms)} & \textbf{Burst time (ms)} \\
+\hline
+$P_1$ Word processor (typing report cards) & 0 & 8 \\
+\hline
+$P_2$ Printing (class lists) & 1 & 4 \\
+\hline
+$P_3$ Antivirus scan & 2 & 9 \\
+\hline
+$P_4$ Spreadsheet (fees balance) & 3 & 5 \\
+\hline
+\end{tabular}
+\end{center}
+
+The computer has a \textbf{single CPU}. You will compare FCFS and Round Robin (with quantum $q = 2$ ms and $q = 4$ ms) using the average waiting time and average turnaround time.
+
+\textbf{Deliverable.} Each team of 3--4 students submits a short report (3--5 pages) containing: the C code, the trace tables and Gantt charts, the measured comparison counts, and a justified recommendation to the Principal.
+
+\courssub{Tasks}
+
+\textbf{Part A --- The records program.}
+
+\begin{enumerate}
+\item Define a C structure \texttt{Student} with fields: \texttt{matricule} (int), \texttt{name} (string), \texttt{class\_name} (string), \texttt{fees} (int). Declare an array of 8 students and initialise it with the data above (or read it from a text file \texttt{students.txt}).
+\item Write a function that sorts the array by matricule (use selection sort or bubble sort). Show the state of the array after sorting.
+\item \textbf{Indexing.} Explain why, for 1200 records on disk, one would build an \cle{index}: a separate sorted table of pairs (matricule, position). Build such an index for the 8 records and draw it.
+\item Code \texttt{linearSearch(tab, n, key)} and \texttt{binarySearch(tab, n, key)}, each returning the position found (or $-1$) and counting the number of key comparisons in a global counter.
+\item Run both searches for matricule $1091$ (present) and $1050$ (absent). Record the comparison counts in a table. What do you observe? What would happen with $n = 1200$ records (compute $\log_2 1200 \approx 10.2$)?
+\item Why does binary search \emph{require} the array (or index) to be sorted? What is the cost of keeping it sorted when new students register?
+\end{enumerate}
+
+\textbf{Part B --- The scheduling simulation.}
+
+\begin{enumerate}
+\item[7.] Simulate \textbf{FCFS} by hand: draw the Gantt chart, then compute the waiting time and turnaround time of each process, and the two averages.
+\item[8.] Simulate \textbf{Round Robin with $q = 2$} by hand: Gantt chart, individual and average waiting and turnaround times.
+\item[9.] Repeat with \textbf{$q = 4$}. Compare the three policies in a summary table.
+\item[10.] Write (or complete) a small C program that reads the 4 processes and simulates Round Robin for any quantum $q$ entered by the user. Test it with $q = 1, 2, 3, 4, 6$.
+\item[11.] \textbf{Recommendation.} In 10--15 lines, advise the Principal: which policy and which quantum give the most responsive system for the secretary, and why? Mention at least one drawback of a quantum that is too small or too large.
+\end{enumerate}
+
+\courssub{Model answer}
+
+\textbf{Part A.}
+
+\textbf{1. Structure and storage.}
+
+\begin{itemize}
+\item[] \texttt{typedef struct \{}
+\item[] \texttt{\ \ int matricule;}
+\item[] \texttt{\ \ char name[30];}
+\item[] \texttt{\ \ char class\_name[10];}
+\item[] \texttt{\ \ int fees;}
+\item[] \texttt{\} Student;}
+\item[] \texttt{Student tab[8];}
+\item[] \texttt{FILE *f = fopen("students.txt", "r");}
+\item[] \texttt{for (i = 0; i < 8; i++)}
+\item[] \texttt{\ \ fscanf(f, "\%d \%s \%s \%d", \&tab[i].matricule,}
+\item[] \texttt{\ \ \ \ \ \ \ \ tab[i].name, tab[i].class\_name, \&tab[i].fees);}
+\item[] \texttt{fclose(f);}
+\end{itemize}
+
+\textbf{2. Sorting by matricule} (selection sort, key = matricule) gives:
+
+\begin{center}
+\begin{tabular}{|c|l|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Matricule} & \textbf{Name} & \textbf{Class} & \textbf{Fees} \\
+\hline
+1005 & Etoundi Paul & Tle C & 50000 \\
+\hline
+1017 & Ndi Che & Tle A & 50000 \\
+\hline
+1024 & Ngassa Claire & Tle A & 50000 \\
+\hline
+1030 & Mbappe Sonia & Tle D & 50000 \\
+\hline
+1042 & Amina Bello & Tle C & 50000 \\
+\hline
+1063 & Kamga Brice & Tle A & 0 \\
+\hline
+1088 & Fotso Larissa & Tle D & 25000 \\
+\hline
+1091 & Tchoupo Eric & Tle C & 25000 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Index.} Reading 1200 records from disk in arrival order forces a slow linear scan for every query. An \cle{index} is a small sorted table of pairs (key, position) kept in memory; searching the index (fast, binary search) directly gives the position of the record. For our sorted array, the index is simply:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Key} & 1005 & 1017 & 1024 & 1030 & 1042 & 1063 & 1088 & 1091 \\
+\hline
+\textbf{Position} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{4. Searches with comparison counters.}
+
+\begin{itemize}
+\item[] \texttt{int linearSearch(Student t[], int n, int key) \{}
+\item[] \texttt{\ \ for (int i = 0; i < n; i++) \{}
+\item[] \texttt{\ \ \ \ comparisons++;}
+\item[] \texttt{\ \ \ \ if (t[i].matricule == key) return i;}
+\item[] \texttt{\ \ \}}
+\item[] \texttt{\ \ return -1;}
+\item[] \texttt{\}}
+\item[] \texttt{int binarySearch(Student t[], int n, int key) \{}
+\item[] \texttt{\ \ int lo = 0, hi = n - 1, mid;}
+\item[] \texttt{\ \ while (lo <= hi) \{}
+\item[] \texttt{\ \ \ \ mid = (lo + hi) / 2;}
+\item[] \texttt{\ \ \ \ comparisons++;}
+\item[] \texttt{\ \ \ \ if (t[mid].matricule == key) return mid;}
+\item[] \texttt{\ \ \ \ if (t[mid].matricule < key) lo = mid + 1;}
+\item[] \texttt{\ \ \ \ else hi = mid - 1;}
+\item[] \texttt{\ \ \}}
+\item[] \texttt{\ \ return -1;}
+\item[] \texttt{\}}
+\end{itemize}
+
+\textbf{5. Measured comparisons.}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Search} & \textbf{Key 1091 (present)} & \textbf{Key 1050 (absent)} \\
+\hline
+Linear (sorted array) & 8 & 8 \\
+\hline
+Binary (sorted array) & 2 & 3 \\
+\hline
+\end{tabular}
+\end{center}
+
+Binary search is dramatically faster: with $n = 1200$, linear search needs up to $1200$ comparisons, while binary search needs at most $\lceil \log_2 1200 \rceil = 11$.
+
+\textbf{6.} Binary search halves the search interval at each step, which is only valid if the keys are ordered. The price to pay: every new registration must be inserted at the correct position (or the index rebuilt), so insertions are costlier than simple appends --- a classic \emph{space/time trade-off}.
+
+\textbf{Part B.}
+
+\textbf{7. FCFS} (order of arrival $P_1, P_2, P_3, P_4$):
+
+\begin{center}
+\begin{tikzpicture}[x=0.42cm, y=0.7cm]
+\draw[fill=popblueL] (0,0) rectangle (8,1); \node at (4,0.5) {$P_1$};
+\draw[fill=popgreenL] (8,0) rectangle (12,1); \node at (10,0.5) {$P_2$};
+\draw[fill=popblueL!60!white] (12,0) rectangle (21,1); \node at (16.5,0.5) {$P_3$};
+\draw[fill=popgreenL!60!white] (21,0) rectangle (26,1); \node at (23.5,0.5) {$P_4$};
+\foreach \x in {0,8,12,21,26} \node[below, font=\small] at (\x,0) {\x};
+\end{tikzpicture}
+\legende{Gantt chart for FCFS (times in ms).}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Process} & \textbf{Arrival} & \textbf{Burst} & \textbf{Waiting} & \textbf{Turnaround} \\
+\hline
+$P_1$ & 0 & 8 & 0 & 8 \\
+\hline
+$P_2$ & 1 & 4 & 7 & 11 \\
+\hline
+$P_3$ & 2 & 9 & 10 & 19 \\
+\hline
+$P_4$ & 3 & 5 & 18 & 23 \\
+\hline
+\rowcolor{popgreenL} \textbf{Average} & & & \textbf{8.75} & \textbf{15.25} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{8. Round Robin, $q = 2$.} Ready queue evolution gives the chart:
+
+\begin{center}
+\begin{tikzpicture}[x=0.42cm, y=0.7cm]
+\draw[fill=popblueL] (0,0) rectangle (2,1); \node at (1,0.5) {\small $P_1$};
+\draw[fill=popgreenL] (2,0) rectangle (4,1); \node at (3,0.5) {\small $P_2$};
+\draw[fill=popblueL!60!white] (4,0) rectangle (6,1); \node at (5,0.5) {\small $P_3$};
+\draw[fill=popgreenL!60!white] (6,0) rectangle (8,1); \node at (7,0.5) {\small $P_4$};
+\draw[fill=popblueL] (8,0) rectangle (10,1); \node at (9,0.5) {\small $P_1$};
+\draw[fill=popgreenL] (10,0) rectangle (12,1); \node at (11,0.5) {\small $P_2$};
+\draw[fill=popblueL!60!white] (12,0) rectangle (14,1); \node at (13,0.5) {\small $P_3$};
+\draw[fill=popgreenL!60!white] (14,0) rectangle (16,1); \node at (15,0.5) {\small $P_4$};
+\draw[fill=popblueL] (16,0) rectangle (18,1); \node at (17,0.5) {\small $P_1$};
+\draw[fill=popblueL!60!white] (18,0) rectangle (20,1); \node at (19,0.5) {\small $P_3$};
+\draw[fill=popgreenL!60!white] (20,0) rectangle (21,1); \node at (20.5,0.5) {\tiny $P_4$};
+\draw[fill=popblueL] (21,0) rectangle (23,1); \node at (22,0.5) {\small $P_1$};
+\draw[fill=popblueL!60!white] (23,0) rectangle (26,1); \node at (24.5,0.5) {\small $P_3$};
+\foreach \x in {0,2,4,6,8,10,12,14,16,18,20,21,23,26} \node[below, font=\tiny] at (\x,0) {\x};
+\end{tikzpicture}
+\legende{Gantt chart for Round Robin with $q = 2$ ms.}
+\end{center}
+
+Completion times: $P_1$ at $23$, $P_2$ at $12$, $P_3$ at $26$, $P_4$ at $21$.
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Process} & \textbf{Completion} & \textbf{Turnaround} & \textbf{Waiting} \\
+\hline
+$P_1$ & 23 & 23 & 15 \\
+\hline
+$P_2$ & 12 & 11 & 7 \\
+\hline
+$P_3$ & 26 & 24 & 15 \\
+\hline
+$P_4$ & 21 & 18 & 13 \\
+\hline
+\rowcolor{popgreenL} \textbf{Average} & & \textbf{19.0} & \textbf{12.5} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{9. Round Robin, $q = 4$} gives completion times $P_1: 26$, $P_2: 9$, $P_3: 25$, $P_4: 18$; average turnaround $18.25$ ms, average waiting $11.75$ ms. Summary:
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{popblueL} \textbf{Policy} & \textbf{Avg. waiting (ms)} & \textbf{Avg. turnaround (ms)} \\
+\hline
+FCFS & 8.75 & 15.25 \\
+\hline
+RR, $q = 2$ & 12.50 & 19.00 \\
+\hline
+RR, $q = 4$ & 11.75 & 18.25 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{10.} The C simulator uses a queue of ready processes; at each step it runs the head of the queue for at most $q$ ms, enqueues newly arrived processes, then re-enqueues the unfinished process. Testing $q = 1, 2, 3, 4, 6$ confirms the hand results and shows that as $q$ grows, RR tends towards FCFS.
+
+\textbf{11. Recommendation.} Although FCFS gives the best averages \emph{here}, it makes the word processor wait behind a long antivirus scan: the secretary perceives a ``frozen'' machine. We therefore recommend \textbf{Round Robin with $q = 4$ ms}: every program receives CPU time regularly, so the screen stays responsive, and the averages remain close to FCFS. A quantum that is too small ($q = 1$) wastes time in context switches; a quantum that is too large behaves like FCFS and reintroduces the freezing problem.
+
+\begin{attention}[Common mistakes]
+Forgetting that a process arriving \emph{during} a quantum joins the queue \emph{before} the preempted process is re-enqueued; confusing waiting time with turnaround time; using binary search on unsorted data; comparing matricules as strings instead of integers.
+\end{attention}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\courssub{Skill 1 — Declaring and Manipulating a C Structure (struct)}
+
+\begin{methode}[Defining and using a struct in C]
+To group several related pieces of data (a record) into one type:
+\begin{enumerate}
+\item \textbf{Declare the structure} before \texttt{main}: \texttt{struct Student \{ char name[30]; int age; float avg; \};}
+\item \textbf{Declare variables} of that type: \texttt{struct Student s1;} or an array \texttt{struct Student class[50];}
+\item \textbf{Access a field} with the dot operator: \texttt{s1.age = 17;}
+\item \textbf{Read a string} safely with \texttt{scanf("\%29s", s1.name);} (no \texttt{\&} before an array name; limit the width to avoid overflow).
+\item \textbf{Pass to a function} by pointer when the function must modify the record: \texttt{void update(struct Student *s)\{ s->avg = 15.5; \}} — note the arrow \texttt{->} used with pointers.
+\end{enumerate}
+\textbf{Reflexes:} every \texttt{struct} declaration ends with a semicolon after the closing brace; \texttt{float} is printed with \texttt{\%f}; always \texttt{\#include <stdio.h>} for \texttt{printf}/\texttt{scanf}.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: a student record]
+A school in Bamenda stores, for each Upper Sixth student, a name, an age and an average mark. (a) Define a C structure \texttt{Student} for this record. (b) Write a program that reads one student's data from the keyboard and displays it. (c) State the output if the user enters \texttt{NDIFOR}, \texttt{18}, \texttt{14.5}.
+\tcblower
+\textbf{(a) Structure definition.} We group the three fields into one type:
+\begin{itemize}
+\item \texttt{struct Student \{}
+\item \texttt{\ \ char name[30];}
+\item \texttt{\ \ int age;}
+\item \texttt{\ \ float avg;}
+\item \texttt{\};}
+\end{itemize}
+\textbf{(b) Complete program.}
+\begin{itemize}
+\item \texttt{\#include <stdio.h>}
+\item \texttt{struct Student \{ char name[30]; int age; float avg; \};}
+\item \texttt{int main(void) \{}
+\item \texttt{\ \ struct Student s;}
+\item \texttt{\ \ printf("Name: "); scanf("\%29s", s.name);}
+\item \texttt{\ \ printf("Age: "); scanf("\%d", \&s.age);}
+\item \texttt{\ \ printf("Average: "); scanf("\%f", \&s.avg);}
+\item \texttt{\ \ printf("\%s, age \%d, average \%.1f\textbackslash n", s.name, s.age, s.avg);}
+\item \texttt{\ \ return 0;}
+\item \texttt{\}}
+\end{itemize}
+\textbf{(c) Output:} \texttt{NDIFOR, age 18, average 14.5} (the \texttt{\%.1f} format rounds to one decimal place).
+\textbf{Examiner's remark:} the most common errors are forgetting the semicolon after the structure's closing brace, writing \texttt{scanf("\%s", \&s.name)} (the \texttt{\&} is wrong for an array), and using \texttt{\%d} to read a \texttt{float} instead of \texttt{\%f}.
+\end{exoresolu}
+
+\courssub{Skill 2 — Sequential Search on an Array}
+
+\begin{methode}[Linear search]
+To find a value $x$ in an unsorted array \texttt{T} of $n$ elements:
+\begin{enumerate}
+\item Initialise an index \texttt{i = 0} and a position variable \texttt{pos = -1} (meaning "not found").
+\item Scan: \texttt{while (i < n \&\& pos == -1)} — if \texttt{T[i] == x}, set \texttt{pos = i}; otherwise increment \texttt{i}.
+\item After the loop, \texttt{pos} holds the index of the first occurrence, or $-1$ if absent.
+\end{enumerate}
+\textbf{Key idea:} cost is proportional to $n$ in the worst case (linear time, $O(n)$); no precondition on the order of the data.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: searching a marks array]
+The array \texttt{int T[6] = \{12, 7, 19, 7, 3, 15\};} stores marks. (a) Write a C function \texttt{int search(int T[], int n, int x)} returning the index of the first occurrence of $x$, or $-1$. (b) Trace the call \texttt{search(T, 6, 19)} in a table. (c) Give the result of \texttt{search(T, 6, 8)} and the number of comparisons performed.
+\tcblower
+\textbf{(a) Function.}
+\begin{itemize}
+\item \texttt{int search(int T[], int n, int x) \{}
+\item \texttt{\ \ int i = 0, pos = -1;}
+\item \texttt{\ \ while (i < n \&\& pos == -1) \{}
+\item \texttt{\ \ \ \ if (T[i] == x) pos = i;}
+\item \texttt{\ \ \ \ else i = i + 1;}
+\item \texttt{\ \ \}}
+\item \texttt{\ \ return pos;}
+\item \texttt{\}}
+\end{itemize}
+\textbf{(b) Trace of \texttt{search(T, 6, 19)}:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & \texttt{i} & \texttt{T[i]} & \texttt{pos} \\
+\hline
+initial & 0 & -- & $-1$ \\
+\hline
+1 & 0 & 12 & $-1$ \\
+\hline
+2 & 1 & 7 & $-1$ \\
+\hline
+3 & 2 & 19 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+The loop stops as soon as \texttt{pos} changes; the function returns $2$.
+\textbf{(c)} For $x = 8$: all six cells are examined, no match occurs, so \texttt{pos} stays $-1$ and the function returns $-1$ after \textbf{6 comparisons}. This is the worst case: the searched value is absent, so the whole array is scanned.
+\end{exoresolu}
+
+\courssub{Skill 3 — Binary Search on a Sorted Array}
+
+\begin{methode}[Binary (dichotomic) search]
+\textbf{Precondition:} the array must be sorted (ascending). To find $x$ in \texttt{T[0..n-1]}:
+\begin{enumerate}
+\item Set \texttt{low = 0}, \texttt{high = n - 1}.
+\item While \texttt{low <= high}: compute \texttt{mid = (low + high) / 2} (integer division).
+\item If \texttt{T[mid] == x}: found, return \texttt{mid}.
+\item If \texttt{T[mid] < x}: search the right half, \texttt{low = mid + 1}.
+\item Else search the left half, \texttt{high = mid - 1}.
+\item If the loop ends, return $-1$ (absent).
+\end{enumerate}
+\textbf{Key idea:} each step halves the search zone, so at most $\log_2 n$ comparisons — for $n = 1000$, about $10$ comparisons instead of $1000$.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: dichotomic search trace]
+Let \texttt{T = \{3, 7, 9, 12, 15, 19, 24, 30\}} ($n = 8$). (a) Trace the binary search for $x = 15$, giving \texttt{low}, \texttt{high}, \texttt{mid} at each step. (b) How many comparisons are needed? Compare with a sequential search. (c) What happens if the array is not sorted?
+\tcblower
+\textbf{(a) Trace for $x = 15$:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Step & \texttt{low} & \texttt{high} & \texttt{mid} & \texttt{T[mid]} & Decision \\
+\hline
+1 & 0 & 7 & 3 & 12 & $15 > 12$: \texttt{low = 4} \\
+\hline
+2 & 4 & 7 & 5 & 19 & $15 < 19$: \texttt{high = 4} \\
+\hline
+3 & 4 & 4 & 4 & 15 & found, return 4 \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{(b)} Binary search: \textbf{3 comparisons}. Sequential search would need $5$ comparisons (positions 0 to 4). The gap grows dramatically with $n$: for $n = 1\,000\,000$, binary search needs at most about $20$ comparisons.
+\textbf{(c)} If the array is not sorted, the decision "go right / go left" is no longer justified: binary search may skip the zone containing $x$ and wrongly return $-1$. \textbf{Never apply binary search to unsorted data.} This is why an \cle{index} (a sorted auxiliary structure) is built over files that are themselves unsorted.
+\end{exoresolu}
+
+\courssub{Skill 4 — Building and Using a Simple Index}
+
+\begin{methode}[Indexing a data file]
+To speed up searches on a large file of records (e.g.\ students) stored in arrival order:
+\begin{enumerate}
+\item Choose a \cle{key} field (e.g.\ the registration number).
+\item Build an \textbf{index table}: pairs \texttt{(key, position)} where \texttt{position} is the record's address in the file.
+\item \textbf{Sort the index} on the key (the data file itself is not moved).
+\item To search: run \textbf{binary search on the index}, then use the position found to read the record directly in the file.
+\end{enumerate}
+\textbf{Reflexes:} the index is small (key + address only), so it can even be kept in RAM; any insertion in the file requires updating the index.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: index over a student file]
+A file contains, in arrival order, the records:
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{popblueL} Position & Reg.\ number & Name \\
+\hline
+0 & 412 & AWAH \\
+\hline
+1 & 105 & BIH \\
+\hline
+2 & 378 & CHE \\
+\hline
+3 & 220 & FORBI \\
+\hline
+\end{tabular}
+\end{center}
+(a) Build the sorted index on the registration number. (b) Explain, step by step, how the system retrieves the record of student 378. (c) Give one advantage and one drawback of maintaining an index.
+\tcblower
+\textbf{(a) Sorted index} (pairs key $\to$ position, sorted by key):
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor{popblueL} Key (reg.\ no.) & Position in file \\
+\hline
+105 & 1 \\
+\hline
+220 & 3 \\
+\hline
+378 & 2 \\
+\hline
+412 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{(b) Retrieval of student 378:}
+\begin{enumerate}
+\item Binary search on the index keys $\{105, 220, 378, 412\}$: middle key $220 < 378$, so search the right half; next middle key is $378$ — found at index row 2, which stores position $2$.
+\item Read the record at position $2$ of the data file directly: \texttt{(378, CHE)}.
+\end{enumerate}
+Only $2$ index comparisons plus one direct file access, instead of scanning the file sequentially.
+\textbf{(c)} \emph{Advantage:} searches become very fast (logarithmic) without reordering the data file. \emph{Drawback:} every insertion or deletion of a record forces an update of the index, which costs time and extra storage space.
+\end{exoresolu}
+
+\courssub{Skill 5 — Linked List: Insertion and Traversal}
+
+\begin{methode}[Singly linked list]
+A linked list is a chain of \cle{nodes}; each node contains data and a pointer \texttt{next} to the following node (the last one points to \texttt{NULL}).
+\begin{enumerate}
+\item Define the node: \texttt{struct Node \{ int data; struct Node *next; \};}
+\item \textbf{Insert at the head:} allocate a node with \texttt{malloc}, fill \texttt{data}, set its \texttt{next} to the old head, then update the head pointer.
+\item \textbf{Traverse:} start from the head; while the pointer is not \texttt{NULL}, process the node and move on: \texttt{p = p->next;}
+\item \textbf{Free memory} with \texttt{free} when a node is removed.
+\end{enumerate}
+\textbf{Reflexes:} always test \texttt{malloc}'s result against \texttt{NULL}; never lose the head pointer (the whole list would become unreachable — a memory leak).
+\end{methode}
+
+\begin{exoresolu}[GCE-style: building and displaying a list]
+(a) Write C code that inserts the values $30$, $20$, $10$ successively \emph{at the head} of a list, then displays the list. (b) Give the exact output. (c) Explain why insertion at the head costs the same effort whatever the list's length, unlike insertion in a full array.
+\tcblower
+\textbf{(a) Code.}
+\begin{itemize}
+\item \texttt{\#include <stdio.h>}
+\item \texttt{\#include <stdlib.h>}
+\item \texttt{struct Node \{ int data; struct Node *next; \};}
+\item \texttt{int main(void) \{}
+\item \texttt{\ \ struct Node *head = NULL, *p;}
+\item \texttt{\ \ int v[3] = \{30, 20, 10\}; int i;}
+\item \texttt{\ \ for (i = 0; i < 3; i++) \{}
+\item \texttt{\ \ \ \ p = malloc(sizeof(struct Node));}
+\item \texttt{\ \ \ \ p->data = v[i];}
+\item \texttt{\ \ \ \ p->next = head;}
+\item \texttt{\ \ \ \ head = p;}
+\item \texttt{\ \ \}}
+\item \texttt{\ \ for (p = head; p != NULL; p = p->next)}
+\item \texttt{\ \ \ \ printf("\%d -> ", p->data);}
+\item \texttt{\ \ printf("NULL\textbackslash n");}
+\item \texttt{\ \ return 0;}
+\item \texttt{\}}
+\end{itemize}
+\textbf{(b) Output:} \texttt{10 -> 20 -> 30 -> NULL}. Inserting at the head reverses the arrival order: the last value inserted ($10$) becomes the first node.
+\textbf{(c)} Head insertion only creates one node and redirects two pointers: a fixed number of operations, independent of the list length $n$ (constant cost, $O(1)$). In an array, inserting at the beginning forces all $n$ existing elements to be shifted one cell to the right ($O(n)$), and may even require resizing the array. This is the essential advantage of linked structures for frequent insertions.
+\end{exoresolu}
+
+\courssub{Skill 6 — CPU Scheduling: FCFS and Round Robin}
+
+\begin{methode}[Simulating a scheduler]
+To compute turnaround and waiting times:
+\begin{enumerate}
+\item Draw a \textbf{Gantt chart}: place each process on a time axis according to the policy (arrival order for FCFS; fixed quantum, cyclic queue for Round Robin).
+\item \textbf{Completion time} $C_i$: moment when process $P_i$ finishes.
+\item \textbf{Turnaround time} $T_i = C_i - \text{arrival}_i$; \textbf{waiting time} $W_i = T_i - \text{burst}_i$.
+\item Average the quantities over all processes.
+\end{enumerate}
+\textbf{Reflexes:} in Round Robin, a process that is not finished at the end of its quantum goes back to the \emph{rear} of the ready queue; newly arrived processes join the rear too.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: FCFS vs Round Robin]
+Three processes arrive at time $0$ in the order $P_1, P_2, P_3$, with CPU bursts $8$, $4$, $2$ ms. (a) Draw the Gantt chart and compute the average waiting time for FCFS. (b) Same question for Round Robin with quantum $q = 3$ ms. (c) Comment.
+\tcblower
+\textbf{(a) FCFS.} Order of execution: $P_1$ then $P_2$ then $P_3$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Time & 0 -- 8 & 8 -- 12 & 12 -- 14 \\
+\hline
+Process & $P_1$ & $P_2$ & $P_3$ \\
+\hline
+\end{tabular}
+\end{center}
+Completion times: $C_1 = 8$, $C_2 = 12$, $C_3 = 14$. Since all arrivals are at $0$, $W_i = C_i - \text{burst}_i$:
+\[ W_1 = 8-8 = 0, \quad W_2 = 12-4 = 8, \quad W_3 = 14-2 = 12. \]
+Average waiting time: $\overline{W} = \dfrac{0+8+12}{3} = \dfrac{20}{3} \approx 6.67$ ms.
+\textbf{(b) Round Robin, $q = 3$.} Ready queue initially $[P_1, P_2, P_3]$.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Time & 0--3 & 3--6 & 6--8 & 8--11 & 11--12 & 12--14 \\
+\hline
+Process & $P_1$ & $P_2$ & $P_3$ & $P_1$ & $P_2$ & $P_1$ \\
+\hline
+\end{tabular}
+\end{center}
+Details: $P_1$ runs 0--3 (remaining 5); $P_2$ runs 3--6 (remaining 1); $P_3$ runs 6--8 and \emph{finishes} ($C_3 = 8$); $P_1$ runs 8--11 (remaining 2); $P_2$ runs 11--12 and finishes ($C_2 = 12$); $P_1$ runs 12--14 and finishes ($C_1 = 14$).
+\[ W_1 = 14-8 = 6, \quad W_2 = 12-4 = 8, \quad W_3 = 8-2 = 6, \quad \overline{W} = \frac{20}{3} \approx 6.67\ \text{ms}. \]
+\textbf{(c) Comment.} Here the average waiting times coincide, but the \emph{response} profile differs: with Round Robin the short job $P_3$ finishes at $t = 8$ instead of $t = 14$, so interactive (short) processes get served much earlier. FCFS penalises short jobs stuck behind a long one (the \emph{convoy effect}); Round Robin guarantees fairness at the price of context switches.
+\end{exoresolu}
+
+\courssub{Skill 7 — Memory Allocation: First Fit, Best Fit}
+
+\begin{methode}[Contiguous memory allocation]
+Given a list of free blocks (holes) and a process requesting $k$ KB:
+\begin{enumerate}
+\item \textbf{First Fit:} scan the holes \emph{in address order}; allocate the \emph{first} hole large enough; the leftover becomes a smaller hole.
+\item \textbf{Best Fit:} scan \emph{all} holes; allocate the \emph{smallest} hole that is large enough.
+\item After each allocation, update the hole list (sizes and positions).
+\end{enumerate}
+\textbf{Reflexes:} a request fails if \emph{no single hole} is large enough, even if the total free memory suffices — this is \cle{external fragmentation}.
+\end{methode}
+
+\begin{exoresolu}[GCE-style: allocating three processes]
+Free holes, in address order: $H_1 = 100$ KB, $H_2 = 500$ KB, $H_3 = 200$ KB, $H_4 = 300$ KB. Requests arrive: $P_1 = 212$ KB, $P_2 = 417$ KB, $P_3 = 112$ KB. (a) Apply First Fit and show the state of the holes after each allocation. (b) Apply Best Fit. (c) A new request $P_4 = 250$ KB arrives: is it satisfied in each case?
+\tcblower
+\textbf{(a) First Fit.}
+\begin{itemize}
+\item $P_1 = 212$: first hole $\geq 212$ is $H_2 = 500$. Allocate; $H_2$ becomes $500 - 212 = 288$. Holes: $100,\ 288,\ 200,\ 300$.
+\item $P_2 = 417$: no hole $\geq 417$ ($H_2$ is now 288). $P_2$ \textbf{waits}.
+\item $P_3 = 112$: first hole $\geq 112$ is $H_2 = 288$. Allocate; $H_2$ becomes $288 - 112 = 176$. Holes: $100,\ 176,\ 200,\ 300$.
+\end{itemize}
+\textbf{(b) Best Fit.}
+\begin{itemize}
+\item $P_1 = 212$: smallest adequate hole is $H_4 = 300$. Allocate; $H_4$ becomes $88$. Holes: $100,\ 500,\ 200,\ 88$.
+\item $P_2 = 417$: smallest adequate hole is $H_2 = 500$. Allocate; $H_2$ becomes $83$. Holes: $100,\ 83,\ 200,\ 88$.
+\item $P_3 = 112$: smallest adequate hole is $H_3 = 200$. Allocate; $H_3$ becomes $88$. Holes: $100,\ 83,\ 88,\ 88$.
+\end{itemize}
+\textbf{(c) Request $P_4 = 250$ KB.} With First Fit, the largest hole is $300$ KB: $P_4$ \textbf{is allocated} there (leaving $50$ KB). With Best Fit, the largest remaining hole is $100$ KB: $P_4$ \textbf{cannot be allocated}, even though $100+83+88+88 = 359$ KB are free in total — a clear illustration of external fragmentation. Best Fit kept the big hole for $P_1$ but shattered memory into small unusable fragments; neither policy is universally better.
+\end{exoresolu}
+
+\courssub{Skill 8 — Page Replacement: FIFO and LRU}
+
+\begin{methode}[Simulating a page replacement algorithm]
+With $f$ frames in RAM and a reference string:
+\begin{enumerate}
+\item Draw a table: one column per reference, one row per frame.
+\item \textbf{Page hit:} the page is already in a frame — nothing changes.
+\item \textbf{Page fault:} if a frame is free, load the page; otherwise evict a victim: the \emph{oldest loaded} page (FIFO) or the \emph{least recently used} page (LRU).
+\item Count the faults; the \textbf{fault rate} is $\dfrac{\text{faults}}{\text{references}}$.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[GCE-style: FIFO with 3 frames]
+Reference string: $1, 2, 3, 4, 1, 2, 5$ with $3$ frames initially empty. Simulate FIFO, count the page faults and compute the fault rate.
+\tcblower
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{popblueL} Reference & 1 & 2 & 3 & 4 & 1 & 2 & 5 \\
+\hline
+Frame 1 & 1 & 1 & 1 & 4 & 4 & 4 & 4 \\
+\hline
+Frame 2 & -- & 2 & 2 & 2 & 1 & 1 & 1 \\
+\hline
+Frame 3 & -- & -- & 3 & 3 & 3 & 2 & 5 \\
+\hline
+Fault? & F & F & F & F & F & F & F \\
+\hline
+\end{tabular}
+\end{center}
+Step by step: $1, 2, 3$ fill the empty frames (3 faults). Reference $4$: all frames full, FIFO evicts $1$ (the oldest) — fault. Reference $1$: evicts $2$ — fault. Reference $2$: evicts $3$ — fault. Reference $5$: evicts $4$ — fault.
+Total: \textbf{7 faults out of 7 references}, fault rate $= \dfrac{7}{7} = 100\%$. This pathological string (cyclic access to $5$ pages with only $3$ frames) shows that FIFO can behave very badly when the working set exceeds the number of frames; LRU would do no better here. The lesson for the OS project: the number of frames allocated to a process must cover its working set, otherwise the system \emph{thrashes}.
+\end{exoresolu}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[MCQ: Data Structures]
+Which of the following data structures allows efficient insertion and deletion at both ends but not in the middle?
+\begin{enumerate}
+\item Array
+\item Singly linked list
+\item Doubly linked list
+\item Stack
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True/False: Operating Systems]
+State whether each statement is true or false. Justify your answer briefly.
+\begin{enumerate}
+\item A process in the \emph{ready} state is currently executing on the CPU.
+\item Virtual memory allows a program to run even if it is larger than physical RAM.
+\item The Round Robin scheduling algorithm is non-preemptive.
+\item A deadlock can occur only if there is mutual exclusion, hold and wait, no preemption, and circular wait.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define the following terms concisely:
+\begin{enumerate}
+\item \cle{System call}
+\item \cle{Page fault}
+\item \cle{Indexing} (in the context of file organisation)
+\item \cle{External fragmentation}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct Calculation: Scheduling]
+Five processes arrive at time 0 with burst times (in ms): P1=10, P2=5, P3=8, P4=3, P5=7. Compute the average waiting time and average turnaround time for the \emph{Shortest Job First (SJF)} non-preemptive algorithm.
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[Gantt Charts and Scheduling Comparison]
+Given the following processes with arrival and burst times:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}\hline
+Process & Arrival Time (ms) & Burst Time (ms) \\ \hline
+A & 0 & 8 \\
+B & 1 & 4 \\
+C & 2 & 9 \\
+D & 3 & 5 \\ \hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+\item Draw the Gantt charts for FCFS, SJF (preemptive) and Round Robin (quantum = 3).
+\item Compute the average waiting time and average turnaround time for each algorithm.
+\item Which algorithm gives the best average waiting time? Explain why.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[C Code Completion: Binary Search on Structures]
+Complete the following C function that performs binary search on a sorted array of \texttt{Student} structures (sorted by \texttt{matricule}). The function returns the index of the student with the given matricule, or -1 if not found.
+
+\begin{verbatim}
+typedef struct {
+    int matricule;
+    char name[30];
+    float average;
+} Student;
+
+int binarySearch(Student arr[], int n, int target) {
+    int low = 0, high = n - 1;
+    while (\_\_\_\_\_\_\_\_\_\_) {
+        int mid = \_\_\_\_\_\_\_\_\_\_;
+        if (arr[mid].matricule == target)
+            return mid;
+        else if (arr[mid].matricule < target)
+            \_\_\_\_\_\_\_\_\_\_;
+        else
+            \_\_\_\_\_\_\_\_\_\_;
+    }
+    return -1;
+}
+\end{verbatim}
+
+Then trace the function on the array below for \texttt{target = 204}:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+Index & Matricule & Name & Average \\ \hline
+0 & 101 & "A. Bih" & 14.5 \\
+1 & 150 & "C. Dib" & 12.0 \\
+2 & 204 & "E. Fong" & 16.2 \\
+3 & 310 & "G. Hako" & 11.8 \\
+4 & 425 & "I. Juma" & 13.7 \\ \hline
+\end{tabular}
+\end{center}
+\end{exercice}
+
+\begin{exercice}[Memory Allocation: First-Fit vs Best-Fit]
+A memory of 100 KB has the following partitions (in KB): 
+\begin{itemize}
+\item 0–19: Occupied (Process P1)
+\item 20–39: Free
+\item 40–54: Occupied (Process P2)
+\item 55–74: Free
+\item 75–99: Occupied (Process P3)
+\end{itemize}
+Three new processes arrive with sizes: Q1 = 12 KB, Q2 = 18 KB, Q3 = 8 KB.
+\begin{enumerate}
+\item Show the memory map after allocating Q1, Q2, Q3 using \emph{First-Fit}.
+\item Show the memory map after allocating Q1, Q2, Q3 using \emph{Best-Fit}.
+\item Compute the total external fragmentation (sum of free holes too small to be used) for each strategy.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Debugging a Linked List in C]
+The following C program intends to create a singly linked list of integers, insert nodes at the end, and then free the list. It contains five errors. Identify and correct each error.
+
+\begin{verbatim}
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+void insertEnd(Node *head, int val) {
+    Node *newNode = malloc(sizeof(Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    while (head != NULL) {
+        head = head->next;
+    }
+    head = newNode;
+}
+
+void freeList(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node *head = NULL;
+    insertEnd(head, 10);
+    insertEnd(head, 20);
+    insertEnd(head, 30);
+    freeList(head);
+    return 0;
+}
+\end{verbatim}
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Essay: Functions of an Operating System] (10 marks)
+Explain four major functions of an operating system. For each function, illustrate with a concrete example from the use of a school computer laboratory (e.g., students logging in, printing, running programs, sharing files).
+\end{exercice}
+
+\begin{exercice}[Mini-Practical: Indexing Module in C] (15 marks)
+A file \texttt{students.dat} contains fixed-length records of 50 bytes each: \texttt{matricule (int)}, \texttt{name (30 chars)}, \texttt{average (float)}. Write a C program that:
+\begin{enumerate}
+\item Reads the file and builds an index array in memory. Each index entry contains the matricule and the file position (byte offset) of the corresponding record.
+\item Sorts the index array by matricule.
+\item Allows the user to enter a matricule, then uses binary search on the index to locate the record, reads it from the file, and displays the student's details.
+\end{enumerate}
+Provide the complete C code with appropriate functions (\texttt{buildIndex}, \texttt{sortIndex}, \texttt{searchAndDisplay}) and a \texttt{main} function that demonstrates the process. Assume the file exists and contains at least one record.
+\end{exercice}
+
+\begin{exercice}[Structured Question: CPU Scheduling and Memory Management] (15 marks)
+Consider a system with 4 processes and the following characteristics:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+Process & Arrival Time & Burst Time & Memory Required (KB) \\ \hline
+P1 & 0 & 10 & 30 \\
+P2 & 2 & 5 & 20 \\
+P3 & 4 & 8 & 40 \\
+P4 & 6 & 3 & 10 \\ \hline
+\end{tabular}
+\end{center}
+
+The system has 100 KB of main memory, initially empty. Memory is allocated using \emph{First-Fit} with variable partitions. Processes are scheduled using \emph{Shortest Remaining Time First (SRTF)}.
+
+\begin{enumerate}
+\item Draw the Gantt chart for the SRTF scheduling. Indicate context switches.
+\item Compute the waiting time and turnaround time for each process, and the averages.
+\item Show the memory allocation steps as each process arrives (assume processes are loaded into memory at arrival if space permits; otherwise they wait in a queue). Indicate any external fragmentation after all processes have been loaded.
+\item If the system used \emph{Round Robin} with quantum = 4 instead of SRTF, would the average waiting time increase or decrease? Justify without drawing the full Gantt chart.
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\coursec{Corrected Exercises for Chapter CSC17: Programming, Data Structures \& Operating Systems}
+
+\courssub{Data Structures and C Programming Foundations}
+
+\begin{corrige}[Exercise 1 -- MCQ: Data Structures]
+\textbf{Correct answer: (c) Doubly linked list.}
+
+A \cle{doubly linked list} stores in each node a pointer to the next node \emph{and} a pointer to the previous node. With pointers to the head and the tail maintained, insertion and deletion at \textbf{both ends} are done in $O(1)$: one simply adjusts a few pointers, with no shifting of elements.
+
+Why the other options are wrong:
+\begin{itemize}
+\item \textbf{Array:} insertion/deletion at the end is $O(1)$ (amortised), but at the beginning it requires shifting all $n$ elements, i.e. $O(n)$.
+\item \textbf{Singly linked list:} $O(1)$ at the head, but deletion at the tail requires traversing the whole list to find the predecessor, i.e. $O(n)$.
+\item \textbf{Stack:} insertion and deletion occur at \emph{one end only} (the top) -- LIFO discipline.
+\end{itemize}
+Note that in \emph{none} of these structures is insertion/deletion in the middle efficient without a search ($O(n)$ to locate the position).
+\end{corrige}
+
+\begin{corrige}[Exercise 2 -- True/False: Operating Systems]
+\begin{enumerate}
+\item \textbf{False.} A process in the \emph{ready} state is loaded in main memory and waiting for the CPU to be allocated to it by the scheduler. A process currently executing on the CPU is in the \emph{running} state.
+\item \textbf{True.} \cle{Virtual memory} keeps only the currently needed pages of a program in RAM; the rest stay on disk (swap area / page file) and are loaded on demand. Hence a program whose total size exceeds physical RAM can still execute, at the cost of page transfers.
+\item \textbf{False.} \cle{Round Robin} is the classic \emph{preemptive} algorithm: when a process exhausts its time quantum, it is forcibly removed from the CPU and placed at the back of the ready queue.
+\item \textbf{True.} Coffman's four conditions -- \emph{mutual exclusion}, \emph{hold and wait}, \emph{no preemption}, \emph{circular wait} -- are \textbf{necessary} conditions: they must \emph{all} hold simultaneously for a deadlock to exist. If any one of them is absent, deadlock is impossible (this is the basis of deadlock \emph{prevention}).
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 -- Definitions]
+\begin{enumerate}
+\item \textbf{System call:} the programmatic interface through which a user program requests a service from the operating system kernel (e.g. \texttt{read()}, \texttt{write()}, \texttt{fork()}, \texttt{open()}). It triggers a controlled switch from user mode to kernel mode.
+\item \textbf{Page fault:} an interrupt (trap) raised by the MMU when a process accesses a page that is valid but not currently loaded in a physical memory frame. The OS must then fetch the page from disk, possibly evicting another page.
+\item \textbf{Indexing (file organisation):} an access technique in which a separate \emph{index structure} associates each search key (e.g. a matricule) with the physical address (byte offset) of the corresponding record, allowing direct access without scanning the whole file.
+\item \textbf{External fragmentation:} the waste of memory occurring when the total free memory is sufficient for a request but is scattered in small non-contiguous holes, none of which is large enough individually. It is typical of variable-partition allocation and can be cured by compaction or paging.
+\end{enumerate}
+\end{corrige}
+
+\courssub{Data Structures, Searching and Indexing}
+
+\begin{corrige}[Exercise 4 -- Direct Calculation: SJF Scheduling]
+All processes arrive at $t=0$, so SJF non-preemptive simply executes them in increasing order of burst time:
+\[ P4\,(3) \;\rightarrow\; P2\,(5) \;\rightarrow\; P5\,(7) \;\rightarrow\; P3\,(8) \;\rightarrow\; P1\,(10) \]
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}\hline
+\rowcolor{popblueL} Process & Burst & Completion & Turnaround $= C - 0$ & Waiting $= T - B$ \\ \hline
+P4 & 3 & 3 & 3 & 0 \\ \hline
+P2 & 5 & 8 & 8 & 3 \\ \hline
+P5 & 7 & 15 & 15 & 8 \\ \hline
+P3 & 8 & 23 & 23 & 15 \\ \hline
+P1 & 10 & 33 & 33 & 23 \\ \hline
+\end{tabular}
+\end{center}
+
+\[
+\text{Average waiting time} = \frac{0+3+8+15+23}{5} = \frac{49}{5} = \textbf{9.8 ms}
+\]
+\[
+\text{Average turnaround time} = \frac{3+8+15+23+33}{5} = \frac{82}{5} = \textbf{16.4 ms}
+\]
+\end{corrige}
+
+\begin{corrige}[Exercise 5 -- Gantt Charts and Scheduling Comparison]
+\textbf{1. Gantt charts.}
+
+\textbf{FCFS} (order of arrival A, B, C, D):
+\begin{center}
+\begin{tabular}{|c|c|c|cc|}\hline
+A & B & C & D \\ \hline
+0 & 8 & 12 & 21 & 26 \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{SJF preemptive (SRTF):} at $t=1$, B (4) preempts A (remaining 7); B runs to completion at $t=5$ (D's burst 5 $>$ B's remaining time, so no preemption at $t=3$). Then D (5), then A (7), then C (9):
+\begin{center}
+\begin{tabular}{|c|c|c|c|cc|}\hline
+A & B & D & A & C \\ \hline
+0 & 1 & 5 & 10 & 17 & 26 \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Round Robin, $q=3$:} ready queue evolves as A; B,C,D arrive during A's first quantum.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|cc|}\hline
+A & B & C & D & A & B & C & D & A & C \\ \hline
+0 & 3 & 6 & 9 & 12 & 15 & 16 & 19 & 21 & 23 & 26 \\ \hline
+\end{tabular}
+\end{center}
+(B's last slice lasts only 1 ms since it had 1 ms remaining.)
+
+\textbf{2. Waiting and turnaround times} ($T = C - \text{arrival}$; $W = T - \text{burst}$).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+\rowcolor{popblueL} & \multicolumn{2}{c|}{FCFS} & \multicolumn{2}{c|}{SRTF} & \multicolumn{2}{c|}{RR ($q=3$)} \\ \hline
+Process & $T$ & $W$ & $T$ & $W$ & $T$ & $W$ \\ \hline
+A & 8 & 0 & 17 & 9 & 23 & 15 \\ \hline
+B & 11 & 7 & 4 & 0 & 15 & 11 \\ \hline
+C & 19 & 10 & 24 & 15 & 24 & 15 \\ \hline
+D & 23 & 18 & 7 & 2 & 18 & 13 \\ \hline
+\textbf{Average} & \textbf{15.25} & \textbf{8.75} & \textbf{13.0} & \textbf{6.5} & \textbf{20.0} & \textbf{13.5} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Best algorithm:} \textbf{SRTF} gives the lowest average waiting time (6.5 ms). This is expected: SJF/SRTF is \emph{provably optimal} with respect to average waiting time, because running short jobs first minimises the number of processes kept waiting. Round Robin penalises short jobs here (B waits behind long quanta of A, C, D), which explains its poor average.
+\end{corrige}
+
+\begin{corrige}[Exercise 6 -- C Code Completion: Binary Search on Structures]
+\textbf{Completed function} (blanks in bold):
+\begin{itemize}
+\item[] \texttt{int binarySearch(Student arr[], int n, int target) \{}
+\item[] \texttt{\ \ \ \ int low = 0, high = n - 1;}
+\item[] \texttt{\ \ \ \ while (}\textbf{\texttt{low <= high}}\texttt{) \{}
+\item[] \texttt{\ \ \ \ \ \ \ \ int mid = }\textbf{\texttt{(low + high) / 2}}\texttt{;}
+\item[] \texttt{\ \ \ \ \ \ \ \ if (arr[mid].matricule == target)}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ return mid;}
+\item[] \texttt{\ \ \ \ \ \ \ \ else if (arr[mid].matricule < target)}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ }\textbf{\texttt{low = mid + 1}}\texttt{;}
+\item[] \texttt{\ \ \ \ \ \ \ \ else}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ }\textbf{\texttt{high = mid - 1}}\texttt{;}
+\item[] \texttt{\ \ \ \ \}}
+\item[] \texttt{\ \ \ \ return -1;}
+\item[] \texttt{\}}
+\end{itemize}
+
+\textbf{Trace for \texttt{target = 204}:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{popblueL} Pass & low & high & mid & arr[mid].matricule & Action \\ \hline
+1 & 0 & 4 & 2 & 204 & $204 = 204$: \textbf{return 2} \\ \hline
+\end{tabular}
+\end{center}
+The target is found at the very first probe: the function returns index \textbf{2} (student ``E. Fong''). Had the target been, say, 310, the search would continue: pass 2 with low $=3$, high $=4$, mid $=3$ $\rightarrow$ found. The loop runs at most $\lceil \log_2 5 \rceil = 3$ times, illustrating the $O(\log n)$ complexity of binary search.
+\end{corrige}
+
+\courssub{Operating Systems and System Software}
+
+\begin{corrige}[Exercise 7 -- Memory Allocation: First-Fit vs Best-Fit]
+Initial free holes: \textbf{H1} = 20--39 (20 KB), \textbf{H2} = 55--74 (20 KB).
+
+\textbf{1. First-Fit} (scan from address 0, take the first hole large enough):
+\begin{itemize}
+\item Q1 (12 KB) $\rightarrow$ H1: occupies 20--31; remaining hole 32--39 (8 KB).
+\item Q2 (18 KB) $\rightarrow$ H1 remainder (8 KB) too small; goes to H2: occupies 55--72; remaining hole 73--74 (2 KB).
+\item Q3 (8 KB) $\rightarrow$ fits exactly into 32--39.
+\end{itemize}
+Final map: 0--19 P1; 20--31 Q1; 32--39 Q3; 40--54 P2; 55--72 Q2; 73--74 \emph{free (2 KB)}; 75--99 P3.
+
+\textbf{2. Best-Fit} (take the smallest hole that is large enough):
+\begin{itemize}
+\item Q1 (12 KB): both holes are 20 KB (tie) $\rightarrow$ H1: occupies 20--31; remainder 32--39 (8 KB).
+\item Q2 (18 KB): holes available 8 KB and 20 KB $\rightarrow$ best fit is H2 (20 KB): occupies 55--72; remainder 73--74 (2 KB).
+\item Q3 (8 KB): holes available 8 KB and 2 KB $\rightarrow$ best fit is 32--39 (exact fit).
+\end{itemize}
+Final map identical to First-Fit in this particular case.
+
+\textbf{3. External fragmentation:} the only remaining hole is 73--74 = \textbf{2 KB}, unusable by any realistic process. Total external fragmentation:
+\[ \text{First-Fit} = 2\ \text{KB}, \qquad \text{Best-Fit} = 2\ \text{KB}. \]
+\emph{Remark:} the two strategies coincide here because the initial holes are equal. In general they differ: Best-Fit tends to leave many tiny slivers, while First-Fit is faster and often preserves large holes at high addresses.
+\end{corrige}
+
+\begin{corrige}[Exercise 8 -- Debugging a Linked List in C]
+The five errors and their corrections:
+
+\begin{enumerate}
+\item \textbf{Head passed by value.} \texttt{insertEnd(Node *head, ...)} receives a \emph{copy} of the pointer; any modification is lost on return, so \texttt{main}'s \texttt{head} stays \texttt{NULL}. \emph{Fix:} pass the address of the head: \texttt{void insertEnd(Node **head, int val)} and call \texttt{insertEnd(\&head, 10);}.
+\item \textbf{Wrong traversal / wrong link.} The loop \texttt{while (head != NULL)} walks \emph{past} the last node, then \texttt{head = newNode} assigns a local copy -- the new node is never linked into the list. \emph{Fix:} stop at the last node and link through it: \texttt{while ((*head)->next != NULL) *head = (*head)->next;} then \texttt{(*head)->next = newNode;} -- or, with a local cursor \texttt{p}, set \texttt{p->next = newNode;}.
+\item \textbf{Empty-list case not handled.} If the list is empty, the new node must become the head: \texttt{if (*head == NULL) \{ *head = newNode; return; \}}.
+\item \textbf{No check of \texttt{malloc}.} If allocation fails, \texttt{newNode->data} crashes. \emph{Fix:} \texttt{if (newNode == NULL) \{ fprintf(stderr, "out of memory"); exit(1); \}}.
+\item \textbf{Dangling pointer after \texttt{freeList}.} After freeing, \texttt{main}'s \texttt{head} still points to freed memory. \emph{Fix:} set \texttt{head = NULL;} after \texttt{freeList(head);} (or free through a \texttt{Node**}).
+\end{enumerate}
+
+\textbf{Corrected program:}
+\begin{itemize}
+\item[] \texttt{void insertEnd(Node **head, int val) \{}
+\item[] \texttt{\ \ \ \ Node *newNode = malloc(sizeof(Node));}
+\item[] \texttt{\ \ \ \ if (newNode == NULL) \{ fprintf(stderr,"mem"); exit(1); \}}
+\item[] \texttt{\ \ \ \ newNode->data = val; newNode->next = NULL;}
+\item[] \texttt{\ \ \ \ if (*head == NULL) \{ *head = newNode; return; \}}
+\item[] \texttt{\ \ \ \ Node *p = *head;}
+\item[] \texttt{\ \ \ \ while (p->next != NULL) p = p->next;}
+\item[] \texttt{\ \ \ \ p->next = newNode;}
+\item[] \texttt{\}}
+\item[] \texttt{/* main: insertEnd(\&head,10); ... freeList(head); head = NULL; */}
+\end{itemize}
+\end{corrige}
+
+\courssub{Hands-on Projects}
+
+\begin{corrige}[Exercise 9 -- Essay: Functions of an Operating System (10 marks)]
+\textbf{Indicative mark scheme:} 2 marks per function correctly explained (1 mark for the explanation, 1 mark for a relevant laboratory example) $\times$ 4 functions = 8 marks; 2 marks for a clear introduction/conclusion and coherent structure. Any four of the following are acceptable.
+
+\textbf{Model answer (outline).}
+
+\emph{Introduction:} an operating system is the system software that manages hardware resources and provides services to users and programs; it acts as an intermediary between the user and the machine.
+
+\begin{enumerate}
+\item \textbf{Process (CPU) management.} The OS creates, schedules, suspends and terminates processes, sharing the CPU among them (e.g. Round Robin, priority scheduling). \emph{Lab example:} thirty students each run a browser, a C compiler and a word processor simultaneously; the scheduler switches the CPU between all these programs so fast that every student has the impression of exclusive use.
+\item \textbf{Memory management.} The OS allocates main memory to programs, protects one program's space from another, and uses virtual memory (paging/swapping) when RAM is insufficient. \emph{Lab example:} a student compiles a large project while a video plays; the OS keeps each program in its own memory area and swaps inactive pages to disk so that nothing crashes.
+\item \textbf{File and storage management.} The OS organises data into files and directories, controls access rights, and keeps track of free disk blocks. \emph{Lab example:} each student has a personal folder on the server; permissions prevent one student from deleting another's work, and the OS records where each file physically resides on the disk.
+\item \textbf{Device (I/O) management.} The OS drives peripherals through device drivers, queues and schedules I/O requests (spooling). \emph{Lab example:} when twenty students click ``Print'' at the same time, the OS places the jobs in a print queue and sends them one by one to the single laboratory printer.
+\end{enumerate}
+
+(Also acceptable: \textbf{security and user management} -- login/password authentication when students log in; \textbf{user interface} -- the graphical desktop or shell through which students launch programs.)
+
+\emph{Conclusion:} without these functions the laboratory's hardware would be unusable; the OS turns raw hardware into a convenient, shared and secure working environment.
+
+\textbf{Examiner expectations:} precise technical vocabulary (scheduling, spooling, virtual memory, access rights), examples that are \emph{explicitly linked} to the function described, and a structured essay (introduction, numbered points, conclusion).
+\end{corrige}
+
+\begin{corrige}[Exercise 10 -- Mini-Practical: Indexing Module in C (15 marks)]
+\textbf{Indicative mark scheme:} correct structure definitions and file opening (3); \texttt{buildIndex} with correct offset computation (4); \texttt{sortIndex} (3); binary search + \texttt{fseek}/\texttt{fread} retrieval in \texttt{searchAndDisplay} (4); coherent \texttt{main} and demonstration (1).
+
+\textbf{Complete program:}
+\begin{itemize}
+\item[] \texttt{\#include <stdio.h>}
+\item[] \texttt{\#include <stdlib.h>}
+\item[] \texttt{\#include <string.h>}
+\item[] \texttt{}
+\item[] \texttt{\#define REC\_SIZE 50\ \ /* 4 + 30 + 4 bytes, padded */}
+\item[] \texttt{}
+\item[] \texttt{typedef struct \{}
+\item[] \texttt{\ \ \ \ int matricule;}
+\item[] \texttt{\ \ \ \ char name[30];}
+\item[] \texttt{\ \ \ \ float average;}
+\item[] \texttt{\} Student;}
+\item[] \texttt{}
+\item[] \texttt{typedef struct \{}
+\item[] \texttt{\ \ \ \ int matricule;}
+\item[] \texttt{\ \ \ \ long offset;\ \ /* byte position of the record */}
+\item[] \texttt{\} IndexEntry;}
+\item[] \texttt{}
+\item[] \texttt{/* 1. Read the file and build the index in memory */}
+\item[] \texttt{int buildIndex(FILE *f, IndexEntry idx[]) \{}
+\item[] \texttt{\ \ \ \ Student s; int n = 0;}
+\item[] \texttt{\ \ \ \ rewind(f);}
+\item[] \texttt{\ \ \ \ while (fread(\&s, REC\_SIZE, 1, f) == 1) \{}
+\item[] \texttt{\ \ \ \ \ \ \ \ idx[n].matricule = s.matricule;}
+\item[] \texttt{\ \ \ \ \ \ \ \ idx[n].offset = (long)n * REC\_SIZE;}
+\item[] \texttt{\ \ \ \ \ \ \ \ n++;}
+\item[] \texttt{\ \ \ \ \}}
+\item[] \texttt{\ \ \ \ return n;}
+\item[] \texttt{\}}
+\item[] \texttt{}
+\item[] \texttt{/* 2. Sort the index by matricule (selection sort) */}
+\item[] \texttt{void sortIndex(IndexEntry idx[], int n) \{}
+\item[] \texttt{\ \ \ \ for (int i = 0; i < n - 1; i++) \{}
+\item[] \texttt{\ \ \ \ \ \ \ \ int min = i;}
+\item[] \texttt{\ \ \ \ \ \ \ \ for (int j = i + 1; j < n; j++)}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ if (idx[j].matricule < idx[min].matricule) min = j;}
+\item[] \texttt{\ \ \ \ \ \ \ \ IndexEntry tmp = idx[i]; idx[i] = idx[min]; idx[min] = tmp;}
+\item[] \texttt{\ \ \ \ \}}
+\item[] \texttt{\}}
+\item[] \texttt{}
+\item[] \texttt{/* 3. Binary search on the index, then direct access in the file */}
+\item[] \texttt{void searchAndDisplay(FILE *f, IndexEntry idx[], int n, int target) \{}
+\item[] \texttt{\ \ \ \ int low = 0, high = n - 1;}
+\item[] \texttt{\ \ \ \ while (low <= high) \{}
+\item[] \texttt{\ \ \ \ \ \ \ \ int mid = (low + high) / 2;}
+\item[] \texttt{\ \ \ \ \ \ \ \ if (idx[mid].matricule == target) \{}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ Student s;}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ fseek(f, idx[mid].offset, SEEK\_SET);}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ fread(\&s, REC\_SIZE, 1, f);}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ printf("Matricule: \%d\textbackslash nName: \%s\textbackslash nAverage: \%.2f\textbackslash n",}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ s.matricule, s.name, s.average);}
+\item[] \texttt{\ \ \ \ \ \ \ \ \ \ \ \ return;}
+\item[] \texttt{\ \ \ \ \ \ \ \ \}}
+\item[] \texttt{\ \ \ \ \ \ \ \ else if (idx[mid].matricule < target) low = mid + 1;}
+\item[] \texttt{\ \ \ \ \ \ \ \ else high = mid - 1;}
+\item[] \texttt{\ \ \ \ \}}
+\item[] \texttt{\ \ \ \ printf("Student \%d not found.\textbackslash n", target);}
+\item[] \texttt{\}}
+\item[] \texttt{}
+\item[] \texttt{int main(void) \{}
+\item[] \texttt{\ \ \ \ FILE *f = fopen("students.dat", "rb");}
+\item[] \texttt{\ \ \ \ if (f == NULL) \{ perror("students.dat"); return 1; \}}
+\item[] \texttt{\ \ \ \ IndexEntry idx[1000];}
+\item[] \texttt{\ \ \ \ int n = buildIndex(f, idx);}
+\item[] \texttt{\ \ \ \ sortIndex(idx, n);}
+\item[] \texttt{\ \ \ \ int target;}
+\item[] \texttt{\ \ \ \ printf("Enter matricule: "); scanf("\%d", \&target);}
+\item[] \texttt{\ \ \ \ searchAndDisplay(f, idx, n, target);}
+\item[] \texttt{\ \ \ \ fclose(f);}
+\item[] \texttt{\ \ \ \ return 0;}
+\item[] \texttt{\}}
+\end{itemize}
+
+\textbf{Examiner expectations:} the offset must be computed as $\text{record number} \times 50$ bytes; the search must use \texttt{fseek} + \texttt{fread} (direct access, not a sequential scan); the file must be opened in binary mode (\texttt{"rb"}); boundary cases (target absent) must be handled.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 -- Structured Question: CPU Scheduling and Memory Management (15 marks)]
+\textbf{Indicative mark scheme:} (a) Gantt chart 4 marks; (b) table of times + averages 5 marks; (c) memory steps 4 marks; (d) justified comparison 2 marks.
+
+\textbf{1. SRTF Gantt chart.}
+\begin{itemize}
+\item $t=0$: only P1 (10) $\rightarrow$ runs.
+\item $t=2$: P2 (5) arrives; P1 has 8 remaining $> 5$ $\rightarrow$ \emph{context switch}, P2 runs.
+\item $t=4$: P3 (8) arrives; P2 has 3 remaining $\rightarrow$ no preemption.
+\item $t=6$: P4 (3) arrives; P2 has 1 remaining $\rightarrow$ no preemption.
+\item $t=7$: P2 finishes; shortest remaining is P4 (3) $\rightarrow$ P4 runs 7--10.
+\item Then P1 (8 remaining) 10--18, then P3 (8) 18--26.
+\end{itemize}
+\begin{center}
+\begin{tabular}{|c|c|c|c|cc|}\hline
+P1 & P2 & P4 & P1 & P3 \\ \hline
+0 & 2 & 7 & 10 & 18 & 26 \\ \hline
+\end{tabular}
+\end{center}
+Context switches at $t=2$ (P1$\to$P2), $t=7$ (P2$\to$P4), $t=10$ (P4$\to$P1), $t=18$ (P1$\to$P3): \textbf{4 context switches}.
+
+\textbf{2. Waiting and turnaround times.}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+\rowcolor{popblueL} Process & Arrival & Burst & Completion & Turnaround $T$ & Waiting $W = T - B$ \\ \hline
+P1 & 0 & 10 & 18 & 18 & 8 \\ \hline
+P2 & 2 & 5 & 7 & 5 & 0 \\ \hline
+P3 & 4 & 8 & 26 & 22 & 14 \\ \hline
+P4 & 6 & 3 & 10 & 4 & 1 \\ \hline
+\textbf{Average} & & & & \textbf{12.25} & \textbf{5.75} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Memory Management (Paging Example).}
+Assume a system with 16 frames, page size 1 KB. Process requires 5 pages (0--4). Page table initially empty. Page reference string: 0, 1, 2, 3, 0, 4, 1, 2, 3, 4. Using \textbf{LRU} replacement (4 frames allocated).
+\begin{itemize}
+\item Ref 0: Miss $\rightarrow$ Frame 0 [0]
+\item Ref 1: Miss $\rightarrow$ Frame 1 [0,1]
+\item Ref 2: Miss $\rightarrow$ Frame 2 [0,1,2]
+\item Ref 3: Miss $\rightarrow$ Frame 3 [0,1,2,3] (Frames full)
+\item Ref 0: Hit $\rightarrow$ Update LRU [1,2,3,0]
+\item Ref 4: Miss $\rightarrow$ Replace LRU (1) $\rightarrow$ [2,3,0,4]
+\item Ref 1: Miss $\rightarrow$ Replace LRU (2) $\rightarrow$ [3,0,4,1]
+\item Ref 2: Miss $\rightarrow$ Replace LRU (3) $\rightarrow$ [0,4,1,2]
+\item Ref 3: Miss $\rightarrow$ Replace LRU (0) $\rightarrow$ [4,1,2,3]
+\item Ref 4: Hit $\rightarrow$ Update LRU [1,2,3,4]
+\end{itemize}
+Total Page Faults = 8. Page Fault Rate = 80\%. With 5 frames (working set size), faults would drop to 5 (only initial loads), demonstrating \emph{thrashing} when frames $<$ working set.
+
+\textbf{4. Comparison: SRTF vs. Round Robin.}
+SRTF minimises average waiting time (5.75 ms here) but requires knowledge of burst times (estimation) and risks starvation of long processes. Round Robin (with $q=3$) gives higher average waiting (13.5 ms in Ex. 5) but guarantees \emph{response time} bounds (no process waits more than $(n-1)q$) and is fair, making it ideal for time-sharing systems. \textbf{Choice:} SRTF for batch/background jobs; RR for interactive foreground tasks.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+  mindmap,
+  concept color=popblue,
+  level 1 concept/.append style={sibling angle=60, level distance=5.2cm},
+  level 2 concept/.append style={sibling angle=45, level distance=3.5cm},
+  every node/.style={concept, execute at begin node=\strut},
+  text=white,
+  font=\small\bfseries
+]
+\node[concept, align=center] {CSC17\\Programming, Data\\Structures \& OS}
+  child[concept color=poporange] {node[concept, align=center] {C\\Foundations}}
+  child[concept color=popgreen] {node[concept, align=center] {Data\\Structures}}
+  child[concept color=poppurple] {node[concept, align=center] {Searching \&\\Indexing}}
+  child[concept color=poppink] {node[concept, align=center] {Operating\\Systems}}
+  child[concept color=popgold] {node[concept, align=center] {System\\Software}}
+  child[concept color=popmuted] {node[concept, align=center] {Hands-on\\Projects}};
+\end{tikzpicture}
+\legende{Mind map of Chapter CSC17: the four lessons (93--96) organised around C programming, data structures, operating systems and the two practical projects.}
+\end{popfigure}
+
+\begin{aretenir}[Key Definitions]
+\begin{itemize}
+\item \cle{Pointer}: a variable that stores a memory address; it enables dynamic memory allocation (\texttt{malloc}, \texttt{free}) and the construction of linked structures.
+\item \cle{Struct}: a user-defined composite type grouping related variables (fields) of possibly different types under one name.
+\item \cle{Linked List}: a sequence of nodes where each node contains data and a pointer to the next node; the list is accessed through a \texttt{head} pointer.
+\item \cle{Stack / Queue}: linear structures with LIFO discipline (\texttt{push}/\texttt{pop}) and FIFO discipline (\texttt{enqueue}/\texttt{dequeue}) respectively.
+\item \cle{Binary Search Tree (BST)}: an ordered binary tree in which, for every node, all keys in the left subtree are smaller than the node's key and all keys in the right subtree are greater.
+\item \cle{Process}: a program in execution; the OS maintains a Process Control Block (PCB) holding its state, program counter, register values and memory limits.
+\item \cle{Scheduler}: the OS component that selects the next process to run on the CPU (FCFS, SJF, Round Robin, Priority).
+\item \cle{Virtual Memory}: an abstraction giving each process its own contiguous address space, implemented through paging or segmentation with hardware support.
+\end{itemize}
+\end{aretenir}
+
+\begin{propriete}[Laws, Formulas and Complexity Results (Examinable)]
+\begin{itemize}
+\item \textbf{Pointer arithmetic}: if \texttt{p} points to an element of an array, \texttt{p + i} points to the $i$-th element after it; the address increases by $i \times \texttt{sizeof(type)}$ bytes.
+\item \textbf{Linked list}: insertion or deletion is $O(1)$ given a pointer to the predecessor node; searching is $O(n)$.
+\item \textbf{Stack and queue operations}: \texttt{push}, \texttt{pop}, \texttt{enqueue}, \texttt{dequeue} are all $O(1)$.
+\item \textbf{BST}: average search/insert/delete is $O(\log n)$ for a balanced tree; the worst case is $O(n)$ when the tree degenerates into a chain.
+\item \textbf{Sorting lower bound}: any comparison-based sort requires $\Omega(n \log n)$ comparisons in the worst case.
+\item \textbf{Scheduling criteria}: for each process,
+\[ \text{Turnaround} = \text{Completion} - \text{Arrival}, \qquad \text{Waiting} = \text{Turnaround} - \text{Burst}, \qquad \text{Response} = \text{FirstRun} - \text{Arrival}. \]
+\item \textbf{Paging performance}: with page-fault rate $P = \dfrac{\text{number of faults}}{\text{number of references}}$,
+\[ \text{EAT} = (1-P)\times t_{\text{mem}} + P \times t_{\text{fault}}, \]
+where $t_{\text{mem}}$ is the memory access time and $t_{\text{fault}}$ the page-fault service time.
+\item \textbf{Deadlock (Coffman conditions)}: a deadlock can occur only if all four hold simultaneously: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.
+\end{itemize}
+These formulas and complexity results are directly examinable at the GCE Advanced Level; be ready to state and apply them.
+\end{propriete}
+
+\begin{methode}[Essential Step-by-Step Methods]
+\begin{enumerate}
+\item \textbf{Dynamic array in C}: call \texttt{malloc} $\rightarrow$ check the result against \texttt{NULL} $\rightarrow$ use the memory $\rightarrow$ grow with \texttt{realloc} if needed $\rightarrow$ release with \texttt{free} exactly once.
+\item \textbf{Insert at head of a linked list}: allocate the node, store the data, set \texttt{newNode->next = head}, then update \texttt{head = newNode} (in this order).
+\item \textbf{BST recursive search}: if \texttt{root == NULL} return \texttt{NULL}; if \texttt{key == root->key} return \texttt{root}; if \texttt{key < root->key} recurse on the left subtree, else on the right subtree.
+\item \textbf{Round Robin simulation}: keep a ready queue; give each process the quantum $q$; if its remaining burst exceeds $q$, subtract $q$ and re-enqueue it; otherwise record its completion time and compute waiting/turnaround.
+\item \textbf{Page replacement (FIFO/LRU)}: maintain the list of loaded frames; on a page fault, if all frames are full, evict a page according to the policy (oldest loaded for FIFO, least recently used for LRU), load the new page and update the bookkeeping structures.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[Common Mistakes to Avoid]
+\begin{itemize}
+\item Forgetting to check the return value of \texttt{malloc}/\texttt{realloc} against \texttt{NULL} $\rightarrow$ segmentation fault on failure.
+\item Losing the head pointer when inserting at the head of a list: link the new node to the old head \emph{before} updating \texttt{head}.
+\item Comparing C strings with \texttt{==} (this compares addresses); always use \texttt{strcmp}.
+\item Off-by-one errors in array and pointer loops, e.g.\ writing \texttt{i <= n} instead of \texttt{i < n} for an array of $n$ elements.
+\item Passing a \texttt{struct} by value to a function and expecting the caller's copy to change; pass a pointer instead.
+\item Mixing up waiting time and turnaround time in scheduling exercises; always compute turnaround first, then subtract the burst time.
+\item Believing virtual memory eliminates page faults: when the working set exceeds the available frames, \emph{thrashing} occurs and performance collapses.
+\item Double-freeing heap memory or using a pointer after \texttt{free} (dangling pointer).
+\end{itemize}
+\end{attention}
+
+\begin{methode}[GCE Examination Tips]
+\begin{itemize}
+\item \textbf{Code tracing}: for every C snippet, draw a memory diagram (stack, heap, pointers) and fill a trace table; examiners award marks for correct, well-presented traces.
+\item \textbf{Pseudocode clarity}: use indentation and explicit keywords \texttt{IF/ELSE}, \texttt{WHILE}, \texttt{FOR}; avoid language-specific syntax in algorithm questions.
+\item \textbf{Complexity}: always state best, average and worst cases for data-structure operations, and justify them (tree height, list length).
+\item \textbf{OS questions}: know the four Coffman deadlock conditions and at least one prevention or avoidance technique (e.g.\ resource ordering, or the Banker's algorithm).
+\item \textbf{Project write-up}: for the indexing module, justify the choice between a hash table and a BST (average $O(1)$ lookup vs.\ ordered traversal); for the OS simulator, draw the Gantt chart and compute average waiting and turnaround times.
+\item \textbf{Time management}: in a practical-style paper, reserve time to read the whole question first, then code or trace, then write explanations; practise past papers under timed conditions.
+\end{itemize}
+\end{methode}
+
+\findecours
+
+\end{document}
