@@ -28,12 +28,12 @@
 \usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
 \usepackage{pagecolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
 \usepackage{pgfplots}
 \usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
 \usepackage[european,siunitx]{circuitikz} % schémas électriques
 \pgfplotsset{compat=1.18}
-\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
 \usepackage{enumitem}
 \usepackage{fancyhdr}
 % [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
@@ -56,7 +56,7 @@
 \sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
 \DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
 \DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
-\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
 \usepackage{qrcode}
 % \degree : commande fréquemment utilisée par les modèles pour un angle ou une
 % température en dehors de \SI{}{} (non fournie par les paquets chargés).
@@ -448,6 +448,7 @@
 \providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
 \providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
 \providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
 
 \begin{document}
 
@@ -1003,9 +1004,277 @@ The uniform distribution models complete indifference within an interval. But mo
 
 \coursec{The Normal Distribution: pdf, Mean and Variance}
 
-\courssub{Introduction: the need for a continuous model}
+\courssub{From Uniform to Normal: Why the Bell Curve?}
 
-The uniform distribution of this section. In the previous section, we met the uniform distribution: a continuous uniform distribution. In the previous section, we saw the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of the uniform distribution of
+In the previous section we studied the \emph{uniform (rectangular) distribution}, where every value in an interval is equally likely. Many natural phenomena, however, do not behave like that. Consider the heights of Upper Sixth students in a Cameroonian secondary school, the marks obtained in a well-designed Further Mathematics examination, or the errors made when measuring the length of a laboratory table with a ruler. In each case:
+\begin{itemize}
+    \item Most observations cluster around a central value.
+    \item Values far from the centre become progressively rarer.
+    \item The pattern is symmetric: a student is roughly as likely to be 5 cm above the mean height as 5 cm below it.
+\end{itemize}
+This symmetric, bell-shaped pattern is so ubiquitous that it has a name: the \textbf{normal distribution} (also called the \cle{Gaussian distribution}). A deep mathematical result — the \emph{Central Limit Theorem} — tells us that the sum (or average) of a large number of small, independent random effects tends to follow this distribution, regardless of the original distributions of those effects. This explains why the normal distribution appears everywhere: heights, measurement errors, examination marks, lifetimes of manufactured items (under certain conditions), and many more.
+
+\courssub{Definition and Probability Density Function}
+
+\begin{definition}[Normal Distribution $N(\mu,\sigma^2)$]
+A continuous random variable $X$ follows a \textbf{normal distribution} with mean $\mu$ and variance $\sigma^2$ (where $\mu \in \mathbb{R}$ and $\sigma > 0$) if its probability density function (pdf) is
+\[
+f(x) = \frac{1}{\sigma\sqrt{2\pi}}\; e^{-\frac{(x-\mu)^2}{2\sigma^2}}, \qquad x \in \mathbb{R}.
+\]
+We write $X \sim N(\mu,\sigma^2)$.
+\end{definition}
+
+\begin{attention}[Variance, not Standard Deviation!]
+The second parameter in the notation $N(\mu,\sigma^2)$ is the \textbf{variance} $\sigma^2$, \emph{not} the standard deviation $\sigma$. This is a very common examination error. Always check: if a question says $X \sim N(10, 4)$, then $\mu = 10$ and $\sigma^2 = 4$, so $\sigma = 2$.
+\end{attention}
+
+The constants in the pdf have precise roles:
+\begin{itemize}
+    \item $\frac{1}{\sigma\sqrt{2\pi}}$ is the normalising constant that makes the total area under the curve equal to $1$.
+    \item The exponent $-\frac{(x-\mu)^2}{2\sigma^2}$ is a quadratic in $x$, centred at $\mu$ and scaled by $\sigma$. It guarantees the bell shape and the symmetry.
+\end{itemize}
+
+\courssub{Shape and Properties of the Normal Curve}
+
+\begin{propriete}[Key Features of the Normal Curve]
+For $X \sim N(\mu,\sigma^2)$ with pdf $f(x)$:
+\begin{enumerate}
+    \item \textbf{Bell-shaped and symmetric} about the vertical line $x = \mu$. Hence $f(\mu + d) = f(\mu - d)$ for any $d$.
+    \item \textbf{Maximum} at $x = \mu$; the maximum value is $f(\mu) = \frac{1}{\sigma\sqrt{2\pi}}$.
+    \item \textbf{Points of inflection} at $x = \mu - \sigma$ and $x = \mu + \sigma$. The curve changes from concave down (near the centre) to concave up (in the tails) exactly one standard deviation away from the mean.
+    \item \textbf{Asymptotic to the $x$-axis}: $f(x) \to 0$ as $x \to \pm\infty$, but never touches the axis.
+    \item \textbf{Total area} under the curve is $1$: $\displaystyle\int_{-\infty}^{\infty} f(x)\,dx = 1$.
+\end{enumerate}
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=7cm,
+    axis lines=middle,
+    xlabel=$x$, ylabel=$f(x)$,
+    xmin=-5, xmax=5,
+    ymin=0, ymax=0.5,
+    xtick={-3,-2,-1,0,1,2,3},
+    ytick={0.1,0.2,0.3,0.4},
+    tick label style={font=\small},
+    label style={font=\small},
+    legend style={at={(0.98,0.98)}, anchor=north east, font=\small, fill=white},
+    domain=-5:5, samples=200,
+    clip=false
+]
+% N(0,1)
+\addplot[popblue, thick] {1/sqrt(max(0,2*pi))*exp(-x^2/2)};
+\addlegendentry{$N(0{,}1)$}
+% N(2,1)
+\addplot[poporange, thick] {1/sqrt(max(0,2*pi))*exp(-(x-2)^2/2)};
+\addlegendentry{$N(2{,}1)$}
+% N(0,4) -> sigma=2
+\addplot[popgreen, thick] {1/(2*sqrt(max(0,2*pi)))*exp(-x^2/8)};
+\addlegendentry{$N(0{,}4)$}
+% vertical line at mean for N(0,1)
+\draw[popblue, dashed, thin] (0,0) -- (0,0.3989);
+% inflection points for N(0,1)
+\draw[popblue, dashed, thin] (-1,0) -- (-1,0.242);
+\draw[popblue, dashed, thin] (1,0) -- (1,0.242);
+% labels for inflection points
+\node[popblue, font=\tiny] at (-1,0.27) {$\mu-\sigma$};
+\node[popblue, font=\tiny] at (1,0.27) {$\mu+\sigma$};
+\node[popblue, font=\tiny] at (0,0.42) {$\mu$};
+\end{axis}
+\end{tikzpicture}
+\legende{Normal curves: $N(0,1)$ (blue), $N(2,1)$ (orange), $N(0,4)$ (green). The blue curve shows inflection points at $\mu\pm\sigma$.}
+\end{popfigure}
+
+\courssub{Role of the Parameters $\mu$ and $\sigma$}
+
+The figure above illustrates perfectly how the two parameters control the distribution:
+\begin{itemize}
+    \item \textbf{$\mu$ (location)}: shifts the curve left or right without changing its shape. $N(2,1)$ is simply $N(0,1)$ moved two units to the right.
+    \item \textbf{$\sigma$ (spread)}: stretches or compresses the curve horizontally. $N(0,4)$ has $\sigma=2$; it is wider and lower than $N(0,1)$ (which has $\sigma=1$). The area remains $1$, so a wider curve must be lower at the peak.
+\end{itemize}
+
+\begin{aretenir}[Interpreting $\mu$ and $\sigma$]
+\begin{itemize}
+    \item $\mu$ is the \textbf{centre} of the distribution (mean, median, and mode all coincide).
+    \item $\sigma$ is the \textbf{standard deviation}; it measures the typical distance of values from the mean. A larger $\sigma$ means more variability, a flatter and wider bell.
+    \item The inflection points are always exactly at $\mu \pm \sigma$. This gives a visual way to estimate $\sigma$ from a sketch.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Expectation and Variance}
+
+\begin{propriete}[Mean and Variance of the Normal Distribution]
+If $X \sim N(\mu,\sigma^2)$, then
+\[
+\mathbb{E}(X) = \mu, \qquad \operatorname{Var}(X) = \sigma^2, \qquad \sigma_X = \sigma.
+\]
+\end{propriete}
+
+\begin{experience}[Derivation of $\mathbb{E}(X)=\mu$ and $\operatorname{Var}(X)=\sigma^2$ (for insight, not examinable as a full proof)]
+We compute $\mathbb{E}(X) = \int_{-\infty}^{\infty} x f(x)\,dx$. Substitute $z = \frac{x-\mu}{\sigma}$, so $x = \mu + \sigma z$, $dx = \sigma\,dz$. Then
+\[
+\mathbb{E}(X) = \int_{-\infty}^{\infty} (\mu + \sigma z) \frac{1}{\sqrt{2\pi}} e^{-z^2/2}\,dz
+= \mu \underbrace{\int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-z^2/2}\,dz}_{=1}
++ \sigma \underbrace{\int_{-\infty}^{\infty} z \frac{1}{\sqrt{2\pi}} e^{-z^2/2}\,dz}_{=0 \text{ (odd function)}} = \mu.
+\]
+
+For the variance, $\operatorname{Var}(X) = \mathbb{E}[(X-\mu)^2] = \int_{-\infty}^{\infty} (x-\mu)^2 f(x)\,dx$. With the same substitution $z = \frac{x-\mu}{\sigma}$, $(x-\mu)^2 = \sigma^2 z^2$, $dx = \sigma\,dz$:
+\[
+\operatorname{Var}(X) = \int_{-\infty}^{\infty} \sigma^2 z^2 \frac{1}{\sqrt{2\pi}} e^{-z^2/2}\,dz
+= \sigma^2 \int_{-\infty}^{\infty} z^2 \phi(z)\,dz \quad \text{where } \phi(z)=\frac{1}{\sqrt{2\pi}}e^{-z^2/2}.
+\]
+Integrate by parts: let $u = z$, $dv = z\phi(z)\,dz$. Then $du = dz$, $v = -\phi(z)$ (since $\frac{d}{dz}\phi(z) = -z\phi(z)$).
+\[
+\int_{-\infty}^{\infty} z^2 \phi(z)\,dz = \Big[-z\phi(z)\Big]_{-\infty}^{\infty} + \int_{-\infty}^{\infty} \phi(z)\,dz = 0 + 1 = 1.
+\]
+Hence $\operatorname{Var}(X) = \sigma^2$.
+\end{experience}
+
+\courssub{Probabilities as Areas Under the Curve}
+
+For any continuous distribution, $P(a \le X \le b)$ is the area under the pdf curve between $a$ and $b$. For the normal distribution, symmetry gives immediate results:
+
+\begin{propriete}[Symmetry Probabilities]
+If $X \sim N(\mu,\sigma^2)$, then
+\[
+P(X \le \mu) = P(X \ge \mu) = 0.5.
+\]
+More generally, for any $d > 0$,
+\[
+P(\mu - d \le X \le \mu + d) = 2\,P(\mu \le X \le \mu + d).
+\]
+\end{propriete}
+
+\begin{methode}[Sketching Before Calculating]
+\begin{enumerate}
+    \item Draw a bell-shaped curve centred at $\mu$.
+    \item Mark the values $a$ and $b$ (or the relevant tail) on the $x$-axis.
+    \item Shade the required area.
+    \item Use symmetry to relate the shaded area to standard normal probabilities (next section).
+\end{enumerate}
+\end{methode}
+
+\courssub{The Empirical Rule (68–95–99.7 Rule)}
+
+Although we cannot integrate the normal pdf in closed form (there is no elementary antiderivative), the areas within $1$, $2$, and $3$ standard deviations of the mean are fixed constants that every student should know. They provide an excellent intuitive grasp of what $\sigma$ means.
+
+\begin{propriete}[Benchmark Areas — The Empirical Rule]
+For $X \sim N(\mu,\sigma^2)$:
+\begin{align*}
+P(\mu - \sigma \le X \le \mu + \sigma) &\approx 0.6827 \quad (\text{about } 68.3\%), \\
+P(\mu - 2\sigma \le X \le \mu + 2\sigma) &\approx 0.9545 \quad (\text{about } 95.4\%), \\
+P(\mu - 3\sigma \le X \le \mu + 3\sigma) &\approx 0.9973 \quad (\text{about } 99.7\%).
+\end{align*}
+Equivalently, the tail probabilities are:
+$P(|X-\mu| > \sigma) \approx 0.317$, $P(|X-\mu| > 2\sigma) \approx 0.045$, $P(|X-\mu| > 3\sigma) \approx 0.0027$.
+\end{propriete}
+
+\begin{popfigure}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.9\linewidth,
+    height=6cm,
+    axis lines=middle,
+    xlabel=$x$, ylabel=$f(x)$,
+    xmin=-4, xmax=4,
+    ymin=0, ymax=0.45,
+    xtick={-3,-2,-1,0,1,2,3},
+    xticklabels={$\mu-3\sigma$,$\mu-2\sigma$,$\mu-\sigma$,$\mu$,$\mu+\sigma$,$\mu+2\sigma$,$\mu+3\sigma$},
+    ytick=\empty,
+    tick label style={font=\small},
+    label style={font=\small},
+    domain=-4:4, samples=200,
+    clip=false
+]
+% Full curve
+\addplot[popblue, thick] {1/sqrt(max(0,2*pi))*exp(-x^2/2)};
+% Shaded area between -1 and 1
+\addplot[popblueL, fill=popblueL, opacity=0.5, domain=-1:1] {1/sqrt(max(0,2*pi))*exp(-x^2/2)} \closedcycle;
+% Vertical lines at -1 and 1
+\draw[popblue, dashed, thin] (-1,0) -- (-1,0.242);
+\draw[popblue, dashed, thin] (1,0) -- (1,0.242);
+% Label for shaded area
+\node[popdark, font=\small, align=center] at (0,0.15) {$P(\mu-\sigma \le X \le \mu+\sigma) \approx 0.683$};
+% Tail labels
+\node[popmuted, font=\tiny] at (-2.5,0.02) {$\approx 0.158$};
+\node[popmuted, font=\tiny] at (2.5,0.02) {$\approx 0.158$};
+\end{axis}
+\end{tikzpicture}
+\legende{The central $68.3\%$ of the area lies within one standard deviation of the mean.}
+\end{popfigure}
+
+\courssub{Why We Need Standardisation — Bridge to the Next Section}
+
+The integrals $\int_a^b \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\,dx$ cannot be expressed in terms of elementary functions. There is no ``normal antiderivative'' like $\frac{x^2}{2}$ or $\ln x$. This is why we \textbf{standardise} every normal variable to the \cle{standard normal variable} $Z \sim N(0,1)$ and use pre-computed tables (or calculators). The next section (Lesson 142) will show exactly how to do this.
+
+\begin{exoresolu}[Interpreting Parameters and Empirical Rule]
+The weights of bags of rice produced by a factory in Douala are normally distributed with mean $50.2$ kg and standard deviation $0.4$ kg.
+\begin{enumerate}
+    \item Write down the distribution of $X$, the weight of a randomly chosen bag.
+    \item Between what two weights do approximately $95\%$ of the bags lie?
+    \item A bag is selected at random. Without using tables, estimate the probability that it weighs more than $51.0$ kg.
+\end{enumerate}
+\tcblower
+\textbf{Solution.}
+\begin{enumerate}
+    \item Mean $\mu = 50.2$, standard deviation $\sigma = 0.4$, so variance $\sigma^2 = 0.16$.
+    \[
+    X \sim N(50.2,\; 0.16).
+    \]
+    \item By the empirical rule, $95\%$ of the data lie within $2\sigma$ of the mean.
+    \[
+    \mu \pm 2\sigma = 50.2 \pm 2(0.4) = 50.2 \pm 0.8.
+    \]
+    So approximately $95\%$ of bags weigh between \textbf{49.4 kg and 51.0 kg}.
+    \item $51.0$ kg is exactly $\mu + 2\sigma$. The area to the right of $\mu+2\sigma$ is half of the outer $4.55\%$ (since $95.45\%$ is inside).
+    \[
+    P(X > 51.0) \approx \frac{1 - 0.9545}{2} = 0.02275 \approx 2.3\%.
+    \]
+    (Using the more precise $95.45\%$ figure gives $2.275\%$; using $95\%$ gives $2.5\%$. Both are acceptable estimates without tables.)
+\end{enumerate}
+\end{exoresolu}
+
+\courssub{Common Mistakes and Exam Tips}
+
+\begin{attention}[Frequent Errors]
+\begin{itemize}
+    \item Writing $N(\mu,\sigma)$ instead of $N(\mu,\sigma^2)$. \textbf{Always square the standard deviation to get the variance for the notation.}
+    \item Forgetting that the normal distribution is continuous: $P(X = a) = 0$ for any specific value $a$. Only intervals have non-zero probability.
+    \item Confusing the pdf $f(x)$ (which can be $>1$ for small $\sigma$) with a probability. $f(x)$ is a \emph{density}, not a probability.
+    \item Trying to ``integrate the normal pdf'' in an exam. You cannot. You must standardise and use tables.
+\end{itemize}
+\end{attention}
+
+\begin{aretenir}[Exam Checklist for This Section]
+\begin{itemize}
+    \item State the pdf correctly: $f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-(x-\mu)^2/(2\sigma^2)}$.
+    \item Identify $\mu$ and $\sigma^2$ from $N(\mu,\sigma^2)$ notation.
+    \item Sketch the curve: label $\mu$, inflection points at $\mu\pm\sigma$, show symmetry.
+    \item Recall $\mathbb{E}(X)=\mu$, $\operatorname{Var}(X)=\sigma^2$.
+    \item Know the empirical rule percentages (68.3\%, 95.4\%, 99.7\%) for quick estimation and checking.
+    \item Always draw a diagram and shade the required area before reaching for the tables.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+    \item A random variable $X \sim N(15, 9)$. Write down the mean, variance, and standard deviation. Sketch the pdf, marking the mean and the inflection points.
+    \item The lifetimes of a certain brand of LED bulb are normally distributed with mean $12000$ hours and variance $10^6$ hours$^2$. Use the empirical rule to estimate the percentage of bulbs that last between $10000$ and $14000$ hours.
+    \item If $Y \sim N(\mu, 25)$ and $P(Y > 30) = 0.5$, find $\mu$.
+    \item Explain why the total area under any normal curve is exactly $1$, referring to the constant $\frac{1}{\sigma\sqrt{2\pi}}$.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+    \item $\mu = 15$, $\sigma^2 = 9$, $\sigma = 3$. Inflection points at $15 \pm 3$, i.e. $12$ and $18$. The curve is symmetric about $x=15$, peak height $f(15) = \frac{1}{3\sqrt{2\pi}} \approx 0.133$.
+    \item $\mu = 12000$, $\sigma = \sqrt{10^6} = 1000$. The interval $[10000, 14000]$ is $\mu \pm 2\sigma$. By the empirical rule, $\approx 95.4\%$ (or $95\%$).
+    \item $P(Y > 30) = 0.5$ means $30$ is the median. For a normal distribution, median $= \mu$. Hence $\mu = 30$.
+    \item The constant $\frac{1}{\sigma\sqrt{2\pi}}$ is chosen precisely so that $\int_{-\infty}^{\infty} f(x)\,dx = 1$. This is a defining property of any probability density function.
+\end{enumerate}
+\end{corrige}
 
 \coursec{The Standard Normal Variable and Use of Tables}
 
@@ -1396,8 +1665,8 @@ Always \textbf{state and check} the conditions $np>5$ and $n(1-p)>5$ before usin
 % Normal curve N(10,5)
 \addplot[domain=0:20, samples=200, thick, poporange, smooth] 
 {1/sqrt(2*pi*5)*exp(-(x-10)^2/(2*5))};
-\addlegendentry{$B(20,0.5)$ histogram}
-\addlegendentry{$N(10,5)$ density}
+\addlegendentry{$B(20{,}0.5)$ histogram}
+\addlegendentry{$N(10{,}5)$ density}
 \end{axis}
 \end{tikzpicture}
 \legende{Histogram of $B(20,0.5)$ with superimposed normal curve $N(10,5)$. The fit is already good at $n=20$.}
