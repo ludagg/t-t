@@ -8,4 +8,4 @@ Et aux élèves qui ont posé leurs questions, y compris celles qu’ils trouvai
 
 Merci à la ministre des Enseignements secondaires, et à son ministère : les programmes officiels qu’ils publient sont le cadre sur lequel OnBuch est construit.
 
-⟦À COMPLÉTER PAR LUDOVIC : les personnes que tu veux remercier nommément⟧
+Merci enfin à l’équipe OnBuch, qui construit avec moi, jour après jour, ce que ce livre ne fait que raconter.

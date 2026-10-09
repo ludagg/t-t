@@ -24,6 +24,6 @@ Aucune de ces lectures n’est nécessaire pour faire ce que propose ce livre. U
 
 Je suis par ailleurs le créateur d’OnBuch (OnBuch+), une application de cours construite sur les programmes officiels du MINESEC ; le chapitre « La lampe » dit pourquoi je la fais, et ce qu’elle ne fait pas.
 
-⟦À COMPLÉTER PAR LUDOVIC : pourquoi tu as écrit ce livre, en tes mots, si tu veux l'ajouter — quelques lignes⟧
+J’ai écrit ce livre parce que mon cœur n’en pouvait plus : il me rongeait d’envie de faire quelque chose pour tous les élèves que je dois aider. Je ne peux pas être dans chaque classe ni à côté de chaque lampe ; un livre, lui, peut y être.
 
 Pour m’écrire à propos de ce livre ou d’OnBuch : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site.
