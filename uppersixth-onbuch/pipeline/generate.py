@@ -424,6 +424,8 @@ def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
     body = node_lists_fix(body)
+    body = re.sub(r"^(\s*(?:\\item\s+)?)\\(texttt|textbf|emph|textit)[ \t]+(?=[^{\s\\])([^\n]*\})[ \t]*(\\\\)?[ \t]*$", lambda m: m.group(1) + "\\" + m.group(2) + "{" + m.group(3) + (m.group(4) or "") if m.group(3).count("}") > m.group(3).count("{") else m.group(0), body, flags=re.M)   # \texttt sans accolade ouvrante
+    body = re.sub(r"(?<!\\)#", lambda _m: "\\#", body)          # # nu (C#, #hashtag) -> \#
     body = re.sub(r"\$\$(\\[A-Za-z]+)\$\$", lambda m: "$" + m.group(1) + "$", body)     # $$\rightarrow$$ (dégât ancien)
     body = re.sub(r"(\\(?:textbf|textit|emph)\{[^{}\n]*?)(\\begin\{)", lambda m: m.group(1) + "}" + m.group(2), body)   # accolade non fermée avant un \begin
     body = ce_fix(body)
