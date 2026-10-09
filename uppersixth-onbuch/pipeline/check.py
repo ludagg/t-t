@@ -50,7 +50,25 @@ def finalize():
             print(f"✔ {L['id']} complète (finalisée)")
 
 
+def drop(ref):
+    lid, name = ref.split("/")
+    d = g.BUILD / lid
+    body = g.autofix((d / f"{name}.rev.tex").read_text())
+    body2, ok = g.drop_fault(body)
+    if ok:
+        (d / f"{name}.rev.tex").write_text(body2)
+        (d / f"{name}.ok.tex").write_text(body2)
+        (d / f"{name}.err").unlink(missing_ok=True)
+        print(f"✂ {ref} : bloc fautif supprimé, validé")
+    else:
+        print(f"✗ {ref} : suppression impossible")
+
+
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["--drop"]:
+        for r in sys.argv[2:]:
+            drop(r)
+        sys.exit()
     if sys.argv[1:] == ["--finalize"]:
         finalize()
         sys.exit()

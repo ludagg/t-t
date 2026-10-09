@@ -289,7 +289,7 @@ _PROT = re.compile("|".join([
     r"\\begin\{(tikzpicture|axis|align\*?|equation\*?|gather\*?|multline\*?|pmatrix|bmatrix|cases|eqnarray\*?|displaymath|math)\}.*?\\end\{\1\}",
     r"\$\$.*?\$\$", r"\$[^$]*\$", r"\\\[.*?\\\]", r"\\\(.*?\\\)",
     r"\\ce" + _BR,
-    r"\\(?:SI|si|num|qty|ang)" + _BR + "(?:" + _BR + ")?",
+    r"\\(?:SI|si|num|qty|ang|SIrange|numrange|SIlist|numlist)" + _BR + "(?:" + _BR + ")?(?:" + _BR + ")?",
     r"\\(?:ensuremath|mathrm|mathbf|mathit|label|ref|legende|tikzmarknode)" + _BR,
     r"\\[_^%&#$]", r"%[^\n]*",
 ]), re.S)
@@ -301,11 +301,14 @@ _SUB = re.compile(r"(?<=[A-Za-z0-9)\]])_(\{[^{}]*\}|[0-9]+)")
 def _text_scripts(seg):
     seg = _GREEK.sub(lambda m: "$\\" + m.group(1) + m.group(2) + "$", seg)
     seg = _SUP.sub(lambda m: "$^{" + m.group(1).strip("{}") + "}$", seg)
-    return _SUB.sub(lambda m: "$_{" + m.group(1).strip("{}") + "}$", seg)
+    seg = _SUB.sub(lambda m: "$_{" + m.group(1).strip("{}") + "}$", seg)
+    return re.sub(r"(?<!\\)_", lambda _m: "\\_", seg)   # _ nu en texte -> \_
 
 
 def text_scripts_fix(body):
     """^ et _ hors mode math (texte courant, cellules de tableau) -> exposants/indices en math."""
+    if len(re.findall(r"(?<!\\)\$", body)) % 2:   # $ déséquilibrés : on ne touche à rien (risque d'inverser texte et math)
+        return body
     out, pos = [], 0
     for m in _PROT.finditer(body):
         out.append(_text_scripts(body[pos:m.start()]))
@@ -354,7 +357,10 @@ def repair_damage(body):
     body = re.sub(r"\$\^\\prime\$(?=[a-z])", "'", body)
     def strip(m):
         return re.sub(r"\$([\^_]\{[^{}]*\})\$", r"\1", m.group(0))
-    return re.sub(r"\\(?:ensuremath|mathrm|SI|si)" + _BR + "(?:" + _BR + ")?", strip, body)
+    body = re.sub(r"\\(?:ensuremath|mathrm|SI|si|SIrange|numrange)" + _BR + "(?:" + _BR + ")?(?:" + _BR + ")?", strip, body)
+    # \n littéral dans \texttt{...} (code C, chaînes)
+    body = re.sub(r"\\texttt\{((?:[^{}]|\\[{}])*)\}", lambda m: "\\texttt{" + re.sub(r"(?<!\\)\\n(?![A-Za-z])", lambda _k: "\\textbackslash{}n", m.group(1)) + "}", body)
+    return body
 
 
 def us_fix(body):
@@ -386,10 +392,12 @@ def us_fix(body):
             out.append(l)
         return "\n".join(out)
     body = _boxed(body)
+    body = re.sub(r"\$\$(\\[A-Za-z]+)\$ ", lambda m: "$" + m.group(1) + " ", body)       # $$\Delta$ h = .. $ -> $\Delta h = .. $
+    body = re.sub(r"\\texttt\{((?:[^{}]|\\[{}])*)\}", lambda m: "\\texttt{" + re.sub(r"\\(?=[A-Z][a-z]|[A-Z]{2})(?!Delta|Gamma|Lambda|Omega|Sigma|Theta|Phi|Psi|Pi\b)", lambda _k: "\\textbackslash{}", m.group(1)) + "}", body)  # C:\Windows
     body = re.sub(r"\\addlegendentry\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}", lambda m: "\\addlegendentry{" + re.sub(r"\\to(?![A-Za-z])", lambda _k: "\\rightarrow ", re.sub(r"\\bar\b", lambda _k: "\\overline", m.group(1))).replace("{,}", ",").replace(",", "{,}") + "}", body)  # \bar est une commande pgfplots
     body = re.sub(r"\\clip\[[^\]\n]*\]", lambda _m: "\\clip", body)   # \clip n'accepte pas d'options
     body = re.sub(r"\\label\b(?!\s*\{)", lambda _m: "\\lbl", body)           # \label utilisé comme variable
-    body = re.sub(r"(?<![\w}])\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
+    body = re.sub(r"\\degree(?![A-Za-z])", lambda _m: "\\ensuremath{{}^{\\circ}}", body)
     body = body.replace("\\then ", "then ").replace("\\celsius", "\\ensuremath{{}^{\\circ}\\mathrm{C}}")
     body = re.sub(r"\\(begin|end)\{(examtip|examtips|tip|keypoint|keypoints|note|remark|remarque|example|worked|summary|info)\}",
                   lambda m: "\\" + m.group(1) + ("{aretenir}" if m.group(2) in ("examtip", "examtips", "tip", "keypoint", "keypoints", "summary") else "{exemplebox}" if m.group(2) in ("example", "worked") else "{attention}"), body)
@@ -970,7 +978,7 @@ def degenerate(t):
         return "caractères d'un autre alphabet"
     if re.search(r"(?:\.[a-z]){6}", t):
         return "charabia"
-    if "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
+    if "\\begin{}" in t or "\u0308" in t or "<|" in t or re.search(r"\\(?:begin|end)(?![{A-Za-z@])", t):
         return "marqueurs parasites"
     for l in t.splitlines():
         opts = re.findall(r"\b([a-z ]+=[0-9a-z.]+(?:em|cm|pt|mm)?)\b", l)
@@ -982,6 +990,25 @@ def degenerate(t):
     if t.count("\\begin{") + 5 < t.count("\\end{") or t.count("\\end{") + 5 < t.count("\\begin{"):
         return "environnements déséquilibrés"
     return None
+
+
+def drop_fault(body, tries=4):
+    """Dernier recours : supprime le bloc fautif (figure, tableau) pour que le reste du texte compile."""
+    for _ in range(tries):
+        ok, err, line = compile_check(body)
+        if ok:
+            return body, True
+        if line is None:
+            return body, False
+        lines = body.splitlines()
+        a, b = fault_span(lines, line)
+        frag = "\n".join(lines[a:b])
+        if not re.search(r"\\begin\{(popfigure|tikzpicture|tabularx|tabular|center|axis)\}", frag):
+            return body, False
+        lines[a:b] = ["% (figure ou tableau supprimé : erreur de compilation)"]
+        body = "\n".join(lines)
+    ok, _, _ = compile_check(body)
+    return body, ok
 
 
 def write_block(L, plan, d, name, instruction, what):
@@ -1039,6 +1066,12 @@ Do not shorten the content: the final version must be at least as rich. Reply on
             ok, err, line = compile_check(body)
             if ok:
                 rev_f.write_text(body)
+    if not ok and os.environ.get("DROP_FAULT", "1") == "1":
+        body3, ok3 = drop_fault(body)
+        if ok3:
+            log(f"  ✂ figure/tableau fautif supprimé dans {L['id']}/{name}")
+            body, ok = body3, True
+            rev_f.write_text(body)
     if not ok:
         (d / f"{name}.err").write_text(f"ligne {line}\n{err}")
         log(f"  ✗ À CORRIGER {L['id']}/{name} (ligne {line}) : {err.strip().splitlines()[0] if err.strip() else '?'}")
