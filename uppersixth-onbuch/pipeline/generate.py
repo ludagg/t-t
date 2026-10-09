@@ -445,6 +445,7 @@ def us_fix(body):
     """Règles propres à l'Upper Sixth (erreurs fréquentes observées)."""
     body = repair_damage(body)
     body = node_lists_fix(body)
+    body = re.sub(r"^([ \t]*)\\\\[ \t]*$", lambda m: m.group(1) + "\\mbox{}\\\\", body, flags=re.M)   # \\ seul sur une ligne : \\mbox{}\\\\
     body = texttt_safe(body)
     for nm in ("step", "cloud", "diamond", "ellipse", "circle", "rectangle", "star", "cylinder", "signal", "trapezium", "chip"):
         if nm + "/.style" in body:   # un style qui porte le nom d'une forme/clé TikZ (récursion ou conflit)
