@@ -1,0 +1,2642 @@
+% Apply common technologies, for web development — ICT Upper Sixth — Cours signé OnBuch+
+% Official MINESEC syllabus. Compiler avec : tectonic ICT16-apply-common-technologies-for-web-development.tex
+\newcommand{\DOCMATIERE}{ICT}
+\newcommand{\DOCNIVEAU}{Upper Sixth}
+\newcommand{\DOCMODULE}{Upper Sixth — ICT}
+\newcommand{\DOCLECON}{16}
+\newcommand{\DOCTITRE}{Apply common technologies, for web development}
+% OnBuch+ — préambule « cours signés » ENRICHI (compilé avec tectonic / XeLaTeX)
+% Système visuel « Pop » d'OnBuch+ : fond crème (jamais blanc), bordures encre
+% épaisses, ombres « dures » décalées, titres Archivo Black en capitales.
+% Version MATHÉMATIQUES : graphes (pgfplots/tikz), boîtes pédagogiques
+% (définition, propriété, méthode, attention, le savais-tu, exercice résolu,
+% exercice, TP, bilan), page de garde et signature OnBuch+ ancrée en bas.
+%
+% Macros attendues dans main.tex AVANT \input{preamble} :
+%   \DOCMATIERE  \DOCNIVEAU  \DOCMODULE  \DOCLECON (numéro)  \DOCTITRE
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage[a4paper,margin=2cm,top=3.4cm,bottom=2.8cm,headheight=1.4cm,footskip=1.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools} % \xmapsto, \coloneqq... souvent utilisés par les modèles
+\usepackage{cancel} % simplifications barrées (bilans de forces)
+% \abs{z} (module, valeur absolue) et \norm{u} (norme), utilisés par les modèles
+\providecommand{\abs}{}\let\abs\relax\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\providecommand{\norm}{}\let\norm\relax\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
+\usepackage{pagecolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usepackage{pgfplots}
+\usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
+\usepackage[european,siunitx]{circuitikz} % schémas électriques
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+% [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
+% documentation...) et gonfle inutilement la mémoire TeX sur un document long
+% (~300 boîtes) : on ne charge que ce qui est réellement utilisé.
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{diagbox} % case d'en-tête diagonale des tableaux à double entrée
+% Colonnes extensibles centrée / gauche / droite (C, L, R), souvent utilisées par les modèles
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{siunitx}
+% parse-numbers=false : accepte aussi \SI{2,5 \times 10^{-3}}{...}
+\sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
+\DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
+\DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\usepackage{qrcode}
+% \degree : commande fréquemment utilisée par les modèles pour un angle ou une
+% température en dehors de \SI{}{} (non fournie par les paquets chargés).
+\providecommand{\degree}{^{\circ}}
+% \qed (fin de démonstration), utilisé par les modèles sans amsthm
+\providecommand{\qed}{\hfill$\square$}
+% \barre : double barre des valeurs interdites dans un tableau de variations (tkz-tab)
+\providecommand{\barre}{\ensuremath{\|}}
+% environnement proof (amsthm non chargé) utilisé par les modèles
+\ifdefined\proof\else\newenvironment{proof}[1][Proof]{\par\noindent\textit{#1.}\ }{\qed\par}\fi
+\usepackage{lastpage}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+% ============================================================
+% Palette « Pop » OnBuch+ — mêmes hex que la classe P (plus_ui.dart)
+% ============================================================
+\definecolor{poporange}{HTML}{F59321}
+\definecolor{popdark}{HTML}{E07A0C}
+\definecolor{popcream}{HTML}{FFF6E8}
+\definecolor{popink}{HTML}{1C1714}
+\definecolor{poppurple}{HTML}{7A5AE0}
+\definecolor{popgreen}{HTML}{2E9E6A}
+\definecolor{poppink}{HTML}{E0457B}
+\definecolor{popblue}{HTML}{2F7DE1}
+\definecolor{popgold}{HTML}{C98A12}
+\definecolor{popmuted}{HTML}{8A7F76}
+\definecolor{popline}{HTML}{EADFD2}
+\definecolor{popgray}{HTML}{8A7F76}
+\colorlet{popgrey}{popgray}
+% Alias tolérants (le modèle nomme parfois les couleurs différemment)
+\colorlet{popwhite}{white}
+\colorlet{popblack}{popink}
+\colorlet{popred}{poppink}
+\colorlet{popyellow}{popgold}
+% Teintes claires pour fonds de tableaux / zones
+\colorlet{popblueL}{popblue!10!white}
+\colorlet{poporangeL}{poporange!14!white}
+\colorlet{popgreenL}{popgreen!12!white}
+\colorlet{poppurpleL}{poppurple!12!white}
+\colorlet{poppinkL}{poppink!12!white}
+\colorlet{popgoldL}{popgold!14!white}
+
+\pagecolor{popcream}
+
+% ============================================================
+% Typographie
+% ============================================================
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,BoldFont=PlusJakartaSans-Bold.ttf]
+% Maths en sans-serif (Fira Math) avec chiffres et lettres droites de Plus
+% Jakarta, pour que les formules se fondent dans le texte.
+\usepackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\setmathfont{FiraMath-Regular.otf}[Path=../../../fonts/]
+\setmathfont{PlusJakartaSans-Medium.ttf}[Path=../../../fonts/,range={up/num,up/{Latin,latin},\mathup}]
+% (icomma retiré : décimales avec point en anglais)
+% Caractères mathématiques Unicode absents des polices de texte (Plus Jakarta,
+% Archivo Black) : rendus par leur équivalent mathématique, en texte comme en
+% formule — sinon ils s'affichent en carré vide (ex. « Arithmétique dans ℤ »).
+\usepackage{newunicodechar}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{𝔻}{\ensuremath{\mathbb{D}}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}
+\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+% majuscules produites par \MakeUppercase dans les titres (α-aminés -> Α)
+\newunicodechar{Α}{\ensuremath{\alpha}}
+\newunicodechar{Β}{\ensuremath{\beta}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Ε}{\ensuremath{\varepsilon}}
+\newunicodechar{Θ}{\ensuremath{\Theta}}
+\newunicodechar{Λ}{\ensuremath{\Lambda}}
+\newunicodechar{Μ}{\ensuremath{\mu}}
+\newunicodechar{Τ}{\ensuremath{\tau}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}
+\newunicodechar{Ψ}{\ensuremath{\Psi}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{⊂}{\ensuremath{\subset}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∛}{\ensuremath{\sqrt[3]{\,}}}
+\newunicodechar{∜}{\ensuremath{\sqrt[4]{\,}}}
+\newunicodechar{⃗}{\ensuremath{{}^{\to}}}
+\newunicodechar{ⁿ}{\ifmmode^{n}\else\textsuperscript{\ensuremath{n}}\fi}
+\newunicodechar{ˣ}{\ifmmode^{x}\else\textsuperscript{\ensuremath{x}}\fi}
+\newunicodechar{ᵇ}{\ifmmode^{b}\else\textsuperscript{\ensuremath{b}}\fi}
+\newunicodechar{ʳ}{\ifmmode^{r}\else\textsuperscript{\ensuremath{r}}\fi}
+\newunicodechar{ᵘ}{\ifmmode^{u}\else\textsuperscript{\ensuremath{u}}\fi}
+\newunicodechar{ʸ}{\ifmmode^{y}\else\textsuperscript{\ensuremath{y}}\fi}
+\newunicodechar{ᵃ}{\ifmmode^{a}\else\textsuperscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵉ}{\ifmmode^{e}\else\textsuperscript{\ensuremath{e}}\fi}
+\newunicodechar{ᵏ}{\ifmmode^{k}\else\textsuperscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵖ}{\ifmmode^{p}\else\textsuperscript{\ensuremath{p}}\fi}
+\newunicodechar{ᴺ}{\ifmmode^{N}\else\textsuperscript{\ensuremath{N}}\fi}
+\newunicodechar{ᶜ}{\ifmmode^{c}\else\textsuperscript{\ensuremath{c}}\fi}
+\newunicodechar{ʰ}{\ifmmode^{h}\else\textsuperscript{\ensuremath{h}}\fi}
+\newunicodechar{ᵠ}{\ifmmode^{q}\else\textsuperscript{\ensuremath{q}}\fi}
+\newunicodechar{ₙ}{\ifmmode_{n}\else\textsubscript{\ensuremath{n}}\fi}
+\newunicodechar{ₐ}{\ifmmode_{a}\else\textsubscript{\ensuremath{a}}\fi}
+\newunicodechar{ᵢ}{\ifmmode_{i}\else\textsubscript{\ensuremath{i}}\fi}
+\newunicodechar{ᵣ}{\ifmmode_{r}\else\textsubscript{\ensuremath{r}}\fi}
+\newunicodechar{ₖ}{\ifmmode_{k}\else\textsubscript{\ensuremath{k}}\fi}
+\newunicodechar{ᵦ}{\ifmmode_{\beta}\else\textsubscript{\ensuremath{\beta}}\fi}
+\newunicodechar{ₓ}{\ifmmode_{x}\else\textsubscript{\ensuremath{x}}\fi}
+\newfontfamily\popdisplay{ArchivoBlack-Regular.ttf}[Path=../../../fonts/]
+\newfontfamily\poplogo{SpaceGrotesk-Bold.ttf}[Path=../../../fonts/]
+\newfontfamily\popsemi{PlusJakartaSans-SemiBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxbold{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/]
+\newfontfamily\popxboldls{PlusJakartaSans-ExtraBold.ttf}[Path=../../../fonts/,LetterSpace=3.0]
+
+\setlist[enumerate]{leftmargin=1.7em,itemsep=5pt,topsep=4pt}
+\setlist[itemize]{leftmargin=1.7em,itemsep=4pt,topsep=4pt,label={\color{poporange}\textbullet}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.25}
+
+% pgfplots : style Pop par défaut
+\pgfplotsset{
+  every axis/.append style={axis line style={popink,line width=1pt},tick style={popink},
+    grid style={popline,line width=0.5pt},label style={font=\small},tick label style={font=\footnotesize}},
+  popcurve/.style={poporange,line width=1.8pt,no markers,smooth},
+}
+% Même style disponible dans un \draw TikZ simple (hors pgfplots)
+\tikzset{popcurve/.style={poporange,line width=1.8pt}}
+\tikzset{popgrid/.style={popline,very thin}}
+\colorlet{popcurve}{poporange} % le nom du style est parfois utilisé comme couleur
+
+% ============================================================
+% Pill / squiggle
+% ============================================================
+\newcommand{\poppill}[3]{%
+  \tikz[baseline=-0.55ex]\node[draw=popink,line width=1.2pt,rounded corners=2.6pt,%
+    fill=#2,inner xsep=6.5pt,inner ysep=3pt]{%
+    \popxboldls\fontsize{7}{7}\selectfont\color{#3}\MakeUppercase{#1}};%
+}
+\newcommand{\popsquiggle}[1]{%
+  \tikz[baseline=-0.4ex]{
+    \draw[#1,line width=2.6pt,line cap=round]
+      plot [smooth] coordinates {(0,0.09) (0.34,0.01) (0.68,0.21) (1.02,0.01) (1.36,0.10)};
+  }%
+}
+% Mot-clé surligné (marqueur orange sous le texte)
+\newcommand{\cle}[1]{{\popxbold\color{popdark}#1}}
+
+% ============================================================
+% En-tête / pied
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\lhead{\raisebox{-0.15ex}{\poplogo\fontsize{13}{13}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\rhead{\poppill{\DOCMATIERE\ \textbullet\ \DOCNIVEAU\ \textbullet\ Chapter \DOCLECON}{white}{popink}}
+\lfoot{\popxbold\fontsize{7.6}{7.6}\selectfont\color{popmuted}\MakeUppercase{Signed course OnBuch+}\ \textbullet\ {\popsemi\DOCTITRE}}
+\rfoot{\tikz[baseline=-0.6ex]\node[rounded corners=8.5pt,fill=popink,minimum height=17pt,minimum width=17pt,inner xsep=5pt,inner sep=0]{\popxbold\fontsize{8}{8}\selectfont\color{popcream}\thepage\,/\,\pageref*{LastPage}};}
+
+% ============================================================
+% Titres
+% ============================================================
+\newcommand{\chaptitre}[2]{%
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.6pt,arc=11pt,
+      drop shadow=popink,left=15pt,right=15pt,top=12pt,bottom=11pt,before skip=3pt,after skip=18pt]
+    \poppill{#2}{popink}{popcream}\par\vspace{9pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{22}{24}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+  \end{tcolorbox}
+}
+% Section numérotée : pastille orange avec le numéro + titre Archivo
+\newcounter{popsec}
+\newcommand{\coursec}[1]{%
+  \stepcounter{popsec}\setcounter{popsub}{0}%
+  \par\vspace{16pt}\noindent
+  \begin{minipage}{\linewidth}
+  \tikz[baseline=-0.7ex]\node[draw=popink,line width=1.6pt,fill=poporange,rounded corners=4pt,minimum size=22pt,inner sep=0]{\popdisplay\fontsize{12}{12}\selectfont\color{popcream}\thepopsec};%
+  \hspace{8pt}{\popdisplay\fontsize{15}{17}\selectfont\color{popink}\MakeUppercase{#1}}\par
+  \vspace{4pt}\noindent{\color{poporange}\rule{36pt}{3.6pt}}
+  \end{minipage}\par\nopagebreak\vspace{8pt}
+}
+\newcounter{popsub}
+\newcommand{\courssub}[1]{%
+  \stepcounter{popsub}%
+  \par\vspace{9pt}\noindent{\popxbold\fontsize{11.5}{13}\selectfont\color{popink}{\color{poporange}\thepopsec.\thepopsub}\hspace{6pt}#1}\par\nopagebreak\vspace{4pt}
+}
+
+% ============================================================
+% Boîtes pédagogiques — même recette : fond blanc, bordure épaisse colorée,
+% ombre dure encre, badge plein. Titre optionnel [#1].
+% ============================================================
+\tcbset{popbase/.style={breakable,enhanced,colback=white,boxrule=2.3pt,arc=9pt,
+  shadow={3pt}{-3pt}{0pt}{popink},left=14pt,right=14pt,top=11pt,bottom=11pt,before skip=11pt,after skip=15pt,
+  fontupper=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink},
+  fontlower=\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+% Coche dessinée (le glyphe ✓ n'existe pas dans les polices du document)
+\newcommand{\popcheck}[1]{\tikz[baseline=-0.5ex]\draw[#1,line width=1.6pt,line cap=round,line join=round](-0.13,0.0)--(-0.04,-0.09)--(0.13,0.1);}
+\providecommand{\coche}{\popcheck{popgreen}}
+\providecommand{\resultat}[1]{\par\smallskip\noindent\fcolorbox{popgreen}{popgreenL}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Result.} #1}}\par\smallskip}
+\newcommand{\popboxhead}[3]{\poppill{#1}{#2}{white}\ifx\relax#3\relax\else\hspace{6pt}{\popxbold\fontsize{10.6}{12}\selectfont\color{popink}#3}\fi\par\vspace{7pt}}
+
+\newtcolorbox{aretenir}[1][]{popbase,colframe=popgreen,before upper={\popboxhead{Key points}{popgreen}{#1}}}
+\newtcolorbox{exemplebox}[1][]{popbase,colframe=poporange,before upper={\popboxhead{Exemple}{poporange}{#1}}}
+\newtcolorbox{definition}[1][]{popbase,colframe=popblue,before upper={\popboxhead{Definition}{popblue}{#1}}}
+\newtcolorbox{propriete}[1][]{popbase,colframe=poppurple,before upper={\popboxhead{Property}{poppurple}{#1}}}
+\newtcolorbox{methode}[1][]{popbase,colframe=popgold,before upper={\popboxhead{Method}{popgold}{#1}}}
+\newtcolorbox{attention}[1][]{popbase,colframe=poppink,before upper={\popboxhead{Warning}{poppink}{#1}}}
+\newtcolorbox{experience}[1][]{popbase,colframe=popblue,colback=popblueL,before upper={\popboxhead{Experiment}{popblue}{#1}}}
+% « Le savais-tu ? » : carte violette pleine (contexte, culture, Cameroun)
+\newtcolorbox{savaistu}[1][]{popbase,colback=poppurple,colframe=popink,
+  fontupper=\popsemi\fontsize{10.4}{14.2}\selectfont\color{white},
+  before upper={\poppill{Did you know?}{white}{poppurple}\ifx\relax#1\relax\else\hspace{6pt}{\popxbold\color{white}#1}\fi\par\vspace{7pt}}}
+% Exercice résolu : énoncé en haut, \tcblower puis la solution sur fond crème
+\newcounter{popexo}\newcounter{popexr}
+\newtcolorbox{exoresolu}[1][]{popbase,colframe=poporange,colbacklower=popcream,
+  segmentation style={popink,line width=1.2pt,dashed},
+  before upper={\stepcounter{popexr}\popboxhead{Worked example \thepopexr}{poporange}{#1}},
+  before lower={\poppill{Solution}{popink}{popcream}\par\vspace{6pt}}}
+% Exercice (non résolu en place) — la correction est dans la partie Corrigés
+\newtcolorbox{exercice}[1][]{popbase,colframe=popink,
+  before upper={\stepcounter{popexo}\popboxhead{Exercise \thepopexo}{popink}{#1}}}
+% Corrigé
+\newtcolorbox{corrige}[1][]{popbase,colframe=popgreen,colback=popgreenL,
+  before upper={\popboxhead{Solution}{popgreen}{#1}}}
+% Objectifs / prérequis / bilan
+\newtcolorbox{objectifs}{popbase,colframe=popink,colback=poporangeL,
+  before upper={\popboxhead{Chapter objectives}{popink}{}}}
+\newtcolorbox{prerequis}{popbase,colframe=popink,colback=popblueL,
+  before upper={\popboxhead{Prerequisites}{popblue}{}}}
+\newtcolorbox{bilan}{popbase,colframe=popink,colback=white,boxrule=2.8pt,
+  before upper={\popboxhead{Fiche bilan}{poporange}{L'essentiel à connaître pour l'examen}}}
+% Figure encadrée avec légende
+\newtcolorbox{popfigure}[1][]{enhanced,breakable=false,colback=white,colframe=popline,boxrule=1.4pt,arc=8pt,
+  left=10pt,right=10pt,top=10pt,bottom=8pt,before skip=10pt,after skip=12pt,halign=center,
+  lower separated=false,halign lower=center,
+  fontlower=\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted},
+  #1}
+\newcommand{\legende}[1]{\par\vspace{6pt}{\popsemi\fontsize{9}{11.5}\selectfont\color{popmuted}#1}}
+
+% ============================================================
+% Signature OnBuch+
+% ============================================================
+\newcommand{\poplogoinline}[1]{{\poplogo\fontsize{#1}{#1}\selectfont\color{popink}OnBuch\color{poporange}+}}
+\newcommand{\signatureonbuch}{%
+  \begin{tcolorbox}[enhanced,colback=popink,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=poporange,left=14pt,right=14pt,top=10pt,bottom=10pt,before skip=0pt,after skip=0pt]
+    \tikz[baseline=-0.7ex]\node[circle,fill=popgreen,draw=popcream,line width=1.3pt,minimum size=22pt,inner sep=0]{\popcheck{white}};%
+    \hspace{9pt}\begin{minipage}[c]{0.62\linewidth}
+      {\popxbold\fontsize{12}{13}\selectfont\color{popcream}Signed\ \textbullet\ {\poplogo OnBuch\color{poporange}+}}\par\vspace{2pt}
+      {\raggedright\popsemi\fontsize{8}{10.5}\selectfont\color{popline}\MakeUppercase{OnBuch+ teaching team}\\\MakeUppercase{Follows the official MINESEC syllabus}\par}
+    \end{minipage}\hfill
+    {\poplogo\fontsize{22}{22}\selectfont\color{popcream}OnBuch\color{poporange}+}
+  \end{tcolorbox}%
+}
+
+% ============================================================
+% Page de garde
+% #1 titre · #2 matière · #3 niveau · #4 module · #5 n° leçon · #6 durée ·
+% #7 description / objectifs (texte ou itemize)
+% ============================================================
+\newcommand{\pagegarde}[7]{%
+  \thispagestyle{empty}
+  \newgeometry{a4paper,margin=1.7cm,top=1.6cm,bottom=1.4cm}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[poporange!18] ([xshift=-3.2cm,yshift=-3.6cm]current page.north east) circle (4.6cm);
+    \fill[poppurple!14] ([xshift=2.4cm,yshift=7.6cm]current page.south west) circle (3.8cm);
+  \end{tikzpicture}%
+  {\poplogo\fontsize{30}{30}\selectfont\color{popink}OnBuch\color{poporange}+}\hfill
+  \raisebox{0.6ex}{\poppill{Signed course \textbullet\ Premium}{popink}{popcream}}\par
+  \vspace{1pt}\popsquiggle{poppurple}\par
+  \vspace{8pt}
+  \begin{tcolorbox}[enhanced,colback=poporange,colframe=popink,boxrule=2.8pt,arc=13pt,
+      drop shadow=popink,left=18pt,right=18pt,top=12pt,bottom=13pt,after skip=10pt]
+    \poppill{#2 \textbullet\ #3}{popink}{popcream}\hspace{5pt}\poppill{#4}{white}{popink}\par\vspace{8pt}
+    {\popdisplay\fontsize{14}{14}\selectfont\color{popink}CHAPTER #5}\par\vspace{4pt}
+    {\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\popdisplay\fontsize{25}{27}\selectfont\color{popcream}\MakeUppercase{#1}\par}
+    \vspace{8pt}
+    {\popxbold\fontsize{9.5}{9.5}\selectfont\color{popink}\MakeUppercase{Suggested time: #6}}
+  \end{tcolorbox}
+  \begin{tcolorbox}[enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+      drop shadow=popink,left=16pt,right=16pt,top=10pt,bottom=10pt,after skip=8pt]
+    \poppill{In this chapter}{poppurple}{white}\par\vspace{5pt}
+    \popsemi\fontsize{9.3}{12.6}\selectfont\color{popink}#7
+  \end{tcolorbox}
+  \noindent\begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=popgreen,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tcbox[colback=white,colframe=popink,boxrule=1.3pt,arc=5pt,boxsep=0pt,nobeforeafter,
+        left=3pt,right=3pt,top=3pt,bottom=3pt,valign=center]{\qrcode[height=1.9cm]{https://play.google.com/store/apps/details?id=com.luvvix.onbuch&hl=en}}%
+      \hspace{8pt}\begin{minipage}[c]{0.5\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Download OnBuch}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}Free \textbullet\ Google Play\\AI tutor, past papers, results\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.487\linewidth}
+    \begin{tcolorbox}[enhanced,colback=poppurple,colframe=popink,boxrule=2.2pt,arc=10pt,
+        drop shadow=popink,left=11pt,right=11pt,top=10pt,bottom=10pt,height=3.1cm,valign=center]
+      \tikz[baseline=-0.7ex]\node[circle,fill=white,draw=popink,line width=1.3pt,minimum size=1.6cm,inner sep=0]{\popdisplay\fontsize{24}{24}\selectfont\color{poppurple}+};%
+      \hspace{8pt}\begin{minipage}[c]{0.6\linewidth}
+        {\popdisplay\fontsize{11}{12.5}\selectfont\color{white}\MakeUppercase{Go OnBuch+}}\par\vspace{4pt}
+        {\raggedright\popsemi\fontsize{8.4}{11}\selectfont\color{white}All signed courses, unlimited AI tutor, PDF sheets — OnBuch+ tab in the app\par}
+      \end{minipage}
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{8pt}
+  \popcontenu
+  \vfill
+  \signatureonbuch
+  \restoregeometry
+  \newpage
+}
+
+% Rangée « Ce cours contient » (page de garde)
+\newcommand{\poptile}[3]{% #1 couleur #2 gros texte #3 légende
+  \begin{tcolorbox}[enhanced,colback=#1,colframe=popink,boxrule=2pt,arc=9pt,shadow={2.5pt}{-2.5pt}{0pt}{popink},
+      left=6pt,right=6pt,top=9pt,bottom=9pt,halign=center,valign=center,height=1.75cm,width=\linewidth,nobeforeafter]
+    {\popdisplay\fontsize{12.5}{13}\selectfont\color{white}\MakeUppercase{#2}}\par\vspace{3pt}
+    {\centering\popsemi\fontsize{7.8}{9.5}\selectfont\color{white}#3\par}
+  \end{tcolorbox}}
+\newcommand{\popcontenu}{%
+  \par\noindent{\popxboldls\fontsize{7.5}{7.5}\selectfont\color{popmuted}THIS SIGNED COURSE CONTAINS}\par\vspace{7pt}
+  \noindent\begin{minipage}[t]{0.235\linewidth}\poptile{popblue}{Course}{complete, illustrated, step by step}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poporange}{Methods}{and worked examples}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{poppink}{Exercises}{exam style + solutions}\end{minipage}\hfill
+  \begin{minipage}[t]{0.235\linewidth}\poptile{popgreen}{Summary sheet}{the essentials to remember}\end{minipage}\par}
+
+% Sommaire
+\newtcolorbox{sommaire}{enhanced,colback=white,colframe=popink,boxrule=2.2pt,arc=10pt,
+  drop shadow=popink,left=18pt,right=18pt,top=13pt,bottom=13pt,before skip=6pt,after skip=20pt,
+  before upper={\poppill{Contents}{poppurple}{white}\par\vspace{9pt}\popsemi\fontsize{10.6}{14.5}\selectfont\color{popink}}}
+
+% Signature de fin de cours — poussée tout en bas de la dernière page
+\newcommand{\findecours}{%
+  \par\vfill\nopagebreak
+  \begin{center}\popsquiggle{poporange}\end{center}\vspace{4pt}
+  \signatureonbuch
+}
+\AtBeginDocument{\def\llbracket{\mathopen{[\mkern-3.5mu[}}\def\rrbracket{\mathclose{]\mkern-3.5mu]}}} % intervalles d'entiers (glyphe ⟦ absent de la police)
+% Glyphes absents de Fira Math : redéfinis à partir de glyphes disponibles
+\AtBeginDocument{%
+  \def\setminus{\mathbin{\backslash}}\let\smallsetminus\setminus
+  \def\vdots{\mathord{\vbox{\baselineskip3.2pt\lineskiplimit0pt\kern4pt\hbox{.}\hbox{.}\hbox{.}}}}%
+  \def\ddots{\mathinner{\mkern1mu\raise6.5pt\hbox{.}\mkern2mu\raise3.6pt\hbox{.}\mkern2mu\raise0.7pt\hbox{.}\mkern1mu}}%
+  \def\triangle{\mathord{\scalebox{0.9}{$\symup{\Delta}$}}}%
+  \def\nabla{\mathord{\raisebox{\depth}{\scalebox{1}[-1]{$\symup{\Delta}$}}}}%
+  \def\checkmark{\popcheck{popdark}}%
+  \def\star{\mathbin{\ast}}\def\bigstar{\mathord{\ast}}%
+  \def\diamond{\mathbin{\scalebox{0.6}{$\Diamond$}}}%
+  \def\bigcup{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cup$}}}{\scalebox{1.25}{$\cup$}}{\cup}{\cup}}\displaylimits}%
+  \def\bigcap{\mathop{\mathchoice{\raisebox{-0.3em}{\scalebox{1.7}{$\cap$}}}{\scalebox{1.25}{$\cap$}}{\cap}{\cap}}\displaylimits}%
+  \def\lesseqqgtr{\mathrel{\lessgtr}}\def\bigoplus{\mathop{\oplus}\displaylimits}%
+}
+\providecommand{\ssi}{if and only if} % abréviation fréquente
+\AtBeginDocument{\providecommand{\wideparen}{\overparen}} % arc de cercle
+
+% Fonctions usuelles que les modèles utilisent sans que amsmath les fournisse
+\providecommand{\arsinh}{\operatorname{arsinh}}\providecommand{\arcosh}{\operatorname{arcosh}}
+\providecommand{\artanh}{\operatorname{artanh}}\providecommand{\arsech}{\operatorname{arsech}}
+\providecommand{\arcsch}{\operatorname{arcsch}}\providecommand{\arcoth}{\operatorname{arcoth}}
+\providecommand{\arcsinh}{\operatorname{arsinh}}\providecommand{\arccosh}{\operatorname{arcosh}}
+\providecommand{\arctanh}{\operatorname{artanh}}\providecommand{\sech}{\operatorname{sech}}
+\providecommand{\csch}{\operatorname{csch}}\providecommand{\arcsec}{\operatorname{arcsec}}
+\providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
+\providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
+\providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
+
+\begin{document}
+
+\pagegarde{Apply common technologies, for web development}{ICT}{Upper Sixth}{Upper Sixth — ICT}{16}{2 periods}{This chapter introduces the two essential technologies that transform plain HTML pages into modern websites: CSS, which controls the visual presentation (colours, fonts, layout), and JavaScript, which adds interactivity and dynamic behaviour to web pages. Learners will style web pages and write scripts that react to user actions, skills directly examined at the GCE Advanced Level.
+\vspace{4pt}
+\begin{multicols}{2}\small
+\begin{itemize}
+\item By the end of this chapter I can explain the role of CSS and JavaScript in web development and how they complement HTML
+\item By the end of this chapter I can write CSS rules using selectors, properties and values
+\item By the end of this chapter I can apply CSS to a page using inline, internal and external stylesheets and explain the cascade and specificity
+\item By the end of this chapter I can style text, colours, backgrounds, borders and the box model of HTML elements
+\item By the end of this chapter I can insert JavaScript into a web page and use variables, data types and operators
+\item By the end of this chapter I can use control structures (if/else, loops) and functions in JavaScript
+\end{itemize}\end{multicols}}
+
+\begin{sommaire}
+\begin{multicols}{2}
+\begin{enumerate}
+\item Introduction to CSS: Syntax, Selectors and Integration
+\item Styling with CSS: Text, Colours, Backgrounds and the Box Model
+\item JavaScript Fundamentals: Syntax, Variables and Control Structures
+\item Interactive Pages: DOM Manipulation, Events and Form Validation
+\item Integration activity
+\item Methods and worked examples
+\item Exercises
+\item Solutions to the exercises
+\item Summary sheet
+\end{enumerate}
+\end{multicols}
+\end{sommaire}
+
+\begin{objectifs}
+\begin{itemize}
+\item By the end of this chapter I can explain the role of CSS and JavaScript in web development and how they complement HTML
+\item By the end of this chapter I can write CSS rules using selectors, properties and values
+\item By the end of this chapter I can apply CSS to a page using inline, internal and external stylesheets and explain the cascade and specificity
+\item By the end of this chapter I can style text, colours, backgrounds, borders and the box model of HTML elements
+\item By the end of this chapter I can insert JavaScript into a web page and use variables, data types and operators
+\item By the end of this chapter I can use control structures (if/else, loops) and functions in JavaScript
+\item By the end of this chapter I can manipulate the DOM to read and modify page content dynamically
+\item By the end of this chapter I can handle events (click, submit, keypress) to create interactive pages
+\item By the end of this chapter I can validate a simple HTML form with JavaScript before submission
+\end{itemize}
+\end{objectifs}
+
+\begin{prerequis}
+\begin{itemize}
+\item Structure of an HTML document and common tags (html, head, body, headings, paragraphs, lists, links, images, tables, forms) from Lower Sixth
+\item Creating and saving files with extensions (.html, .css, .js) and opening them in a browser
+\item Basic notion of attributes and values in HTML tags
+\item Elementary algorithmic thinking: variables, conditions and loops (from the algorithmics lessons)
+\item Using a text editor such as Notepad++ or VS Code
+\end{itemize}
+\end{prerequis}
+
+\newpage
+
+\coursec{Introduction to CSS: Syntax, Selectors and Integration}
+
+A young entrepreneur in Douala creates a website to sell her tailor-made dresses, but the pages look dull: plain black text on a white background, no colours, no layout, and nothing happens when a visitor clicks a button. Meanwhile, her competitor's site, built with CSS and JavaScript, displays attractive colours, well-organised sections and a form that instantly checks the customer's phone number before submission. Within weeks, the competitor's online orders triple while hers stagnate. What makes the difference between a static, unattractive page and a modern, interactive website? This chapter reveals the two technologies behind that difference: \cle{CSS} for presentation and \cle{JavaScript} for interactivity.
+
+The problem is clear: HTML alone can only describe the \emph{content} and \emph{structure} of a page (headings, paragraphs, images, links). It was never designed to control \emph{appearance}. In this first section, we discover how CSS solves this problem by separating content from presentation.
+
+\courssub{What is CSS? Definition and Role}
+
+Imagine building a house. The bricks, beams and doors give the house its \emph{structure} --- this is the role of HTML. But the paint, the tiles, the curtains and the decoration give the house its \emph{beauty} --- this is the role of CSS. A house without decoration is liveable but unattractive; a web page without CSS is readable but dull.
+
+\begin{definition}[CSS --- Cascading Style Sheets]
+\cle{CSS} (Cascading Style Sheets) is a style language used to describe the \textbf{presentation} of a document written in HTML: colours, fonts, sizes, spacing, borders, backgrounds and layout. Its fundamental principle is the \textbf{separation of content (HTML) from presentation (CSS)}: the HTML file says \emph{what} is on the page, the CSS says \emph{how it looks}.
+\end{definition}
+
+\begin{savaistu}[Why ``Cascading''?]
+The word \emph{cascading} refers to the way styles ``flow down'' from several sources (browser defaults, external files, internal blocks, inline attributes) and combine according to priority rules, like water flowing down steps. We study this cascade at the end of the section. CSS is maintained by the W3C, the same consortium that standardises HTML.
+\end{savaistu}
+
+\courssub{Advantages of CSS}
+
+Why did the whole web adopt CSS instead of styling directly inside HTML tags? Consider a school website in Bamenda with 40 pages. If the colour of every heading is written inside the HTML of each page, changing the school's colour theme means editing 40 files. With CSS, one line in one file updates the whole site.
+
+\begin{aretenir}[Main advantages of CSS]
+\begin{itemize}
+\item \textbf{Consistency}: all pages share the same look because they use the same stylesheet.
+\item \textbf{Easier maintenance}: one change in one file updates the entire website.
+\item \textbf{Faster loading}: the external CSS file is downloaded once and cached by the browser; HTML files stay small.
+\item \textbf{Professional appearance}: colours, fonts, spacing and layout give a modern, attractive design.
+\item \textbf{Accessibility and flexibility}: the same content can be presented differently for a phone, a projector or a printer.
+\end{itemize}
+\end{aretenir}
+
+\courssub{Anatomy of a CSS Rule}
+
+CSS is made of \textbf{rules}. Each rule answers two questions: \emph{which element(s)} do we style, and \emph{how}?
+
+\begin{definition}[CSS rule]
+A \cle{CSS rule} consists of a \textbf{selector} followed by a \textbf{declaration block} enclosed in braces \texttt{\{ \}}. Each declaration inside the block is a pair \textbf{property: value;} ended by a semicolon:
+\begin{center}
+\texttt{selector \{ property: value; property: value; \}}
+\end{center}
+\end{definition}
+
+\begin{exemplebox}[A first CSS rule]
+\texttt{h1 \{ color: blue; font-size: 24px; \}}
+
+This rule selects every \texttt{<h1>} heading and applies two declarations: the text colour becomes blue and the font size becomes 24 pixels.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+\node[draw=popblue, fill=popblueL, rounded corners, minimum width=2.2cm, minimum height=0.9cm] (sel) at (0,0) {\texttt{h1}};
+\node at (1.7,0) {\texttt{\{}};
+\node[draw=poporange, fill=white, rounded corners, minimum width=1.8cm, minimum height=0.9cm] (prop) at (3.4,0) {\texttt{color}};
+\node at (4.6,0) {\texttt{:}};
+\node[draw=popgreen, fill=popgreenL, rounded corners, minimum width=1.8cm, minimum height=0.9cm] (val) at (5.9,0) {\texttt{blue}};
+\node at (7.0,0) {\texttt{;}};
+\node at (7.6,0) {\texttt{\}}};
+\draw[->, thick, popblue] (sel.south) -- ++(0,-0.7) node[below, popblue]{selector};
+\draw[->, thick, poporange] (prop.north) -- ++(0,0.7) node[above, poporange]{property};
+\draw[->, thick, popgreen] (val.north) -- ++(0,0.7) node[above, popgreen]{value};
+\draw[thick, poppurple] (2.3,-0.6) rectangle (6.9,0.6);
+\draw[->, thick, poppurple] (6.9,-0.6) -- ++(0.6,-0.5) node[below right, poppurple, align=left]{declaration\\block};
+\end{tikzpicture}
+\end{center}
+\legende{Anatomy of a CSS rule: selector, declaration block, property and value.}
+\end{popfigure}
+
+\begin{attention}[The forgotten semicolon]
+A very common mistake is to forget the semicolon between two declarations:
+\begin{center}
+\texttt{h1 \{ color: blue font-size: 24px; \}}
+\end{center}
+The browser can no longer understand where the first declaration ends, so it \textbf{ignores the broken declaration and all the following ones} in the block. Always end each declaration with a semicolon --- even the last one, as a good habit.
+\end{attention}
+
+\courssub{The Three Ways of Applying CSS}
+
+CSS can be attached to an HTML page in three ways. Each has its use, but they are not equally good.
+
+\textbf{1. Inline CSS} (inside the tag, with the \texttt{style} attribute):
+\begin{center}
+\texttt{<p style="color: red;">Urgent notice</p>}
+\end{center}
+It styles \emph{one single element}. It is quick for a test but terrible for maintenance: imagine changing the colour of 200 paragraphs one by one.
+
+\textbf{2. Internal CSS} (a \texttt{<style>} block in the \texttt{<head>}):
+\begin{center}
+\texttt{<head> <style> p \{ color: red; \} </style> </head>}
+\end{center}
+It styles \emph{one whole page}. Useful for a single-page document, but the styles cannot be shared between pages.
+
+\textbf{3. External CSS} (a separate \texttt{.css} file linked to every page): the styles live in a file such as \texttt{style.css}, and each HTML page points to it. This is the \textbf{recommended professional method}.
+
+\begin{methode}[Linking an external stylesheet]
+To connect an external stylesheet \texttt{style.css} placed in the same folder as the HTML page:
+\begin{enumerate}
+\item Create a plain-text file named \texttt{style.css} and write your rules in it (no \texttt{<style>} tags inside!).
+\item In the \texttt{<head>} of each HTML page, add exactly one line:\\
+\texttt{<link rel="stylesheet" href="style.css">}
+\item Save both files and open the HTML page in a browser: the styles apply immediately.
+\end{enumerate}
+The attribute \texttt{rel="stylesheet"} declares the relationship, and \texttt{href} gives the path to the file.
+\end{methode}
+
+\begin{propriete}[Advantage of the external method]
+An external stylesheet can be linked by \textbf{any number of pages}. Hence: one modification updates the whole site (maintenance), all pages look identical (consistency), and the browser downloads the CSS file only once (faster loading). \emph{(Stating this advantage is a classic GCE question --- learn it.)}
+\end{propriete}
+
+\courssub{Basic Selectors}
+
+The selector is the ``aiming device'' of a rule. CSS offers several basic selectors:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Selector} & \textbf{Example} & \textbf{Selects} \\
+\hline
+Element & \texttt{p} & every \texttt{<p>} paragraph \\
+\hline
+Class & \texttt{.promo} & every element with \texttt{class="promo"} \\
+\hline
+ID & \texttt{\#menu} & the unique element with \texttt{id="menu"} \\
+\hline
+Universal & \texttt{*} & absolutely every element \\
+\hline
+Grouping & \texttt{h1, h2} & all \texttt{<h1>} \textbf{and} all \texttt{<h2>} \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{exemplebox}[Selectors in action]
+\begin{itemize}
+\item \texttt{p \{ text-align: justify; \}} --- all paragraphs justified.
+\item \texttt{.price \{ color: green; \}} --- any tag carrying \texttt{class="price"} (a class can be reused on many elements).
+\item \texttt{\#banner \{ background: yellow; \}} --- the single element with \texttt{id="banner"} (an id must be \textbf{unique} in the page).
+\item \texttt{h1, h2, h3 \{ font-family: Arial; \}} --- grouping: one rule for three element types.
+\end{itemize}
+\end{exemplebox}
+
+\begin{attention}[Class vs ID]
+A frequent confusion at the GCE: a \textbf{class} (\texttt{.name}) may be applied to \emph{many} elements, while an \textbf{ID} (\texttt{\#name}) must identify \emph{one single} element per page. Also note the syntax: classes use a dot, IDs use a hash, element selectors use no symbol at all.
+\end{attention}
+
+\courssub{The Cascade and Specificity}
+
+What happens when several rules target the same element with contradictory values? For example, an external file says \texttt{p \{ color: black; \}} and an inline attribute says \texttt{style="color: red;"}. CSS resolves the conflict with two ideas: \textbf{specificity} (how precise the selector is) and \textbf{order} (the last rule read wins, all else being equal).
+
+\begin{propriete}[Specificity hierarchy]
+When several rules conflict, the winner is decided by this priority order, from strongest to weakest:
+\begin{center}
+\textbf{inline styles $>$ IDs (\#) $>$ classes (.) $>$ elements}
+\end{center}
+For the three application methods, the priority is \textbf{inline $>$ internal $>$ external}. When two rules have equal specificity, the one that appears \emph{last} in the code is applied. \emph{(This hierarchy must be known for the examination.)}
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small, >=stealth]
+\node[draw=popblue, fill=popblueL, rounded corners, minimum width=3.4cm, minimum height=0.9cm] (ext) at (0,3) {External file (.css)};
+\node[draw=poporange, fill=white, rounded corners, minimum width=3.4cm, minimum height=0.9cm] (int) at (0,1.5) {Internal <style> block};
+\node[draw=popgreen, fill=popgreenL, rounded corners, minimum width=3.4cm, minimum height=0.9cm] (inl) at (0,0) {Inline style attribute};
+\node[draw=poppurple, thick, rounded corners, minimum width=3.2cm, minimum height=1.1cm] (page) at (6.5,1.5) {Rendered page};
+\draw[->, thick, popblue] (ext.east) -- (page.160);
+\draw[->, thick, poporange] (int.east) -- (page.west);
+\draw[->, thick, popgreen] (inl.east) -- (page.200);
+\node[popmuted, align=left] at (6.5,-0.4) {Priority: inline $>$ internal $>$ external};
+\node[popmuted, align=left] at (6.5,3.4) {All three sources merge (cascade)};
+\end{tikzpicture}
+\end{center}
+\legende{The cascade: three sources of styles merge into one rendered page; on conflict, inline beats internal, which beats external.}
+\end{popfigure}
+
+\begin{exoresolu}[Which colour wins?]
+A page contains: (1) an external file with \texttt{p \{ color: black; \}}, (2) an internal block with \texttt{p \{ color: blue; \}}, and (3) one paragraph written as \texttt{<p style="color: red;">Sale!</p>}. State the colour of: (a) the ``Sale!'' paragraph; (b) the other paragraphs.
+\tcblower
+\textbf{Solution.}
+\begin{itemize}
+\item (a) The ``Sale!'' paragraph carries an \textbf{inline} style. Inline has the highest priority (inline $>$ internal $>$ external), so it appears \textbf{red}.
+\item (b) The other paragraphs receive both the external rule (black) and the internal rule (blue). Internal beats external, so they appear \textbf{blue}.
+\end{itemize}
+\end{exoresolu}
+
+\courssub{CSS Comments and Good Practices}
+
+Like any code, CSS must be documented. A \cle{comment} is a note ignored by the browser:
+\begin{center}
+\texttt{/* This rule styles the prices in green */}
+\end{center}
+Comments start with \texttt{/*} and end with \texttt{*/} and may span several lines. Note carefully: HTML comments \texttt{<!-- ... -->} do \textbf{not} work inside a CSS file.
+
+\begin{aretenir}[Good coding practices]
+\begin{itemize}
+\item Use an \textbf{external stylesheet} for any site with more than one page.
+\item Write \textbf{one declaration per line} and indent the block for readability.
+\item End every declaration with a \textbf{semicolon}.
+\item Choose meaningful class names: \texttt{.price}, \texttt{.menu}, not \texttt{.x1}.
+\item Comment the sections of your stylesheet (header, menu, footer\ldots).
+\end{itemize}
+\end{aretenir}
+
+\begin{attention}[Exam tip]
+GCE Advanced Level questions very often ask you to \textbf{name and distinguish the three ways of applying CSS} (inline, internal, external) and to \textbf{state one advantage of the external method}. Answer with the exact vocabulary: \emph{``an external stylesheet can be shared by all pages, so a single change updates the whole site''}.
+\end{attention}
+
+\begin{exercice}[Douala Dress Shop]
+The Douala entrepreneur's page contains \texttt{<h2 class="offer" id="main-offer">Weekend Promotion</h2>}. The stylesheet contains: \texttt{h2 \{ color: black; \}}, \texttt{.offer \{ color: blue; \}} and \texttt{\#main-offer \{ color: purple; \}}.
+\begin{enumerate}
+\item What colour is displayed? Justify using the specificity hierarchy.
+\item Write the line that links the external file \texttt{shop.css} to the page.
+\item Give two advantages of CSS for her multi-page website.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+\begin{enumerate}
+\item The heading appears \textbf{purple}: the ID selector (\texttt{\#main-offer}) is more specific than the class (\texttt{.offer}), which is itself more specific than the element selector (\texttt{h2}).
+\item \texttt{<link rel="stylesheet" href="shop.css">} placed in the \texttt{<head>}.
+\item Any two of: consistency of design across all pages; easier maintenance (one file to edit); faster loading (the CSS file is cached); professional, attractive appearance.
+\end{enumerate}
+\end{corrige}
+
+\coursec{Styling with CSS: Text, Colours, Backgrounds and the Box Model}
+
+In the previous section we learnt the grammar of CSS: a rule is made of a \cle{selector} and a \cle{declaration block} containing property--value pairs, and we saw the three ways of integrating CSS into a page (inline, internal and external). Knowing the grammar is not enough: we must now learn the \emph{vocabulary}, that is, the actual properties that make a page beautiful and readable. In this section we study the properties that control colours, text, backgrounds and, above all, the \cle{box model} --- the single most important idea in CSS layout, and a favourite of GCE Advanced Level examiners.
+
+\courssub{Colour in CSS}
+
+\textbf{Observation.} Open the website of a Cameroonian institution such as ANTIC (\texttt{antic.cm}) or a mobile money operator like MTN Mobile Money (\texttt{mtn.cm}) or Orange Money (\texttt{orange.cm}). You immediately recognise them by their colours: MTN's yellow (\texttt{\#FFCC00}), Orange's orange (\texttt{\#FF6600}). Every one of these colours is specified in CSS. There are three classic ways to write a colour, plus modern functional notations.
+
+\begin{definition}[Ways of writing a colour in CSS]
+A colour may be written as:
+\begin{enumerate}
+\item a \cle{colour name}: a keyword such as \texttt{red}, \texttt{blue}, \texttt{green}, \texttt{yellow}, \texttt{white}, \texttt{black} (about 140 standard names exist);
+\item a \cle{hexadecimal code}: \texttt{\#RRGGBB}, where \texttt{RR}, \texttt{GG} and \texttt{BB} are two hexadecimal digits (00 to FF) giving the intensity of Red, Green and Blue respectively;
+\item an \cle{rgb() value}: \texttt{rgb(red, green, blue)} where each component is an integer from 0 to 255;
+\item (modern) \cle{rgba()} or \cle{rgb() with alpha}: \texttt{rgba(red, green, blue, alpha)} or \texttt{rgb(r g b / alpha)} where \texttt{alpha} is a number between 0 (transparent) and 1 (opaque), allowing transparency.
+\end{enumerate}
+\end{definition}
+
+\begin{exemplebox}[Equivalent ways of writing the same colours]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|l|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Name} & \textbf{Hexadecimal} & \textbf{rgb()} & \textbf{Meaning} \\
+\hline
+\texttt{red} & \texttt{\#FF0000} & \texttt{rgb(255,0,0)} & maximum red, no green, no blue \\
+\hline
+\texttt{green} & \texttt{\#008000} & \texttt{rgb(0,128,0)} & medium green (CSS named green) \\
+\hline
+\texttt{lime} & \texttt{\#00FF00} & \texttt{rgb(0,255,0)} & maximum green \\
+\hline
+\texttt{white} & \texttt{\#FFFFFF} & \texttt{rgb(255,255,255)} & all components at maximum \\
+\hline
+\texttt{black} & \texttt{\#000000} & \texttt{rgb(0,0,0)} & all components at zero \\
+\hline
+\texttt{yellow} & \texttt{\#FFFF00} & \texttt{rgb(255,255,0)} & red + green at maximum \\
+\hline
+\end{tabularx}
+\end{center}
+Note that \texttt{\#FF0000} and \texttt{rgb(255,0,0)} describe exactly the same colour, because FF in hexadecimal equals 255 in decimal. For transparency: \texttt{rgba(255,0,0,0.5)} gives a semi-transparent red.
+\end{exemplebox}
+
+\textbf{Choosing readable contrasts.} A colour choice is only good if the text remains \emph{readable}. The rule of thumb is simple: \textbf{dark text on a light background, or light text on a dark background}. Yellow text on a white background, or dark blue text on a black background, strains the eyes and loses marks in a practical examination. A safe combination for body text is black or very dark grey (\texttt{\#333333}) on white (\texttt{\#FFFFFF} or \texttt{\#FAFAFA}).
+
+\begin{attention}[Forgetting the \# symbol]
+A very common mistake is to write a hexadecimal colour without the hash symbol: \texttt{color: FF0000;} instead of \texttt{color: \#FF0000;}. Without the \texttt{\#}, the browser does not recognise the value and \emph{silently ignores the whole declaration} --- your text keeps its default colour and you may spend long minutes searching for the error. Always check: a hexadecimal colour begins with \texttt{\#} and is followed by exactly six hexadecimal digits (0--9, A--F).
+\end{attention}
+
+\begin{savaistu}[Cameroon's digital colours]
+MTN Cameroon's brand yellow is \texttt{\#FFCC00} (rgb(255,204,0)), Orange Cameroon's orange is \texttt{\#FF6600} (rgb(255,102,0)), and ANTIC uses a deep blue \texttt{\#003399}. When you build a web page for a local client, using their exact brand colours (often found in their brand guidelines) shows professionalism. In the GCE practical, if a question asks for "MTN yellow", use \texttt{\#FFCC00} or \texttt{rgb(255,204,0)}.
+\end{savaistu}
+
+\courssub{Text and Font Properties}
+
+Text is the heart of a web page, so CSS offers a rich family of properties to control it.
+
+\begin{propriete}[Text and font properties most frequently examined]
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Property} & \textbf{Role} & \textbf{Example values} \\
+\hline
+\texttt{color} & colour of the text itself & \texttt{red}, \texttt{\#003366} \\
+\hline
+\texttt{font-family} & the typeface (list of fallbacks) & \texttt{Arial, sans-serif} \\
+\hline
+\texttt{font-size} & size of the characters & \texttt{16px}, \texttt{1.2em}, \texttt{120\%} \\
+\hline
+\texttt{font-weight} & thickness (bold or not) & \texttt{normal}, \texttt{bold}, \texttt{700} \\
+\hline
+\texttt{font-style} & italic or not & \texttt{normal}, \texttt{italic} \\
+\hline
+\texttt{text-align} & horizontal alignment of text & \texttt{left}, \texttt{center}, \texttt{right}, \texttt{justify} \\
+\hline
+\texttt{text-decoration} & underlining, line-through, overline & \texttt{underline}, \texttt{none}, \texttt{line-through} \\
+\hline
+\texttt{line-height} & vertical space between lines (unitless preferred) & \texttt{1.5}, \texttt{24px} \\
+\hline
+\texttt{text-transform} & capitalisation & \texttt{uppercase}, \texttt{lowercase}, \texttt{capitalize} \\
+\hline
+\texttt{letter-spacing} & space between characters & \texttt{1px}, \texttt{0.1em} \\
+\hline
+\end{tabularx}
+\end{center}
+\end{propriete}
+
+\textbf{Units for font-size.} Three units appear constantly:
+\begin{itemize}
+\item \texttt{px} (pixels): an absolute size, e.g.\ \texttt{font-size: 16px;} --- precise and predictable;
+\item \texttt{em}: a size \emph{relative to the parent element's font-size}. If the parent has \texttt{font-size: 16px}, then \texttt{1.5em} means $1.5 \times 16 = 24$ pixels;
+\item \texttt{\%}: also relative to the parent's font-size: \texttt{120\%} of 16px is $1.2 \times 16 = 19.2$ pixels.
+\end{itemize}
+\textbf{Best practice:} Set a base \texttt{font-size} on \texttt{body} (e.g.\ \texttt{16px}) and use \texttt{rem} (root em) or \texttt{em} for everything else, so the whole design scales if the user changes browser default size.
+
+\begin{exemplebox}[Styling a heading and a paragraph]
+\begin{center}
+\begin{tabular}{l}
+\texttt{h1 \{ color: \#003366; font-family: Arial, sans-serif;} \\
+\texttt{\textbackslash{}quad font-size: 2rem; text-align: center; font-weight: 700; \}} \\
+\texttt{p \{ font-size: 1rem; line-height: 1.6; text-align: justify; \}} \\
+\end{tabular}
+\end{center}
+Every \texttt{<h1>} becomes dark blue, centred, in Arial at 2rem (typically 32px); every paragraph is justified with comfortable spacing between lines. Note the \emph{fallback list} in \texttt{font-family}: if Arial is unavailable, the browser uses any sans-serif font.
+\end{exemplebox}
+
+\begin{attention}[text-decoration: none on links]
+By default, hyperlinks are underlined. To remove the underline, write \texttt{a \{ text-decoration: none; \}}. A frequent exam slip is to try \texttt{underline: none} or \texttt{text-decoration: false} --- neither exists. To add underline on hover: \texttt{a:hover \{ text-decoration: underline; \}}.
+\end{attention}
+
+\courssub{Background Properties}
+
+The \cle{background} of an element is the area behind its content and padding (but not the margin).
+
+\begin{definition}[Main background properties]
+\begin{itemize}
+\item \texttt{background-color}: paints the background with a colour, e.g.\ \texttt{background-color: \#FFFFCC;}
+\item \texttt{background-image}: places an image behind the content, e.g.\ \texttt{background-image: url("banner.jpg");}
+\item \texttt{background-repeat}: controls tiling of the image: \texttt{repeat} (default, tiles in both directions), \texttt{repeat-x}, \texttt{repeat-y}, or \texttt{no-repeat} (image shown once).
+\item \texttt{background-position}: sets the starting position, e.g.\ \texttt{center center}, \texttt{top left}, \texttt{50\% 50\%}.
+\item \texttt{background-size}: \texttt{cover} (scales to cover entire area, may crop), \texttt{contain} (scales to fit entirely), or explicit sizes like \texttt{200px 100px}.
+\item \texttt{background-attachment}: \texttt{scroll} (default, scrolls with page) or \texttt{fixed} (parallax effect).
+\item \textbf{Shorthand:} \texttt{background: \#FFF url("img.png") no-repeat center / cover;} sets colour, image, repeat, position, and size in one line.
+\end{itemize}
+\end{definition}
+
+\begin{exemplebox}[A coloured banner with fallback]
+\texttt{div.banner \{ background-color: \#006600; background-image: url("logo.png"); background-repeat: no-repeat; background-position: center; color: white; padding: 20px; \}} creates a green banner with a centred logo and white text. If the image fails to load, the green background ensures text remains readable. Always provide a \texttt{background-color} fallback when using images.
+\end{exemplebox}
+
+\courssub{The CSS Box Model}
+
+\textbf{Observation.} Look at any web page: every element --- a paragraph, an image, a heading, a table cell --- occupies a rectangular region. CSS treats \emph{every} element as a rectangle made of four nested layers. Understanding these layers explains why elements are spaced the way they are, and why two elements sometimes seem ``too far apart''.
+
+\begin{definition}[The box model]
+Every HTML element is a rectangular box composed of four layers, from the inside outwards:
+\begin{enumerate}
+\item the \cle{content}: the text or image itself, whose size is set by \texttt{width} and \texttt{height};
+\item the \cle{padding}: transparent space \emph{inside} the box, between the content and the border;
+\item the \cle{border}: a visible (or invisible) line surrounding the padding;
+\item the \cle{margin}: transparent space \emph{outside} the border, separating this box from its neighbours.
+\end{enumerate}
+The total horizontal space occupied by an element is:
+\[ \text{total width} = \text{margin-left} + \text{border-left} + \text{padding-left} + \text{width} + \text{padding-right} + \text{border-right} + \text{margin-right}. \]
+\end{definition}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=1.0]
+% Outer margin area (light gray)
+\fill[popmuted!20] (0,0) rectangle (9,5.4);
+% Border area (orange)
+\fill[poporange!30] (0.9,0.8) rectangle (8.1,4.6);
+% Padding area (light green)
+\fill[popgreenL] (1.5,1.4) rectangle (7.5,4.0);
+% Content area (white)
+\fill[white] (2.3,1.9) rectangle (6.7,3.5);
+% Labels
+\node at (4.5,2.7) {\textbf{content}};
+\node at (4.5,1.15) {\small padding};
+\node[poporange] at (4.5,4.25) {\small \textbf{border}};
+\node[popmuted] at (4.5,5.05) {\small margin};
+% Dimension arrows
+\draw[<->, popdark] (2.3,3.75) -- (6.7,3.75) node[midway, above, fill=white, inner sep=1pt] {\scriptsize width};
+\draw[<->, popdark] (9.25,0) -- (9.25,5.4) node[midway, right] {\scriptsize total height};
+\draw[<->, popdark] (1.5,-0.25) -- (7.5,-0.25) node[midway, below] {\scriptsize width + padding + border};
+\draw[<->, popdark] (-0.25,0.8) -- (-0.25,4.6) node[midway, left] {\scriptsize total height};
+\end{tikzpicture}
+\legende{The CSS box model: content wrapped in padding, then a border, then the margin.}
+\end{popfigure}
+
+\textbf{Borders.} A border is described by three ingredients, which can be set separately or together with the shorthand \texttt{border}:
+\begin{itemize}
+\item \texttt{border-width}: thickness, e.g.\ \texttt{2px} or \texttt{thin}, \texttt{medium}, \texttt{thick};
+\item \texttt{border-style}: \texttt{solid}, \texttt{dashed}, \texttt{dotted}, \texttt{double}, \texttt{groove}, \texttt{ridge}, \texttt{inset}, \texttt{outset}, \texttt{none}, \texttt{hidden};
+\item \texttt{border-color}: any CSS colour;
+\item \texttt{border-radius}: rounds the corners, e.g.\ \texttt{border-radius: 10px;} --- the larger the value, the rounder the corner. Can take up to four values (top-left, top-right, bottom-right, bottom-left).
+\end{itemize}
+Example: \texttt{border: 2px solid \#003366;} sets width, style and colour in one line.
+
+\begin{attention}[Margin is outside, padding is inside]
+The classic confusion: \textbf{margin} adds space \emph{outside} the border (it pushes \emph{neighbours} away), while \textbf{padding} adds space \emph{inside} the border (it pushes the \emph{content} away from the border). If you want more air between a paragraph's text and its frame, use padding; if you want more air between two framed paragraphs, use margin. Also remember: the background colour covers the content \emph{and the padding}, but never the margin.
+\end{attention}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.92]
+% Left box: padding
+\fill[popgreenL] (0,0) rectangle (4.6,3.2);
+\draw[line width=2pt, poporange] (0,0) rectangle (4.6,3.2);
+\fill[white] (0.9,0.8) rectangle (3.7,2.4);
+\node at (2.3,1.6) {\small content};
+\draw[<->, popdark] (0.9,2.75) -- (0,2.75);
+\node at (2.3,3.7) {\textbf{Padding}: inside};
+\node[popmuted] at (2.3,-0.75) {\scriptsize space between border and content};
+% Right box: margin
+\begin{scope}[xshift=7.2cm]
+\fill[popblueL] (-1.1,-0.9) rectangle (5.7,4.1);
+\fill[white] (0,0) rectangle (4.6,3.2);
+\draw[line width=2pt, poporange] (0,0) rectangle (4.6,3.2);
+\node at (2.3,1.6) {\small content};
+\node at (2.3,4.6) {\textbf{Margin}: outside};
+\draw[<->, popdark] (0,3.55) -- (0,4.1);
+\draw[<->, popdark] (-1.1,1.6) -- (0,1.6);
+\node[popmuted] at (2.3,-1.35) {\scriptsize space between border and neighbours};
+\end{scope}
+\end{tikzpicture}
+\legende{Padding (left) inflates the box from the inside; margin (right) separates the box from other elements.}
+\end{popfigure}
+
+\courssub{The \texttt{box-sizing} Property (Critical for Layout)}
+
+By default (\texttt{box-sizing: content-box}), \texttt{width} and \texttt{height} apply \emph{only to the content area}. Adding padding or border increases the total rendered size. This makes layout calculations painful.
+
+\begin{propriete}[box-sizing: border-box]
+With \texttt{box-sizing: border-box}, the declared \texttt{width} and \texttt{height} include content, padding, and border (but not margin). The content area shrinks to accommodate padding and border. This is the modern best practice.
+\end{propriete}
+
+\begin{methode}[Applying border-box globally (recommended)]
+Add this at the top of your stylesheet:
+\begin{center}
+\begin{tabular}{l}
+\texttt{*, *::before, *::after \{ } \\
+\texttt{\textbackslash{}quad box-sizing: border-box; } \\
+\texttt{\}} \\
+\end{tabular}
+\end{center}
+Now \texttt{width: 300px; padding: 20px; border: 5px solid black;} results in a box that is exactly 300px wide (content becomes 250px). This prevents layout breaks when adding padding/borders.
+\end{methode}
+
+\courssub{Dimensions and Centring}
+
+\textbf{Width and height.} The properties \texttt{width} and \texttt{height} fix the size of the \emph{content area} (or the whole box if \texttt{box-sizing: border-box}). They accept pixels (\texttt{width: 600px;}), percentages of the parent (\texttt{width: 80\%;}), or viewport units (\texttt{width: 50vw;}).
+
+\textbf{Min/Max constraints.} \texttt{min-width}, \texttt{max-width}, \texttt{min-height}, \texttt{max-height} prevent elements from becoming too small or too large (responsive design).
+
+\textbf{Display.} The \texttt{display} property controls how a box participates in the layout:
+\begin{itemize}
+\item \texttt{block}: the element occupies the whole available width and starts on a new line (e.g.\ \texttt{<p>}, \texttt{<h1>}, \texttt{<div>}, \texttt{<section>}); width, height, margin, padding all apply;
+\item \texttt{inline}: the element flows inside the text without line breaks (e.g.\ \texttt{<span>}, \texttt{<a>}, \texttt{<strong>}, \texttt{<img>}); width and height are ignored; vertical margins/paddings do not affect line flow;
+\item \texttt{inline-block}: flows inline like text, \emph{but} accepts width, height, padding and margin like a block --- very useful for menus and cards placed side by side;
+\item \texttt{none}: the element is removed from the layout entirely (not rendered).
+\end{itemize}
+
+\begin{methode}[Centring a block horizontally]
+To centre a block element (a \texttt{<div>}, a table, an image displayed as a block) inside its parent:
+\begin{enumerate}
+\item give the element a \texttt{width} smaller than its parent, e.g.\ \texttt{width: 80\%;} or \texttt{width: 600px;};
+\item set the left and right margins to \texttt{auto}: \texttt{margin: 0 auto;} (top/bottom margin 0, left/right automatic).
+\end{enumerate}
+The browser then shares the leftover space equally between the two sides, and the block sits exactly in the middle. Note: \texttt{text-align: center} centres \emph{text inside} an element, not the element itself --- do not confuse the two.
+\end{methode}
+
+\begin{attention}[Margin collapsing]
+Vertical margins of adjacent block elements \emph{collapse}: the larger margin wins, they do not add up. Example: \texttt{div\{margin-bottom:30px;\}} followed by \texttt{div\{margin-top:20px;\}} results in 30px gap, not 50px. Horizontal margins never collapse. This is a frequent exam trap.
+\end{attention}
+
+\courssub{Styling Tables and Forms}
+
+Unstyled HTML tables have no visible borders and cramped cells; unstyled forms look messy. A few properties transform them.
+
+\begin{itemize}
+\item \texttt{border-collapse: collapse;} on the \texttt{table} merges the double borders of cells into single clean lines;
+\item \texttt{border} and \texttt{padding} on \texttt{th} and \texttt{td} give each cell a frame and breathing space;
+\item \texttt{background-color} on \texttt{th} distinguishes the header row;
+\item \textbf{(exam-useful extra)} the pseudo-class \texttt{:nth-child(even)} selects every even row: \texttt{tr:nth-child(even) \{ background-color: \#E8F0FE; \}} produces \emph{alternating row colours} (``zebra striping''), which greatly improves readability of long tables such as class lists or marks;
+\item \texttt{:hover} on \texttt{tr} highlights the row under the mouse: \texttt{tr:hover \{ background-color: \#D0E0FF; \}};
+\item for forms, give \texttt{input}, \texttt{select}, \texttt{textarea} a \texttt{padding}, a \texttt{border}, a \texttt{border-radius}, and a consistent \texttt{font-size} (prevents zoom on iOS); align labels with \texttt{display: block} or flexbox.
+\end{itemize}
+
+\begin{exoresolu}[Styling a marks table]
+Write the CSS so that a table of student marks has collapsed single grey borders, a dark blue header row with white text, cells padded by 8 pixels, centred text, and a light background on every even row. The table should be centred on the page at 80\% width.
+\tcblower
+\begin{center}
+\begin{tabular}{l}
+\texttt{table \{ } \\
+\texttt{\textbackslash{}quad border-collapse: collapse; } \\
+\texttt{\textbackslash{}quad width: 80\%; } \\
+\texttt{\textbackslash{}quad margin: 20px auto; } \\
+\texttt{\}} \\
+\texttt{th, td \{ } \\
+\texttt{\textbackslash{}quad border: 1px solid \#999; } \\
+\texttt{\textbackslash{}quad padding: 8px; } \\
+\texttt{\textbackslash{}quad text-align: center; } \\
+\texttt{\}} \\
+\texttt{th \{ } \\
+\texttt{\textbackslash{}quad background-color: \#003366; } \\
+\texttt{\textbackslash{}quad color: white; } \\
+\texttt{\}} \\
+\texttt{tr:nth-child(even) \{ background-color: \#E8F0FE; \}} \\
+\texttt{tr:hover \{ background-color: \#D0E0FF; \}} \\
+\end{tabular}
+\end{center}
+\textbf{Explanation.} \texttt{border-collapse: collapse} avoids doubled lines between cells; the selector \texttt{th, td} applies the same border and padding to both header and data cells; the table is centred with \texttt{width} plus \texttt{margin: 0 auto}; \texttt{:nth-child(even)} paints rows 2, 4, 6, \dots{} giving the zebra effect; \texttt{:hover} adds interactivity.
+\end{exoresolu}
+
+\courssub{Mini-Workshop: A School Notice-Board Page}
+
+\begin{experience}[Styling the GBHS notice board]
+A school notice-board page contains: a main heading, a short introduction paragraph, a table of announcements, and a highlighted ``urgent'' section. Here is a complete internal stylesheet demonstrating all concepts from this section:
+\begin{center}
+\begin{tabular}{l}
+\texttt{* \{ box-sizing: border-box; \}} \\
+\texttt{body \{ font-family: Arial, sans-serif; background-color: \#F5F5F5; margin: 0; padding: 20px; \}} \\
+\texttt{h1 \{ color: \#003366; text-align: center; margin-bottom: 0.5em; \}} \\
+\texttt{p.intro \{ font-size: 1.1rem; line-height: 1.6; text-align: justify; color: \#333; \}} \\
+\texttt{table \{ border-collapse: collapse; width: 90\%; margin: 20px auto; \}} \\
+\texttt{th, td \{ border: 1px solid \#666; padding: 10px; text-align: left; \}} \\
+\texttt{th \{ background-color: \#003366; color: white; \}} \\
+\texttt{tr:nth-child(even) \{ background-color: \#E8F0FE; \}} \\
+\texttt{tr:hover \{ background-color: \#D0E0FF; \}} \\
+\texttt{div.urgent \{ background-color: \#FFF0F0; border: 2px solid \#CC0000; } \\
+\texttt{\textbackslash{}quad border-radius: 8px; padding: 20px; margin: 20px auto; width: 80\%; \}} \\
+\texttt{div.urgent h2 \{ color: \#CC0000; margin-top: 0; \}} \\
+\end{tabular}
+\end{center}
+Observe how every idea of this section appears: named and hexadecimal colours, relative font sizes (\texttt{rem}), the box model (padding inside the urgent box, margin outside it), rounded corners, centring with \texttt{margin: auto}, \texttt{box-sizing: border-box} for predictable sizing, and a zebra-striped table with hover effect. Try it, then change one property at a time and observe the effect in the browser --- this is the fastest way to master CSS.
+\end{experience}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item Colours: names, \texttt{\#RRGGBB} (never forget the \texttt{\#}), \texttt{rgb(r,g,b)}, \texttt{rgba(r,g,b,a)}; always keep a strong text/background contrast (WCAG AA minimum 4.5:1).
+\item Text: \texttt{color}, \texttt{font-family} (with fallbacks), \texttt{font-size} (px, em, rem, \%), \texttt{font-weight}, \texttt{font-style}, \texttt{text-align}, \texttt{text-decoration}, \texttt{line-height} (unitless), \texttt{text-transform}.
+\item Backgrounds: \texttt{background-color}, \texttt{background-image: url(...)}, \texttt{background-repeat}, \texttt{background-position}, \texttt{background-size}, shorthand \texttt{background}.
+\item Box model: content $\to$ padding $\to$ border $\to$ margin; total width adds all horizontal layers.
+\item \texttt{box-sizing: border-box} makes \texttt{width} include padding and border --- use it globally.
+\item Padding is inside the border, margin is outside; background covers content+padding only.
+\item Centre a block with a \texttt{width} plus \texttt{margin: 0 auto}; \texttt{text-align: center} centres inline content.
+\item \texttt{display}: block, inline, inline-block, none; margin collapsing vertically.
+\item Tables: \texttt{border-collapse: collapse}, zebra stripes with \texttt{tr:nth-child(even)}, hover highlighting.
+\end{itemize}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+A \texttt{<div>} has \texttt{width: 200px; padding: 10px; border: 5px solid black; margin: 20px;}. Assume \texttt{box-sizing: content-box} (default).
+(a) Calculate the total horizontal space it occupies.
+(b) Write the CSS to centre it horizontally \emph{while keeping the 20px top/bottom margins}.
+(c) Write a rule making every odd row of a table light yellow (\texttt{\#FFFFCC}).
+(d) If we add \texttt{box-sizing: border-box} to the div but keep \texttt{width: 200px}, what becomes the content width?
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+(a) Total width $= 20 + 5 + 10 + 200 + 10 + 5 + 20 = 270$ pixels. (Left margin + left border + left padding + width + right padding + right border + right margin).
+(b) \texttt{div \{ width: 200px; margin: 20px auto; \}} (top/bottom 20px, left/right auto).
+(c) \texttt{tr:nth-child(odd) \{ background-color: \#FFFFCC; \}}.
+(d) With \texttt{border-box}, the declared width (200px) includes padding and border. Content width $= 200 - 2\times(10+5) = 170$ pixels.
+\end{corrige}
+
+\coursec{JavaScript Fundamentals: Syntax, Variables and Control Structures}
+
+In the previous section we learnt how CSS dresses a web page: colours, fonts, backgrounds and the box model control the \emph{presentation} of the content. But a page made only of HTML and CSS is \emph{static}: it always displays the same thing, whatever the visitor does. If you want a page that reacts --- a button that computes the average of your mock GCE marks, a form that refuses an empty telephone number, a counter that increases when you click --- you need a third technology: \cle{JavaScript}. HTML gives the \emph{structure}, CSS gives the \emph{style}, and JavaScript gives the \emph{behaviour}.
+
+\courssub{What is JavaScript?}
+
+\begin{definition}[JavaScript and script]
+\cle{JavaScript} is a \emph{scripting language} executed by the \textbf{web browser} (Chrome, Firefox, Edge\ldots) on the visitor's computer. It allows a web page to become \emph{dynamic} and \emph{interactive}: it can read what the user types, perform calculations, modify the content of the page and react to events such as clicks. A \cle{script} is a short program, written as a sequence of \emph{instructions} (statements), that the browser executes line by line.
+\end{definition}
+
+\begin{savaistu}[JavaScript is not Java]
+Despite its name, JavaScript has almost nothing in common with the Java language. It was created in 1995 for the Netscape browser and was named ``JavaScript'' mainly for marketing reasons. Today it is the language behind almost every interactive site you use in Cameroon: the balance check page of MTN Mobile Money, the e-government portals, and the results pages of the GCE Board all rely on JavaScript.
+\end{savaistu}
+
+\textbf{Inserting JavaScript into a page.} There are two standard ways:
+\begin{itemize}
+\item \textbf{Internal script}: the code is written directly in the HTML file between the tags \texttt{<script>} and \texttt{</script>}, usually placed just before \texttt{</body>} so that the page content loads first.
+\item \textbf{External script}: the code is saved in a separate file, for example \texttt{script.js}, and linked with \texttt{<script src="script.js"></script>}. This is the recommended practice for larger projects because the same script can be reused by several pages and the browser can cache it.
+\end{itemize}
+
+\begin{attention}[Placement of \texttt{<script>}]
+If the script tries to access HTML elements that have not yet been parsed (for example, a script in \texttt{<head>} that reads a \texttt{<div>} in \texttt{<body>}), it will fail. Placing the script just before \texttt{</body>} or using the \texttt{defer} attribute (\texttt{<script src="script.js" defer></script>}) guarantees that the DOM is ready.
+\end{attention}
+
+\textbf{A first script.} Three instructions are essential for a beginner:
+\begin{itemize}
+\item \texttt{alert("Hello")} displays a modal pop-up message box;
+\item \texttt{document.write("Hello")} writes text directly into the page (mainly used for simple tests; it overwrites the whole page if called after the page has loaded);
+\item \texttt{console.log("Hello")} writes a message in the browser's \emph{developer console} (opened with the F12 key), which is invisible to visitors and therefore ideal for \emph{debugging}, i.e. finding errors.
+\end{itemize}
+
+\begin{methode}[Writing and testing a first JavaScript program]
+\begin{enumerate}
+\item Open a text editor (Notepad++, VS Code) and create a file \texttt{index.html} containing the basic HTML skeleton.
+\item Just before \texttt{</body>}, add \texttt{<script>} then your instructions, for example \texttt{alert("Welcome to my page");}, then \texttt{</script>}.
+\item Save the file and open it with a browser (double-click).
+\item Observe the result. If nothing happens, press F12 to open the console and read the error message: it indicates the line where the problem lies.
+\item Correct, save, and refresh the page (F5) to test again.
+\end{enumerate}
+\end{methode}
+
+\begin{attention}[JavaScript is case-sensitive]
+JavaScript distinguishes \textbf{uppercase} from \textbf{lowercase} letters. Writing \texttt{Document.write("Hi")} or \texttt{Alert("Hi")} produces an error, because the correct names are \texttt{document.write} and \texttt{alert}. Similarly, a variable declared as \texttt{average} is different from a variable called \texttt{Average}. Most ``my script does nothing'' problems of beginners come from a wrong capital letter.
+\end{attention}
+
+\courssub{Variables and Data Types}
+
+A \cle{variable} is a named memory location in which the program stores a value that may change during execution. In modern JavaScript a variable is declared with one of two keywords:
+\begin{itemize}
+\item \texttt{let x = 15;} declares a variable whose value can be modified (block-scoped, recommended);
+\item \texttt{const PI = 3.14;} declares a \emph{constant} whose value cannot be reassigned (also block-scoped).
+\end{itemize}
+The keyword \texttt{var} is the old way of declaring variables (function-scoped); it is still found in many textbooks and past papers, but \texttt{let} and \texttt{const} are preferred in modern code.
+
+\textbf{Naming rules.} A variable name (identifier) must begin with a letter, an underscore \texttt{\_} or a dollar sign \texttt{\$}; it may then contain letters, digits, \texttt{\_} and \texttt{\$}; it must not be a reserved word (\texttt{if}, \texttt{for}, \texttt{function}\ldots) and must not contain spaces or hyphens. Valid: \texttt{mark1}, \texttt{total\_sum}, \texttt{average}. Invalid: \texttt{1mark}, \texttt{my mark}, \texttt{total-sum}.
+
+\textbf{Data types.} JavaScript has primitive types and objects. The three basic primitive types you must master are:
+\begin{itemize}
+\item \textbf{number}: numeric values, integers or decimals, e.g. \texttt{let age = 17;} or \texttt{let avg = 12.75;} (note the decimal \emph{point});
+\item \textbf{string}: text, always written between single or double quotes, e.g. \texttt{let name = "Amina";};
+\item \textbf{boolean}: a logical value, only \texttt{true} or \texttt{false}, e.g. \texttt{let admitted = true;}.
+\end{itemize}
+Two other primitive types exist: \texttt{undefined} (variable declared but not assigned) and \texttt{null} (intentional absence of value).
+
+\begin{exemplebox}[Declaring and initialising variables]
+\begin{verbatim}
+let studentName = "Ngono";   // string
+let mathMark = 14;           // number (integer)
+let physicsMark = 13.5;      // number (decimal)
+let isAdmitted = true;       // boolean
+const MAX\_MARK = 20;         // constant
+\end{verbatim}
+\end{exemplebox}
+
+\courssub{Operators}
+
+Operators combine values to produce new values.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|l|}
+\hline
+\rowcolor{popblueL} \textbf{Category} & \textbf{Operators} & \textbf{Example / result} \\
+\hline
+Arithmetic & \texttt{+} \quad \texttt{-} \quad \texttt{*} \quad \texttt{/} \quad \texttt{\%} (remainder) & \texttt{14 \% 4} gives \texttt{2} \\
+\hline
+Comparison & \texttt{==} (equal), \texttt{===} (strictly equal), \texttt{!=} (different), \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=} & \texttt{10 >= 10} is \texttt{true} \\
+\hline
+Logical & \texttt{\&\&} (AND), \texttt{||} (OR), \texttt{!} (NOT) & \texttt{true \&\& false} is \texttt{false} \\
+\hline
+Assignment & \texttt{=}, \texttt{+=}, \texttt{-=}, \texttt{*=}, \texttt{/=} & \texttt{x += 3} adds 3 to \texttt{x} \\
+\hline
+\end{tabularx}
+\end{center}
+
+The difference between \texttt{==} and \texttt{===} is that \texttt{==} compares values after converting types (so \texttt{"5" == 5} is \texttt{true}), while \texttt{===} also requires the same \emph{type} (so \texttt{"5" === 5} is \texttt{false}). At this level, prefer \texttt{===} and \texttt{!==} to avoid surprising type coercion.
+
+\begin{attention}[Assignment \texttt{=} versus comparison \texttt{==} / \texttt{===}]
+The single equals sign \texttt{=} is the \emph{assignment} operator: \texttt{avg = 10} \textbf{stores} 10 in \texttt{avg}. To \textbf{test} equality you must write \texttt{avg == 10} or \texttt{avg === 10}. Writing \texttt{if (avg = 10)} does not compare anything: it puts 10 into \texttt{avg} and the condition is then treated as true, so the program always takes the wrong branch. This is one of the most frequent errors at the GCE.
+\end{attention}
+
+\textbf{Reading user input.} The instruction \texttt{prompt("Enter a mark:")} opens a small dialog box and returns what the user typed --- \emph{always as a string}. To calculate with it, convert it: \texttt{parseInt("12")} gives the integer \texttt{12}, and \texttt{parseFloat("12.5")} gives the decimal number \texttt{12.5}. Forgetting this conversion is a classic trap: \texttt{"2" + "3"} gives the string \texttt{"23"} (text concatenation), whereas \texttt{parseInt("2") + parseInt("3")} gives the number \texttt{5}.
+
+\begin{exemplebox}[Input, conversion and calculation]
+\begin{verbatim}
+let a = prompt("First mark:");      // user types "12" -> string "12"
+let b = prompt("Second mark:");     // user types "14" -> string "14"
+let sum = parseInt(a) + parseInt(b); // 12 + 14 = 26 (number)
+alert("Sum = " + sum);              // displays "Sum = 26"
+\end{verbatim}
+\end{exemplebox}
+
+\courssub{Conditional Structures: if, if\ldots else, switch}
+
+Programs become intelligent when they can \emph{choose} between several actions according to a \emph{condition}.
+
+\textbf{The \texttt{if} statement.} The syntax is:
+\texttt{if (condition) \{ instructions \}}. The block between braces executes only when the condition evaluates to \texttt{true}. With \texttt{if \ldots\ else} we provide an alternative block executed when the condition is \texttt{false}; with \texttt{else if} we chain several tests. Example: deciding whether a GCE candidate is admitted.
+
+\begin{exemplebox}[Admission decision]
+\begin{verbatim}
+let avg = parseFloat(prompt("Average?"));
+if (avg >= 10) {
+    alert("Admitted");
+} else {
+    alert("Failed");
+}
+\end{verbatim}
+If the user enters $12.5$, the condition \texttt{12.5 >= 10} is true, so the message ``Admitted'' appears. If the user enters $8$, the \texttt{else} branch runs and ``Failed'' appears.
+\end{exemplebox}
+
+\begin{popfigure}
+\begin{tikzpicture}[
+font=\small,
+startstop/.style={rectangle, rounded corners, draw=popdark, fill=popblueL, minimum width=2.6cm, minimum height=0.8cm, align=center},
+process/.style={rectangle, draw=popdark, fill=popgreenL, minimum width=3.2cm, minimum height=0.8cm, align=center},
+decision/.style={diamond, draw=popdark, fill=popgold!40, aspect=2.4, align=center, inner sep=1pt},
+arrow/.style={->, thick, popdark}
+]
+\node[startstop] (start) {Start};
+\node[process, below=0.5cm of start] (input) {Read average \texttt{avg}};
+\node[decision, below=0.7cm of input] (test) {\texttt{avg >= 10} ?};
+\node[process, below left=0.9cm and 0.2cm of test] (adm) {Display ``Admitted''};
+\node[process, below right=0.9cm and 0.2cm of test] (fail) {Display ``Failed''};
+\node[startstop, below=2.6cm of test] (stop) {End};
+\draw[arrow] (start) -- (input);
+\draw[arrow] (input) -- (test);
+\draw[arrow] (test) -| node[pos=0.25, above]{true} (adm);
+\draw[arrow] (test) -| node[pos=0.25, above]{false} (fail);
+\draw[arrow] (adm) |- (stop);
+\draw[arrow] (fail) |- (stop);
+\end{tikzpicture}
+\legende{Flowchart of an \texttt{if\ldots else} structure deciding the admission of a GCE candidate (average $\geq 10$).}
+\end{popfigure}
+
+\textbf{The \texttt{switch} statement.} When one variable must be compared with several fixed values, \texttt{switch} is clearer than a long chain of \texttt{else if}. The syntax:
+\begin{verbatim}
+switch (expression) {
+    case value1:
+        instructions;
+        break;
+    case value2:
+        instructions;
+        break;
+    default:
+        instructions;
+}
+\end{verbatim}
+Each \texttt{case} tests one value; \texttt{break} stops the execution inside the switch; \texttt{default} runs when no case matches. Forgetting \texttt{break} makes the following cases execute too (``fall-through'') --- another classic mistake.
+
+\begin{exemplebox}[Grade to comment with switch]
+\begin{verbatim}
+let grade = prompt("Grade (A, B, C, D, E):");
+switch (grade) {
+    case "A": alert("Excellent"); break;
+    case "B": alert("Good"); break;
+    case "C": alert("Fair"); break;
+    case "D": alert("Pass"); break;
+    case "E": alert("Fail"); break;
+    default: alert("Invalid grade");
+}
+\end{verbatim}
+\end{exemplebox}
+
+\courssub{Loops: for and while}
+
+A \cle{loop} repeats a block of instructions. Instead of writing \texttt{document.write} ten times to print the multiplication table of 7, we write it once inside a loop.
+
+\textbf{The \texttt{for} loop} is used when the number of repetitions is known in advance:
+\texttt{for (initialisation; condition; increment) \{ instructions \}}. Example:
+\texttt{for (let i = 1; i <= 10; i++) \{ document.write("7 x " + i + " = " + (7*i) + "<br>"); \}}. Here \texttt{i} starts at 1, the body repeats while \texttt{i <= 10}, and \texttt{i++} increases \texttt{i} by 1 after each pass.
+
+\begin{popfigure}
+\begin{tikzpicture}[
+font=\small,
+startstop/.style={rectangle, rounded corners, draw=popdark, fill=popblueL, minimum width=2.8cm, minimum height=0.8cm, align=center},
+process/.style={rectangle, draw=popdark, fill=popgreenL, minimum width=3.4cm, minimum height=0.8cm, align=center},
+decision/.style={diamond, draw=popdark, fill=popgold!40, aspect=2.4, align=center, inner sep=1pt},
+arrow/.style={->, thick, popdark}
+]
+\node[startstop] (start) {Start};
+\node[process, below=0.5cm of start] (init) {\texttt{i = 1}};
+\node[decision, below=0.7cm of init] (test) {\texttt{i <= 10} ?};
+\node[process, below=1cm of test] (body) {Display \texttt{7 x i = 7*i}};
+\node[process, below=0.5cm of body] (inc) {\texttt{i = i + 1}};
+\node[startstop, right=2.2cm of test] (stop) {End};
+\draw[arrow] (start) -- (init);
+\draw[arrow] (init) -- (test);
+\draw[arrow] (test) -- node[right]{true} (body);
+\draw[arrow] (body) -- (inc);
+\draw[arrow] (inc.west) -| ++(-1.6,0) |- (test.west);
+\draw[arrow] (test) -- node[above]{false} (stop);
+\end{tikzpicture}
+\legende{Flowchart of a \texttt{for} loop printing the multiplication table of 7, for \texttt{i} from 1 to 10.}
+\end{popfigure}
+
+\textbf{The \texttt{while} loop} repeats a block \emph{as long as} a condition remains true; it is used when the number of repetitions is not known in advance: \texttt{while (condition) \{ instructions \}}. The condition is tested \emph{before} each pass, so the body may execute zero times. You must ensure that something inside the loop eventually makes the condition false, otherwise you get an \emph{infinite loop} and the page freezes.
+
+\begin{exemplebox}[Sum of positive numbers with while]
+\begin{verbatim}
+let sum = 0;
+let value = parseFloat(prompt("Enter a positive number (negative to stop):"));
+while (value >= 0) {
+    sum = sum + value;
+    value = parseFloat(prompt("Enter a positive number (negative to stop):"));
+}
+alert("Sum = " + sum);
+\end{verbatim}
+The loop stops as soon as the user enters a negative number.
+\end{exemplebox}
+
+\begin{exoresolu}[Sum of marks with a for loop]
+\textbf{Statement.} Write a script that asks for the marks of 3 subjects and displays their sum and average. Predict the output if the user enters 12, 15 and 9.
+\tcblower
+\textbf{Solution.}
+\begin{verbatim}
+let sum = 0;
+for (let i = 1; i <= 3; i++) {
+    let m = parseFloat(prompt("Mark " + i));
+    sum = sum + m;
+}
+alert("Sum = " + sum + ", Average = " + (sum/3));
+\end{verbatim}
+\textbf{Trace:} initially \texttt{sum = 0}. Pass 1: \texttt{i = 1}, \texttt{m = 12}, \texttt{sum = 12}. Pass 2: \texttt{i = 2}, \texttt{m = 15}, \texttt{sum = 27}. Pass 3: \texttt{i = 3}, \texttt{m = 9}, \texttt{sum = 36}. Then \texttt{i} becomes 4, the condition \texttt{4 <= 3} is false, the loop stops. The alert displays ``Sum = 36, Average = 12''.
+\end{exoresolu}
+
+\begin{aretenir}[Exam tip: tracing a script]
+A classic GCE question gives a short script and asks you to \emph{predict its output}. Method: draw a small table with one column per variable and one row per pass through the loop; update the values line by line exactly as the computer would; then write down what each \texttt{alert} or \texttt{document.write} displays. Never guess --- trace. Pay special attention to the initial value of the counter, to whether the condition uses \texttt{<} or \texttt{<=}, and to the order of the instructions inside the loop.
+\end{aretenir}
+
+\courssub{Functions: Avoiding Repetition}
+
+Suppose three different buttons of your page must each compute an average. Copying the same five lines three times is bad practice: if you later correct a mistake, you must correct it in three places. A \cle{function} packages a block of instructions under a name, so it can be \emph{called} (executed) as many times as needed.
+
+\textbf{Declaring and calling.} A function is declared once:
+\texttt{function average(a, b) \{ let r = (a + b) / 2; return r; \}}. Here \texttt{a} and \texttt{b} are \emph{parameters}: placeholders that receive the values given at the call. The keyword \texttt{return} sends the result back to the caller. The function does nothing until it is \emph{called}: \texttt{let m = average(12, 16);} executes the body with \texttt{a = 12}, \texttt{b = 16}, and stores the returned value \texttt{14} in \texttt{m}. A function without a \texttt{return} statement returns \texttt{undefined}.
+
+\begin{exemplebox}[A reusable function]
+\begin{verbatim}
+function square(x) {
+    return x * x;
+}
+document.write(square(5));  // displays 25
+document.write(square(9));  // displays 81
+\end{verbatim}
+The same code serves both calculations: this is the power of functions --- write once, use many times.
+\end{exemplebox}
+
+\begin{exemplebox}[Function with multiple parameters and no return]
+\begin{verbatim}
+function greet(name, age) {
+    alert("Hello " + name + ", you are " + age + " years old.");
+}
+greet("Amina", 17);  // calls the function
+\end{verbatim}
+\end{exemplebox}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Write a script that reads an integer with \texttt{prompt()} and displays ``Even'' or ``Odd'' using the operator \texttt{\%}.
+\item Trace the following script and give the exact output: \texttt{let s = 0; for (let i = 1; i < 5; i++) \{ s = s + i; \} alert(s);}
+\item Write a function \texttt{maxOfTwo(a, b)} that returns the larger of its two parameters, then call it with the values 14 and 9.
+\item Write a \texttt{while} loop that asks the user for numbers and accumulates their sum until the user enters 0, then displays the sum.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise n°2]
+Trace: \texttt{i = 1}: \texttt{s = 1}; \texttt{i = 2}: \texttt{s = 3}; \texttt{i = 3}: \texttt{s = 6}; \texttt{i = 4}: \texttt{s = 10}. Then \texttt{i = 5} and the condition \texttt{5 < 5} is false, so the loop stops. The alert displays \texttt{10}. Note the strict inequality: the pass \texttt{i = 5} never happens.
+\end{corrige}
+
+\begin{corrige}[Exercise n°3]
+\begin{verbatim}
+function maxOfTwo(a, b) {
+    if (a > b) return a;
+    else return b;
+}
+alert(maxOfTwo(14, 9));  // displays 14
+\end{verbatim}
+\end{corrige}
+
+\begin{corrige}[Exercise n°4]
+\begin{verbatim}
+let sum = 0;
+let n = parseFloat(prompt("Enter a number (0 to stop):"));
+while (n !== 0) {
+    sum = sum + n;
+    n = parseFloat(prompt("Enter a number (0 to stop):"));
+}
+alert("Sum = " + sum);
+\end{verbatim}
+\end{corrige}
+
+With variables, operators, conditions, loops and functions, you now master the fundamental grammar of JavaScript. The next section will put these tools to work on the page itself: reading and modifying HTML elements through the DOM, reacting to events such as clicks, and validating forms before they are submitted.
+
+\coursec{Interactive Pages: DOM Manipulation, Events and Form Validation}
+
+In the previous section we learnt the grammar of JavaScript: variables, operators, conditions and loops. But a language alone does not make a page \emph{alive}. A script becomes useful only when it can \textbf{see} the page and \textbf{change} it: react when a visitor clicks a button, read what was typed into a form, refuse to send incomplete data. That is exactly what this final section is about. By the end, you will be able to build a complete interactive registration form — the kind of page used every day in Cameroon for school enrolment, mobile money registration or examination candidate registration on the GCE Board portal.
+
+\courssub{The Document Object Model (DOM)}
+
+\begin{experience}[Observing the page as a family tree]
+Consider this tiny page: a heading, a paragraph, and a form containing one text field and one button. If you were asked to describe the page to someone over the phone, you would naturally say: ``the page has a head and a body; inside the body there is a heading, a paragraph and a form; inside the form there is an input and a button''. You have just described a \emph{tree}. JavaScript sees every web page exactly this way.
+\end{experience}
+
+\begin{definition}[The Document Object Model]
+The \cle{DOM} (Document Object Model) is the representation of a web page as a \textbf{tree of objects} created by the browser when it loads the HTML document. Every HTML element (and even the text inside elements) becomes a \textbf{node} of the tree, and JavaScript can \textbf{read}, \textbf{modify}, \textbf{add} or \textbf{delete} any node. The root object is called \texttt{document}.
+\end{definition}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  every node/.style={draw=popblue, rounded corners=2pt, fill=popblueL, font=\small, inner sep=3pt},
+  edge from parent/.style={draw=popmuted, thick},
+  level 1/.style={sibling distance=60mm, level distance=13mm},
+  level 2/.style={sibling distance=30mm, level distance=13mm},
+  level 3/.style={sibling distance=22mm, level distance=13mm}]
+\node {html}
+  child { node {head} child { node {title} } }
+  child { node {body}
+    child { node {h1} }
+    child { node {p} }
+    child { node {form}
+      child { node {input} }
+      child { node {button} }
+    }
+  };
+\end{tikzpicture}
+\end{center}
+\legende{The DOM tree of a small HTML page: \texttt{html} is the root; \texttt{head} and \texttt{body} are its children; the \texttt{form} itself has two children, \texttt{input} and \texttt{button}.}
+\end{popfigure}
+
+Because the page is a tree of \emph{objects}, each element carries \textbf{properties} (its text, its colour, its value) that JavaScript can consult and change. The whole art of interactivity reduces to three steps: \textbf{find} the node, \textbf{read or change} it, and decide \textbf{when} to do it (in response to an event).
+
+\courssub{Selecting Elements and Modifying the Page}
+
+Before changing anything, the script must first \emph{grab} the element. JavaScript offers several selection methods:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Method} & \textbf{What it returns} \\
+\hline
+\texttt{document.getElementById('b1')} & the single element whose \texttt{id} is \texttt{b1} (or \texttt{null} if none) \\
+\hline
+\texttt{document.getElementsByClassName('note')} & a list of all elements of class \texttt{note} \\
+\hline
+\texttt{document.querySelector('p')} & the \emph{first} element matching the CSS selector (here the first paragraph) \\
+\hline
+\end{tabularx}
+\end{center}
+
+\begin{attention}[Script placed too early: getElementById returns null]
+The browser reads the page \textbf{from top to bottom}. If your script is placed in the \texttt{head} and calls \texttt{getElementById('b1')} before the button \texttt{b1} has been created lower in the page, the method returns \texttt{null} and the script fails. \textbf{Good habit:} place the \texttt{script} block just before the closing \texttt{body} tag, so that all elements already exist when the script runs.
+\end{attention}
+
+Once an element is selected, three properties do most of the work:
+
+\begin{itemize}
+\item \texttt{element.textContent} : reads or replaces the \textbf{text} of the element, e.g. \texttt{document.getElementById('msg').textContent = 'Welcome!';}.
+\item \texttt{element.innerHTML} : reads or replaces the \textbf{HTML content} (tags included), e.g. \texttt{innerHTML = '<b>Admitted</b>';} displays bold text.
+\item \texttt{element.style.property} : changes a CSS property directly, e.g. \texttt{document.body.style.backgroundColor = 'yellow';}. Note that CSS names with hyphens become camelCase: \texttt{background-color} becomes \texttt{backgroundColor}.
+\end{itemize}
+
+Reading what a user typed into a form field is done with the \texttt{value} property: \texttt{document.getElementById('phone').value} gives the content of the field whose \texttt{id} is \texttt{phone}.
+
+\begin{attention}['2' + '3' gives '23', not 5]
+The \texttt{value} of a form field is \textbf{always a string of characters}, even if the user typed digits. Writing \texttt{'2' + '3'} performs \emph{concatenation} and produces \texttt{'23'}. To compute, convert first with \texttt{Number(...)} or \texttt{parseInt(...)}: \texttt{Number(a) + Number(b)} gives $5$. This is one of the most frequent errors in GCE practical scripts.
+\end{attention}
+
+\courssub{Events: Making the Page React}
+
+\begin{definition}[Event]
+An \cle{event} is a signal produced by the browser when something happens on the page: a click, a mouse movement, a key pressed, a form submitted. A JavaScript function attached to an event and executed automatically when it occurs is called an \textbf{event handler}.
+\end{definition}
+
+The most common events at this level are:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+\rowcolor{popblueL} \textbf{Event} & \textbf{Fired when\ldots} \\
+\hline
+\texttt{onclick} & the user clicks an element \\
+\hline
+\texttt{onmouseover} & the mouse pointer moves onto an element \\
+\hline
+\texttt{onchange} & the value of a field changes and loses focus \\
+\hline
+\texttt{onsubmit} & a form is about to be submitted \\
+\hline
+\texttt{onkeypress} & a key is pressed while a field has focus \\
+\hline
+\end{tabularx}
+\end{center}
+
+A handler can be attached in two ways:
+\begin{itemize}
+\item \textbf{HTML attribute:} \texttt{<button onclick="change()">Click</button>} — simple and common at GCE level.
+\item \textbf{addEventListener:} \texttt{document.getElementById('b1').addEventListener('click', change);} — separates HTML from JavaScript; note the event name is written \emph{without} ``on''.
+\end{itemize}
+
+\begin{methode}[Making an element react to a click]
+\begin{enumerate}
+\item \textbf{Select} the element, e.g. give it an \texttt{id} and use \texttt{getElementById}.
+\item \textbf{Attach} the event: write \texttt{onclick="myFunction()"} in the tag, or use \texttt{addEventListener('click', myFunction)}.
+\item \textbf{Write} the handler function \texttt{myFunction()} containing the actions to perform (change text, colour, visibility\ldots).
+\end{enumerate}
+\end{methode}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[font=\small,
+  actor/.style={draw=popdark, fill=popgreenL, rounded corners=2pt, inner sep=4pt},
+  msg/.style={->, thick, popblue},
+  lbl/.style={fill=white, inner sep=1pt, font=\footnotesize}]
+\node[actor] (u) at (0,0) {User};
+\node[actor] (b) at (4.5,0) {Button};
+\node[actor] (h) at (9,0) {Handler};
+\draw[dashed, popmuted] (u.south) -- (0,-4.6);
+\draw[dashed, popmuted] (b.south) -- (4.5,-4.6);
+\draw[dashed, popmuted] (h.south) -- (9,-4.6);
+\draw[msg] (0,-1) -- node[lbl, above]{1. clicks} (4.4,-1);
+\draw[msg] (4.5,-2) -- node[lbl, above]{2. onclick fires} (8.9,-2);
+\draw[msg, poporange] (9,-3) -- node[lbl, above]{3. function runs} (9,-3.01);
+\node[lbl, align=center] at (9,-3.5) {reads / modifies DOM};
+\draw[msg, popgreen] (8.9,-4.2) -- node[lbl, above]{4. page changes} (0.1,-4.2);
+\end{tikzpicture}
+\end{center}
+\legende{Sequence of an interaction: the user clicks, the event fires, the handler function runs and modifies the DOM, and the page updates instantly without reloading.}
+\end{popfigure}
+
+\begin{exemplebox}[A button that changes the background colour]
+HTML: \texttt{<button id="b1" onclick="paint()">Paint</button>}.\\[2pt]
+Script (placed before \texttt{</body>}):
+\texttt{function paint() \{ document.body.style.backgroundColor = 'lightblue'; \}}.\\[2pt]
+To show/hide a paragraph instead, toggle its display: \texttt{var p = document.getElementById('para'); p.style.display = (p.style.display === 'none') ? 'block' : 'none';}.
+\end{exemplebox}
+
+\courssub{Form Validation with JavaScript}
+
+A form that sends empty or wrong data wastes time and server resources — think of a candidate registering for the GCE with a missing phone number. \textbf{Client-side validation} checks the data \emph{in the browser, before submission}.
+
+\begin{methode}[Validating a form before submission with onsubmit]
+\begin{enumerate}
+\item Attach the handler to the form: \texttt{<form onsubmit="return check()">}.
+\item In \texttt{check()}, read each field with \texttt{document.getElementById('\ldots').value}.
+\item Test each rule: field not empty (\texttt{value === ''}), phone has 9 digits (\texttt{value.length === 9}), two passwords identical (\texttt{p1 === p2}).
+\item If a rule fails: display an error message and \texttt{return false;} — this \textbf{cancels the submission}. If all rules pass, \texttt{return true;} and the form is sent.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Validating a phone number and two matching passwords]
+A form contains fields \texttt{phone} (a Cameroonian mobile number, 9 digits, e.g. 6XXXXXXXX), \texttt{pwd} and \texttt{pwd2}, plus a paragraph \texttt{err} for messages. Write the validation function.
+\tcblower
+\textbf{Solution.} The function reads the three values, tests them in order, writes a message and returns \texttt{false} on the first failure:
+\begin{align*}
+&\texttt{function check() \{}\\
+&\quad \texttt{var ph = document.getElementById('phone').value;}\\
+&\quad \texttt{var p1 = document.getElementById('pwd').value;}\\
+&\quad \texttt{var p2 = document.getElementById('pwd2').value;}\\
+&\quad \texttt{var e = document.getElementById('err');}\\
+&\quad \texttt{if (ph.length !== 9) \{ e.textContent = 'Phone must have 9 digits'; return false; \}}\\
+&\quad \texttt{if (p1 === '') \{ e.textContent = 'Password required'; return false; \}}\\
+&\quad \texttt{if (p1 !== p2) \{ e.textContent = 'Passwords do not match'; return false; \}}\\
+&\quad \texttt{return true;}\\
+&\texttt{\}}
+\end{align*}
+The form tag is \texttt{<form onsubmit="return check()">}. The keyword \texttt{return} before \texttt{check()} is essential: it transmits the \texttt{false} to the browser, which then blocks the submission.
+\end{exoresolu}
+
+\courssub{Guided Project: An Interactive School Registration Form}
+
+\begin{experience}[Building the form step by step]
+We build a mini registration page for ``GBHS OnBuch'' with live validation and a welcome message.
+\begin{enumerate}
+\item \textbf{HTML skeleton:} a form with fields \texttt{fullname}, \texttt{phone}, a button \texttt{reg}, a paragraph \texttt{msg} for feedback.
+\item \textbf{Live check on the phone field:} attach \texttt{onkeypress} or \texttt{onchange} so that as soon as the field loses focus, a handler colours the field border green (9 digits) or red (otherwise) using \texttt{element.style.borderColor}.
+\item \textbf{Submission check:} \texttt{<form onsubmit="return register()">}; the function refuses empty names and bad phone numbers with \texttt{return false}.
+\item \textbf{Welcome message:} when everything is valid, the handler writes \texttt{'Welcome ' + name + ', registration received!'} into \texttt{msg} using \texttt{textContent}, and changes the page background to a soft green.
+\end{enumerate}
+The complete logic is exactly the combination of the methods above: select, read \texttt{.value}, test, modify the DOM, return \texttt{true} or \texttt{false}.
+\end{experience}
+
+\begin{aretenir}[Key points]
+\begin{itemize}
+\item The DOM is the page seen as a tree of objects; \texttt{document} is its root.
+\item Select with \texttt{getElementById}, \texttt{getElementsByClassName} or \texttt{querySelector}; modify with \texttt{textContent}, \texttt{innerHTML} and \texttt{style}.
+\item An event (click, submit, keypress\ldots) triggers a handler function; \texttt{return false} in \texttt{onsubmit} blocks the submission.
+\item Field values are strings: convert before calculating.
+\end{itemize}
+\end{aretenir}
+
+\begin{savaistu}[Libraries and frameworks — awareness only]
+Professional developers rarely write all this by hand: libraries such as \textbf{jQuery} simplify selection and events (\texttt{\$('\#b1').click(...)}) and frameworks such as React or Angular build whole applications from reusable components. They all still rely on the DOM and events you have just learnt. This is for your culture only — \textbf{not examinable in depth} at GCE level.
+\end{savaistu}
+
+\begin{attention}[Exam tip — GCE practical style]
+Practical papers often show a half-written script and ask you to \textbf{complete} it: fill in the \texttt{getElementById} call, write the condition that tests an empty field, or add \texttt{return false}. Train yourself to read the HTML first, spot the \texttt{id} of each element, then trace the script line by line.
+\end{attention}
+
+\begin{exercice}[Show and hide]
+Write the HTML and JavaScript for a page with a button and a paragraph of advice. Each click on the button hides the paragraph if it is visible, and shows it again if it is hidden.
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+HTML: \texttt{<button onclick="toggle()">Show/Hide</button>} and \texttt{<p id="adv">Revise every day!</p>}. Script: \texttt{function toggle() \{ var p = document.getElementById('adv'); if (p.style.display === 'none') \{ p.style.display = 'block'; \} else \{ p.style.display = 'none'; \} \}}. The script is placed just before \texttt{</body>} so that the paragraph exists when the handler runs.
+\end{corrige}
+
+\newpage
+
+\coursec{Integration activity}
+
+\courssub{Aims of the activity}
+
+This integration activity closes the chapter \emph{Apply common technologies for web development}. It mobilises, in a single realistic project, all the competences developed in Lessons 47 and 48. By the end of the activity, each group of learners should be able to:
+
+\begin{itemize}
+\item write an \cle{external CSS stylesheet} and link it correctly to an HTML page using the \texttt{link} element;
+\item use \cle{selectors} (element, class, id, descendant) to apply styles precisely;
+\item style text, colours, backgrounds, tables (borders, alternating row colours) and lay out elements using the \cle{box model} (margin, border, padding, content);
+\item declare and use JavaScript \cle{variables}, \cle{functions}, \cle{conditions} (\texttt{if}/\texttt{else}) and simple loops;
+\item access and modify page content through the \cle{DOM} (\texttt{getElementById}, \texttt{value}, \texttt{innerHTML});
+\item react to \cle{events} (\texttt{onclick}, \texttt{onchange}, \texttt{oninput});
+\item \cle{validate a form} before submission (non-empty fields, 9-digit Cameroonian phone number);
+\item work in a team, present a product and \emph{justify} technical choices, as expected at the GCE Advanced Level.
+\end{itemize}
+
+\begin{aretenir}[Competence targeted]
+The learner integrates CSS styling and JavaScript interactivity to design, implement, test and present a complete, attractive and functional one-page website for a local business.
+\end{aretenir}
+
+\courssub{Situation}
+
+\textbf{Mama Ngo's Catering -- Buea.}\par
+Mrs.\ Ngo Bekono runs a small catering business near Molyko, Buea. She prepares traditional dishes for students, staff of the University of Buea and families celebrating events. Until now, customers place orders by phone call or WhatsApp message, and Mrs.\ Ngo writes everything in a notebook. She frequently makes mistakes: she misreads phone numbers, forgets quantities, and customers often quarrel about the total price because it is computed by hand.
+
+Her nephew, a student in Upper Sixth, has convinced her that a simple \emph{one-page website} opened on any phone browser would solve these problems. He has already written the basic HTML structure, but the page is ugly (plain black text on white background, no layout) and completely static (no calculation, no verification). Mrs.\ Ngo hires \textbf{your group} to finish the work.
+
+\textbf{Data provided by Mrs.\ Ngo.}\par
+Her price list is fixed and must appear in a table on the page:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|r|}
+\hline
+\rowcolor{popblueL} \textbf{Code} & \textbf{Dish (service)} & \textbf{Unit price (FCFA)} \\
+\hline
+P1 & Eru with water fufu (plate) & 1500 \\
+\hline
+P2 & Ndol\'e with miondo (plate) & 2000 \\
+\hline
+P3 & Poulet DG (plate) & 2500 \\
+\hline
+P4 & Fried fish with plantain (plate) & 1800 \\
+\hline
+P5 & Full event catering (per guest) & 3500 \\
+\hline
+\end{tabularx}
+\end{center}
+
+\textbf{Her requirements (the contract).}
+\begin{enumerate}
+\item A \textbf{header} displaying the business name ``Mama Ngo's Catering -- Buea'' and her slogan ``\emph{The taste of home}'', using her favourite colours: deep green background, white text, gold underline. All styling must be in an \textbf{external CSS file} named \texttt{style.css}.
+\item The \textbf{price table} must have visible borders, a coloured header row, and \textbf{alternating row colours} (zebra striping) so that customers read prices easily.
+\item An \textbf{order form} with four fields: customer name, phone number, product (a drop-down list of the five dishes) and quantity.
+\item \textbf{JavaScript validation}: when the customer clicks ``Send order'', the script must refuse the order if any field is empty or if the phone number does not contain \textbf{exactly 9 digits} (Cameroonian mobile numbers such as \texttt{690123456}), and display a clear red error message.
+\item \textbf{Automatic total}: as soon as the quantity or the product changes, the page must display the \textbf{total cost in FCFA} (unit price $\times$ quantity) without reloading the page.
+\item \textbf{Confirmation}: after a valid order, a personalised message such as ``\emph{Thank you Amina! Your order of 3 plate(s) of Poulet DG, total 7500 FCFA, has been received. We will call you on 690123456.}'' must appear in green.
+\end{enumerate}
+
+Your group must produce the three files (\texttt{index.html}, \texttt{style.css}, \texttt{script.js}), test the page in a browser, and present it to the class, \emph{justifying} every important CSS and JavaScript choice.
+
+\courssub{Tasks}
+
+\textbf{Task 1 -- Structure and integration of CSS.}
+\begin{enumerate}
+\item Recall the three ways of integrating CSS into an HTML page. State which one Mrs.\ Ngo imposes and give \textbf{two advantages} of this method.
+\item Write the HTML line that links \texttt{style.css} to \texttt{index.html}, and state precisely where it must be placed.
+\end{enumerate}
+
+\textbf{Task 2 -- Styling the page.}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item Write the CSS rules for the header: deep green background (for example \texttt{\#1B5E20}), white centred text, and a gold underline (\texttt{\#FFD700}) under the slogan. Explain which \emph{selector} you use and why.
+\item Using the \textbf{box model}, give the page content a comfortable spacing: explain the difference between \texttt{margin} and \texttt{padding}, then write a rule that gives the main content an inner spacing of \texttt{20px} and centres it with a maximum width of \texttt{800px}.
+\item Style the price table: collapsed borders, a green header row with white text, and alternating row colours (white / light grey \texttt{\#F2F2F2}) using the \texttt{:nth-child(even)} pseudo-class. Explain in one sentence how \texttt{:nth-child(even)} works.
+\end{enumerate}
+
+\textbf{Task 3 -- JavaScript interactivity.}
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item Write a JavaScript function \texttt{computeTotal()} that reads the unit price of the selected product and the quantity from the DOM, computes the total, and displays it in a paragraph with \texttt{id="total"}. State on which \textbf{events} this function must be attached so that the total updates immediately.
+\item Write a function \texttt{validateOrder()} that: (a) checks that no field is empty; (b) checks that the phone number contains exactly 9 digits; (c) displays a red error message or, if everything is valid, calls the confirmation function. Explain why a \emph{regular expression} such as \texttt{/\^\{\}\$\textbackslash{}backslash\$d\{9\}\$/} is more reliable than simply checking the length.
+\item Write the function \texttt{showThanks()} that builds the personalised message using the values entered and displays it in green. Which DOM property do you use to inject the text into the page?
+\item Mrs.\ Ngo notices that typing letters in the quantity field breaks the total. Propose and justify \textbf{one HTML solution} and \textbf{one JavaScript solution} to this problem.
+\end{enumerate}
+
+\textbf{Task 4 -- Presentation and justification.}
+\begin{enumerate}
+\setcounter{enumi}{9}
+\item Prepare a 5-minute presentation: demonstrate the page live (valid order, then an order with a bad phone number), and justify at least three technical choices (choice of selectors, external CSS, event handling, validation strategy).
+\end{enumerate}
+
+\begin{attention}[Common traps to avoid]
+Linking the CSS file with a wrong path or forgetting \texttt{rel="stylesheet"}; confusing \texttt{id} and \texttt{class} selectors; reading a form value \emph{before} the user has typed (script placed before the HTML elements without waiting for the page to load); comparing with \texttt{=} instead of \texttt{==} or \texttt{===}; forgetting that \texttt{value} returns a \emph{string}, so \texttt{"2" + "3"} gives \texttt{"23"} and not \texttt{5} -- convert with \texttt{Number()} or \texttt{parseInt()}.
+\end{attention}
+
+\courssub{Model answer}
+
+\textbf{Task 1.} The three integration methods are: \emph{inline} CSS (attribute \texttt{style} on an element), \emph{internal} CSS (a \texttt{style} block in the \texttt{head}) and \emph{external} CSS (a separate \texttt{.css} file). Mrs.\ Ngo imposes the \textbf{external} method. Advantages: (1) the same stylesheet can style several pages, so changes are made once; (2) it separates content (HTML) from presentation (CSS), making the code easier to read and maintain. The link is placed inside the \texttt{head} element:
+
+\begin{center}
+\texttt{<link rel="stylesheet" href="style.css">}
+\end{center}
+
+\textbf{Task 2 -- Question 3.} Using an \texttt{id} selector because the header is unique:
+
+\begin{center}
+\texttt{\#header \{ background-color: \#1B5E20; color: white; text-align: center; padding: 20px; \}}\\
+\texttt{\#slogan \{ text-decoration: underline; text-decoration-color: \#FFD700; font-style: italic; \}}
+\end{center}
+
+\textbf{Question 4.} \texttt{padding} is the space \emph{inside} the box, between the content and the border; \texttt{margin} is the space \emph{outside} the border, separating the box from its neighbours. Centring rule:
+
+\begin{center}
+\texttt{main \{ max-width: 800px; margin: 0 auto; padding: 20px; \}}
+\end{center}
+
+\texttt{margin: 0 auto} gives a zero vertical margin and automatically equal left/right margins, which centres the block horizontally.
+
+\textbf{Question 5.} Table styling:
+
+\begin{center}
+\texttt{table \{ border-collapse: collapse; width: 100\%; \}}\\
+\texttt{th, td \{ border: 1px solid \#999; padding: 8px; \}}\\
+\texttt{th \{ background-color: \#1B5E20; color: white; \}}\\
+\texttt{tr:nth-child(even) \{ background-color: \#F2F2F2; \}}
+\end{center}
+
+\texttt{:nth-child(even)} selects every row whose position among its siblings is a multiple of 2 (rows 2, 4, 6, \ldots), producing the zebra effect.
+
+\textbf{Task 3 -- Question 6.} The function \texttt{computeTotal()}:
+
+\begin{center}
+\texttt{function computeTotal() \{}\\
+\texttt{\textbackslash{}quad var price = Number(document.getElementById("product").value);}\\
+\texttt{\textbackslash{}quad var qty = Number(document.getElementById("qty").value);}\\
+\texttt{\textbackslash{}quad var total = price * qty;}\\
+\texttt{\textbackslash{}quad document.getElementById("total").innerHTML = "Total: " + total + " FCFA";}\\
+\texttt{\}}
+\end{center}
+
+The drop-down list stores each price as the \texttt{value} of its \texttt{option} (e.g.\ \texttt{<option value="2500">Poulet DG -- 2500 FCFA</option>}). The function is attached to the events \texttt{onchange} of the product list and \texttt{oninput} of the quantity field, so the total updates immediately, without any button click or page reload.
+
+\textbf{Question 7.} Validation:
+
+\begin{center}
+\texttt{function validateOrder() \{}\\
+\texttt{\textbackslash{}quad var name = document.getElementById("name").value.trim();}\\
+\texttt{\textbackslash{}quad var phone = document.getElementById("phone").value.trim();}\\
+\texttt{\textbackslash{}quad var qty = document.getElementById("qty").value;}\\
+\texttt{\textbackslash{}quad var err = document.getElementById("error");}\\
+\texttt{\textbackslash{}quad if (name === "" || phone === "" || qty === "") \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad err.innerHTML = "Please fill in all fields."; return; \}}\\
+\texttt{\textbackslash{}quad if (!/\^\{\}\$\textbackslash{}backslash\$d\{9\}\$/.test(phone)) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad err.innerHTML = "Phone number must contain exactly 9 digits."; return; \}}\\
+\texttt{\textbackslash{}quad err.innerHTML = ""; showThanks(name, phone); \}}
+\end{center}
+
+The regular expression \texttt{/\^\{\}\$\textbackslash{}backslash\$d\{9\}\$/} is more reliable than a length test because it simultaneously imposes that the entry \emph{starts} (\texttt{\^\{\}}) and \emph{ends} (\texttt{\$}) with exactly nine \emph{digits} (\texttt{\$\textbackslash{}backslash\$d\{9\}}): an input like \texttt{69012AB56}, which has length 9 but contains letters, is rejected.
+
+\textbf{Question 8.} The confirmation function injects the message with the DOM property \texttt{innerHTML}:
+
+\begin{center}
+\texttt{function showThanks(name, phone) \{}\\
+\texttt{\textbackslash{}quad var msg = document.getElementById("thanks");}\\
+\texttt{\textbackslash{}quad msg.style.color = "green";}\\
+\texttt{\textbackslash{}quad msg.innerHTML = "Thank you " + name + "! Your order has been received. We will call you on " + phone + "."; \}}
+\end{center}
+
+\textbf{Question 9.} HTML solution: use \texttt{<input type="number" min="1">} so the browser itself blocks non-numeric input and values below 1. JavaScript solution: test with \texttt{isNaN(qty)} or force a minimum in the code (\texttt{if (qty < 1) qty = 1;}). Using both together is best practice: HTML gives a first barrier, JavaScript guarantees the check even on old browsers.
+
+\textbf{Task 4.} A good presentation demonstrates: a valid order (name, \texttt{690123456}, 3 plates of Poulet DG $\rightarrow$ total $3 \times 2500 = 7500$ FCFA, green thank-you message), then a rejected order (phone \texttt{67890123}, only 8 digits $\rightarrow$ red error). Justifications expected: external CSS for reusability and maintainability; \texttt{id} selectors for unique elements and \texttt{class} selectors for repeated styles; \texttt{oninput}/\texttt{onchange} events for instant feedback; regular-expression validation for robustness; conversion with \texttt{Number()} to avoid string concatenation bugs.
+
+\begin{experience}[Evaluation grid suggested for the teacher]
+External CSS correctly linked and used (2 pts); header and table styling with zebra rows (3 pts); box model applied (2 pts); total computed live (3 pts); validation of empty fields and 9-digit phone (4 pts); personalised confirmation (2 pts); quality of presentation and justification (4 pts). Total: 20 pts.
+\end{experience}
+
+\newpage
+
+\coursec{Methods and worked examples}
+
+\coursec{Introduction to CSS: Syntax, Selectors and Integration}
+
+CSS (Cascading Style Sheets) is the language that describes how HTML elements are presented on screen. It separates \cle{structure} (HTML) from \cle{presentation} (layout, colours, fonts), making sites easier to maintain and restyle. In this section we learn the anatomy of a CSS rule, the three ways to attach styles to a page, and how the browser resolves conflicts between competing rules.
+
+\begin{savaistu}[CSS in Cameroon]
+Many Cameroonian government portals (e.g. \texttt{www.minesec.gov.cm}, \texttt{www.antic.cm}) use external stylesheets to keep a consistent visual identity across dozens of pages. When the Ministry updates its colour palette, only one \texttt{.css} file changes.
+\end{savaistu}
+
+\courssub{Method 1: Writing and Integrating CSS Rules}
+
+\begin{methode}[Writing a correct CSS rule and linking it to a page]
+A CSS \cle{rule} consists of a \cle{selector} and a \cle{declaration block}. To apply CSS to a web page, follow these steps:
+\begin{enumerate}
+\item Identify the HTML element(s) you want to style (tag, class or id).
+\item Choose the correct selector: \texttt{p} selects all paragraphs, \texttt{.menu} selects every element with \texttt{class="menu"}, \texttt{\#logo} selects the single element with \texttt{id="logo"}.
+\item Write the declaration block in curly braces; each declaration is \texttt{property: value;} — never forget the colon and the semicolon.
+\item Choose the integration method:
+      \begin{itemize}
+      \item \textbf{Inline:} \texttt{style="..."} inside a tag (quick tests only).
+      \item \textbf{Internal:} a \texttt{<style>} block in the \texttt{<head>} (single-page styles).
+      \item \textbf{External:} a separate \texttt{.css} file linked with \texttt{<link rel="stylesheet" href="style.css">} in the \texttt{<head>}. \textbf{For any serious project, prefer the external stylesheet:} one file styles the whole site.
+      \end{itemize}
+\item Open the page in a browser and check the result; if a rule is ignored, check spelling of the property and the selector first.
+\end{enumerate}
+\textbf{Reflex:} one selector, one pair of braces, one semicolon per declaration. An external file never contains \texttt{<style>} tags.
+\end{methode}
+
+\begin{aretenir}[Anatomy of a CSS rule]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Part} & \textbf{Example} \\ \hline
+Selector & \texttt{\#titre} \\ \hline
+Declaration block & \texttt{\{ color: blue; text-align: center; \}} \\ \hline
+Property & \texttt{color} \\ \hline
+Value & \texttt{blue} \\ \hline
+\end{tabular}
+\end{center}
+\end{aretenir}
+
+\begin{attention}[Common syntax errors]
+\begin{itemize}
+\item Missing semicolon after a declaration (the last one before \texttt{\}} is optional but good practice).
+\item Misspelled property names (e.g. \texttt{font-colour} instead of \texttt{color}).
+\item Using \texttt{=} instead of \texttt{:} between property and value.
+\item Putting HTML tags inside an external \texttt{.css} file.
+\end{itemize}
+\end{attention}
+
+\begin{exoresolu}[Styling the page of a Douala cybercafé]
+A student in Bonabéri creates a page \texttt{index.html} for a cybercafé. The page contains a heading \texttt{<h1 id="titre">Douala Net Café</h1>}, several paragraphs of class \texttt{info}, and a list of services.
+\begin{enumerate}
+\item Write the CSS rule that colours the main heading in blue and centres it.
+\item Write the rule that gives all \texttt{info} paragraphs a font size of 14 pixels and grey colour.
+\item Show the line that links an external file \texttt{style.css} to the HTML page, and state where it is placed.
+\end{enumerate}
+\tcblower
+\textbf{1. Rule for the heading.} The heading has an \texttt{id}, so we use the \texttt{\#} selector. An id is unique in a page, which is exactly what we want for a main title:
+\begin{center}
+\texttt{\#titre \{ color: blue; text-align: center; \}}
+\end{center}
+The selector \texttt{\#titre} targets the element whose \texttt{id} is \texttt{titre}; \texttt{color} sets the text colour and \texttt{text-align: center} centres the text horizontally.
+
+\textbf{2. Rule for the paragraphs.} Several paragraphs share \texttt{class="info"}, so we use the class selector, written with a dot:
+\begin{center}
+\texttt{.info \{ font-size: 14px; color: gray; \}}
+\end{center}
+Every element carrying the class \texttt{info} receives both declarations. Note the unit \texttt{px} after the number: a length without a unit is invalid (except the value \texttt{0}).
+
+\textbf{3. Linking the external stylesheet.} The link is placed inside the \texttt{<head>} section of the HTML document, never in the \texttt{<body>}:
+\begin{center}
+\texttt{<link rel="stylesheet" href="style.css">}
+\end{center}
+The attribute \texttt{rel="stylesheet"} declares the relationship, and \texttt{href} gives the path to the file. Since both files are in the same folder, the file name alone is enough. From now on, any change in \texttt{style.css} is reflected on every page that links it.
+\end{exoresolu}
+
+\courssub{Method 2: Choosing the Right Selector and Managing Conflicts}
+
+\begin{methode}[Selectors, specificity and the cascade]
+When several rules target the same element, the browser must decide which one wins.
+\begin{enumerate}
+\item List all rules that match the element.
+\item Apply the \cle{specificity} order, from weakest to strongest:
+      \begin{itemize}
+      \item \textbf{Type selector} (\texttt{p}, \texttt{h1}, \texttt{div})
+      \item \textbf{Class selector} (\texttt{.info}, \texttt{.menu}) and \textbf{attribute selectors} (\texttt{[type="text"]})
+      \item \textbf{ID selector} (\texttt{\#titre}, \texttt{\#logo})
+      \item \textbf{Inline style} (\texttt{style="..."})
+      \end{itemize}
+\item If two rules have equal specificity, the one that appears \textbf{last} in the stylesheet wins (this is the \emph{cascade}, the ``C'' in CSS).
+\item Use \cle{descendant selectors} (\texttt{div p}) to target elements inside a given container, \cle{child selectors} (\texttt{ul > li}) for direct children, and group selectors with a comma (\texttt{h1, h2, h3}) to share declarations.
+\item Pseudo-classes (\texttt{:hover}, \texttt{:focus}, \texttt{:nth-child}) and pseudo-elements (\texttt{::before}, \texttt{::after}) have the same specificity as classes.
+\end{enumerate}
+\textbf{Reflex:} before saying ``my CSS does not work'', ask: is a more specific rule overriding mine?
+\end{methode}
+
+\begin{aretenir}[Specificity hierarchy (simplified)]
+\[
+\text{inline style} \;>\; \text{ID selector} \;>\; \text{class/attribute/pseudo-class} \;>\; \text{type selector} \;>\; \text{universal selector (*)}
+\]
+The \texttt{!important} flag overrides everything but should be avoided in maintainable code.
+\end{aretenir}
+
+\begin{exoresolu}[Predicting the colour of a paragraph]
+A page contains:
+\begin{center}
+\texttt{<p id="actu" class="info">Match at 4 pm in Yaoundé.</p>}
+\end{center}
+and the stylesheet contains, in this order:
+\begin{center}
+\texttt{p \{ color: black; \}}\\
+\texttt{.info \{ color: green; \}}\\
+\texttt{\#actu \{ color: red; \}}
+\end{center}
+\begin{enumerate}
+\item What colour is displayed for the paragraph? Justify.
+\item The class rule is moved after the id rule. Does the colour change?
+\end{enumerate}
+\tcblower
+\textbf{1. Displayed colour: red.} All three selectors match the paragraph: it is a \texttt{p}, it has the class \texttt{info}, and it has the id \texttt{actu}. We therefore compare specificity. The type selector \texttt{p} is the weakest; the class selector \texttt{.info} is stronger; the id selector \texttt{\#actu} is the strongest of the three. The id rule wins, so the text appears in \textbf{red}.
+
+\textbf{2. Moving the class rule: no change.} The rule ``the last one wins'' applies \emph{only between rules of equal specificity}. Here the three rules have different specificity levels, so the id rule still wins wherever it is placed in the file. The paragraph remains red. This is a classic GCE trap: order matters only as a tie-breaker, never to beat a more specific selector.
+\end{exoresolu}
+
+\coursec{Styling with CSS: Text, Colours, Backgrounds and the Box Model}
+
+\courssub{Method 3: Styling Text, Colours and Backgrounds}
+
+\begin{methode}[Essential text, colour and background properties]
+\begin{enumerate}
+\item \textbf{Font and text:} \texttt{font-family}, \texttt{font-size}, \texttt{font-weight}, \texttt{font-style}, \texttt{line-height}, \texttt{text-align}, \texttt{text-decoration}, \texttt{text-transform}, \texttt{letter-spacing}.
+\item \textbf{Colours:} named colours (\texttt{red}), hexadecimal (\texttt{\#ff0000}, \texttt{\#f00}), RGB (\texttt{rgb(255,0,0)}), RGBA (\texttt{rgba(255,0,0,0.5)}), HSL (\texttt{hsl(0,100\%,50\%)}).
+\item \textbf{Backgrounds:} \texttt{background-color}, \texttt{background-image}, \texttt{background-repeat}, \texttt{background-position}, \texttt{background-size}, \texttt{background-attachment}. The shorthand \texttt{background} sets all at once.
+\item Always provide a fallback \texttt{font-family} list ending with a generic family (\texttt{serif}, \texttt{sans-serif}, \texttt{monospace}).
+\end{enumerate}
+\textbf{Reflex:} use relative units (\texttt{rem}, \texttt{em}, \texttt{\%}) for font sizes to respect user preferences and accessibility.
+\end{methode}
+
+\begin{exemplebox}[A styled notice for a Buea school]
+\texttt{.notice \{ font-family: "Segoe UI", Arial, sans-serif; font-size: 1.1rem; line-height: 1.5; color: \#333; background-color: \#f0f8ff; padding: 1rem; border-left: 4px solid \#0066cc; \}}
+\end{exemplebox}
+
+\courssub{Method 4: Mastering the Box Model}
+
+\begin{methode}[Computing the space occupied by an element]
+Every HTML element is a rectangular box made of four layers, from inside to outside: \cle{content}, \cle{padding} (inner space), \cle{border}, \cle{margin} (outer space separating it from neighbours).
+\begin{enumerate}
+\item Identify the four values: content width, padding, border thickness, margin.
+\item Compute the \textbf{total width} occupied (default \texttt{box-sizing: content-box}):
+\[ \text{total width} = \text{content} + 2\times\text{padding} + 2\times\text{border} + 2\times\text{margin} \]
+(the left and right values are added, hence the factor 2). The same formula applies vertically for the total height.
+\item Use \texttt{padding: 10px;} for space \emph{inside} the box (the background colour extends over it) and \texttt{margin: 10px;} for space \emph{outside} (always transparent).
+\item To centre a block horizontally, give it a width and set \texttt{margin: auto;}.
+\item \textbf{Modern practice:} set \texttt{box-sizing: border-box;} on all elements (via \texttt{* \{ box-sizing: border-box; \}}) so that \texttt{width} and \texttt{height} include padding and border, making layout calculations intuitive.
+\end{enumerate}
+\textbf{Reflex:} padding touches the content; margin touches the neighbours.
+\end{methode}
+
+\begin{popfigure}
+\begin{tikzpicture}[scale=0.7, font=\small]
+% Content box
+\draw[popblue, thick, fill=popblueL] (0,0) rectangle (6,3);
+\node[popdark] at (3,1.5) {Content};
+% Padding
+\draw[popgreen, thick, fill=popgreenL, fill opacity=0.3] (-0.8,-0.8) rectangle (6.8,3.8);
+\node[popgreen] at (3,3.3) {Padding};
+% Border
+\draw[poporange, thick] (-1.2,-1.2) rectangle (7.2,4.2);
+\node[poporange] at (3,3.8) {Border};
+% Margin
+\draw[poppurple, dashed, thick] (-2,-2) rectangle (8,5);
+\node[poppurple] at (3,4.5) {Margin};
+% Dimensions
+\draw[<->, popdark] (0,-1.5) -- (6,-1.5) node[midway, below] {width};
+\draw[<->, popdark] (-1.5,0) -- (-1.5,3) node[midway, left] {height};
+\end{tikzpicture}
+\legende{The CSS box model: content, padding, border, margin.}
+\end{popfigure}
+
+\begin{exoresolu}[Width of a price banner]
+A shop in Bamenda displays a banner styled by:
+\begin{center}
+\texttt{.banner \{ width: 200px; padding: 10px; border: 5px solid black; margin: 20px; \}}
+\end{center}
+\begin{enumerate}
+\item Compute the total horizontal space occupied by the banner.
+\item The webmaster wants the banner to occupy exactly 200 pixels in total. What content width must be set, keeping the other values?
+\end{enumerate}
+\tcblower
+\textbf{1. Total width.} Apply the box model formula. On each side we have padding $10\ \mathrm{px}$, border $5\ \mathrm{px}$ and margin $20\ \mathrm{px}$, i.e. $10+5+20 = 35\ \mathrm{px}$ per side:
+\[ \text{total} = 200 + 2\times 10 + 2\times 5 + 2\times 20 = 200 + 20 + 10 + 40 = 270\ \mathrm{px}. \]
+The banner therefore occupies \textbf{270 pixels} horizontally on the screen, although its declared \texttt{width} is only 200 px.
+
+\textbf{2. Adjusting the content width.} We now want:
+\[ w + 2\times 10 + 2\times 5 + 2\times 20 = 200 \]
+\[ w + 70 = 200 \quad\Longrightarrow\quad w = 130\ \mathrm{px}. \]
+The webmaster must write \texttt{width: 130px;}. Note that the \emph{visible} box (content + padding + border, without the transparent margin) is then $130+20+10 = 160\ \mathrm{px}$; the margin completes the 200 px of occupied space.
+\end{exoresolu}
+
+\coursec{JavaScript Fundamentals: Syntax, Variables and Control Structures}
+
+JavaScript is the programming language of the web. It runs in the browser, manipulates the DOM, handles events, and communicates with servers. We use \texttt{<script>} tags (usually just before \texttt{</body>}) or an external \texttt{.js} file loaded with \texttt{<script src="app.js"></script>}.
+
+\begin{savaistu}[JavaScript in Cameroon]
+Mobile money USSD simulators, MTN MoMo and Orange Money web apps, and the GCE Board's online registration portal all rely heavily on JavaScript for client-side validation and dynamic updates.
+\end{savaistu}
+
+\courssub{Method 5: Declaring Variables and Using Control Structures}
+
+\begin{methode}[Variables, conditions and loops]
+\begin{enumerate}
+\item Declare variables with \texttt{let} (reassignable) or \texttt{const} (constant reference). Avoid the old \texttt{var} (function-scoped, hoisted).
+\item Distinguish the primitive types: \textbf{number} (\texttt{2500}, \texttt{3.14}, \texttt{NaN}, \texttt{Infinity}), \textbf{string} (\texttt{"Yaoundé"}, \texttt{'Douala'}, \texttt{\`Bafoussam\`}), \textbf{boolean} (\texttt{true}/\texttt{false}), \textbf{null}, \textbf{undefined}. Objects (arrays, functions, dates) are reference types.
+\item Use \texttt{===} (strict equality) and \texttt{!==} (strict inequality) to avoid type coercion surprises. \texttt{==} and \texttt{!=} perform type conversion and are a frequent source of bugs.
+\item For a decision, use \texttt{if (condition) \{ ... \} else \{ ... \}} with comparison operators \texttt{<}, \texttt{<=}, \texttt{>}, \texttt{>=}, \texttt{===}, \texttt{!==} and logical operators \texttt{\&\&} (and), \texttt{||} (or), \texttt{!} (not).
+\item For repetition, use \texttt{for (let i = 0; i < n; i++) \{ ... \}} or \texttt{while (condition) \{ ... \}}. In a \texttt{while} loop, ensure the condition eventually becomes false, otherwise the loop is infinite.
+\item Display a quick result with \texttt{alert(...)} or write to the console with \texttt{console.log(...)}.
+\end{enumerate}
+\textbf{Reflex:} \texttt{=} assigns a value, \texttt{===} compares values and types. Confusing them inside an \texttt{if} is the most common beginner's error.
+\end{methode}
+
+\begin{attention}[Type coercion traps]
+\begin{itemize}
+\item \texttt{"5" + 2} $\rightarrow$ \texttt{"52"} (string concatenation).
+\item \texttt{"5" - 2} $\rightarrow$ \texttt{3} (numeric subtraction).
+\item \texttt{[] == ""} $\rightarrow$ \texttt{true}, but \texttt{[] === ""} $\rightarrow$ \texttt{false}.
+\item Always convert form inputs with \texttt{Number(...)} or \texttt{parseInt(...)} before arithmetic.
+\end{itemize}
+\end{attention}
+
+\begin{exoresolu}[Mobile money withdrawal fee]
+A script computes the fee charged on a mobile money withdrawal: the fee is $1\ \%$ of the amount, but it is at least 50 FCFA. Write the JavaScript code that declares an \texttt{amount} of 4000 FCFA, computes the fee, and displays it with \texttt{alert}.
+\tcblower
+\textbf{Analysis.} $1\ \%$ of 4000 is $4000 \times 0.01 = 40$ FCFA, which is below the minimum of 50 FCFA, so the fee must be 50 FCFA. We need a conditional structure.
+
+\textbf{Code.}
+\begin{center}
+\texttt{let amount = 4000;}\\
+\texttt{let fee = amount * 0.01;}\\
+\texttt{if (fee < 50) \{ fee = 50; \}}\\
+\texttt{alert("Fee: " + fee + " FCFA");}
+\end{center}
+
+\textbf{Line-by-line explanation.}
+\begin{itemize}
+\item \texttt{let amount = 4000;} declares a numeric variable holding the withdrawal amount.
+\item \texttt{let fee = amount * 0.01;} computes $1\ \%$ of the amount; here \texttt{fee} receives $40$.
+\item The condition \texttt{fee < 50} is true ($40 < 50$), so the block is executed and \texttt{fee} is overwritten with the minimum value $50$.
+\item \texttt{alert(...)} opens a dialog box. The \texttt{+} operator joins (concatenates) strings and numbers, producing the message ``Fee: 50 FCFA''.
+\end{itemize}
+\textbf{Check:} for an amount of 20000 FCFA, the fee would be $20000 \times 0.01 = 200$ FCFA, the condition would be false, and the displayed fee would remain 200 FCFA — the code behaves correctly in both cases.
+\end{exoresolu}
+
+\courssub{Method 6: Combining Loops and the DOM to Generate Content}
+
+\begin{methode}[Building repeated content with a loop]
+When a page must display a list (timetable, price list, results), do not write the HTML by hand: generate it.
+\begin{enumerate}
+\item Prepare a container in the HTML, e.g. \texttt{<ul id="list"></ul>} or \texttt{<tbody id="rows"></tbody>}.
+\item In the script, select the container.
+\item Loop over the data with \texttt{for} or \texttt{forEach}; at each iteration, build the new content, e.g. \texttt{container.innerHTML += "<li>" + item + "</li>";} or create elements with \texttt{document.createElement} and \texttt{appendChild}.
+\item Alternatively, perform a repeated calculation (multiplication table, cumulative total) and display the final result in one element.
+\end{enumerate}
+\textbf{Reflex:} initialise an accumulator (total \texttt{= 0}, string \texttt{= ""}) \emph{before} the loop, never inside it.
+\end{methode}
+
+\begin{exoresolu}[Total of a market basket]
+A page helps a trader at Mokolo market. It contains \texttt{<p id="total"></p>}. The prices (in FCFA) of the items bought are stored in an array: \texttt{let prices = [500, 1500, 250, 1000];}. Write the script that computes the total with a loop and displays ``Total: 3250 FCFA'' in the paragraph.
+\tcblower
+\textbf{Code.}
+\begin{center}
+\texttt{let prices = [500, 1500, 250, 1000];}\\
+\texttt{let total = 0;}\\
+\texttt{for (let i = 0; i < prices.length; i++) \{}\\
+\texttt{\textbackslash{}quad total = total + prices[i];}\\
+\texttt{\}}\\
+\texttt{document.getElementById("total").textContent = "Total: " + total + " FCFA";}
+\end{center}
+
+\textbf{Step-by-step trace.}
+\begin{itemize}
+\item \texttt{total} is initialised to \texttt{0} before the loop — the accumulator reflex.
+\item The loop runs with \texttt{i} from \texttt{0} to \texttt{3} (since \texttt{prices.length} is $4$). The condition \texttt{i < prices.length} makes the code work for \emph{any} number of items, not just four.
+\item Iteration 1: \texttt{total = 0 + 500 = 500}. Iteration 2: \texttt{total = 500 + 1500 = 2000}. Iteration 3: \texttt{total = 2000 + 250 = 2250}. Iteration 4: \texttt{total = 2250 + 1000 = 3250}.
+\item After the loop, the paragraph's text is set by concatenation: ``Total: 3250 FCFA''.
+\end{itemize}
+\textbf{Why not hard-code the four values?} Because with \texttt{prices.length} the same script works tomorrow when the trader buys ten items. This pair ``array + loop + accumulator + DOM output'' summarises the whole chapter: CSS for presentation, HTML for structure, and JavaScript for behaviour — the three pillars of every interactive web page you will meet at the GCE and beyond.
+\end{exoresolu}
+
+\coursec{Interactive Pages: DOM Manipulation, Events and Form Validation}
+
+\courssub{Method 7: Manipulating the DOM}
+
+\begin{methode}[Reading and modifying page content with JavaScript]
+The \cle{DOM} (Document Object Model) represents the page as a tree of objects that JavaScript can read and modify.
+\begin{enumerate}
+\item \textbf{Select} the element: \texttt{document.getElementById("titre")} for an id, \texttt{document.querySelector(".info")} for the first element matching a CSS selector, \texttt{document.querySelectorAll(".info")} for a \texttt{NodeList} of all matches.
+\item \textbf{Read or change its text}: \texttt{element.textContent = "New text";} (safe, ignores HTML) or \texttt{element.innerHTML = "<strong>New</strong> text";} (parses HTML, use with caution).
+\item \textbf{Change its style}: \texttt{element.style.color = "red";} (CSS properties with a hyphen become camelCase: \texttt{font-size} $\rightarrow$ \texttt{fontSize}, \texttt{background-color} $\rightarrow$ \texttt{backgroundColor}).
+\item \textbf{Modify classes:} \texttt{element.classList.add("active")}, \texttt{remove("hidden")}, \texttt{toggle("open")}, \texttt{contains("active")}.
+\item \textbf{Read a form field}: \texttt{document.getElementById("nom").value} — the result is always a \emph{string}; convert it with \texttt{Number(...)} or \texttt{parseInt(...)} before any calculation.
+\item Make sure the script runs \emph{after} the HTML elements exist (place the \texttt{<script>} tag at the end of the body, or use \texttt{defer} attribute), otherwise the selection returns \texttt{null}.
+\end{enumerate}
+\textbf{Reflex:} select first, then act. Always test the selection with \texttt{console.log(element)} when something fails.
+\end{methode}
+
+\begin{exoresolu}[A button that updates a school notice board]
+The page of a college in Buea contains:
+\begin{center}
+\texttt{<h2 id="notice">Classes start at 7:30.</h2>}\\
+\texttt{<button id="btn">Update</button>}
+\end{center}
+Write the JavaScript code so that clicking the button changes the heading text to ``Classes start at 8:00.'' and colours it green.
+\tcblower
+\textbf{Code.}
+\begin{center}
+\texttt{let notice = document.getElementById("notice");}\\
+\texttt{let btn = document.getElementById("btn");}\\
+\texttt{btn.addEventListener("click", function() \{}\\
+\texttt{\textbackslash{}quad notice.textContent = "Classes start at 8:00.";}\\
+\texttt{\textbackslash{}quad notice.style.color = "green";}\\
+\texttt{\});}
+\end{center}
+
+\textbf{Explanation.}
+\begin{itemize}
+\item The first two lines \emph{select} the two elements by their ids and store them in variables, so we do not search the document repeatedly.
+\item \texttt{addEventListener("click", function() \{ ... \})} attaches an \cle{event handler}: the anonymous function is executed each time the button is clicked. This is the heart of interactivity: the page \emph{reacts} to the user.
+\item Inside the handler, \texttt{textContent} replaces the text of the heading, and \texttt{style.color} applies the green colour immediately, without reloading the page.
+\end{itemize}
+\textbf{Common trap:} writing \texttt{notice.style.font-colour} or \texttt{notice.color} would fail; DOM style properties use camelCase names (\texttt{backgroundColor}, \texttt{fontSize}) and must be reached through \texttt{style}.
+\end{exoresolu}
+
+\courssub{Method 8: Handling Events and Validating a Form}
+
+\begin{methode}[Validating user input before submission]
+Form validation prevents empty or absurd data from being sent — think of an e-registration form on a school website.
+\begin{enumerate}
+\item Give each input an \texttt{id} and select it with \texttt{getElementById}.
+\item Listen to the form's \texttt{submit} event (or a button's \texttt{click} event).
+\item Read the values with \texttt{.value}; check them: empty string, length, numeric range, \texttt{isNaN(...)} for ``is not a number''.
+\item If a check fails: display an error message (in a dedicated \texttt{<span>} or with \texttt{alert}) and stop the submission with \texttt{event.preventDefault();}.
+\item If all checks pass, let the form be submitted or display a confirmation.
+\item \textbf{HTML5 built-in validation:} use \texttt{required}, \texttt{min}, \texttt{max}, \texttt{pattern}, \texttt{type="email|number|tel"} for a first line of defence without JavaScript.
+\end{enumerate}
+\textbf{Reflex:} never trust the user. Validate \emph{every} field, and remember that \texttt{.value} returns a string: \texttt{"12" + "5"} gives \texttt{"125"}, not $17$.
+\end{methode}
+
+\begin{exoresolu}[Validating a GCE registration form]
+A school website contains a form with two fields: \texttt{<input id="cand" type="text">} for the candidate's name and \texttt{<input id="age" type="text">} for the age, plus a submit button. Write the JavaScript code that, on submission:
+\begin{enumerate}
+\item refuses an empty name;
+\item refuses an age that is not a number or is below 14;
+\item displays ``Registration accepted'' otherwise.
+\end{enumerate}
+\tcblower
+\textbf{Code.}
+\begin{center}
+\texttt{let form = document.querySelector("form");}\\
+\texttt{form.addEventListener("submit", function(event) \{}\\
+\texttt{\textbackslash{}quad let name = document.getElementById("cand").value;}\\
+\texttt{\textbackslash{}quad let age = Number(document.getElementById("age").value);}\\
+\texttt{\textbackslash{}quad if (name == "") \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad alert("Please enter the candidate's name.");}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad event.preventDefault();}\\
+\texttt{\textbackslash{}quad \} else if (isNaN(age) || age < 14) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad alert("Please enter a valid age (14 or more).");}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad event.preventDefault();}\\
+\texttt{\textbackslash{}quad \} else \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad alert("Registration accepted");}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\});}
+\end{center}
+
+\textbf{Explanation.}
+\begin{itemize}
+\item We listen to the \texttt{submit} event of the whole form, so validation runs whether the user clicks the button or presses Enter.
+\item \texttt{Number(...)} converts the string read from the age field into a number; if the user typed letters, the result is \texttt{NaN}, detected by \texttt{isNaN(age)}.
+\item The first \texttt{if} tests the empty string \texttt{""}. The \texttt{else if} combines two rejections with the logical OR \texttt{||}: non-numeric age \emph{or} age under 14.
+\item \texttt{event.preventDefault()} cancels the browser's default action (sending the form), so invalid data never leaves the page.
+\item Only when both tests pass does the final \texttt{else} display the confirmation message.
+\end{itemize}
+\textbf{Test cases:} name ``Amina'', age ``17'' $\rightarrow$ accepted; name ``'' $\rightarrow$ first alert; name ``Amina'', age ``abc'' $\rightarrow$ \texttt{NaN}, second alert; age ``12'' $\rightarrow$ second alert. All branches are covered, which is exactly what a GCE examiner expects to see.
+\end{exoresolu}
+
+\begin{experience}[Build a dynamic multiplication table]
+Create a page with an input \texttt{<input id="n" type="number" min="1" max="12">}, a button \texttt{<button id="go">Generate</button>}, and an empty \texttt{<table id="tbl"></table>}. Write a script that, on click, reads \texttt{n}, clears the table, and uses a loop to append rows \texttt{<tr><td>1 x n = result</td></tr>} up to \texttt{12 x n}. Use \texttt{document.createElement} and \texttt{appendChild} for clean DOM manipulation.
+\end{experience}
+
+\newpage
+
+\coursec{Exercises}
+
+\courssub{I check my knowledge}
+
+\begin{exercice}[Multiple choice questions]
+For each question, choose the single correct answer.
+\begin{enumerate}
+\item Which of the following is the correct CSS syntax to make all \texttt{<h1>} headings red?
+\begin{enumerate}
+\item \texttt{h1 \{color: red;\}}
+\item \texttt{\{h1: color=red;\}}
+\item \texttt{h1: red color;}
+\item \texttt{color h1 \{red;\}}
+\end{enumerate}
+\item Which CSS selector has the \emph{highest} specificity?
+\begin{enumerate}
+\item An element selector such as \texttt{p}
+\item A class selector such as \texttt{.note}
+\item An id selector such as \texttt{\#title}
+\item A pseudo-class such as \texttt{:hover}
+\end{enumerate}
+\item In JavaScript, which keyword declares a variable whose value cannot be reassigned?
+\begin{enumerate}
+\item \texttt{var}
+\item \texttt{let}
+\item \texttt{const}
+\item \texttt{static}
+\end{enumerate}
+\item Which JavaScript instruction changes the text inside the element \texttt{<p id="msg">}?
+\begin{enumerate}
+\item \texttt{document.getElementById("msg").innerHTML = "Hello";}
+\item \texttt{getElementById.msg = "Hello";}
+\item \texttt{document.msg.innerHTML("Hello");}
+\item \texttt{msg.document.text = "Hello";}
+\end{enumerate}
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[True or false --- justify]
+State whether each statement is \textbf{true} or \textbf{false}, and justify your answer in one or two sentences.
+\begin{enumerate}
+\item An inline style written in a \texttt{style} attribute overrides a rule in an external style sheet.
+\item In the CSS box model, the margin is the space \emph{inside} the border of an element.
+\item In JavaScript, the operator \texttt{=} compares two values for equality.
+\item JavaScript code placed in a web page is executed by the browser, not by the web server.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Definitions]
+Define each of the following terms in your own words, giving one example for each:
+\begin{enumerate}
+\item \cle{CSS selector};
+\item \cle{CSS declaration};
+\item \cle{DOM (Document Object Model)};
+\item \cle{JavaScript event}.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Direct calculations]
+\begin{enumerate}
+\item A CSS rule sets \texttt{width: 200px; padding: 10px; border: 2px solid black; margin: 15px;} on a box. Compute the \emph{total horizontal space} occupied by the box, from the outer edge of the left margin to the outer edge of the right margin.
+\item Compute the specificity score (in the form $a$-$b$-$c$: ids, classes, elements) of each of the following selectors: \texttt{p}, \texttt{.menu li}, \texttt{\#header h1}. Which one wins if they all target the same heading?
+\end{enumerate}
+\end{exercice}
+
+\courssub{I practise}
+
+\begin{exercice}[The cascade in action]
+A web page contains the paragraph \texttt{<p id="intro" style="color: green;">Welcome</p>}. The external style sheet contains \texttt{p \{color: blue;\}} and the internal \texttt{<style>} block in the \texttt{<head>} contains \texttt{\#intro \{color: red;\}}.
+\begin{enumerate}
+\item State the final colour in which the paragraph is displayed.
+\item Justify your answer by explaining the roles of the cascade (origin order) and of specificity.
+\item What would the colour be if the inline \texttt{style} attribute were removed?
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Styling a results table]
+The computer science teacher of GBHS Bamenda displays term results in an HTML table of class \texttt{results}. Write the CSS rules to:
+\begin{enumerate}
+\item give the header row (\texttt{th}) a blue background with white bold text;
+\item give every cell (\texttt{th} and \texttt{td}) a 1px solid black border;
+\item centre the content of every cell horizontally;
+\item collapse the borders so that adjacent cells share a single border line.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Tracing a script]
+Consider the following JavaScript script:
+\begin{center}
+\begin{tabular}{l}
+\texttt{let total = 0;}\\
+\texttt{for (let i = 1; i <= 5; i++) \{}\\
+\texttt{\textbackslash{}quad if (i \% 2 == 0) \{ total = total + i; \}}\\
+\texttt{\}}\\
+\texttt{alert(total);}
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item Trace the execution of the loop step by step (value of \texttt{i}, test result, value of \texttt{total}).
+\item Write exactly what the \texttt{alert} displays.
+\item The programmer had written \texttt{if (i = 2)} instead of \texttt{if (i \% 2 == 0)}. Explain the error caused by using \texttt{=} instead of \texttt{==}, and state what happens.
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Change Theme button]
+A page contains \texttt{<button id="themeBtn">Change Theme</button>}. Write a complete JavaScript script (using \texttt{getElementById}, an event listener, and \texttt{style.backgroundColor}) such that each click on the button switches the page background between white and dark grey (\texttt{\#333333}). \emph{Hint:} keep track of the current state with a Boolean variable.
+\end{exercice}
+
+\courssub{I prepare for the GCE}
+
+\begin{exercice}[Structured question: CSS and JavaScript]
+A school in Yaoundé wants a modern website presenting its classes, results and announcements.
+\begin{enumerate}
+\item Define \emph{CSS} and \emph{JavaScript}, stating the role of each in a web page. \hfill(4 marks)
+\item Give \textbf{two} differences between CSS and JavaScript (nature of the language, purpose, way of acting on the page). \hfill(4 marks)
+\item Describe one concrete situation in the school website where CSS is the appropriate tool, and one where JavaScript is required. Justify each choice. \hfill(4 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Form validation problem]
+The school's registration page contains the form:
+\begin{center}
+\begin{tabular}{l}
+\texttt{<form id="regForm">}\\
+\texttt{\textbackslash{}quad <input type="text" id="phone" placeholder="Phone number">}\\
+\texttt{\textbackslash{}quad <input type="submit" value="Register">}\\
+\texttt{</form>}
+\end{tabular}
+\end{center}
+Parents must enter a Cameroonian phone number of exactly 9 digits (for example \texttt{650123456}).
+\begin{enumerate}
+\item Explain why validation on the client side improves the user experience, and why it does not replace server-side validation. \hfill(4 marks)
+\item Complete the function \texttt{checkForm()} below so that it reads the phone field, verifies that it contains exactly 9 digits (characters \texttt{0}--\texttt{9} only), displays an alert if invalid, and returns \texttt{true} if valid or \texttt{false} otherwise. \hfill(6 marks)
+\begin{center}
+\begin{tabular}{l}
+\texttt{function checkForm() \{}\\
+\texttt{\textbackslash{}quad let phone = document.getElementById("phone").value;}\\
+\texttt{\textbackslash{}quad // to be completed}\\
+\texttt{\}}
+\end{tabular}
+\end{center}
+\item Show how the function is attached to the form's \texttt{submit} event, and explain the role of \texttt{event.preventDefault()}. \hfill(4 marks)
+\end{enumerate}
+\end{exercice}
+
+\begin{exercice}[Design study: an interactive notice board]
+The principal wants the school's online notice board to: (i) have a coloured banner, styled headings and alternating row colours in the announcements table; (ii) allow a visitor to click a button to hide or show the details of each announcement; (iii) refuse empty announcement titles when the secretary adds a notice.
+\begin{enumerate}
+\item For each requirement (i), (ii) and (iii), state whether it is achieved with HTML, CSS or JavaScript, and justify. \hfill(6 marks)
+\item Write the CSS rule producing alternating background colours on the rows of a table of class \texttt{board} (use the \texttt{:nth-child(even)} pseudo-class). \hfill(3 marks)
+\item Outline, in pseudocode or commented JavaScript, the mechanism used for requirement (ii): which DOM method selects the element, which event is listened to, and which style property is toggled. \hfill(5 marks)
+\item Give two advantages of placing the CSS in an external file rather than inline for a site maintained by several teachers. \hfill(2 marks)
+\end{enumerate}
+\end{exercice}
+
+\newpage
+
+\coursec{Solutions to the exercises}
+
+\begin{corrige}[Exercise 1 --- Multiple choice questions]
+\begin{enumerate}
+\item \textbf{Answer: a)} \texttt{h1 \{color: red;\}}. A CSS rule consists of a \cle{selector} (\texttt{h1}) followed by a \cle{declaration block} in curly braces; each declaration is a \texttt{property: value;} pair. Options b), c) and d) mix up the order or use \texttt{=} instead of \texttt{:}.
+\item \textbf{Answer: c)} An id selector such as \texttt{\#title}. Specificity increases in the order: element (0-0-1) $<$ class/pseudo-class (0-1-0) $<$ id (1-0-0). The id selector therefore wins over the others.
+\item \textbf{Answer: c)} \texttt{const}. A variable declared with \texttt{const} cannot be reassigned after initialisation; \texttt{var} and \texttt{let} allow reassignment, and \texttt{static} is not a JavaScript variable declaration keyword.
+\item \textbf{Answer: a)} \texttt{document.getElementById("msg").innerHTML = "Hello";}. The DOM method \texttt{getElementById} belongs to the \texttt{document} object and returns the element whose \texttt{id} is \texttt{"msg"}; setting its \texttt{innerHTML} property replaces its content.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 2 --- True or false --- justify]
+\begin{enumerate}
+\item \textbf{True.} In the CSS cascade, an inline style (in a \texttt{style} attribute) has higher priority than rules from internal or external style sheets, whatever their specificity (unless \texttt{!important} is used).
+\item \textbf{False.} The margin is the space \emph{outside} the border, separating the element from its neighbours. The space \emph{inside} the border, between the content and the border, is the \cle{padding}.
+\item \textbf{False.} The single \texttt{=} is the \emph{assignment} operator: it stores a value in a variable. Comparison for equality uses \texttt{==} (loose equality) or \texttt{===} (strict equality, value and type).
+\item \textbf{True.} JavaScript embedded in a web page is a \cle{client-side} language: it is downloaded with the page and executed by the browser's JavaScript engine on the visitor's computer, not by the web server.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 3 --- Definitions]
+\begin{enumerate}
+\item \textbf{CSS selector:} the part of a CSS rule that indicates \emph{which} HTML elements the rule applies to. Example: in \texttt{p.note \{color: blue;\}}, the selector \texttt{p.note} targets all paragraphs of class \texttt{note}.
+\item \textbf{CSS declaration:} a \texttt{property: value;} pair inside a declaration block; it states \emph{one} presentation instruction. Example: \texttt{font-size: 14px;} is a declaration setting the text size to 14 pixels.
+\item \textbf{DOM (Document Object Model):} the tree-shaped representation of a web page that the browser builds in memory, in which every element, attribute and text is a \emph{node} (object) that JavaScript can read and modify. Example: \texttt{document.getElementById("msg")} accesses the node of the element with id \texttt{msg} in the DOM tree.
+\item \textbf{JavaScript event:} an action or occurrence detected by the browser (a click, a key press, the loading of the page, a form submission) to which a script can react by executing a function called an \emph{event handler}. Example: the \texttt{click} event on a button can trigger a function that changes the page background.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 4 --- Direct calculations]
+\begin{enumerate}
+\item In the standard box model, the total horizontal space is the sum of margin, border, padding and width on \emph{both} sides:
+\begin{align*}
+\text{Total} &= \text{margin} + \text{border} + \text{padding} + \text{width} + \text{padding} + \text{border} + \text{margin}\\
+&= 15 + 2 + 10 + 200 + 10 + 2 + 15 = \SI{254}{px}.
+\end{align*}
+The box occupies a total horizontal space of \textbf{\SI{254}{px}}.
+\item Specificity scores (ids-classes-elements):
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|c|X|}\hline
+\rowcolor{popblueL} \textbf{Selector} & \textbf{Score} & \textbf{Counting} \\ \hline
+\texttt{p} & 0-0-1 & 1 element \\ \hline
+\texttt{.menu li} & 0-1-1 & 1 class + 1 element \\ \hline
+\texttt{\#header h1} & 1-0-1 & 1 id + 1 element \\ \hline
+\end{tabularx}
+\end{center}
+Comparing from the left: $1 > 0$ in the id column, so \texttt{\#header h1} has the highest specificity and \textbf{wins} if all three target the same heading.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 5 --- The cascade in action]
+\begin{enumerate}
+\item The paragraph is displayed in \textbf{green}.
+\item When several rules apply to the same element, the browser first compares \emph{origin and priority}: an \cle{inline style} (the \texttt{style} attribute) beats rules from internal and external style sheets, regardless of their specificity. Here the inline declaration \texttt{color: green} therefore overrides both \texttt{\#intro \{color: red;\}} (internal) and \texttt{p \{color: blue;\}} (external). Specificity is only used to decide \emph{between rules of the same origin}: between the two style-sheet rules, the id selector \texttt{\#intro} (1-0-0) is more specific than the element selector \texttt{p} (0-0-1), so red would beat blue.
+\item Without the inline \texttt{style} attribute, the decision falls back to specificity between the two remaining rules: \texttt{\#intro} (1-0-0) wins over \texttt{p} (0-0-1), so the paragraph would be displayed in \textbf{red}.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 6 --- Styling a results table]
+The required CSS rules are:
+\begin{center}
+\begin{tabular}{l}
+\texttt{table.results \{ border-collapse: collapse; \}}\\
+\texttt{.results th \{ background-color: blue; color: white; font-weight: bold; \}}\\
+\texttt{.results th, .results td \{ border: 1px solid black; text-align: center; \}}\\
+\end{tabular}
+\end{center}
+Explanation:
+\begin{enumerate}
+\item \texttt{.results th} targets the header cells of the table: \texttt{background-color: blue} gives the blue background, \texttt{color: white} the white text and \texttt{font-weight: bold} the bold style.
+\item The grouped selector \texttt{.results th, .results td} applies the same \texttt{1px solid black} border to every cell, header or data.
+\item \texttt{text-align: center} in the same rule centres the content of every cell horizontally.
+\item \texttt{border-collapse: collapse} on the table makes adjacent cells share a single border line instead of two separate borders.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 7 --- Tracing a script]
+\begin{enumerate}
+\item Trace of the loop (the condition \texttt{i \% 2 == 0} is true when \texttt{i} is even):
+\begin{center}
+\begin{tabular}{|c|c|c|c|}\hline
+\rowcolor{popblueL} \textbf{\texttt{i}} & \textbf{\texttt{i <= 5}} & \textbf{\texttt{i \% 2 == 0}} & \textbf{\texttt{total} after the iteration} \\ \hline
+1 & true & false & 0 \\ \hline
+2 & true & true & $0+2=2$ \\ \hline
+3 & true & false & 2 \\ \hline
+4 & true & true & $2+4=6$ \\ \hline
+5 & true & false & 6 \\ \hline
+6 & false & \multicolumn{2}{c|}{loop ends} \\ \hline
+\end{tabular}
+\end{center}
+\item The \texttt{alert} displays exactly \textbf{6} (the sum of the even numbers from 1 to 5: $2+4$).
+\item Writing \texttt{if (i = 2)} is an \emph{assignment}, not a comparison: the value \texttt{2} is stored into \texttt{i}, and the condition evaluates to \texttt{2}, which is \emph{truthy} (any non-zero value is treated as true). Two consequences follow: the branch is always executed, and \texttt{i} is reset to 2 at every test, so after \texttt{i++} it becomes 3, then is set back to 2 again: the loop \textbf{never ends} (infinite loop) and the browser tab freezes. The correct comparison operators are \texttt{==} or \texttt{===}.
+\end{enumerate}
+\end{corrige}
+
+\begin{corrige}[Exercise 8 --- Change Theme button]
+Complete script:
+\begin{center}
+\begin{tabular}{l}
+\texttt{let dark = false; // current state: false = white, true = dark grey}\\
+\texttt{let btn = document.getElementById("themeBtn");}\\
+\texttt{btn.addEventListener("click", function() \{}\\
+\texttt{\textbackslash{}quad dark = !dark; // switch the state}\\
+\texttt{\textbackslash{}quad if (dark) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad document.body.style.backgroundColor = "\#333333";}\\
+\texttt{\textbackslash{}quad \} else \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad document.body.style.backgroundColor = "white";}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\});}
+\end{tabular}
+\end{center}
+Explanation: \texttt{getElementById("themeBtn")} selects the button in the DOM; \texttt{addEventListener("click", ...)} attaches a handler executed at each click; the Boolean \texttt{dark} remembers the current theme and is inverted with \texttt{!dark}; finally \texttt{document.body.style.backgroundColor} applies the corresponding colour to the page background.
+\end{corrige}
+
+\begin{corrige}[Exercise 9 --- Structured question: CSS and JavaScript]
+\textbf{(a) Definitions and roles (4 marks).}
+\begin{itemize}
+\item \textbf{CSS} (Cascading Style Sheets): a style-sheet language used to describe the \emph{presentation} of an HTML page --- colours, fonts, sizes, spacing, layout. \hfill(1 mark definition + 1 mark role)
+\item \textbf{JavaScript}: a programming (scripting) language executed by the browser, used to add \emph{behaviour and interactivity} to a page --- reacting to events, modifying content dynamically, validating forms. \hfill(1 mark definition + 1 mark role)
+\end{itemize}
+\textbf{(b) Two differences (4 marks, 2 marks each).}
+\begin{center}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+\rowcolor{popblueL} \textbf{Criterion} & \textbf{CSS} & \textbf{JavaScript} \\ \hline
+Nature & Declarative style language (selector + declarations) & Full programming language (variables, tests, loops, functions) \\ \hline
+Purpose & Appearance and layout of the page & Logic, calculations and interactivity \\ \hline
+Way of acting & Applies static presentation rules to elements & Modifies the DOM dynamically in response to events \\ \hline
+\end{tabularx}
+\end{center}
+Any two of these rows earn the 4 marks.
+\textbf{(c) Concrete situations (4 marks, 2 marks each).}
+\begin{itemize}
+\item \emph{CSS is appropriate} for presenting the results table with the school's colours, styled headings and centred columns: this is a purely visual formatting task, which is exactly the role of CSS.
+\item \emph{JavaScript is required} to check that a phone number entered in the registration form contains 9 digits before sending it: this requires a test (logic) and a reaction to the submit event, which CSS cannot do.
+\end{itemize}
+\emph{Examiner's expectations:} precise definitions naming the type of language; differences expressed as clear contrasts, not vague statements; situations must be justified by the nature of the task (presentation vs. logic/interaction).
+\end{corrige}
+
+\begin{corrige}[Exercise 10 --- Form validation problem]
+\textbf{(a) Client-side validation (4 marks).} It improves the user experience because the check is \emph{immediate} (no round trip to the server), the user is warned at once and can correct the input, and useless network traffic and server load are reduced. \hfill(2 marks)\\
+However, it does \emph{not} replace server-side validation: JavaScript can be disabled or bypassed in the browser, so a malicious or erroneous request can still reach the server; the server must therefore re-check every piece of data before storing it. \hfill(2 marks)
+
+\textbf{(b) Completed function (6 marks).}
+\begin{center}
+\begin{tabular}{l}
+\texttt{function checkForm() \{}\\
+\texttt{\textbackslash{}quad let phone = document.getElementById("phone").value;}\\
+\texttt{\textbackslash{}quad if (phone.length != 9) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad alert("The number must contain exactly 9 digits.");}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad return false;}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\textbackslash{}quad for (let i = 0; i < phone.length; i++) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad if (phone[i] < "0" || phone[i] > "9") \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad\textbackslash{}quad alert("Only digits 0-9 are allowed.");}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad\textbackslash{}quad return false;}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad \}}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\textbackslash{}quad return true;}\\
+\texttt{\}}
+\end{tabular}
+\end{center}
+Mark scheme: reading the field with \texttt{.value} (given); testing the length equal to 9 (2 marks); checking each character is between \texttt{"0"} and \texttt{"9"} with a loop (2 marks); displaying an \texttt{alert} and returning \texttt{false} when invalid (1 mark); returning \texttt{true} when valid (1 mark). (A solution using a regular expression such as \texttt{/\textasciicircum{}[0-9]\{9\}\$/.test(phone)} earns full credit.)
+
+\textbf{(c) Attachment to the submit event (4 marks).}
+\begin{center}
+\begin{tabular}{l}
+\texttt{document.getElementById("regForm").addEventListener("submit", function(event) \{}\\
+\texttt{\textbackslash{}quad if (!checkForm()) \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad event.preventDefault();}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\});}
+\end{tabular}
+\end{center}
+The listener is attached to the form's \texttt{submit} event (2 marks). \texttt{event.preventDefault()} cancels the browser's default action --- sending the form to the server --- so that an invalid form is \emph{not} submitted (2 marks). When \texttt{checkForm()} returns \texttt{true}, the default action proceeds normally.
+\end{corrige}
+
+\begin{corrige}[Exercise 11 --- Design study: an interactive notice board]
+\textbf{(a) Technology for each requirement (6 marks, 2 each).}
+\begin{itemize}
+\item \textbf{(i) CSS.} Coloured banner, styled headings and alternating row colours are pure \emph{presentation}; CSS applies them through selectors and declarations without any programming logic.
+\item \textbf{(ii) JavaScript.} Hiding or showing details \emph{when the visitor clicks} requires reacting to the \texttt{click} event and modifying the DOM dynamically: this is behaviour, the role of JavaScript.
+\item \textbf{(iii) JavaScript.} Refusing an empty title means \emph{testing} the content of a field when the form is submitted and blocking the submission: this decision logic cannot be expressed in HTML or CSS alone (HTML's \texttt{required} attribute may be mentioned as a complement, but the programmed check is JavaScript's role).
+\end{itemize}
+\textbf{(b) Alternating rows (3 marks).}
+\begin{center}
+\texttt{.board tr:nth-child(even) \{ background-color: lightgray; \}}
+\end{center}
+The pseudo-class \texttt{:nth-child(even)} selects every even-numbered row of the table of class \texttt{board} and paints its background (1 mark for the selector \texttt{.board tr}, 1 mark for \texttt{:nth-child(even)}, 1 mark for the declaration).
+\textbf{(c) Mechanism for hide/show (5 marks).}
+\begin{center}
+\begin{tabular}{l}
+\texttt{// select the button and the details block in the DOM}\\
+\texttt{let btn = document.getElementById("detailsBtn");}\\
+\texttt{let details = document.getElementById("details");}\\
+\texttt{// listen to the click event on the button}\\
+\texttt{btn.addEventListener("click", function() \{}\\
+\texttt{\textbackslash{}quad // toggle the display property}\\
+\texttt{\textbackslash{}quad if (details.style.display == "none") \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad details.style.display = "block";}\\
+\texttt{\textbackslash{}quad \} else \{}\\
+\texttt{\textbackslash{}quad\textbackslash{}quad details.style.display = "none";}\\
+\texttt{\textbackslash{}quad \}}\\
+\texttt{\});}
+\end{tabular}
+\end{center}
+Expected points: the DOM selection method \texttt{getElementById} (1 mark); the event listened to is \texttt{click} via \texttt{addEventListener} (2 marks); the toggled style property is \texttt{display} (between \texttt{none} and \texttt{block}) (2 marks).
+\textbf{(d) Advantages of an external style sheet (2 marks, 1 each).}
+\begin{itemize}
+\item \textbf{Consistency and single maintenance point:} one file styles the whole site; a teacher edits it once and every page is updated, avoiding contradictory inline styles.
+\item \textbf{Separation of concerns and reusability:} HTML content and presentation are kept apart, pages are lighter and easier to read, and the same style sheet is shared (and cached) by all pages.
+\end{itemize}
+\emph{Examiner's expectations:} each justification must link the requirement to the \emph{nature} of the technology (presentation vs. event-driven logic); code excerpts must use correct syntax; short, precise answers score full marks.
+\end{corrige}
+
+\newpage
+
+\coursec{Summary sheet}
+
+\begin{popfigure}
+\begin{tikzpicture}[mindmap, grow cyclic, every node/.style={concept, text=white, font=\small\bfseries},
+root concept/.append style={concept color=popink, font=\large\bfseries},
+level 1/.append style={level distance=3.6cm, sibling angle=60},
+level 2/.append style={level distance=2.2cm, sibling angle=45, font=\scriptsize},
+concept connection/.append style={color=popmuted}]
+\node[root concept, align=center]{Web Development:\\ CSS \& JavaScript}
+  child[concept color=popblue]{ node {CSS Syntax \& Integration}
+    child[concept color=popblue!70]{ node {selector \{prop: value;\}} }
+    child[concept color=popblue!70]{ node {inline / internal / external} }
+  }
+  child[concept color=poporange]{ node {Selectors}
+    child[concept color=poporange!70]{ node {element, .class, \#id} }
+    child[concept color=poporange!70]{ node {specificity \& cascade} }
+  }
+  child[concept color=popgreen]{ node {Styling \& Box Model}
+    child[concept color=popgreen!70]{ node {text, colour, background} }
+    child[concept color=popgreen!70]{ node {margin--border--padding--content} }
+  }
+  child[concept color=poppurple]{ node {JavaScript Basics}
+    child[concept color=poppurple!70]{ node {var / let / const} }
+    child[concept color=poppurple!70]{ node {if, for, while, functions} }
+  }
+  child[concept color=poppink]{ node {DOM \& Events}
+    child[concept color=poppink!70]{ node {getElementById, innerHTML} }
+    child[concept color=poppink!70]{ node {onclick, addEventListener} }
+  }
+  child[concept color=popgold]{ node {Form Validation}
+    child[concept color=popgold!70]{ node {check empty, length, format} }
+    child[concept color=popgold!70]{ node {prevent submission if invalid} }
+  };
+\end{tikzpicture}
+\legende{Mind map of the chapter: styling pages with CSS and adding interactivity with JavaScript.}
+\end{popfigure}
+
+\begin{bilan}
+\textbf{Key definitions}
+\begin{itemize}
+\item \cle{CSS} (Cascading Style Sheets): language that describes the \textbf{presentation} (colours, fonts, layout) of an HTML document, separating content from appearance.
+\item \cle{Declaration}: a pair \texttt{property: value;} (e.g. \texttt{color: blue;}). A \cle{rule} = selector + declaration block.
+\item \cle{Selector}: pattern that targets elements: element (\texttt{p}), class (\texttt{.menu}), id (\texttt{\#top}), descendant (\texttt{div p}), pseudo-class (\texttt{a:hover}).
+\item \cle{Specificity}: priority order used when rules conflict: inline style $>$ id $>$ class $>$ element; the \emph{last} rule wins at equal specificity (the \textbf{cascade}).
+\item \cle{Box model}: every element is a box: \textbf{content} $\rightarrow$ \textbf{padding} $\rightarrow$ \textbf{border} $\rightarrow$ \textbf{margin}. Total width $=$ content $+$ padding $+$ border $+$ margin.
+\item \cle{JavaScript}: scripting language executed by the browser that makes pages \textbf{dynamic and interactive}.
+\item \cle{DOM} (Document Object Model): tree representation of the page that JavaScript can read and modify.
+\item \cle{Event}: action detected by the browser (click, key press, submit) that can trigger a function.
+\end{itemize}
+
+\textbf{Essential syntax to know}
+\begin{itemize}
+\item CSS rule: \texttt{h1 \{ color: \#0066CC; text-align: center; \}}
+\item Integration: inline (\texttt{style="..."}), internal (\texttt{<style>} in \texttt{<head>}), external (\texttt{<link rel="stylesheet" href="style.css">}) --- the \textbf{external sheet is the recommended method}.
+\item Colours: name, hexadecimal (\texttt{\#FF0000}), \texttt{rgb(255,0,0)}.
+\item JavaScript: \texttt{let x = 5; const PI = 3.14;} --- strings in quotes, comments with \texttt{//}.
+\item Conditions and loops: \texttt{if (age >= 18) \{...\} else \{...\}}; \texttt{for (let i=0; i<10; i++) \{...\}}; \texttt{while (n > 0) \{...\}}.
+\item Function: \texttt{function greet(name) \{ return "Hello " + name; \}}
+\item DOM access: \texttt{document.getElementById("msg").innerHTML = "Welcome";}
+\item Event handling: \texttt{<button onclick="greet('Ali')">} or \texttt{element.addEventListener("click", greet);}
+\item Validation: read \texttt{document.getElementById("email").value}, test it, show an error message and \texttt{return false;} to block submission.
+\end{itemize}
+
+\textbf{Methods}
+\begin{itemize}
+\item To style a page: identify elements $\rightarrow$ choose selectors $\rightarrow$ write rules in an external sheet $\rightarrow$ link it in \texttt{<head>} $\rightarrow$ test in the browser.
+\item To add interactivity: write the function $\rightarrow$ attach it to an event $\rightarrow$ test with the browser console.
+\item To validate a form: check each field (empty? length? format?) $\rightarrow$ display a clear message $\rightarrow$ allow submission only if all tests pass.
+\end{itemize}
+
+\textbf{Common mistakes}
+\begin{itemize}
+\item Forgetting the semicolon between CSS declarations or the braces around the block.
+\item Confusing \texttt{.class} (reusable, many elements) with \texttt{\#id} (unique element).
+\item Using \texttt{=} (assignment) instead of \texttt{==} or \texttt{===} (comparison) in an \texttt{if}.
+\item Case sensitivity: \texttt{getElementById} is not \texttt{getElementByID}; JavaScript and CSS ids must match exactly.
+\item Placing the script before the HTML elements it manipulates (put it at the end of \texttt{<body>} or use \texttt{onload}).
+\item Confusing padding (inside the border) with margin (outside the border).
+\end{itemize}
+
+\textbf{GCE tips}
+\begin{itemize}
+\item Be able to \textbf{read and complete} a short CSS or JavaScript extract, and to \textbf{predict the output} of a script (typical structured question).
+\item Know the three CSS integration methods and be ready to \textbf{justify} why external sheets are best (reuse, maintenance, separation of concerns).
+\item Draw and label the \textbf{box model} quickly; a labelled diagram earns full marks.
+\item For validation questions, always mention \textbf{client-side} checking with JavaScript and that it improves user experience (e.g. a student registration form on a school website).
+\item Write code neatly, indent blocks, and give meaningful identifiers --- clarity is rewarded.
+\end{itemize}
+\end{bilan}
+
+\findecours
+
+\end{document}

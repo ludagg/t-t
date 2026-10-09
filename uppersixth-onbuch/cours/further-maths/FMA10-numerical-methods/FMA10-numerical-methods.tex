@@ -28,12 +28,12 @@
 \usepackage[table]{xcolor} % [table] : fournit aussi \rowcolors (alternance de lignes)
 \usepackage{pagecolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
+\usetikzlibrary{shapes.symbols,circuits.logic.US,circuits.logic.IEC,arrows.meta,positioning,calc,shapes.geometric,shapes.misc,shapes.arrows,decorations.pathmorphing,decorations.pathreplacing,decorations.markings,patterns,shadows,mindmap,trees,fit,backgrounds,matrix,intersections,angles,quotes}
 \usepackage{pgfplots}
 \usepackage[version=4]{mhchem} % équations nucléaires \ce{^{235}_{92}U}
 \usepackage[european,siunitx]{circuitikz} % schémas électriques
 \pgfplotsset{compat=1.18}
-\usepgfplotslibrary{fillbetween,groupplots} % aires entre courbes (calcul intégral)
+\usepgfplotslibrary{fillbetween,groupplots,polar,statistics,dateplot} % aires entre courbes (calcul intégral)
 \usepackage{enumitem}
 \usepackage{fancyhdr}
 % [most] charge toutes les bibliothèques tcolorbox (listings, minted, raster,
@@ -56,7 +56,7 @@
 \sisetup{locale=UK,output-decimal-marker={.},group-minimum-digits=4,parse-numbers=false}
 \DeclareSIUnit\ohm{\ensuremath{\symup{\Omega}}} % U+2126 absent de la police
 \DeclareSIUnit\division{div} % réglages d'oscilloscope (ms/div, V/div)
-\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
+\DeclareSIUnit\year{yr}\DeclareSIUnit\annum{yr}\DeclareSIUnit\Ma{Ma}\DeclareSIUnit\tr{tr} % tours (vitesse de rotation, ex. \SI{1500}{\tr\per\minute})
 \usepackage{qrcode}
 % \degree : commande fréquemment utilisée par les modèles pour un angle ou une
 % température en dehors de \SI{}{} (non fournie par les paquets chargés).
@@ -448,6 +448,7 @@
 \providecommand{\arccsc}{\operatorname{arccsc}}\providecommand{\arccot}{\operatorname{arccot}}
 \providecommand{\sgn}{\operatorname{sgn}}\providecommand{\lcm}{\operatorname{lcm}}
 \providecommand{\Var}{\operatorname{Var}}\providecommand{\Cov}{\operatorname{Cov}}
+\providecommand{\permil}{\ensuremath{{}^{0}\!/_{00}}}\providecommand{\textperthousand}{\ensuremath{{}^{0}\!/_{00}}}
 
 \begin{document}
 
@@ -1083,10 +1084,251 @@ The first neglected term is $\frac{0.1^7}{7 \times 5040} \approx 2.8 \times 10^{
 \end{itemize}
 \end{aretenir}
 
-<|close|> The. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor, the. Taylor series the. Taylor series the Taylor, the Taylor series the. Taylor series the. ( the Taylor series. Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor, the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor, 0.0 the. Taylor series the. Taylor series the Taylor series the Taylor series. Taylor series the Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the. Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the Taylor series the Taylor series the. Taylor series the Taylor series the.. Taylor series the Taylor, the Taylor series the. Taylor series the. Taylor, the Taylor series the Taylor series the Taylor series the. Taylor series the. Taylor series the. Taylor series the. Taylor, the. Taylor series the. Taylor series the Taylor series the. 
- the. Taylor series ** the. OnBuch the. OnBuch to the.  
-  for the. The of the OnBuch the OnBuch the OnBuch the On the On the . the. OnBuch+ the OnBuch the OnBuch the On The the OnBuch+ app. On. On The On The On OnB OnBuch the On
-The of the OnB On The OnBuch the On The On The On The On The On The On The On The On The On The On The On The On On On The On The On The On The On The On the On the On, the On The On The On the On the On the On the On The On The On the On the On the On the On The the On the On The On, and the the On the On the On the On the On the On, and the the On, and the the On the On the On the On the On,  On the On the On the On the On the On the On the On, in the On and the the Taylor series the. The the On the the On the On, and the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On the On
+\coursec{Applications of Taylor Approximations}
+
+In the previous section we built the Taylor and Maclaurin machinery: we learned how to expand functions such as $e^x$, $\sin x$, $\cos x$, $\ln(1+x)$ and $(1+x)^n$ into infinite power series. A natural question now arises: \emph{what are these series actually good for?} The answer is that Taylor series are one of the most powerful \cle{approximation} tools in all of mathematics. Whenever a calculator, a physicist or an engineer needs a numerical value of a function, it is almost always a truncated Taylor series that does the work behind the scenes. In this section we learn to use these series with judgement: to approximate function values to a required accuracy, to justify the famous small-angle approximations, to evaluate tricky limits, to estimate integrals that have no elementary antiderivative, and to compare our results with Simpson's rule.
+
+\courssub{Approximating Function Values to a Required Number of Decimal Places}
+
+\textbf{The idea.} Suppose we want $\sin(0.2)$ to $4$ decimal places. The Maclaurin series gives
+\[ \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots \]
+Substituting $x = 0.2$:
+\[ \sin(0.2) = 0.2 - \frac{0.008}{6} + \frac{0.00032}{120} - \cdots = 0.2 - 0.0013333\ldots + 0.00000266\ldots - \cdots \]
+The terms decrease very fast, so a few terms suffice. The key skill is knowing \emph{when to stop}: we stop when the first neglected term cannot affect the required decimal place.
+
+\begin{methode}[Approximating a value to $n$ decimal places]
+\begin{enumerate}
+\item \textbf{Expand.} Write down the Maclaurin (or Taylor) series of the function, in its interval of validity.
+\item \textbf{Substitute.} Replace $x$ by the given value (converting to radians if it is an angle) and compute the terms one by one, keeping at least $n+2$ decimal places in your working.
+\item \textbf{Check the first neglected term.} For an alternating series whose terms decrease in absolute value to $0$, the error made by truncating is \emph{smaller in absolute value than the first neglected term}. Stop as soon as that term is less than $\tfrac12 \times 10^{-n}$ (half a unit of the last required decimal place).
+\item \textbf{Round and conclude.} Round your accumulated sum to $n$ decimal places and state the answer clearly.
+\end{enumerate}
+\end{methode}
+
+\begin{exoresolu}[Approximating $e^{0.1}$ to 5 decimal places]
+Use the Maclaurin series of $e^x$ to find $e^{0.1}$ correct to $5$ decimal places, justifying the number of terms used.
+\tcblower
+\textbf{Solution.} The Maclaurin series $e^x = 1 + x + \dfrac{x^2}{2!} + \dfrac{x^3}{3!} + \cdots$ is valid for all $x \in \mathbb{R}$. With $x = 0.1$:
+\begin{align*}
+1 &= 1.0000000\\
+\frac{x}{1!} &= 0.1000000\\
+\frac{x^2}{2!} &= 0.0050000\\
+\frac{x^3}{3!} &= 0.00016667\\
+\frac{x^4}{4!} &= 0.00000417\\
+\frac{x^5}{5!} &= 0.000000083
+\end{align*}
+The term $\dfrac{x^5}{5!} \approx 8.33\times 10^{-8} < \tfrac12 \times 10^{-5}$, and all subsequent terms are smaller still, so they cannot affect the fifth decimal place. Summing the terms up to $x^4$:
+\[ e^{0.1} \approx 1 + 0.1 + 0.005 + 0.00016667 + 0.00000417 = 1.10517084 \]
+Hence $\boxed{e^{0.1} \approx 1.10517}$ to $5$ decimal places (the true value is $1.1051709\ldots$).
+\end{exoresolu}
+
+\begin{attention}[Truncating before the required accuracy is guaranteed]
+A very common GCE mistake is to stop after two or three terms ``because the terms look small''. Small is not enough: you must \emph{prove} the first neglected term is below half a unit of the last required decimal place. For example, approximating $\sin(0.5)$ by $0.5 - \frac{0.125}{6} = 0.47917$ gives an error of about $2.6\times 10^{-4}$ from the neglected $\frac{x^5}{120}$ term — fine for $3$ decimal places, but \emph{not} for $4$. Always state the first neglected term and its size explicitly: examiners award a mark for this justification.
+\end{attention}
+
+\courssub{Small-Angle Approximations}
+
+\textbf{Observation.} Draw the graphs of $y = \sin x$ and $y = x$ near the origin: they are almost indistinguishable. This is not a coincidence — it is the Maclaurin series at work.
+
+From the series
+\[ \sin x = x - \frac{x^3}{6} + \frac{x^5}{120} - \cdots, \qquad \cos x = 1 - \frac{x^2}{2} + \frac{x^4}{24} - \cdots, \]
+we see immediately that for \emph{small} $x$ (in radians), the higher powers are negligible:
+
+\begin{propriete}[Small-angle approximations]
+For $x$ small and measured in \cle{radians}:
+\[ \sin x \approx x, \qquad \cos x \approx 1 - \frac{x^2}{2}, \qquad \tan x \approx x. \]
+More precisely, the error in $\sin x \approx x$ is about $\dfrac{x^3}{6}$, the error in $\cos x \approx 1 - \dfrac{x^2}{2}$ is about $\dfrac{x^4}{24}$, and the error in $\tan x \approx x$ is about $\dfrac{x^3}{3}$.
+\end{propriete}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=11cm, height=7cm,
+    xmin=-0.9, xmax=0.9, ymin=-0.9, ymax=0.9,
+    axis lines=middle,
+    xlabel={$x$ (rad)}, ylabel={$y$},
+    xlabel style={at={(ticklabel* cs:1)}, anchor=west},
+    legend style={at={(0.03,0.97)}, anchor=north west, font=\small},
+    grid=both, grid style={popline, very thin},
+    samples=100, domain=-0.9:0.9
+]
+\addplot[popblue, thick] {sin(deg(x))};
+\addlegendentry{$y=\sin x$}
+\addplot[poporange, thick, dashed] {x};
+\addlegendentry{$y=x$}
+\addplot[popgreen, thick, dashdotted] {x - x^3/6};
+\addlegendentry{$y=x-\frac{x^3}{6}$}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+\legende{Near $x=0$, the line $y=x$ is an excellent approximation to $y=\sin x$; the cubic $y=x-\frac{x^3}{6}$ remains accurate much further from the origin.}
+\end{popfigure}
+
+\begin{exemplebox}[The period of a pendulum]
+In physics, the motion of a simple pendulum of length $L$ obeys $\ddot{\theta} = -\dfrac{g}{L}\sin\theta$. For small oscillations we replace $\sin\theta$ by $\theta$, giving $\ddot{\theta} = -\dfrac{g}{L}\theta$ — simple harmonic motion with period $T = 2\pi\sqrt{L/g}$. For a pendulum in a Yaound\'e laboratory with $L = \SI{1.00}{m}$ and $g = \SI{9.81}{m.s^{-2}}$, $T \approx 2\pi\sqrt{1/9.81} \approx \SI{2.01}{s}$. The approximation is excellent provided the amplitude stays below about $10^\circ$ ($0.17$ rad), where $\sin\theta$ and $\theta$ differ by less than $0.5\%$.
+\end{exemplebox}
+
+\begin{attention}[Mixing degrees and radians]
+The approximations $\sin x \approx x$ and $\cos x \approx 1 - \frac{x^2}{2}$ are valid \textbf{only when $x$ is in radians}. For example, $\sin 5^\circ$ is \emph{not} approximately $5$! You must first convert: $5^\circ = \frac{5\pi}{180} \approx 0.0873$ rad, so $\sin 5^\circ \approx 0.0873$ (true value $0.0872$). Before applying any small-angle approximation, check the unit and convert with $\theta_{\text{rad}} = \theta_{\text{deg}}\times \frac{\pi}{180}$.
+\end{attention}
+
+\courssub{Evaluating Limits Using Series}
+
+Many limits of the form $\dfrac{0}{0}$ become transparent once the numerator is expanded as a series. The technique is: expand, simplify, then let $x \to 0$.
+
+\begin{exoresolu}[Two classical limits]
+Using Maclaurin series, evaluate:
+\textbf{(a)} $\displaystyle\lim_{x\to 0}\frac{1-\cos x}{x^2}$ \qquad \textbf{(b)} $\displaystyle\lim_{x\to 0}\frac{e^x - 1 - x}{x^2}$.
+\tcblower
+\textbf{Solution.} \textbf{(a)} Since $\cos x = 1 - \dfrac{x^2}{2} + \dfrac{x^4}{24} - \cdots$,
+\[ \frac{1-\cos x}{x^2} = \frac{\dfrac{x^2}{2} - \dfrac{x^4}{24} + \cdots}{x^2} = \frac{1}{2} - \frac{x^2}{24} + \cdots \xrightarrow[x\to 0]{} \frac{1}{2}. \]
+\textbf{(b)} Since $e^x = 1 + x + \dfrac{x^2}{2} + \dfrac{x^3}{6} + \cdots$,
+\[ \frac{e^x - 1 - x}{x^2} = \frac{\dfrac{x^2}{2} + \dfrac{x^3}{6} + \cdots}{x^2} = \frac{1}{2} + \frac{x}{6} + \cdots \xrightarrow[x\to 0]{} \frac{1}{2}. \]
+Note how the series method replaces a delicate indeterminate form by simple algebra: the terms that caused the $0/0$ cancel exactly.
+\end{exoresolu}
+
+\courssub{Approximating Integrals with No Elementary Antiderivative}
+
+Some innocent-looking integrals, such as $\displaystyle\int e^{-x^2}\,dx$ and $\displaystyle\int \frac{\sin x}{x}\,dx$, have \emph{no} antiderivative expressible with elementary functions. Yet these integrals are essential (the first underlies the normal distribution in statistics). Taylor series rescue us.
+
+\begin{propriete}[Term-by-term integration of a power series]
+If $f(x) = \displaystyle\sum_{k=0}^{\infty} a_k x^k$ converges on an interval containing $0$ and $x$, then
+\[ \int_0^x f(t)\,dt = \sum_{k=0}^{\infty} a_k \frac{x^{k+1}}{k+1}, \]
+i.e. a power series may be integrated \cle{term by term} inside its interval of convergence, and the resulting series has the same interval of convergence. (The proof is beyond the syllabus; you may quote and use this result.)
+\end{propriete}
+
+\begin{exoresolu}[Estimating $\displaystyle\int_0^{0.5} e^{-x^2}\,dx$ to 4 decimal places]
+Show that $\displaystyle\int_0^{0.5} e^{-x^2}\,dx \approx 0.4613$.
+\tcblower
+\textbf{Solution.} Replace $x$ by $-x^2$ in $e^x = \sum \frac{x^k}{k!}$:
+\[ e^{-x^2} = 1 - x^2 + \frac{x^4}{2!} - \frac{x^6}{3!} + \frac{x^8}{4!} - \cdots \]
+Integrating term by term from $0$ to $0.5$:
+\[ \int_0^{0.5} e^{-x^2}\,dx = \left[ x - \frac{x^3}{3} + \frac{x^5}{5\cdot 2!} - \frac{x^7}{7\cdot 3!} + \frac{x^9}{9\cdot 4!} - \cdots \right]_0^{0.5} \]
+\begin{align*}
+&= 0.5 - \frac{0.125}{3} + \frac{0.03125}{10} - \frac{0.0078125}{42} + \frac{0.001953125}{216} - \cdots\\
+&= 0.5 - 0.0416667 + 0.0031250 - 0.0001860 + 0.0000090 - \cdots\\
+&\approx 0.4612813.
+\end{align*}
+The series is alternating with decreasing terms; the first neglected term is below $4\times 10^{-7} < \frac12 \times 10^{-4}$, so the result is guaranteed: $\displaystyle\int_0^{0.5} e^{-x^2}\,dx \approx \boxed{0.4613}$ (4 d.p.).
+\end{exoresolu}
+
+\begin{exemplebox}[The sine integral]
+Similarly, since $\dfrac{\sin x}{x} = 1 - \dfrac{x^2}{3!} + \dfrac{x^4}{5!} - \cdots$ (for $x\neq 0$, with value $1$ at $x=0$),
+\[ \int_0^{1} \frac{\sin x}{x}\,dx = 1 - \frac{1}{3\cdot 3!} + \frac{1}{5\cdot 5!} - \frac{1}{7\cdot 7!} + \cdots = 1 - 0.055556 + 0.001667 - 0.000028 + \cdots \approx 0.9461. \]
+\end{exemplebox}
+
+\courssub{Combining with Simpson's Rule: Two Independent Estimates}
+
+We now have \emph{two} ways to estimate a definite integral: Simpson's rule (Lesson 83) and term-by-term series integration. A powerful exam technique — and good scientific practice — is to compute both and check that they agree.
+
+\begin{exoresolu}[Series versus Simpson for $\displaystyle\int_0^1 \frac{\sin x}{x}\,dx$]
+Estimate $\displaystyle I = \int_0^1 \dfrac{\sin x}{x}\,dx$ using Simpson's rule with $4$ strips, and compare with the series value $0.9461$.
+\tcblower
+\textbf{Solution.} With $h = 0.25$, define $f(x) = \frac{\sin x}{x}$ with $f(0) = 1$ (the limiting value).
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+\rowcolor{popblueL}
+$x$ & $0$ & $0.25$ & $0.5$ & $0.75$ & $1$ \\
+\hline
+$f(x)$ & $1.000000$ & $0.989616$ & $0.958851$ & $0.908852$ & $0.841471$ \\
+\hline
+\end{tabular}
+\end{center}
+Simpson's rule:
+\begin{align*}
+I &\approx \frac{h}{3}\Big[ f(0) + f(1) + 4\big(f(0.25) + f(0.75)\big) + 2f(0.5) \Big]\\
+&= \frac{0.25}{3}\Big[ 1 + 0.841471 + 4(0.989616 + 0.908852) + 2(0.958851) \Big]\\
+&= \frac{0.25}{3}\big[ 1.841471 + 7.593872 + 1.917702 \big] = \frac{0.25}{3}(11.353045) \approx 0.9461.
+\end{align*}
+The two methods agree to $4$ decimal places ($0.94608$ vs $0.94608$), which strongly confirms the result.
+\end{exoresolu}
+
+\begin{popfigure}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=1.2cm,
+  startstop/.style={rectangle, rounded corners, draw=popdark, fill=popblueL, text width=4.2cm, align=center, font=\small, minimum height=0.9cm},
+  decision/.style={diamond, draw=popdark, fill=popgreenL, text width=3.4cm, align=center, font=\small, aspect=2.2},
+  process/.style={rectangle, draw=popdark, fill=white, text width=4.6cm, align=center, font=\small, minimum height=0.9cm},
+  arrow/.style={-{stealth}, thick, popdark}
+]
+\node[startstop] (start) {Approximation task given};
+\node[decision, below=of start] (q1) {Value of a \emph{function} at a point?};
+\node[process, below left=of q1] (taylor) {Use Maclaurin/Taylor series; check first neglected term};
+\node[decision, below right=of q1] (q2) {Antiderivative known in elementary form?};
+\node[process, below left=of q2] (series) {Integrate the series term by term};
+\node[process, below right=of q2] (simpson) {Use Simpson's rule with $n$ strips};
+\node[startstop, below=2.5cm of q2] (check) {Cross-check both estimates if possible};
+\draw[arrow] (start) -- (q1);
+\draw[arrow] (q1) -- node[above left, font=\scriptsize]{yes} (taylor);
+\draw[arrow] (q1) -- node[above right, font=\scriptsize]{no: an integral} (q2);
+\draw[arrow] (q2) -- node[above left, font=\scriptsize]{no} (series);
+\draw[arrow] (q2) -- node[above right, font=\scriptsize]{yes or table of values} (simpson);
+\draw[arrow] (series) |- (check);
+\draw[arrow] (simpson) |- (check);
+\draw[arrow] (taylor) |- (check);
+\end{tikzpicture}
+\end{center}
+\legende{Choosing between a Taylor series and Simpson's rule for a given approximation task.}
+\end{popfigure}
+
+\courssub{Binomial-Type Approximations for Roots}
+
+The binomial series $(1+x)^n = 1 + nx + \dfrac{n(n-1)}{2!}x^2 + \dfrac{n(n-1)(n-2)}{3!}x^3 + \cdots$ (valid for $|x|<1$) is ideal for roots and reciprocals of numbers close to $1$.
+
+\begin{exoresolu}[Approximating $\sqrt{1.02}$ and $(0.98)^{-1}$]
+\textbf{(a)} Find $\sqrt{1.02}$ to $6$ decimal places. \textbf{(b)} Find $(0.98)^{-1}$ to $4$ decimal places.
+\tcblower
+\textbf{Solution.} \textbf{(a)} Write $\sqrt{1.02} = (1+0.02)^{1/2}$. With $n = \tfrac12$, $x = 0.02$:
+\[ (1+x)^{1/2} = 1 + \frac{x}{2} - \frac{x^2}{8} + \frac{x^3}{16} - \cdots = 1 + 0.01 - \frac{0.0004}{8} + \frac{0.000008}{16} - \cdots \]
+\[ = 1 + 0.01 - 0.00005 + 0.0000005 - \cdots = 1.0099505 \]
+The next term is below $10^{-8}$, so $\sqrt{1.02} \approx \boxed{1.009950}$ (6 d.p.).
+\textbf{(b)} Write $(0.98)^{-1} = (1 - 0.02)^{-1}$. With $n = -1$, $x = -0.02$:
+\[ (1+x)^{-1} = 1 - x + x^2 - x^3 + \cdots = 1 + 0.02 + 0.0004 + 0.000008 + \cdots = 1.020408\ldots \]
+The term $x^4 = 1.6\times 10^{-7} < \frac12\times 10^{-4}$ after summing, so $(0.98)^{-1} \approx \boxed{1.0204}$ (4 d.p.).
+\end{exoresolu}
+
+\courssub{GCE Exam Technique}
+
+\begin{aretenir}[How to present a Taylor approximation in the exam]
+\begin{enumerate}
+\item \textbf{State the series} you use, with its general term and interval of validity.
+\item \textbf{Substitute} the value (in radians for angles), computing each term with at least two extra decimal places.
+\item \textbf{Bound the error}: quote the first neglected term and show it is less than half a unit of the last required decimal place.
+\item \textbf{Conclude} with a boxed answer rounded to the requested accuracy, and where possible \textbf{cross-check} with another method (Simpson's rule for integrals).
+\end{enumerate}
+\end{aretenir}
+
+\begin{exercice}[Practice]
+\begin{enumerate}
+\item Use the Maclaurin series of $\ln(1+x)$ to find $\ln(1.1)$ correct to $5$ decimal places, justifying the number of terms.
+\item Evaluate $\displaystyle\lim_{x\to 0}\frac{\sin x - x}{x^3}$ using a series.
+\item Estimate $\displaystyle\int_0^{0.4}\frac{\sin x}{x}\,dx$ to $5$ decimal places by term-by-term integration, then verify with Simpson's rule using $4$ strips.
+\item Use the binomial series to find $\sqrt[3]{1.03}$ correct to $5$ decimal places.
+\end{enumerate}
+\end{exercice}
+
+\begin{corrige}[Exercise 1]
+$\ln(1+x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \cdots$ for $-1 < x \le 1$. With $x = 0.1$: $0.1 - 0.005 + 0.00033333 - 0.000025 + 0.000002 = 0.09531033\ldots$; the next term $1.7\times 10^{-7} < \frac12\times 10^{-5}$. Hence $\ln(1.1) \approx 0.09531$ (5 d.p.).
+\end{corrige}
+
+\begin{corrige}[Exercise 2]
+$\sin x - x = -\dfrac{x^3}{6} + \dfrac{x^5}{120} - \cdots$, so $\dfrac{\sin x - x}{x^3} = -\dfrac{1}{6} + \dfrac{x^2}{120} - \cdots \to -\dfrac{1}{6}$ as $x \to 0$.
+\end{corrige}
+
+\begin{corrige}[Exercise 3]
+Series: $\left[x - \frac{x^3}{18} + \frac{x^5}{600} - \cdots\right]_0^{0.4} = 0.4 - 0.0035556 + 0.0000171 = 0.3964615$, next term $< 10^{-7}$, so $I \approx 0.39646$ (5 d.p.). Simpson with $h = 0.1$: ordinates $f(0)=1$, $f(0.1)=0.998334$, $f(0.2)=0.993347$, $f(0.3)=0.985067$, $f(0.4)=0.973546$; $I \approx \frac{0.1}{3}[1 + 0.973546 + 4(0.998334 + 0.985067) + 2(0.993347)] = \frac{0.1}{3}(11.893854) \approx 0.39646$. The two estimates agree.
+\end{corrige}
+
+\begin{corrige}[Exercise 4]
+$(1.03)^{1/3} = 1 + \frac{0.03}{3} + \frac{\frac13(-\frac23)}{2}(0.03)^2 + \frac{\frac13(-\frac23)(-\frac53)}{6}(0.03)^3 + \cdots = 1 + 0.01 - 0.0001 + 0.00000167 - \cdots = 1.00990167\ldots$; next term $< 3\times 10^{-8}$. Hence $\sqrt[3]{1.03} \approx 1.00990$ (5 d.p.).
+\end{corrige}
+
+\begin{savaistu}[Series in your pocket]
+Every scientific calculator and every computer evaluates $e^x$, $\sin x$, $\ln x$ by means of rapidly convergent polynomial approximations closely related to Taylor series — the very technique you have just learned. The same mathematics that computes satellite orbits and models the spread of a disease in Douala is, at its heart, a well-chosen truncated series with a controlled error.
+\end{savaistu}
 
 \coursec{Step-by-Step Methods for Differential Equations}
 
