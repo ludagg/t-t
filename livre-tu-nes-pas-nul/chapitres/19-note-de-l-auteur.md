@@ -22,6 +22,8 @@ Sur le monde autour de l’école, enfin : *Les Héritiers* de Pierre Bourdieu 
 
 Aucune de ces lectures n’est nécessaire pour faire ce que propose ce livre. Un cahier de brouillon suffit.
 
-Je suis par ailleurs le créateur d’OnBuch (OnBuch+), une application de cours construite sur les programmes officiels du MINESEC ; les chapitres « La lampe » et « Atelier » disent pourquoi je la fais, comment, et ce qu’elle ne fait pas.
+Je suis par ailleurs le créateur d’OnBuch (OnBuch+), une application de cours construite sur les programmes officiels du MINESEC ; le chapitre « La lampe » dit pourquoi je la fais, et ce qu’elle ne fait pas.
 
 ⟦À COMPLÉTER PAR LUDOVIC : pourquoi tu as écrit ce livre, en tes mots, si tu veux l'ajouter — quelques lignes⟧
+
+Pour m’écrire à propos de ce livre ou d’OnBuch : +237 678 43 85 57, 689 72 19 23 ou ludovic@onbuch.site.

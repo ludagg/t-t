@@ -1150,3 +1150,9 @@ Les interdits complets figurent dans chaque fiche (rubrique **X**). Rappel de la
 8. Les motifs prévus pour ce chapitre (§4) sont-ils posés, sans être expliqués ?
 9. La chute est-elle un geste ou une image, pas une morale ni une question ?
 10. Lecture à voix haute d'une page au hasard : sonne-t-elle comme ce livre, et comme aucun autre ?
+
+---
+
+## Décision éditoriale (octobre 2026) — suppression du chapitre « Atelier »
+
+Le chapitre 16 (« Atelier », comment est fait OnBuch, vérification des contenus produits avec l'IA) est supprimé du livre à la demande de l'auteur. Conséquences : « Lettre à Aïcha » devient le chapitre 14 ; la note de l'auteur ne renvoie plus qu'à « La lampe » ; les deux marqueurs du chapitre disparaissent. Les mentions « ch. 16 » du plan et des rapports sont devenues sans objet (le fichier reste récupérable dans l'historique Git).
