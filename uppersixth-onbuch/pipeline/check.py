@@ -50,6 +50,28 @@ def finalize():
             print(f"✔ {L['id']} complète (finalisée)")
 
 
+def llm_repair(ref):
+    """Réparation automatique par le modèle (6 essais), puis suppression du bloc fautif en dernier recours."""
+    lid, name = ref.split("/")
+    d = g.BUILD / lid
+    body = g.autofix((d / f"{name}.rev.tex").read_text())
+    ok, _, _ = g.compile_check(body)
+    if not ok:
+        body, ok = g.compile_fix(body, ref, tries=6)
+        if ok:
+            body = g.autofix(body)
+            ok, _, _ = g.compile_check(body)
+    if not ok:
+        body, ok = g.drop_fault(body)
+    if ok and not g.degenerate(body):
+        (d / f"{name}.rev.tex").write_text(body)
+        (d / f"{name}.ok.tex").write_text(body)
+        (d / f"{name}.err").unlink(missing_ok=True)
+        print(f"✔ {ref} réparé")
+    else:
+        print(f"✗ {ref} : réparation impossible")
+
+
 def drop(ref):
     lid, name = ref.split("/")
     d = g.BUILD / lid
@@ -65,6 +87,10 @@ def drop(ref):
 
 
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["--llm"]:
+        for r in sys.argv[2:]:
+            llm_repair(r)
+        sys.exit()
     if sys.argv[1:2] == ["--drop"]:
         for r in sys.argv[2:]:
             drop(r)
