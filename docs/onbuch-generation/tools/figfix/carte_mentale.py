@@ -20,6 +20,13 @@ def grp(s,i,o="{",c="}"):
 def skipws(s,i):
     while i<len(s) and s[i] in " \t\r\n": i+=1
     return i
+STYLES={}
+def colof(txt):
+    m=re.search(r"concept color=([A-Za-z0-9!.]+)",txt)
+    if m: return m.group(1)
+    for k,v in STYLES.items():
+        if re.search(r"(?<![\w/])"+re.escape(k)+r"(?![\w/])",txt): return v
+    return None
 def parse_children(s):
     """s = suite de child[opts]{node[opts]{texte} child...} ; retourne liste de (couleur,texte,[enfants])"""
     out=[];i=skipws(s,0)
@@ -31,9 +38,9 @@ def parse_children(s):
             if not body[b:].startswith("node"): raise ValueError("child sans node")
             b=skipws(body,b+4);nopts=""
             if body[b]=="[": nopts,b=grp(body,b,"[","]");b=skipws(body,b)
+            if body[b]=="(": b=skipws(body,body.index(")",b)+1)
             text,b=grp(body,b);rest=body[b:]
-            col=re.search(r"concept color=([A-Za-z0-9!.]+)",opts+" "+nopts)
-            out.append((col.group(1) if col else None,text.strip(),parse_children(rest)))
+            out.append((colof(opts+" "+nopts),text.strip(),parse_children(rest)))
             i=skipws(s,i)
         elif s[i]==";" or s[i] in " \t\r\n": i+=1
         else: raise ValueError("contenu inattendu : "+s[i:i+30])
@@ -47,17 +54,20 @@ def items(ch,depth=0):
         r+="\\item "+clean(t)+"\n"+items(sub,depth+1)
     return r+"\\end{itemize}\n"
 def convert(block):
-    m=re.match(r"\\begin\{tikzpicture\}\[mindmap.*?\]\s*(?=(?:\\path|\\node|\\draw))",block,re.S)
+    STYLES.clear()
     # options de l'environnement : jusqu'au ']' qui ferme, en tenant compte des crochets imbriqués
     i=len(r"\begin{tikzpicture}");opts,i=grp(block,i,"[","]");body=block[i:-len(END)]
-    body=re.sub(r"%[^\n]*","",body)
+    body=re.sub(r"(?<!\\)%[^\n]*","",body)
+    for k,v in re.findall(r"([A-Za-z0-9 ]+)/\.style=\{[^{}]*?concept color=([A-Za-z0-9!.]+)",opts): STYLES[k.strip()]=v
     j=body.index("\\node");j2=j+5;j2=skipws(body,j2);ropts=""
     if body[j2]=="[": ropts,j2=grp(body,j2,"[","]");j2=skipws(body,j2)
+    if body.startswith("at",j2): j2=skipws(body,body.index(")",j2)+1)
+    if body[j2]=="(": j2=skipws(body,body.index(")",j2)+1)
     root,j2=grp(body,j2);ch=parse_children(body[j2:])
     if not ch: raise ValueError("aucune branche")
     default=["popblue","poporange","popgreen","poppurple","popgold","poppink"]
     ncol=2 if len(ch)<=4 else 3
-    rc=re.search(r"concept color=([A-Za-z0-9!.]+)",body[:j2]) or re.search(r"root concept[^\n]*concept color=([A-Za-z0-9!.]+)",opts)
+    rc=re.search(r"concept color=([A-Za-z0-9!.]+)",ropts) or re.search(r"root concept[^\n]*?concept color=([A-Za-z0-9!.]+)",opts) or re.search(r"(?<![\w ])concept color=([A-Za-z0-9!.]+)",opts)
     rcol=rc.group(1) if rc else "popink"
     out="\\begin{center}\\tcbox[colback="+rcol+",colframe="+rcol+",coltext=white,arc=9pt,boxsep=4pt,left=6pt,right=6pt]{\\bfseries\\small "+clean(root)+"}\\end{center}\n\\vspace{-2pt}\n"
     out+="\\begin{tcbraster}[raster columns="+str(ncol)+",raster equal height=rows,raster column skip=6pt,raster row skip=6pt,enhanced,blankest]\n"
@@ -70,15 +80,20 @@ def convert(block):
         out+=items(sub)+"\\end{tcolorbox}\n"
     return out+"\\end{tcbraster}\n"
 def process(path):
-    s=open(path,encoding="utf-8").read();res=[];pos=0;n=0;bad=0
+    s=open(path,encoding="utf-8").read();res=[];pos=0;n=0;bad=0;scan=0
     while True:
-        a=s.find(OPEN,pos)
+        a=s.find("\\begin{tikzpicture}",scan)
         if a<0: break
+        k=a+len("\\begin{tikzpicture}")
+        if k>=len(s) or s[k]!="[": scan=k;continue
+        try: opts,_=grp(s,k,"[","]")
+        except Exception: scan=k;continue
+        if "mindmap" not in opts: scan=k;continue
         b=s.find(END,a)+len(END)
-        try: res.append(s[pos:a]);res.append(convert(s[a:b]));n+=1
+        try: new=convert(s[a:b]);res.append(s[pos:a]);res.append(new);n+=1
         except Exception as e:
-            res[-1:]=[s[pos:a]] if len(res)%2==1 else res[-1:];res.append(s[a:b]);bad+=1;print("NON RECONNUE",path,str(e)[:60])
-        pos=b
+            bad+=1;print("NON RECONNUE",path,str(e)[:70]);scan=b;continue
+        pos=b;scan=b
     res.append(s[pos:])
     if n: open(path,"w",encoding="utf-8").write("".join(res))
     return n,bad
