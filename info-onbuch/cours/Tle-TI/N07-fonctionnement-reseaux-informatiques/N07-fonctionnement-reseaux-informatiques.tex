@@ -1189,112 +1189,82 @@ C'est la question « star » du Bac, qui teste la compréhension transversale de
 
 \begin{popfigure}
 \begin{tikzpicture}[
-    node distance=8mm and 12mm,
-    proto/.style={rectangle, rounded corners, draw=popblue, thick, fill=popblueL, minimum width=2.2cm, minimum height=0.9cm, font=\small\bfseries, align=center},
-    layer/.style={rectangle, draw=popdark, thick, fill=popcream, minimum width=3cm, minimum height=0.7cm, font=\small\bfseries, align=center},
-    arrow/.style={-Stealth, thick, draw=popdark},
-    labelarrow/.style={midway, fill=white, inner sep=1pt, font=\tiny, text=popdark}
+    couche/.style={rectangle, draw=popdark, thick, fill=popcream, text width=2.3cm, minimum height=1.05cm, font=\scriptsize\bfseries, align=center},
+    proto/.style={rectangle, rounded corners=2pt, draw=popblue, thick, fill=popblueL, minimum height=1.05cm, font=\scriptsize, align=center, inner sep=2pt}
 ]
-% TCP/IP Model Layers (left)
-\node[layer, align=center] (L4) at (0, 5.5){Couche 4\\Transport};
-\node[layer, align=center] (L3) at (0, 4.0){Couche 3\\Internet};
-\node[layer, align=center] (L2) at (0, 2.5){Couche 2\\Liaison};
-\node[layer, align=center] (L1) at (0, 1.0){Couche 1\\Physique};
+% quatre étages, de haut en bas
+\node[couche] at (0,0) (c4) {4. Application};
+\node[proto, text width=1.9cm] at (3.2,0) {HTTP/HTTPS\\port 80/443};
+\node[proto, text width=1.9cm] at (5.4,0) {DNS\\port 53};
+\node[proto, text width=1.9cm] at (7.6,0) {SMTP, POP3,\\IMAP : 25/110/143};
+\node[proto, text width=1.9cm] at (9.8,0) {FTP\\port 20/21};
+\node[proto, text width=1.9cm] at (12.0,0) {DHCP\\port 67/68};
 
-% Protocols (right)
-\node[proto, align=center] (HTTP) at (5, 6.2){HTTP/HTTPS\\(Port 80/443)};
-\node[proto, align=center] (DNS) at (5, 5.0){DNS\\(Port 53 UDP/TCP)};
-\node[proto, align=center] (DHCP) at (5, 3.8){DHCP\\(Port 67/68 UDP)};
-\node[proto, align=center] (SMTP) at (5, 2.6){SMTP/POP3/IMAP\\(Port 25/110/143)};
-\node[proto, align=center] (FTP) at (5, 1.4){FTP\\(Port 20/21 TCP)};
+\node[couche] at (0,-1.5) (c3) {3. Transport};
+\node[proto, text width=4.1cm] at (4.3,-1.5) {TCP\\fiable, ordonné, contrôle de flux};
+\node[proto, text width=4.1cm] at (8.7,-1.5) {UDP\\rapide, sans connexion};
 
-\node[proto, align=center] (TCP) at (9, 5.5){TCP\\(Fiable, Ordonné,\\Contrôle flux)};
-\node[proto, align=center] (UDP) at (9, 4.3){UDP\\(Rapide, Best-effort)};
+\node[couche] at (0,-3.0) (c2) {2. Internet};
+\node[proto, text width=3.3cm] at (3.7,-3.0) {IPv4 / IPv6\\adressage, routage};
+\node[proto, text width=3.3cm] at (7.4,-3.0) {ICMP\\diagnostic, erreurs};
+\node[proto, text width=3.3cm] at (11.1,-3.0) {ARP\\IP $\leftrightarrow$ adresse MAC};
 
-\node[proto, align=center] (IP) at (13, 4.0){IPv4 / IPv6\\(Routage, Adressage,\\Fragmentation)};
-\node[proto, align=center] (ICMP) at (13, 2.8){ICMP\\(Diagnostic, Erreurs)};
-\node[proto, align=center] (ARP) at (13, 1.6){ARP\\(IP $\leftrightarrow$ MAC LAN)};
+\node[couche] at (0,-4.5) (c1) {1. Accès réseau};
+\node[proto, text width=5.2cm] at (4.9,-4.5) {Ethernet / Wi-Fi\\trames, adresses MAC};
+\node[proto, text width=5.2cm] at (10.3,-4.5) {Câble / fibre / radio\\bits, signaux};
 
-\node[proto, align=center] (ETH) at (16.5, 2.5){Ethernet / Wi-Fi\\(Trames, Adresses MAC)};
-\node[proto, align=center] (PHY) at (16.5, 1.0){Câble / Fibre / Radio\\(Bits, Signaux)};
-
-% Arrows between layers and protocols
-\draw[arrow] (L4.east) -- node[labelarrow] {utilise} (HTTP.west);
-\draw[arrow] (L4.east) -- node[labelarrow] {utilise} (DNS.west);
-\draw[arrow] (L4.east) -- node[labelarrow] {utilise} (SMTP.west);
-\draw[arrow] (L4.east) -- node[labelarrow] {utilise} (FTP.west);
-\draw[arrow] (L4.east) -- node[labelarrow] {utilise} (DHCP.west);
-
-\draw[arrow] (HTTP.east) -- node[labelarrow] {TCP port 80} (TCP.west);
-\draw[arrow] (SMTP.east) -- node[labelarrow] {TCP port 25} (TCP.west);
-\draw[arrow] (FTP.east) -- node[labelarrow] {TCP port 21} (TCP.west);
-\draw[arrow] (DNS.east) -- node[labelarrow] {UDP port 53} (UDP.west);
-\draw[arrow] (DHCP.east) -- node[labelarrow] {UDP port 67/68} (UDP.west);
-
-\draw[arrow] (TCP.east) -- node[labelarrow] {encapsule dans} (IP.west);
-\draw[arrow] (UDP.east) -- node[labelarrow] {encapsule dans} (IP.west);
-
-\draw[arrow] (IP.east) -- node[labelarrow] {utilise} (ICMP.west);
-\draw[arrow] (IP.east) -- node[labelarrow] {utilise} (ARP.west);
-
-\draw[arrow] (ICMP.east) -- node[labelarrow] {encapsule dans} (ETH.west);
-\draw[arrow] (ARP.east) -- node[labelarrow] {encapsule dans} (ETH.west);
-\draw[arrow] (IP.east) -- node[labelarrow] {encapsule dans} (ETH.west);
-
-\draw[arrow] (ETH.east) -- node[labelarrow] {transmet sur} (PHY.west);
-
-% Vertical grouping lines
-\draw[popmuted, dashed, thick] (4.2, 6.8) -- (4.2, 0.4) node[midway, right, rotate=90, font=\tiny] {Couche Application};
-\draw[popmuted, dashed, thick] (8.2, 6.8) -- (8.2, 0.4) node[midway, right, rotate=90, font=\tiny] {Couche Transport};
-\draw[popmuted, dashed, thick] (12.2, 6.8) -- (12.2, 0.4) node[midway, right, rotate=90, font=\tiny] {Couche Internet};
-\draw[popmuted, dashed, thick] (15.7, 6.8) -- (15.7, 0.4) node[midway, right, rotate=90, font=\tiny] {Couche Liaison/Physique};
-
+% encapsulation : une flèche entre étages
+\foreach \a/\b in {c4/c3,c3/c2,c2/c1}{\draw[-Stealth,thick,popmuted] ([xshift=0cm,yshift=-0.52cm]\a.south) -- ([yshift=0.52cm]\b.north);}
+\node[font=\tiny,text=popmuted,anchor=west] at (0.1,-0.75) {encapsulé};
+\node[font=\tiny,text=popmuted,anchor=west] at (0.1,-2.25) {encapsulé};
+\node[font=\tiny,text=popmuted,anchor=west] at (0.1,-3.75) {encapsulé};
 \end{tikzpicture}
-\legende{Positionnement des principaux protocoles dans le modèle TCP/IP (simplifié). Les flèches indiquent l'encapsulation ou l'utilisation (ex. HTTP utilise TCP, IP encapsule TCP/UDP/ICMP/ARP).}
+\legende{Les quatre couches du modèle TCP/IP et leurs principaux protocoles. Chaque couche s'appuie sur celle du dessous : HTTP utilise TCP, TCP et UDP sont encapsulés dans IP, IP dans Ethernet ou Wi-Fi.}
 \end{popfigure}
 
 \begin{popfigure}
-\begin{tikzpicture}[
-    node distance=10mm and 15mm,
-    host/.style={rectangle, rounded corners, draw=popdark, thick, fill=popcream, minimum width=2.2cm, minimum height=1.2cm, font=\small\bfseries, align=center},
+\newcommand{\seqstyle}{%
+  \tikzset{host/.style={rectangle, rounded corners, draw=popdark, thick, fill=popcream, minimum width=2.6cm, minimum height=0.9cm, font=\small\bfseries, align=center},
+    life/.style={dashed, popmuted},
     msg/.style={-Stealth, thick, draw=popblue},
     ack/.style={-Stealth, thick, draw=popgreen, dashed},
-    label/.style={midway, fill=white, inner sep=1.5pt, font=\scriptsize, text=popdark, align=center},
-    tlabel/.style={above, font=\tiny, text=popmuted}
-]
-% Nodes
-\node[host, align=center] (Client) at (0, 0){Client\\navigateur};
-\node[host, align=center] (DNS) at (5, 1.5){Serveur DNS\\récursif (FAI)};
-\node[host, align=center] (Auth) at (10, 1.5){Serveur DNS\\autoritaire\\example.com};
-\node[host, align=center] (Web) at (5, -2.5){Serveur Web\\www.example.com:80};
-
-% DNS Resolution Phase
-\draw[msg] (Client) -- node[label, align=center]{1. Requête DNS A\\www.example.com\\(UDP 53)} (DNS);
-\draw[msg] (DNS) -- node[label, align=center]{2. Requête itérative\\Racine $\to$ .com $\to$ Auth\\(UDP 53)} (Auth);
-\draw[ack] (Auth) -- node[label, align=center]{3. Réponse A record\\93.184.216.34\\(UDP 53)} (DNS);
-\draw[ack] (DNS) -- node[label, align=center]{4. Réponse au client\\IP + TTL\\(UDP 53)} (Client);
-
-% TCP Handshake
-\draw[msg] (Client) -- node[label, pos=0.3, align=center]{5. SYN\\seq=$x$} (Web);
-\draw[ack] (Web) -- node[label, pos=0.3, align=center]{6. SYN-ACK\\seq=$y$, ack=$x+1$} (Client);
-\draw[msg] (Client) -- node[label, pos=0.3, align=center]{7. ACK\\seq=$x+1$, ack=$y+1$} (Web);
-
-% HTTP Exchange
-\draw[msg] (Client) -- node[label, pos=0.5, align=center]{8. HTTP GET /\\Host: www.example.com} (Web);
-\draw[ack] (Web) -- node[label, pos=0.5, align=center]{9. HTTP 200 OK\\Content-Type: text/html\\<HTML>...} (Client);
-
-% TCP Close (optional)
-\draw[msg, draw=poporange] (Client) -- node[label, pos=0.7] {10. FIN/ACK} (Web);
-\draw[ack, draw=poporange] (Web) -- node[label, pos=0.7] {11. FIN/ACK} (Client);
-\draw[msg, draw=poporange] (Client) -- node[label, pos=0.7] {12. ACK} (Web);
-
-% Phase labels
-\node[tlabel] at (2.5, 2.5) {\textbf{Phase 1 : Résolution DNS (UDP)}};
-\node[tlabel] at (2.5, -0.5) {\textbf{Phase 2 : Connexion TCP (Three-way handshake)}};
-\node[tlabel] at (2.5, -3.5) {\textbf{Phase 3 : Échange HTTP (Requête/Réponse)}};
-
+    lbl/.style={above, font=\scriptsize, text=popdark, align=center, inner sep=1pt}}}
+\seqstyle
+\textbf{\small Phase 1 : résolution DNS (UDP, port 53)}\par\smallskip
+\begin{tikzpicture}
+\node[host] (C) at (0,0) {Client\\navigateur};
+\node[host] (R) at (5.2,0) {Serveur DNS\\récursif (FAI)};
+\node[host] (A) at (10.4,0) {Serveur DNS\\autoritaire};
+\foreach \n in {C,R,A}{\draw[life] (\n.south) -- ++(0,-4.2);}
+\draw[msg] (0,-1.4) -- node[lbl]{1. Requête : adresse de\\www.example.com ?} (5.2,-1.4);
+\draw[msg] (5.2,-2.2) -- node[lbl]{2. Requête itérative\\(racine, .com, autoritaire)} (10.4,-2.2);
+\draw[ack] (10.4,-3.0) -- node[lbl]{3. Réponse : 93.184.216.34} (5.2,-3.0);
+\draw[ack] (5.2,-3.8) -- node[lbl]{4. Réponse : IP + durée de vie} (0,-3.8);
 \end{tikzpicture}
-\legende{Diagramme de séquence : résolution DNS suivie d'une connexion TCP et d'un échange HTTP. Flèches pleines = requêtes/données, flèches pointillées = réponses/ACK.}
+
+\bigskip
+\textbf{\small Phase 2 : connexion TCP (poignée de main en trois temps)}\par\smallskip
+\begin{tikzpicture}
+\node[host] (C) at (0,0) {Client};
+\node[host] (W) at (7.2,0) {Serveur Web\\port 80};
+\foreach \n in {C,W}{\draw[life] (\n.south) -- ++(0,-2.6);}
+\draw[msg] (0,-0.9) -- node[lbl]{5. SYN (seq = $x$)} (7.2,-0.9);
+\draw[ack] (7.2,-1.7) -- node[lbl]{6. SYN-ACK (seq = $y$, ack = $x+1$)} (0,-1.7);
+\draw[msg] (0,-2.5) -- node[lbl]{7. ACK (ack = $y+1$)} (7.2,-2.5);
+\end{tikzpicture}
+
+\bigskip
+\textbf{\small Phase 3 : échange HTTP, puis fermeture}\par\smallskip
+\begin{tikzpicture}
+\node[host] (C) at (0,0) {Client};
+\node[host] (W) at (7.2,0) {Serveur Web};
+\foreach \n in {C,W}{\draw[life] (\n.south) -- ++(0,-3.4);}
+\draw[msg] (0,-0.9) -- node[lbl]{8. HTTP GET /} (7.2,-0.9);
+\draw[ack] (7.2,-1.7) -- node[lbl]{9. HTTP 200 OK (page HTML)} (0,-1.7);
+\draw[msg, draw=poporange] (0,-2.5) -- node[lbl]{10. FIN} (7.2,-2.5);
+\draw[ack, draw=poporange] (7.2,-3.3) -- node[lbl]{11. FIN-ACK} (0,-3.3);
+\end{tikzpicture}
+\legende{Résolution DNS, connexion TCP puis échange HTTP. Flèches pleines : requêtes ; flèches pointillées : réponses et acquittements.}
 \end{popfigure}
 
 \begin{aretenir}[Résumé des protocoles clés pour le Bac]
