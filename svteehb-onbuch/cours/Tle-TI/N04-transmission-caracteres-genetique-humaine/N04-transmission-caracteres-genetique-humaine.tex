@@ -588,19 +588,19 @@ Pour visualiser ces recombinaisons aléatoires, on utilise l'\cle{échiquier de 
 % En-têtes colonnes (gamètes mâle) - ligne y=2 à 3
 \node[popblue, font=\bfseries] at (0.5,2.5) {$A$};
 \node[popblue, font=\bfseries] at (1.5,2.5) {$a$};
-\node[popmuted, anchor=east] at (0,2.5) {$\sigma$};
+\node[popmuted] at (0.5,3.4) {$\sigma$ (mâle)};
 % En-têtes lignes (gamètes femelle) - colonne x=0 à 1
-\node[poporange, font=\bfseries, rotate=90] at (-0.3,2) {$A$};
-\node[poporange, font=\bfseries, rotate=90] at (-0.3,1) {$a$};
-\node[popmuted, anchor=north] at (-0.3,1.5) {$\varphi$};
-% Contenu cases (centres aux coordonnées .5, .5 ; 1.5, .5 ; .5, 1.5 ; 1.5, 1.5)
-\node at (0.5,1.5) {$A/A$ \textbf{(Jaune)}};
-\node at (1.5,1.5) {$A/a$ \textbf{(Jaune)}};
-\node at (0.5,0.5) {$A/a$ \textbf{(Jaune)}};
-\node at (1.5,0.5) {$a/a$ \textbf{(Vert)}};
+\node[poporange, font=\bfseries] at (-0.4,2) {$A$};
+\node[poporange, font=\bfseries] at (-0.4,1) {$a$};
+\node[popmuted] at (-1.3,1.5) {$\varphi$ (femelle)};
+% Contenu cases
+\node[align=center, font=\small] at (0.5,1.5) {$A/A$\\ \textbf{(Jaune)}};
+\node[align=center, font=\small] at (1.5,1.5) {$A/a$\\ \textbf{(Jaune)}};
+\node[align=center, font=\small] at (0.5,0.5) {$A/a$\\ \textbf{(Jaune)}};
+\node[align=center, font=\small] at (1.5,0.5) {$a/a$\\ \textbf{(Vert)}};
 % Légendes proportions
-\node[popdark, align=center] at (1.5,-0.6) {Génotypes F2 : 1 $A/A$ : 2 $A/a$ : 1 $a/a$};
-\node[popdark, align=center] at (1.5,-1.3) {Phénotypes F2 : \textbf{3 Jaunes} : \textbf{1 Vert}};
+\node[popdark, align=center] at (1.5,-0.7) {Génotypes F2 : 1 $A/A$ : 2 $A/a$ : 1 $a/a$};
+\node[popdark, align=center] at (1.5,-1.4) {Phénotypes F2 : \textbf{3 Jaunes} : \textbf{1 Vert}};
 \end{tikzpicture}
 \legende{Échiquier de croisement F1 $\times$ F1 ($A/a \times A/a$) pour un caractère à dominance complète. Les gamètes sont portés par les axes ; les cases internes donnent les génotypes zygotiques et le phénotype correspondant.}
 \end{popfigure}
@@ -867,89 +867,28 @@ Proportion théorique & 9/16 = 0,5625 & 3/16 = 0,1875 & 3/16 = 0,1875 & 1/16 = 0
 
 \begin{popfigure}
 \begin{tikzpicture}[scale=0.65, every node/.style={font=\small}]
-% Styles
 \tikzset{
-    cell/.style={minimum width=1.6cm, minimum height=1.6cm, draw=popline, thick, anchor=south west},
     gamlabel/.style={font=\small\bfseries, text=popdark},
     genolabel/.style={font=\scriptsize, text=popdark},
     legbox/.style={draw=popline, thick, minimum width=0.6cm, minimum height=0.35cm, rounded corners=2pt}
 }
-% Gametes
-\def\glist{{"JA","Ja","jA","ja"}}
-% Colors per phenotype
-% 0: Yellow Smooth (J_ A_) -> popgoldL
-% 1: Yellow Wrinkled (J_ aa) -> poporangeL
-% 2: Green Smooth (jj A_) -> popgreenL
-% 3: Green Wrinkled (jj aa) -> poppinkL
-
-% Draw grid and cells
-\foreach \r in {0,1,2,3} {
-    \foreach \c in {0,1,2,3} {
-        % Determine phenotype index 0,1,2,3
-        % Gamete row \r, Gamete col \c
-        % Extract alleles
-        % Row gamete
-        \pgfmathparse{\glist[\r]} \let\rgam\pgfmathresult
-        % Col gamete
-        \pgfmathparse{\glist[\c]} \let\cgam\pgfmathresult
-        % Alleles: J/j from char 0, A/a from char 1
-        \edef\rJ{\rgam:0:1} \edef\rA{\rgam:1:1} % Not easy in tikz math, use ifthenelse logic via macros
-    }
-}
-% Simpler: Hardcode the 16 genotypes/phenotypes for reliability in TikZ
-% Row 0 (Female JA)
-\foreach \c/\cgam/\pheno/\geno in {0/JA/0/JA, 1/Ja/0/Ja, 2/jA/0/jA, 3/ja/0/ja} {
-    \pgfmathparse{\c*1.6} \let\x\pgfmathresult
-    \pgfmathparse{0*1.6} \let\y\pgfmathresult
-    \ifnum\pheno=0 \fill[popgoldL] (\x,\y) rectangle (\x+1.6,\y+1.6); \fi
-    \ifnum\pheno=1 \fill[poporangeL] (\x,\y) rectangle (\x+1.6,\y+1.6); \fi
-    \ifnum\pheno=2 \fill[popgreenL] (\x,\y) rectangle (\x+1.6,\y+1.6); \fi
-    \ifnum\pheno=3 \fill[poppinkL] (\x,\y) rectangle (\x+1.6,\y+1.6); \fi
-    \node[genolabel] at (\x+0.8,\y+0.8) {$JjAa$}; % Placeholder, will fix below
-}
-% Actually, let's just manually place the 16 nodes with correct genotypes for perfect control.
-% Coordinates: bottom-left (0,0) to top-right (6.4, 6.4). Row 0 bottom (Female JA), Row 3 top (Female ja).
-% Col 0 left (Male JA), Col 3 right (Male ja).
-
+% Coordinates: bottom-left (0,0) to top-right (6.4, 6.4).
 % Row 0 (Female JA) - y = 0 to 1.6
-\fill[popgoldL] (0,0) rectangle (1.6,1.6); \node[genolabel] at (0.8,0.8) {$JJAA$}; % JA x JA
-\fill[popgoldL] (1.6,0) rectangle (3.2,1.6); \node[genolabel] at (2.4,0.8) {$JjAA$}; % JA x Ja
-\fill[popgoldL] (3.2,0) rectangle (4.8,1.6); \node[genolabel] at (4.0,0.8) {$JJAa$}; % JA x jA
-\fill[popgoldL] (4.8,0) rectangle (6.4,1.6); \node[genolabel] at (5.6,0.8) {$JjAa$}; % JA x ja
-
+\fill[popgoldL] (0,0) rectangle (1.6,1.6); \node[genolabel] at (0.8,0.8) {$JJAA$};
+\fill[popgoldL] (1.6,0) rectangle (3.2,1.6); \node[genolabel] at (2.4,0.8) {$JjAA$};
+\fill[popgoldL] (3.2,0) rectangle (4.8,1.6); \node[genolabel] at (4.0,0.8) {$JJAa$};
+\fill[popgoldL] (4.8,0) rectangle (6.4,1.6); \node[genolabel] at (5.6,0.8) {$JjAa$};
 % Row 1 (Female Ja) - y = 1.6 to 3.2
-\fill[popgoldL] (0,1.6) rectangle (1.6,3.2); \node[genolabel] at (0.8,2.4) {$JjAA$}; % Ja x JA
-\fill[popgoldL] (1.6,1.6) rectangle (3.2,3.2); \node[genolabel] at (2.4,2.4) {$JJAA$}; % Ja x Ja -> JJAA? No Ja x Ja -> JJ Aa? Wait. Ja (J,a) x Ja (J,a) -> JJ aa. Yellow Wrinkled.
-% CORRECTION:
-% Gametes: JA (J,A), Ja (J,a), jA (j,A), ja (j,a)
-% Row 1 Female Ja (J,a)
-% Col 0 Male JA (J,A) -> Jj Aa (Yellow Smooth) -> popgoldL
-% Col 1 Male Ja (J,a) -> JJ aa (Yellow Wrinkled) -> poporangeL
-% Col 2 Male jA (j,A) -> Jj Aa (Yellow Smooth) -> popgoldL
-% Col 3 Male ja (j,a) -> Jj aa (Yellow Wrinkled) -> poporangeL
-
-\fill[popgoldL] (0,1.6) rectangle (1.6,3.2); \node[genolabel] at (0.8,2.4) {$JjAa$};
+\fill[popgoldL] (0,1.6) rectangle (1.6,3.2); \node[genolabel] at (0.8,2.4) {$JjAA$};
 \fill[poporangeL] (1.6,1.6) rectangle (3.2,3.2); \node[genolabel] at (2.4,2.4) {$JJaa$};
 \fill[popgoldL] (3.2,1.6) rectangle (4.8,3.2); \node[genolabel] at (4.0,2.4) {$JjAa$};
 \fill[poporangeL] (4.8,1.6) rectangle (6.4,3.2); \node[genolabel] at (5.6,2.4) {$Jjaa$};
-
 % Row 2 (Female jA) - y = 3.2 to 4.8
-% Female jA (j,A)
-% Col 0 Male JA (J,A) -> Jj AA (Yellow Smooth) -> popgoldL
-% Col 1 Male Ja (J,a) -> Jj Aa (Yellow Smooth) -> popgoldL
-% Col 2 Male jA (j,A) -> jj AA (Green Smooth) -> popgreenL
-% Col 3 Male ja (j,a) -> jj Aa (Green Smooth) -> popgreenL
 \fill[popgoldL] (0,3.2) rectangle (1.6,4.8); \node[genolabel] at (0.8,4.0) {$JjAA$};
 \fill[popgoldL] (1.6,3.2) rectangle (3.2,4.8); \node[genolabel] at (2.4,4.0) {$JjAa$};
 \fill[popgreenL] (3.2,3.2) rectangle (4.8,4.8); \node[genolabel] at (4.0,4.0) {$jjAA$};
 \fill[popgreenL] (4.8,3.2) rectangle (6.4,4.8); \node[genolabel] at (5.6,4.0) {$jjAa$};
-
 % Row 3 (Female ja) - y = 4.8 to 6.4
-% Female ja (j,a)
-% Col 0 Male JA (J,A) -> Jj Aa (Yellow Smooth) -> popgoldL
-% Col 1 Male Ja (J,a) -> Jj aa (Yellow Wrinkled) -> poporangeL
-% Col 2 Male jA (j,A) -> jj Aa (Green Smooth) -> popgreenL
-% Col 3 Male ja (j,a) -> jj aa (Green Wrinkled) -> poppinkL
 \fill[popgoldL] (0,4.8) rectangle (1.6,6.4); \node[genolabel] at (0.8,5.6) {$JjAa$};
 \fill[poporangeL] (1.6,4.8) rectangle (3.2,6.4); \node[genolabel] at (2.4,5.6) {$Jjaa$};
 \fill[popgreenL] (3.2,4.8) rectangle (4.8,6.4); \node[genolabel] at (4.0,5.6) {$jjAa$};
@@ -968,18 +907,18 @@ Proportion théorique & 9/16 = 0,5625 & 3/16 = 0,1875 & 3/16 = 0,1875 & 1/16 = 0
     \pgfmathparse{\r*1.6+0.8} \let\y\pgfmathresult
     \node[gamlabel, anchor=east, rotate=-45] at (-0.2, \y) {\rgam};
 }
-\node[font=\small\bfseries] at (3.2, 7.2) {Gamètes mâles (colonnes)};
-\node[font=\small\bfseries, rotate=90] at (-1.0, 3.2) {Gamètes femelles (lignes)};
+\node[font=\small\bfseries] at (3.2, 7.6) {Gamètes mâles (colonnes)};
+\node[font=\small\bfseries, rotate=90] at (-1.6, 3.2) {Gamètes femelles (lignes)};
 
-% Legend
-\begin{scope}[yshift=-1.8cm]
+% Legend (stacked vertically)
+\begin{scope}[yshift=-2.0cm]
 \node[legbox, fill=popgoldL] (l1) at (0,0) {};
 \node[right=2pt] at (l1.east) {Jaune lisse ($J\_A\_$) -- 9/16};
-\node[legbox, fill=poporangeL] (l2) at (5,0) {};
+\node[legbox, fill=poporangeL] (l2) at (0,-0.6) {};
 \node[right=2pt] at (l2.east) {Jaune ridée ($J\_aa$) -- 3/16};
-\node[legbox, fill=popgreenL] (l3) at (0,-0.6) {};
+\node[legbox, fill=popgreenL] (l3) at (0,-1.2) {};
 \node[right=2pt] at (l3.east) {Verte lisse ($jjA\_$) -- 3/16};
-\node[legbox, fill=poppinkL] (l4) at (5,-0.6) {};
+\node[legbox, fill=poppinkL] (l4) at (0,-1.8) {};
 \node[right=2pt] at (l4.east) {Verte ridée ($jjaa$) -- 1/16};
 \end{scope}
 \end{tikzpicture}
@@ -1010,79 +949,62 @@ Comment l'indépendance des gènes s'explique-t-elle au niveau cellulaire ? Rapp
 
 \begin{popfigure}
 \begin{tikzpicture}[scale=0.75, every node/.style={font=\small}]
-% Styles
 \tikzset{
     chrom/.style={draw=popdark, thick, minimum width=0.5cm, minimum height=1.3cm, rounded corners=2pt},
-    chromM/.style={chrom, fill=popblueL}, % Maternal (Blue tint)
-    chromP/.style={chrom, fill=poporangeL}, % Paternal (Orange tint)
+    chromM/.style={chrom, fill=popblueL},
+    chromP/.style={chrom, fill=poporangeL},
     allele/.style={font=\small\bfseries, text=popdark},
-    centromere/.style={fill=popdark, minimum width=0.5cm, minimum height=0.15cm},
     arrow/.style={->, >=Stealth, thick, popdark},
-    labelbox/.style={draw=popdark, rounded corners, fill=popcream, inner sep=3pt, font=\small\bfseries, text=popdark},
+    labelbox/.style={draw=popdark, rounded corners, fill=popcream, inner sep=3pt, font=\small\bfseries, text=popdark, align=center},
     plate/.style={dashed, popmuted, thick}
 }
 
-% --- Configuration 1 : Orientation 1 ---
-\node[labelbox] at (0, 7.0) {\textbf{Orientation 1 (aléatoire)}};
-% Metaphase Plate
-\draw[plate] (-3.5, 5.0) -- (3.5, 5.0) node[right=2mm] {Plaque équatoriale};
-
-% Bivalent 1 (Chr 1 pair) - Left side
-% Maternal (Top) J, Paternal (Bottom) j
+% --- Configuration 1 ---
+\begin{scope}[xshift=0cm]
+\node[labelbox] at (0, 7.2) {Orientation 1 (aléatoire)};
+\draw[plate] (-3.5, 5.0) -- (3.5, 5.0) node[right=2mm, font=\footnotesize] {Plaque équatoriale};
 \node[chromM] (b1m) at (-1.5, 5.8) {}; \node[allele, popblue] at (-1.5, 5.8) {$J$};
 \node[chromP] (b1p) at (-1.5, 4.2) {}; \node[allele, poporange] at (-1.5, 4.2) {$j$};
-\draw[popblue, thick] (-1.5, 5.45) -- (-1.5, 4.55); % Centromere connection
-
-% Bivalent 2 (Chr 2 pair) - Right side
-% Maternal (Top) A, Paternal (Bottom) a
+\draw[popblue, thick] (-1.5, 5.45) -- (-1.5, 4.55);
 \node[chromM] (b2m) at (1.5, 5.8) {}; \node[allele, popblue] at (1.5, 5.8) {$A$};
 \node[chromP] (b2p) at (1.5, 4.2) {}; \node[allele, poporange] at (1.5, 4.2) {$a$};
 \draw[poporange, thick] (1.5, 5.45) -- (1.5, 4.55);
-
-% Anaphase I Arrows (Separation of homologs)
-\draw[arrow] (-1.5, 5.8) -- (-1.5, 6.8); % J up
-\draw[arrow] (1.5, 5.8) -- (1.5, 6.8);   % A up
-\draw[arrow] (-1.5, 4.2) -- (-1.5, 3.2); % j down
-\draw[arrow] (1.5, 4.2) -- (1.5, 3.2);   % a down
-
-% Telophase I / Gametes Result 1 (Top pole gets J and A; Bottom gets j and a)
-\node[labelbox] at (0, 1.8) {\textbf{Pôle 1 : Gamètes $JA$ \quad Pôle 2 : Gamètes $ja$}};
-% Pole 1 (Top)
-\node[chromM] at (-1.5, 1.8) {}; \node[allele, popblue] at (-1.5, 1.8) {$J$};
-\node[chromM] at (0.5, 1.8) {}; \node[allele, popblue] at (0.5, 1.8) {$A$};
-% Pole 2 (Bottom)
+\draw[arrow] (-1.5, 5.8) -- (-1.5, 6.9);
+\draw[arrow] (1.5, 5.8) -- (1.5, 6.9);
+\draw[arrow] (-1.5, 4.2) -- (-1.5, 3.1);
+\draw[arrow] (1.5, 4.2) -- (1.5, 3.1);
+% Résultat
+\node[labelbox] at (0, 2.4) {Pôle 1 : gamètes $JA$\\ Pôle 2 : gamètes $ja$};
+\node[chromM] at (-1.5, 1.2) {}; \node[allele, popblue] at (-1.5, 1.2) {$J$};
+\node[chromM] at (0.2, 1.2) {}; \node[allele, popblue] at (0.2, 1.2) {$A$};
 \node[chromP] at (-1.5, 0.2) {}; \node[allele, poporange] at (-1.5, 0.2) {$j$};
-\node[chromP] at (0.5, 0.2) {}; \node[allele, poporange] at (0.5, 0.2) {$a$};
+\node[chromP] at (0.2, 0.2) {}; \node[allele, poporange] at (0.2, 0.2) {$a$};
+\node[font=\footnotesize, anchor=west] at (0.6, 1.2) {Pôle 1};
+\node[font=\footnotesize, anchor=west] at (0.6, 0.2) {Pôle 2};
+\end{scope}
 
-% --- Configuration 2 : Orientation 2 (shifted right) ---
+% --- Configuration 2 ---
 \begin{scope}[xshift=10cm]
-\node[labelbox] at (0, 7.0) {\textbf{Orientation 2 (aléatoire)}};
-\draw[plate] (-3.5, 5.0) -- (3.5, 5.0) node[right=2mm] {Plaque équatoriale};
-
-% Bivalent 1 (Chr 1) - Maternal on Bottom, Paternal on Top
+\node[labelbox] at (0, 7.2) {Orientation 2 (aléatoire)};
+\draw[plate] (-3.5, 5.0) -- (3.5, 5.0) node[right=2mm, font=\footnotesize] {Plaque équatoriale};
 \node[chromP] (b1p) at (-1.5, 5.8) {}; \node[allele, poporange] at (-1.5, 5.8) {$j$};
 \node[chromM] (b1m) at (-1.5, 4.2) {}; \node[allele, popblue] at (-1.5, 4.2) {$J$};
 \draw[popblue, thick] (-1.5, 5.45) -- (-1.5, 4.55);
-
-% Bivalent 2 (Chr 2) - Maternal on Top, Paternal on Bottom (Same as Orient 1 for Chr2)
 \node[chromM] (b2m) at (1.5, 5.8) {}; \node[allele, popblue] at (1.5, 5.8) {$A$};
 \node[chromP] (b2p) at (1.5, 4.2) {}; \node[allele, poporange] at (1.5, 4.2) {$a$};
 \draw[poporange, thick] (1.5, 5.45) -- (1.5, 4.55);
-
-% Anaphase I Arrows
-\draw[arrow] (-1.5, 5.8) -- (-1.5, 6.8); % j up
-\draw[arrow] (1.5, 5.8) -- (1.5, 6.8);   % A up
-\draw[arrow] (-1.5, 4.2) -- (-1.5, 3.2); % J down
-\draw[arrow] (1.5, 4.2) -- (1.5, 3.2);   % a down
-
-% Gametes Result 2
-\node[labelbox] at (0, 1.8) {\textbf{Pôle 1 : Gamètes $jA$ \quad Pôle 2 : Gamètes $Ja$}};
-% Pole 1 (Top) gets j and A
-\node[chromP] at (-1.5, 1.8) {}; \node[allele, poporange] at (-1.5, 1.8) {$j$};
-\node[chromM] at (0.5, 1.8) {}; \node[allele, popblue] at (0.5, 1.8) {$A$};
-% Pole 2 (Bottom) gets J and a
+\draw[arrow] (-1.5, 5.8) -- (-1.5, 6.9);
+\draw[arrow] (1.5, 5.8) -- (1.5, 6.9);
+\draw[arrow] (-1.5, 4.2) -- (-1.5, 3.1);
+\draw[arrow] (1.5, 4.2) -- (1.5, 3.1);
+% Résultat
+\node[labelbox] at (0, 2.4) {Pôle 1 : gamètes $jA$\\ Pôle 2 : gamètes $Ja$};
+\node[chromP] at (-1.5, 1.2) {}; \node[allele, poporange] at (-1.5, 1.2) {$j$};
+\node[chromM] at (0.2, 1.2) {}; \node[allele, popblue] at (0.2, 1.2) {$A$};
 \node[chromM] at (-1.5, 0.2) {}; \node[allele, popblue] at (-1.5, 0.2) {$J$};
-\node[chromP] at (0.5, 0.2) {}; \node[allele, poporange] at (0.5, 0.2) {$a$};
+\node[chromP] at (0.2, 0.2) {}; \node[allele, poporange] at (0.2, 0.2) {$a$};
+\node[font=\footnotesize, anchor=west] at (0.6, 1.2) {Pôle 1};
+\node[font=\footnotesize, anchor=west] at (0.6, 0.2) {Pôle 2};
 \end{scope}
 \end{tikzpicture}
 \legende{Mécanisme du brassage interchromosomique (Anaphase I). Deux paires de chromosomes homologues (Bleu = Chromosome maternel, Orange = Chromosome paternel). Chr 1 porte $J/j$, Chr 2 porte $A/a$. \textbf{Gauche :} Orientation 1 $\rightarrow$ Gamètes parentaux ($JA$, $ja$). \textbf{Droite :} Orientation 2 $\rightarrow$ Gamètes recombinés ($Ja$, $jA$). Les deux orientations sont équiprobables (50\% chacune), d'où 4 types de gamètes à 25\% chacun.}
@@ -1263,7 +1185,7 @@ Le \textbf{crossing‑over} est l’échange \emph{réciproque} de fragments d�
 \end{definition}
 
 \begin{popfigure}
-\begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
+\begin{tikzpicture}[every node/.style={font=\small}]
 % Chromosome homologue 1 (bleu) - deux chromatides sœurs
 \draw[popblue, thick] (0,2.2) -- (7,2.2);
 \draw[popblue, thick] (0,1.8) -- (7,1.8);
@@ -1272,23 +1194,23 @@ Le \textbf{crossing‑over} est l’échange \emph{réciproque} de fragments d�
 \draw[poporange, thick] (0,-0.2) -- (7,-0.2);
 % Centromères
 \draw[popdark, thick] (3.5,2.2) -- (3.5,-0.2);
-% Allèles avant crossing-over
-\node[popblue] at (1.5,2.5) {$A$};
-\node[popblue] at (5.5,2.5) {$B$};
-\node[popblue] at (1.5,1.5) {$A$};
-\node[popblue] at (5.5,1.5) {$B$};
-\node[poporange] at (1.5,-0.5) {$a$};
-\node[poporange] at (5.5,-0.5) {$b$};
-\node[poporange] at (1.5,-0.9) {$a$};
-\node[poporange] at (5.5,-0.9) {$b$};
-% Chiasma entre chromatides non-sœurs (haut du 1, bas du 2)
+% Allèles
+\node[popblue, fill=white, inner sep=1pt] at (1.5,2.5) {$A$};
+\node[popblue, fill=white, inner sep=1pt] at (5.5,2.5) {$B$};
+\node[popblue, fill=white, inner sep=1pt] at (1.5,1.5) {$A$};
+\node[popblue, fill=white, inner sep=1pt] at (5.5,1.5) {$B$};
+\node[poporange, fill=white, inner sep=1pt] at (1.5,-0.5) {$a$};
+\node[poporange, fill=white, inner sep=1pt] at (5.5,-0.5) {$b$};
+\node[poporange, fill=white, inner sep=1pt] at (1.5,-0.9) {$a$};
+\node[poporange, fill=white, inner sep=1pt] at (5.5,-0.9) {$b$};
+% Chiasma
 \draw[popgreen, thick, decorate, decoration={snake, amplitude=1.5pt, segment length=4pt}] (3.5,1.8) -- (3.5,0.2);
-\node[popgreen, right] at (3.7,1.0) {Chiasma};
+\node[popgreen, right, fill=white, inner sep=1pt, font=\footnotesize] at (3.7,1.0) {Chiasma};
 % Légendes
-\node[align=left, popdark] at (-1.5,2.0) {Chromatides\\sœurs (identiques)};
-\node[align=left, popdark] at (-1.5,0.0) {Chromatides\\sœurs (identiques)};
-\node[align=center, popblue] at (3.5,2.7) {Chromosome homologue 1 (paternel)};
-\node[align=center, poporange] at (3.5,-1.3) {Chromosome homologue 2 (maternel)};
+\node[align=center, popdark, font=\footnotesize] at (-1.7,2.0) {Chromatides\\sœurs (identiques)};
+\node[align=center, popdark, font=\footnotesize] at (-1.7,0.0) {Chromatides\\sœurs (identiques)};
+\node[align=center, popblue, font=\footnotesize, text width=6cm] at (3.5,3.0) {Chromosome homologue 1 (paternel)};
+\node[align=center, poporange, font=\footnotesize, text width=6cm] at (3.5,-1.5) {Chromosome homologue 2 (maternel)};
 \end{tikzpicture}
 \legende{Crossing-over en prophase I (stade pachytène). Échange réciproque entre deux chromatides non-sœurs (une de chaque homologue). Les allèles parentaux $A\,B$ et $a\,b$ donnent naissance à des chromatides recombinées $A\,b$ et $a\,B$.}
 \end{popfigure}
@@ -1822,7 +1744,7 @@ L'hémophilie A (déficit en facteur VIII) et B (déficit en facteur IX) sont de
 \begin{popfigure}
 \begin{center}
 \begin{tikzpicture}[
-  person/.style={draw, thick, minimum width=1.2cm, minimum height=0.8cm, rounded corners=3pt},
+  person/.style={draw, thick, minimum width=1.2cm, minimum height=0.8cm, rounded corners=3pt, font=\footnotesize},
   male/.style={person, rectangle, fill=popblueL},
   female/.style={person, circle, fill=poppinkL},
   affected/.style={fill=poporange!80},
@@ -1831,48 +1753,48 @@ L'hémophilie A (déficit en facteur VIII) et B (déficit en facteur IX) sont de
   link/.style={thick, popdark}
 ]
 % Generation 1
-\node[generation] (G1) at (0,4) {G1};
-\node[female, carrier] (V) at (2,4) {Victoria};
-\node[male] (A) at (5,4) {Albert};
+\node[generation] (G1) at (0,4.5) {G1};
+\node[female, carrier] (V) at (3,4.5) {Victoria};
+\node[male] (A) at (6.5,4.5) {Albert};
 \draw[link] (V) -- (A);
 % Generation 2
-\node[generation] (G2) at (0,2.5) {G2};
-\node[female, carrier] (Alice) at (0.5,2.5) {Alice};
-\node[male, affected] (Leopold) at (2.5,2.5) {Léopold};
-\node[female, carrier] (Beatrice) at (4.5,2.5) {Béatrice};
+\node[generation] (G2) at (0,3) {G2};
+\node[female, carrier] (Alice) at (1.0,3) {Alice};
+\node[male, affected] (Leopold) at (3.6,3) {Léopold};
+\node[female, carrier] (Beatrice) at (6.2,3) {Béatrice};
 \draw[link] (V) -- (Alice);
 \draw[link] (V) -- (Leopold);
 \draw[link] (V) -- (Beatrice);
 % Generation 3 - Alice line
-\node[generation] (G3a) at (0,1) {G3};
-\node[male, affected] (AlexisR) at (-1,1) {Alexis (Russie)};
-\node[female, carrier] (Irene) at (0.5,1) {Irène};
-\node[female, carrier] (Alix) at (2,1) {Alix (Tsarine)};
+\node[generation] (G3a) at (0,1.5) {G3};
+\node[male, affected] (AlexisR) at (-0.4,1.5) {Alexis R.};
+\node[female, carrier] (Irene) at (1.6,1.5) {Irène};
+\node[female, carrier] (Alix) at (3.6,1.5) {Alix};
 \draw[link] (Alice) -- (AlexisR);
 \draw[link] (Alice) -- (Irene);
 \draw[link] (Alice) -- (Alix);
 % Generation 3 - Beatrice line
-\node[male, affected] (LeopoldB) at (4,1) {Léopold};
-\node[male, affected] (Maurice) at (5,1) {Maurice};
-\node[female, carrier] (VicEug) at (6,1) {Vic.-Eug.};
+\node[male, affected] (LeopoldB) at (5.4,1.5) {Léopold};
+\node[male, affected] (Maurice) at (7.4,1.5) {Maurice};
+\node[female, carrier] (VicEug) at (9.4,1.5) {Vic.-Eug.};
 \draw[link] (Beatrice) -- (LeopoldB);
 \draw[link] (Beatrice) -- (Maurice);
 \draw[link] (Beatrice) -- (VicEug);
 % Generation 4 - Alix line
-\node[generation] (G4) at (0,-0.5) {G4};
-\node[male, affected] (Alexis2) at (2,-0.5) {Alexis (héritier)};
+\node[generation] (G4) at (0,0) {G4};
+\node[male, affected] (Alexis2) at (3.6,0) {Alexis (héritier)};
 \draw[link] (Alix) -- (Alexis2);
 % Generation 4 - VicEug line
-\node[male, affected] (Alfonso) at (5.5,-0.5) {Alphonse};
-\node[male, affected] (Gonzalo) at (6.5,-0.5) {Gonzalo};
+\node[male, affected] (Alfonso) at (7.9,0) {Alphonse};
+\node[male, affected] (Gonzalo) at (9.9,0) {Gonzalo};
 \draw[link] (VicEug) -- (Alfonso);
 \draw[link] (VicEug) -- (Gonzalo);
 % Legend
-\node[anchor=west] at (8,3.5) {\textbf{Légende :}};
-\node[male, anchor=west] at (8,3) {}; \node[anchor=west] at (9.3,3) {Homme normal};
-\node[male, affected, anchor=west] at (8,2.5) {}; \node[anchor=west] at (9.3,2.5) {Homme atteint};
-\node[female, anchor=west] at (8,2) {}; \node[anchor=west] at (9.3,2) {Femme normale};
-\node[female, carrier, anchor=west] at (8,1.5) {}; \node[anchor=west] at (9.3,1.5) {Femme conductrice};
+\node[anchor=west, font=\small] at (0,-1.8) {\textbf{Légende :}};
+\node[male, anchor=west] at (0,-2.6) {}; \node[anchor=west, font=\footnotesize] at (1.0,-2.6) {Homme normal};
+\node[male, affected, anchor=west] at (4.2,-2.6) {}; \node[anchor=west, font=\footnotesize] at (5.2,-2.6) {Homme atteint};
+\node[female, anchor=west] at (0,-3.4) {}; \node[anchor=west, font=\footnotesize] at (1.0,-3.4) {Femme normale};
+\node[female, carrier, anchor=west] at (4.2,-3.4) {}; \node[anchor=west, font=\footnotesize] at (5.2,-3.4) {Femme conductrice};
 \end{tikzpicture}
 \end{center}
 \legende{Pedigree simplifié de l'hémophilie B dans la descendance de la reine Victoria. Carrés = hommes, cercles = femmes. Rempli orange = atteint. Hachuré = conductrice (phénotype normal, un allèle muté).}
@@ -3340,31 +3262,25 @@ Total & 1500 \\ \hline
 \end{exercice}
 
 \begin{popfigure}
-\begin{tikzpicture}[scale=0.8, >=Stealth]
-% Gene order: y -- w -- m
-\draw[thick, popblue] (0,0) -- (10,0);
-% y at 0
-\node[below=3pt] at (0,0) {$y$};
-\node[above=5pt] at (0,0) {\textbf{0,0 cM}};
-% w at 5.73 cM -> scaled ~2.86 cm
-\draw[thick, popblue] (2.86, -0.1) -- (2.86, 0.1);
-\node[below=3pt] at (2.86,0) {$w$};
-\node[above=5pt] at (2.86,0) {\textbf{5,7 cM}};
-% m at 22.26 cM -> scaled ~11.13 cm (too wide). Rescale.
-% Let's rescale: 1 cM = 0.3 cm. Total ~6.7 cm.
+\begin{tikzpicture}[every node/.style={font=\small}, >=Stealth]
+% 1 cM = 0.3 cm
 \draw[thick, popblue] (0,0) -- (6.7,0);
+% y
+\draw[thick, popblue] (0,-0.15) -- (0,0.15);
 \node[below=3pt] at (0,0) {$y$};
 \node[above=5pt] at (0,0) {\textbf{0,0 cM}};
-\draw[thick, popblue] (1.72, -0.1) -- (1.72, 0.1); % 5.73 * 0.3
+% w
+\draw[thick, popblue] (1.72,-0.15) -- (1.72,0.15);
 \node[below=3pt] at (1.72,0) {$w$};
 \node[above=5pt] at (1.72,0) {\textbf{5,7 cM}};
-\draw[thick, popblue] (6.68, -0.1) -- (6.68, 0.1); % 22.26 * 0.3
+% m
+\draw[thick, popblue] (6.68,-0.15) -- (6.68,0.15);
 \node[below=3pt] at (6.68,0) {$m$};
 \node[above=5pt] at (6.68,0) {\textbf{22,3 cM}};
-% Distance labels
-\node[above=12pt] at (0.86,0) {5,7 cM};
-\node[above=12pt] at (4.2,0) {16,5 cM};
-\node[above=22pt] at (3.34,0) {22,3 cM (y-m)};
+% Distance labels (sous la carte pour éviter les chevauchements)
+\draw[<->, popmuted] (0,-0.7) -- (1.72,-0.7) node[midway, below, font=\footnotesize] {5,7 cM};
+\draw[<->, popmuted] (1.72,-1.4) -- (6.68,-1.4) node[midway, below, font=\footnotesize] {16,5 cM};
+\draw[<->, popmuted] (0,-2.1) -- (6.68,-2.1) node[midway, below, font=\footnotesize] {22,3 cM ($y$--$m$)};
 \end{tikzpicture}
 \legende{Carte factorielle des gènes $y$, $w$, $m$ sur le chromosome X de la Drosophile (Expérience 1). L'ordre est $y - w - m$. Distances calculées à partir des fréquences de recombinaison observées.}
 \end{popfigure}
