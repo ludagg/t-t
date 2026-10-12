@@ -546,24 +546,28 @@ Une \cle{énergie fossile} est une énergie issue de la transformation, pendant 
 
 \begin{popfigure}
 \begin{center}
-\begin{tikzpicture}[font=\small, >=Stealth]
+\begin{tikzpicture}[font=\small, >=Stealth, scale=0.92,
+  nod/.style={draw, rounded corners, minimum width=3.0cm, minimum height=1cm, align=center},
+  lab/.style={font=\scriptsize}]
 % --- Cycle fossile ---
-\node[draw=popdark, fill=popdark!15, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (gis) at (0,0) {Gisement fossile\\(pétrole, charbon)};
-\node[draw=poporange, fill=poporangeL, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (usine) at (4.2,0) {Combustion\\(moteur, usine)};
-\node[draw=popink, fill=poppinkL, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (atm1) at (8.4,0) {\ce{CO2} accumulé\\dans l'atmosphère};
-\draw[->, very thick, popdark] (gis) -- (usine) node[midway, above]{extraction};
-\draw[->, very thick, poporange] (usine) -- (atm1) node[midway, above]{émission nette};
-\draw[->, dashed, popmuted] (atm1.south) .. controls (4.2,-1.6) .. (gis.south) node[midway, below, align=center]{retour impossible : formation en millions d'années};
-\node[font=\bfseries, popdark] at (4.2,1.3) {Cycle OUVERT : ressource épuisable};
+\node[nod, draw=popdark, fill=popdark!15] (gis) at (0,0) {Gisement fossile\\(pétrole, charbon)};
+\node[nod, draw=poporange, fill=poporangeL] (usine) at (5.6,0) {Combustion\\(moteur, usine)};
+\node[nod, draw=popink, fill=poppinkL] (atm1) at (11.2,0) {\ce{CO2} accumulé\\dans l'atmosphère};
+\draw[->, very thick, popdark] (gis) -- (usine) node[midway, above, lab]{extraction};
+\draw[->, very thick, poporange] (usine) -- (atm1) node[midway, above, lab]{émission};
+\draw[->, dashed, popmuted] (atm1.south) .. controls (5.6,-1.7) .. (gis.south)
+  node[midway, below, align=center, font=\scriptsize]{retour impossible : formation en millions d'années};
+\node[font=\bfseries, popdark] at (5.6,1.35) {Cycle OUVERT : ressource épuisable};
 
 % --- Cycle renouvelable ---
-\node[draw=popgreen, fill=popgreenL, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (plante) at (0,-3.6) {Plante\\(biomasse)};
-\node[draw=popblue, fill=popblueL, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (carbu) at (4.2,-3.6) {Biocarburant\\ou bois énergie};
-\node[draw=popink, fill=poppinkL, rounded corners, minimum width=2.6cm, minimum height=1cm, align=center] (atm2) at (8.4,-3.6) {\ce{CO2} atmosphérique};
-\draw[->, very thick, popgreen] (plante) -- (carbu) node[midway, above]{récolte, transformation};
-\draw[->, very thick, popblue] (carbu) -- (atm2) node[midway, above]{combustion};
-\draw[->, very thick, popgreen] (atm2.south) .. controls (4.2,-5.4) .. (plante.south) node[midway, below, align=center]{photosynthèse : le \ce{CO2} est réabsorbé en quelques années};
-\node[font=\bfseries, popgreen!60!black] at (4.2,-2.3) {Cycle BOUCLÉ : ressource renouvelable};
+\node[nod, draw=popgreen, fill=popgreenL] (plante) at (0,-5.0) {Plante\\(biomasse)};
+\node[nod, draw=popblue, fill=popblueL] (carbu) at (5.6,-5.0) {Biocarburant\\ou bois énergie};
+\node[nod, draw=popink, fill=poppinkL] (atm2) at (11.2,-5.0) {\ce{CO2} atmosphérique};
+\draw[->, very thick, popgreen] (plante) -- (carbu) node[midway, above, lab]{récolte};
+\draw[->, very thick, popblue] (carbu) -- (atm2) node[midway, above, lab]{combustion};
+\draw[->, very thick, popgreen] (atm2.south) .. controls (5.6,-6.8) .. (plante.south)
+  node[midway, below, align=center, font=\scriptsize]{photosynthèse : le \ce{CO2} est réabsorbé en quelques années};
+\node[font=\bfseries, popgreen!60!black] at (5.6,-3.65) {Cycle BOUCLÉ : ressource renouvelable};
 \end{tikzpicture}
 \end{center}
 \legende{Comparaison des cycles de vie d'une énergie fossile (en haut, cycle ouvert : le carbone libéré ne retourne pas au gisement) et d'une énergie renouvelable issue de la biomasse (en bas, cycle bouclé : la photosynthèse réabsorbe le \ce{CO2} émis par la combustion).}
@@ -1194,7 +1198,7 @@ La bonne nouvelle est que cette technique ne demande \textbf{aucune machine indu
 \draw[very thick, popdark, fill=popgoldL] (0,0) rectangle (8,5);
 % Toile (tamis)
 \draw[fill=popblueL, draw=popline, line width=0.5pt] (0.5,0.5) rectangle (7.5,4.5);
-% Mailles du tamis (représentation simplifiée)
+% Mailles du tamis
 \foreach \x in {1,1.5,...,7} {\draw[popline, very thin] (\x,0.5) -- (\x,4.5);}
 \foreach \y in {1,1.5,...,4} {\draw[popline, very thin] (0.5,\y) -- (7.5,\y);}
 % Fibres déposées (aspect feutre)
@@ -1206,16 +1210,23 @@ La bonne nouvelle est que cette technique ne demande \textbf{aucune machine indu
   \draw[poporange, thick, line cap=round] (\xi,\yi) -- ++(\ang:\len);
 }
 % Flèches d'égouttage
-\draw[-{Stealth[length=2mm]}, popblue, thick] (4, -0.3) -- (4, 0.2) node[midway, right] {Eau};
-\draw[-{Stealth[length=2mm]}, popblue, thick] (6, -0.3) -- (6, 0.2);
-% Légendes
-\draw[-{Stealth[length=2.5mm]}, popdark] (8.3, 4.7) node[right, align=left, text width=3.5cm] {\textbf{1} Cadre de bois rigide\\ (ex: tasseaux \SI{3x3}{cm})} -- (7.8, 4.7);
-\draw[-{Stealth[length=2.5mm]}, popblue] (8.3, 2.5) node[right, align=left, text width=3.5cm] {\textbf{2} Toile fine tendue (tamis)\\ moustiquaire nylon ou inox} -- (7.6, 2.5);
-\draw[-{Stealth[length=2.5mm]}, poporange] (8.3, 1.0) node[right, align=left, text width=3.5cm] {\textbf{3} Nappe de fibres de cellulose\\ déposée par égouttage} -- (7.0, 1.2);
-\draw[-{Stealth[length=2.5mm]}, popgreen] (-0.3, 2.5) node[left, align=right, text width=3.5cm] {\textbf{4} L'eau traverse les mailles\\ (égouttage gravitaire)} -- (0.5, 2.5);
-\draw[-{Stealth[length=2.5mm]}, poppurple] (-0.3, 0.5) node[left, align=right, text width=3.5cm] {\textbf{5} Feuille humide couchée\\ sur feutre/planche pour pressage} -- (0.5, 0.5);
+\draw[-{Stealth[length=2mm]}, popblue, thick] (4, -0.35) -- (4, 0.2);
+\draw[-{Stealth[length=2mm]}, popblue, thick] (6, -0.35) -- (6, 0.2);
+\node[font=\scriptsize, popblue, anchor=north] at (5,-0.4) {Eau (égouttage gravitaire)};
+% Numéros repères
+\node[circle, fill=white, draw=popdark, font=\scriptsize\bfseries, inner sep=1pt] at (0.25,4.75) {1};
+\node[circle, fill=white, draw=popblue, font=\scriptsize\bfseries, inner sep=1pt] at (7.75,4.75) {2};
+\node[circle, fill=white, draw=poporange, font=\scriptsize\bfseries, inner sep=1pt] at (7.75,0.25) {3};
+\node[circle, fill=white, draw=popgreen, font=\scriptsize\bfseries, inner sep=1pt] at (0.25,0.25) {4};
+\node[circle, fill=white, draw=poppurple, font=\scriptsize\bfseries, inner sep=1pt] at (4,-1.15) {5};
 \end{tikzpicture}
 \end{center}
+{\footnotesize\raggedright
+\textbf{1} Cadre de bois rigide (ex. tasseaux \SI{3x3}{cm}) \textbullet{}
+\textbf{2} Toile fine tendue (tamis : moustiquaire nylon ou inox) \textbullet{}
+\textbf{3} Nappe de fibres de cellulose déposée par égouttage \textbullet{}
+\textbf{4} L'eau traverse les mailles (égouttage gravitaire) \textbullet{}
+\textbf{5} Feuille humide couchée sur feutre/planche pour pressage.\par}
 \legende{Schéma de principe du cadre à tamis (moule à papier) pour fabrication artisanale. \textbf{1} Cadre bois ; \textbf{2} Toile (tamis) ; \textbf{3} Fibres retenues formant la feuille ; \textbf{4} Égouttage de l'eau ; \textbf{5} Couchage (transfert de la feuille humide sur support absorbant) avant pressage.}
 \end{popfigure}
 
@@ -1388,32 +1399,32 @@ L'extrudeuse est la machine clé de la plasturgie : c'est elle qui réalise le p
 % Trémie
 \draw[thick, popdark, fill=popblueL] (0.7,0.9) -- (0.3,2.1) -- (1.9,2.1) -- (1.5,0.9) -- cycle;
 \node[font=\scriptsize] at (1.1,2.45) {Trémie};
-\node[font=\scriptsize, text=popmuted] at (1.1,1.55) {paillettes};
+\node[font=\scriptsize, text=popmuted] at (1.5,1.55) {paillettes};
 \draw[-{Stealth[length=2mm]}, popblue, thick] (1.1,1.3) -- (1.1,0.95);
 % Vis sans fin
 \draw[very thick, poporange] (0.3,0) -- (8.1,0);
 \foreach \x in {0.5,1.1,1.7,2.3,2.9,3.5,4.1,4.7,5.3,5.9,6.5,7.1,7.7}{
   \draw[thick, poporange] (\x,-0.62) .. controls (\x+0.25,-0.1) and (\x+0.25,0.1) .. (\x,0.62);
 }
-\node[font=\scriptsize, text=poporange] at (2.2,-1.25) {Vis sans fin (transport + compression)};
+\node[font=\scriptsize, text=poporange, anchor=west] at (2.0,-1.35) {Vis sans fin (transport + compression)};
 % Zones de chauffe
 \draw[thick, poppink, fill=poppinkL] (2.6,-0.9) rectangle (4.4,0.9);
 \draw[thick, poppink, fill=poppinkL] (4.7,-0.9) rectangle (6.5,0.9);
 \node[font=\scriptsize, text=poppink] at (3.5,1.25) {Zone de chauffe 1};
-\node[font=\scriptsize, text=poppink] at (5.6,1.25) {Zone de chauffe 2};
-\node[font=\scriptsize, text=poppink] at (5.6,-1.25) {$\approx$ \SI{270}{\celsius} : fusion du PET};
+\node[font=\scriptsize, text=poppink] at (5.6,1.70) {Zone de chauffe 2};
+\node[font=\scriptsize, text=poppink, anchor=west] at (2.0,-1.85) {$\approx$ \SI{270}{\celsius} : fusion du PET};
 % Filière
 \draw[thick, popdark, fill=popgreenL] (8.4,-0.5) -- (9.1,-0.18) -- (9.1,0.18) -- (8.4,0.5) -- cycle;
 \node[font=\scriptsize] at (8.75,0.85) {Filière};
 % Filaments
 \draw[very thick, popgreen] (9.1,0.08) -- (10.6,0.08);
 \draw[very thick, popgreen] (9.1,-0.08) -- (10.6,-0.08);
-\node[font=\scriptsize, text=popgreen] at (10.0,0.5) {Filaments};
+\node[font=\scriptsize, text=popgreen] at (10.0,0.55) {Filaments};
 \draw[-{Stealth[length=2mm]}, popgreen, thick] (10.6,0) -- (11.3,0);
 \node[font=\scriptsize, text=popgreen] at (11.9,0) {granulés};
 % Sens de rotation
 \draw[-{Stealth[length=2mm]}, poporange, thick] (0.1,1.3) arc (150:30:0.5);
-\node[font=\scriptsize, text=poporange] at (0.75,1.75) {rotation};
+\node[font=\scriptsize, text=poporange, anchor=west] at (0.25,2.05) {rotation};
 \end{tikzpicture}
 \end{center}
 \legende{Schéma simplifié d'une extrudeuse. Les paillettes de PET introduites par la trémie sont saisies par la vis sans fin en rotation, fondues dans les zones de chauffe (environ \SI{270}{\celsius}), puis forcées à travers la filière d'où elles sortent en filaments continus, refroidis puis découpés en granulés.}
