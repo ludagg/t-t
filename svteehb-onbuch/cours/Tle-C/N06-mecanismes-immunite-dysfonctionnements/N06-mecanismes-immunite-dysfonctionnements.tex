@@ -543,68 +543,62 @@ Un \cle{leucocyte} (ou globule blanc) est une cellule nucléée du sang et de la
 
 \begin{popfigure}
 \begin{tikzpicture}[
-    scale=0.85, every node/.style={transform shape},
-    stem/.style={draw=popdark, thick, fill=popcream, rounded corners=4pt, minimum width=3cm, minimum height=1.1cm, font=\small\bfseries, align=center},
-    prog/.style={draw=popblue, thick, fill=popblueL, rounded corners=4pt, minimum width=2.8cm, minimum height=0.9cm, font=\small, align=center},
-    mature/.style={draw=popgreen, thick, fill=popgreenL, rounded corners=4pt, minimum width=2.6cm, minimum height=0.85cm, font=\small, align=center},
+    every node/.style={font=\small},
+    stem/.style={draw=popdark, thick, fill=popcream, rounded corners=4pt, align=center, text width=3.4cm, minimum width=3.4cm, inner sep=4pt, font=\small\bfseries},
+    prog/.style={draw=popblue, thick, fill=popblueL, rounded corners=4pt, align=center, text width=3.2cm, minimum width=3.2cm, inner sep=3pt, font=\small},
+    mature/.style={draw=popgreen, thick, fill=popgreenL, rounded corners=4pt, align=center, text width=3.2cm, minimum width=3.2cm, inner sep=3pt, font=\small},
     arrow/.style={-Stealth, thick, popdark},
     dasharrow/.style={-Stealth, thick, poporange, dashed},
+    bus/.style={popdark, thick},
 ]
-% Niveaux y
-\def\yStem{6}
-\def\yProg{3.5}
-\def\yMature{0.5}
 
-% Cellule souche
-\node[stem, align=center] (HSC) at (0,\yStem){Cellule souche hématopoïétique\\$($CD34$^+$$)$\\Moelle osseuse rouge};
+% Cellule souche (sommet)
+\node[stem] (HSC) at (0,0) {Cellule souche hématopoïétique (CD34$^+$)\\Moelle osseuse rouge};
 
 % Progéniteurs
-\node[prog, align=center] (CMP) at (-5.5,\yProg){Progéniteur myéloïde commun\\ (CMP)};
-\node[prog, align=center] (CLP) at (5.5,\yProg){Progéniteur lymphoïde commun\\ (CLP)};
+\node[prog, below left=1.4cm and 2.2cm of HSC] (CMP) {Progéniteur myéloïde commun (CMP)};
+\node[prog, below right=1.4cm and 2.2cm of HSC] (CLP) {Progéniteur lymphoïde commun (CLP)};
+\draw[arrow] (HSC.south) -- ++(0,-0.5) -| (CMP.north);
+\draw[arrow] (HSC.south) -- ++(0,-0.5) -| (CLP.north);
 
-% Lignée myéloïde
-\node[mature, align=center] (GMP) at (-8,\yMature){Progéniteur granulocytaire-\\monocytaire (GMP)};
-\node[mature] (Mono) at (-11,-2) {Monocyte $\rightarrow$ Macrophage};
-\node[mature] (PolyN) at (-8,-2) {Polynucléaire neutrophile};
-\node[mature] (PolyE) at (-5,-2) {Polynucléaire éosinophile};
-\node[mature] (PolyB) at (-2,-2) {Polynucléaire basophile};
+% --- Lignée myéloïde (colonne gauche, bus) ---
+\node[mature, below=1.2cm of CMP] (GMP) {Progéniteur granulocytaire-monocytaire (GMP)};
+\draw[arrow] (CMP.south) -- (GMP.north);
 
-% Lignée lymphoïde
-\node[mature] (preB) at (3,\yMature) {Pré-lymphocyte B};
-\node[mature, align=center] (LB) at (3,-2){Lymphocyte B mature\\ (Moelle osseuse)};
-\node[mature] (preT) at (8,\yMature) {Pré-lymphocyte T};
-\node[mature] (Thymus) at (8,-2) {Maturation dans le \textbf{Thymus}};
-\node[mature] (LT4) at (11,-2) {LT CD4$^+$ (Auxiliaire)};
-\node[mature] (LT8) at (8,-4) {LT CD8$^+$ (Cytotoxique)};
+\node[mature, below=1.2cm of GMP] (Mono) {Monocyte $\rightarrow$ Macrophage};
+\node[mature, below=0.9cm of Mono] (PolyN) {Polynucléaire neutrophile};
+\node[mature, below=0.9cm of PolyN] (PolyE) {Polynucléaire éosinophile};
+\node[mature, below=0.9cm of PolyE] (PolyB) {Polynucléaire basophile};
 
-% Flèches
-\draw[arrow] (HSC.south west) -- (CMP.north);
-\draw[arrow] (HSC.south east) -- (CLP.north);
+% bus vertical reliant le GMP aux quatre effecteurs
+\coordinate (busL) at ([xshift=-2.6cm]GMP.west);
+\draw[bus] (GMP.west) -- (busL);
+\draw[bus] (busL) -- (busL |- PolyB.south);
+\foreach \n in {Mono,PolyN,PolyE,PolyB} {\draw[arrow] (busL |- \n.west) -- (\n.west);}
+\node[align=center, font=\small\itshape, popmuted, below=0.25cm of PolyB] {Immunité non spécifique};
 
-\draw[arrow] (CMP.south west) -- (GMP.north);
-\draw[arrow] (GMP.south west) -- (Mono.north);
-\draw[arrow] (GMP.south) -- (PolyN.north);
-\draw[arrow] (GMP.south east) -- (PolyE.north);
-\draw[arrow] (GMP.east) -- (PolyB.west);
-
-\draw[arrow] (CLP.south west) -- (preB.north);
+% --- Lignée lymphoïde (colonne droite) ---
+\node[mature, below=1.2cm of CLP] (preB) {Pré-lymphocyte B};
+\node[mature, below=0.9cm of preB] (LB) {Lymphocyte B mature (Moelle osseuse)};
+\draw[arrow] (CLP.south) -- (preB.north);
 \draw[arrow] (preB.south) -- (LB.north);
+\node[align=center, font=\small\itshape, popmuted, right=0.2cm of LB] {Immunité humorale};
 
-\draw[arrow] (CLP.south east) -- (preT.north);
-\draw[dasharrow] (preT.south) -- (Thymus.north); % Migration vers thymus
-\draw[arrow] (Thymus.south east) -- (LT4.north west);
-\draw[arrow] (Thymus.south west) -- (LT8.north);
-
-% Annotations
-\node[align=center, font=\small\itshape, popmuted] at (-11,-3.2) {Immunité non spécifique};
-\node[align=center, font=\small\itshape, popmuted] at (3,-3.2) {Immunité humorale};
-\node[align=center, font=\small\itshape, popmuted] at (9.5,-4.5) {Immunité cellulaire};
+\node[mature, below=1.6cm of LB] (preT) {Pré-lymphocyte T};
+\node[mature, below=0.9cm of preT] (Thymus) {Maturation dans le \textbf{Thymus}};
+\draw[dasharrow] (CLP.south) -- ++(0,-0.4) -| (preT.north);
+\draw[arrow] (preT.south) -- (Thymus.north);
+\node[mature, below left=0.9cm and 1.6cm of Thymus] (LT8) {LT CD8$^+$ (Cytotoxique)};
+\node[mature, below right=0.9cm and 1.6cm of Thymus] (LT4) {LT CD4$^+$ (Auxiliaire)};
+\draw[arrow] (Thymus.south) -- ++(0,-0.4) -| (LT8.north);
+\draw[arrow] (Thymus.south) -- ++(0,-0.4) -| (LT4.north);
+\node[align=center, font=\small\itshape, popmuted, below=0.25cm of LT8] {Immunité cellulaire};
 
 % Légende boîtes
-\node[draw=popdark, fill=popcream, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at (-11.5,6.5) {Cellule souche};
-\node[draw=popblue, fill=popblueL, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at (-11.5,6.0) {Progéniteur engagé};
-\node[draw=popgreen, fill=popgreenL, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at (-11.5,5.5) {Cellule effectrice mature};
-\node[draw=poporange, dashed, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at (-11.5,5.0) {Migration / Maturation};
+\node[draw=popdark, fill=popcream, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at ([xshift=-2.4cm,yshift=0.6cm]HSC.north west) {Cellule souche};
+\node[draw=popblue, fill=popblueL, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at ([xshift=-2.4cm,yshift=0.05cm]HSC.north west) {Progéniteur engagé};
+\node[draw=popgreen, fill=popgreenL, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at ([xshift=-2.4cm,yshift=-0.5cm]HSC.north west) {Cellule effectrice mature};
+\node[draw=poporange, dashed, rounded corners=2pt, inner sep=2pt, font=\tiny, anchor=north west] at ([xshift=-2.4cm,yshift=-1.05cm]HSC.north west) {Migration / Maturation};
 \end{tikzpicture}
 \legende{Schéma de l'hématopoïèse humaine : différenciation des cellules souches de la moelle osseuse rouge vers les effecteurs de l'immunité. Les flèches pleines indiquent la différenciation ; la flèche pointillée la migration des pré-LT vers le thymus pour maturation.}
 \end{popfigure}
@@ -1156,60 +1150,58 @@ Réponse stéréotypée, non spécifique, déclenchée par une agression (infect
 \end{experience}
 
 \begin{popfigure}
-\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
-  % Styles
+\begin{tikzpicture}[every node/.style={font=\small}]
   \tikzset{
-    vessel/.style={draw=popdark, thick, fill=popred!20, rounded corners=2mm},
-    endo/.style={draw=popblue, ultra thick},
-    basal/.style={draw=popmuted, thick, dashed},
-    tissue/.style={fill=popcream!50},
-    mast/.style={draw=poppurple, thick, fill=poppurpleL, circle, minimum size=0.5cm},
-    pnn/.style={draw=poporange, thick, fill=poporangeL, circle, minimum size=0.4cm},
-    mono/.style={draw=popgreen, thick, fill=popgreenL, ellipse, minimum width=0.6cm, minimum height=0.35cm},
-    hist/.style={draw=poppink, very thick, -{Stealth[length=3mm]}, poppink},
-    cyto/.style={draw=popblue, thick, -{Stealth[length=2mm]}, popblue},
-    label/.style={font=\footnotesize, text=popdark, align=center},
-    title/.style={font=\bfseries\small, popdark}
+  vessel/.style={draw=popdark, thick, fill=popred!20, rounded corners=2mm},
+  endo/.style={draw=popblue, ultra thick},
+  basal/.style={draw=popmuted, thick, dashed},
+  tissue/.style={fill=popcream!50},
+  mast/.style={draw=poppurple, thick, fill=poppurpleL, circle, minimum size=0.5cm},
+  pnn/.style={draw=poporange, thick, fill=poporangeL, circle, minimum size=0.4cm},
+  mono/.style={draw=popgreen, thick, fill=popgreenL, ellipse, minimum width=0.6cm, minimum height=0.35cm},
+  hist/.style={draw=poppink, very thick, -{Stealth[length=3mm]}, poppink},
+  cyto/.style={draw=popblue, thick, -{Stealth[length=2mm]}, popblue},
+  label/.style={font=\footnotesize, text=popdark, align=center},
+  title/.style={font=\bfseries\small, popdark}
   }
 
-  % Normal vessel (left)
+  % Vaisseau sain (gauche)
   \begin{scope}[xshift=0cm]
     \node[vessel, minimum width=2.5cm, minimum height=1.8cm] (V1) at (1.25, 0) {};
     \draw[endo] (0, 0.3) -- (2.5, 0.3) node[label, midway, above] {Endothélium jointif};
     \draw[basal] (0, -0.3) -- (2.5, -0.3) node[label, midway, below] {Membrane basale};
-    \foreach \y in {0.6, 0.9, 1.2} \draw[popred, thick] (0.3, \y) -- (2.2, \y); % Blood flow
+    \foreach \y in {0.6, 0.9, 1.2} \draw[popred, thick] (0.3, \y) -- (2.2, \y);
     \node[pnn] at (0.6, 0.6) {}; \node[pnn] at (1.2, 0.9) {}; \node[pnn] at (1.8, 0.6) {};
     \node[mast] (M1) at (1.25, -1.2) {};
-    \node[label, align=center] at (M1){Mastocyte\\ (granules intacts)};
-    \node[title] at (1.25, 1.5) {Vaisseau sain (repos)};
+    \node[label, align=center] at (1.25, -2.0) {Mastocyte\\ (granules intacts)};
+    \node[title] at (1.25, 1.7) {Vaisseau sain (repos)};
   \end{scope}
 
-  % Inflamed vessel (right)
+  % Vaisseau enflammé (droite)
   \begin{scope}[xshift=7cm]
     \node[vessel, minimum width=3.0cm, minimum height=2.5cm] (V2) at (1.5, 0) {};
     \draw[endo] (0, 0.5) -- (3.0, 0.5);
     \draw[basal] (0, -0.5) -- (3.0, -0.5);
-    % Dilated vessel: wider
     \foreach \y in {0.8, 1.2, 1.6, 2.0} \draw[popred, thick] (0.2, \y) -- (2.8, \y);
-    % Leukocytes rolling/adhering
     \node[pnn] at (0.5, 0.8) {}; \node[pnn] at (1.0, 1.2) {}; \node[pnn] at (2.0, 1.6) {};
     \node[mono, rotate=90] at (2.5, 1.2) {};
-    % Diapedesis: PNN squeezing between endothelial cells
+    % Diapédèse
     \node[pnn] (Pdiap) at (1.5, 0.5) {};
     \draw[poporange, thick, decorate, decoration={zigzag, amplitude=1pt, segment length=2pt}] (Pdiap) -- (1.5, -0.2);
-    \node[label, poporange] at (1.5, -0.6) {Diapédèse};
-    % Mastocyte degranulating
-    \node[mast] (M2) at (1.5, -1.5) {};
+    \node[label, poporange] at (2.7, -0.4) {Diapédèse};
+    % Œdème interstitiel
+    \draw[popblue!30, fill=popblue!10] (0.2, -0.6) -- (2.8, -0.6) -- (2.8, -1.4) -- (0.2, -1.4) -- cycle;
+    \node[label, popblue, align=center] at (0.6, -1.0){Œdème interstitiel\\(protéines, fluide)};
+    % Mastocyte et dégranulation
+    \node[mast] (M2) at (1.9, -2.6) {};
+    \node[label, align=center] at (1.9, -3.4) {Mastocyte\\ (dégranulation)};
     \foreach \angle/\len in {30/0.6, 60/0.7, 90/0.8, 120/0.7, 150/0.6}
-      \draw[hist] (M2) -- ++(\angle:\len) node[label, pos=1.2, anchor=south] {Histamine};
-    \node[label, align=center] at (M2){Mastocyte\\ (dégranulation)};
-    % Chemotaxis arrows
-    \draw[cyto] (3.2, 1.0) -- (3.8, 0.5) node[label, right, align=center]{Chimioattractants\\(C5a, LTB4, fMLP)};
+      \draw[hist] (M2) -- ++(\angle:\len);
+    \node[label, poppink] at (2.85, -1.75) {Histamine};
+    % Chimioattractants
+    \draw[cyto] (3.2, 1.0) -- (3.8, 0.5) node[label, right, align=center, text width=2.4cm]{Chimioattractants\\(C5a, LTB4, fMLP)};
     \draw[cyto] (3.2, 1.5) -- (3.8, 2.0);
-    % Tissue edema
-    \draw[popblue!30, fill=popblue!10] (0.2, -0.5) -- (2.8, -0.5) -- (2.8, -1.3) -- (0.2, -1.3) -- cycle;
-    \node[label, popblue, align=center] at (1.5, -0.9){Œdème interstitiel\\(protéines, fluide)};
-    \node[title] at (1.5, 2.3) {Foyer inflammatoire aigu};
+    \node[title] at (1.5, 2.6) {Foyer inflammatoire aigu};
   \end{scope}
 \end{tikzpicture}
 \legende{Schéma comparatif : à gauche, capillaire au repos (endothélium jointif, flux rapide, mastocyte granulé) ; à droite, foyer inflammatoire : vasodilatation (calor, rubor), hyperperméabilité (œdème/tumor), dégranulation mastocytaire (histamine), adhérence et diapédèse des polynucléaires neutrophiles (PNN) et monocytes vers le tissu (chimioattractisme).}
@@ -1338,7 +1330,6 @@ La réponse à médiation cellulaire vise à éliminer les \textbf{cellules alt�
 
 \begin{popfigure}
 \begin{tikzpicture}[
-    scale=0.9,
     every node/.style={font=\small},
     cell/.style={draw=popdark, thick, fill=popcream, rounded corners=0.3cm, minimum width=2.5cm, minimum height=1.8cm},
     lymp/.style={draw=popblue, thick, fill=popblueL, circle, minimum size=1.2cm},
@@ -1357,42 +1348,41 @@ La réponse à médiation cellulaire vise à éliminer les \textbf{cellules alt�
     \node[mol] (cmh\angle) at (\angle:\r) {};
     \draw[poporange, thick] (\angle:\r) -- (\angle:1.15);
 }
-\node[poporange, align=center] at (0,-1.4) {CMH I + peptide viral};
+\node[poporange, align=center] at (0,-1.5) {CMH I + peptide viral};
 % LT8
 \node[lymp] (lt8) at (4,0) {};
-\node[align=center] at (4,0.9) {\textbf{LT8 (CD8$^+$)}};
+\node[align=center] at (4,1.0) {\textbf{LT8 (CD8$^+$)}};
 \node at (4,0) {TCR};
 \node at (4,-0.4) {CD8};
 % Flèche reconnaissance
-\draw[arrow] (lt8.west) -- ++(-0.8,0) node[midway, above] {Reconnaissance} -- (cible.east);
+\draw[arrow] (lt8.west) -- (cible.east);
+\node[fill=white, inner sep=1pt, font=\footnotesize] at (2.3,0.55) {Reconnaissance};
 % Synapse immunologique
 \draw[poppurple, thick, dashed] (1.2,-0.3) rectangle (2.8,0.3);
-\node[poppurple, align=center] at (2,0.6) {Synapse immunologique};
+\node[poppurple, align=center] at (2,1.15) {Synapse immunologique};
 % Activation : LT4 aide (schématisé à côté)
-\node[draw=popgreen, thick, fill=popgreenL, circle, minimum size=1cm] (lt4) at (4,2.2) {};
-\node[align=center] at (4,3) {\textbf{LT4 (CD4$^+$)}};
-\node at (4,2.2) {TCR};
-\node at (4,1.8) {CD4};
-\draw[arrow, popgreen] (lt4.south) -- (lt8.north) node[midway, right] {IL-2};
+\node[draw=popgreen, thick, fill=popgreenL, circle, minimum size=1cm] (lt4) at (4,2.4) {};
+\node[align=center] at (4,3.2) {\textbf{LT4 (CD4$^+$)}};
+\node at (4,2.4) {TCR};
+\node at (4,2.0) {CD4};
+\draw[arrow, popgreen] (lt4.south) -- (lt8.north) node[midway, right=6mm] {IL-2};
 % Multiplication clonale
-\node[draw=popblue, thick, fill=popblueL, rounded corners=0.2cm, minimum width=3cm, minimum height=1cm] (clone) at (7.5,2.2) {};
-\node[align=center] at (7.5,2.2) {Multiplication clonale\\(expansion des LT8 spécifiques)};
+\node[draw=popblue, thick, fill=popblueL, rounded corners=0.2cm, minimum width=3cm, minimum height=1cm, align=center, text width=3cm] (clone) at (7.8,2.4) {Multiplication clonale\\(expansion des LT8 spécifiques)};
 \draw[arrow] (lt8.east) -- (clone.west);
 % Effecteurs LT8 vers cible
-\draw[arrow] (clone.south) |- (3.5,-1.5) -| (cible.south) node[pos=0.25, right] {LT8 effecteurs};
+\draw[arrow] (clone.south) |- (3.5,-1.9) -| (cible.south);
+\node[fill=white, inner sep=1pt, font=\footnotesize] at (5.5,-1.65) {LT8 effecteurs};
 % Perforines / Granzymes
-\node[perforin] (perf) at (2.5,-1.5) {};
-\node[align=center] at (2.5,-2.1) {Perforines};
-\node[perforin] (granz) at (1.2,-1.5) {};
-\node[align=center] at (1.2,-2.1) {Granzymes};
+\node[perforin] (perf) at (2.5,-1.9) {};
+\node[perforin] (granz) at (1.3,-1.9) {};
+\node[align=center, font=\footnotesize, fill=white, inner sep=1pt] at (2.0,-2.7) {Perforines \& Granzymes};
 \draw[arrow, poppink] (perf) -- (0,-1);
 \draw[arrow, poppink] (granz) -- (0,-1);
 % Apoptose
-\node[draw=poppink, thick, fill=poppinkL, rounded corners=0.2cm, minimum width=2.5cm, minimum height=0.7cm] (apop) at (0,-2.8) {};
-\node[align=center] at (0,-2.8) {Apoptose de la cellule cible};
+\node[draw=poppink, thick, fill=poppinkL, rounded corners=0.2cm, minimum width=2.5cm, minimum height=0.7cm, align=center, text width=2.5cm] (apop) at (0,-3.4) {Apoptose de la cellule cible};
 \draw[arrow, poppink] (0,-1.7) -- (apop.north);
-% Légende
-\node[align=left, anchor=north west] at (-4.5,1.3) {
+% Légende sous le schéma
+\node[align=left, anchor=north west, text width=13cm, font=\footnotesize] at (-3.6,-4.4) {
 \textbf{Légende :}\\
 1. LT8 reconnaît complexe Ag + CMH I via TCR + CD8.\\
 2. LT4 (reconnaissant Ag + CMH II sur CPA) sécrète IL-2 $\to$ prolifération LT8.\\
@@ -1443,7 +1433,6 @@ La réponse humorale cible les \textbf{antigènes libres} ou les \textbf{pathog�
 
 \begin{popfigure}
 \begin{tikzpicture}[
-    scale=0.9,
     every node/.style={font=\small},
     cell/.style={draw=popdark, thick, fill=popcream, rounded corners=0.3cm, minimum width=2.2cm, minimum height=1.6cm},
     lymp/.style={draw=popblue, thick, fill=popblueL, circle, minimum size=1.1cm},
@@ -1480,18 +1469,17 @@ La réponse humorale cible les \textbf{antigènes libres} ou les \textbf{pathog�
 \node at (-3,-2.5) {Usine à Ac};
 \draw[arrow] (lb.south) -- (plasm.north) node[midway, right] {Différenciation};
 % Multiplication clonale (schématisée)
-\node[draw=popblue, thick, fill=popblueL, rounded corners=0.2cm, minimum width=2.5cm, minimum height=0.8cm] (clone) at (-5.5,-2.5) {};
-\node[align=center] at (-5.5,-2.5) {Expansion clonale};
+\node[draw=popblue, thick, fill=popblueL, rounded corners=0.2cm, minimum width=2.5cm, minimum height=0.8cm, align=center, text width=2.5cm] (clone) at (-5.8,-2.5) {Expansion clonale};
 \draw[arrow] (lb.south west) -- (clone.north east);
 % Sécrétion anticorps
 \foreach \y in {-2.8, -2.5, -2.2} {
     \node[ab] (ab\y) at (-1.8,\y) {};
 }
 \draw[arrow, poppurple] (plasm.east) -- (-1.5,-2.5) node[midway, above] {Sécrétion};
-\node[align=center, poppurple] at (-0.5,-2.5) {Anticorps spécifiques};
+\node[align=center, poppurple] at (-0.5,-3.4) {Anticorps spécifiques};
 % Actions des Ac
 \node[draw=poppurple, thick, fill=poppurpleL, rounded corners=0.2cm, minimum width=3.5cm, minimum height=2.5cm] (actions) at (3,-1) {};
-\node[align=left] at (3,0.2) {
+\node[align=left, text width=3.2cm] at (3,0.2) {
 \textbf{Modes d'action des Ac :}\\
 $\bullet$ Neutralisation (blocage fixation)\\
 $\bullet$ Agglutination / Précipitation\\
@@ -1499,8 +1487,8 @@ $\bullet$ Opsonisation (facilite phagocytose)\\
 $\bullet$ Activation complément (lyse)
 };
 \draw[arrow, poppurple] (-0.5,-2.5) -- (actions.west);
-% Légende
-\node[align=left, anchor=north west] at (-6.5,3) {
+% Légende sous le schéma
+\node[align=left, anchor=north west, text width=13cm, font=\footnotesize] at (-6.5,-4.3) {
 \textbf{Légende :}\\
 1. LB capte Ag via BCR $\to$ internalisation, présentation peptide + CMH II.\\
 2. LT4 spécifique reconnaît peptide + CMH II $\to$ activation (CD40L + cytokines).\\
@@ -1552,46 +1540,40 @@ C'est le point d'articulation \textbf{clé} entre les deux voies et la clé de c
 
 \begin{popfigure}
 \begin{tikzpicture}[
-    scale=0.95,
     every node/.style={font=\small},
-    apc/.style={draw=popdark, thick, fill=popcream, ellipse, minimum width=2.5cm, minimum height=1.5cm},
-    lymp/.style={draw=popblue, thick, fill=popblueL, circle, minimum size=1.1cm},
-    lt4/.style={draw=popgreen, thick, fill=popgreenL, circle, minimum size=1.1cm},
+    apc/.style={draw=popdark, thick, fill=popcream, ellipse, minimum width=3.0cm, minimum height=2.2cm},
+    lymp/.style={draw=popblue, thick, fill=popblueL, circle, minimum size=1.5cm},
+    lt4/.style={draw=popgreen, thick, fill=popgreenL, circle, minimum size=1.5cm},
     arrow/.style={->, thick, >=Stealth, popdark},
     cyto/.style={->, thick, >=Stealth, poppink}
 ]
-% CPA (ex: cellule dendritique)
-\node[apc] (cpa) at (0,2) {};
-\node[align=center] at (0,2.9) {\textbf{Cellule présentatrice d'antigène (CPA)}};
-\node at (0,2.3) {CMH II + peptide};
-\node at (0,1.7) {CMH I + peptide};
-\node at (0,1.1) {B7 (CD80/86)};
-\node at (0,0.5) {Cytokines (IL-12)};
+% CPA
+\node[apc] (cpa) at (0,4) {};
+\node[align=center] at (0,5.6) {\textbf{Cellule présentatrice d'antigène (CPA)}};
+\node[align=center, font=\footnotesize] at (0,4) {CMH II + peptide\\CMH I + peptide\\B7 (CD80/86)\\Cytokines (IL-12)};
 % LT4
-\node[lt4] (lt4) at (-3.5,0) {};
-\node[align=center] at (-3.5,-1) {\textbf{LT4 (CD4$^+$)}};
-\node at (-3.5,0) {TCR + CD4};
-\node at (-3.5,-0.4) {CD28};
+\node[lt4] (lt4) at (-4,0.5) {};
+\node[align=center] at (-4,2.0) {\textbf{LT4 (CD4$^+$)}};
+\node[align=center, font=\footnotesize] at (-4,-1.1) {TCR + CD4\\CD28};
 % LB
-\node[lymp] (lb) at (3.5,0) {};
-\node[align=center] at (3.5,-1) {\textbf{LB}};
-\node at (3.5,0) {BCR};
-\node at (3.5,-0.4) {CMH II + peptide};
+\node[lymp] (lb) at (4,0.5) {};
+\node[align=center] at (4,2.0) {\textbf{LB}};
+\node[align=center, font=\footnotesize] at (4,-1.1) {BCR\\CMH II + peptide};
 % LT8
-\node[lymp] (lt8) at (0,-2.5) {};
-\node[align=center] at (0,-3.5) {\textbf{LT8 (CD8$^+$)}};
-\node at (0,-2.5) {TCR + CD8};
+\node[lymp] (lt8) at (0,-3.2) {};
+\node[align=center] at (0,-4.7) {\textbf{LT8 (CD8$^+$)}};
+\node[align=center, font=\footnotesize] at (0,-5.5) {TCR + CD8};
 % Flèches activation LT4 par CPA
-\draw[arrow] (cpa.south west) -- (lt4.north east) node[midway, left, align=center] {Signal 1 : TCR\\CMH II + peptide\\Signal 2 : CD28-B7};
-\draw[arrow] (cpa.south) -- ++(0,-0.3) -| (lt4.north) node[midway, above] {IL-12 $\to$ Th1};
+\draw[arrow] (cpa.south west) -- (lt4.north) node[midway, above left, align=center, text width=3.4cm, font=\footnotesize] {Signal 1 : TCR /\\CMH II + peptide\\Signal 2 : CD28-B7};
+\draw[arrow] (cpa.south) -- ++(0,-0.6) -| (lt4.east) node[midway, above, font=\footnotesize] {IL-12 $\to$ Th1};
 % LT4 activé aide LB
-\draw[arrow, popgreen] (lt4.east) -- node[midway, above] {CD40L + IL-4, IL-5, IL-6, IL-21} (lb.west);
+\draw[arrow, popgreen] (lt4.east) -- node[midway, above, text width=3.6cm, align=center, font=\footnotesize] {CD40L + IL-4, IL-5, IL-6, IL-21} (lb.west);
 % LT4 activé aide LT8
-\draw[arrow, popgreen] (lt4.south) -- node[midway, right] {IL-2} (lt8.north);
+\draw[arrow, popgreen] (lt4.south) -- node[midway, right, font=\footnotesize] {IL-2} (lt8.west);
 % LB présente Ag à LT4 (double reconnaissance)
-\draw[arrow, poporange] (lb.north west) -- node[midway, above, sloped] {Présentation Ag + CMH II} (lt4.north east);
-% Légende
-\node[align=left, anchor=north west] at (-6,3) {
+\draw[arrow, poporange] (lb.south) to[bend left=18] node[midway, below, align=center, text width=3.6cm, font=\footnotesize] {Présentation Ag + CMH II} (lt4.south);
+% Légende sous le schéma
+\node[align=left, anchor=north west, text width=13cm, font=\footnotesize] at (-6.5,-6.0) {
 \textbf{Coopération LT4 :}\\
 $\bullet$ LT4 activé par CPA (Signaux 1+2+cytokines).\\
 $\bullet$ LT4 $\xrightarrow{\text{CD40L, cytokines}}$ aide LB $\to$ plasmocytes + mémoire.\\
@@ -2052,7 +2034,7 @@ Nous étudierons trois exemples emblématiques illustrant les deux grandes cible
 \end{propriete}
 
 \begin{popfigure}
-\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+\begin{tikzpicture}[every node/.style={font=\small}]
     % Couleurs
     \colorlet{betahealthy}{popgreen!80!popdark}
     \colorlet{betadestroyed}{poporange!80!popdark}
@@ -2060,91 +2042,94 @@ Nous étudierons trois exemples emblématiques illustrant les deux grandes cible
     \colorlet{insulin}{popblue}
     \colorlet{blood}{poppink!70!popdark}
     \colorlet{capillary}{popmuted}
-    
+
     % --- PANCREAS SAIN (Gauche) ---
-    \begin{scope}[xshift=-7cm]
+    \begin{scope}[xshift=0cm]
+        \node[popdark, font=\bfseries\small] at (0,1.9) {Pancréas \textbf{SAIN}};
         % Capillaire
-        \draw[capillary, line width=2pt] (-1.5,0) -- (1.5,0);
-        \draw[capillary, line width=2pt] (-1.5,-0.1) -- (1.5,-0.1);
-        \node[capillary, anchor=north] at (0,0.2) {Capillaire sanguin};
-        
+        \draw[capillary, line width=2pt] (-1.5,0.6) -- (1.5,0.6);
+        \draw[capillary, line width=2pt] (-1.5,0.5) -- (1.5,0.5);
+        \node[capillary, font=\footnotesize] at (0,0.95) {Capillaire sanguin};
+
         % Îlot de Langerhans
-        \draw[popdark, thick, fill=popcream] (0,-2) ellipse (1.2cm and 0.8cm);
-        \node[popdark, anchor=north] at (0,-1.1) {Îlot de Langerhans sain};
-        
-        % Cellules bêta (majoritaires au centre)
+        \draw[popdark, thick, fill=popcream] (0,-1.5) ellipse (1.2cm and 0.8cm);
+        \node[popdark, font=\footnotesize, text width=3.2cm, align=center] at (0,-0.55) {Îlot de Langerhans sain};
+
+        % Cellules bêta
         \foreach \angle/\r in {30/0.5, 90/0.4, 150/0.5, 210/0.4, 270/0.5, 330/0.4, 0/0.3, 60/0.3, 120/0.3, 180/0.3, 240/0.3, 300/0.3} {
             \pgfmathsetmacro{\x}{\r*cos(\angle)}
             \pgfmathsetmacro{\y}{\r*sin(\angle)}
-            \draw[betahealthy, fill=betahealthy!30, thick] (\x,\y-2) circle (0.12cm);
-            % Granules d'insuline
+            \draw[betahealthy, fill=betahealthy!30, thick] (\x,\y-1.5) circle (0.12cm);
             \foreach \i in {1,2,3} {
                 \pgfmathsetmacro{\ang}{rand*360}
                 \pgfmathsetmacro{\rad}{0.02+rand*0.05}
-                \fill[insulin] ($(\x,\y-2)+(\ang:\rad)$) circle (0.015cm);
+                \fill[insulin] ($(\x,\y-1.5)+(\ang:\rad)$) circle (0.015cm);
             }
         }
-        \node[betahealthy, anchor=north] at (0,-3.2) {Cellules $\beta$ (insuline +++)};
-        
-        % Cellules alpha (périphérie)
+        % Cellules alpha
         \foreach \angle in {45, 135, 225, 315} {
             \pgfmathsetmacro{\x}{1.0*cos(\angle)}
             \pgfmathsetmacro{\y}{0.6*sin(\angle)}
-            \draw[popgold, fill=popgold!30, thick] (\x,\y-2) circle (0.1cm);
+            \draw[popgold, fill=popgold!30, thick] (\x,\y-1.5) circle (0.1cm);
         }
-        \node[popgold, anchor=south] at (0,-0.9) {Cellules $\alpha$ (glucagon)};
-        
+
         % Flèche sécrétion insuline
-        \draw[insulin, ->, thick, >=Stealth] (0,-2.8) -- (0,-1.2) node[midway, right] {Sécrétion d'insuline};
+        \draw[insulin, ->, thick, >=Stealth] (0,-2.3) -- (0,0.5);
+        \node[insulin, font=\footnotesize, text width=2.6cm, align=left] at (1.7,-1.9) {Sécrétion d'insuline};
+
+        % Légendes sous l'îlot
+        \node[betahealthy, font=\footnotesize, text width=3.6cm, align=center] at (0,-3.1) {Cellules $\beta$ (insuline +++)};
+        \node[popgold, font=\footnotesize] at (0,-3.7) {Cellules $\alpha$ (glucagon)};
     \end{scope}
-    
-    % Flèche transition
-    \draw[popdark, ->, very thick, >=Stealth] (-5.5,-3.5) -- (-3.5,-3.5) node[midway, above, popdark] {\textbf{Auto-immunité}};
-    \draw[popdark, ->, very thick, >=Stealth] (-5.5,-4.0) -- (-3.5,-4.0) node[midway, above, popdark] {\textbf{(LT8+ cytotoxiques)}};
-    
+
+    % --- Transition ---
+    \begin{scope}[xshift=5.6cm]
+        \draw[popdark, ->, very thick, >=Stealth] (-1.1,-1.0) -- (1.1,-1.0);
+        \node[popdark, font=\footnotesize, text width=2.4cm, align=center] at (0,-0.6) {\textbf{Auto-immunité}};
+        \draw[popdark, ->, very thick, >=Stealth] (-1.1,-2.2) -- (1.1,-2.2);
+        \node[popdark, font=\footnotesize, text width=2.6cm, align=center] at (0,-1.8) {\textbf{(LT8+ cytotoxiques)}};
+    \end{scope}
+
     % --- PANCREAS DIABÉTIQUE (Droite) ---
-    \begin{scope}[xshift=3.5cm]
+    \begin{scope}[xshift=11.2cm]
+        \node[popdark, font=\bfseries\small] at (0,1.9) {Pancréas \textbf{DIABÉTIQUE TYPE 1}};
         % Capillaire
-        \draw[capillary, line width=2pt] (-1.5,0) -- (1.5,0);
-        \draw[capillary, line width=2pt] (-1.5,-0.1) -- (1.5,-0.1);
-        \node[capillary, anchor=north] at (0,0.2) {Capillaire sanguin};
-        
+        \draw[capillary, line width=2pt] (-1.5,0.6) -- (1.5,0.6);
+        \draw[capillary, line width=2pt] (-1.5,0.5) -- (1.5,0.5);
+        \node[capillary, font=\footnotesize] at (0,0.95) {Capillaire sanguin};
+
         % Îlot détruit
-        \draw[popdark, thick, fill=popcream!50!poporangeL] (0,-2) ellipse (1.2cm and 0.8cm);
-        \node[popdark, anchor=north] at (0,-1.1) {Îlot de Langerhans détruit (insulite)};
-        
-        % Débris cellulaires / fibrose
-        \draw[poporange, fill=poporange!20, thick] (0,-2) ellipse (0.8cm and 0.5cm);
-        \node[poporange, anchor=north] at (0,-2.0) {Fibrose / Débris};
-        
+        \draw[popdark, thick, fill=popcream!50!poporangeL] (0,-1.5) ellipse (1.2cm and 0.8cm);
+        \node[popdark, font=\footnotesize, text width=3.4cm, align=center] at (0,-0.5) {Îlot de Langerhans détruit (insulite)};
+
+        % Fibrose / débris
+        \draw[poporange, fill=poporange!20, thick] (0,-1.5) ellipse (0.8cm and 0.5cm);
+        \node[poporange, font=\footnotesize] at (0,-1.5) {Fibrose / Débris};
+
         % Lymphocytes T infiltrants
         \foreach \i in {1,...,15} {
             \pgfmathsetmacro{\x}{-1.0+rand*2.0}
-            \pgfmathsetmacro{\y}{-2.5+rand*1.0}
+            \pgfmathsetmacro{\y}{-1.9+rand*0.8}
             \draw[lympho, fill=lympho!20, thick] (\x,\y) circle (0.07cm);
-            % Noyau
             \fill[lympho!80!black] (\x,\y) circle (0.03cm);
         }
-        \node[lympho, anchor=north] at (0,-3.3) {Infiltrat lymphocytaire (LT8+ auto-réactifs)};
-        
-        % Cellules bêta résiduelles (rares, en apoptose)
+        % Cellules bêta résiduelles
         \foreach \angle/\r in {90/0.6, 270/0.6} {
             \pgfmathsetmacro{\x}{\r*cos(\angle)}
             \pgfmathsetmacro{\y}{\r*sin(\angle)}
-            \draw[betadestroyed, fill=betadestroyed!30, thick, dashed] (\x,\y-2) circle (0.12cm);
-            % Noyau fragmenté (apoptose)
-            \draw[betadestroyed, thick] (\x-0.04,\y-2) -- (\x+0.04,\y-2);
-            \draw[betadestroyed, thick] (\x,\y-2.04) -- (\x,\y-1.96);
+            \draw[betadestroyed, fill=betadestroyed!30, thick, dashed] (\x,\y-1.5) circle (0.12cm);
+            \draw[betadestroyed, thick] (\x-0.04,\y-1.5) -- (\x+0.04,\y-1.5);
+            \draw[betadestroyed, thick] (\x,\y-1.54) -- (\x,\y-1.46);
         }
-        \node[betadestroyed, anchor=south] at (0,-3.7) {Cellules $\beta$ résiduelles (apoptose) $< 20\%$};
-        
-        % Pas d'insuline sécrétée
-        \draw[insulin, ->, thick, >=Stealth, dashed] (0,-2.8) -- (0,-1.2) node[midway, right, opacity=0.5] {Sécrétion nulle};
+
+        % Pas d'insuline
+        \draw[insulin, ->, thick, >=Stealth, dashed] (0,-2.3) -- (0,0.5);
+        \node[insulin, font=\footnotesize, text width=2.6cm, align=left] at (1.7,-1.9) {Sécrétion nulle};
+
+        % Légendes sous l'îlot
+        \node[lympho, font=\footnotesize, text width=4.0cm, align=center] at (0,-3.2) {Infiltrat lymphocytaire (LT8+ auto-réactifs)};
+        \node[betadestroyed, font=\footnotesize, text width=3.8cm, align=center] at (0,-4.1) {Cellules $\beta$ résiduelles (apoptose) $< 20\%$};
     \end{scope}
-    
-    % Légendes communes
-    \node[align=center, font=\bfseries\small] at (-7, 1.5) {Pancréas \textbf{SAIN}};
-    \node[align=center, font=\bfseries\small] at (3.5, 1.5) {Pancréas \textbf{DIABÉTIQUE TYPE 1}};
 \end{tikzpicture}
 \legende{Comparaison histologique schématique d'un îlot de Langerhans sain (gauche) et détruit par l'insulite auto-immune (droite) dans le diabète de type 1. À gauche : cellules $\beta$ riches en granules d'insuline (bleu), cellules $\alpha$ périphériques (or). À droite : infiltration massive par des lymphocytes T CD8+ cytotoxiques (violet), fibrose, rares cellules $\beta$ résiduelles en apoptose (pointillés). L'absence d'insuline entraîne l'hyperglycémie.}
 \end{popfigure}
@@ -2170,115 +2155,74 @@ Au Cameroun, le diagnostic repose sur l'hyperglycémie à jeun $\ge 1,26$ g/L (o
 C'est l'exemple type de la \textbf{maladie auto-immune à anticorps anti-récepteur} (type II de Gell et Coombs).
 
 \begin{popfigure}
-\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
-    % Couleurs
+\begin{tikzpicture}[every node/.style={font=\small}]
     \colorlet{axon}{popblue}
     \colorlet{muscle}{popred!70!popdark}
     \colorlet{ach}{popgreen}
     \colorlet{rach}{poppurple}
     \colorlet{ab}{poporange}
     \colorlet{mito}{popgold}
-    
-    % --- JONCTION NORMALE (Haut) ---
-    \begin{scope}[yshift=4cm]
-        % Terminaison axonique
+
+    % ===== JONCTION NORMALE =====
+    \begin{scope}[yshift=3.6cm]
+        \node[popdark, font=\bfseries\normalsize] at (0,2.9) {Jonction neuromusculaire \textbf{NORMALE}};
         \draw[axon, fill=axon!10, thick] (-3,0) rectangle (3,1);
-        \node[axon, anchor=south] at (0,1.1) {Terminaison motoneurone (axone)};
-        % Vésicules synaptiques
-        \foreach \i in {1,...,12} {
-            \pgfmathsetmacro{\x}{-2.5+rand*4.5}
+        \node[axon, anchor=south, font=\footnotesize] at (0,1.05) {Terminaison motoneurone (axone)};
+        \foreach \i in {1,...,14} {
+            \pgfmathsetmacro{\x}{-2.6+rand*5.2}
             \pgfmathsetmacro{\y}{0.15+rand*0.6}
-            \draw[ach, fill=ach!30] (\x,\y) circle (0.06cm);
+            \draw[ach, fill=ach!30] (\x,\y) circle (0.05cm);
         }
-        \node[ach, anchor=north] at (0,-0.2) {Vésicules d'acétylcholine (ACh)};
-        % Mitochondries
-        \foreach \i in {1,...,4} {
-            \pgfmathsetmacro{\x}{-2.5+rand*4.5}
-            \pgfmathsetmacro{\y}{0.15+rand*0.6}
-            \draw[mito, fill=mito!30, thick] (\x,\y) ellipse (0.08cm and 0.04cm);
-        }
-        
-        % Fente synaptique
-        \draw[popline, thick] (-3,-0.1) -- (3,-0.1);
-        \draw[popline, thick] (-3,-0.6) -- (3,-0.6);
-        \node[popmuted, anchor=north] at (0,-0.35) {Fente synaptique ($\sim 50$ nm)};
-        % ACh libérée
-        \foreach \i in {1,...,8} {
-            \pgfmathsetmacro{\x}{-2+rand*4}
-            \pgfmathsetmacro{\y}{-0.2+rand*0.3}
-            \node[ach, scale=0.7] at (\x,\y) {ACh};
-        }
-        
-        % Membrane musculaire (plissée)
-        \draw[muscle, thick, decorate, decoration={snake, amplitude=0.1cm, segment length=0.3cm}] (-3,-0.6) -- (3,-0.6);
-        \node[muscle, anchor=north] at (0,-0.7) {Membrane musculaire (plissée)};
-        
-        % Récepteurs AChR (normaux)
+        \node[fill=white, inner sep=1pt, font=\footnotesize] at (0,0.5) {Vésicules d'acétylcholine (ACh)};
+        \draw[popline, thick] (-3,-0.15) -- (3,-0.15);
+        \draw[popline, thick] (-3,-0.55) -- (3,-0.55);
+        \node[popmuted, font=\footnotesize, anchor=east] at (-3.2,-0.35) {Fente synaptique ($\sim 50$ nm)};
+        \foreach \x in {-2.4,-1.6,-0.8,0,0.8,1.6,2.4} \node[ach, font=\tiny] at (\x,-0.35) {ACh};
+        \draw[muscle, thick, decorate, decoration={snake, amplitude=0.1cm, segment length=0.3cm}] (-3,-0.55) -- (3,-0.55);
+        \node[muscle, font=\footnotesize, anchor=west] at (3.2,-0.55) {Membrane musculaire (plissée)};
         \foreach \x in {-2.5, -1.5, -0.5, 0.5, 1.5, 2.5} {
             \draw[rach, fill=rach!30, thick] (\x,-0.75) rectangle ++(0.6, -0.4);
-            % Site de fixation
             \node[rach, scale=0.6] at (\x+0.3, -0.95) {AChR};
         }
-        \node[rach, anchor=north] at (0,-1.3) {Récepteurs à l'ACh (AChR) fonctionnels};
-        
-        % Flèche dépolarisation
-        \draw[popgreen, ->, very thick, >=Stealth] (0,-1.4) -- (0,-1.8) node[midway, right] {Ouverture canal Na$^+$ $\rightarrow$ Dépolarisation (PPP) $\rightarrow$ Potentiel d'action musculaire $\rightarrow$ \textbf{Contraction}};
+        \node[rach, font=\footnotesize] at (0,-1.35) {Récepteurs à l'ACh (AChR) fonctionnels};
+        \draw[popgreen, ->, very thick, >=Stealth] (0,-1.55) -- (0,-2.1);
+        \node[popgreen, font=\footnotesize, text width=13cm, align=center] at (0,-2.5) {Ouverture canal Na$^+$ $\rightarrow$ Dépolarisation (PPP) $\rightarrow$ Potentiel d'action musculaire $\rightarrow$ \textbf{Contraction}};
     \end{scope}
-    
+
     % Séparateur
-    \draw[popline, dashed, thick] (-4, 2.8) -- (4, 2.8);
-    
-    % --- JONCTION MYASTHÉNIQUE (Bas) ---
-    \begin{scope}[yshift=-1.5cm]
-        % Terminaison axonique (identique)
+    \draw[popline, dashed, thick] (-4, 1.5) -- (4, 1.5);
+
+    % ===== JONCTION MYASTHÉNIQUE =====
+    \begin{scope}[yshift=-3.4cm]
+        \node[popdark, font=\bfseries\normalsize] at (0,2.9) {Jonction neuromusculaire \textbf{MYASTHÉNIQUE}};
         \draw[axon, fill=axon!10, thick] (-3,0) rectangle (3,1);
-        \node[axon, anchor=south] at (0,1.1) {Terminaison motoneurone (normale)};
-        \foreach \i in {1,...,12} {
-            \pgfmathsetmacro{\x}{-2.5+rand*4.5}
+        \node[axon, anchor=south, font=\footnotesize] at (0,1.05) {Terminaison motoneurone (normale)};
+        \foreach \i in {1,...,14} {
+            \pgfmathsetmacro{\x}{-2.6+rand*5.2}
             \pgfmathsetmacro{\y}{0.15+rand*0.6}
-            \draw[ach, fill=ach!30] (\x,\y) circle (0.06cm);
+            \draw[ach, fill=ach!30] (\x,\y) circle (0.05cm);
         }
-        
-        % Fente synaptique
-        \draw[popline, thick] (-3,-0.1) -- (3,-0.1);
-        \draw[popline, thick] (-3,-0.6) -- (3,-0.6);
-        \node[popmuted, anchor=north] at (0,-0.35) {Fente synaptique};
-        % ACh libérée (normale)
-        \foreach \i in {1,...,8} {
-            \pgfmathsetmacro{\x}{-2+rand*4}
-            \pgfmathsetmacro{\y}{-0.2+rand*0.3}
-            \node[ach, scale=0.7] at (\x,\y) {ACh};
-        }
-        
-        % Membrane musculaire
-        \draw[muscle, thick, decorate, decoration={snake, amplitude=0.1cm, segment length=0.3cm}] (-3,-0.6) -- (3,-0.6);
-        \node[muscle, anchor=north] at (0,-0.7) {Membrane musculaire};
-        
-        % Récepteurs AChR BLOQUÉS / DÉTRUITS
+        \node[fill=white, inner sep=1pt, font=\footnotesize] at (0,0.5) {Vésicules d'acétylcholine (ACh)};
+        \draw[popline, thick] (-3,-0.15) -- (3,-0.15);
+        \draw[popline, thick] (-3,-0.55) -- (3,-0.55);
+        \node[popmuted, font=\footnotesize, anchor=east] at (-3.2,-0.35) {Fente synaptique};
+        \foreach \x in {-2.4,-1.6,-0.8,0,0.8,1.6,2.4} \node[ach, font=\tiny] at (\x,-0.35) {ACh};
+        \draw[muscle, thick, decorate, decoration={snake, amplitude=0.1cm, segment length=0.3cm}] (-3,-0.55) -- (3,-0.55);
+        \node[muscle, font=\footnotesize, anchor=west] at (3.2,-0.55) {Membrane musculaire};
         \foreach \x in {-2.5, -1.5, -0.5, 0.5, 1.5, 2.5} {
-            % Récepteur
             \draw[rach, fill=rach!30, thick] (\x,-0.75) rectangle ++(0.6, -0.4);
-            % Auto-anticorps fixés (IgG)
-            \draw[ab, fill=ab!30, thick] (\x+0.1,-0.75) -- (\x+0.25,-0.55) -- (\x+0.5,-0.55) -- (\x+0.35,-0.65) -- (\x+0.5,-0.75) -- (\x+0.25,-0.75) -- cycle; % Forme Y simplifiée
-            \draw[ab, fill=ab!30, thick] (\x+0.35,-0.75) -- (\x+0.2,-0.55) -- (\x-0.05,-0.55) -- (\x+0.1,-0.65) -- (\x-0.05,-0.75) -- (\x+0.2,-0.75) -- cycle; % Second bras
-            % Corps IgG
+            \draw[ab, fill=ab!30, thick] (\x+0.1,-0.75) -- (\x+0.25,-0.55) -- (\x+0.5,-0.55) -- (\x+0.35,-0.65) -- (\x+0.5,-0.75) -- (\x+0.25,-0.75) -- cycle;
+            \draw[ab, fill=ab!30, thick] (\x+0.35,-0.75) -- (\x+0.2,-0.55) -- (\x-0.05,-0.55) -- (\x+0.1,-0.65) -- (\x-0.05,-0.75) -- (\x+0.2,-0.75) -- cycle;
             \fill[ab] (\x+0.3,-0.65) circle (0.04cm);
         }
-        \node[ab, anchor=north] at (0,-1.3) {Auto-anticorps anti-AChR (IgG1/IgG3) fixés};
-        \node[rach, anchor=north] at (0,-1.55) {Récepteurs \textbf{bloqués}, \textbf{modulés} (internalisés) et \textbf{détruits} (complément)};
-        
-        % Flèche ÉCHEC
-        \draw[poporange, ->, very thick, >=Stealth] (0,-1.7) -- (0,-2.1) node[midway, right, align=center] {Fixation ACh \textbf{réduite} $\rightarrow$ PPP \textbf{insuffisante} $\rightarrow$ \textbf{Pas de potentiel d'action} $\rightarrow$ \textbf{Fatigabilité musculaire}};
-        
-        % Légende anticorps
-        \draw[ab, thick] (-3.5, -2.5) -- (-2.5, -2.5) node[right, ab] {Auto-anticorps IgG anti-AChR};
-        \draw[rach, thick] (-3.5, -2.8) -- (-2.5, -2.8) node[right, rach] {Récepteur AChR (cible)};
-        \draw[ach, thick] (-3.5, -3.1) -- (-2.5, -3.1) node[right, ach] {Acétylcholine};
+        \node[ab, font=\footnotesize, text width=9cm, align=center] at (0,-1.45) {Auto-anticorps anti-AChR (IgG1/IgG3) fixés};
+        \node[rach, font=\footnotesize, text width=13cm, align=center] at (0,-1.95) {Récepteurs \textbf{bloqués}, \textbf{modulés} (internalisés) et \textbf{détruits} (complément)};
+        \draw[poporange, ->, very thick, >=Stealth] (0,-2.3) -- (0,-2.8);
+        \node[poporange, font=\footnotesize, text width=13cm, align=center] at (0,-3.25) {Fixation ACh \textbf{réduite} $\rightarrow$ PPP \textbf{insuffisante} $\rightarrow$ \textbf{Pas de potentiel d'action} $\rightarrow$ \textbf{Fatigabilité musculaire}};
+        \node[ab, font=\footnotesize, anchor=west] at (-4.4,-4.0) {Auto-anticorps IgG anti-AChR};
+        \node[rach, font=\footnotesize, anchor=west] at (1.2,-4.0) {Récepteur AChR (cible)};
+        \node[ach, font=\footnotesize, anchor=west] at (5.4,-4.0) {Acétylcholine};
     \end{scope}
-    
-    % Titres
-    \node[align=center, font=\bfseries\normalsize] at (-4.5, 4.5) {Jonction neuromusculaire \textbf{NORMALE}};
-    \node[align=center, font=\bfseries\normalsize] at (-4.5, 1.0) {Jonction neuromusculaire \textbf{MYASTHÉNIQUE}};
 \end{tikzpicture}
 \legende{Mécanisme de la myasthénie auto-immune. Haut : Jonction normale. L'acétylcholine (ACh, vert) libérée se fixe sur ses récepteurs (AChR, violet) $\rightarrow$ ouverture canaux Na$^+$ $\rightarrow$ contraction. Bas : Jonction myasthénique. Des auto-anticorps IgG (orange) se fixent sur les AChR. Conséquences : 1) \textbf{Blocage compétitif} de la fixation de l'ACh. 2) \textbf{Modulation antigénique} : internalisation et dégradation accélérée des AChR. 3) \textbf{Activation du complément} (C3b, C5b-9) $\rightarrow$ destruction de la membrane post-synaptique (plis disparus). Résultat : amplitude de la potentielle de plaque (PPP) réduite, souvent sous le seuil de déclenchement du potentiel d'action musculaire $\rightarrow$ faiblesse fatigable.}
 \end{popfigure}
@@ -2810,14 +2754,13 @@ Un patient masculin, 32 ans, séroconverti estimé à $t=0$ (infection primaire 
     ytick={0,200,400,600,800,1000,1200},
     grid=major, grid style={popline},
     axis y line=left, axis x line=bottom,
-    legend style={at={(0.5,-0.15)}, anchor=north, fill=white, draw=popdark},
+    legend style={at={(0.02,0.98)}, anchor=north west, fill=white, draw=popdark, font=\footnotesize},
 ]
 % CD4 curve
 \addplot[popblue, very thick, smooth, mark=*, mark size=2] coordinates {
     (0, 850) (0.5, 550) (1, 600) (2, 550) (3, 500) (4, 450) (5, 380) (6, 300) (7, 220) (8, 150) (9, 80) (10, 40)
 };
 \addlegendentry{LT4$^+$ (échelle gauche)}
-% Viral load - second axis
 \end{axis}
 \begin{axis}[
     width=\linewidth, height=7cm,
@@ -2827,7 +2770,7 @@ Un patient masculin, 32 ans, séroconverti estimé à $t=0$ (infection primaire 
     ytick={1,100,10000,1000000},
     ymode=log,
     axis y line=right, axis x line=none,
-    legend style={at={(0.5,-0.15)}, anchor=north, fill=white, draw=popdark},
+    legend style={at={(0.98,0.98)}, anchor=north east, fill=white, draw=popdark, font=\footnotesize},
 ]
 \addplot[poporange, very thick, smooth, mark=square*, mark size=2] coordinates {
     (0, 5000000) (0.5, 50000) (1, 30000) (2, 50000) (3, 80000) (4, 120000) (5, 200000) (6, 350000) (7, 600000) (8, 800000) (9, 1500000) (10, 3000000)
@@ -3157,33 +3100,34 @@ Exp. 1 : greffe même souche pure $\rightarrow$ acceptée. Exp. 2 : greffe souch
 \begin{popfigure}
 \begin{center}
 \begin{tikzpicture}[
-  node distance=1.0cm and 1.2cm,
+  node distance=1.4cm and 2.2cm,
   every node/.style={align=center, font=\small},
-  apc/.style={ellipse, draw=popblue, thick, fill=popblueL, minimum width=2.5cm},
+  apc/.style={ellipse, draw=popblue, thick, fill=popblueL, minimum width=2.8cm},
   lymph/.style={circle, draw=poppurple, thick, fill=poppurpleL, minimum width=2cm},
   eff/.style={rectangle, draw=popgreen, thick, fill=popgreenL, rounded corners, minimum width=2.5cm},
   arrow/.style={-Stealth, thick, popdark},
-  cytokine/.style={-Stealth, dashed, poporange, thick}
+  cytokine/.style={-Stealth, dashed, poporange, thick},
+  elab/.style={font=\tiny, align=center, text width=3.2cm, fill=white, inner sep=1pt}
 ]
 % APC
 \node[apc, align=center] (apc){Cellule Présentatrice\\ d'Antigène (CPA)\\(Macrophage, Cell. dendritique, LB)\\\textbf{CMH II + Peptide}};
 % Th
 \node[lymph, right=of apc, align=center] (th){LT4 naïf (CD4+)\\\textbf{TCR + CD4}};
 % Activation
-\draw[arrow] (apc) -- node[above, font=\tiny] {Reconnaissance TCR/(Peptide-CMH II) + CD4 co-récepteur} (th);
-\draw[cytokine] (th) -- ++(0,1.2) -| node[above, font=\tiny, pos=0.5] {IL-2, IFN-$\gamma$, IL-4...} (apc); % autocrine/paracrine
+\draw[arrow] (apc) -- node[above, elab] {Reconnaissance TCR/(Peptide-CMH II) + CD4 co-récepteur} (th);
+\draw[cytokine] (th) -- ++(0,1.6) -| node[above, elab, pos=0.5] {IL-2, IFN-$\gamma$, IL-4...} (apc);
 
 % Branche Humorale
 \node[lymph, below right=of th, align=center] (lb){LB naïf\\\textbf{BCR (IgM/D) + CMH II}};
-\draw[arrow] (th) -- node[above left, font=\tiny] {Contact CD40L/CD40 + Cytokines (IL-4, IL-5)} (lb);
+\draw[arrow] (th) -- node[above left, elab] {Contact CD40L/CD40 + Cytokines (IL-4, IL-5)} (lb);
 \node[eff, below=of lb, align=center] (plasma){Plasmocyte\\ \textbf{Usine à anticorps (IgG, IgA, IgE...)}};
 \node[eff, right=of plasma] (memB) {LB Mémoire};
-\draw[arrow] (lb) -- node[left, font=\tiny] {Différenciation} (plasma);
+\draw[arrow] (lb) -- node[left, elab] {Différenciation} (plasma);
 \draw[arrow] (lb) -- (memB);
 
 % Branche Cellulaire
 \node[lymph, above right=of th, align=center] (tc){LT8 naïf (CD8+)\\\textbf{TCR + CD8}};
-\draw[arrow] (th) -- node[above right, font=\tiny] {IL-2} (tc);
+\draw[arrow] (th) -- node[above right, elab] {IL-2} (tc);
 \node[eff, above=of tc, align=center] (ctlt){LT8 Cytotoxique (CTL)\\\textbf{Perforines, Granzymes, Fas/FasL}};
 \node[eff, right=of ctlt] (memT) {LT Mémoire (CD4/CD8)};
 \draw[arrow] (tc) -- (ctlt);
@@ -3191,8 +3135,8 @@ Exp. 1 : greffe même souche pure $\rightarrow$ acceptée. Exp. 2 : greffe souch
 
 % Cible Cellulaire
 \node[apc, right=of ctlt, fill=poporangeL, draw=poporange, align=center] (cible){Cellule Cible Infectée\\ ou Cancéreuse\\ \textbf{CMH I + Peptide viral/tumoral}};
-\draw[arrow, poporange] (ctlt) -- node[above, font=\tiny] {Reconnaissance TCR/(Peptide-CMH I) + CD8 co-récepteur} (cible);
-\draw[arrow, poporange, bend left=20] (cible) to node[above, font=\tiny] {Apoptose} (ctlt);
+\draw[arrow, poporange] (ctlt) -- node[above, elab] {Reconnaissance TCR/(Peptide-CMH I) + CD8 co-récepteur} (cible);
+\draw[arrow, poporange, bend left=20] (cible) to node[below, elab] {Apoptose} (ctlt);
 
 % Legendes boites
 \node[draw=popblue, fit=(apc), inner sep=2pt, label={[popblue]above left:\textbf{Présentation}}] {};
